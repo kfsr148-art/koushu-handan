@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>配牌 攻守判定</title>
+<style>
+  /* オフラインでも確実に動くよう、外部フォント読み込みは使わず端末標準フォントを用いる */
+  :root {
+    --serif: "Hiragino Mincho ProN", "YuMincho", "Yu Mincho", "MS Mincho", serif;
+    --sans: -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "YuGothic", "Yu Gothic", "Meiryo", sans-serif;
+    --felt:        #1f5c47;
+    --felt-dark:   #163f31;
+    --felt-light:  #2a7459;
+    --bone:        #f3ece0;
+    --bone-edge:   #d9cdb8;
+    --ink:         #1a1a18;
+    --ink-soft:    #5c5750;
+    --vermilion:   #c0392b;
+    --vermilion-d: #962b20;
+    --gold:        #c8a45c;
+    --jade:        #3a9d78;
+    --line:        rgba(243,236,224,0.16);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background:
+      radial-gradient(ellipse at 50% 0%, var(--felt-light) 0%, var(--felt) 42%, var(--felt-dark) 100%);
+    color: var(--bone);
+    font-family: var(--sans);
+    min-height: 100vh;
+    padding: 28px 16px 64px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .wrap { width: 100%; max-width: 720px; }
+
+  .panel-foot {
+    text-align: center; margin-top: 18px; padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .eyebrow {
+    font-size: 11px; letter-spacing: 0.42em; text-indent: 0.42em;
+    color: var(--gold); font-weight: 700; margin-bottom: 10px;
+  }
+  .panel-foot h1 {
+    font-family: var(--serif);
+    font-weight: 800; font-size: clamp(22px, 5vw, 30px);
+    letter-spacing: 0.08em; line-height: 1.1;
+  }
+  h1 .sep { color: var(--gold); margin: 0 0.22em; font-weight: 500; }
+  .lead {
+    margin-top: 12px; font-size: 12.5px; color: rgba(243,236,224,0.66);
+    line-height: 1.7; max-width: 460px; margin-left: auto; margin-right: auto;
+  }
+
+  /* ---- panel ---- */
+  .panel {
+    background: linear-gradient(180deg, rgba(0,0,0,0.16), rgba(0,0,0,0.28));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px 18px 22px;
+    margin-bottom: 18px;
+    box-shadow: inset 0 1px 0 rgba(243,236,224,0.06), 0 12px 30px rgba(0,0,0,0.28);
+  }
+  .panel-label {
+    font-size: 11px; letter-spacing: 0.3em; text-indent: 0.3em;
+    color: var(--gold); font-weight: 700; margin-bottom: 4px;
+  }
+  .panel-sub { font-size: 12px; color: rgba(243,236,224,0.6); margin-bottom: 16px; }
+
+  /* ---- hand display ---- */
+  .hand {
+    display: flex; flex-wrap: wrap; gap: 5px; min-height: 62px;
+    padding: 12px; border-radius: 10px;
+    background: rgba(0,0,0,0.22);
+    border: 1px dashed rgba(243,236,224,0.18);
+    margin-bottom: 8px; align-items: center;
+  }
+  .hand.empty::before {
+    content: '配牌表示枠';
+    font-size: 12.5px; color: rgba(243,236,224,0.4); margin: auto;
+  }
+  .tile {
+    position: relative;
+    width: 34px; height: 47px; border-radius: 5px;
+    background: linear-gradient(180deg, var(--bone) 0%, #e7ddca 100%);
+    border: 1px solid var(--bone-edge);
+    box-shadow: 0 2px 0 #b3a589, 0 3px 5px rgba(0,0,0,0.3);
+    color: var(--ink);
+    font-family: var(--serif); font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; user-select: none;
+    transition: transform 0.08s ease;
+    font-size: 19px; line-height: 1;
+  }
+  .tile:active { transform: translateY(1px); }
+  /* 押し損じ対策：見た目は変えず、当たり判定だけを牌の周囲へ広げる。
+     横持ちで牌の幅を痩せさせずに、指のずれを拾えるようにする。
+     選択パレット（.pick）にのみ効かせ、配牌表示枠の牌には及ぼさない。 */
+  .tile.pick::before {
+    content: "";
+    position: absolute;
+    top: -5px; right: -4px; bottom: -5px; left: -4px;
+    z-index: 1;
+  }
+  .tile.man  { color: var(--ink); }
+  .tile.pin  { color: #1f5fa8; }
+  .tile.sou  { color: #1f7a3d; }
+  .tile.honor{ color: var(--vermilion-d); }
+  .tile .suf { font-size: 10px; margin-left: 1px; align-self: flex-end; margin-bottom: 6px; }
+  .tile.red { background: linear-gradient(180deg,#ffe9e4,#ffd2c8); }
+  .tile.red::after {
+    content:''; position:absolute; inset:0; border:1.5px solid var(--vermilion);
+    border-radius:5px; opacity:0.5;
+  }
+  .tile.low {
+    box-shadow: 0 0 0 3px #e8b54a, 0 0 10px rgba(232,181,74,0.6);
+  }
+  .tile.low::after {
+    content:'?'; position:absolute; top:-9px; left:-7px;
+    width:18px; height:18px; line-height:18px; text-align:center;
+    background:#e8b54a; color:#1a1410; font-size:13px; font-weight:700;
+    border-radius:50%; z-index:3;
+  }
+  .hand .tile { cursor: pointer; }
+  .hand .tile:hover::before {
+    content:'×'; position:absolute; top:-6px; right:-6px;
+    width:15px; height:15px; background:var(--vermilion); color:#fff;
+    border-radius:50%; font-size:11px; font-family:sans-serif;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .counter { font-size: 12px; color: rgba(243,236,224,0.65); text-align: right; }
+  .counter b { color: var(--bone); font-size: 13px; }
+  .counter.full b { color: var(--gold); }
+
+  /* ---- tile picker ---- */
+  .picker { margin-top: 4px; }
+  .suit-row { margin-bottom: 12px; }
+  .suit-name {
+    font-size: 10px; letter-spacing: 0.2em; color: rgba(243,236,224,0.5);
+    margin-bottom: 6px; font-weight: 500;
+  }
+  .suit-tiles { display: flex; flex-wrap: wrap; gap: 8px; }
+  .suit-tiles.two-row { display: block; }
+  .tile-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .tile-row + .tile-row { margin-top: 8px; }
+  .pick {
+    width: 100%; height: 56px; font-size: 22px;
+    box-shadow: 0 3px 0 #b3a589, 0 3px 5px rgba(0,0,0,0.28);
+  }
+  .pick .suf { font-size: 10px; margin-bottom: 7px; }
+
+  /* ---- dora indicator (盤面の空きに置く表示牌指定ボタン) ---- */
+  .dora-toggle {
+    grid-column: span 2;
+    position: relative; z-index: 2;
+    border-radius: 8px;
+    border: 1px dashed var(--gold);
+    background: rgba(200,164,92,0.10);
+    color: var(--gold);
+    font-family: inherit; font-weight: 700;
+    font-size: clamp(10px, 2.4vw, 13px); line-height: 1.25;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 0 6px;
+    transition: all 0.12s ease;
+  }
+  .dora-toggle:active { transform: translateY(1px); }
+  .dora-toggle.armed {
+    background: var(--gold); color: var(--ink);
+    border-style: solid;
+    box-shadow: 0 0 10px rgba(200,164,92,0.6);
+  }
+  .dora-readout { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .dora-readout .dr-tile {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 24px; height: 32px; padding: 0 5px;
+    background: linear-gradient(180deg, var(--bone) 0%, #e7ddca 100%);
+    border: 1px solid var(--bone-edge); border-radius: 5px;
+    color: var(--ink); font-family: var(--serif); font-weight: 700; font-size: 15px;
+    box-shadow: 0 2px 0 #b3a589;
+  }
+  .dora-readout .dr-tile.pin   { color:#1f5fa8; }
+  .dora-readout .dr-tile.sou   { color:#1f7a3d; }
+  .dora-readout .dr-tile.honor { color: var(--vermilion-d); }
+  .dora-readout .dr-tile .suf  { font-size: 9px; margin-left: 1px; align-self: flex-end; margin-bottom: 4px; }
+  .dora-readout .dr-arrow { color: var(--gold); font-weight: 700; }
+  .dora-readout .dr-count { color: var(--gold); font-weight: 700; font-size: 13px; }
+  .dora-readout .dr-hint  { color: rgba(243,236,224,0.55); font-size: 12.5px; }
+  .dora-readout .dr-clear {
+    margin-left: 2px; font-size: 11px; padding: 3px 10px; border-radius: 14px;
+    border: 1px solid rgba(243,236,224,0.3); background: transparent;
+    color: rgba(243,236,224,0.75); cursor: pointer; font-family: inherit;
+  }
+
+  /* ---- 場風・自風の選択 ---- */
+  .wind-note {
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  /* 場×席の格子：左列に場のラベル、上行に席の見出し、中の8升が選択ボタン */
+  .wind-grid {
+    display: grid;
+    grid-template-columns: auto repeat(4, 1fr);
+    gap: 5px;
+    align-items: center;
+  }
+  .wind-corner { }
+  .wind-head { font-size: 11px; color: rgba(243,236,224,0.55); text-align: center; }
+  .wind-side { font-size: 12.5px; color: var(--gold); font-weight: 700; padding-right: 4px; white-space: nowrap; }
+  .seat-cell { font-size: 13px; padding: 6px 0; text-align: center; }
+  .wind-readout { font-size: 12px; color: rgba(243,236,224,0.6); line-height: 1.6; margin-top: 2px; }
+
+  /* ---- inline picker (手牌のすぐ下に置く統合盤面) ---- */
+  .picker-inline {
+    margin-top: 14px; padding: 14px; border-radius: 11px;
+    background: rgba(0,0,0,0.16);
+    border: 1px solid rgba(243,236,224,0.1);
+  }
+  .picker-head {
+    font-size: 12.5px; color: var(--gold); font-weight: 700;
+    margin-top: 12px; letter-spacing: 0.04em;
+  }
+
+  /* ---- dora ---- */
+  .dora-note {
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line);
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .dora-note span { font-size: 12.5px; color: rgba(243,236,224,0.78); }
+  .chip {
+    font-size: 12px; padding: 5px 12px; border-radius: 20px;
+    border: 1px solid rgba(243,236,224,0.28); background: transparent;
+    color: var(--bone); cursor: pointer; font-family: inherit;
+    transition: all 0.12s ease;
+  }
+  .chip.on { background: var(--gold); color: var(--ink); border-color: var(--gold); font-weight: 700; }
+
+  .stepper { display: flex; align-items: center; gap: 10px; }
+  .step-btn {
+    width: 56px; height: 56px; border-radius: 10px;
+    border: 1px solid rgba(243,236,224,0.28); background: rgba(0,0,0,0.2);
+    color: var(--bone); font-size: 30px; cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.1s ease; line-height: 1; padding: 0;
+  }
+
+  .quick-input {
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line);
+  }
+  .qi-label {
+    display:block; font-size: 12.5px; color: var(--gold); font-weight:700;
+    margin-bottom: 8px;
+  }
+  .qi-row { display: flex; gap: 7px; }
+  .qi-field {
+    flex: 1; min-width: 0; padding: 11px 12px; border-radius: 9px;
+    border: 1px solid rgba(243,236,224,0.28); background: rgba(0,0,0,0.22);
+    color: var(--bone); font-family: inherit; font-size: 17px;
+    letter-spacing: 0.06em; outline: none;
+  }
+  .qi-field::placeholder { color: rgba(243,236,224,0.38); letter-spacing: 0; font-size: 14px; }
+  .qi-field:focus { border-color: var(--gold); }
+  .qi-btn {
+    flex: 0 0 auto; width: 44px; border-radius: 9px;
+    background: rgba(0,0,0,0.25); color: rgba(243,236,224,0.72);
+    font-family: inherit; font-weight: 700; font-size: 17px; cursor: pointer;
+    border: 1px solid rgba(243,236,224,0.22);
+  }
+  .qi-btn:active { background: rgba(0,0,0,0.4); transform: translateY(1px); }
+  .qi-status {
+    margin-top: 9px; font-size: 13px; min-height: 19px; line-height: 1.5;
+    color: rgba(243,236,224,0.5); transition: color 0.15s ease;
+  }
+  .qi-status.ok   { color: var(--jade); font-weight: 700; }
+  .qi-status.warn { color: var(--gold); }
+  .qi-status.err  { color: #e98a7c; }
+  .qi-hint { margin-top: 9px; font-size: 11px; color: rgba(243,236,224,0.5); line-height:1.6; }
+  .qi-hint b { color: var(--gold); font-weight: 700; }
+  .step-btn {
+    width: 56px; height: 56px; border-radius: 10px;
+    border: 1px solid rgba(243,236,224,0.28); background: rgba(0,0,0,0.2);
+    color: var(--bone); font-size: 30px; cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.1s ease; line-height: 1; padding: 0;
+  }
+  .step-btn:active { transform: translateY(1px); background: rgba(0,0,0,0.35); }
+  .step-val {
+    font-family: var(--serif); font-weight: 700; font-size: 28px;
+    color: var(--gold); min-width: 36px; text-align: center;
+  }
+  .step-cap { font-size: 14px; color: rgba(243,236,224,0.6); margin-left: 4px; }
+
+  /* ---- buttons ---- */
+  .actions { display: flex; gap: 10px; margin-bottom: 22px; }
+  .btn {
+    flex: 1; padding: 14px; border-radius: 11px; border: none;
+    font-family: var(--serif); font-weight: 700; font-size: 15px;
+    letter-spacing: 0.08em; cursor: pointer; transition: all 0.14s ease;
+  }
+  .btn-go {
+    background: linear-gradient(180deg, var(--vermilion), var(--vermilion-d));
+    color: var(--bone); box-shadow: 0 4px 0 #7a2218, 0 6px 14px rgba(0,0,0,0.3);
+  }
+  .btn-go:active { transform: translateY(3px); box-shadow: 0 1px 0 #7a2218; }
+  .btn-go:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: 0 4px 0 #7a2218; }
+  .btn-clear {
+    flex: 0 0 auto; padding-left: 22px; padding-right: 22px;
+    background: rgba(0,0,0,0.2); color: rgba(243,236,224,0.8);
+    border: 1px solid var(--line);
+  }
+
+  /* ---- verdict ---- */
+  .verdict { display: none; }
+  .verdict.show { display: block; animation: rise 0.4s cubic-bezier(.2,.7,.3,1); }
+  @keyframes rise { from { opacity:0; transform: translateY(14px);} to {opacity:1; transform:none;} }
+
+  .verdict-card {
+    border-radius: 16px; padding: 26px 22px; text-align: center;
+    border: 1px solid; position: relative; overflow: hidden;
+  }
+  .verdict-card.attack {
+    background: linear-gradient(165deg, rgba(192,57,43,0.22), rgba(150,43,32,0.12));
+    border-color: rgba(192,57,43,0.5);
+  }
+  .verdict-card.defend {
+    background: linear-gradient(165deg, rgba(58,157,120,0.2), rgba(31,92,71,0.1));
+    border-color: rgba(58,157,120,0.5);
+  }
+  .verdict-mascot {
+    font-size: clamp(56px, 18vw, 92px); line-height: 1; margin-bottom: 4px;
+    animation: pop 0.5s cubic-bezier(.2,1.3,.4,1) both;
+  }
+  @keyframes pop {
+    0% { transform: scale(0) rotate(-15deg); opacity: 0; }
+    60% { transform: scale(1.15) rotate(5deg); }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+  .verdict-kanji {
+    font-family: var(--serif); font-weight: 800;
+    font-size: clamp(54px, 16vw, 84px); line-height: 1; letter-spacing: 0.1em;
+  }
+  .attack .verdict-kanji { color: #ff7b62; text-shadow: 0 0 30px rgba(192,57,43,0.5); }
+  .defend .verdict-kanji { color: #5fd3a6; text-shadow: 0 0 30px rgba(58,157,120,0.45); }
+  .verdict-word { font-size: 14px; letter-spacing: 0.3em; text-indent: 0.3em; margin-top: 10px; color: rgba(243,236,224,0.85); }
+  .seat-foot {
+    margin-top: 10px; font-size: 12px; line-height: 1.6;
+    color: var(--gold); font-family: var(--serif);
+  }
+
+  .reasons {
+    margin-top: 20px; text-align: left;
+    background: rgba(0,0,0,0.18); border-radius: 12px; padding: 16px 16px 6px;
+  }
+  .reason {
+    display: flex; align-items: flex-start; gap: 11px;
+    padding: 9px 0 13px; border-bottom: 1px solid var(--line);
+  }
+  .reason:last-child { border-bottom: none; }
+  .r-mark {
+    flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; margin-top: 1px;
+  }
+  .r-mark.yes { background: rgba(58,157,120,0.25); color: #5fd3a6; }
+  .r-mark.no  { background: rgba(192,57,43,0.22); color: #ff8b74; }
+  .r-body { flex: 1; }
+  .r-title { font-size: 13.5px; font-weight: 700; color: var(--bone); }
+  .r-detail { font-size: 12px; color: rgba(243,236,224,0.62); margin-top: 3px; line-height: 1.6; }
+
+  .verdict-foot {
+    margin-top: 16px; font-size: 11.5px; line-height: 1.7;
+    color: rgba(243,236,224,0.5); font-family: var(--serif);
+  }
+
+  /* =================================================================
+     横向き（landscape）専用レイアウト ── iPhoneを横にした全画面で使う
+     方針：縦のことは考えず、横一枚に全要素をスクロールなしで収める。
+     ・左右二段組はやめ、「上＝盤面・下＝操作」の横割りにする。
+     ・盤面は横幅をフルに使い、各スートを横一列(10列)に畳む。
+       tile-row を display:contents で透過させ、牌を直接10列グリッドへ。
+       並びは 1 2 3 4 5 赤5 6 7 8 9。字牌は7枚で左から。横幅フルなので牌が大きい。
+     ・下段は grid-template-areas で 配牌枠・枚数・ドラ・判定・入力 を横に並べる。
+     ・題名と盤面見出しは横では省き、高さを稼ぐ。
+     高さの低い横向きだけに効かせ、縦やPC/iPadには影響しない。
+     ================================================================= */
+  @media (orientation: landscape) and (max-height: 560px) {
+    body {
+      padding: 6px 10px 8px;
+      align-items: flex-start;
+    }
+    .wrap { max-width: 100%; }
+
+    /* パネルをエリア配置に。上=盤面（横幅フル）、下=操作群を横並び。
+       max-heightで画面高以内に必ず収め、字牌が切れないようにする。 */
+    .panel {
+      display: grid;
+      grid-template-columns: minmax(0,1.5fr) auto minmax(0,1.3fr) auto;
+      grid-template-areas:
+        "picker picker picker picker"
+        "hand   dora   qi     act";
+      column-gap: 12px;
+      row-gap: 8px;
+      align-items: center;
+      padding: 8px 12px 10px;
+      margin-bottom: 8px;
+      max-height: calc(100dvh - 14px);
+    }
+
+    /* 盤面：上段に横幅フル。各スートを横10列に畳む */
+    .picker-inline {
+      grid-area: picker;
+      margin-top: 0;
+      padding: 10px 12px;
+    }
+    .suit-tiles.two-row {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+    }
+    .suit-tiles.two-row .tile-row { display: contents; }
+    .tile-row + .tile-row { margin-top: 0; }
+    .suit-row { margin-bottom: 4px; }
+    .suit-row:last-child { margin-bottom: 0; }
+    .suit-name { margin-bottom: 2px; font-size: 9px; }
+    /* 牌の高さを画面の高さから自動算出。低い画面では縮み、字牌まで必ず1画面に収まる。
+       4段ぶんの牌＋見出し＋下段操作を引いた残りを4で割る。上下限はclampで抑える。 */
+    .pick {
+      width: 100%;
+      height: clamp(30px, calc((100dvh - 168px) / 4), 52px);
+      font-size: clamp(13px, calc((100dvh - 168px) / 4 * 0.37), 19px);
+      box-shadow: 0 2px 0 #b3a589, 0 2px 4px rgba(0,0,0,0.28);
+    }
+    .pick .suf { font-size: 0.5em; margin-bottom: 0.28em; }
+    .picker-head { display: none; }   /* 盤面の説明文は横では省略 */
+
+    /* 下段：左から 配牌枠＋枚数 / ドラ / 入力 / 判定ボタン */
+    .hand {
+      grid-area: hand; margin: 0;
+      min-height: 56px; padding: 8px;
+    }
+    .counter {
+      grid-area: hand;            /* 配牌枠の右下隅に枚数を小さく重ねる */
+      align-self: end; justify-self: end;
+      font-size: 10px;
+      margin: 0 8px 5px 0; pointer-events: none;
+    }
+    .counter b { font-size: 11px; }
+    .value-col {
+      grid-area: dora; margin: 0;
+      display: flex; flex-direction: column; gap: 6px;
+      align-items: center; justify-content: center; min-width: 0;
+    }
+    .dora-note {
+      margin: 0; padding: 0; border: none; flex-direction: column; gap: 4px;
+      align-items: center; justify-content: center;
+    }
+    .dora-help { display: none; }   /* 横では説明文を省き、風の選択の場所を作る */
+    .wind-note { margin: 0; padding: 0; border: none; gap: 3px; }
+    .wind-grid { gap: 3px; }
+    .wind-head { font-size: 8px; }
+    .wind-side { font-size: 9px; padding-right: 2px; }
+    .seat-cell { font-size: 9px; padding: 3px 0; }
+    .wind-readout { display: none; }   /* 横では読み取り文も省く */
+    .quick-input {
+      grid-area: qi; margin: 0; padding: 0; border: none;
+    }
+    .actions { grid-area: act; margin: 0; flex-direction: column; gap: 8px; }
+
+    /* 操作群のパーツを横向き用に詰める */
+    .step-btn { width: 40px; height: 40px; font-size: 22px; }
+    .step-val { font-size: 20px; min-width: 26px; }
+    .step-cap { display: none; }
+    .stepper { gap: 6px; }
+    .btn { padding: 12px 16px; font-size: 14px; white-space: nowrap; }
+    .btn-go { flex: none; }
+    .btn-clear { flex: none; }
+    .qi-label { font-size: 9px; margin-bottom: 4px; line-height: 1.3; }
+    .qi-field { padding: 9px 10px; font-size: 15px; }
+    .qi-btn { width: 38px; font-size: 15px; }
+    .qi-status { font-size: 11px; min-height: 0; margin-top: 4px; }
+    .qi-hint { display: none; }       /* 長い注記は横では省略 */
+    .panel-foot { display: none; }    /* 題名は横では省略 */
+
+    /* 結果カードはパネルの下にコンパクトに。理由を横三列で低く収める */
+    .verdict-card { padding: 12px 14px; }
+    .verdict-mascot { font-size: 38px; margin-bottom: 0; }
+    .verdict-kanji { font-size: 36px; }
+    .verdict-word { font-size: 11px; margin-top: 4px; }
+    .seat-foot { font-size: 9px; margin-top: 4px; }
+    .reasons {
+      margin-top: 8px;
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0 14px;
+      padding: 10px 12px 2px;
+    }
+    .reason { border-bottom: none; padding: 4px 0 7px; }
+    .verdict-foot { margin-top: 8px; font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="panel">
+    <div class="picker-inline">
+      <div id="pickerBody">
+      <div class="suit-row">
+        <div class="suit-name">萬子</div>
+        <div class="suit-tiles two-row">
+          <div class="tile-row"><div class="tile pick man" data-suit="man" data-label="1" data-num="1" data-code="m1" data-red="0">1<span class="suf">萬</span></div><div class="tile pick man" data-suit="man" data-label="2" data-num="2" data-code="m2" data-red="0">2<span class="suf">萬</span></div><div class="tile pick man" data-suit="man" data-label="3" data-num="3" data-code="m3" data-red="0">3<span class="suf">萬</span></div><div class="tile pick man" data-suit="man" data-label="4" data-num="4" data-code="m4" data-red="0">4<span class="suf">萬</span></div><div class="tile pick man" data-suit="man" data-label="5" data-num="5" data-code="m5" data-red="0">5<span class="suf">萬</span></div></div>
+          <div class="tile-row"><div class="tile pick man red" data-suit="man" data-label="5" data-num="5" data-code="m5" data-red="1">5<span class="suf">萬</span></div><div class="tile pick man" data-suit="man" data-label="6" data-num="6" data-code="m6" data-red="0">6<span class="suf">萬</span></div><div class="tile pick man" data-suit="man" data-label="7" data-num="7" data-code="m7" data-red="0">7<span class="suf">萬</span></div><div class="tile pick man" data-suit="man" data-label="8" data-num="8" data-code="m8" data-red="0">8<span class="suf">萬</span></div><div class="tile pick man" data-suit="man" data-label="9" data-num="9" data-code="m9" data-red="0">9<span class="suf">萬</span></div></div>
+        </div>
+      </div>
+      <div class="suit-row">
+        <div class="suit-name">筒子</div>
+        <div class="suit-tiles two-row">
+          <div class="tile-row"><div class="tile pick pin" data-suit="pin" data-label="1" data-num="1" data-code="p1" data-red="0">1<span class="suf">筒</span></div><div class="tile pick pin" data-suit="pin" data-label="2" data-num="2" data-code="p2" data-red="0">2<span class="suf">筒</span></div><div class="tile pick pin" data-suit="pin" data-label="3" data-num="3" data-code="p3" data-red="0">3<span class="suf">筒</span></div><div class="tile pick pin" data-suit="pin" data-label="4" data-num="4" data-code="p4" data-red="0">4<span class="suf">筒</span></div><div class="tile pick pin" data-suit="pin" data-label="5" data-num="5" data-code="p5" data-red="0">5<span class="suf">筒</span></div></div>
+          <div class="tile-row"><div class="tile pick pin red" data-suit="pin" data-label="5" data-num="5" data-code="p5" data-red="1">5<span class="suf">筒</span></div><div class="tile pick pin" data-suit="pin" data-label="6" data-num="6" data-code="p6" data-red="0">6<span class="suf">筒</span></div><div class="tile pick pin" data-suit="pin" data-label="7" data-num="7" data-code="p7" data-red="0">7<span class="suf">筒</span></div><div class="tile pick pin" data-suit="pin" data-label="8" data-num="8" data-code="p8" data-red="0">8<span class="suf">筒</span></div><div class="tile pick pin" data-suit="pin" data-label="9" data-num="9" data-code="p9" data-red="0">9<span class="suf">筒</span></div></div>
+        </div>
+      </div>
+      <div class="suit-row">
+        <div class="suit-name">索子</div>
+        <div class="suit-tiles two-row">
+          <div class="tile-row"><div class="tile pick sou" data-suit="sou" data-label="1" data-num="1" data-code="s1" data-red="0">1<span class="suf">索</span></div><div class="tile pick sou" data-suit="sou" data-label="2" data-num="2" data-code="s2" data-red="0">2<span class="suf">索</span></div><div class="tile pick sou" data-suit="sou" data-label="3" data-num="3" data-code="s3" data-red="0">3<span class="suf">索</span></div><div class="tile pick sou" data-suit="sou" data-label="4" data-num="4" data-code="s4" data-red="0">4<span class="suf">索</span></div><div class="tile pick sou" data-suit="sou" data-label="5" data-num="5" data-code="s5" data-red="0">5<span class="suf">索</span></div></div>
+          <div class="tile-row"><div class="tile pick sou red" data-suit="sou" data-label="5" data-num="5" data-code="s5" data-red="1">5<span class="suf">索</span></div><div class="tile pick sou" data-suit="sou" data-label="6" data-num="6" data-code="s6" data-red="0">6<span class="suf">索</span></div><div class="tile pick sou" data-suit="sou" data-label="7" data-num="7" data-code="s7" data-red="0">7<span class="suf">索</span></div><div class="tile pick sou" data-suit="sou" data-label="8" data-num="8" data-code="s8" data-red="0">8<span class="suf">索</span></div><div class="tile pick sou" data-suit="sou" data-label="9" data-num="9" data-code="s9" data-red="0">9<span class="suf">索</span></div></div>
+        </div>
+      </div>
+      <div class="suit-row">
+        <div class="suit-name">字牌</div>
+        <div class="suit-tiles two-row">
+          <div class="tile-row">
+          <div class="tile pick honor" data-suit="honor" data-label="東" data-num="0" data-code="E" data-red="0">東</div>
+          <div class="tile pick honor" data-suit="honor" data-label="南" data-num="0" data-code="S" data-red="0">南</div>
+          <div class="tile pick honor" data-suit="honor" data-label="西" data-num="0" data-code="W" data-red="0">西</div>
+          <div class="tile pick honor" data-suit="honor" data-label="北" data-num="0" data-code="N" data-red="0">北</div>
+          </div>
+          <div class="tile-row">
+          <div class="tile pick honor" data-suit="honor" data-label="白" data-num="0" data-code="P" data-red="0">白</div>
+          <div class="tile pick honor" data-suit="honor" data-label="發" data-num="0" data-code="F" data-red="0">發</div>
+          <div class="tile pick honor" data-suit="honor" data-label="中" data-num="0" data-code="C" data-red="0">中</div>
+          <button type="button" class="dora-toggle" id="doraToggle">ドラ表示牌<br>を指定</button>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="picker-head">牌を選ぶ — 押すと下の配牌表示枠に加わりますわ</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-go" id="judgeBtn" disabled>判定する</button>
+      <button class="btn btn-clear" id="clearBtn">流す</button>
+    </div>
+
+    <div class="value-col">
+    <div class="dora-note">
+      <span class="dora-help">ドラは、上の盤面で「ドラ表示牌を指定」を押してから表示牌を一枚選べば、手牌から自動で数えますわ。</span>
+      <div class="dora-readout" id="doraReadout">
+        <span class="dr-hint">ドラ表示牌は未指定ですの（ドラ0として判定）。</span>
+      </div>
+    </div>
+    <div class="wind-note">
+      <div class="wind-grid" id="windGrid">
+        <span class="wind-corner"></span>
+        <span class="wind-head">東家</span>
+        <span class="wind-head">南家</span>
+        <span class="wind-head">西家</span>
+        <span class="wind-head">北家</span>
+        <span class="wind-side">東場</span>
+        <button type="button" class="chip seat-cell" data-round="E" data-seat="E">東1</button>
+        <button type="button" class="chip seat-cell" data-round="E" data-seat="S">東2</button>
+        <button type="button" class="chip seat-cell" data-round="E" data-seat="W">東3</button>
+        <button type="button" class="chip seat-cell" data-round="E" data-seat="N">東4</button>
+        <span class="wind-side">南場</span>
+        <button type="button" class="chip seat-cell" data-round="S" data-seat="E">南1</button>
+        <button type="button" class="chip seat-cell" data-round="S" data-seat="S">南2</button>
+        <button type="button" class="chip seat-cell" data-round="S" data-seat="W">南3</button>
+        <button type="button" class="chip seat-cell" data-round="S" data-seat="N">南4</button>
+      </div>
+      <div class="wind-readout" id="windReadout">自分の席を選ぶと、その場風・自風の対子が役牌として打点に乗りますわ。</div>
+    </div>
+    </div>
+
+    <div class="hand empty" id="hand"></div>
+    <div class="counter" id="counter"><b>0</b> / 10〜13 枚</div>
+
+    <div class="quick-input">
+      <label class="qi-label">数字で打つ — 打つそばから、上の配牌表示枠に並びますわ</label>
+      <div class="qi-row">
+        <input type="text" id="qiText" class="qi-field" placeholder="例 18m 1357p 3368s 1z5z" autocapitalize="off" autocorrect="off" spellcheck="false">
+        <button class="qi-btn" id="qiBack" title="一字消す">⌫</button>
+        <button class="qi-btn" id="qiClear" title="ぜんぶ消す">×</button>
+      </div>
+      <div id="qiStatus" class="qi-status"></div>
+      <div class="qi-hint"><b>m</b>=萬 <b>p</b>=筒 <b>s</b>=索。数字のあとに種類で <b>18m</b>＝一萬・八萬。字牌は上の盤面の札か、キーボードなら <b>1z</b>〜<b>7z</b>（東南西北白發中）。赤五は <b>0</b>（0m＝赤五萬）。例 <b>18m 1357p 3368s 南西</b>。漢字・英字どちらでも通りますわ。</div>
+    </div>
+
+    <div class="panel-foot">
+      <div class="eyebrow">配牌 第一感</div>
+      <h1>攻<span class="sep">か</span>守<span class="sep">か</span></h1>
+      <p class="lead">配牌の13枚を並べるだけ。点棒も役も巡目も度外視して、攻めか守りか——その第一感だけを、迷わず二択でお返ししますわ。</p>
+    </div>
+  </div>
+
+  <div class="verdict" id="verdict"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // ---- tile model ----
+  const SUITS = [
+    { key:'man',  name:'萬子',  suf:'萬', nums:[1,2,3,4,5,6,7,8,9] },
+    { key:'pin',  name:'筒子',  suf:'筒', nums:[1,2,3,4,5,6,7,8,9] },
+    { key:'sou',  name:'索子',  suf:'索', nums:[1,2,3,4,5,6,7,8,9] },
+  ];
+  const HONORS = [
+    { key:'honor', label:'東', code:'E' }, { key:'honor', label:'南', code:'S' },
+    { key:'honor', label:'西', code:'W' }, { key:'honor', label:'北', code:'N' },
+    { key:'honor', label:'白', code:'P' }, { key:'honor', label:'發', code:'F' },
+    { key:'honor', label:'中', code:'C' },
+  ];
+  const YAKUHAI = new Set(['P','F','C']); // 三元牌（場風・自風は配牌段階では役牌扱いの簡略化で三元牌のみ確定計上）
+
+  let hand = [];       // {suit,label,num,code,red}
+  let doraCount = 0;
+  let doraIndicator = null;     // ドラ表示牌のコード（'m4' や 'P' など。未指定は null）
+  let indicatorArmed = false;   // 表示牌の「指定」モード中か
+  let roundWind = null;         // 場風 'E'/'S'（未指定は null）
+  let seatWind  = null;         // 自風 'E'/'S'/'W'/'N'（未指定は null。'E'＝親）
+
+  const handEl = document.getElementById('hand');
+  const counterEl = document.getElementById('counter');
+  const judgeBtn = document.getElementById('judgeBtn');
+
+  // ---- attach handlers to static picker tiles ----
+  // 牌はHTMLに直接書き込まれているので、生成せずクリックだけ拾う
+  const pickerTiles = document.querySelectorAll('#pickerBody .tile.pick');
+  pickerTiles.forEach(el => {
+    el.addEventListener('click', function () {
+      const code = el.getAttribute('data-code');
+      // 「ドラ表示牌を指定」モード中は、押した牌を表示牌として捕まえ、手牌には加えない
+      if(indicatorArmed){
+        doraIndicator = code;
+        indicatorArmed = false;
+        refreshDora();
+        return;
+      }
+      addTile({
+        suit: el.getAttribute('data-suit'),
+        label: el.getAttribute('data-label'),
+        num: parseInt(el.getAttribute('data-num'), 10),
+        code: code,
+        red: el.getAttribute('data-red') === '1'
+      });
+    });
+  });
+
+  // ---- hand ops ----
+  // ボタンで足すときも「入力欄の文字」を唯一の真実にする。
+  // 今の入力を解析→その牌を1枚足す→文字列に戻して入力欄へ→rebuildHandで再構築。
+  // これでボタンとキーボードの食い違いが起きない。
+  function addTile(t) {
+    const field = document.getElementById('qiText');
+    const { tiles } = parseDigits(field.value);
+    if (tiles.length >= 18) return;
+    tiles.push(t);
+    field.value = tilesToInput(tiles);
+    rebuildHand();
+  }
+  function render() {
+    handEl.innerHTML='';
+    handEl.classList.toggle('empty', hand.length===0);
+    // sort for display
+    const order = {man:0,pin:1,sou:2,honor:3};
+    const sorted = [...hand].sort((a,b)=> order[a.suit]-order[b.suit] || a.num-b.num);
+    sorted.forEach(t => {
+      const el = document.createElement('div');
+      el.className = `tile ${t.suit}${t.red?' red':''}${t.low?' low':''}`;
+      const suf = t.suit==='honor' ? '' : `<span class="suf">${SUITS.find(s=>s.key===t.suit).suf}</span>`;
+      el.innerHTML = `${t.label}${suf}`;
+      el.onclick = () => { removeTileFromInput(t); };
+      handEl.appendChild(el);
+    });
+    counterEl.innerHTML = `<b>${hand.length}</b> / 10〜13 枚`;
+    counterEl.classList.toggle('full', hand.length>=10 && hand.length<=13);
+    // 10〜13枚なら判定可能（13枚ちょうどが最も正確。14枚以上は多牌として弾く）
+    judgeBtn.disabled = (hand.length < 10 || hand.length > 13);
+  }
+
+
+  // ============================================================
+  //  数字方式の入力（テンキーだけで打てる）
+  //  1=萬 2=筒 3=索、区切り=0、字牌はボタン
+  //  赤五は数字を丸括弧で (5)
+  // ============================================================
+  const honorData = {
+    'E':{label:'東'},'S':{label:'南'},'W':{label:'西'},'N':{label:'北'},
+    'P':{label:'白'},'F':{label:'發'},'C':{label:'中'}
+  };
+
+  // 入力文字列を解析して牌の配列＋エラーを返す純関数
+  // 標準方式: 数字を溜め、m/p/s/z で種類確定。0=赤五。漢字字牌も直接対応。
+  const honorKanji = {'東':'E','南':'S','西':'W','北':'N','白':'P','發':'F','发':'F','中':'C'};
+  const honorByZ = {'1':'E','2':'S','3':'W','4':'N','5':'P','6':'F','7':'C'};
+  function parseDigits(raw){
+    const tiles = [];
+    const errs = [];
+    let buf = [];
+    for(let i=0;i<raw.length;i++){
+      let ch = raw[i];
+      // 空白・区切り類はすべて読み飛ばす
+      if(ch===' '||ch==='　'||ch==='\t'||ch==='\n'||ch==='\r'||ch==='('||ch===')'||ch==='（'||ch==='）'||ch===','||ch==='、'||ch==='.'||ch==='。') continue;
+      // 全角数字（０-９）を半角に正規化
+      if(ch>='０'&&ch<='９'){ ch = String.fromCharCode(ch.charCodeAt(0)-0xFEE0); }
+      // 全角英字（ｍｐｓｚ等）を半角に正規化
+      if(ch>='ａ'&&ch<='ｚ'){ ch = String.fromCharCode(ch.charCodeAt(0)-0xFEE0); }
+      if(ch>='Ａ'&&ch<='Ｚ'){ ch = String.fromCharCode(ch.charCodeAt(0)-0xFEE0); }
+
+      if(ch>='0'&&ch<='9'){ buf.push(ch); continue; }
+      const low = ch.toLowerCase();
+      let suit = (low==='m')?'man':(low==='p')?'pin':(low==='s')?'sou':null;
+      if(suit){
+        // 種類の前に数字がなければ、その種類文字は黙って捨てる（寛容）
+        buf.forEach(d=>{
+          const red = d==='0';
+          const num = red ? 5 : +d;
+          tiles.push({ suit, label:String(num), num, code:suit[0]+num, red });
+        });
+        buf = [];
+        continue;
+      }
+      if(low==='z'){
+        // z の前の数字のうち、1〜7 だけ字牌にする。8・9・0 などは黙って捨てる（寛容）
+        buf.forEach(d=>{
+          const code = honorByZ[d];
+          if(code) tiles.push({ suit:'honor', label:honorData[code].label, num:0, code, red:false });
+        });
+        buf = [];
+        continue;
+      }
+      if(honorKanji[ch]){
+        tiles.push({ suit:'honor', label:(ch==='发'?'發':ch), num:0, code:honorKanji[ch], red:false });
+        continue;
+      }
+      // 上記以外の文字（@ ; y k などローマ字や記号）は、エラーにせず黙って無視する
+    }
+    // 末尾に種類のつかない数字が残っても、エラーにはせず黙って捨てる（寛容）
+    return { tiles, errs };
+  }
+
+  function rebuildHand(){
+    const raw = document.getElementById('qiText').value;
+    const { tiles, errs } = parseDigits(raw);
+    hand = tiles.slice(0,18);
+    render();
+    document.getElementById('verdict').classList.remove('show');
+    showStatus(hand, errs, tiles.length);
+    refreshDora();   // 手牌が変われば、表示牌から数えるドラ枚数も更新する
+  }
+
+  const suitJP = {man:'萬',pin:'筒',sou:'索'};
+  function showStatus(h, errs, rawTotal){
+    const el = document.getElementById('qiStatus');
+    el.className = 'qi-status';
+    const c = {}; const over = {};
+    h.forEach(t=>{ c[t.code]=(c[t.code]||0)+1; if(c[t.code]>4) over[t.code]=c[t.code]; });
+    const overCodes = Object.keys(over);
+    if(errs.length){
+      el.classList.add('err'); el.textContent = errs[0] + 'の。'; return;
+    }
+    if(overCodes.length){
+      el.classList.add('err');
+      const code = overCodes[0];
+      let name;
+      if('mps'.includes(code[0])) name = code[1] + suitJP[{m:'man',p:'pin',s:'sou'}[code[0]]];
+      else name = honorData[code].label;
+      el.textContent = `${name}が${over[code]}枚ですわ。同じ牌は4枚まででしてよ。`;
+      return;
+    }
+    if(rawTotal>18){
+      el.classList.add('warn');
+      el.textContent = `${rawTotal}枚ぶん。多すぎますわ、18枚までにしてくださいまし。`;
+      return;
+    }
+    if(h.length>13 && h.length<=18){
+      el.classList.add('warn');
+      el.textContent = `いま ${h.length} 枚。多牌ですわ——配牌は13枚ですの。余分を外してくださいまし。`;
+      return;
+    }
+    if(h.length===13){
+      el.classList.add('ok'); el.textContent = '13枚そろいましたわ。判定できましてよ。'; return;
+    }
+    if(h.length>=10 && h.length<13){
+      el.classList.add('ok');
+      el.textContent = `いま ${h.length} 枚。あと ${13-h.length} 枚で本来の形ですけれど、このまま判定もできますわ（目安は少し甘くなりますの）。`;
+      return;
+    }
+    if(h.length===0){ el.textContent = ''; return; }
+    el.classList.add('warn');
+    el.textContent = `いま ${h.length} 枚。あと ${13-h.length} 枚ですわ（10枚から判定できましてよ）。`;
+  }
+
+  document.getElementById('qiText').addEventListener('input', rebuildHand);
+
+  document.getElementById('qiBack').addEventListener('click', ()=>{
+    const field = document.getElementById('qiText');
+    field.value = field.value.replace(/\s*$/,'').slice(0,-1);
+    rebuildHand();
+    field.focus();
+  });
+
+  document.getElementById('qiClear').addEventListener('click', ()=>{
+    document.getElementById('qiText').value = '';
+    rebuildHand();
+    document.getElementById('qiText').focus();
+  });
+
+  // タップした牌を、入力文字列から1つ抜いて組み直す
+  function removeTileFromInput(tile){
+    const field = document.getElementById('qiText');
+    const { tiles } = parseDigits(field.value);
+    // 後ろから同じ牌を1つ探す（字牌はcode一致、数牌はsuit+num+red）
+    let hitIndex = -1;
+    for(let i=tiles.length-1;i>=0;i--){
+      const t = tiles[i];
+      if(tile.suit==='honor'){
+        if(t.suit==='honor' && t.code===tile.code){ hitIndex=i; break; }
+      } else if(t.suit===tile.suit && t.num===tile.num && t.red===tile.red){ hitIndex=i; break; }
+    }
+    if(hitIndex<0 && tile.suit!=='honor'){
+      // 赤指定違いでも数が合えば消す（保険）
+      for(let i=tiles.length-1;i>=0;i--){
+        if(tiles[i].suit===tile.suit && tiles[i].num===tile.num){ hitIndex=i; break; }
+      }
+    }
+    const kept = tiles.filter((t,i)=> i!==hitIndex);
+    field.value = tilesToInput(kept);
+    rebuildHand();
+  }
+
+  // 牌配列 → 「18m 1357p 3368s 南西」標準形式の入力文字列。赤五は 0、字牌は漢字。
+  function tilesToInput(tiles){
+    const suf = {man:'m',pin:'p',sou:'s'};
+    const honorLabel = {E:'東',S:'南',W:'西',N:'北',P:'白',F:'發',C:'中'};
+    const groups = {man:[],pin:[],sou:[]};
+    const honors = [];
+    tiles.forEach(t=>{ if(t.suit==='honor') honors.push(t); else groups[t.suit].push(t); });
+    const parts = [];
+    ['man','pin','sou'].forEach(suit=>{
+      if(groups[suit].length===0) return;
+      const sorted = [...groups[suit]].sort((a,b)=> a.num-b.num);
+      let s = '';
+      sorted.forEach(t=>{ s += t.red ? '0' : String(t.num); });
+      s += suf[suit];
+      parts.push(s);
+    });
+    if(honors.length){
+      const order = ['E','S','W','N','P','F','C'];
+      const sorted = [...honors].sort((a,b)=> order.indexOf(a.code)-order.indexOf(b.code));
+      parts.push(sorted.map(t=> honorLabel[t.code]).join(''));
+    }
+    return parts.join(' ');
+  }
+
+  // ============================================================
+  //  ドラ表示牌 → ドラ本体を割り出し、手牌から枚数を自動で数える
+  // ============================================================
+  const doraToggle  = document.getElementById('doraToggle');
+  const doraReadout = document.getElementById('doraReadout');
+
+  // 表示牌のコード → ドラ本体のコード
+  function indicatorToDora(code){
+    if('mps'.includes(code[0])){                 // 数牌：9の次は1へ巡回
+      const suit = code[0], n = +code[1];
+      return suit + (n === 9 ? 1 : n + 1);
+    }
+    if('ESWN'.includes(code)){                   // 風牌：東→南→西→北→東
+      const o = ['E','S','W','N'];
+      return o[(o.indexOf(code) + 1) % 4];
+    }
+    const d = ['P','F','C'];                      // 三元牌：白→發→中→白
+    return d[(d.indexOf(code) + 1) % 3];
+  }
+
+  // コード → 読み取り表示用の小さな牌
+  function tileChip(code){
+    if('mps'.includes(code[0])){
+      const cls = {m:'man', p:'pin', s:'sou'}[code[0]];
+      const suf = {m:'萬', p:'筒', s:'索'}[code[0]];
+      return `<span class="dr-tile ${cls}">${code[1]}<span class="suf">${suf}</span></span>`;
+    }
+    return `<span class="dr-tile honor">${honorData[code].label}</span>`;
+  }
+
+  // 表示牌の状態に合わせ、ドラ枚数の再計算と読み取り表示の更新
+  function refreshDora(){
+    doraToggle.classList.toggle('armed', indicatorArmed);
+    doraToggle.innerHTML = indicatorArmed ? '表示牌を<br>選択中…' : 'ドラ表示牌<br>を指定';
+    if(doraIndicator === null){
+      doraCount = 0;
+      doraReadout.innerHTML = indicatorArmed
+        ? `<span class="dr-hint">盤面の牌を一枚お押しを。それを表示牌といたしますわ。</span>`
+        : `<span class="dr-hint">ドラ表示牌は未指定ですの（ドラ0として判定）。</span>`;
+      return;
+    }
+    const doraCode = indicatorToDora(doraIndicator);
+    doraCount = hand.filter(t => t.code === doraCode).length;
+    doraReadout.innerHTML =
+        `<span class="dr-hint">表示</span>${tileChip(doraIndicator)}`
+      + `<span class="dr-arrow">→ ドラ</span>${tileChip(doraCode)}`
+      + `<span class="dr-count">手牌に ${doraCount} 枚</span>`
+      + `<button type="button" class="dr-clear" id="doraClear">解除</button>`;
+    document.getElementById('doraClear').onclick = () => {
+      doraIndicator = null;
+      indicatorArmed = false;
+      refreshDora();
+    };
+  }
+
+  // 「指定」ボタン：押すとモードの入切。入のとき、次の盤面タップが表示牌になる
+  doraToggle.onclick = () => {
+    indicatorArmed = !indicatorArmed;
+    refreshDora();
+  };
+
+  document.getElementById('clearBtn').onclick = () => {
+    document.getElementById('qiText').value = '';
+    hand = []; doraIndicator = null; indicatorArmed = false; doraCount = 0;
+    refreshDora();
+    document.getElementById('verdict').classList.remove('show');
+    document.getElementById('qiStatus').textContent = '';
+    document.getElementById('qiStatus').className = 'qi-status';
+    render();
+  };
+
+  // ============================================================
+  //  場×席の格子。1升を選ぶと場風・自風が同時に決まる（単一選択）。
+  //  同じ升を再度押すと解除。内部の roundWind / seatWind を立てるだけで、
+  //  判定本体（役牌の打点・親補正）は従来のまま動く。
+  //  自風＝役牌の打点に効き、'E'（東家）なら親として押し引きにも効く。
+  // ============================================================
+  const windReadout = document.getElementById('windReadout');
+  const windJP = {E:'東', S:'南', W:'西', N:'北'};
+  function refreshWind(){
+    document.querySelectorAll('.seat-cell').forEach(c=>{
+      const sel = c.getAttribute('data-round') === roundWind
+               && c.getAttribute('data-seat')  === seatWind;
+      c.classList.toggle('on', sel);
+    });
+    if(!windReadout) return;
+    if(!roundWind && !seatWind){
+      windReadout.textContent = '自分の席を選ぶと、その場風・自風の対子が役牌として打点に乗りますわ。';
+      return;
+    }
+    const rp = windJP[roundWind] + '場';
+    const sp = windJP[seatWind]  + '家';
+    let tail = '';
+    if(roundWind === seatWind) tail += `・ダブ${windJP[seatWind]}`;
+    if(seatWind === 'E')      tail += '・親（際どい配牌は一歩攻めへ寄せますわ）';
+    else                      tail += '・子';
+    windReadout.textContent = `${rp} ${sp}${tail}`;
+  }
+  document.querySelectorAll('.seat-cell').forEach(c=>{
+    c.addEventListener('click', ()=>{
+      const r = c.getAttribute('data-round');
+      const s = c.getAttribute('data-seat');
+      // 同じ升をもう一度押したら解除、違う升なら両方を一度に立てる
+      if(roundWind === r && seatWind === s){
+        roundWind = null; seatWind = null;
+      } else {
+        roundWind = r; seatWind = s;
+      }
+      refreshWind();
+    });
+  });
+
+  // ============================================================
+  //  JUDGEMENT  —  配牌の第一感を攻守二択で固定（点棒・役・巡目は度外視）
+  // ============================================================
+  function analyze() {
+    // 14枚以上（多牌）は配牌判定の対象外。受け入れ計算が成立しないため、
+    // 計算には一切進ませず、入れ直しを促す印だけ返して断つ。
+    if(hand.length >= 14){
+      return { tooMany: true };
+    }
+    // counts
+    const cnt = {};                 // code -> number
+    let redCount = 0;
+    const suitNums = {man:[],pin:[],sou:[]};
+    const honorCount = {};
+    hand.forEach(t=>{
+      cnt[t.code]=(cnt[t.code]||0)+1;
+      if(t.red) redCount++;
+      if(t.suit==='honor') honorCount[t.code]=(honorCount[t.code]||0)+1;
+      else suitNums[t.suit].push(t.num);
+    });
+    Object.values(suitNums).forEach(a=>a.sort((x,y)=>x-y));
+
+    // --- 良形カウント：全分解で最良の良形数を採る（貪欲法の取りこぼしを無くす）---
+    let goodShapes = 0;   // 良形（順子・暗刻・対子・両面）
+    let weakShapes = 0;   // 弱形（嵌張・辺張）
+
+    // 1スート c[1..9] を全分解し、最良の (good, meld, weak) を返す。
+    //   meld=順子+暗刻（完成面子）／goodP=対子+両面（良形塔子）
+    //   good=meld+goodP（面子も良形に含める）／weak=嵌張+辺張
+    //   選択基準（辞書式最大）：good最大 → 面子最大 → 弱形最大（拾える塔子は拾う）
+    // shanten() の decompose と同じ総当たりの思想。三四五六や三三三四のような
+    // 複合形を、貪欲な一本道ではなく最良の分解で数える。
+    function bestShapeOneSuit(c){
+      let best = null;
+      const better = (a,b)=> a[0]!==b[0] ? a[0]>b[0] : (a[1]!==b[1] ? a[1]>b[1] : a[2]>b[2]);
+      function rec(i, meld, goodP, weak){
+        if(i>9){
+          const cand=[meld+goodP, meld, weak];
+          if(best===null || better(cand,best)) best=cand;
+          return;
+        }
+        if(c[i]===0){ rec(i+1, meld, goodP, weak); return; }
+        if(c[i]>=3){ c[i]-=3; rec(i, meld+1, goodP, weak); c[i]+=3; }              // 暗刻
+        if(i<=7 && c[i]>0 && c[i+1]>0 && c[i+2]>0){                                 // 順子
+          c[i]--;c[i+1]--;c[i+2]--; rec(i, meld+1, goodP, weak); c[i]++;c[i+1]++;c[i+2]++;
+        }
+        if(c[i]>=2){ c[i]-=2; rec(i, meld, goodP+1, weak); c[i]+=2; }              // 対子
+        if(i<=8 && c[i]>0 && c[i+1]>0){                                            // 隣接：両面 or 辺張
+          const penchan = (i===1)||(i+1===9);
+          c[i]--;c[i+1]--;
+          if(penchan) rec(i, meld, goodP, weak+1); else rec(i, meld, goodP+1, weak);
+          c[i]++;c[i+1]++;
+        }
+        if(i<=7 && c[i]>0 && c[i+2]>0){ c[i]--;c[i+2]--; rec(i, meld, goodP, weak+1); c[i]++;c[i+2]++; } // 嵌張
+        c[i]--; rec(i, meld, goodP, weak); c[i]++;                                 // 浮き牌
+      }
+      rec(1,0,0,0);
+      return { good: best[0], meld: best[1], weak: best[2] };
+    }
+
+    // 字牌は順子がないので単純カウント（対子・暗刻ともに良形1）
+    Object.values(honorCount).forEach(c=>{
+      if(c>=2) goodShapes++;
+    });
+    // 数牌は全分解で最良の良形数を採る
+    for(const key of ['man','pin','sou']){
+      const c=[0,0,0,0,0,0,0,0,0,0];
+      suitNums[key].forEach(n=>c[n]++);
+      const r = bestShapeOneSuit(c);
+      goodShapes += r.good;
+      weakShapes += r.weak;
+    }
+
+    const totalBlocks = goodShapes + weakShapes;
+
+    // ============================================================
+    //  受け入れの広さ（伸びしろ）を測る
+    //  各牌について「引いたら手が進むか」を数え、
+    //  有効牌の種類数で「広い手／狭い手」を判定する
+    // ============================================================
+    // 現在の手牌から到達できる最小シャンテン数を求め、
+    // 山に残る34種を1枚ずつ加えてシャンテンが減る牌を「有効牌」とする
+    function tilesArray(h){
+      const a=[];
+      h.forEach(t=>{
+        if(t.suit==='honor') a.push(t.code);
+        else a.push(t.suit[0]+t.num);
+      });
+      return a;
+    }
+    // 13枚 → 標準形シャンテン数（七対子・国士は簡略のため通常手のみ）
+    function shanten(tiles, mode){
+      // tiles: array of codes like 'm1','p5','E'
+      const man=[],pin=[],sou=[],hon={};
+      tiles.forEach(c=>{
+        if('mps'.includes(c[0])){
+          const n=+c[1];
+          if(c[0]==='m')man.push(n); else if(c[0]==='p')pin.push(n); else sou.push(n);
+        } else hon[c]=(hon[c]||0)+1;
+      });
+      const cnt=arr=>{const o=[0,0,0,0,0,0,0,0,0,0]; arr.forEach(n=>o[n]++); return o;};
+      const m=cnt(man),p=cnt(pin),s=cnt(sou);
+
+      // 字牌の面子・塔子（対子）
+      let honMelds=0, honPartial=0;
+      Object.values(hon).forEach(c=>{
+        if(c>=3) honMelds++;
+        else if(c===2) honPartial++;
+      });
+
+      // 数牌1スートを (面子, 塔子) の全分解で評価し、
+      // 各 (melds, partials) 候補を集める
+      function decompose(c,i,melds,partials,results){
+        // 末端まで来たら記録
+        if(i>9){ results.push([melds,partials]); return; }
+        if(c[i]===0){ decompose(c,i+1,melds,partials,results); return; }
+        // 暗刻
+        if(c[i]>=3){ c[i]-=3; decompose(c,i,melds+1,partials,results); c[i]+=3; }
+        // 順子
+        if(i<=7&&c[i]>0&&c[i+1]>0&&c[i+2]>0){ c[i]--;c[i+1]--;c[i+2]--; decompose(c,i,melds+1,partials,results); c[i]++;c[i+1]++;c[i+2]++; }
+        // 対子
+        if(c[i]>=2){ c[i]-=2; decompose(c,i,melds,partials+1,results); c[i]+=2; }
+        // 両面・嵌張
+        if(i<=8&&c[i]>0&&c[i+1]>0){ c[i]--;c[i+1]--; decompose(c,i,melds,partials+1,results); c[i]++;c[i+1]++; }
+        if(i<=7&&c[i]>0&&c[i+2]>0){ c[i]--;c[i+2]--; decompose(c,i,melds,partials+1,results); c[i]++;c[i+2]++; }
+        // 浮き牌
+        c[i]--; decompose(c,i,melds,partials,results); c[i]++;
+      }
+
+      // 3スートを合成。全組合せだと重いので、各スートの非劣解だけ残す
+      function frontier(c){
+        const all=[]; decompose(c.slice(),1,0,0,all);
+        // melds最大ごとにpartials最大を残す
+        const bestByMeld={};
+        all.forEach(([me,pa])=>{ if(bestByMeld[me]===undefined||pa>bestByMeld[me]) bestByMeld[me]=pa; });
+        return Object.keys(bestByMeld).map(me=>[+me,bestByMeld[me]]);
+      }
+      const fm=frontier(m), fp=frontier(p), fs=frontier(s);
+
+      let minSt=8;
+      for(const [m1,p1] of fm) for(const [m2,p2] of fp) for(const [m3,p3] of fs){
+        let melds = m1+m2+m3+honMelds;
+        let partials = p1+p2+p3+honPartial;
+        // 面子＋塔子は最大4ブロック＋雀頭1
+        let block = melds + partials;
+        if(block > 5) partials -= (block - 5);
+        if(partials < 0) partials = 0;
+        // 標準シャンテン式（雀頭考慮の簡易版）
+        let st = 8 - 2*melds - partials;
+        // 完成形（4面子1雀頭）は -1（和了）
+        if(melds >= 4 && partials >= 1 && (melds+partials)>=5) st = -1;
+        if(st < minSt) minSt = st;
+      }
+      // 七対子・国士無双の向聴も測り、標準形と合わせた3役の最小を返す。
+      // 良形カウントを総当たりに直したのに合わせ、受け入れの土台もここで揃える。
+      const allCnt={};
+      tiles.forEach(c=> allCnt[c]=(allCnt[c]||0)+1);
+      // 七対子：6 -（対子の種類）＋ 不足する種類ぶんの補正
+      let kinds=0, pairs=0;
+      Object.values(allCnt).forEach(c=>{ kinds++; if(c>=2) pairs++; });
+      const chiitoiSt = 6 - pairs + Math.max(0, 7 - kinds);
+      // 国士無双：13 -（么九字牌の種類）-（対子が1つでもあれば1）
+      const yao=['m1','m9','p1','p9','s1','s9','E','S','W','N','P','F','C'];
+      let koKinds=0, koPair=0;
+      yao.forEach(t=>{ const c=allCnt[t]||0; if(c>=1) koKinds++; if(c>=2) koPair=1; });
+      const kokushiSt = 13 - koKinds - koPair;
+      // mode='std' のときは標準形のみの向聴を返す。
+      // 七対子に向かう手か（七対子向聴 ≤ 標準向聴か）を判定するために使う。
+      if(mode==='std') return minSt;
+      return Math.min(minSt, chiitoiSt, kokushiSt);
+    }
+
+    const baseTiles = tilesArray(hand);
+    // 枚数が13でなくても判定できるよう拡張：
+    //   13枚 → そのまま
+    //   13枚未満 → 不足分を「形に絡まないダミー字牌」で補い、13枚相当で向聴を測る
+    //             （ダミーは孤立牌なので向聴を不当に下げない）
+    //   14枚以上 → 1枚ずつ捨てた中の最小向聴で評価（元の14枚ロジックと同趣旨）
+    let acceptTypes = 0, acceptTiles = 0, baseShanten = 99;
+
+    // 計算用に13枚相当へ正規化したタイル列を作る
+    function normalizeForShanten(tiles){
+      const t = tiles.slice();
+      if(t.length === 13) return t;
+      if(t.length < 13){
+        // 不足分を、場に4枚未満で最も孤立しやすい字牌で埋める
+        const honors = ['E','S','W','N','P','F','C'];
+        let hi = 0;
+        while(t.length < 13){
+          // 既存と重複しにくい字牌を順に足す（向聴に絡みにくくする）
+          const code = honors[hi % honors.length];
+          const cur = t.filter(c=>c===code).length;
+          if(cur < 1){ t.push(code); }    // 同じ字牌は1枚までに留め、対子化させない
+          hi++;
+          if(hi > 200) { t.push(honors[0]); } // 念のための無限ループ防止
+        }
+        return t;
+      }
+      return t; // 14枚以上はそのまま渡し、下で捨て牌を選ぶ
+    }
+
+    if(baseTiles.length >= 10 && baseTiles.length <= 18){
+      const allTiles=[];
+      for(const su of ['m','p','s']) for(let n=1;n<=9;n++) allTiles.push(su+n);
+      ['E','S','W','N','P','F','C'].forEach(h=>allTiles.push(h));
+
+      if(baseTiles.length <= 13){
+        // 13枚以下：13枚相当に正規化して向聴と受け入れを測る
+        const tiles13 = normalizeForShanten(baseTiles);
+        baseShanten = shanten(tiles13);
+        allTiles.forEach(code=>{
+          const have = baseTiles.filter(c=>c===code).length;
+          if(have>=4) return;
+          const plus = tiles13.concat([code]);
+          if(baseShanten <= 0){
+            if(shanten(plus) === -1){ acceptTypes++; acceptTiles += (4 - have); }
+          } else {
+            let bestSt=99;
+            const uniq=[...new Set(plus)];
+            uniq.forEach(disc=>{
+              const idx=plus.indexOf(disc);
+              const left=plus.slice(0,idx).concat(plus.slice(idx+1));
+              const st=shanten(left);
+              if(st<bestSt) bestSt=st;
+            });
+            if(bestSt < baseShanten){ acceptTypes++; acceptTiles += (4 - have); }
+          }
+        });
+      } else {
+        // 14枚以上：1枚捨てた中の最小向聴を基準シャンテンとする
+        const uniqDisc=[...new Set(baseTiles)];
+        let bestBase=99, bestLeft=null;
+        uniqDisc.forEach(disc=>{
+          const idx=baseTiles.indexOf(disc);
+          const left=baseTiles.slice(0,idx).concat(baseTiles.slice(idx+1));
+          const st=shanten(left);
+          if(st<bestBase){ bestBase=st; bestLeft=left; }
+        });
+        baseShanten = bestBase;
+        // 受け入れは、その最良の捨て牌後の手（13枚相当）を基準に測る
+        const ref = bestLeft || baseTiles.slice(0,13);
+        allTiles.forEach(code=>{
+          const have = ref.filter(c=>c===code).length;
+          if(have>=4) return;
+          const plus = ref.concat([code]);
+          if(baseShanten <= 0){
+            if(shanten(plus) === -1){ acceptTypes++; acceptTiles += (4 - have); }
+          } else {
+            let bestSt=99;
+            const uniq=[...new Set(plus)];
+            uniq.forEach(disc=>{
+              const idx=plus.indexOf(disc);
+              const left=plus.slice(0,idx).concat(plus.slice(idx+1));
+              const st=shanten(left);
+              if(st<bestSt) bestSt=st;
+            });
+            if(bestSt < baseShanten){ acceptTypes++; acceptTiles += (4 - have); }
+          }
+        });
+      }
+    }
+    // 広さの分類：シャンテン数が深いほど受け入れは多くて当然なので、
+    // 段階ごとに「広い／狭い」の基準を変える
+    let widthLabel, widthGood;
+    if(baseShanten <= 0){
+      // テンパイ：待ち枚数で判定
+      if(acceptTiles >= 7)      { widthLabel='好形待ち';   widthGood=true; }
+      else if(acceptTiles >= 4) { widthLabel='ふつうの待ち'; widthGood=true; }
+      else                      { widthLabel='愚形待ち';   widthGood=false; }
+    } else if(baseShanten === 1){
+      if(acceptTiles >= 40)     { widthLabel='非常に広い'; widthGood=true; }
+      else if(acceptTiles >= 24){ widthLabel='広い';       widthGood=true; }
+      else if(acceptTiles >= 12){ widthLabel='ふつう';     widthGood=true; }
+      else                      { widthLabel='狭い';       widthGood=false; }
+    } else {
+      // 2向聴以深
+      if(acceptTiles >= 50)     { widthLabel='非常に広い'; widthGood=true; }
+      else if(acceptTiles >= 36){ widthLabel='広い';       widthGood=true; }
+      else if(acceptTiles >= 20){ widthLabel='ふつう';     widthGood=true; }
+      else                      { widthLabel='狭い';       widthGood=false; }
+    }
+
+    // ---打点の種：ドラ枚数 / 赤 / 役牌の刻子見込み（三元牌＋自風・場風）---
+    // 役牌の対子＝刻子化見込みで打点に算入。三元牌・自風・場風それぞれ+1、
+    // ダブ風（自風と場風が同じ）はその対子だけ+2。
+    let yakuhaiValue = 0;
+    const yakuhaiNames = [];
+    Object.keys(honorCount).forEach(code=>{
+      if(honorCount[code] < 2) return;
+      let han = 0;
+      if(YAKUHAI.has(code)) han += 1;       // 三元牌（白發中）
+      if(code === seatWind)  han += 1;       // 自風
+      if(code === roundWind) han += 1;       // 場風
+      if(han > 0){
+        yakuhaiValue += han;
+        yakuhaiNames.push((han >= 2 ? 'ダブ' : '') + honorData[code].label + 'の対子');
+      }
+    });
+    const yakuhaiPair = yakuhaiValue > 0;
+    const doraValue = doraCount + redCount + yakuhaiValue;
+    const valueSources = [];
+    if(doraCount>0) valueSources.push('ドラ'+doraCount);
+    if(redCount>0)  valueSources.push('赤'+ (redCount>1? redCount : ''));
+    yakuhaiNames.forEach(n=> valueSources.push(n));
+    const hasValue = doraValue>0;
+
+    // --- 判定ロジック（ドラ枚数で形の要求が変動）---
+    // 基本は良形4ブロックで攻め。打点が厚いほど、必要な良形数を下げる。
+    //   打点 0      → 良形5以上を要求（安手は好形でなければ押さない）
+    //   打点 1      → 良形4以上
+    //   打点 2      → 良形3以上（ドラ2あれば多少形が悪くても前に出る）
+    //   打点 3以上  → 良形2以上（打点が暴力。形が粗くても攻め寄り）
+    let shapeNeeded;
+    if(doraValue<=0)      shapeNeeded = 5;
+    else if(doraValue===1) shapeNeeded = 4;
+    else if(doraValue===2) shapeNeeded = 3;
+    else                   shapeNeeded = 2;
+
+    // ============================================================
+    //  攻めの手の「向かいやすい方向」を読む（配牌で言える範囲のみ）
+    //  予言ではなく、手なりで見えている選択肢を控えめに挙げる。
+    //  確度の高いものから拾い、最大3つまで。
+    // ============================================================
+    const directions = [];
+    const suitCount = {
+      man: suitNums.man.length,
+      pin: suitNums.pin.length,
+      sou: suitNums.sou.length
+    };
+    const honorTotal = Object.values(honorCount).reduce((s,c)=>s+c,0);
+    const suitName = { man:'萬子', pin:'筒子', sou:'索子' };
+    const maxSuit = ['man','pin','sou'].reduce((a,b)=> suitCount[b]>suitCount[a]?b:a, 'man');
+    const maxSuitN = suitCount[maxSuit];
+    const numTotal = suitCount.man + suitCount.pin + suitCount.sou;
+
+    // 対子・刻子の数（七対子・対々の気配を見るため数え直す。少量なので軽い）
+    let pairKinds = 0, tripletKinds = 0;
+    Object.values(cnt).forEach(c=>{ if(c>=3) tripletKinds++; else if(c===2) pairKinds++; });
+    const pairTotal = pairKinds + tripletKinds; // 対子相当の種類数
+
+    // 染め（清一の芽）：1色が極端に多く、他2色が薄い
+    const otherTwo = numTotal - maxSuitN;
+    if(maxSuitN >= 8 && otherTwo <= 2 && honorTotal <= 2){
+      if(honorTotal >= 1) directions.push(`${suitName[maxSuit]}の混一色`);
+      else directions.push(`${suitName[maxSuit]}の清一色`);
+    } else if(maxSuitN >= 6 && otherTwo <= 4){
+      directions.push(`${suitName[maxSuit]}への染め`);
+    }
+
+    // 七対子：対子が3種以上で、面子手が育っていない
+    if(pairKinds >= 3 && tripletKinds <= 1){
+      directions.push(`七対子（対子${pairTotal}）`);
+    }
+    // 対々：対子・刻子が3種以上あり、順子になりにくい（既に刻子がある）
+    if(tripletKinds >= 1 && pairTotal >= 3 && directions.indexOf('七対子')===-1){
+      directions.push('対々和');
+    }
+
+    // 役牌：三元牌・場風相当の対子（既存のyakuhaiPairを流用）
+    if(yakuhaiPair){
+      directions.push('役牌');
+    }
+
+    // タンヤオ：么九（1・9・字牌）が少なく、2〜8が中心
+    let terminalCount = honorTotal;
+    ['man','pin','sou'].forEach(k=> suitNums[k].forEach(n=>{ if(n===1||n===9) terminalCount++; }));
+    if(terminalCount <= 1 && numTotal >= 7 && directions.length < 3){
+      directions.push('タンヤオ');
+    }
+
+    const directionsTrimmed = directions.slice(0,3);
+
+    // ============================================================
+    //  国士無双の芽（么九字牌の distinct 種類数で測る）
+    //  普通の手としては屑でも、么九が10種以上そろえば国士の一本道が見える。
+    //  13種中いくつ集まっているかを数え、対子の有無も見る（向聴の目安）。
+    // ============================================================
+    const manHas = n => suitNums.man.includes(n);
+    const pinHas = n => suitNums.pin.includes(n);
+    const souHas = n => suitNums.sou.includes(n);
+    let kokushiKinds = 0;
+    [['man',1],['man',9],['pin',1],['pin',9],['sou',1],['sou',9]].forEach(([s,n])=>{
+      if((s==='man'&&manHas(n))||(s==='pin'&&pinHas(n))||(s==='sou'&&souHas(n))) kokushiKinds++;
+    });
+    kokushiKinds += Object.keys(honorCount).length;   // 字牌の distinct 種類（最大7）
+    // 么九字牌に対子があるか（あれば国士シャンテンが1つ進む）
+    let kokushiHasPair = false;
+    [['m',1],['m',9],['p',1],['p',9],['s',1],['s',9]].forEach(([s,n])=>{
+      if((cnt[s+n]||0) >= 2) kokushiHasPair = true;
+    });
+    Object.values(honorCount).forEach(c=>{ if(c>=2) kokushiHasPair = true; });
+    const kokushiSeen = kokushiKinds >= 10;
+    const kokushiShanten = 13 - kokushiKinds - (kokushiHasPair ? 1 : 0);
+
+    // 国士が見えるなら最優先で先頭に。么九が多い手はそもそも普通の方向が立たない。
+    if(kokushiSeen){
+      directions.unshift(`国士無双（13種中${kokushiKinds}）`);
+    }
+    const finalDirections = directions.slice(0,3);
+
+    // ============================================================
+    //  役満が「一歩手前」か（国士のほかは配牌での近さを牌構成で測る簡易判定）
+    //  厳密な役満向聴ではなく、構成の偏りで「ほぼ役満」の極端な配牌だけを拾う。
+    //  どの役満も配牌でここまで偏るのは稀なので、隠し玉として控えめに発火する。
+    // ============================================================
+    const hc = code => (honorCount[code] || 0);
+    const dragonCounts = [hc('P'), hc('F'), hc('C')];          // 白・發・中
+    const windCounts   = [hc('E'), hc('S'), hc('W'), hc('N')]; // 東南西北
+    const dragonTiles  = dragonCounts.reduce((a,b)=>a+b,0);
+    const windTiles    = windCounts.reduce((a,b)=>a+b,0);
+    const dragonsPair  = dragonCounts.filter(c=>c>=2).length;  // 対子以上の三元牌の種類
+    const dragonsTrip  = dragonCounts.filter(c=>c>=3).length;  // 刻子の三元牌の種類
+    const windsPair    = windCounts.filter(c=>c>=2).length;    // 対子以上の風牌の種類
+    // 緑一色：索子の{2,3,4,6,8}と發のみ
+    const greenSet = new Set([2,3,4,6,8]);
+    let greenTiles = hc('F');
+    suitNums.sou.forEach(n=>{ if(greenSet.has(n)) greenTiles++; });
+    // 清老頭：各色の1・9のみ（字牌は含めない）
+    let chinroTiles = 0;
+    ['man','pin','sou'].forEach(k=> suitNums[k].forEach(n=>{ if(n===1||n===9) chinroTiles++; }));
+    // 四暗刻の気配：暗刻の数と雀頭の有無
+    let ankouCount = 0;
+    Object.values(cnt).forEach(c=>{ if(c>=3) ankouCount++; });
+    const pairCount = Object.values(cnt).filter(c=>c>=2).length;  // 対子以上の種類数（暗刻も含む）
+    const hasAnyPair = Object.values(cnt).some(c=>c>=2);
+    // 九蓮の気配：一色の枚数
+    const maxSuitTiles = Math.max(suitNums.man.length, suitNums.pin.length, suitNums.sou.length);
+
+    let yakumanName = '';
+    if(kokushiShanten <= 1)                          yakumanName = '国士無双';
+    else if(honorTotal >= 12)                        yakumanName = '字一色';
+    else if(greenTiles >= 12)                        yakumanName = '緑一色';
+    else if(chinroTiles >= 12)                       yakumanName = '清老頭';
+    else if(dragonsTrip >= 2 && dragonsPair >= 3)    yakumanName = '大三元';
+    else if(windsPair >= 4 && windTiles >= 8)        yakumanName = '四喜和';
+    else if(ankouCount >= 3 && hasAnyPair)           yakumanName = '四暗刻';
+    else if(ankouCount >= 2 && pairCount >= 4)       yakumanName = '四暗刻';
+    else if(maxSuitTiles >= 12)                      yakumanName = '九蓮宝燈';
+    const yakumanReach = yakumanName !== '';
+
+
+    // 七対子に向かう手（七対子向聴 ≤ 標準向聴）では、良形を「揃った対子の数」で測る。
+    // 七対子は単騎待ちで塔子の良し悪しが関わらず、揃った対子の数こそが攻めの根拠になる。
+    // 面子手が近い手は従来の bestShapeOneSuit のまま（向かう役の物差しで測る）。
+    {
+      const normT = normalizeForShanten(tilesArray(hand));
+      const c2={}; normT.forEach(c=> c2[c]=(c2[c]||0)+1);
+      let k2=0, p2=0; Object.values(c2).forEach(c=>{ k2++; if(c>=2) p2++; });
+      const chiitoiShanten = 6 - p2 + Math.max(0, 7 - k2);
+      const stdShanten = shanten(normT, 'std');
+      if(chiitoiShanten < stdShanten){
+        goodShapes = p2;   // 良形＝揃った対子の数
+        weakShapes = 0;    // 七対子に塔子の概念はない
+      }
+    }
+    const shapeOK = goodShapes >= shapeNeeded;
+    const isDealer = seatWind === 'E';   // 東家＝親
+
+    // 受け入れの広さで微調整：
+    //   良形が1つ足りなくても、受け入れが非常に広ければ攻めに格上げ
+    //   良形が足りていても、受け入れが極端に狭ければ攻めを見送り（安手のみ）
+    //   親はテンパイ維持の価値が高いので、際どい線だけ一歩攻めへ寄せる。
+    let verdict;
+    if(shapeOK){
+      const narrowDefend = acceptTiles < (isDealer ? 6 : 8) && doraValue <= 1;
+      verdict = narrowDefend ? 'defend' : 'attack';
+    } else {
+      const wideAttack = acceptTiles >= (isDealer ? 20 : 24) && doraValue >= 1;
+      verdict = wideAttack ? 'attack' : 'defend';
+    }
+    // 国士が見える手は、普通の形が屑でも「攻」へ。屑手にこそ国士の一本道がある。
+    if(kokushiSeen){
+      verdict = 'attack';
+    }
+    // 役満が一歩手前の極端な配牌も、普通の形を度外視して「攻」へ。
+    if(yakumanReach){
+      verdict = 'attack';
+    }
+
+    return { goodShapes, weakShapes, totalBlocks, shapeOK, shapeNeeded,
+             hasValue, valueSources, doraValue, doraCount, redCount, yakuhaiPair, verdict,
+             baseShanten, acceptTypes, acceptTiles, widthLabel, widthGood,
+             directions: finalDirections,
+             kokushiSeen, kokushiKinds, kokushiShanten,
+             yakumanReach, yakumanName,
+             isDealer, seatWind, roundWind,
+             defHonors: honorTotal, defTerminals: (terminalCount - honorTotal) };
+  }
+
+  document.getElementById('judgeBtn').onclick = () => {
+    const a = analyze();
+    const v = document.getElementById('verdict');
+
+    // 多牌（14枚以上）は配牌判定の対象外。攻守を出さず、入れ直しだけ促す。
+    if(a.tooMany){
+      v.innerHTML = `
+        <div class="verdict-card defend">
+          <div class="verdict-mascot">🐭</div>
+          <div class="verdict-kanji">多</div>
+          <div class="verdict-word">多牌ですわ</div>
+          <div class="verdict-foot">
+            14枚以上は配牌の判定対象外ですの。配牌を入れ直してくださいまし。
+          </div>
+        </div>`;
+      v.classList.add('show');
+      return;
+    }
+
+    const attack = a.verdict==='attack';
+
+    const reasons = [];
+    reasons.push({
+      ok: a.hasValue,
+      title: a.hasValue ? `打点 ${a.doraValue} — ${a.valueSources.join('・')}` : '打点の種なし',
+      detail: a.hasValue
+        ? `${a.valueSources.join('・')}で打点 ${a.doraValue} 相当。打点が厚いほど、多少形が粗くても押す価値が出ますわ。`
+        : 'ドラも赤も役牌の対子もございませんわ。安手では、好形でなければ押す見返りが見合いませんの。'
+    });
+    reasons.push({
+      ok: a.shapeOK,
+      title: `良形 ${a.goodShapes} ブロック（この打点なら ${a.shapeNeeded} 必要）` + (a.weakShapes? ` ／ 弱い塔子 ${a.weakShapes}` : ''),
+      detail: a.shapeOK
+        ? `両面・対子・暗刻が ${a.goodShapes} つ。打点 ${a.doraValue} に対し必要な ${a.shapeNeeded} を満たし、和了へ伸びる形ですわ。`
+        : `良形が ${a.shapeNeeded} に届きませんの。打点 ${a.doraValue} では、この形で押し切るには手数がかかりすぎますわ。`
+    });
+    // 伸びしろ（受け入れの広さ）
+    reasons.push({
+      ok: a.widthGood,
+      title: `伸びしろ ${a.widthLabel} — 有効牌 ${a.acceptTypes}種 ${a.acceptTiles}枚`,
+      detail: a.widthGood
+        ? `${a.baseShanten}向聴。引いて手が進む牌が ${a.acceptTiles} 枚もございますの。ツモのたびに育つ、伸びる手ですわ。`
+        : `${a.baseShanten}向聴。手を進める牌が ${a.acceptTiles} 枚しかございませんの。嵌張・辺張が多く、ツモを重ねても足踏みしがちな狭い手ですわ。押すなら、この狭さを承知の上で。`
+    });
+    // 攻めのときだけ：手なりで見えている方向（予言ではなく選択肢）
+    if(attack){
+      let dirDetail;
+      if(a.kokushiSeen){
+        let stance;
+        if(a.kokushiShanten <= 1){
+          stance = `あと一歩ですの。普通の形を作るより、こちらへ寄せたほうが速いですわ。`;
+        } else if(a.kokushiShanten === 2){
+          stance = `射程に入っておりますわ。普通の手としても伸びない配牌ですから、国士へ寄せる価値は十分ございますの。`;
+        } else {
+          stance = `まだ遠うございますわ。一本道に賭けるなら覚悟を持って。数巡で么九が増えなければ、見切りも肝心ですの。`;
+        }
+        dirDetail = `么九字牌が ${a.kokushiKinds} 種そろっており、国士無双が見えますわ（およそ ${a.kokushiShanten} 向聴）。`
+          + stance
+          + (a.directions.length > 1 ? `（ほかに ${a.directions.slice(1).join('・')} の目も）` : '');
+      } else if(a.directions.length > 0){
+        dirDetail = `配牌の段階で、${a.directions.join('・')} の芽がございますわ。確定ではございませんけれど、この方向を頭に置いて手を進めると、迷いが減りますの。引いた牌しだいで変わりますから、固執はなさらず。`;
+      } else {
+        dirDetail = `特定の役に寄ってはおりませんわ。素直に順子を伸ばす手なりで、両面を残しながら聴牌へ向かうのがよろしいですの。`;
+      }
+      reasons.push({
+        ok: a.directions.length > 0,
+        title: a.directions.length > 0
+          ? `見える手 — ${a.directions.join('・')}`
+          : '見える手 — 順子の手なり',
+        detail: dirDetail
+      });
+    } else {
+      // 守りのときだけ：手元の「守る弾」（字牌・端牌）がどれだけあるか。
+      // 配牌では絶対安全牌は決まらないので、あくまで降り材料の目安として示す。
+      const stock = a.defHonors + a.defTerminals;
+      let stockDetail, stockOK;
+      if(a.defHonors >= 2 || stock >= 4){
+        stockOK = true;
+        stockDetail = `字牌 ${a.defHonors} 枚・端牌 ${a.defTerminals} 枚。いざ危なくなっても切り出す牌に困りませんわ。守りに回るなら、まずこれらを温存して、中張牌から整理なさいまし。`;
+      } else if(stock >= 2){
+        stockOK = true;
+        stockDetail = `字牌 ${a.defHonors} 枚・端牌 ${a.defTerminals} 枚。最低限の降り材料はございますの。字牌は終盤まで抱え、危険が見えたら順に手放せるよう備えておきますわ。`;
+      } else {
+        stockOK = false;
+        stockDetail = `字牌 ${a.defHonors} 枚・端牌 ${a.defTerminals} 枚と、守り寄りの牌が乏しい手ですわ。中張牌ばかりで、降りるとき切る牌に窮しますの。早い段階で字牌や端牌を一枚は確保し、無防備にならぬようご注意を。`;
+      }
+      reasons.push({
+        ok: stockOK,
+        title: `守る弾 — 字牌 ${a.defHonors}・端牌 ${a.defTerminals}`,
+        detail: stockDetail
+      });
+    }
+
+    // 場風・自風が選ばれていれば、結果に文脈を一行添える
+    const windJP2 = {E:'東', S:'南', W:'西', N:'北'};
+    let seatLine = '';
+    if(a.seatWind || a.roundWind){
+      const rp = a.roundWind ? windJP2[a.roundWind] + '場' : '場風未指定';
+      const sp = a.seatWind  ? windJP2[a.seatWind]  + '家' : '自風未指定';
+      seatLine = `${rp}・${sp}`;
+      if(a.isDealer)      seatLine += ' ── 親番ゆえ、際どい配牌は一歩攻めへ寄せておりますわ。';
+      else if(a.seatWind) seatLine += ' ── 子の基準で判じておりますの。';
+    }
+
+    v.innerHTML = `
+      <div class="verdict-card ${attack?'attack':'defend'}">
+        <div class="verdict-mascot">${attack ? (a.yakumanReach ? '🐦‍🔥' : (a.kokushiSeen ? '🐉' : '🐅')) : ((a.defHonors + a.defTerminals) >= 2 ? '🐑' : '🐭')}</div>
+        <div class="verdict-kanji">${attack?'攻':'守'}</div>
+        <div class="verdict-word">${attack?'前に出る手ですわ':'引いて構える手ですわ'}</div>
+        ${seatLine ? `<div class="seat-foot">${seatLine}</div>` : ''}
+        <div class="reasons">
+          ${reasons.map(r=>`
+            <div class="reason">
+              <div class="r-mark ${r.ok?'yes':'no'}">${r.ok?'✓':'×'}</div>
+              <div class="r-body">
+                <div class="r-title">${r.title}</div>
+                <div class="r-detail">${r.detail}</div>
+              </div>
+            </div>`).join('')}
+        </div>
+        <div class="verdict-foot">
+          ${attack
+            ? (a.yakumanReach
+                ? `${a.yakumanName} が射程に入った配牌ですわ。普通の手を組むより、この一本に懸ける値打ちがございますの。滅多に巡り合えぬ手——逃さぬよう、丁寧に寄せてくださいまし。芽が細れば見切る覚悟も、頭の隅に。`
+                : (a.kokushiSeen
+                    ? `么九字牌 ${a.kokushiKinds} 種、国士無双が見える配牌（およそ ${a.kokushiShanten} 向聴）。普通の手としては伸びませんから、序盤は么九を集める一本道に寄せますわ。数巡で芽が増えなければ、潔く見切るのも一手ですの。`
+                    : `打点 ${a.doraValue}・良形 ${a.goodShapes} ブロック。形と打点が見合った押す配牌。序盤から手なりで仕掛け、聴牌へ最短で向かってよろしいですわ。`))
+            : `打点 ${a.doraValue} に対し良形が ${a.shapeNeeded} に届きませんの。無理に押さず、安全牌を残して様子を見ますわ。打点が乗るか形が整えば、攻めへ切り替える余地は残しておきますの。`}
+        </div>
+      </div>`;
+    v.classList.add('show');
+    v.scrollIntoView({behavior:'smooth', block:'nearest'});
+  };
+
+  render();
+  refreshWind();
+});
+</script>
+</body>
+</html>
