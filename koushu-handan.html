@@ -679,7 +679,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function addTile(t) {
     const field = document.getElementById('qiText');
     const { tiles } = parseDigits(field.value);
-    if (tiles.length >= 18) return;
+    if (tiles.length >= 14) return;   // 14枚目まで置ける。判定時に多牌ガードが発火、15枚目以降は積ませない
     tiles.push(t);
     field.value = tilesToInput(tiles);
     rebuildHand();
@@ -768,7 +768,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function rebuildHand(){
     const raw = document.getElementById('qiText').value;
     const { tiles, errs } = parseDigits(raw);
-    hand = tiles.slice(0,18);
+    hand = tiles.slice(0,14);   // 14枚目まで盤面に乗せる。15枚目以降は切り捨て、14枚は多牌として判定で弾く
     render();
     document.getElementById('verdict').classList.remove('show');
     document.body.classList.remove('judged');
