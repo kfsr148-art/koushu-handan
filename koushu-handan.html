@@ -417,8 +417,8 @@
     }
     .wrap { max-width: 100%; max-height: 100dvh; overflow: hidden; }
 
-    /* パネルを画面の高さちょうどに固定。行を rows で配分し、盤面が余りを埋める。
-       max-height(上限)では中身が縮まずはみ出すため、height固定＋fr配分で必ず1画面に収める。
+    /* パネルを画面の高さに固定。各行は中身なりの高さを取り、上から順に積む。
+       盤面に勘の固定上限を引くと中身と合わず字牌段があふれて配牌枠と重なるため、autoで中身なりにする。
        overflow:hidden で万一の溢れも切り、上下スクロールを原理的に断つ。 */
     .panel {
       display: grid;
@@ -430,7 +430,8 @@
         "dora   act";
       column-gap: 12px;
       row-gap: 6px;
-      align-items: center;
+      align-items: stretch;
+      align-content: start;
       padding: 8px 12px 10px;
       margin-bottom: 0;
       height: 100dvh;
@@ -445,30 +446,30 @@
       display: flex; flex-direction: column;
       min-height: 0; overflow: hidden;
     }
-    .suit-row { flex: 1; min-height: 0; display: flex; flex-direction: column; margin-bottom: 4px; }
+    .suit-row { min-height: 0; flex: 1; display: flex; flex-direction: column; justify-content: center; margin-bottom: 4px; }
     .suit-row:last-child { margin-bottom: 0; }
     .suit-tiles.two-row {
       display: grid;
       grid-template-columns: repeat(10, minmax(0, 1fr));
       gap: 5px;
-      flex: 1; min-height: 0;
-      align-content: center;   /* 牌を行の中央に。余白は上下に均等に逃がす */
       justify-items: center;
     }
     .suit-tiles.two-row .tile-row { display: contents; }
     .suit-name { margin-bottom: 2px; font-size: 9px; line-height: 1; }
-    /* 牌に麻雀牌の縦横比を持たせ、潰れを断つ。マス目いっぱいに広げず比率を保つので、
-       数字牌も字牌も同じ形・同じ高さの一段に揃う。幅に上限をかけ四段が画面に収まりスライドは戻らない。 */
+    /* 牌は小さい固定サイズに抑える。aspect-ratioだと幅次第で高さが膨らみ四段が画面を超えるため、
+       高さをじかに抑えて四段＋見出し＋下段が確実に1画面へ収まるようにする。 */
     .pick {
-      width: 100%;
-      max-width: 64px;
-      aspect-ratio: 3 / 4;
-      height: auto;
+      width: 30px;
+      height: 100%;
+      max-height: 38px;
       min-height: 0;
-      font-size: clamp(11px, 2.2dvh, 16px);
+      font-size: 13px;
       box-shadow: 0 2px 0 #b3a589, 0 2px 4px rgba(0,0,0,0.28);
     }
     .pick .suf { font-size: 0.5em; margin-bottom: 0.28em; }
+    /* 字牌は漢字一文字ゆえ升の中で大きく描かれ、上三段（数字＋添字の二要素）より牌が膨らんで見える。
+       上三段と同一の寸法・字の大きさを明示して、四段の牌の見た目を揃える。 */
+    .suit-row:last-child .pick { width: 30px; height: 100%; max-height: 38px; font-size: 13px; }
     .picker-head { display: none; }   /* 盤面の説明文は横では省略 */
 
     /* 下段：左から 配牌枠＋枚数 / ドラ / 入力 / 判定ボタン */
@@ -479,7 +480,7 @@
       overflow: hidden; justify-content: flex-start;
     }
     /* 配牌枠が横幅フルになったぶん牌を見やすい大きさに。13枚でも一列に収まる。 */
-    .hand .tile { width: 28px; height: 38px; font-size: 16px; flex: 0 0 auto; }
+    .hand .tile { width: 28px; height: 38px; font-size: 16px; flex: 0 0 auto; flex-direction: column; }
     .hand .tile .suf { font-size: 8px; margin-bottom: 4px; }
     .counter {
       grid-area: hand;            /* 配牌枠の右下隅に枚数を小さく重ねる */
@@ -499,22 +500,24 @@
     }
     .dora-help { display: none; }   /* 横では説明文を省き、風の選択の場所を作る */
     .wind-note { margin: 0; padding: 0; border: none; gap: 3px; }
-    .wind-grid { gap: 3px 4px; }
-    .wind-head { font-size: 9px; line-height: 1; }
-    .wind-side { font-size: 10px; padding-right: 3px; }
-    .seat-cell { font-size: 11px; padding: 4px 2px; border-radius: 8px; line-height: 1.2; }
+    .wind-grid {
+      display: flex; flex-wrap: nowrap;
+      gap: 4px; justify-content: center;
+    }
+    .wind-corner, .wind-head, .wind-side { display: none; }   /* 横では見出しを省き、ボタン8つだけ一列に */
+    .seat-cell { font-size: 11px; padding: 4px 6px; border-radius: 8px; line-height: 1.2; flex: 0 0 auto; }
     .wind-readout { display: none; }   /* 横では読み取り文も省く */
     .quick-input {
       display: none;   /* 横持ちは盤面タップで牌を並べるのでキーボード入力欄は省く。空いた幅は配牌表示枠へ回す */
     }
-    .actions { grid-area: act; margin: 0; flex-direction: column; gap: 8px; }
+    .actions { grid-area: act; margin: 0; flex-direction: row; gap: 8px; }
 
     /* 操作群のパーツを横向き用に詰める */
     .step-btn { width: 40px; height: 40px; font-size: 22px; }
     .step-val { font-size: 20px; min-width: 26px; }
     .step-cap { display: none; }
     .stepper { gap: 6px; }
-    .btn { padding: 10px 16px; font-size: 14px; white-space: nowrap; }
+    .btn { padding: 4px 16px; font-size: 14px; white-space: nowrap; }
     .btn-go { flex: none; }
     .btn-clear { flex: none; }
     .qi-label { font-size: 9px; margin-bottom: 2px; line-height: 1.2; }
@@ -547,10 +550,36 @@
       animation: none;   /* riseの終端transformが中央寄せを打ち消すのを防ぐ */
     }
 
+    /* 判定後のみ：結果カードを画面高に収め、末尾のボタンまで1画面に入れる。
+       判定前の盤面には効かせない（body.judged 限定）。スクロールは出さず overflow:hidden で抑える。 */
+    body.judged .wrap {
+      height: 100dvh; overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    body.judged .verdict, body.judged .verdict.show {
+      flex: 1; min-height: 0; display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    body.judged .verdict-card {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column;
+      padding: 8px 14px 10px;
+    }
+    body.judged .reasons { flex: 1; min-height: 0; overflow: hidden; }
+
     /* 判定後（body.judged）は盤面パネルを畳み、結果カードを最前面へ繰り上げる。
        配牌は並べ終わっているので、上半分を占める牌の盤面は役目を終えている。
        「次の配牌へ」ボタンで judged を外せば盤面が戻る。横持ちだけの挙動。 */
     body.judged .panel { display: none; }
+    /* ボタンは結果カードの末尾にすなおに置く。固定で宙に浮かせると他要素を覆い位置も狂うため。
+       結果カードを画面高に収めることで、末尾のボタンも自然に画面内へ入る。 */
+    body.judged .back-to-board {
+      display: block; width: 100%; margin-top: 6px;
+      padding: 10px 14px; border: none; border-radius: 12px;
+      background: rgba(243,236,224,0.16); color: rgba(243,236,224,0.95);
+      font-family: var(--serif); font-size: 13px; letter-spacing: 0.15em;
+      cursor: pointer;
+    }
     .back-to-board {
       display: block; width: 100%; margin-top: 10px;
       padding: 11px 14px; border: none; border-radius: 12px;
