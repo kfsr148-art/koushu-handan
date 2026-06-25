@@ -433,11 +433,13 @@
     .suit-row:last-child { margin-bottom: 0; }
     .suit-name { margin-bottom: 2px; font-size: 9px; }
     /* 牌の高さを画面の高さから自動算出。低い画面では縮み、字牌まで必ず1画面に収まる。
-       4段ぶんの牌＋見出し＋下段操作を引いた残りを4で割る。上下限はclampで抑える。 */
+       4段ぶんの牌＋見出し＋下段操作を引いた残りを4で割る。上下限はclampで抑える。
+       引く値(205)＝牌4段以外に要る縦（見出し・配牌枠・ドラ・風グリッド・判定ボタン・余白）。
+       下段操作群が縁から溢れないよう、実測に合わせて余裕を持たせている。 */
     .pick {
       width: 100%;
-      height: clamp(30px, calc((100dvh - 168px) / 4), 52px);
-      font-size: clamp(13px, calc((100dvh - 168px) / 4 * 0.37), 19px);
+      height: clamp(30px, calc((100dvh - 270px) / 4), 46px);
+      font-size: clamp(13px, calc((100dvh - 270px) / 4 * 0.37), 17px);
       box-shadow: 0 2px 0 #b3a589, 0 2px 4px rgba(0,0,0,0.28);
     }
     .pick .suf { font-size: 0.5em; margin-bottom: 0.28em; }
@@ -446,7 +448,7 @@
     /* 下段：左から 配牌枠＋枚数 / ドラ / 入力 / 判定ボタン */
     .hand {
       grid-area: hand; margin: 0;
-      min-height: 56px; padding: 8px;
+      min-height: 44px; padding: 6px;
     }
     .counter {
       grid-area: hand;            /* 配牌枠の右下隅に枚数を小さく重ねる */
@@ -481,7 +483,7 @@
     .step-val { font-size: 20px; min-width: 26px; }
     .step-cap { display: none; }
     .stepper { gap: 6px; }
-    .btn { padding: 12px 16px; font-size: 14px; white-space: nowrap; }
+    .btn { padding: 10px 16px; font-size: 14px; white-space: nowrap; }
     .btn-go { flex: none; }
     .btn-clear { flex: none; }
     .qi-label { font-size: 9px; margin-bottom: 4px; line-height: 1.3; }
