@@ -378,6 +378,10 @@
     color: rgba(243,236,224,0.5); font-family: var(--serif);
   }
 
+  /* 「次の配牌へ」戻りボタン。横持ちで盤面を畳んだときだけ使う。
+     縦持ち・PCでは盤面が常に見えているので不要＝既定では隠す。 */
+  .back-to-board { display: none; }
+
   /* =================================================================
      横向き（landscape）専用レイアウト ── iPhoneを横にした全画面で使う
      方針：縦のことは考えず、横一枚に全要素をスクロールなしで収める。
@@ -500,6 +504,19 @@
     }
     .reason { border-bottom: none; padding: 4px 0 7px; }
     .verdict-foot { margin-top: 8px; font-size: 10px; }
+
+    /* 判定後（body.judged）は盤面パネルを畳み、結果カードを最前面へ繰り上げる。
+       配牌は並べ終わっているので、上半分を占める牌の盤面は役目を終えている。
+       「次の配牌へ」ボタンで judged を外せば盤面が戻る。横持ちだけの挙動。 */
+    body.judged .panel { display: none; }
+    .back-to-board {
+      display: block; width: 100%; margin-top: 10px;
+      padding: 11px 14px; border: none; border-radius: 12px;
+      background: rgba(243,236,224,0.12); color: rgba(243,236,224,0.92);
+      font-family: var(--serif); font-size: 14px; letter-spacing: 0.15em;
+      cursor: pointer;
+    }
+    .back-to-board:active { background: rgba(243,236,224,0.2); }
   }
 </style>
 </head>
@@ -752,6 +769,7 @@ document.addEventListener('DOMContentLoaded', function () {
     hand = tiles.slice(0,18);
     render();
     document.getElementById('verdict').classList.remove('show');
+    document.body.classList.remove('judged');
     showStatus(hand, errs, tiles.length);
     refreshDora();   // 手牌が変われば、表示牌から数えるドラ枚数も更新する
   }
@@ -926,6 +944,7 @@ document.addEventListener('DOMContentLoaded', function () {
     hand = []; doraIndicator = null; indicatorArmed = false; doraCount = 0;
     refreshDora();
     document.getElementById('verdict').classList.remove('show');
+    document.body.classList.remove('judged');
     document.getElementById('qiStatus').textContent = '';
     document.getElementById('qiStatus').className = 'qi-status';
     render();
@@ -1312,11 +1331,19 @@ document.addEventListener('DOMContentLoaded', function () {
     Object.values(cnt).forEach(c=>{ if(c>=3) tripletKinds++; else if(c===2) pairKinds++; });
     const pairTotal = pairKinds + tripletKinds; // 対子相当の種類数
 
-    // 染め（清一の芽）：1色が極端に多く、他2色が薄い
+    // 染め：清一色は数牌のみ、混一色は最多色＋字牌で測る。
+    //   字牌は混一の混じり物ではなく手の内。最多色＋字牌が厚く、他2色が薄ければ芽。
+    //   otherTwo＝最多色以外の数牌（＝混一・清一どちらでも純粋な邪魔牌）。
     const otherTwo = numTotal - maxSuitN;
+    const honitsuN = maxSuitN + honorTotal;   // 混一の物差し：最多色＋字牌
     if(maxSuitN >= 8 && otherTwo <= 2 && honorTotal <= 2){
+      // 数牌だけで一色がほぼ揃う：清一色の芽（字牌が少しなら混一寄り）
       if(honorTotal >= 1) directions.push(`${suitName[maxSuit]}の混一色`);
       else directions.push(`${suitName[maxSuit]}の清一色`);
+    } else if(honitsuN >= 8 && maxSuitN >= 6 && otherTwo <= 2 && honorTotal >= 1){
+      // 最多色＋字牌で厚い：混一色の芽（字牌を戦力に数える）
+      // ただし数牌の芯が6枚は要る。字牌頼みの薄い一色は混一と呼ばない。
+      directions.push(`${suitName[maxSuit]}の混一色`);
     } else if(maxSuitN >= 6 && otherTwo <= 4){
       directions.push(`${suitName[maxSuit]}への染め`);
     }
@@ -1395,7 +1422,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // 四暗刻の気配：暗刻の数と雀頭の有無
     let ankouCount = 0;
     Object.values(cnt).forEach(c=>{ if(c>=3) ankouCount++; });
-    const pairCount = Object.values(cnt).filter(c=>c>=2).length;  // 対子以上の種類数（暗刻も含む）
     const hasAnyPair = Object.values(cnt).some(c=>c>=2);
     // 九蓮の気配：一色の枚数
     const maxSuitTiles = Math.max(suitNums.man.length, suitNums.pin.length, suitNums.sou.length);
@@ -1408,7 +1434,6 @@ document.addEventListener('DOMContentLoaded', function () {
     else if(dragonsTrip >= 2 && dragonsPair >= 3)    yakumanName = '大三元';
     else if(windsPair >= 4 && windTiles >= 8)        yakumanName = '四喜和';
     else if(ankouCount >= 3 && hasAnyPair)           yakumanName = '四暗刻';
-    else if(ankouCount >= 2 && pairCount >= 4)       yakumanName = '四暗刻';
     else if(maxSuitTiles >= 12)                      yakumanName = '九蓮宝燈';
     const yakumanReach = yakumanName !== '';
 
@@ -1477,6 +1502,7 @@ document.addEventListener('DOMContentLoaded', function () {
           </div>
         </div>`;
       v.classList.add('show');
+      v.scrollIntoView({behavior:'smooth', block:'nearest'});
       return;
     }
 
@@ -1590,8 +1616,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     : `打点 ${a.doraValue}・良形 ${a.goodShapes} ブロック。形と打点が見合った押す配牌。序盤から手なりで仕掛け、聴牌へ最短で向かってよろしいですわ。`))
             : `打点 ${a.doraValue} に対し良形が ${a.shapeNeeded} に届きませんの。無理に押さず、安全牌を残して様子を見ますわ。打点が乗るか形が整えば、攻めへ切り替える余地は残しておきますの。`}
         </div>
+        <button type="button" class="back-to-board" onclick="document.body.classList.remove('judged'); document.querySelector('.picker-inline').scrollIntoView({behavior:'smooth', block:'start'});">次の配牌へ ↑</button>
       </div>`;
     v.classList.add('show');
+    document.body.classList.add('judged');
     v.scrollIntoView({behavior:'smooth', block:'nearest'});
   };
 
