@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>配牌 攻守判定</title>
+<!-- ホーム画面Webアプリは古いHTMLを強く握る。更新を確実に拾わせるため毎回取り直させる -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <style>
   /* オフラインでも確実に動くよう、外部フォント読み込みは使わず端末標準フォントを用いる */
   :root {
@@ -318,6 +322,15 @@
   /* ---- verdict ---- */
   .verdict { display: none; }
   .verdict.show { display: block; animation: rise 0.4s cubic-bezier(.2,.7,.3,1); }
+  /* 多牌の警告は牌に被せない。タップを裏の牌へ素通りさせ、細い一行で示す */
+  .verdict.pass { pointer-events: none; }
+  .verdict-mini {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border-radius: 12px;
+    background: rgba(31,92,71,0.92); border: 1px solid rgba(58,157,120,0.55);
+  }
+  .verdict-mini .m { font-size: 22px; line-height: 1; }
+  .verdict-mini .t { font-size: 13px; letter-spacing: 0.08em; color: rgba(243,236,224,0.92); }
   @keyframes rise { from { opacity:0; transform: translateY(14px);} to {opacity:1; transform:none;} }
 
   .verdict-card {
@@ -506,6 +519,15 @@
     }
     .reason { border-bottom: none; padding: 4px 0 7px; }
     .verdict-foot { margin-top: 8px; font-size: 10px; }
+
+    /* 多牌の警告（pass）は牌が下半分にあるので画面上端中央へ浮かせる。
+       z-indexで牌より前に出して文字を読ませ、pass(pointer-events:none)で
+       タップは裏の牌へ通す。これで「読める」と「牌を消せる」を両立する。 */
+    .verdict.pass {
+      position: fixed; top: 6px; left: 50%; transform: translateX(-50%);
+      z-index: 50; text-align: center; width: auto;
+      animation: none;   /* riseの終端transformが中央寄せを打ち消すのを防ぐ */
+    }
 
     /* 判定後（body.judged）は盤面パネルを畳み、結果カードを最前面へ繰り上げる。
        配牌は並べ終わっているので、上半分を占める牌の盤面は役目を終えている。
@@ -701,7 +723,7 @@ document.addEventListener('DOMContentLoaded', function () {
     counterEl.innerHTML = `<b>${hand.length}</b> / 10〜13 枚`;
     counterEl.classList.toggle('full', hand.length>=10 && hand.length<=13);
     // 10〜13枚なら判定可能（13枚ちょうどが最も正確。14枚以上は多牌として弾く）
-    judgeBtn.disabled = (hand.length < 10 || hand.length > 13);
+    judgeBtn.disabled = (hand.length < 10 || hand.length > 14);   // 14枚も押せる→多牌ガードが「多牌ですわ」を返す
   }
 
 
@@ -770,7 +792,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const { tiles, errs } = parseDigits(raw);
     hand = tiles.slice(0,14);   // 14枚目まで盤面に乗せる。15枚目以降は切り捨て、14枚は多牌として判定で弾く
     render();
-    document.getElementById('verdict').classList.remove('show');
+    document.getElementById('verdict').classList.remove('show', 'pass');
     document.body.classList.remove('judged');
     showStatus(hand, errs, tiles.length);
     refreshDora();   // 手牌が変われば、表示牌から数えるドラ枚数も更新する
@@ -945,7 +967,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('qiText').value = '';
     hand = []; doraIndicator = null; indicatorArmed = false; doraCount = 0;
     refreshDora();
-    document.getElementById('verdict').classList.remove('show');
+    document.getElementById('verdict').classList.remove('show', 'pass');
     document.body.classList.remove('judged');
     document.getElementById('qiStatus').textContent = '';
     document.getElementById('qiStatus').className = 'qi-status';
@@ -1494,17 +1516,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 多牌（14枚以上）は配牌判定の対象外。攻守を出さず、入れ直しだけ促す。
     if(a.tooMany){
+      // 多牌は盤面を畳まない（牌を直すため）。結果は牌に被らぬ細い帯にし、
+      // passでタップを裏の牌へ素通りさせる。スクロールもしない（牌が動くと邪魔）。
       v.innerHTML = `
-        <div class="verdict-card defend">
-          <div class="verdict-mascot">🐭</div>
-          <div class="verdict-kanji">多</div>
-          <div class="verdict-word">多牌ですわ</div>
-          <div class="verdict-foot">
-            14枚以上は配牌の判定対象外ですの。配牌を入れ直してくださいまし。
-          </div>
+        <div class="verdict-mini">
+          <span class="m">🐭</span>
+          <span class="t">多牌ですわ — 配牌を入れ直してくださいまし</span>
         </div>`;
-      v.classList.add('show');
-      v.scrollIntoView({behavior:'smooth', block:'nearest'});
+      v.classList.add('show', 'pass');
       return;
     }
 
@@ -1620,6 +1639,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
         <button type="button" class="back-to-board" onclick="document.body.classList.remove('judged'); document.querySelector('.picker-inline').scrollIntoView({behavior:'smooth', block:'start'});">次の配牌へ ↑</button>
       </div>`;
+    v.classList.remove('pass');   // 多牌の素通り設定を解除（次の配牌へボタンを押せるように）
     v.classList.add('show');
     document.body.classList.add('judged');
     v.scrollIntoView({behavior:'smooth', block:'nearest'});
