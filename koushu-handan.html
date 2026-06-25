@@ -447,12 +447,12 @@
     .suit-name { margin-bottom: 2px; font-size: 9px; }
     /* 牌の高さを画面の高さから自動算出。低い画面では縮み、字牌まで必ず1画面に収まる。
        4段ぶんの牌＋見出し＋下段操作を引いた残りを4で割る。上下限はclampで抑える。
-       引く値(205)＝牌4段以外に要る縦（見出し・配牌枠・ドラ・風グリッド・判定ボタン・余白）。
-       下段操作群が縁から溢れないよう、実測に合わせて余裕を持たせている。 */
+       引く値(325)＝牌4段以外に要る縦（見出し・配牌枠・ドラ・風グリッド・判定ボタン・余白）。
+       下段操作群が縁から溢れず、スクロールなしで1画面に収まるよう実測に合わせた値。 */
     .pick {
       width: 100%;
-      height: clamp(30px, calc((100dvh - 285px) / 4), 46px);
-      font-size: clamp(13px, calc((100dvh - 285px) / 4 * 0.37), 17px);
+      height: clamp(26px, calc((100dvh - 325px) / 4), 46px);
+      font-size: clamp(12px, calc((100dvh - 325px) / 4 * 0.37), 17px);
       box-shadow: 0 2px 0 #b3a589, 0 2px 4px rgba(0,0,0,0.28);
     }
     .pick .suf { font-size: 0.5em; margin-bottom: 0.28em; }
@@ -936,6 +936,8 @@ document.addEventListener('DOMContentLoaded', function () {
   function refreshDora(){
     doraToggle.classList.toggle('armed', indicatorArmed);
     doraToggle.innerHTML = indicatorArmed ? '表示牌を<br>選択中…' : 'ドラ表示牌<br>を指定';
+    // 中身を入れても display:none のままだと見えない。状態に応じて枠自体を開閉する。
+    doraReadout.style.display = (doraIndicator !== null || indicatorArmed) ? '' : 'none';
     if(doraIndicator === null){
       doraCount = 0;
       doraReadout.innerHTML = indicatorArmed
@@ -963,7 +965,9 @@ document.addEventListener('DOMContentLoaded', function () {
     refreshDora();
   };
 
-  document.getElementById('clearBtn').onclick = () => {
+  // 盤面を次の配牌に向けて掃く。場風・自風は据え置き、牌・ドラ表示牌・入力・判定だけ初期化。
+  // 「流す」ボタンと「次の配牌へ」ボタンの双方がここを呼ぶ（挙動を一本化）。
+  function resetBoard() {
     document.getElementById('qiText').value = '';
     hand = []; doraIndicator = null; indicatorArmed = false; doraCount = 0;
     refreshDora();
@@ -972,7 +976,9 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('qiStatus').textContent = '';
     document.getElementById('qiStatus').className = 'qi-status';
     render();
-  };
+  }
+  window.resetBoard = resetBoard;   // 判定後に生成される「次の配牌へ」ボタンのonclickから呼ぶため外へ公開
+  document.getElementById('clearBtn').onclick = resetBoard;
 
   // ============================================================
   //  場×席の格子。1升を選ぶと場風・自風が同時に決まる（単一選択）。
@@ -1637,7 +1643,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     : `打点 ${a.doraValue}・良形 ${a.goodShapes} ブロック。形と打点が見合った押す配牌。序盤から手なりで仕掛け、聴牌へ最短で向かってよろしいですわ。`))
             : `打点 ${a.doraValue} に対し良形が ${a.shapeNeeded} に届きませんの。無理に押さず、安全牌を残して様子を見ますわ。打点が乗るか形が整えば、攻めへ切り替える余地は残しておきますの。`}
         </div>
-        <button type="button" class="back-to-board" onclick="document.body.classList.remove('judged'); document.querySelector('.picker-inline').scrollIntoView({behavior:'smooth', block:'start'});">次の配牌へ ↑</button>
+        <button type="button" class="back-to-board" onclick="window.resetBoard(); document.querySelector('.picker-inline').scrollIntoView({behavior:'smooth', block:'start'});">次の配牌へ ↑</button>
       </div>`;
     v.classList.remove('pass');   // 多牌の素通り設定を解除（次の配牌へボタンを押せるように）
     v.classList.add('show');
