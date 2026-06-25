@@ -407,52 +407,61 @@
      高さの低い横向きだけに効かせ、縦やPC/iPadには影響しない。
      ================================================================= */
   @media (orientation: landscape) and (max-height: 560px) {
+    /* 上下スライドを設計で断つ：画面の高さに固定し、はみ出す中身は切る。
+       スクロールの逃げ道そのものを塞ぐので、見積もりが多少ずれても画面外へ流れない。 */
+    html, body { height: 100dvh; overflow: hidden; }
     body {
+      min-height: 0;
       padding: 6px 10px 8px;
       align-items: flex-start;
     }
-    .wrap { max-width: 100%; }
+    .wrap { max-width: 100%; max-height: 100dvh; overflow: hidden; }
 
-    /* パネルをエリア配置に。上=盤面（横幅フル）、下=操作群を横並び。
-       max-heightで画面高以内に必ず収め、字牌が切れないようにする。 */
+    /* パネルを画面の高さちょうどに固定。行を rows で配分し、盤面が余りを埋める。
+       max-height(上限)では中身が縮まずはみ出すため、height固定＋fr配分で必ず1画面に収める。
+       overflow:hidden で万一の溢れも切り、上下スクロールを原理的に断つ。 */
     .panel {
       display: grid;
-      grid-template-columns: minmax(0,1.5fr) auto minmax(0,1.3fr) auto;
+      grid-template-columns: minmax(0,1fr) auto;
+      grid-template-rows: 1fr auto auto;
       grid-template-areas:
-        "picker picker picker picker"
-        "hand   dora   qi     act";
+        "picker picker"
+        "hand   hand"
+        "dora   act";
       column-gap: 12px;
-      row-gap: 8px;
+      row-gap: 6px;
       align-items: center;
       padding: 8px 12px 10px;
-      margin-bottom: 8px;
-      max-height: calc(100dvh - 14px);
+      margin-bottom: 0;
+      height: 100dvh;
+      overflow: hidden;
     }
 
-    /* 盤面：上段に横幅フル。各スートを横10列に畳む */
+    /* 盤面：割り当てられた行の高さを4つのスート行で等分。牌は画面でなく親に従って収まる。 */
     .picker-inline {
       grid-area: picker;
       margin-top: 0;
-      padding: 10px 12px;
+      padding: 8px 12px;
+      display: flex; flex-direction: column;
+      min-height: 0; overflow: hidden;
     }
+    .suit-row { flex: 1; min-height: 0; display: flex; flex-direction: column; margin-bottom: 4px; }
+    .suit-row:last-child { margin-bottom: 0; }
     .suit-tiles.two-row {
       display: grid;
       grid-template-columns: repeat(10, 1fr);
-      gap: 6px;
+      gap: 5px;
+      flex: 1; min-height: 0;   /* スート行の残り高さを埋め、牌がこの高さに従う */
     }
     .suit-tiles.two-row .tile-row { display: contents; }
-    .tile-row + .tile-row { margin-top: 0; }
-    .suit-row { margin-bottom: 4px; }
-    .suit-row:last-child { margin-bottom: 0; }
-    .suit-name { margin-bottom: 2px; font-size: 9px; }
-    /* 牌の高さを画面の高さから自動算出。低い画面では縮み、字牌まで必ず1画面に収まる。
-       4段ぶんの牌＋見出し＋下段操作を引いた残りを4で割る。上下限はclampで抑える。
-       引く値(325)＝牌4段以外に要る縦（見出し・配牌枠・ドラ・風グリッド・判定ボタン・余白）。
-       下段操作群が縁から溢れず、スクロールなしで1画面に収まるよう実測に合わせた値。 */
+    .suit-name { margin-bottom: 2px; font-size: 9px; line-height: 1; }
+    /* 牌の高さは画面から計算せず、親（スート行）の高さに従わせる。
+       パネルが画面高に固定され、行を等分するので、画面がどんな高さでも牌が自動で縮み、はみ出さない。 */
     .pick {
       width: 100%;
-      height: clamp(26px, calc((100dvh - 325px) / 4), 46px);
-      font-size: clamp(12px, calc((100dvh - 325px) / 4 * 0.37), 17px);
+      height: 100%;
+      min-height: 0;
+      font-size: clamp(11px, 2.4dvh, 17px);
       box-shadow: 0 2px 0 #b3a589, 0 2px 4px rgba(0,0,0,0.28);
     }
     .pick .suf { font-size: 0.5em; margin-bottom: 0.28em; }
@@ -461,8 +470,13 @@
     /* 下段：左から 配牌枠＋枚数 / ドラ / 入力 / 判定ボタン */
     .hand {
       grid-area: hand; margin: 0;
-      min-height: 44px; padding: 6px;
+      min-height: 44px; padding: 6px 10px;
+      flex-wrap: nowrap; gap: 4px;   /* 折り返さず一列に。横幅フルなので13枚が余裕で並ぶ */
+      overflow: hidden; justify-content: flex-start;
     }
+    /* 配牌枠が横幅フルになったぶん牌を見やすい大きさに。13枚でも一列に収まる。 */
+    .hand .tile { width: 28px; height: 38px; font-size: 16px; flex: 0 0 auto; }
+    .hand .tile .suf { font-size: 8px; margin-bottom: 4px; }
     .counter {
       grid-area: hand;            /* 配牌枠の右下隅に枚数を小さく重ねる */
       align-self: end; justify-self: end;
@@ -480,14 +494,14 @@
       align-items: center; justify-content: center;
     }
     .dora-help { display: none; }   /* 横では説明文を省き、風の選択の場所を作る */
-    .wind-note { margin: 0; padding: 0; border: none; gap: 2px; }
-    .wind-grid { gap: 2px 3px; }
-    .wind-head { font-size: 7px; line-height: 1; }
-    .wind-side { font-size: 8px; padding-right: 2px; }
-    .seat-cell { font-size: 8px; padding: 1px 0; border-radius: 8px; line-height: 1.2; }
+    .wind-note { margin: 0; padding: 0; border: none; gap: 3px; }
+    .wind-grid { gap: 3px 4px; }
+    .wind-head { font-size: 9px; line-height: 1; }
+    .wind-side { font-size: 10px; padding-right: 3px; }
+    .seat-cell { font-size: 11px; padding: 4px 2px; border-radius: 8px; line-height: 1.2; }
     .wind-readout { display: none; }   /* 横では読み取り文も省く */
     .quick-input {
-      grid-area: qi; margin: 0; padding: 0; border: none;
+      display: none;   /* 横持ちは盤面タップで牌を並べるのでキーボード入力欄は省く。空いた幅は配牌表示枠へ回す */
     }
     .actions { grid-area: act; margin: 0; flex-direction: column; gap: 8px; }
 
