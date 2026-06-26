@@ -1219,6 +1219,12 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       const fm=frontier(m), fp=frontier(p), fs=frontier(s);
 
+      // 雀頭の有無を測る土台：手牌に対子（count≥2）が一枚も無ければ、雀頭は即座には作れない。
+      // 塔子だけで4ブロックを埋めても、雀頭を仕立てるのに一手余計にかかる。
+      let noPairInHand = true;
+      [m,p,s].forEach(cc=>{ for(let k=1;k<=9;k++) if(cc[k]>=2) noPairInHand=false; });
+      Object.values(hon).forEach(c=>{ if(c>=2) noPairInHand=false; });
+
       let minSt=8;
       for(const [m1,p1] of fm) for(const [m2,p2] of fp) for(const [m3,p3] of fs){
         let melds = m1+m2+m3+honMelds;
@@ -1227,8 +1233,10 @@ document.addEventListener('DOMContentLoaded', function () {
         let block = melds + partials;
         if(block > 5) partials -= (block - 5);
         if(partials < 0) partials = 0;
-        // 標準シャンテン式（雀頭考慮の簡易版）
+        // 標準シャンテン式
         let st = 8 - 2*melds - partials;
+        // 雀頭補正：面子4つに満たないのに4ブロックを塔子で埋め切り、雀頭になる対子が無いと、一手余計にかかる。
+        if(noPairInHand && melds < 4 && (melds + partials) >= 5) st += 1;
         // 完成形（4面子1雀頭）は -1（和了）
         if(melds >= 4 && partials >= 1 && (melds+partials)>=5) st = -1;
         if(st < minSt) minSt = st;
