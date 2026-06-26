@@ -499,6 +499,10 @@
       align-items: center; justify-content: center;
     }
     .dora-help { display: none; }   /* 横では説明文を省き、風の選択の場所を作る */
+    /* 下段のドラ読み取り欄の牌は、横では一段小さく詰める。
+       上のパレットの牌とは連動させず独立指定（後で上の牌だけ大きくしても、ここは影響を受けない）。 */
+    .value-col .dora-readout .dr-tile { min-width: 16px; height: 22px; font-size: 10px; padding: 0 3px; }
+    .value-col .dora-readout .dr-tile .suf { font-size: 7px; margin-bottom: 2px; }
     .wind-note { margin: 0; padding: 0; border: none; gap: 3px; }
     .wind-grid {
       display: flex; flex-wrap: nowrap;
