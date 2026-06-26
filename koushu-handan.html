@@ -409,7 +409,7 @@
   @media (orientation: landscape) and (max-height: 560px) {
     /* 上下スライドを設計で断つ：画面の高さに固定し、はみ出す中身は切る。
        スクロールの逃げ道そのものを塞ぐので、見積もりが多少ずれても画面外へ流れない。 */
-    html, body { min-height: 100dvh; }   /* 縦は流す：牌を実寸に保ち、入りきらなければスクロールを許す */
+    html, body { height: 100dvh; overflow: hidden; }   /* 盤面は一画面に収まる。固定して上下スライドの逃げ道を塞ぐ。 */
     body {
       min-height: 0;
       padding: 6px 10px 8px;
@@ -645,7 +645,7 @@
 
     <div class="actions">
       <button class="btn btn-go" id="judgeBtn" disabled>判定する</button>
-      <button class="btn btn-clear" id="clearBtn">流す</button>
+      <button class="btn btn-clear" id="clearBtn">リセット</button>
     </div>
 
     <div class="value-col">
