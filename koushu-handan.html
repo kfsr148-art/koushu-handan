@@ -409,13 +409,13 @@
   @media (orientation: landscape) and (max-height: 560px) {
     /* 上下スライドを設計で断つ：画面の高さに固定し、はみ出す中身は切る。
        スクロールの逃げ道そのものを塞ぐので、見積もりが多少ずれても画面外へ流れない。 */
-    html, body { height: 100dvh; overflow: hidden; }
+    html, body { min-height: 100dvh; }   /* 縦は流す：牌を実寸に保ち、入りきらなければスクロールを許す */
     body {
       min-height: 0;
       padding: 6px 10px 8px;
       align-items: flex-start;
     }
-    .wrap { max-width: 100%; max-height: 100dvh; overflow: hidden; }
+    .wrap { max-width: 100%; }
 
     /* パネルを画面の高さに固定。各行は中身なりの高さを取り、上から順に積む。
        盤面に勘の固定上限を引くと中身と合わず字牌段があふれて配牌枠と重なるため、autoで中身なりにする。
@@ -423,30 +423,27 @@
     .panel {
       display: grid;
       grid-template-columns: minmax(0,1fr) auto;
-      grid-template-rows: 1fr auto auto;
+      grid-template-rows: auto auto auto;
       grid-template-areas:
         "picker picker"
         "hand   hand"
         "dora   act";
       column-gap: 12px;
-      row-gap: 6px;
+      row-gap: 4px;
       align-items: stretch;
       align-content: start;
-      padding: 8px 12px 10px;
+      padding: 4px 12px 6px;
       margin-bottom: 0;
-      height: 100dvh;
-      overflow: hidden;
     }
 
     /* 盤面：割り当てられた行の高さを4つのスート行で等分。牌は画面でなく親に従って収まる。 */
     .picker-inline {
       grid-area: picker;
       margin-top: 0;
-      padding: 8px 12px;
+      padding: 4px 12px;
       display: flex; flex-direction: column;
-      min-height: 0; overflow: hidden;
     }
-    .suit-row { min-height: 0; flex: 1; display: flex; flex-direction: column; justify-content: center; margin-bottom: 4px; }
+    .suit-row { display: flex; flex-direction: column; justify-content: center; margin-bottom: 2px; }
     .suit-row:last-child { margin-bottom: 0; }
     .suit-tiles.two-row {
       display: grid;
@@ -456,32 +453,30 @@
     }
     .suit-tiles.two-row .tile-row { display: contents; }
     .suit-name { margin-bottom: 2px; font-size: 9px; line-height: 1; }
-    /* 牌は小さい固定サイズに抑える。aspect-ratioだと幅次第で高さが膨らみ四段が画面を超えるため、
-       高さをじかに抑えて四段＋見出し＋下段が確実に1画面へ収まるようにする。 */
+    /* 牌は実寸を保つ。潰すと読めず押せないので、四段＋下段が一画面に収まる読める下限へ。 */
     .pick {
-      width: 30px;
-      height: 100%;
-      max-height: 38px;
-      min-height: 0;
-      font-size: 13px;
+      width: 36px;
+      height: 32px;
+      font-size: 14px;
       box-shadow: 0 2px 0 #b3a589, 0 2px 4px rgba(0,0,0,0.28);
     }
     .pick .suf { font-size: 0.5em; margin-bottom: 0.28em; }
-    /* 字牌は漢字一文字ゆえ升の中で大きく描かれ、上三段（数字＋添字の二要素）より牌が膨らんで見える。
-       上三段と同一の寸法・字の大きさを明示して、四段の牌の見た目を揃える。 */
-    .suit-row:last-child .pick { width: 30px; height: 100%; max-height: 38px; font-size: 13px; }
+    /* 字牌段も上三段と同一寸法に揃える。 */
+    .suit-row:last-child .pick { width: 36px; height: 32px; font-size: 14px; }
+    /* ドラボタンは字牌のすぐ右へ。右端で見切れぬよう左詰めにし、右に余白を残す。 */
+    .dora-toggle { grid-column: 8 / span 2; justify-self: start; width: 100%; }
     .picker-head { display: none; }   /* 盤面の説明文は横では省略 */
 
     /* 下段：左から 配牌枠＋枚数 / ドラ / 入力 / 判定ボタン */
     .hand {
       grid-area: hand; margin: 0;
-      min-height: 44px; padding: 6px 10px;
+      min-height: 32px; padding: 4px 10px;
       flex-wrap: nowrap; gap: 4px;   /* 折り返さず一列に。横幅フルなので13枚が余裕で並ぶ */
       overflow: hidden; justify-content: flex-start;
     }
-    /* 配牌枠が横幅フルになったぶん牌を見やすい大きさに。13枚でも一列に収まる。 */
-    .hand .tile { width: 28px; height: 38px; font-size: 16px; flex: 0 0 auto; flex-direction: column; }
-    .hand .tile .suf { font-size: 8px; margin-bottom: 4px; }
+    /* 配牌枠の牌は空枠(min-height 32px)に収まる高さに。これで牌を入れても枠が膨らまず、下へ沈まない。 */
+    .hand .tile { width: 22px; height: 24px; font-size: 10px; flex: 0 0 auto; flex-direction: column; }
+    .hand .tile .suf { font-size: 6px; margin-bottom: 1px; }
     .counter {
       grid-area: hand;            /* 配牌枠の右下隅に枚数を小さく重ねる */
       align-self: end; justify-self: end;
@@ -499,17 +494,23 @@
       align-items: center; justify-content: center;
     }
     .dora-help { display: none; }   /* 横では説明文を省き、風の選択の場所を作る */
+    /* 横ではドラの読み取りを字牌右のボタンへ集約。下段の長い読み取り行は畳んで、判定ボタンを一画面に収める。
+       refreshDora がインラインで display を書くため !important で上書きする。 */
+    .value-col .dora-readout { display: none !important; }
+    /* ボタンに映すドラ牌は字牌行に収まるよう小ぶりに。 */
+    .dora-toggle .dr-tile { min-width: 14px; height: 18px; font-size: 11px; padding: 0 3px; box-shadow: 0 1px 0 #b3a589; margin-top: 2px; }
+    .dora-toggle .dr-tile .suf { font-size: 7px; margin-bottom: 1px; }
     /* 下段のドラ読み取り欄の牌は、横では一段小さく詰める。
        上のパレットの牌とは連動させず独立指定（後で上の牌だけ大きくしても、ここは影響を受けない）。 */
-    .value-col .dora-readout .dr-tile { min-width: 16px; height: 22px; font-size: 10px; padding: 0 3px; }
-    .value-col .dora-readout .dr-tile .suf { font-size: 7px; margin-bottom: 2px; }
+    .value-col .dora-readout .dr-tile { min-width: 16px !important; height: 20px !important; font-size: 11px !important; padding: 0 3px !important; }
+    .value-col .dora-readout .dr-tile .suf { font-size: 7px !important; margin-bottom: 2px !important; }
     .wind-note { margin: 0; padding: 0; border: none; gap: 3px; }
     .wind-grid {
       display: flex; flex-wrap: nowrap;
-      gap: 4px; justify-content: center;
+      gap: 8px; justify-content: space-between; width: 100%;
     }
     .wind-corner, .wind-head, .wind-side { display: none; }   /* 横では見出しを省き、ボタン8つだけ一列に */
-    .seat-cell { font-size: 11px; padding: 4px 6px; border-radius: 8px; line-height: 1.2; flex: 0 0 auto; }
+    .seat-cell { font-size: 13px; padding: 8px 0; border-radius: 8px; line-height: 1.2; flex: 1 1 0; text-align: center; }
     .wind-readout { display: none; }   /* 横では読み取り文も省く */
     .quick-input {
       display: none;   /* 横持ちは盤面タップで牌を並べるのでキーボード入力欄は省く。空いた幅は配牌表示枠へ回す */
@@ -557,19 +558,19 @@
     /* 判定後のみ：結果カードを画面高に収め、末尾のボタンまで1画面に入れる。
        判定前の盤面には効かせない（body.judged 限定）。スクロールは出さず overflow:hidden で抑える。 */
     body.judged .wrap {
-      height: 100dvh; overflow: hidden;
       display: flex; flex-direction: column;
     }
     body.judged .verdict, body.judged .verdict.show {
-      flex: 1; min-height: 0; display: flex; flex-direction: column;
-      overflow: hidden;
+      display: flex; flex-direction: column;
     }
     body.judged .verdict-card {
-      flex: 1; min-height: 0;
-      display: flex; flex-direction: column;
       padding: 8px 14px 10px;
     }
-    body.judged .reasons { flex: 1; min-height: 0; overflow: hidden; }
+    /* 横の判定後は一画面に収める：各理由の説明文と末尾の総括を畳み、見出しの○×だけ残す。
+       四項目を横一列に並べて凸凹をなくす。詳しい説明は縦持ちで読む割り切り。 */
+    body.judged .reasons { grid-template-columns: repeat(4, 1fr); gap: 0 10px; }
+    body.judged .r-detail { display: none; }
+    body.judged .verdict-foot { display: none; }
 
     /* 判定後（body.judged）は盤面パネルを畳み、結果カードを最前面へ繰り上げる。
        配牌は並べ終わっているので、上半分を占める牌の盤面は役目を終えている。
@@ -657,15 +658,15 @@
         <span class="wind-head">西家</span>
         <span class="wind-head">北家</span>
         <span class="wind-side">東場</span>
-        <button type="button" class="chip seat-cell" data-round="E" data-seat="E">東1</button>
-        <button type="button" class="chip seat-cell" data-round="E" data-seat="S">東2</button>
-        <button type="button" class="chip seat-cell" data-round="E" data-seat="W">東3</button>
-        <button type="button" class="chip seat-cell" data-round="E" data-seat="N">東4</button>
+        <button type="button" class="chip seat-cell" data-round="E" data-seat="E">東東</button>
+        <button type="button" class="chip seat-cell" data-round="E" data-seat="S">東南</button>
+        <button type="button" class="chip seat-cell" data-round="E" data-seat="W">東西</button>
+        <button type="button" class="chip seat-cell" data-round="E" data-seat="N">東北</button>
         <span class="wind-side">南場</span>
-        <button type="button" class="chip seat-cell" data-round="S" data-seat="E">南1</button>
-        <button type="button" class="chip seat-cell" data-round="S" data-seat="S">南2</button>
-        <button type="button" class="chip seat-cell" data-round="S" data-seat="W">南3</button>
-        <button type="button" class="chip seat-cell" data-round="S" data-seat="N">南4</button>
+        <button type="button" class="chip seat-cell" data-round="S" data-seat="E">南東</button>
+        <button type="button" class="chip seat-cell" data-round="S" data-seat="S">南南</button>
+        <button type="button" class="chip seat-cell" data-round="S" data-seat="W">南西</button>
+        <button type="button" class="chip seat-cell" data-round="S" data-seat="N">南北</button>
       </div>
       <div class="wind-readout" id="windReadout">自分の席を選ぶと、その場風・自風の対子が役牌として打点に乗りますわ。</div>
     </div>
@@ -752,7 +753,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function addTile(t) {
     const field = document.getElementById('qiText');
     const { tiles } = parseDigits(field.value);
-    if (tiles.length >= 14) return;   // 14枚目まで置ける。判定時に多牌ガードが発火、15枚目以降は積ませない
+    if (tiles.length >= 13) return;   // 13枚ハードキャップ。これ以上は積ませない（多牌を起こさせない）
     tiles.push(t);
     field.value = tilesToInput(tiles);
     rebuildHand();
@@ -774,7 +775,7 @@ document.addEventListener('DOMContentLoaded', function () {
     counterEl.innerHTML = `<b>${hand.length}</b> / 10〜13 枚`;
     counterEl.classList.toggle('full', hand.length>=10 && hand.length<=13);
     // 10〜13枚なら判定可能（13枚ちょうどが最も正確。14枚以上は多牌として弾く）
-    judgeBtn.disabled = (hand.length < 10 || hand.length > 14);   // 14枚も押せる→多牌ガードが「多牌ですわ」を返す
+    judgeBtn.disabled = (hand.length < 10 || hand.length > 13);   // 10〜13枚で判定可。13枚キャップなので多牌は起きない
   }
 
 
@@ -986,7 +987,14 @@ document.addEventListener('DOMContentLoaded', function () {
   // 表示牌の状態に合わせ、ドラ枚数の再計算と読み取り表示の更新
   function refreshDora(){
     doraToggle.classList.toggle('armed', indicatorArmed);
-    doraToggle.innerHTML = indicatorArmed ? '表示牌を<br>選択中…' : 'ドラ表示牌<br>を指定';
+    // ボタン自体にドラを映す：横向きでは下段の読み取り行を畳むため、ここが結果の置き場になる。
+    if(indicatorArmed){
+      doraToggle.innerHTML = '表示牌を<br>選択中…';
+    } else if(doraIndicator !== null){
+      doraToggle.innerHTML = 'ドラ<br>' + tileChip(indicatorToDora(doraIndicator));
+    } else {
+      doraToggle.innerHTML = 'ドラ表示牌<br>を指定';
+    }
     // 中身を入れても display:none のままだと見えない。状態に応じて枠自体を開閉する。
     doraReadout.style.display = (doraIndicator !== null || indicatorArmed) ? '' : 'none';
     if(doraIndicator === null){
