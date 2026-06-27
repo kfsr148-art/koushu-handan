@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="54">
+<html lang="ja" data-ver="61">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -406,6 +406,13 @@
   .attack .verdict-kanji { color: #ff7b62; text-shadow: 0 0 30px rgba(192,57,43,0.5); }
   .defend .verdict-kanji { color: #5fd3a6; text-shadow: 0 0 30px rgba(58,157,120,0.45); }
   .verdict-word { font-size: 14px; letter-spacing: 0.3em; text-indent: 0.3em; margin-top: 10px; color: rgba(243,236,224,0.85); }
+  .verdict-edge {
+    display: inline-block; margin-top: 8px;
+    font-size: 11px; letter-spacing: 0.18em; text-indent: 0.18em;
+    padding: 3px 13px; border-radius: 12px;
+    background: rgba(232,192,96,0.13); color: #e8c060;
+    border: 1px solid rgba(232,192,96,0.42);
+  }
   .tone-row { display: flex; gap: 6px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
   .tone-btn {
     font-family: inherit; font-size: 12px; padding: 5px 12px;
@@ -449,6 +456,20 @@
      縦持ち・PCでは盤面が常に見えているので不要＝既定では隠す。 */
   .back-to-board { display: none; }
   .next-hand-row { display: none; }   /* 次局の二択も横持ち専用。縦持ち・PCでは盤面が見えているので不要。 */
+
+  /* 横向き専用ツール：縦にしたら本体を隠し、横向きを促す案内だけ出す */
+  .rotate-hint { display: none; }
+  @media (orientation: portrait) {
+    .wrap { display: none !important; }
+    .rotate-hint {
+      display: flex; flex-direction: column; gap: 14px;
+      position: fixed; inset: 0; z-index: 9999;
+      align-items: center; justify-content: center; text-align: center; padding: 40px;
+      background: #14241c; color: rgba(243,236,224,0.9);
+      font-family: var(--serif); font-size: 20px; line-height: 1.7; letter-spacing: 0.08em;
+    }
+    .rotate-hint .rh-sub { font-size: 14px; opacity: 0.6; letter-spacing: 0.12em; }
+  }
 
   /* =================================================================
      横向き（landscape）専用レイアウト ── iPhoneを横にした全画面で使う
@@ -689,7 +710,8 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v54</div>
+  <div id="verTag">v61</div>
+  <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
   <div class="panel">
     <div class="picker-inline">
@@ -741,6 +763,7 @@
       <button class="btn btn-go" id="judgeBtn" disabled>判定する</button>
       <button class="btn btn-del" id="delBtn">一枚消す</button>
       <button class="btn btn-clear" id="clearBtn">リセット</button>
+      <button class="btn btn-shuffle" id="shuffleBtn">配牌</button>
     </div>
 
     <div class="value-col">
@@ -921,7 +944,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function canAddTile(t, tiles){
     if(t.suit!=='honor' && t.num===5){
       const cnt = tiles.filter(x => x.suit===t.suit && x.num===5 && (!!x.red)===(!!t.red)).length;
-      return cnt < 2;
+      return cnt < (t.red ? 1 : 3);   // 雀魂標準：通常五は3枚・赤五は1枚
     }
     const cnt = tiles.filter(x => x.code===t.code && (!!x.red)===(!!t.red)).length;
     return cnt < 4;
@@ -1152,6 +1175,29 @@ document.addEventListener('DOMContentLoaded', function () {
     return parts.join(' ');
   }
 
+  // ---- ランダム配牌（練習用）。山から13枚引いて盤面に流し込む ----
+  function shuffleHand(){
+    const wall = [];
+    ['man','pin','sou'].forEach(suit=>{
+      for(let n=1;n<=9;n++){
+        if(n===5){
+          for(let i=0;i<3;i++) wall.push({suit, num:5, red:false});
+          wall.push({suit, num:5, red:true});   // 赤五を各色1枚だけ混ぜる
+        } else {
+          for(let i=0;i<4;i++) wall.push({suit, num:n, red:false});
+        }
+      }
+    });
+    ['E','S','W','N','P','F','C'].forEach(code=>{
+      for(let i=0;i<4;i++) wall.push({suit:'honor', code});
+    });
+    for(let i=wall.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [wall[i],wall[j]]=[wall[j],wall[i]]; }
+    const hand = wall.slice(0,13);
+    document.getElementById('qiText').value = tilesToInput(hand);
+    rebuildHand();
+  }
+  window.shuffleHand = shuffleHand;
+
   // ============================================================
   //  ドラ表示牌 → ドラ本体を割り出し、手牌から枚数を自動で数える
   // ============================================================
@@ -1275,6 +1321,7 @@ document.addEventListener('DOMContentLoaded', function () {
   window.nextHand = nextHand;
   document.getElementById('clearBtn').onclick = resetBoard;
   document.getElementById('delBtn').onclick = removeLastTile;
+  document.getElementById('shuffleBtn').onclick = shuffleHand;
 
   // ============================================================
   //  場×席の格子。1升を選ぶと場風・自風が同時に決まる（単一選択）。
@@ -1285,6 +1332,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const windReadout = document.getElementById('windReadout');
   const windJP = {E:'東', S:'南', W:'西', N:'北'};
   function refreshWind(){
+    try {
+      if(roundWind) localStorage.setItem('koushu_round', roundWind); else localStorage.removeItem('koushu_round');
+      if(seatWind)  localStorage.setItem('koushu_seat',  seatWind);  else localStorage.removeItem('koushu_seat');
+    } catch(e){}
     document.querySelectorAll('.seat-cell').forEach(c=>{
       const sel = c.getAttribute('data-round') === roundWind
                && c.getAttribute('data-seat')  === seatWind;
@@ -1824,24 +1875,22 @@ document.addEventListener('DOMContentLoaded', function () {
     //   良形が1つ足りなくても、受け入れが非常に広ければ攻めに格上げ
     //   良形が足りていても、受け入れが極端に狭ければ攻めを見送り（安手のみ）
     //   親はテンパイ維持の価値が高いので、際どい線だけ一歩攻めへ寄せる。
-    let verdict;
+    let verdict, edgeFlag = false;
     if(shapeOK){
       const narrowDefend = acceptTiles < (isDealer ? 6 : 8) && doraValue <= 1;
       verdict = narrowDefend ? 'defend' : 'attack';
+      if(narrowDefend) edgeFlag = true;                        // 攻の形だが受けが狭く守へ倒した紙一重
     } else {
       const wideAttack = acceptTiles >= (isDealer ? 20 : 24) && doraValue >= 1;
       verdict = wideAttack ? 'attack' : 'defend';
+      if(wideAttack) edgeFlag = true;                          // 形は足りぬが受けの広さで攻へ格上げした紙一重
     }
     // 国士が見える手は、普通の形が屑でも「攻」へ。屑手にこそ国士の一本道がある。
-    if(kokushiSeen){
-      verdict = 'attack';
-    }
+    if(kokushiSeen){ verdict = 'attack'; edgeFlag = false; }
     // 役満が一歩手前の極端な配牌も、普通の形を度外視して「攻」へ。
-    if(yakumanReach){
-      verdict = 'attack';
-    }
+    if(yakumanReach){ verdict = 'attack'; edgeFlag = false; }
 
-    return { goodShapes, weakShapes, totalBlocks, shapeOK, shapeNeeded,
+    return { borderline: edgeFlag, goodShapes, weakShapes, totalBlocks, shapeOK, shapeNeeded,
              hasValue, valueSources, doraValue, doraCount, redCount, yakuhaiPair, verdict,
              baseShanten, acceptTypes, acceptTiles, widthLabel, widthGood,
              directions: finalDirections,
@@ -1858,14 +1907,31 @@ document.addEventListener('DOMContentLoaded', function () {
     blunt:      { a:'攻めろ', d:'引け' },
     lady:       { a:'前に出る手ですわ', d:'引いて構える手ですわ' },
   };
-  let currentTone = 'butler';
+  let currentTone = (()=>{ try { return localStorage.getItem('koushu_tone') || 'butler'; } catch(e){ return 'butler'; } })();
   let lastAttack = false;
+  // 縦向き案内も口調で言い回しを変える
+  const ROTATE_WORDS = {
+    butler:     { main:'画面を横にしてお使いくださいませ', sub:'こちらは横向き専用でございます' },
+    strategist: { main:'画面を横に構えられよ',           sub:'横向きでのみ働く陣立て' },
+    blunt:      { main:'横にしろ',                       sub:'横向き専用だ' },
+    lady:       { main:'画面を横にしてお使いくださいまし', sub:'このツールは横向き専用ですの' },
+  };
+  function applyRotateTone(){
+    const r = ROTATE_WORDS[currentTone] || ROTATE_WORDS.butler;
+    const el = document.querySelector('.rotate-hint');
+    if(!el) return;
+    if(el.children[0]) el.children[0].textContent = r.main;
+    const sub = el.querySelector('.rh-sub');
+    if(sub) sub.textContent = r.sub;
+  }
   function setTone(t){
     if(!TONE_WORDS[t]) return;
     currentTone = t;
+    try { localStorage.setItem('koushu_tone', t); } catch(e){}
     const w = document.querySelector('.verdict-word');
     if(w) w.textContent = TONE_WORDS[t][lastAttack ? 'a' : 'd'];
     document.querySelectorAll('.tone-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-tone')===t));
+    applyRotateTone();
   }
   window.setTone = setTone;
 
@@ -1976,6 +2042,7 @@ document.addEventListener('DOMContentLoaded', function () {
       <div class="verdict-card ${attack?'attack':'defend'}">
         <div class="verdict-mascot">${attack ? (a.yakumanReach ? '🐦‍🔥' : (a.kokushiSeen ? '🐉' : '🐅')) : ((a.defHonors + a.defTerminals) >= 2 ? '🐑' : '🐭')}</div>
         <div class="verdict-kanji">${attack?'攻':'守'}</div>
+        ${a.borderline ? '<div class="verdict-edge">際どい一手</div>' : ''}
         <div class="verdict-word">${TONE_WORDS[currentTone][attack?'a':'d']}</div>
         <div class="tone-row">
           <button type="button" class="tone-btn${currentTone==='butler'?' active':''}" data-tone="butler" onclick="window.setTone('butler')">執事</button>
@@ -2014,7 +2081,14 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   render();
+  try {
+    const sr = localStorage.getItem('koushu_round');
+    const ss = localStorage.getItem('koushu_seat');
+    if(sr) roundWind = sr;
+    if(ss) seatWind  = ss;
+  } catch(e){}
   refreshWind();
+  applyRotateTone();
 });
 </script>
 <script>
