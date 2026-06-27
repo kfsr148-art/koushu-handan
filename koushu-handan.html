@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>配牌 攻守判定</title>
 <!-- ホーム画面Webアプリは古いHTMLを強く握る。更新を確実に拾わせるため毎回取り直させる -->
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -35,11 +35,7 @@
     color: var(--bone);
     font-family: var(--sans);
     min-height: 100vh;
-    padding:
-      max(28px, env(safe-area-inset-top))
-      max(16px, env(safe-area-inset-right))
-      max(64px, env(safe-area-inset-bottom))
-      max(16px, env(safe-area-inset-left));
+    padding: 28px 16px 64px;
     display: flex;
     justify-content: center;
   }
@@ -453,12 +449,8 @@
     html, body { height: 100dvh; overflow: hidden; }   /* 盤面は一画面に収まる。固定して上下スライドの逃げ道を塞ぐ。 */
     body {
       min-height: 0;
-      padding:
-        max(6px, env(safe-area-inset-top))
-        max(10px, env(safe-area-inset-right))
-        max(8px, env(safe-area-inset-bottom))
-        max(10px, env(safe-area-inset-left));
-      align-items: flex-start;
+      padding: 6px 10px 8px;
+      align-items: center;
     }
     .wrap { max-width: 100%; }
 
