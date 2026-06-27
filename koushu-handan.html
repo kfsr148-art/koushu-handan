@@ -161,7 +161,7 @@
 
   /* ---- dora indicator (盤面の空きに置く表示牌指定ボタン) ---- */
   .dora-toggle {
-    grid-column: span 2;
+    grid-column: span 1;
     position: relative; z-index: 2;
     border-radius: 8px;
     border: 1px dashed var(--gold);
@@ -176,10 +176,37 @@
   }
   .dora-toggle:active { transform: translateY(1px); }
   .dora-toggle.armed {
-    background: var(--gold); color: var(--ink);
-    border-style: solid;
-    box-shadow: 0 0 10px rgba(200,164,92,0.6);
+    background: rgba(0,0,0,0.42); color: var(--gold);
+    border: 1.5px solid var(--gold); border-style: solid;
+    box-shadow: 0 0 10px rgba(200,164,92,0.45), inset 0 0 0 1px rgba(200,164,92,0.18);
   }
+  /* 選択完了後：暗背景＋金の実線枠。乗せた白い牌を浮かせる土台。 */
+  .dora-toggle.set {
+    background: rgba(0,0,0,0.42); color: var(--gold);
+    border: 1.5px solid var(--gold); border-style: solid;
+    box-shadow: 0 0 10px rgba(200,164,92,0.45), inset 0 0 0 1px rgba(200,164,92,0.18);
+  }
+  /* 選択完了後の牌。白い下地で暗い盤面から浮かせる。ボタン外の別枠に置く。 */
+  .dora-face-slot {
+    grid-column: span 1;
+    display: flex; align-items: center; justify-content: flex-start;
+    padding-left: 8px;
+  }
+  .dora-face {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 30px; height: 40px; padding: 0 6px;
+    background: linear-gradient(180deg, var(--bone) 0%, #e7ddca 100%);
+    border: 1px solid var(--bone-edge); border-radius: 5px;
+    color: var(--ink); font-family: var(--serif); font-weight: 700; font-size: 22px;
+    box-shadow: 0 2px 0 #b3a589, 0 3px 6px rgba(0,0,0,0.4);
+  }
+  .dora-face.pin   { color:#1f5fa8; }
+  .dora-face.sou   { color:#1f7a3d; }
+  .dora-face.honor { color: var(--vermilion-d); }
+  .dora-face .suf  { font-size: 11px; margin-left: 1px; align-self: flex-end; margin-bottom: 5px; }
+  /* ラベルと枚数は横持ち専用。縦持ちは下の読み取り行に委ね、口は牌だけに保つ。 */
+  .dora-face-lab, .dora-face-cnt { display: none; }
+  .dora-toggle .dora-lab { font-size: 12px; color: var(--gold); font-weight: 700; margin-right: 7px; }
   .dora-readout { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .dora-readout .dr-tile {
     display: inline-flex; align-items: center; justify-content: center;
@@ -306,6 +333,7 @@
     flex: 1; padding: 14px; border-radius: 11px; border: none;
     font-family: var(--serif); font-weight: 700; font-size: 15px;
     letter-spacing: 0.08em; cursor: pointer; transition: all 0.14s ease;
+    white-space: nowrap;
   }
   .btn-go {
     background: linear-gradient(180deg, var(--vermilion), var(--vermilion-d));
@@ -314,10 +342,17 @@
   .btn-go:active { transform: translateY(3px); box-shadow: 0 1px 0 #7a2218; }
   .btn-go:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: 0 4px 0 #7a2218; }
   .btn-clear {
-    flex: 0 0 auto; padding-left: 22px; padding-right: 22px;
+    flex: 0 0 auto; padding-left: 16px; padding-right: 16px;
     background: rgba(0,0,0,0.2); color: rgba(243,236,224,0.8);
     border: 1px solid var(--line);
   }
+  /* 牌を一枚だけ戻すデリート。リセット（丸ごと消去）とは別物として、控えめに隣へ。 */
+  .btn-del {
+    flex: 0 0 auto; padding-left: 13px; padding-right: 13px;
+    background: rgba(0,0,0,0.14); color: rgba(243,236,224,0.78);
+    border: 1px solid var(--line);
+  }
+  .btn-del:disabled { opacity: 0.4; cursor: not-allowed; }
 
   /* ---- verdict ---- */
   .verdict { display: none; }
@@ -413,10 +448,9 @@
     body {
       min-height: 0;
       padding: 6px 10px 8px;
-      align-items: stretch;
-      flex-direction: column;
+      align-items: flex-start;
     }
-    .wrap { max-width: 100%; flex: 1; display: flex; flex-direction: column; min-height: 0; }
+    .wrap { max-width: 100%; }
 
     /* パネルを画面の高さに固定。各行は中身なりの高さを取り、上から順に積む。
        盤面に勘の固定上限を引くと中身と合わず字牌段があふれて配牌枠と重なるため、autoで中身なりにする。
@@ -432,9 +466,7 @@
       column-gap: 12px;
       row-gap: 4px;
       align-items: stretch;
-      align-content: space-between;
-      flex: 1;
-      min-height: 0;
+      align-content: start;
       padding: 4px 12px 6px;
       margin-bottom: 0;
     }
@@ -466,8 +498,8 @@
     .pick .suf { font-size: 0.5em; margin-bottom: 0.28em; }
     /* 字牌段も上三段と同一寸法に揃える。 */
     .suit-row:last-child .pick { width: 36px; height: 32px; font-size: 14px; }
-    /* ドラボタンは字牌のすぐ右へ。右端で見切れぬよう左詰めにし、右に余白を残す。 */
-    .dora-toggle { grid-column: 8 / span 2; justify-self: start; width: 100%; }
+    /* ドラボタンと牌枠を字牌段の右側へ。ボタンを8列目、牌枠をその右9〜10列に。 */
+    .dora-toggle { grid-column: 8 / span 1; justify-self: start; width: 100%; }
     .picker-head { display: none; }   /* 盤面の説明文は横では省略 */
 
     /* 下段：左から 配牌枠＋枚数 / ドラ / 入力 / 判定ボタン */
@@ -500,9 +532,14 @@
     /* 横ではドラの読み取りを字牌右のボタンへ集約。下段の長い読み取り行は畳んで、判定ボタンを一画面に収める。
        refreshDora がインラインで display を書くため !important で上書きする。 */
     .value-col .dora-readout { display: none !important; }
-    /* ボタンに映すドラ牌は字牌行に収まるよう小ぶりに。 */
-    .dora-toggle .dr-tile { min-width: 14px; height: 18px; font-size: 11px; padding: 0 3px; box-shadow: 0 1px 0 #b3a589; margin-top: 2px; }
-    .dora-toggle .dr-tile .suf { font-size: 7px; margin-bottom: 1px; }
+    /* 牌枠はボタンの右、9〜10列に。字牌段に収まるよう牌を小ぶりに。 */
+    .dora-face-slot { grid-column: 9 / span 2; padding-left: 5px; justify-content: flex-start; }
+    .dora-face { min-width: 16px; height: 20px; font-size: 12px; padding: 0 3px; box-shadow: 0 1px 0 #b3a589; }
+    .dora-face .suf { font-size: 7px; margin-bottom: 1px; }
+    /* 横持ちのみ：牌の左に「ドラ」、右に手牌枚数を金色で添え、何の牌で何枚かを一目で示す。 */
+    .dora-face-lab { display: inline; font-size: 11px; color: var(--gold); font-weight: 700; margin-right: 4px; }
+    .dora-face-cnt { display: inline; font-size: 12px; color: var(--gold); font-weight: 700; margin-left: 4px; white-space: nowrap; }
+    .dora-toggle .dora-lab { font-size: 9px; margin-right: 4px; }
     /* 下段のドラ読み取り欄の牌は、横では一段小さく詰める。
        上のパレットの牌とは連動させず独立指定（後で上の牌だけ大きくしても、ここは影響を受けない）。 */
     .value-col .dora-readout .dr-tile { min-width: 16px !important; height: 20px !important; font-size: 11px !important; padding: 0 3px !important; }
@@ -528,6 +565,7 @@
     .btn { padding: 4px 16px; font-size: 14px; white-space: nowrap; }
     .btn-go { flex: none; }
     .btn-clear { flex: none; }
+    .btn-del { flex: none; padding-left: 12px; padding-right: 12px; }
     .qi-label { font-size: 9px; margin-bottom: 2px; line-height: 1.2; }
     .qi-field { padding: 7px 10px; font-size: 15px; }
     .qi-btn { width: 38px; font-size: 15px; }
@@ -638,7 +676,8 @@
           <div class="tile pick honor" data-suit="honor" data-label="白" data-num="0" data-code="P" data-red="0">白</div>
           <div class="tile pick honor" data-suit="honor" data-label="發" data-num="0" data-code="F" data-red="0">發</div>
           <div class="tile pick honor" data-suit="honor" data-label="中" data-num="0" data-code="C" data-red="0">中</div>
-          <button type="button" class="dora-toggle" id="doraToggle">ドラ表示牌<br>を指定</button>
+          <button type="button" class="dora-toggle" id="doraToggle">ドラ<br>指定</button>
+          <div class="dora-face-slot" id="doraFaceSlot"></div>
           </div>
         </div>
       </div>
@@ -648,6 +687,7 @@
 
     <div class="actions">
       <button class="btn btn-go" id="judgeBtn" disabled>判定する</button>
+      <button class="btn btn-del" id="delBtn">一枚消す</button>
       <button class="btn btn-clear" id="clearBtn">リセット</button>
     </div>
 
@@ -725,6 +765,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const handEl = document.getElementById('hand');
   const counterEl = document.getElementById('counter');
   const judgeBtn = document.getElementById('judgeBtn');
+  const delBtn = document.getElementById('delBtn');
 
   // ---- attach handlers to static picker tiles ----
   // 牌はHTMLに直接書き込まれているので、生成せずクリックだけ拾う
@@ -779,6 +820,7 @@ document.addEventListener('DOMContentLoaded', function () {
     counterEl.classList.toggle('full', hand.length>=10 && hand.length<=13);
     // 10〜13枚なら判定可能（13枚ちょうどが最も正確。14枚以上は多牌として弾く）
     judgeBtn.disabled = (hand.length < 10 || hand.length > 13);   // 10〜13枚で判定可。13枚キャップなので多牌は起きない
+    delBtn.disabled = (hand.length === 0);   // 戻す牌が無いときは押せないよう淡く
   }
 
 
@@ -933,6 +975,17 @@ document.addEventListener('DOMContentLoaded', function () {
     rebuildHand();
   }
 
+  // 末尾（配牌枠の右端）の牌を一枚だけ戻す。手牌は左から並ぶので、押すたび右端から削れる backspace 式。
+  // 狙った牌が右端でなければ、その牌を直接タップして消す既存の仕掛けを併用すればよい。
+  function removeLastTile(){
+    const field = document.getElementById('qiText');
+    const { tiles } = parseDigits(field.value);
+    if(tiles.length === 0) return;
+    tiles.pop();
+    field.value = tilesToInput(tiles);
+    rebuildHand();
+  }
+
   // 牌配列 → 「18m 1357p 3368s 南西」標準形式の入力文字列。赤五は 0、字牌は漢字。
   function tilesToInput(tiles){
     const suf = {man:'m',pin:'p',sou:'s'};
@@ -962,6 +1015,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // ============================================================
   const doraToggle  = document.getElementById('doraToggle');
   const doraReadout = document.getElementById('doraReadout');
+  const doraFaceSlot = document.getElementById('doraFaceSlot');
 
   // 表示牌のコード → ドラ本体のコード
   function indicatorToDora(code){
@@ -987,16 +1041,37 @@ document.addEventListener('DOMContentLoaded', function () {
     return `<span class="dr-tile honor">${honorData[code].label}</span>`;
   }
 
+  // コード → ボタンに乗せる大ぶりの牌。読み取り用 dr-tile とは別クラスにして、
+  // 横持ちの小型指定に巻き込まれないようにする。選択後ボタンの主役。
+  function tileChipBig(code){
+    if('mps'.includes(code[0])){
+      const cls = {m:'man', p:'pin', s:'sou'}[code[0]];
+      const suf = {m:'萬', p:'筒', s:'索'}[code[0]];
+      return `<span class="dora-face ${cls}">${code[1]}<span class="suf">${suf}</span></span>`;
+    }
+    return `<span class="dora-face honor">${honorData[code].label}</span>`;
+  }
+
   // 表示牌の状態に合わせ、ドラ枚数の再計算と読み取り表示の更新
   function refreshDora(){
     doraToggle.classList.toggle('armed', indicatorArmed);
-    // ボタン自体にドラを映す：横向きでは下段の読み取り行を畳むため、ここが結果の置き場になる。
+    // 選択完了後（表示牌が決まり、かつ選択中でない）だけ set を付け、暗背景＋金枠で牌を浮かせる。
+    doraToggle.classList.toggle('set', doraIndicator !== null && !indicatorArmed);
+    // ボタンには文字だけ。牌は右隣の別枠（doraFaceSlot）へ出し、枠の外で大きく見せる。
     if(indicatorArmed){
-      doraToggle.innerHTML = '表示牌を<br>選択中…';
+      doraToggle.innerHTML = '選択<br>中…';
+      doraFaceSlot.innerHTML = '';
     } else if(doraIndicator !== null){
-      doraToggle.innerHTML = 'ドラ<br>' + tileChip(indicatorToDora(doraIndicator));
+      doraToggle.innerHTML = '選択<br>完了';
+      const dCode = indicatorToDora(doraIndicator);
+      const cnt = hand.filter(t => t.code === dCode).length;
+      doraFaceSlot.innerHTML =
+          '<span class="dora-face-lab">ドラ</span>'
+        + tileChipBig(dCode)
+        + `<span class="dora-face-cnt">×${cnt}</span>`;
     } else {
-      doraToggle.innerHTML = 'ドラ表示牌<br>を指定';
+      doraToggle.innerHTML = 'ドラ<br>指定';
+      doraFaceSlot.innerHTML = '';
     }
     // 中身を入れても display:none のままだと見えない。状態に応じて枠自体を開閉する。
     doraReadout.style.display = (doraIndicator !== null || indicatorArmed) ? '' : 'none';
@@ -1041,6 +1116,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   window.resetBoard = resetBoard;   // 判定後に生成される「次の配牌へ」ボタンのonclickから呼ぶため外へ公開
   document.getElementById('clearBtn').onclick = resetBoard;
+  document.getElementById('delBtn').onclick = removeLastTile;
 
   // ============================================================
   //  場×席の格子。1升を選ぶと場風・自風が同時に決まる（単一選択）。
