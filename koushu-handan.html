@@ -446,7 +446,7 @@
   @media (orientation: landscape) {
     /* 上下スライドを設計で断つ：画面の高さに固定し、はみ出す中身は切る。
        スクロールの逃げ道そのものを塞ぐので、見積もりが多少ずれても画面外へ流れない。 */
-    html, body { height: 100dvh; overflow: hidden; }   /* 盤面は一画面に収まる。固定して上下スライドの逃げ道を塞ぐ。 */
+    html, body { height: 100svh; overflow: hidden; }   /* 盤面は一画面に収まる。固定して上下スライドの逃げ道を塞ぐ。 */
     body {
       min-height: 0;
       padding: 6px 10px 8px;
@@ -499,13 +499,14 @@
     .pick {
       height: 100%; width: auto;
       aspect-ratio: 36 / 32;
+      max-height: 58px; max-width: 65px;
       justify-self: center;
       font-size: clamp(16px, 6vh, 26px);
       box-shadow: 0 2px 0 #b3a589, 0 2px 4px rgba(0,0,0,0.28);
     }
     .pick .suf { font-size: 0.5em; margin-bottom: 0.28em; }
     /* 字牌段も上三段と同一寸法に揃える。 */
-    .suit-row:last-child .pick { height: 100%; width: auto; aspect-ratio: 36 / 32; font-size: clamp(16px, 6vh, 26px); }
+    .suit-row:last-child .pick { height: 100%; width: auto; aspect-ratio: 36 / 32; max-height: 58px; max-width: 65px; font-size: clamp(16px, 6vh, 26px); }
     /* ドラボタンと牌枠を字牌段の右側へ。ボタンを8列目、牌枠をその右9〜10列に。 */
     .dora-toggle { grid-column: 8 / span 1; justify-self: start; width: 100%; }
     .picker-head { display: none; }   /* 盤面の説明文は横では省略 */
