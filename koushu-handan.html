@@ -406,16 +406,17 @@
      ・題名と盤面見出しは横では省き、高さを稼ぐ。
      高さの低い横向きだけに効かせ、縦やPC/iPadには影響しない。
      ================================================================= */
-  @media (orientation: landscape) and (max-height: 560px) {
+  @media (orientation: landscape) {
     /* 上下スライドを設計で断つ：画面の高さに固定し、はみ出す中身は切る。
        スクロールの逃げ道そのものを塞ぐので、見積もりが多少ずれても画面外へ流れない。 */
     html, body { height: 100dvh; overflow: hidden; }   /* 盤面は一画面に収まる。固定して上下スライドの逃げ道を塞ぐ。 */
     body {
       min-height: 0;
       padding: 6px 10px 8px;
-      align-items: flex-start;
+      align-items: stretch;
+      flex-direction: column;
     }
-    .wrap { max-width: 100%; }
+    .wrap { max-width: 100%; flex: 1; display: flex; flex-direction: column; min-height: 0; }
 
     /* パネルを画面の高さに固定。各行は中身なりの高さを取り、上から順に積む。
        盤面に勘の固定上限を引くと中身と合わず字牌段があふれて配牌枠と重なるため、autoで中身なりにする。
@@ -431,7 +432,9 @@
       column-gap: 12px;
       row-gap: 4px;
       align-items: stretch;
-      align-content: start;
+      align-content: space-between;
+      flex: 1;
+      min-height: 0;
       padding: 4px 12px 6px;
       margin-bottom: 0;
     }
