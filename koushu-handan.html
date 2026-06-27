@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" data-ver="8">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -661,7 +661,7 @@
 </style>
 </head>
 <body>
-  <div id="verTag">v7</div>
+  <div id="verTag">v8</div>
 <div class="wrap">
   <div class="panel">
     <div class="picker-inline">
@@ -1885,6 +1885,30 @@ document.addEventListener('DOMContentLoaded', function () {
   render();
   refreshWind();
 });
+</script>
+<script>
+/* 自動更新：開くたびGitHubの最新版をキャッシュを通さず確認し、版が新しければそちらへ切り替える。
+   これにより、ホーム画面のアイコンはそのまま、貼り直しも ?v= も要らなくなる。 */
+(function(){
+  try{
+    var CUR = document.documentElement.getAttribute('data-ver') || '';
+    var vt = document.getElementById('verTag'); if(vt){ vt.textContent = 'v' + CUR; }
+    /* 既に更新先（_v=付き）に居るなら、再確認しない＝ループ防止 */
+    if(location.search.indexOf('_v=') !== -1) return;
+    var base = location.href.split('?')[0].split('#')[0];
+    fetch(base + '?_chk=' + Date.now(), { cache: 'no-store' })
+      .then(function(r){ return r.ok ? r.text() : null; })
+      .then(function(html){
+        if(!html) return;
+        var m = html.match(/data-ver="([^"]*)"/);
+        var NEW = m ? m[1] : '';
+        if(NEW && NEW !== CUR){
+          location.replace(base + '?_v=' + encodeURIComponent(NEW));
+        }
+      })
+      .catch(function(){ /* オフライン等：今の版のまま使う */ });
+  }catch(e){ /* 失敗しても通常動作を妨げない */ }
+})();
 </script>
 </body>
 </html>
