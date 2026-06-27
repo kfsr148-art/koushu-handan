@@ -246,6 +246,7 @@
   .wind-side { font-size: 12.5px; color: var(--gold); font-weight: 700; padding-right: 4px; white-space: nowrap; }
   .seat-cell { font-size: 13px; padding: 6px 0; text-align: center; }
   .wind-readout { font-size: 12px; color: rgba(243,236,224,0.6); line-height: 1.6; margin-top: 2px; }
+  .wind-2step { display: none; }   /* 縦持ちでは隠す。横持ちのみ二段式を出す。 */
 
   /* ---- inline picker (手牌のすぐ下に置く統合盤面) ---- */
   .picker-inline {
@@ -429,6 +430,7 @@
   /* 「次の配牌へ」戻りボタン。横持ちで盤面を畳んだときだけ使う。
      縦持ち・PCでは盤面が常に見えているので不要＝既定では隠す。 */
   .back-to-board { display: none; }
+  .next-hand-row { display: none; }   /* 次局の二択も横持ち専用。縦持ち・PCでは盤面が見えているので不要。 */
 
   /* =================================================================
      横向き（landscape）専用レイアウト ── iPhoneを横にした全画面で使う
@@ -545,13 +547,16 @@
     .value-col .dora-readout .dr-tile { min-width: 16px !important; height: 20px !important; font-size: 11px !important; padding: 0 3px !important; }
     .value-col .dora-readout .dr-tile .suf { font-size: 7px !important; margin-bottom: 2px !important; }
     .wind-note { margin: 0; padding: 0; border: none; gap: 3px; }
-    .wind-grid {
-      display: flex; flex-wrap: nowrap;
-      gap: 8px; justify-content: space-between; width: 100%;
-    }
-    .wind-corner, .wind-head, .wind-side { display: none; }   /* 横では見出しを省き、ボタン8つだけ一列に */
-    .seat-cell { font-size: 13px; padding: 8px 0; border-radius: 8px; line-height: 1.2; flex: 1 1 0; text-align: center; }
+    .wind-grid { display: none; }   /* 横では8マスを畳み、下の二段式に委ねる */
+    .wind-corner, .wind-head, .wind-side { display: none; }
     .wind-readout { display: none; }   /* 横では読み取り文も省く */
+    /* 横持ちの二段式：左に場2つ（固定幅）、間を空けて右に自4つ（場を押すと現れ、均等に広がる）。一列のまま。 */
+    .value-col .wind-note { align-self: stretch; width: 100%; }   /* 風の行を value-col 幅いっぱいに。中央寄せで縮んでいたのを伸ばす。 */
+    .wind-2step { display: flex; align-items: center; gap: 14px; width: 100%; }
+    .w2-round { display: flex; gap: 8px; flex: 0 0 auto; }
+    .w2-seat  { display: flex; gap: 10px; flex: 1 1 auto; min-width: 0; }
+    .w2-r { font-size: 15px; padding: 10px 18px; border-radius: 8px; line-height: 1.2; flex: 0 0 auto; }
+    .w2-s { font-size: 16px; padding: 10px 0; border-radius: 8px; line-height: 1.2; flex: 1 1 0; min-width: 0; max-width: 120px; text-align: center; }
     .quick-input {
       display: none;   /* 横持ちは盤面タップで牌を並べるのでキーボード入力欄は省く。空いた幅は配牌表示枠へ回す */
     }
@@ -634,6 +639,15 @@
       cursor: pointer;
     }
     .back-to-board:active { background: rgba(243,236,224,0.2); }
+    /* 次局の二択：横持ちで判定後、連チャン・親流れを横並び半々に置く。 */
+    body.judged .next-hand-row { display: flex; gap: 8px; margin-top: 6px; }
+    body.judged .next-hand-row .nh-btn {
+      flex: 1; padding: 10px 14px; border: none; border-radius: 12px;
+      background: rgba(243,236,224,0.16); color: rgba(243,236,224,0.95);
+      font-family: var(--serif); font-size: 13px; letter-spacing: 0.12em;
+      cursor: pointer;
+    }
+    body.judged .next-hand-row .nh-btn:active { background: rgba(243,236,224,0.26); }
   }
 </style>
 </head>
@@ -710,6 +724,19 @@
         <button type="button" class="chip seat-cell" data-round="S" data-seat="S">南南</button>
         <button type="button" class="chip seat-cell" data-round="S" data-seat="W">南西</button>
         <button type="button" class="chip seat-cell" data-round="S" data-seat="N">南北</button>
+      </div>
+      <!-- 横持ち専用：場を先に選び、押すと自4つが現れる二段式。縦持ちでは隠し、上のマス目を使う。 -->
+      <div class="wind-2step" id="wind2step">
+        <div class="w2-round">
+          <button type="button" class="chip w2-r" data-round="E">東場</button>
+          <button type="button" class="chip w2-r" data-round="S">南場</button>
+        </div>
+        <div class="w2-seat" id="w2Seat" style="display:none;">
+          <button type="button" class="chip w2-s" data-seat="E">東</button>
+          <button type="button" class="chip w2-s" data-seat="S">南</button>
+          <button type="button" class="chip w2-s" data-seat="W">西</button>
+          <button type="button" class="chip w2-s" data-seat="N">北</button>
+        </div>
       </div>
       <div class="wind-readout" id="windReadout">自分の席を選ぶと、その場風・自風の対子が役牌として打点に乗りますわ。</div>
     </div>
@@ -1114,7 +1141,21 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('qiStatus').className = 'qi-status';
     render();
   }
-  window.resetBoard = resetBoard;   // 判定後に生成される「次の配牌へ」ボタンのonclickから呼ぶため外へ公開
+  window.resetBoard = resetBoard;   // 判定後に生成される次局ボタンのonclickから呼ぶため外へ公開
+
+  // 判定後の次局。連チャン(advanceDealer=false)は場・自そのまま。親流れ(=true)は自風を一つ進める。
+  // 親が隣へ移るぶん、自席から見た自風は 東→北→西→南→東 と回る（東→南ではない）。場替えは南場ボタンで手動。
+  const nextSeatWind = { E:'N', N:'W', W:'S', S:'E' };
+  function nextHand(advanceDealer){
+    if(advanceDealer && seatWind){
+      seatWind = nextSeatWind[seatWind];
+      refreshWind();
+    }
+    resetBoard();   // 牌・ドラ・入力・判定を流す（風は据え置き）。盤面も戻る。
+    const pi = document.querySelector('.picker-inline');
+    if(pi) pi.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  window.nextHand = nextHand;
   document.getElementById('clearBtn').onclick = resetBoard;
   document.getElementById('delBtn').onclick = removeLastTile;
 
@@ -1132,6 +1173,18 @@ document.addEventListener('DOMContentLoaded', function () {
                && c.getAttribute('data-seat')  === seatWind;
       c.classList.toggle('on', sel);
     });
+    // 横持ちの二段式：場ボタンの選択、自4つの表示可否と選択を反映
+    document.querySelectorAll('.w2-r').forEach(c=>{
+      c.classList.toggle('on', c.getAttribute('data-round') === roundWind);
+      c.style.display = '';   // 場替えで席を保ったまま切り替えられるよう、東場・南場は常に両方出す
+    });
+    const w2Seat = document.getElementById('w2Seat');
+    if(w2Seat){
+      w2Seat.style.display = roundWind ? '' : 'none';   // 場が未選択なら自4つは出さない
+      w2Seat.querySelectorAll('.w2-s').forEach(c=>{
+        c.classList.toggle('on', c.getAttribute('data-seat') === seatWind);
+      });
+    }
     if(!windReadout) return;
     if(!roundWind && !seatWind){
       windReadout.textContent = '自分の席を選ぶと、その場風・自風の対子が役牌として打点に乗りますわ。';
@@ -1155,6 +1208,25 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         roundWind = r; seatWind = s;
       }
+      refreshWind();
+    });
+  });
+
+  // 横持ち二段式：まず場（東場/南場）。同じ場を再度押せば場・自とも解除。違う場なら自はそのまま差し替え。
+  document.querySelectorAll('.w2-r').forEach(c=>{
+    c.addEventListener('click', ()=>{
+      const r = c.getAttribute('data-round');
+      if(roundWind === r){ roundWind = null; seatWind = null; }
+      else { roundWind = r; }
+      refreshWind();
+    });
+  });
+  // 横持ち二段式：場を選んだ後に自（東/南/西/北）。同じ自を再度で解除。場が未選択なら無効。
+  document.querySelectorAll('.w2-s').forEach(c=>{
+    c.addEventListener('click', ()=>{
+      if(!roundWind) return;
+      const s = c.getAttribute('data-seat');
+      seatWind = (seatWind === s) ? null : s;
       refreshWind();
     });
   });
@@ -1789,7 +1861,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     : `打点 ${a.doraValue}・良形 ${a.goodShapes} ブロック。形と打点が見合った押す配牌。序盤から手なりで仕掛け、聴牌へ最短で向かってよろしいですわ。`))
             : `打点 ${a.doraValue} に対し良形が ${a.shapeNeeded} に届きませんの。無理に押さず、安全牌を残して様子を見ますわ。打点が乗るか形が整えば、攻めへ切り替える余地は残しておきますの。`}
         </div>
-        <button type="button" class="back-to-board" onclick="window.resetBoard(); document.querySelector('.picker-inline').scrollIntoView({behavior:'smooth', block:'start'});">次の配牌へ ↑</button>
+        <div class="next-hand-row">
+          <button type="button" class="nh-btn" onclick="window.nextHand(false);">連チャン ↑</button>
+          <button type="button" class="nh-btn" onclick="window.nextHand(true);">親流れ ↑</button>
+        </div>
       </div>`;
     v.classList.remove('pass');   // 多牌の素通り設定を解除（次の配牌へボタンを押せるように）
     v.classList.add('show');
