@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="53">
+<html lang="ja" data-ver="54">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -406,6 +406,15 @@
   .attack .verdict-kanji { color: #ff7b62; text-shadow: 0 0 30px rgba(192,57,43,0.5); }
   .defend .verdict-kanji { color: #5fd3a6; text-shadow: 0 0 30px rgba(58,157,120,0.45); }
   .verdict-word { font-size: 14px; letter-spacing: 0.3em; text-indent: 0.3em; margin-top: 10px; color: rgba(243,236,224,0.85); }
+  .tone-row { display: flex; gap: 6px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+  .tone-btn {
+    font-family: inherit; font-size: 12px; padding: 5px 12px;
+    border-radius: 14px; border: 1px solid rgba(243,236,224,0.25);
+    background: rgba(243,236,224,0.06); color: rgba(243,236,224,0.7);
+    cursor: pointer; transition: all 0.12s ease;
+  }
+  .tone-btn.active { background: rgba(243,236,224,0.92); color: #1f3a2e; border-color: transparent; font-weight: 700; }
+  .tone-btn:active { transform: translateY(1px); }
   .seat-foot {
     margin-top: 10px; font-size: 12px; line-height: 1.6;
     color: var(--gold); font-family: var(--serif);
@@ -680,7 +689,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v53</div>
+  <div id="verTag">v54</div>
 <div class="wrap">
   <div class="panel">
     <div class="picker-inline">
@@ -1842,6 +1851,24 @@ document.addEventListener('DOMContentLoaded', function () {
              defHonors: honorTotal, defTerminals: (terminalCount - honorTotal) };
   }
 
+  // ---- 判定文の語り口（4種）。横持ちで見える「攻／守の一言」を切り替える ----
+  const TONE_WORDS = {
+    butler:     { a:'攻めるべき局面でございます', d:'お退きくださいませ' },
+    strategist: { a:'攻めるが上策', d:'退くが兵法' },
+    blunt:      { a:'攻めろ', d:'引け' },
+    lady:       { a:'前に出る手ですわ', d:'引いて構える手ですわ' },
+  };
+  let currentTone = 'butler';
+  let lastAttack = false;
+  function setTone(t){
+    if(!TONE_WORDS[t]) return;
+    currentTone = t;
+    const w = document.querySelector('.verdict-word');
+    if(w) w.textContent = TONE_WORDS[t][lastAttack ? 'a' : 'd'];
+    document.querySelectorAll('.tone-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-tone')===t));
+  }
+  window.setTone = setTone;
+
   document.getElementById('judgeBtn').onclick = () => {
     const a = analyze();
     const v = document.getElementById('verdict');
@@ -1860,6 +1887,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const attack = a.verdict==='attack';
+    lastAttack = attack;
 
     const reasons = [];
     reasons.push({
@@ -1948,7 +1976,13 @@ document.addEventListener('DOMContentLoaded', function () {
       <div class="verdict-card ${attack?'attack':'defend'}">
         <div class="verdict-mascot">${attack ? (a.yakumanReach ? '🐦‍🔥' : (a.kokushiSeen ? '🐉' : '🐅')) : ((a.defHonors + a.defTerminals) >= 2 ? '🐑' : '🐭')}</div>
         <div class="verdict-kanji">${attack?'攻':'守'}</div>
-        <div class="verdict-word">${attack?'前に出る手ですわ':'引いて構える手ですわ'}</div>
+        <div class="verdict-word">${TONE_WORDS[currentTone][attack?'a':'d']}</div>
+        <div class="tone-row">
+          <button type="button" class="tone-btn${currentTone==='butler'?' active':''}" data-tone="butler" onclick="window.setTone('butler')">執事</button>
+          <button type="button" class="tone-btn${currentTone==='strategist'?' active':''}" data-tone="strategist" onclick="window.setTone('strategist')">軍師</button>
+          <button type="button" class="tone-btn${currentTone==='blunt'?' active':''}" data-tone="blunt" onclick="window.setTone('blunt')">ぶっきらぼう</button>
+          <button type="button" class="tone-btn${currentTone==='lady'?' active':''}" data-tone="lady" onclick="window.setTone('lady')">お嬢様</button>
+        </div>
         ${seatLine ? `<div class="seat-foot">${seatLine}</div>` : ''}
         <div class="reasons">
           ${reasons.map(r=>`
