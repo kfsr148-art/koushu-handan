@@ -446,7 +446,8 @@
   @media (orientation: landscape) {
     /* 上下スライドを設計で断つ：画面の高さに固定し、はみ出す中身は切る。
        スクロールの逃げ道そのものを塞ぐので、見積もりが多少ずれても画面外へ流れない。 */
-    html, body { height: 100svh; overflow: hidden; }   /* 盤面は一画面に収まる。固定して上下スライドの逃げ道を塞ぐ。 */
+    html { height: 100%; }
+    html, body { height: 100%; overflow: hidden; }   /* 盤面は一画面に収まる。固定して上下スライドの逃げ道を塞ぐ。 */
     body {
       min-height: 0;
       padding: 6px 10px 8px;
@@ -656,9 +657,11 @@
     }
     body.judged .next-hand-row .nh-btn:active { background: rgba(243,236,224,0.26); }
   }
+  #verTag { position: fixed; top: 2px; left: 5px; font-size: 9px; letter-spacing:0.05em; color: rgba(243,236,224,0.32); z-index: 99; pointer-events: none; font-family: var(--sans); }
 </style>
 </head>
 <body>
+  <div id="verTag">v7</div>
 <div class="wrap">
   <div class="panel">
     <div class="picker-inline">
