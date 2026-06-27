@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="11">
+<html lang="ja" data-ver="52">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -91,9 +91,9 @@
   .tile {
     position: relative;
     width: 34px; height: 47px; border-radius: 5px;
-    background: linear-gradient(180deg, var(--bone) 0%, #e7ddca 100%);
+    background: linear-gradient(180deg, #fdf9f1 0%, #f4ecdc 60%, #e7ddc8 100%);
     border: 1px solid var(--bone-edge);
-    box-shadow: 0 2px 0 #b3a589, 0 3px 5px rgba(0,0,0,0.3);
+    box-shadow: inset 0 1px 1.5px rgba(255,255,255,0.6), 0 2px 0 #c2b496, 0 3px 1px #a89a7d, 0 4px 6px rgba(0,0,0,0.28);
     color: var(--ink);
     font-family: var(--serif); font-weight: 700;
     display: flex; align-items: center; justify-content: center;
@@ -111,10 +111,20 @@
     top: -5px; right: -4px; bottom: -5px; left: -4px;
     z-index: 1;
   }
-  .tile.man  { color: var(--ink); }
+  .tile.man  { color: var(--ink); flex-direction: column; line-height: 1.05; }
+  .tile.man .suf { color: var(--vermilion); font-size: 0.85em; margin: 0; align-self: center; }
+  .tile.man.red { color: var(--vermilion); }
   .tile.pin  { color: #1f5fa8; }
+  .pin-svg{ display:block; width:88%; height:88%; }
+  .dr-tile .pin-svg{ width:94%; height:78%; }
+  .dora-face .pin-svg{ width:94%; height:86%; }
+  .sou-svg{ display:block; width:90%; height:92%; }
+  .dr-tile .sou-svg{ width:84%; height:90%; }
+  .dora-face .sou-svg{ width:100%; height:100%; }
   .tile.sou  { color: #1f7a3d; }
-  .tile.honor{ color: var(--vermilion-d); }
+  .tile.honor{ color: var(--ink); }
+  .tile.honor[data-code="F"], .dora-face.honor[data-code="F"], .dora-readout .dr-tile.honor[data-code="F"]{ color:#1f7a3d; }
+  .tile.honor[data-code="C"], .dora-face.honor[data-code="C"], .dora-readout .dr-tile.honor[data-code="C"]{ color: var(--vermilion); }
   .tile .suf { font-size: 10px; margin-left: 1px; align-self: flex-end; margin-bottom: 6px; }
   .tile.red { background: linear-gradient(180deg,#ffe9e4,#ffd2c8); }
   .tile.red::after {
@@ -155,7 +165,7 @@
   .tile-row + .tile-row { margin-top: 8px; }
   .pick {
     width: 100%; height: 56px; font-size: 22px;
-    box-shadow: 0 3px 0 #b3a589, 0 3px 5px rgba(0,0,0,0.28);
+    box-shadow: inset 0 1.5px 2px rgba(255,255,255,0.6), 0 3px 0 #c2b496, 0 4px 1px #a89a7d, 0 6px 9px rgba(0,0,0,0.30);
   }
   .pick .suf { font-size: 10px; margin-bottom: 7px; }
 
@@ -202,7 +212,7 @@
   }
   .dora-face.pin   { color:#1f5fa8; }
   .dora-face.sou   { color:#1f7a3d; }
-  .dora-face.honor { color: var(--vermilion-d); }
+  .dora-face.honor { color: var(--ink); }
   .dora-face .suf  { font-size: 11px; margin-left: 1px; align-self: flex-end; margin-bottom: 5px; }
   /* ラベルと枚数は横持ち専用。縦持ちは下の読み取り行に委ね、口は牌だけに保つ。 */
   .dora-face-lab, .dora-face-cnt { display: none; }
@@ -218,7 +228,7 @@
   }
   .dora-readout .dr-tile.pin   { color:#1f5fa8; }
   .dora-readout .dr-tile.sou   { color:#1f7a3d; }
-  .dora-readout .dr-tile.honor { color: var(--vermilion-d); }
+  .dora-readout .dr-tile.honor { color: var(--ink); }
   .dora-readout .dr-tile .suf  { font-size: 9px; margin-left: 1px; align-self: flex-end; margin-bottom: 4px; }
   .dora-readout .dr-arrow { color: var(--gold); font-weight: 700; }
   .dora-readout .dr-count { color: var(--gold); font-weight: 700; font-size: 13px; }
@@ -485,7 +495,7 @@
       min-height: 0; height: 100%;
     }
     #pickerBody { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; }
-    .suit-row { display: grid; grid-template-rows: auto 1fr; margin-bottom: 2px; flex: 1 1 0; min-height: 0; }
+    .suit-row { display: grid; grid-template-columns: auto 1fr; margin-bottom: 2px; flex: 1 1 0; min-height: 0; }
     .suit-row:last-child { margin-bottom: 0; }
     .suit-tiles.two-row {
       display: grid;
@@ -496,21 +506,21 @@
       grid-auto-rows: 1fr; align-items: stretch;
     }
     .suit-tiles.two-row .tile-row { display: contents; }
-    .suit-name { margin-bottom: 2px; font-size: 9px; line-height: 1; }
+    .suit-name { writing-mode: horizontal-tb; font-size: 10px; line-height: 1.25; letter-spacing: 0; margin: 0 5px 0 1px; color: rgba(243,236,224,0.85); align-self: center; white-space: nowrap; }
     /* 牌は実寸を保つ。潰すと読めず押せないので、四段＋下段が一画面に収まる読める下限へ。 */
     .pick {
-      height: 100%; width: auto;
+      height: 90%; width: auto; min-height: 0;
       aspect-ratio: 36 / 32;
-      max-height: 58px; max-width: 65px;
-      justify-self: center;
-      font-size: clamp(16px, 6vh, 26px);
-      box-shadow: 0 2px 0 #b3a589, 0 2px 4px rgba(0,0,0,0.28);
+      max-height: 54px; max-width: 61px;
+      justify-self: center; align-self: center;
+      font-size: clamp(15px, 5.4vh, 24px);
+      box-shadow: inset 0 1.5px 2px rgba(255,255,255,0.6), 0 3px 0 #c2b496, 0 4px 1px #a89a7d, 0 6px 9px rgba(0,0,0,0.30);
     }
     .pick .suf { font-size: 0.5em; margin-bottom: 0.28em; }
     /* 字牌段も上三段と同一寸法に揃える。 */
-    .suit-row:last-child .pick { height: 100%; width: auto; aspect-ratio: 36 / 32; max-height: 58px; max-width: 65px; font-size: clamp(16px, 6vh, 26px); }
+    .suit-row:last-child .pick { height: 90%; width: auto; min-height: 0; aspect-ratio: 36 / 32; max-height: 54px; max-width: 61px; align-self: center; font-size: clamp(15px, 5.4vh, 24px); }
     /* ドラボタンと牌枠を字牌段の右側へ。ボタンを8列目、牌枠をその右9〜10列に。 */
-    .dora-toggle { grid-column: 8 / span 1; justify-self: start; width: 100%; }
+    .dora-toggle { grid-column: 8 / span 1; justify-self: start; width: 100%; height: 90%; align-self: center; box-sizing: border-box; font-size: 11px; line-height: 1.1; padding: 2px 4px; }
     .picker-head { display: none; }   /* 盤面の説明文は横では省略 */
 
     /* 下段：左から 配牌枠＋枚数 / ドラ / 入力 / 判定ボタン */
@@ -545,7 +555,7 @@
     .value-col .dora-readout { display: none !important; }
     /* 牌枠はボタンの右、9〜10列に。字牌段に収まるよう牌を小ぶりに。 */
     .dora-face-slot { grid-column: 9 / span 2; padding-left: 5px; justify-content: flex-start; }
-    .dora-face { min-width: 16px; height: 20px; font-size: 12px; padding: 0 3px; box-shadow: 0 1px 0 #b3a589; }
+    .dora-face { min-width: 28px; height: 32px; font-size: 14px; padding: 0 3px; box-shadow: 0 1px 0 #b3a589; }
     .dora-face .suf { font-size: 7px; margin-bottom: 1px; }
     /* 横持ちのみ：牌の左に「ドラ」、右に手牌枚数を金色で添え、何の牌で何枚かを一目で示す。 */
     .dora-face-lab { display: inline; font-size: 11px; color: var(--gold); font-weight: 700; margin-right: 4px; }
@@ -662,7 +672,16 @@
 </style>
 </head>
 <body>
-  <div id="verTag">v11</div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+    <radialGradient id="gb" cx="38%" cy="34%" r="72%"><stop offset="0%" stop-color="#3f7ec4"/><stop offset="75%" stop-color="#1f5fa8"/><stop offset="100%" stop-color="#143f70"/></radialGradient>
+    <radialGradient id="gr" cx="38%" cy="34%" r="72%"><stop offset="0%" stop-color="#d9594b"/><stop offset="75%" stop-color="#c0392b"/><stop offset="100%" stop-color="#8f281d"/></radialGradient>
+    <radialGradient id="gg" cx="38%" cy="34%" r="72%"><stop offset="0%" stop-color="#2f9e5a"/><stop offset="75%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#155a2c"/></radialGradient>
+    <linearGradient id="bamg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#3aa564"/><stop offset="48%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
+    <linearGradient id="bamr" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#d9594b"/><stop offset="48%" stop-color="#c0392b"/><stop offset="100%" stop-color="#8f281d"/></linearGradient>
+    <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
+    <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
+  </defs></svg>
+  <div id="verTag">v52</div>
 <div class="wrap">
   <div class="panel">
     <div class="picker-inline">
@@ -698,7 +717,7 @@
           <div class="tile pick honor" data-suit="honor" data-label="北" data-num="0" data-code="N" data-red="0">北</div>
           </div>
           <div class="tile-row">
-          <div class="tile pick honor" data-suit="honor" data-label="白" data-num="0" data-code="P" data-red="0">白</div>
+          <div class="tile pick honor" data-suit="honor" data-label="白" data-num="0" data-code="P" data-red="0"></div>
           <div class="tile pick honor" data-suit="honor" data-label="發" data-num="0" data-code="F" data-red="0">發</div>
           <div class="tile pick honor" data-suit="honor" data-label="中" data-num="0" data-code="C" data-red="0">中</div>
           <button type="button" class="dora-toggle" id="doraToggle">ドラ<br>指定</button>
@@ -779,6 +798,57 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+  // ---- 筒子の絵柄(SVG) ----
+  function pinDot(cx,cy,r,c){
+    return `<g transform="translate(${cx},${cy})"><circle r="${r}" fill="url(#g${c})"/><circle r="${(r*0.57).toFixed(1)}" fill="#f6f0e4"/><circle r="${(r*0.30).toFixed(1)}" fill="url(#g${c})"/><circle r="${(r*0.11).toFixed(1)}" fill="#f6f0e4"/></g>`;
+  }
+  const PIN_LAYOUT = {
+    1:[[46,41,16,'b']],
+    2:[[27,23,12,'b'],[65,59,12,'b']],
+    3:[[24,20,11,'b'],[46,41,11,'r'],[68,62,11,'b']],
+    4:[[28,23,11,'b'],[64,23,11,'b'],[28,59,11,'b'],[64,59,11,'b']],
+    5:[[46,41,11.5,'r'],[26,21,11.5,'b'],[66,21,11.5,'b'],[26,61,11.5,'b'],[66,61,11.5,'b']],
+    6:[[28,18,10.5,'b'],[64,18,10.5,'b'],[28,41,10.5,'r'],[64,41,10.5,'r'],[28,64,10.5,'b'],[64,64,10.5,'b']],
+    7:[[24,15,8.5,'b'],[41,22,8.5,'b'],[58,29,8.5,'b'],[30,49,9.5,'r'],[58,49,9.5,'r'],[30,67,9.5,'r'],[58,67,9.5,'r']],
+    8:[[30,14,8,'b'],[62,14,8,'b'],[30,33,8,'b'],[62,33,8,'b'],[30,52,8,'b'],[62,52,8,'b'],[30,71,8,'b'],[62,71,8,'b']],
+    9:[[26,18,8,'b'],[46,18,8,'b'],[66,18,8,'b'],[26,41,8,'r'],[46,41,8,'r'],[66,41,8,'r'],[26,64,8,'b'],[46,64,8,'b'],[66,64,8,'b']],
+  };
+  function pinSVG(n, red){
+    let L = PIN_LAYOUT[n]||[];
+    if(red) L = L.map(d=>[d[0],d[1],d[2],'r']);
+    const body = L.map(d=>pinDot(d[0],d[1],d[2],d[3])).join('');
+    return `<svg class="pin-svg" viewBox="0 0 92 82">${body}</svg>`;
+  }
+
+  // ---- 索子の絵柄(SVG) ----
+  function bamboo(cx,cy,h,c,angle){
+    const node = c==='g' ? '#0f4520' : '#7a1e15';
+    const rot = angle ? ` rotate(${angle})` : '';
+    return `<g transform="translate(${cx},${cy})${rot}"><rect x="-4.5" y="${(-h/2).toFixed(1)}" width="9" height="${h}" rx="4.5" fill="url(#bam${c})"/><rect x="-4.5" y="${(-h*0.18-1).toFixed(1)}" width="9" height="2" rx="1" fill="${node}" opacity="0.5"/><rect x="-4.5" y="${(h*0.18-1).toFixed(1)}" width="9" height="2" rx="1" fill="${node}" opacity="0.5"/></g>`;
+  }
+  const SOU_LAYOUT = {
+    2:[[46,23,28,'g'],[46,59,28,'g']],
+    3:[[46,20,20,'g'],[33,58,20,'g'],[59,58,20,'g']],
+    4:[[32,24,28,'g'],[60,24,28,'g'],[32,58,28,'g'],[60,58,28,'g']],
+    5:[[46,41,26,'r'],[30,21,24,'g'],[62,21,24,'g'],[30,61,24,'g'],[62,61,24,'g']],
+    6:[[26,29,22,'g'],[46,29,22,'g'],[66,29,22,'g'],[26,57,22,'g'],[46,57,22,'g'],[66,57,22,'g']],
+    7:[[46,13,18,'r'],[28,38,18,'g'],[46,38,18,'g'],[64,38,18,'g'],[28,62,18,'g'],[46,62,18,'g'],[64,62,18,'g']],
+    8:[[30,24,28,'g',0],[62,24,28,'g',0],[30,58,28,'g',0],[62,58,28,'g',0],[40,30,20,'g',32],[52,30,20,'g',-32],[40,52,20,'g',-32],[52,52,20,'g',32]],
+    9:[[28,18,20,'g'],[46,18,20,'r'],[64,18,20,'g'],[28,41,20,'g'],[46,41,20,'r'],[64,41,20,'g'],[28,64,20,'g'],[46,64,20,'r'],[64,64,20,'g']],
+  };
+  const BIRD_SVG = `<path d="M38,56 L29,75 L40,67 L46,73 L52,67 L63,75 L54,56 Z" fill="url(#bd2)"/><ellipse cx="46" cy="48" rx="15" ry="16" fill="url(#bd)"/><path d="M33,44 q-7,7 -3,17 q7,-3 8,-13 Z" fill="#15622f"/><path d="M59,44 q7,7 3,17 q-7,-3 -8,-13 Z" fill="#15622f"/><circle cx="46" cy="27" r="11" fill="url(#bd)"/><path d="M40,18 q-3,-9 1,-13 q2,5 1,12 Z" fill="#1f7a3d"/><path d="M46,16 q0,-10 0,-14 q1,6 1,13 Z" fill="#1f7a3d"/><path d="M52,18 q3,-9 -1,-13 q-2,5 -1,12 Z" fill="#1f7a3d"/><path d="M56,27 L66,24 L57,31 Z" fill="#d98a2b"/><circle cx="50" cy="25" r="2.4" fill="#0e3a1c"/><circle cx="50.7" cy="24.3" r="0.9" fill="#fff"/><path d="M42,63 L40,72 M42,72 L37,74 M42,72 L43,75" stroke="#c0392b" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M50,63 L52,72 M50,72 L49,75 M50,72 L55,74" stroke="#c0392b" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
+  function souSVG(n, red){
+    if(n===1) return `<svg class="sou-svg" viewBox="0 0 92 82">${BIRD_SVG}</svg>`;
+    let L = SOU_LAYOUT[n]||[];
+    if(red) L = L.map(d=>[d[0],d[1],d[2],'r',d[4]]);
+    const body = L.map(d=>bamboo(d[0],d[1],d[2],d[3],d[4])).join('');
+    return `<svg class="sou-svg" viewBox="0 0 92 82">${body}</svg>`;
+  }
+
+  // ---- 萬子の漢数字 ----
+  const KAN = ['','一','二','三','四','五','六','七','八','九'];
+  function kanjiNum(n){ return KAN[n] || String(n); }
+
   // ---- tile model ----
   const SUITS = [
     { key:'man',  name:'萬子',  suf:'萬', nums:[1,2,3,4,5,6,7,8,9] },
@@ -809,6 +879,13 @@ document.addEventListener('DOMContentLoaded', function () {
   // 牌はHTMLに直接書き込まれているので、生成せずクリックだけ拾う
   const pickerTiles = document.querySelectorAll('#pickerBody .tile.pick');
   pickerTiles.forEach(el => {
+    if(el.classList.contains('pin')){
+      el.innerHTML = pinSVG(parseInt(el.getAttribute('data-num'), 10), el.getAttribute('data-red')==='1');
+    } else if(el.classList.contains('sou')){
+      el.innerHTML = souSVG(parseInt(el.getAttribute('data-num'), 10), el.getAttribute('data-red')==='1');
+    } else if(el.classList.contains('man')){
+      el.innerHTML = `${kanjiNum(parseInt(el.getAttribute('data-num'), 10))}<span class="suf">萬</span>`;
+    }
     el.addEventListener('click', function () {
       const code = el.getAttribute('data-code');
       // 「ドラ表示牌を指定」モード中は、押した牌を表示牌として捕まえ、手牌には加えない
@@ -832,10 +909,20 @@ document.addEventListener('DOMContentLoaded', function () {
   // ボタンで足すときも「入力欄の文字」を唯一の真実にする。
   // 今の入力を解析→その牌を1枚足す→文字列に戻して入力欄へ→rebuildHandで再構築。
   // これでボタンとキーボードの食い違いが起きない。
+  // 同種牌の上限：通常牌は4枚、五は通常2枚・赤2枚（赤ドラ運用）
+  function canAddTile(t, tiles){
+    if(t.suit!=='honor' && t.num===5){
+      const cnt = tiles.filter(x => x.suit===t.suit && x.num===5 && (!!x.red)===(!!t.red)).length;
+      return cnt < 2;
+    }
+    const cnt = tiles.filter(x => x.code===t.code && (!!x.red)===(!!t.red)).length;
+    return cnt < 4;
+  }
   function addTile(t) {
     const field = document.getElementById('qiText');
     const { tiles } = parseDigits(field.value);
     if (tiles.length >= 13) return;   // 13枚ハードキャップ。これ以上は積ませない（多牌を起こさせない）
+    if (!canAddTile(t, tiles)) return;   // 同種牌の上限を超えたら積ませない
     tiles.push(t);
     field.value = tilesToInput(tiles);
     rebuildHand();
@@ -849,8 +936,17 @@ document.addEventListener('DOMContentLoaded', function () {
     sorted.forEach(t => {
       const el = document.createElement('div');
       el.className = `tile ${t.suit}${t.red?' red':''}${t.low?' low':''}`;
-      const suf = t.suit==='honor' ? '' : `<span class="suf">${SUITS.find(s=>s.key===t.suit).suf}</span>`;
-      el.innerHTML = `${t.label}${suf}`;
+      el.setAttribute('data-code', t.code);
+      if(t.suit==='pin'){
+        el.innerHTML = pinSVG(t.num, t.red);
+      } else if(t.suit==='sou'){
+        el.innerHTML = souSVG(t.num, t.red);
+      } else if(t.suit==='man'){
+        el.innerHTML = `${kanjiNum(t.num)}<span class="suf">萬</span>`;
+      } else {
+        const suf = t.suit==='honor' ? '' : `<span class="suf">${SUITS.find(s=>s.key===t.suit).suf}</span>`;
+        el.innerHTML = `${t.label}${suf}`;
+      }
       el.onclick = () => { removeTileFromInput(t); };
       handEl.appendChild(el);
     });
@@ -1074,9 +1170,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if('mps'.includes(code[0])){
       const cls = {m:'man', p:'pin', s:'sou'}[code[0]];
       const suf = {m:'萬', p:'筒', s:'索'}[code[0]];
-      return `<span class="dr-tile ${cls}">${code[1]}<span class="suf">${suf}</span></span>`;
+      const inner = code[0]==='p' ? pinSVG(+code[1]) : code[0]==='s' ? souSVG(+code[1]) : `${kanjiNum(+code[1])}<span class="suf">萬</span>`;
+      return `<span class="dr-tile ${cls}">${inner}</span>`;
     }
-    return `<span class="dr-tile honor">${honorData[code].label}</span>`;
+    return `<span class="dr-tile honor" data-code="${code}">${honorData[code].label}</span>`;
   }
 
   // コード → ボタンに乗せる大ぶりの牌。読み取り用 dr-tile とは別クラスにして、
@@ -1085,9 +1182,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if('mps'.includes(code[0])){
       const cls = {m:'man', p:'pin', s:'sou'}[code[0]];
       const suf = {m:'萬', p:'筒', s:'索'}[code[0]];
-      return `<span class="dora-face ${cls}">${code[1]}<span class="suf">${suf}</span></span>`;
+      const inner = code[0]==='p' ? pinSVG(+code[1]) : code[0]==='s' ? souSVG(+code[1]) : `${kanjiNum(+code[1])}<span class="suf">萬</span>`;
+      return `<span class="dora-face ${cls}">${inner}</span>`;
     }
-    return `<span class="dora-face honor">${honorData[code].label}</span>`;
+    return `<span class="dora-face honor" data-code="${code}">${honorData[code].label}</span>`;
   }
 
   // 表示牌の状態に合わせ、ドラ枚数の再計算と読み取り表示の更新
@@ -1880,7 +1978,6 @@ document.addEventListener('DOMContentLoaded', function () {
     v.classList.remove('pass');   // 多牌の素通り設定を解除（次の配牌へボタンを押せるように）
     v.classList.add('show');
     document.body.classList.add('judged');
-    v.scrollIntoView({behavior:'smooth', block:'nearest'});
   };
 
   render();
