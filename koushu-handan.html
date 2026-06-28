@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="153">
+<html lang="ja" data-ver="154">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -701,17 +701,11 @@
       display: flex; flex-direction: column;
       height: auto; max-height: 100%; align-self: flex-start;
     }
-    /* DIAGNOSTIC v153: outline each container to locate the gap. Remove after. */
-    body.judged .wrap { outline: 3px solid yellow !important; }
-    body.judged .verdict { outline: 3px solid cyan !important; }
-    body.judged .verdict-card { outline: 3px solid magenta !important; }
-    body.judged .reasons { outline: 3px solid lime !important; }
-    body.judged .next-hand-row { outline: 3px solid orange !important; }
     /* 縦寄せは center をやめ、上詰め＋画面高めいっぱいに。
        中身が高いとき center だと上下へあふれて末尾ボタンが画面外へ沈むため。 */
     body.judged .verdict, body.judged .verdict.show {
-      display: flex; flex-direction: column; flex: 0 1 auto;
-      justify-content: flex-start; min-height: 0;
+      display: flex; flex-direction: column; flex: 0 0 auto;
+      justify-content: flex-start; align-self: flex-start; min-height: 0;
     }
     /* 結果カード自体を縦フレックスにし、画面高を超えない天井を引く。
        理由欄だけを伸縮スクロール域にして、見出し・方言ボタン・末尾ボタンは
@@ -719,7 +713,7 @@
     body.judged .verdict-card {
       padding: 8px 14px 10px;
       display: flex; flex-direction: column;
-      flex: 0 1 auto;
+      flex: 0 0 auto; align-self: flex-start; width: 100%;
       max-height: 100%; min-height: 0; overflow: hidden;
     }
     /* 理由欄を唯一の伸縮スクロール域にする。あふれたらここだけ縦に送る。
@@ -806,7 +800,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v153</div>
+  <div id="verTag">v154</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
   <div class="panel">
