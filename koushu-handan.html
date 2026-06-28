@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="109">
+<html lang="ja" data-ver="110">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -22,6 +22,7 @@
     --ink-soft:    #5c5750;
     --vermilion:   #c0392b;
     --vermilion-d: #962b20;
+    --man-red:     #9c2d2c;   /* 萬子の朱。雀魂の牌から実測した深い朱に合わせる */
     --gold:        #c8a45c;
     --jade:        #3a9d78;
     --line:        rgba(243,236,224,0.16);
@@ -111,9 +112,9 @@
     top: -5px; right: -4px; bottom: -5px; left: -4px;
     z-index: 1;
   }
-  .tile.man  { color: var(--ink); flex-direction: column; line-height: 1.05; }
-  .tile.man .suf { color: var(--vermilion); font-size: 0.85em; margin: 0; align-self: center; }
-  .tile.man.red { color: var(--vermilion); }
+  .tile.man  { color: var(--man-red); flex-direction: column; line-height: 1.05; }
+  .tile.man .suf { color: var(--man-red); font-size: 0.85em; margin: 0; align-self: center; }
+  .tile.man.red { color: var(--man-red); }
   .tile.pin  { color: #1f5fa8; }
   .pin-svg{ display:block; width:88%; height:88%; }
   .dr-tile .pin-svg{ width:94%; height:78%; }
@@ -226,6 +227,7 @@
     color: var(--ink); font-family: var(--serif); font-weight: 700; font-size: 15px;
     box-shadow: 0 2px 0 #b3a589;
   }
+  .dora-readout .dr-tile.man   { color: var(--man-red); }
   .dora-readout .dr-tile.pin   { color:#1f5fa8; }
   .dora-readout .dr-tile.sou   { color:#1f7a3d; }
   .dora-readout .dr-tile.honor { color: var(--ink); }
@@ -624,8 +626,8 @@
     }
     .dora-face .suf { font-size: 8px; margin-bottom: 2px; }
     /* 萬子は数字と「萬」を縦に積む二段組（盤面の .tile.man と同じ作り）。 */
-    .dora-face.man { flex-direction: column; line-height: 1.05; font-size: 14px; }
-    .dora-face.man .suf { color: var(--vermilion); font-size: 0.85em; margin: 0; margin-bottom: 0; align-self: center; }
+    .dora-face.man { flex-direction: column; line-height: 1.05; font-size: 14px; color: var(--man-red); }
+    .dora-face.man .suf { color: var(--man-red); font-size: 0.85em; margin: 0; margin-bottom: 0; align-self: center; }
     /* 図柄(SVG)は高さ基準で置き縦横比を保つ（歪ませない）。横は枠内で中央、
        はみ出る左右は overflow:hidden で切る。これで牌種によらず同寸・図柄は歪まない。 */
     .dora-face .sou-svg, .dora-face .pin-svg { width: auto; height: 100%; flex: 0 0 auto; }
