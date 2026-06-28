@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="144">
+<html lang="ja" data-ver="145">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -799,7 +799,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v144</div>
+  <div id="verTag">v145</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
   <div class="panel">
@@ -1988,7 +1988,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if((cnt[s+n]||0) >= 2) kokushiHasPair = true;
     });
     Object.values(honorCount).forEach(c=>{ if(c>=2) kokushiHasPair = true; });
-    const kokushiSeen = kokushiKinds >= 10;
+    const kokushiSeen = kokushiKinds >= 9;
     const kokushiShanten = 13 - kokushiKinds - (kokushiHasPair ? 1 : 0);
 
     // 国士が見えるなら最優先で先頭に。么九が多い手はそもそも普通の方向が立たない。
