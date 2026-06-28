@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="162">
+<html lang="ja" data-ver="163">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -497,23 +497,15 @@
      ================================================================= */
   @media (orientation: landscape) {
     /* 上下スライドを設計で断つ：画面の高さに固定し、はみ出す中身は切る。
-       スクロールの逃げ道そのものを塞ぐので、見積もりが多少ずれても画面外へ流れない。
-       ただしURLバーを畳ませるため、bodyにだけ1pxの縦の遊びを作り、上スワイプを許す。
-       中身(.wrap)は画面高に据え置くので盤面はずれず、動くのは1pxの遊びのみ。 */
-    html { height: 100%; overflow: hidden; }
-    body {
-      height: calc(100% + 1px);   /* 1pxだけ高くして上スワイプを許し、SafariにURLバーを畳ませる */
-      overflow-y: scroll;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior: none;  /* 引っ張りの跳ね返りを抑える */
-    }
-    html, body { }
+       スクロールの逃げ道そのものを塞ぐので、見積もりが多少ずれても画面外へ流れない。 */
+    html { height: 100%; }
+    html, body { height: 100%; overflow: hidden; }   /* 盤面は一画面に収まる。固定して上下スライドの逃げ道を塞ぐ。 */
     body {
       min-height: 0;
       padding: 0 env(safe-area-inset-right, 0px) 0 env(safe-area-inset-left, 0px);
       align-items: stretch;
     }
-    .wrap { max-width: 100%; height: 100vh; }
+    .wrap { max-width: 100%; height: 100%; }
 
     /* パネルを画面の高さに固定。各行は中身なりの高さを取り、上から順に積む。
        盤面に勘の固定上限を引くと中身と合わず字牌段があふれて配牌枠と重なるため、autoで中身なりにする。
@@ -796,20 +788,6 @@
 </style>
 </head>
 <body>
-<script>
-/* 横向きSafariのURLバーを畳ませる。bodyに作った1pxの遊びを上方向へスクロールさせると、
-   横持ちのSafariはアドレス一行を消す。背面タップ経由で開いたときの帯対策。
-   全画面のWebアプリ（ホーム画面アイコン）では遊びが無く何も起きない。 */
-(function(){
-  function hideBar(){
-    if(window.matchMedia && window.matchMedia('(orientation: landscape)').matches){
-      window.scrollTo(0, 1);
-    }
-  }
-  window.addEventListener('load', function(){ hideBar(); setTimeout(hideBar, 300); setTimeout(hideBar, 700); });
-  window.addEventListener('orientationchange', function(){ setTimeout(hideBar, 400); });
-})();
-</script>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
     <radialGradient id="gb" cx="38%" cy="34%" r="72%"><stop offset="0%" stop-color="#3f7ec4"/><stop offset="75%" stop-color="#1f5fa8"/><stop offset="100%" stop-color="#143f70"/></radialGradient>
     <radialGradient id="gr" cx="38%" cy="34%" r="72%"><stop offset="0%" stop-color="#d9594b"/><stop offset="75%" stop-color="#c0392b"/><stop offset="100%" stop-color="#8f281d"/></radialGradient>
@@ -819,7 +797,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v162</div>
+  <div id="verTag">v163</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
   <div class="panel">
