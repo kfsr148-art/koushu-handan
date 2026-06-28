@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="76">
+<html lang="ja" data-ver="108">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -377,7 +377,9 @@
   }
   .verdict-mini .m { font-size: 22px; line-height: 1; }
   .verdict-mini .t { font-size: 13px; letter-spacing: 0.08em; color: rgba(243,236,224,0.92); }
-  @keyframes rise { from { opacity:0; transform: translateY(14px);} to {opacity:1; transform:none;} }
+  /* 判定の瞬間に結果カードが下から上へ動いて「画面がずれる」ように見えるのを防ぐ。
+     上下移動(translateY)をやめ、フェードイン(opacityのみ)にする。柔らかさは残し、位置は動かさない。 */
+  @keyframes rise { from { opacity:0; } to { opacity:1; } }
 
   .verdict-card {
     border-radius: 16px; padding: 26px 22px; text-align: center;
@@ -560,17 +562,28 @@
     /* 字牌段も上三段と同一寸法に揃える。 */
     .suit-row:last-child .pick { height: 90%; width: auto; min-height: 0; aspect-ratio: 36 / 32; max-height: 54px; max-width: 61px; align-self: center; font-size: clamp(15px, 5.4vh, 24px); }
     /* ドラボタンと牌枠を字牌段の右側へ。ボタンを8列目、牌枠をその右9〜10列に。 */
-    .dora-toggle { grid-column: 8 / span 1; justify-self: start; width: 100%; height: 90%; align-self: center; box-sizing: border-box; font-size: 11px; line-height: 1.1; padding: 2px 4px; }
+    /* ドラ指定ボタンは8列目の升目に置き、サイズは盤面の牌(.pick)と同じに揃える。
+       牌と同じ aspect-ratio・max寸法・height にして、上の牌・横の字牌と大きさを合わせる。 */
+    .dora-toggle {
+      grid-column: 8 / span 1;
+      height: 90%; width: auto; min-height: 0;
+      aspect-ratio: 36 / 32; max-height: 54px; max-width: 61px;
+      justify-self: center; align-self: center;
+      margin-top: 4px;
+      box-sizing: border-box; font-size: 11px; line-height: 1.1; padding: 2px 4px;
+    }
     .picker-head { display: none; }   /* 盤面の説明文は横では省略 */
 
     /* 下段：左から 配牌枠＋枚数 / ドラ / 入力 / 判定ボタン */
     .hand {
       grid-area: hand; margin: 0;
-      min-height: 32px; padding: 4px 10px;
+      height: 32px; min-height: 32px; max-height: 32px; padding: 4px 10px;
       flex-wrap: nowrap; gap: 4px;   /* 折り返さず一列に。横幅フルなので13枚が余裕で並ぶ */
-      overflow: hidden; justify-content: flex-start;
+      overflow: hidden; justify-content: flex-start; align-items: center;
+      box-sizing: border-box;
     }
-    /* 配牌枠の牌は空枠(min-height 32px)に収まる高さに。これで牌を入れても枠が膨らまず、下へ沈まない。 */
+    /* 配牌枠の高さは 32px に固定。空でも牌が入っても枠の高さが変わらないので、
+       牌を出し入れしても上の盤面が上下に動かない。牌はこの高さに収まる寸法にする。 */
     .hand .tile { width: 22px; height: 24px; font-size: 10px; flex: 0 0 auto; flex-direction: column; }
     .hand .tile .suf { font-size: 6px; margin-bottom: 1px; }
     .counter {
@@ -594,12 +607,34 @@
        refreshDora がインラインで display を書くため !important で上書きする。 */
     .value-col .dora-readout { display: none !important; }
     /* 牌枠はボタンの右、9〜10列に。字牌段に収まるよう牌を小ぶりに。 */
-    .dora-face-slot { grid-column: 9 / span 2; padding-left: 5px; justify-content: flex-start; }
-    .dora-face { min-width: 28px; height: 32px; font-size: 14px; padding: 0 3px; box-shadow: 0 1px 0 #b3a589; }
-    .dora-face .suf { font-size: 7px; margin-bottom: 1px; }
-    /* 横持ちのみ：牌の左に「ドラ」、右に手牌枚数を金色で添え、何の牌で何枚かを一目で示す。 */
-    .dora-face-lab { display: inline; font-size: 11px; color: var(--gold); font-weight: 700; margin-right: 4px; }
-    .dora-face-cnt { display: inline; font-size: 12px; color: var(--gold); font-weight: 700; margin-left: 4px; white-space: nowrap; }
+    /* ドラ表示牌の入れ物を、選択完了ボタン(8列目)と同じ作りにする：
+       9列目の升目1つ、justify-self:center で中央配置。
+       中の「ドラ×0」文字は position:absolute で牌の流れから外すので、
+       牌だけが升目の中央＝上の九萬・九筒・九索の真下に来る。
+       文字は牌の右へ絶対配置で添える（位置の微調整は次段階）。 */
+    .dora-face-slot { grid-column: 9 / span 1; justify-self: center; align-self: center; align-items: center; justify-content: center; padding: 0; gap: 0; height: 100%; overflow: visible; position: relative; }
+    .dora-face-lab { display: inline; font-size: 11px; color: var(--gold); font-weight: 700; margin-right: 3px; }
+    /* ドラ表示牌は小ぶりの固定寸法のまま。サイズは上の牌より小さく保ち、
+       位置(列・高さ)だけ揃える。牌種によらず同寸法で図柄は枠内中央に収める。 */
+    .dora-face {
+      flex: 0 0 auto; width: 26px; height: 34px; padding: 0;
+      font-size: 17px; box-shadow: 0 1px 0 #b3a589; overflow: hidden;
+      display: inline-flex; align-items: center; justify-content: center;
+      align-self: center;
+    }
+    .dora-face .suf { font-size: 8px; margin-bottom: 2px; }
+    /* 萬子は数字と「萬」を縦に積む二段組（盤面の .tile.man と同じ作り）。 */
+    .dora-face.man { flex-direction: column; line-height: 1.05; font-size: 14px; }
+    .dora-face.man .suf { color: var(--vermilion); font-size: 0.85em; margin: 0; margin-bottom: 0; align-self: center; }
+    /* 図柄(SVG)は高さ基準で置き縦横比を保つ（歪ませない）。横は枠内で中央、
+       はみ出る左右は overflow:hidden で切る。これで牌種によらず同寸・図柄は歪まない。 */
+    .dora-face .sou-svg, .dora-face .pin-svg { width: auto; height: 100%; flex: 0 0 auto; }
+    /* 右端の塊：「ドラ×0」は絶対配置で牌の流れから外す。
+       これで牌だけが升目の中央に置かれ、九の真下に揃う。
+       文字は牌の右端から、10列目の升目あたりへ右にずらして置く（上の牌の右側に合わせる）。 */
+    .dora-face-tail { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); margin-left: 30px; display: inline-flex; align-items: center; white-space: nowrap; }
+    /* 横持ちのみ：右端に手牌枚数を金色で添え、何枚かを一目で示す。 */
+    .dora-face-cnt { display: inline; font-size: 12px; color: var(--gold); font-weight: 700; white-space: nowrap; }
     .dora-toggle .dora-lab { font-size: 9px; margin-right: 4px; }
     /* 下段のドラ読み取り欄の牌は、横では一段小さく詰める。
        上のパレットの牌とは連動させず独立指定（後で上の牌だけ大きくしても、ここは影響を受けない）。 */
@@ -665,15 +700,55 @@
     body.judged .wrap {
       display: flex; flex-direction: column;
     }
+    /* 縦寄せは center をやめ、上詰め＋画面高めいっぱいに。
+       中身が高いとき center だと上下へあふれて末尾ボタンが画面外へ沈むため。 */
     body.judged .verdict, body.judged .verdict.show {
-      display: flex; flex-direction: column; flex: 1 1 0; justify-content: center;
+      display: flex; flex-direction: column; flex: 1 1 0;
+      justify-content: flex-start; min-height: 0;
     }
+    /* 結果カード自体を縦フレックスにし、画面高を超えない天井を引く。
+       理由欄だけを伸縮スクロール域にして、見出し・方言ボタン・末尾ボタンは
+       スクロールの外に置く。これで縦寸が足りない比率でもボタンが画面内に残る。 */
     body.judged .verdict-card {
       padding: 8px 14px 10px;
+      display: flex; flex-direction: column;
+      max-height: 100%; min-height: 0; overflow: hidden;
     }
-    /* 横の判定後は一画面に収める：各理由の説明文と末尾の総括を畳み、見出しの○×だけ残す。
-       四項目を横一列に並べて凸凹をなくす。詳しい説明は縦持ちで読む割り切り。 */
-    body.judged .reasons { grid-template-columns: repeat(4, 1fr); gap: 0 10px; }
+    /* 理由欄を唯一の伸縮スクロール域にする。あふれたらここだけ縦に送る。
+       内側の上下padは薄くし、横四列の各項目が見切れず読める高さを保つ。 */
+    body.judged .reasons {
+      grid-template-columns: repeat(4, 1fr); gap: 0 10px;
+      flex: 1 1 auto; min-height: 0; overflow-y: auto;
+      align-content: start; padding: 8px 12px;
+    }
+    body.judged .reason { padding: 3px 0; }
+    /* 横持ち判定後は理由の見出しを一回り小さく・行間を締める。
+       「良形Nブロック（…）／弱い塔子M」のように二行に折れても背が暴れず、
+       隣の項目と高さの差が小さくなり、ボタンへの食い込みを防ぐ。
+       情報は一つも削らず、字を詰めて収める。 */
+    body.judged .r-title { font-size: 11.5px; line-height: 1.35; }
+    body.judged .r-mark { width: 18px; height: 18px; font-size: 11px; }
+    body.judged .reason { gap: 7px; }
+    /* 末尾の二択ボタンは縮ませない＝常に画面内へ残す。 */
+    body.judged .next-hand-row { flex: 0 0 auto; }
+    /* 上段（マスコット・攻守の字・一言・ボタン群・席文言）は実寸を保たせる。
+       伸縮の主役は理由欄だけにし、上段が潰れて不格好になるのを防ぐ。 */
+    body.judged .verdict-mascot,
+    body.judged .verdict-kanji,
+    body.judged .verdict-word,
+    body.judged .tone-row,
+    body.judged .dialect-row,
+    body.judged .seat-foot { flex: 0 0 auto; }
+    /* 判定後は上段をさらに切り詰め、理由欄に高さを回す。
+       方言ボタンの段が増えたぶん上段が重くなり、理由欄が見切れるのを防ぐ。
+       マスコットと字を一回り小さく、各段の余白を最小限にする。 */
+    body.judged .verdict-mascot { font-size: 26px; margin-bottom: 0; line-height: 1; }
+    body.judged .verdict-kanji { font-size: 24px; line-height: 1; }
+    body.judged .verdict-word { font-size: 10px; margin-top: 2px; line-height: 1.4; }
+    body.judged .verdict-word.long { font-size: 9.5px; line-height: 1.4; max-width: 94%; }
+    body.judged .tone-row { margin-top: 5px; }
+    body.judged .dialect-row { margin-top: 3px; }
+    body.judged .seat-foot { font-size: 9px; margin-top: 2px; }
     body.judged .r-detail { display: none; }
     body.judged .verdict-foot { display: none; }
 
@@ -1267,9 +1342,9 @@ document.addEventListener('DOMContentLoaded', function () {
       const dCode = indicatorToDora(doraIndicator);
       const cnt = hand.filter(t => t.code === dCode).length;
       doraFaceSlot.innerHTML =
-          '<span class="dora-face-lab">ドラ</span>'
-        + tileChipBig(dCode)
-        + `<span class="dora-face-cnt">×${cnt}</span>`;
+          tileChipBig(dCode)
+        + '<span class="dora-face-tail"><span class="dora-face-lab">ドラ</span>'
+        + `<span class="dora-face-cnt">×${cnt}</span></span>`;
     } else {
       doraToggle.innerHTML = 'ドラ<br>指定';
       doraFaceSlot.innerHTML = '';
@@ -1932,21 +2007,31 @@ document.addEventListener('DOMContentLoaded', function () {
           v: { a:'攻めるっちゃでございます', d:'引くっちゃでございます' },
           r: { main:'画面を横にしてくださいませっちゃ', sub:'横向き専用でございますっちゃ' },
           s: { dealer:'親番でございますで、際どい配牌はちっと攻めに寄せちょります', child:'子の基準で見ちょります' },
+          ae:'際どい局面にございますっちゃ。されど、ここは攻めるが上策かと。退いて悔いを残すより、前へ進まれませ。', ed:'危うい配牌にございますっちゃね。ここはひとまず退かれませ。無理は禁物、機を待つもまた一手にございます。', ph:'これは……役満が見えちょりますぞ。千載一遇の好機、何としても物にされませっちゃ。', dr:'国士無双が見えちょりますぞ。么九字牌十種、万に一つの夢路にございます。一本道を、丁寧にたどられませっちゃ。',
         },
         strategist: {
           v: { a:'攻めるが上策っちゃ', d:'退くが兵法っちゃ' },
           r: { main:'画面を横に構えよっちゃ', sub:'横向きでのみ働くっちゃ' },
           s: { dealer:'親番なれば、際どきは攻めに寄せちょる', child:'子の基準にて見ちょる' },
+          ae:'五分と五分の分かれ目なりっちゃ。されど我は攻めを採る。攻めて活路を開くが、兵法の常道よ。', ed:'危うき盤面なりっちゃ。ここは退くが上策。いたずらに討って出ず、力を蓄え次の機を待つべし。', ph:'役満、射程に入れりっちゃ。万に一つの大物手、討ち取れば天下に轟くぞ。', dr:'国士の相、十種に及べりっちゃ。これぞ乱戦の活路なり。一本道を恐れず征け。',
         },
         blunt: {
           v: { a:'攻めろっちゃ', d:'引けっちゃ' },
           r: { main:'横にせえっちゃ', sub:'横向き専用じゃ' },
           s: { dealer:'親番じゃ、際どいのは攻めに寄せちょる', child:'子で見ちょる' },
+          ae:'際どいっちゃ。だが攻めろ。迷う暇があるなら、前に出ろ。', ed:'危ないっちゃ。引け。無理に押す手じゃなか、ここは様子を見ろ。', ph:'役満が見えちょる。狙え。逃すな。', dr:'国士が見えちょる。么九を集めろ。一点突破でいけっちゃ。',
         },
         lady: {
           v: { a:'攻めるっちゃですわ', d:'引くっちゃですわ' },
           r: { main:'画面を横にしてくださいましっちゃ', sub:'横向き専用ですっちゃ' },
           s: { dealer:'親番ですから、際どい配牌はちっと攻めに寄せちょりますわ', child:'子の基準で見ちょりますわ' },
+          ae:'あら、これは際どいことっちゃ……。でも、わたくし前に出ますわ。引いていては、何も始まりませんもの。', ed:'悩ましいですわねっちゃ……。けれど、ここは退いておきますわ。無理を通すのは、美しくございませんもの。', ph:'まあ……役満ですわっちゃ。こんな手、滅多にございませんの。逃さず、丁寧に育てますわよ。', dr:'まあ、国士無双……夢のような配牌ですわっちゃ。么九を一つずつ、丁寧に集めてまいりましょう。',
+        },
+        french: {
+          v: { a:'ふっ、攻めるっちゃですわ、ウィ', d:'ノン、引くっちゃですわ' },
+          r: { main:'画面を横にしてくださるっちゃ? シル・ヴ・プレ', sub:'横向き専用ですっちゃ、ウィ' },
+          s: { dealer:'親番ですもの、際どい配牌はちっと攻めに寄せちょりますわ、ウィ', child:'子の基準で見ちょりますわ、ノン・プロブレム' },
+          ae:'ふっ、これは際どいことっちゃ……。でも、わたくし前に出ますわ、ウィ。攻めずして勝利はございませんもの。', ed:'ノン、悩ましいですわねっちゃ……。ここは退いておきますの。無理は禁物、セ・ラ・ヴィですわ。', ph:'マドモワゼル、ご覧になって……役満ですわっちゃ、ウィ。こんな手、滅多にございませんの。トレビアン、丁寧に育てますわよ。', dr:'まあ、国士無双……セ・マニフィーク、夢のような配牌ですわっちゃ。么九を一つずつ、優雅に集めてまいりましょう、ウィ。',
         },
       },
     },
@@ -1959,21 +2044,31 @@ document.addEventListener('DOMContentLoaded', function () {
           v: { a:'攻めるばいでございます', d:'引くばいでございます' },
           r: { main:'画面を横にしてくださいませばい', sub:'横向き専用でございますばい' },
           s: { dealer:'親番でございますけん、際どい配牌はちっと攻めに寄せとります', child:'子の基準で見とります' },
+          ae:'際どい局面にございますばい。されど、ここは攻めるが上策かと。退いて悔いを残すより、前へ進まれませ。', ed:'危うい配牌にございますばいね。ここはひとまず退かれませ。無理は禁物、機を待つもまた一手にございます。', ph:'これは……役満が見えとりますぞ。千載一遇の好機、何としても物にされませばい。', dr:'国士無双が見えとりますぞ。么九字牌十種、万に一つの夢路にございます。一本道を、丁寧にたどられませばい。',
         },
         strategist: {
           v: { a:'攻めるが上策ばい', d:'退くが兵法ばい' },
           r: { main:'画面を横に構えんね', sub:'横向きでのみ働くばい' },
           s: { dealer:'親番なればこそ、際どきは攻めに寄せとう', child:'子の基準にて見とう' },
+          ae:'五分と五分の分かれ目なりばい。されど我は攻めを採る。攻めて活路を開くが、兵法の常道よ。', ed:'危うき盤面なりばい。ここは退くが上策。いたずらに討って出ず、力を蓄え次の機を待つべし。', ph:'役満、射程に入れりばい。万に一つの大物手、討ち取れば天下に轟くぞ。', dr:'国士の相、十種に及べりばい。これぞ乱戦の活路なり。一本道を恐れず征け。',
         },
         blunt: {
           v: { a:'攻めろばい', d:'引けばい' },
           r: { main:'横にせんね', sub:'横向き専用ばい' },
           s: { dealer:'親番ばい、際どいのは攻めに寄せとう', child:'子で見とう' },
+          ae:'際どいばい。だが攻めろ。迷う暇があるなら、前に出ろ。', ed:'危なかばい。引け。無理に押す手じゃなか、ここは様子を見ろ。', ph:'役満が見えとう。狙え。逃すな。', dr:'国士が見えとう。么九を集めろ。一点突破でいけばい。',
         },
         lady: {
           v: { a:'攻めるとですわ', d:'引くとですわ' },
           r: { main:'画面を横にしてくださいましばい', sub:'横向き専用ですばい' },
           s: { dealer:'親番ですから、際どい配牌はちっと攻めに寄せとりますわ', child:'子の基準で見とりますわ' },
+          ae:'あら、これは際どいことばい……。でも、わたくし前に出ますわ。引いていては、何も始まりませんもの。', ed:'悩ましいですわねばい……。けれど、ここは退いておきますわ。無理を通すのは、美しくございませんもの。', ph:'まあ……役満ですわばい。こんな手、滅多にございませんの。逃さず、丁寧に育てますわよ。', dr:'まあ、国士無双……夢のような配牌ですわばい。么九を一つずつ、丁寧に集めてまいりましょう。',
+        },
+        french: {
+          v: { a:'ふっ、攻めるとですわ、ウィ', d:'ノン、引くとですわ' },
+          r: { main:'画面を横にしてくださいましばい? シル・ヴ・プレ', sub:'横向き専用ですばい、ウィ' },
+          s: { dealer:'親番ですもの、際どい配牌はちっと攻めに寄せとりますわ、ウィ', child:'子の基準で見とりますわ、ノン・プロブレム' },
+          ae:'ふっ、これは際どいことばい……。でも、わたくし前に出ますわ、ウィ。攻めずして勝利はございませんもの。', ed:'ノン、悩ましいですわねばい……。ここは退いておきますの。無理は禁物、セ・ラ・ヴィですわ。', ph:'マドモワゼル、ご覧になって……役満ですわばい、ウィ。こんな手、滅多にございませんの。トレビアン、丁寧に育てますわよ。', dr:'まあ、国士無双……セ・マニフィーク、夢のような配牌ですわばい。么九を一つずつ、優雅に集めてまいりましょう、ウィ。',
         },
       },
     },
@@ -1986,21 +2081,31 @@ document.addEventListener('DOMContentLoaded', function () {
           v: { a:'攻めるでございます', d:'引くでございます' },
           r: { main:'画面を横にしてくださいませな', sub:'横向き専用でございます' },
           s: { dealer:'親番でございますさかい、際どい配牌はちょい攻めに寄せとります', child:'子の基準で見とります' },
+          ae:'際どい局面にございますで。されど、ここは攻めるが上策かと。退いて悔いを残すより、前へ進まれませ。', ed:'危うい配牌にございますなあ。ここはひとまず退かれませ。無理は禁物、機を待つもまた一手にございます。', ph:'これは……役満が見えとりますぞ。千載一遇の好機、何としても物にされませ。', dr:'国士無双が見えとりますぞ。么九字牌十種、万に一つの夢路にございます。一本道を、丁寧にたどられませ。',
         },
         strategist: {
           v: { a:'攻めるが上策やで', d:'退くが兵法やで' },
           r: { main:'画面を横に構ええや', sub:'横向きでのみ働くで' },
           s: { dealer:'親番なればこそ、際どきは攻めに寄せとる', child:'子の基準にて見とる' },
+          ae:'五分と五分の分かれ目なりやで。されど我は攻めを採る。攻めて活路を開くが、兵法の常道よ。', ed:'危うき盤面なりやで。ここは退くが上策。いたずらに討って出ず、力を蓄え次の機を待つべし。', ph:'役満、射程に入れりやで。万に一つの大物手、討ち取れば天下に轟くぞ。', dr:'国士の相、十種に及べりやで。これぞ乱戦の活路なり。一本道を恐れず征け。',
         },
         blunt: {
           v: { a:'攻めろや', d:'引けや' },
           r: { main:'横にせえや', sub:'横向き専用や' },
           s: { dealer:'親番や、際どいのは攻めに寄せとる', child:'子で見とる' },
+          ae:'際どいで。だが攻めろ。迷う暇があるなら、前に出ろや。', ed:'危ないで。引け。無理に押す手やない、ここは様子を見ろや。', ph:'役満が見えとる。狙え。逃すな。', dr:'国士が見えとる。么九を集めろ。一点突破でいけや。',
         },
         lady: {
           v: { a:'攻めるんやわ', d:'引くんやわ' },
           r: { main:'画面を横にしてくださいましな', sub:'横向き専用なんですわ' },
           s: { dealer:'親番ですから、際どい配牌はちょい攻めに寄せとりますわ', child:'子の基準で見とりますわ' },
+          ae:'あら、これは際どいことやわ……。でも、わたくし前に出ますわ。引いていては、何も始まりませんもの。', ed:'悩ましいですわねえ……。けれど、ここは退いておきますわ。無理を通すのは、美しくございませんもの。', ph:'まあ……役満ですわやで。こんな手、滅多にございませんの。逃さず、丁寧に育てますわよ。', dr:'まあ、国士無双……夢のような配牌ですわやで。么九を一つずつ、丁寧に集めてまいりましょう。',
+        },
+        french: {
+          v: { a:'ふっ、攻めるんやわ、ウィ', d:'ノン、引くんやわ' },
+          r: { main:'画面を横にしてくださいましな? シル・ヴ・プレ', sub:'横向き専用なんですわ、ウィ' },
+          s: { dealer:'親番ですもの、際どい配牌はちょい攻めに寄せとりますわ、ウィ', child:'子の基準で見とりますわ、ノン・プロブレム' },
+          ae:'ふっ、これは際どいことやわ……。でも、わたくし前に出ますわ、ウィ。攻めずして勝利はございませんもの。', ed:'ノン、悩ましいですわねえ……。ここは退いておきますの。無理は禁物、セ・ラ・ヴィですわ。', ph:'マドモワゼル、ご覧になって……役満ですわやで、ウィ。こんな手、滅多にございませんの。トレビアン、丁寧に育てますわよ。', dr:'まあ、国士無双……セ・マニフィーク、夢のような配牌ですわやで。么九を一つずつ、優雅に集めてまいりましょう、ウィ。',
         },
       },
     },
@@ -2050,8 +2155,22 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   function pickVerdictWord(attack){
     const v = wordSrc().v;                 // 通常版（人柄、または人柄×方言の掛け合わせ）
-    // 特別な配牌の台詞：方言選択中は方言の素から、人柄のみなら人柄から
-    const sp = (currentDialect && DIALECT_WORDS[currentDialect]) ? DIALECT_WORDS[currentDialect].v : v;
+    // 特別な配牌の台詞の出どころを決める：
+    //   方言×人柄の掛け合わせ（byTone）に特別台詞があれば、それを最優先（濃いめの掛け合わせ）
+    //   無ければ方言の素 → それも無ければ人柄
+    let sp = v;
+    if(currentDialect && DIALECT_WORDS[currentDialect]){
+      const d = DIALECT_WORDS[currentDialect];
+      const bt = (d.byTone && d.byTone[currentTone]) || {};
+      // 特別台詞の四キーだけを、掛け合わせ（byTone）→方言の素（d）の順で拾う。
+      // byTone に当該キーがあれば濃いめの掛け合わせ版、無ければ方言の素へ落ちる。
+      sp = {
+        ph: bt.ph || d.ph,
+        dr: bt.dr || d.dr,
+        ae: bt.ae || d.ae,
+        ed: bt.ed || d.ed,
+      };
+    }
     if(lastPhoenix && sp.ph) return sp.ph;   // 役満が見える配牌
     if(lastDragon && sp.dr) return sp.dr;     // 国士無双が見える配牌
     if(lastBorderline){
