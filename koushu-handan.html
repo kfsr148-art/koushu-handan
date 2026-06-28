@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="154">
+<html lang="ja" data-ver="155">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -697,31 +697,28 @@
 
     /* 判定後のみ：結果カードを画面高に収め、末尾のボタンまで1画面に入れる。
        判定前の盤面には効かせない（body.judged 限定）。スクロールは出さず overflow:hidden で抑える。 */
+    /* 判定後：伸縮計算を全廃し、中身を上から積むだけにする。
+       伸びる要素が無ければ余白は原理的に出ない。横長端末なので末尾ボタンも自然に画面内。 */
     body.judged .wrap {
-      display: flex; flex-direction: column;
-      height: auto; max-height: 100%; align-self: flex-start;
+      display: block; height: auto;
     }
     /* 縦寄せは center をやめ、上詰め＋画面高めいっぱいに。
        中身が高いとき center だと上下へあふれて末尾ボタンが画面外へ沈むため。 */
     body.judged .verdict, body.judged .verdict.show {
-      display: flex; flex-direction: column; flex: 0 0 auto;
-      justify-content: flex-start; align-self: flex-start; min-height: 0;
+      display: block; height: auto; min-height: 0;
     }
     /* 結果カード自体を縦フレックスにし、画面高を超えない天井を引く。
        理由欄だけを伸縮スクロール域にして、見出し・方言ボタン・末尾ボタンは
        スクロールの外に置く。これで縦寸が足りない比率でもボタンが画面内に残る。 */
     body.judged .verdict-card {
       padding: 8px 14px 10px;
-      display: flex; flex-direction: column;
-      flex: 0 0 auto; align-self: flex-start; width: 100%;
-      max-height: 100%; min-height: 0; overflow: hidden;
+      display: block; height: auto;
     }
     /* 理由欄を唯一の伸縮スクロール域にする。あふれたらここだけ縦に送る。
        内側の上下padは薄くし、横四列の各項目が見切れず読める高さを保つ。 */
     body.judged .reasons {
       grid-template-columns: repeat(4, 1fr); gap: 0 10px;
-      flex: 0 1 auto; min-height: 0; overflow-y: auto;
-      align-content: start; padding: 6px 12px;
+      height: auto; align-content: start; padding: 6px 12px;
     }
     body.judged .reason { padding: 2px 0; }
     /* 横持ち判定後は理由の見出しを一回り小さく・行間を締める。
@@ -800,7 +797,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v154</div>
+  <div id="verTag">v155</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
   <div class="panel">
