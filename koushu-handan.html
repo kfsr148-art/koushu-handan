@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="163">
+<html lang="ja" data-ver="172">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -364,6 +364,16 @@
     border: 1px solid var(--line);
   }
   .btn-del:disabled { opacity: 0.4; cursor: not-allowed; }
+  /* 順子・刻子のまとめ入力トグル。押すと金色に灯り、次に押した牌を起点に3枚入る。 */
+  .btn-group {
+    flex: 0 0 auto; padding-left: 13px; padding-right: 13px;
+    background: rgba(200,164,92,0.10); color: var(--gold);
+    border: 1px dashed var(--gold);
+  }
+  .btn-group.armed {
+    background: var(--gold); color: #1a1410;
+    border-style: solid; box-shadow: 0 0 12px rgba(200,164,92,0.6);
+  }
 
   /* ---- verdict ---- */
   .verdict { display: none; }
@@ -561,11 +571,11 @@
     .pick .suf { font-size: 0.5em; margin-bottom: 0.28em; }
     /* 字牌段も上三段と同一寸法に揃える。 */
     .suit-row:last-child .pick { height: 90%; width: auto; min-height: 0; aspect-ratio: 36 / 32; max-height: 54px; max-width: 61px; align-self: center; font-size: clamp(15px, 5.4vh, 24px); }
-    /* ドラボタンと牌枠を字牌段の右側へ。ボタンを8列目、牌枠をその右9〜10列に。 */
-    /* ドラ指定ボタンは8列目の升目に置き、サイズは盤面の牌(.pick)と同じに揃える。
+    /* ドラ指定ボタンは白發中の右(4列目)に置き、字牌欄の中央へ。牌枠はその右5列目。 */
+    /* ドラ指定ボタンは4列目の升目に置き、サイズは盤面の牌(.pick)と同じに揃える。
        牌と同じ aspect-ratio・max寸法・height にして、上の牌・横の字牌と大きさを合わせる。 */
     .dora-toggle {
-      grid-column: 8 / span 1;
+      grid-column: 4 / span 1;
       height: 90%; width: auto; min-height: 0;
       aspect-ratio: 36 / 32; max-height: 54px; max-width: 61px;
       justify-self: center; align-self: center;
@@ -590,7 +600,7 @@
       grid-area: hand;            /* 配牌枠の右下隅に枚数を小さく重ねる */
       align-self: end; justify-self: end;
       font-size: 10px;
-      margin: 0 8px 5px 0; pointer-events: none;
+      margin: 0 52px 5px 0; pointer-events: none;
     }
     .counter b { font-size: 11px; }
     .value-col {
@@ -612,7 +622,7 @@
        中の「ドラ×0」文字は position:absolute で牌の流れから外すので、
        牌だけが升目の中央＝上の九萬・九筒・九索の真下に来る。
        文字は牌の右へ絶対配置で添える（位置の微調整は次段階）。 */
-    .dora-face-slot { grid-column: 9 / span 1; justify-self: center; align-self: center; align-items: center; justify-content: center; padding: 0; gap: 0; height: 100%; overflow: visible; position: relative; }
+    .dora-face-slot { grid-column: 5 / span 1; justify-self: center; align-self: center; align-items: center; justify-content: center; padding: 0; gap: 0; height: 100%; overflow: visible; position: relative; }
     .dora-face-lab { display: inline; font-size: 11px; color: var(--gold); font-weight: 700; margin-right: 3px; }
     /* ドラ表示牌は小ぶりの固定寸法のまま。サイズは上の牌より小さく保ち、
        位置(列・高さ)だけ揃える。牌種によらず同寸法で図柄は枠内中央に収める。 */
@@ -629,10 +639,8 @@
     /* 図柄(SVG)は高さ基準で置き縦横比を保つ（歪ませない）。横は枠内で中央、
        はみ出る左右は overflow:hidden で切る。これで牌種によらず同寸・図柄は歪まない。 */
     .dora-face .sou-svg, .dora-face .pin-svg { width: auto; height: 100%; flex: 0 0 auto; }
-    /* 右端の塊：「ドラ×0」は絶対配置で牌の流れから外す。
-       これで牌だけが升目の中央に置かれ、九の真下に揃う。
-       文字は牌の右端から、10列目の升目あたりへ右にずらして置く（上の牌の右側に合わせる）。 */
-    .dora-face-tail { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); margin-left: 30px; display: inline-flex; align-items: center; white-space: nowrap; }
+    /* 枚数の文字は表示牌の真下に小さく添える。右へずらすと東南西北の牌と重なるため下方向へ。 */
+    .dora-face-tail { position: absolute; left: 50%; top: 100%; transform: translateX(-50%); margin-top: 1px; display: inline-flex; align-items: center; white-space: nowrap; }
     /* 横持ちのみ：右端に手牌枚数を金色で添え、何枚かを一目で示す。 */
     .dora-face-cnt { display: inline; font-size: 12px; color: var(--gold); font-weight: 700; white-space: nowrap; }
     .dora-toggle .dora-lab { font-size: 9px; margin-right: 4px; }
@@ -648,9 +656,9 @@
     .value-col .wind-note { align-self: stretch; width: 100%; }   /* 風の行を value-col 幅いっぱいに。中央寄せで縮んでいたのを伸ばす。 */
     .wind-2step { display: flex; align-items: center; gap: 14px; width: 100%; }
     .w2-round { display: flex; gap: 8px; flex: 0 0 auto; }
-    .w2-seat  { display: flex; gap: 10px; flex: 1 1 auto; min-width: 0; }
+    .w2-seat  { display: flex; gap: 10px; flex: 0 1 auto; min-width: 0; }
     .w2-r { font-size: 15px; padding: 10px 18px; border-radius: 8px; line-height: 1.2; flex: 0 0 auto; }
-    .w2-s { font-size: 16px; padding: 10px 0; border-radius: 8px; line-height: 1.2; flex: 1 1 0; min-width: 0; max-width: 120px; text-align: center; }
+    .w2-s { font-size: 16px; padding: 10px 0; border-radius: 8px; line-height: 1.2; flex: 0 1 auto; width: 44px; min-width: 0; text-align: center; }
     .quick-input {
       display: none;   /* 横持ちは盤面タップで牌を並べるのでキーボード入力欄は省く。空いた幅は配牌表示枠へ回す */
     }
@@ -797,7 +805,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v163</div>
+  <div id="verTag">v172</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
   <div class="panel">
@@ -828,17 +836,17 @@
         <div class="suit-name">字牌</div>
         <div class="suit-tiles two-row">
           <div class="tile-row">
-          <div class="tile pick honor" data-suit="honor" data-label="東" data-num="0" data-code="E" data-red="0">東</div>
-          <div class="tile pick honor" data-suit="honor" data-label="南" data-num="0" data-code="S" data-red="0">南</div>
-          <div class="tile pick honor" data-suit="honor" data-label="西" data-num="0" data-code="W" data-red="0">西</div>
-          <div class="tile pick honor" data-suit="honor" data-label="北" data-num="0" data-code="N" data-red="0">北</div>
-          </div>
-          <div class="tile-row">
           <div class="tile pick honor" data-suit="honor" data-label="白" data-num="0" data-code="P" data-red="0"></div>
           <div class="tile pick honor" data-suit="honor" data-label="發" data-num="0" data-code="F" data-red="0">發</div>
           <div class="tile pick honor" data-suit="honor" data-label="中" data-num="0" data-code="C" data-red="0">中</div>
           <button type="button" class="dora-toggle" id="doraToggle">ドラ<br>指定</button>
           <div class="dora-face-slot" id="doraFaceSlot"></div>
+          </div>
+          <div class="tile-row">
+          <div class="tile pick honor" data-suit="honor" data-label="東" data-num="0" data-code="E" data-red="0">東</div>
+          <div class="tile pick honor" data-suit="honor" data-label="南" data-num="0" data-code="S" data-red="0">南</div>
+          <div class="tile pick honor" data-suit="honor" data-label="西" data-num="0" data-code="W" data-red="0">西</div>
+          <div class="tile pick honor" data-suit="honor" data-label="北" data-num="0" data-code="N" data-red="0">北</div>
           </div>
         </div>
       </div>
@@ -847,8 +855,9 @@
     </div>
 
     <div class="actions">
+      <button type="button" class="btn btn-group" id="shuntsuBtn" onclick="window.setGroupMode('shuntsu')">順子</button>
+      <button type="button" class="btn btn-group" id="kotsuBtn" onclick="window.setGroupMode('kotsu')">刻子</button>
       <button class="btn btn-go" id="judgeBtn" disabled>判定する</button>
-      <button class="btn btn-del" id="delBtn">一枚消す</button>
       <button class="btn btn-clear" id="clearBtn">リセット</button>
       <button class="btn btn-shuffle" id="shuffleBtn">配牌</button>
     </div>
@@ -991,7 +1000,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const handEl = document.getElementById('hand');
   const counterEl = document.getElementById('counter');
   const judgeBtn = document.getElementById('judgeBtn');
-  const delBtn = document.getElementById('delBtn');
+  const delBtn = null;   // 一枚消すボタンは廃止（牌は配牌枠の牌タップで個別に消せる）
 
   // ---- attach handlers to static picker tiles ----
   // 牌はHTMLに直接書き込まれているので、生成せずクリックだけ拾う
@@ -1013,13 +1022,21 @@ document.addEventListener('DOMContentLoaded', function () {
         refreshDora();
         return;
       }
-      addTile({
+      const tile = {
         suit: el.getAttribute('data-suit'),
         label: el.getAttribute('data-label'),
         num: parseInt(el.getAttribute('data-num'), 10),
         code: code,
         red: el.getAttribute('data-red') === '1'
-      });
+      };
+      // 順子・刻子モードが立っていれば、起点としてまとめて入れ、モードは入れたら解除する
+      if(groupMode){
+        addGroupFrom(tile);
+        groupMode = null;
+        refreshGroupButtons();
+        return;
+      }
+      addTile(tile);
     });
   });
 
@@ -1045,6 +1062,52 @@ document.addEventListener('DOMContentLoaded', function () {
     field.value = tilesToInput(tiles);
     rebuildHand();
   }
+
+  // ---- 順子・刻子のまとめ入力 ----
+  // 連番（順子）や同一牌3枚（刻子）がまとまって来る配牌のため、起点の1枚から3枚をまとめて入れる。
+  // モードボタンを押した直後に牌を押すと展開。普段の一枚押しには干渉しない（モードが立っているときだけ働く）。
+  let groupMode = null;   // null=通常 / 'shuntsu'=順子 / 'kotsu'=刻子
+
+  // 数牌の番号 n からタイル一枚ぶんの簡易オブジェクトを作る。red=true なら赤牌として作る。
+  function numTileOf(suit, n, red){
+    const code = ({man:'m',pin:'p',sou:'s'})[suit] + n;
+    return { suit, label:String(n), num:n, code, red: !!red };
+  }
+  // 順子の3つの番号を返す。端ははみ出さないよう内側へ寄せる（8→789, 9→789, 1→123）。
+  function shuntsuNums(n){
+    let start = n;
+    if(start > 7) start = 7;   // 8,9 は 789 に寄せる
+    return [start, start+1, start+2];
+  }
+  // 起点牌 t を受け、モードに応じて3枚をまとめて入れる
+  function addGroupFrom(t){
+    if(t.suit === 'honor'){
+      // 字牌：順子は無効。刻子のみ3枚。
+      if(groupMode === 'kotsu'){
+        for(let i=0;i<3;i++) addTile({ suit:t.suit, label:t.label, num:t.num, code:t.code, red:false });
+      }
+      return;
+    }
+    // 起点が赤五のときは、順子・刻子で入れる「5」だけを赤で入れる（他の牌は通常牌）。
+    const startRedFive = (t.red === true && t.num === 5);
+    if(groupMode === 'shuntsu'){
+      shuntsuNums(t.num).forEach(n => addTile(numTileOf(t.suit, n, startRedFive && n === 5)));
+    } else if(groupMode === 'kotsu'){
+      // 刻子は同じ牌3枚。起点が赤五でも赤は各色1枚のみなので、赤1枚＋通常2枚で入れる。
+      for(let i=0;i<3;i++) addTile(numTileOf(t.suit, t.num, startRedFive && i === 0));
+    }
+  }
+  // モードボタンの見た目を更新
+  function refreshGroupButtons(){
+    const sb = document.getElementById('shuntsuBtn');
+    const kb = document.getElementById('kotsuBtn');
+    if(sb) sb.classList.toggle('armed', groupMode === 'shuntsu');
+    if(kb) kb.classList.toggle('armed', groupMode === 'kotsu');
+  }
+  window.setGroupMode = function(mode){
+    groupMode = (groupMode === mode) ? null : mode;   // 同じボタン再押しで解除
+    refreshGroupButtons();
+  };
   function render() {
     handEl.innerHTML='';
     handEl.classList.toggle('empty', hand.length===0);
@@ -1072,7 +1135,7 @@ document.addEventListener('DOMContentLoaded', function () {
     counterEl.classList.toggle('full', hand.length>=10 && hand.length<=13);
     // 10〜13枚なら判定可能（13枚ちょうどが最も正確。14枚以上は多牌として弾く）
     judgeBtn.disabled = (hand.length < 10 || hand.length > 13);   // 10〜13枚で判定可。13枚キャップなので多牌は起きない
-    delBtn.disabled = (hand.length === 0);   // 戻す牌が無いときは押せないよう淡く
+    if(delBtn) delBtn.disabled = (hand.length === 0);   // 一枚消すは廃止。残骸参照を無害化
   }
 
 
@@ -1407,7 +1470,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   window.nextHand = nextHand;
   document.getElementById('clearBtn').onclick = resetBoard;
-  document.getElementById('delBtn').onclick = removeLastTile;
+  // 一枚消すボタンは廃止。removeLastTile は配牌ボタン等から間接利用が無ければ未使用となる
   document.getElementById('shuffleBtn').onclick = shuffleHand;
 
   // ============================================================
