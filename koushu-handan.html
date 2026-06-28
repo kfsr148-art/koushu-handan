@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="119">
+<html lang="ja" data-ver="124">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -459,6 +459,7 @@
   .r-body { flex: 1; }
   .r-title { font-size: 13.5px; font-weight: 700; color: var(--bone); }
   .r-detail { font-size: 12px; color: rgba(243,236,224,0.62); margin-top: 3px; line-height: 1.6; }
+  .r-caret { display: none; }
 
   .verdict-foot {
     margin-top: 16px; font-size: 11.5px; line-height: 1.7;
@@ -751,6 +752,14 @@
     body.judged .dialect-row { margin-top: 3px; }
     body.judged .seat-foot { font-size: 9px; margin-top: 2px; }
     body.judged .r-detail { display: none; }
+    body.judged .reason.open .r-detail { display: block; }
+    body.judged .reason { cursor: pointer; }
+    body.judged .r-caret {
+      display: inline-block; margin-left: 5px; font-size: 9px;
+      color: rgba(243,236,224,0.4); transition: transform 0.15s ease;
+      transform: translateY(-1px);
+    }
+    body.judged .reason.open .r-caret { transform: rotate(180deg) translateY(1px); }
     body.judged .verdict-foot { display: none; }
 
     /* 判定後（body.judged）は盤面パネルを畳み、結果カードを最前面へ繰り上げる。
@@ -2489,6 +2498,13 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   window.setTone = setTone;
   window.setDialect = setDialect;
+  // 根拠カードはアコーディオン式：常に開くのは1つだけ。別を押すと前のは自動で閉じる。
+  window.toggleReason = function(el){
+    var willOpen = !el.classList.contains('open');
+    var siblings = el.parentNode.querySelectorAll('.reason');
+    for(var i=0;i<siblings.length;i++){ siblings[i].classList.remove('open'); }
+    if(willOpen){ el.classList.add('open'); }
+  };
 
   document.getElementById('judgeBtn').onclick = () => {
     const a = analyze();
@@ -2514,27 +2530,28 @@ document.addEventListener('DOMContentLoaded', function () {
     lastDragon = a.kokushiSeen && !a.yakumanReach;
 
     const reasons = [];
+    // 根拠の深掘り（detail）は詰め込み解説で統一。タップで開くと、数字の意味まで読める。
     reasons.push({
       ok: a.hasValue,
       title: a.hasValue ? `打点 ${a.doraValue} — ${a.valueSources.join('・')}` : '打点の種なし',
       detail: a.hasValue
-        ? `${a.valueSources.join('・')}で打点 ${a.doraValue} 相当。打点が厚いほど、多少形が粗くても押す価値が出ますわ。`
-        : 'ドラも赤も役牌の対子もございませんわ。安手では、好形でなければ押す見返りが見合いませんの。'
+        ? `${a.valueSources.join('・')}で打点 ${a.doraValue} 相当ですね。押し引きの基準では、打点が高いほど多少形が悪くても期待値が攻めに傾きます。だからこの項目は「攻める根拠」として効いてきます。`
+        : `ドラ・赤・役牌の対子、どれもありませんね。安手のときは、放銃したときの失点に対して和了の見返りが小さい。だから良形でなければ押す価値が出にくい、というのが基本の考え方です。`
     });
     reasons.push({
       ok: a.shapeOK,
       title: `良形 ${a.goodShapes} ブロック（この打点なら ${a.shapeNeeded} 必要）` + (a.weakShapes? ` ／ 弱い塔子 ${a.weakShapes}` : ''),
       detail: a.shapeOK
-        ? `両面・対子・暗刻が ${a.goodShapes} つ。打点 ${a.doraValue} に対し必要な ${a.shapeNeeded} を満たし、和了へ伸びる形ですわ。`
-        : `良形が ${a.shapeNeeded} に届きませんの。打点 ${a.doraValue} では、この形で押し切るには手数がかかりすぎますわ。`
+        ? `両面・対子・暗刻といった良形が ${a.goodShapes} つあります。必要数 ${a.shapeNeeded} は打点から逆算した目安で、打点 ${a.doraValue} ならこの数。条件を満たしているので、和了まで伸びやすい形と判断できます。`
+        : `良形が ${a.goodShapes} つで、必要な ${a.shapeNeeded} に届いていません。この必要数は「打点が低いほど多くの良形が要る」という逆算で、打点 ${a.doraValue} だと ${a.shapeNeeded} 必要。足りないと、押し切るまでの手数がかかりすぎます。`
     });
     // 伸びしろ（受け入れの広さ）
     reasons.push({
       ok: a.widthGood,
       title: `伸びしろ ${a.widthLabel} — 有効牌 ${a.acceptTypes}種 ${a.acceptTiles}枚`,
       detail: a.widthGood
-        ? `${a.baseShanten}向聴。引いて手が進む牌が ${a.acceptTiles} 枚もございますの。ツモのたびに育つ、伸びる手ですわ。`
-        : `${a.baseShanten}向聴。手を進める牌が ${a.acceptTiles} 枚しかございませんの。嵌張・辺張が多く、ツモを重ねても足踏みしがちな狭い手ですわ。押すなら、この狭さを承知の上で。`
+        ? `${a.baseShanten}向聴で、手を進める有効牌が ${a.acceptTiles} 枚。これだけ受け入れが広いと、ツモのたびに手が進みやすい。有効牌の枚数は「手の伸びやすさ」を測る物差しだと思ってください。`
+        : `${a.baseShanten}向聴で、有効牌が ${a.acceptTiles} 枚しかありません。嵌張・辺張が多いと、ツモを重ねても向聴が進まず足踏みしがち。押すなら、この受け入れの狭さを承知のうえで判断しましょう。`
     });
     // 攻めのときだけ：手なりで見えている方向（予言ではなく選択肢）
     if(attack){
@@ -2542,19 +2559,19 @@ document.addEventListener('DOMContentLoaded', function () {
       if(a.kokushiSeen){
         let stance;
         if(a.kokushiShanten <= 1){
-          stance = `あと一歩ですの。普通の形を作るより、こちらへ寄せたほうが速いですわ。`;
+          stance = `あと一歩のところまで来ています。普通の形に組むより、国士へ寄せたほうが和了が速い局面です。`;
         } else if(a.kokushiShanten === 2){
-          stance = `射程に入っておりますわ。普通の手としても伸びない配牌ですから、国士へ寄せる価値は十分ございますの。`;
+          stance = `射程に入っています。普通の手としても伸びにくい配牌なので、国士へ寄せる価値は十分あると判断できます。`;
         } else {
-          stance = `まだ遠うございますわ。一本道に賭けるなら覚悟を持って。数巡で么九が増えなければ、見切りも肝心ですの。`;
+          stance = `まだ距離があります。一本道に賭けるなら覚悟が要りますし、数巡で么九が増えなければ見切る判断も大事です。`;
         }
-        dirDetail = `么九字牌が ${a.kokushiKinds} 種そろっており、国士無双が見えますわ（およそ ${a.kokushiShanten} 向聴）。`
+        dirDetail = `么九字牌が ${a.kokushiKinds} 種そろっていて、国士無双が見えます（およそ ${a.kokushiShanten} 向聴）。`
           + stance
           + (a.directions.length > 1 ? `（ほかに ${a.directions.slice(1).join('・')} の目も）` : '');
       } else if(a.directions.length > 0){
-        dirDetail = `配牌の段階で、${a.directions.join('・')} の芽がございますわ。確定ではございませんけれど、この方向を頭に置いて手を進めると、迷いが減りますの。引いた牌しだいで変わりますから、固執はなさらず。`;
+        dirDetail = `配牌の段階で、${a.directions.join('・')} の芽があります。確定ではありませんが、この方向を意識して打つと迷いが減ります。引いた牌しだいで変わるので、固執はしないこと。`;
       } else {
-        dirDetail = `特定の役に寄ってはおりませんわ。素直に順子を伸ばす手なりで、両面を残しながら聴牌へ向かうのがよろしいですの。`;
+        dirDetail = `特定の役には寄っていません。こういうときは素直に順子を伸ばす手なりが基本。両面を残しながら聴牌へ向かいましょう。`;
       }
       reasons.push({
         ok: a.directions.length > 0,
@@ -2570,13 +2587,13 @@ document.addEventListener('DOMContentLoaded', function () {
       let stockDetail, stockOK;
       if(a.defHonors >= 2 || stock >= 4){
         stockOK = true;
-        stockDetail = `字牌 ${a.defHonors} 枚・端牌 ${a.defTerminals} 枚。いざ危なくなっても切り出す牌に困りませんわ。守りに回るなら、まずこれらを温存して、中張牌から整理なさいまし。`;
+        stockDetail = `字牌 ${a.defHonors} 枚・端牌 ${a.defTerminals} 枚あります。危なくなっても切り出せる牌に困らない量です。守りに回るときは、まずこれらを温存して、中張牌から先に整理するのがセオリーです。`;
       } else if(stock >= 2){
         stockOK = true;
-        stockDetail = `字牌 ${a.defHonors} 枚・端牌 ${a.defTerminals} 枚。最低限の降り材料はございますの。字牌は終盤まで抱え、危険が見えたら順に手放せるよう備えておきますわ。`;
+        stockDetail = `字牌 ${a.defHonors} 枚・端牌 ${a.defTerminals} 枚。最低限の降り材料はあります。字牌は終盤まで抱えておき、危険が見えたら順に手放せるよう備えておきましょう。`;
       } else {
         stockOK = false;
-        stockDetail = `字牌 ${a.defHonors} 枚・端牌 ${a.defTerminals} 枚と、守り寄りの牌が乏しい手ですわ。中張牌ばかりで、降りるとき切る牌に窮しますの。早い段階で字牌や端牌を一枚は確保し、無防備にならぬようご注意を。`;
+        stockDetail = `字牌 ${a.defHonors} 枚・端牌 ${a.defTerminals} 枚と、守りの牌が乏しい手です。中張牌ばかりだと、降りるときに切る安全牌に困ります。早い段階で字牌や端牌を一枚は確保して、無防備にならないよう注意しましょう。`;
       }
       reasons.push({
         ok: stockOK,
@@ -2625,10 +2642,10 @@ document.addEventListener('DOMContentLoaded', function () {
         ${seatLine ? `<div class="seat-foot">${seatLine}</div>` : ''}
         <div class="reasons">
           ${reasons.map(r=>`
-            <div class="reason">
+            <div class="reason" onclick="window.toggleReason(this)">
               <div class="r-mark ${r.ok?'yes':'no'}">${r.ok?'✓':'×'}</div>
               <div class="r-body">
-                <div class="r-title">${r.title}</div>
+                <div class="r-title">${r.title}<span class="r-caret">▾</span></div>
                 <div class="r-detail">${r.detail}</div>
               </div>
             </div>`).join('')}
