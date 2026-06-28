@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="156">
+<html lang="ja" data-ver="157">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -704,19 +704,15 @@
       height: auto; min-height: 0; overflow-y: auto;
     }
     body.judged .wrap {
-      display: block; height: auto;
+      display: block !important; height: auto !important;
     }
-    /* 縦寄せは center をやめ、上詰め＋画面高めいっぱいに。
-       中身が高いとき center だと上下へあふれて末尾ボタンが画面外へ沈むため。 */
     body.judged .verdict, body.judged .verdict.show {
-      display: block; height: auto; min-height: 0;
+      display: block !important; height: auto !important; min-height: 0 !important;
     }
-    /* 結果カード自体を縦フレックスにし、画面高を超えない天井を引く。
-       理由欄だけを伸縮スクロール域にして、見出し・方言ボタン・末尾ボタンは
-       スクロールの外に置く。これで縦寸が足りない比率でもボタンが画面内に残る。 */
+    /* 結果カード：中身ぶんの高さに固定。外枠が画面下まで伸びるのを断つ。 */
     body.judged .verdict-card {
       padding: 8px 14px 10px;
-      display: block; height: auto;
+      display: block !important; height: auto !important; max-height: none !important;
     }
     /* 理由欄を唯一の伸縮スクロール域にする。あふれたらここだけ縦に送る。
        内側の上下padは薄くし、横四列の各項目が見切れず読める高さを保つ。 */
@@ -801,7 +797,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v156</div>
+  <div id="verTag">v157</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
   <div class="panel">
