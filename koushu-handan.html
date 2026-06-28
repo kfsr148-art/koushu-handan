@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="141">
+<html lang="ja" data-ver="142">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -799,7 +799,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v141</div>
+  <div id="verTag">v142</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
   <div class="panel">
@@ -1564,6 +1564,99 @@ document.addEventListener('DOMContentLoaded', function () {
     const totalBlocks = goodShapes + weakShapes;
 
     // ============================================================
+    //  埋まり方の質：和了形（4面子1雀頭）に向けて、
+    //  残りブロックが「好形（両面・対子）で埋まる見込み」か
+    //  「愚形（嵌張・辺張）どまり」かを数える。
+    //  ※ goodShapes/weakShapes（判定用の良形カウント）とは別計算。
+    //    こちらは雀頭を1つ確保したうえで面子を優先して分解する。
+    // ============================================================
+    // 1スートを分解し、面子数ごとに「ターツ総数最大→好形最大」の非劣解を返す。
+    // 愚形を罰さずに拾う（拾える塔子は拾う）のが要点。
+    function decomposeSuitMW(c){
+      const out=[];
+      function rec(i, melds, good, weak){
+        if(i>9){ out.push([melds, good, weak]); return; }
+        if(c[i]===0){ rec(i+1, melds, good, weak); return; }
+        if(c[i]>=3){ c[i]-=3; rec(i, melds+1, good, weak); c[i]+=3; }
+        if(i<=7 && c[i]>0 && c[i+1]>0 && c[i+2]>0){ c[i]--;c[i+1]--;c[i+2]--; rec(i, melds+1, good, weak); c[i]++;c[i+1]++;c[i+2]++; }
+        if(c[i]>=2){ c[i]-=2; rec(i, melds, good+1, weak); c[i]+=2; }            // 対子＝好形
+        if(i<=8 && c[i]>0 && c[i+1]>0){                                          // 隣接
+          const penchan=(i===1)||(i+1===9);
+          c[i]--;c[i+1]--;
+          if(penchan) rec(i, melds, good, weak+1); else rec(i, melds, good+1, weak);
+          c[i]++;c[i+1]++;
+        }
+        if(i<=7 && c[i]>0 && c[i+2]>0){ c[i]--;c[i+2]--; rec(i, melds, good, weak+1); c[i]++;c[i+2]++; } // 嵌張
+        c[i]--; rec(i, melds, good, weak); c[i]++;                               // 浮き牌
+      }
+      rec(1,0,0,0);
+      const byMeld={};
+      out.forEach(([me,g,w])=>{
+        const tat=g+w;
+        if(!byMeld[me]){ byMeld[me]=[g,w]; return; }
+        const curTat=byMeld[me][0]+byMeld[me][1];
+        if(tat>curTat || (tat===curTat && g>byMeld[me][0])) byMeld[me]=[g,w];
+      });
+      return Object.keys(byMeld).map(me=>({melds:+me, good:byMeld[me][0], weak:byMeld[me][1]}));
+    }
+    // 雀頭を1つ仮置きし、残りで面子・ターツを最大化。
+    // 戻り：{melds, good, weak, hasPair}（雀頭を除いた残り枠のターツ内訳）
+    function blockProfile(){
+      const pairCands=[];
+      for(const key of ['man','pin','sou']){
+        const cc=[0,0,0,0,0,0,0,0,0,0];
+        suitNums[key].forEach(n=>cc[n]++);
+        for(let n=1;n<=9;n++) if(cc[n]>=2) pairCands.push({type:key, n});
+      }
+      for(const h of Object.keys(honorCount)) if(honorCount[h]>=2) pairCands.push({type:'honor', h});
+      pairCands.push(null); // 雀頭なし（好形ターツ1つを雀頭に転用）
+      let best=null;
+      for(const pc of pairCands){
+        const sn={man:[...suitNums.man], pin:[...suitNums.pin], sou:[...suitNums.sou]};
+        const hc=Object.assign({}, honorCount);
+        let hasPair=false;
+        if(pc){
+          hasPair=true;
+          if(pc.type==='honor'){ hc[pc.h]-=2; }
+          else { let removed=0; sn[pc.type]=sn[pc.type].filter(x=>{ if(x===pc.n && removed<2){removed++; return false;} return true; }); }
+        }
+        const front=[];
+        for(const key of ['man','pin','sou']){
+          const cc=[0,0,0,0,0,0,0,0,0,0];
+          sn[key].forEach(n=>cc[n]++);
+          front.push(decomposeSuitMW(cc));
+        }
+        let honMeld=0, honGood=0;
+        Object.values(hc).forEach(c=>{ if(c>=3) honMeld++; else if(c===2) honGood++; });
+        for(const a of front[0]) for(const b of front[1]) for(const cS of front[2]){
+          const melds=a.melds+b.melds+cS.melds+honMeld;
+          let good=a.good+b.good+cS.good+honGood;
+          let weak=a.weak+b.weak+cS.weak;
+          // 面子4枠を超えるターツは捨て塔子。好形を温存し、愚形から削る。
+          let over=melds+good+weak-4;
+          if(over>0){ const cw=Math.min(weak,over); weak-=cw; over-=cw; const cg=Math.min(good,over); good-=cg; over-=cg; }
+          let effMelds=melds, effGood=good, effWeak=weak, effPair=hasPair;
+          if(!hasPair){
+            if(good>0){ effGood=good-1; effPair=true; }
+            else if(weak>0){ effWeak=weak-1; effPair=true; }
+          }
+          // 評価：雀頭確保 > 面子最大 > ターツ総数最大 > 好形最大
+          const score=[effPair?1:0, effMelds, effMelds+effGood+effWeak, effGood];
+          if(!best){ best={melds:effMelds,good:effGood,weak:effWeak,hasPair:effPair,score}; continue; }
+          const s=score,t=best.score;
+          if(s[0]>t[0]||(s[0]===t[0]&&s[1]>t[1])||(s[0]===t[0]&&s[1]===t[1]&&s[2]>t[2])||(s[0]===t[0]&&s[1]===t[1]&&s[2]===t[2]&&s[3]>t[3])){
+            best={melds:effMelds,good:effGood,weak:effWeak,hasPair:effPair,score};
+          }
+        }
+      }
+      return best || {melds:0, good:0, weak:0, hasPair:false};
+    }
+    const fillProf = blockProfile();
+    const fillRemain = Math.max(0, 4 - fillProf.melds);          // 雀頭別・面子4枠の残り
+    const fillGood = Math.min(fillProf.good, fillRemain);        // 好形で埋まる見込み
+    const fillWeak = Math.min(fillProf.weak, Math.max(0, fillRemain - fillGood)); // 愚形どまり
+
+    // ============================================================
     //  受け入れの広さ（伸びしろ）を測る
     //  各牌について「引いたら手が進むか」を数え、
     //  有効牌の種類数で「広い手／狭い手」を判定する
@@ -1980,6 +2073,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if(yakumanReach){ verdict = 'attack'; edgeFlag = false; }
 
     return { borderline: edgeFlag, goodShapes, weakShapes, totalBlocks, shapeOK, shapeNeeded,
+             fillGood, fillWeak, fillRemain,
              hasValue, valueSources, doraValue, doraCount, redCount, yakuhaiPair, verdict,
              baseShanten, acceptTypes, acceptTiles, widthLabel, widthGood,
              directions: finalDirections,
@@ -2528,10 +2622,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     reasons.push({
       ok: a.shapeOK,
-      title: `良形 ${a.goodShapes}（要 ${a.shapeNeeded}）` + (a.weakShapes? ` ／ 弱形 ${a.weakShapes}` : ''),
-      detail: a.shapeOK
-        ? `良形 ${a.goodShapes} つ。打点 ${a.doraValue} に必要な ${a.shapeNeeded} を満たし、和了へ伸びる形です。`
-        : `良形 ${a.goodShapes} つで必要な ${a.shapeNeeded} に不足。打点が低いほど多く要るため、押し切るのが重い。`
+      title: `埋まり 好${a.fillGood}・愚${a.fillWeak}（要 ${a.fillRemain}）`,
+      detail: (a.fillGood + a.fillWeak === 0)
+        ? `和了まで残り ${a.fillRemain} ブロック。まだ形が定まらず、ターツから作る段階です。`
+        : `和了まで残り ${a.fillRemain} ブロック。両面で ${a.fillGood} つ、愚形で ${a.fillWeak} つ埋まる見込み。愚形が多いほど、待ちが細くなります。`
     });
     // 伸びしろ（受け入れの広さ）
     reasons.push({
