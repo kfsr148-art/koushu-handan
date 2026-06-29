@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="203">
+<html lang="ja" data-ver="204">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -841,7 +841,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v203</div>
+  <div id="verTag">v204</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
   <div class="panel">
@@ -1089,6 +1089,25 @@ document.addEventListener('DOMContentLoaded', function () {
     const cnt = tiles.filter(x => x.code===t.code && (!!x.red)===(!!t.red)).length;
     return cnt < 4;
   }
+
+  // ---- 押した枚数を声で告げる（日本語・数字のみ）。連打・まとめ入力でも前の声を打ち消し、常に「今の枚数」だけ言う。 ----
+  const COUNT_YOMI = ['','いち','に','さん','よん','ご','ろく','なな','はち','きゅう','じゅう','じゅういち','じゅうに','じゅうさん'];
+  let jaVoice = null;
+  function pickJaVoice(){
+    try { const vs = window.speechSynthesis.getVoices(); jaVoice = vs.find(v => v.lang && v.lang.toLowerCase().indexOf('ja')===0) || null; } catch(e){}
+  }
+  if ('speechSynthesis' in window) { pickJaVoice(); try { window.speechSynthesis.onvoiceschanged = pickJaVoice; } catch(e){} }
+  function speakCount(n){
+    if (!('speechSynthesis' in window)) return;
+    if (n < 1 || n >= COUNT_YOMI.length) return;
+    try {
+      const u = new SpeechSynthesisUtterance(COUNT_YOMI[n]);
+      u.lang = 'ja-JP'; if (jaVoice) u.voice = jaVoice; u.rate = 1.25;
+      window.speechSynthesis.cancel();   // 前の声を打ち消し、今の枚数だけ残す
+      window.speechSynthesis.speak(u);
+    } catch(e){}
+  }
+
   function addTile(t) {
     const field = document.getElementById('qiText');
     const { tiles } = parseDigits(field.value);
@@ -1097,6 +1116,7 @@ document.addEventListener('DOMContentLoaded', function () {
     tiles.push(t);
     field.value = tilesToInput(tiles);
     rebuildHand();
+    speakCount(tiles.length);   // 押した枚数を声で告げる（視線は盤面のまま耳で数を拾える）
   }
 
   // ---- 順子・両隣のまとめ入力 ----
