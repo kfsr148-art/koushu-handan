@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="204">
+<html lang="ja" data-ver="206">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -505,6 +505,7 @@
   .rotate-hint { display: none; }
   @media (orientation: portrait) {
     .wrap { display: none !important; }
+    .voice-credit { display: none !important; }
     .rotate-hint {
       display: flex; flex-direction: column; gap: 14px;
       position: fixed; inset: 0; z-index: 9999;
@@ -829,6 +830,7 @@
     body.judged .next-hand-row .nh-btn:active { background: rgba(243,236,224,0.26); }
   }
   #verTag { position: fixed; top: 2px; left: 5px; font-size: 9px; letter-spacing:0.05em; color: rgba(243,236,224,0.32); z-index: 99; pointer-events: none; font-family: var(--sans); }
+  .voice-credit { position: fixed; top: 2px; left: 44px; font-size: 9px; letter-spacing: 0.04em; color: rgba(243,236,224,0.40); z-index: 99; pointer-events: none; font-family: var(--sans); display: none; }
 </style>
 </head>
 <body>
@@ -841,7 +843,8 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v204</div>
+  <div id="verTag">v206</div>
+  <div id="voiceCredit" class="voice-credit">VOICEVOX:ずんだもん</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
   <div class="panel">
@@ -1090,23 +1093,60 @@ document.addEventListener('DOMContentLoaded', function () {
     return cnt < 4;
   }
 
-  // ---- 押した枚数を声で告げる（日本語・数字のみ）。連打・まとめ入力でも前の声を打ち消し、常に「今の枚数」だけ言う。 ----
+  // ---- 枚数・判定の読み上げ。voice/ に音声ファイル(ずんだもん等)があればそれで鳴らし、無ければOS音声に自動フォールバック。 ----
+  //   ファイル名：枚数 voice/1.wav 〜 voice/13.wav ／ 判定 voice/attack.wav・voice/defend.wav
   const COUNT_YOMI = ['','いち','に','さん','よん','ご','ろく','なな','はち','きゅう','じゅう','じゅういち','じゅうに','じゅうさん'];
   let jaVoice = null;
   function pickJaVoice(){
     try { const vs = window.speechSynthesis.getVoices(); jaVoice = vs.find(v => v.lang && v.lang.toLowerCase().indexOf('ja')===0) || null; } catch(e){}
   }
   if ('speechSynthesis' in window) { pickJaVoice(); try { window.speechSynthesis.onvoiceschanged = pickJaVoice; } catch(e){} }
-  function speakCount(n){
-    if (!('speechSynthesis' in window)) return;
-    if (n < 1 || n >= COUNT_YOMI.length) return;
+  // OS音声（フォールバック）
+  function speakOS(text, rate){
+    if (!('speechSynthesis' in window) || !text) return;
     try {
-      const u = new SpeechSynthesisUtterance(COUNT_YOMI[n]);
-      u.lang = 'ja-JP'; if (jaVoice) u.voice = jaVoice; u.rate = 1.25;
-      window.speechSynthesis.cancel();   // 前の声を打ち消し、今の枚数だけ残す
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'ja-JP'; if (jaVoice) u.voice = jaVoice; u.rate = rate || 1.0;
+      window.speechSynthesis.cancel();
       window.speechSynthesis.speak(u);
     } catch(e){}
   }
+  // 音声ファイル層（任意）。読み込めた名前だけファイル再生、それ以外はOS音声。
+  const VOICE_DIR = 'voice/';
+  const _audio = {};            // name -> HTMLAudioElement
+  const _voiceReady = {};       // name -> true(読込成功) / false(失敗)
+  function _showVoiceCredit(){ const el = document.getElementById('voiceCredit'); if (el) el.style.display = 'block'; }
+  function _preloadVoices(){
+    const names = ['attack','defend'].concat(Array.from({length:13}, (_,i)=>String(i+1)));
+    names.forEach(n => {
+      try {
+        const a = new Audio(VOICE_DIR + n + '.wav');
+        a.preload = 'auto';
+        a.addEventListener('canplaythrough', () => { _voiceReady[n] = true; _showVoiceCredit(); }, { once:true });
+        a.addEventListener('error', () => { _voiceReady[n] = false; }, { once:true });
+        _audio[n] = a;
+      } catch(e){}
+    });
+  }
+  _preloadVoices();
+  function _stopAllAudio(){ for (const k in _audio){ try { _audio[k].pause(); _audio[k].currentTime = 0; } catch(e){} } }
+  // ファイルがあればそれを、無ければOS音声で。連打時は前を止めて今のだけ。
+  function playVoice(name, osText, osRate){
+    const a = _audio[name];
+    if (_voiceReady[name] && a) {
+      try {
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        _stopAllAudio();
+        a.currentTime = 0;
+        const p = a.play();
+        if (p && p.catch) p.catch(() => speakOS(osText, osRate));
+        return;
+      } catch(e){}
+    }
+    speakOS(osText, osRate);   // 未読込・失敗時はOS音声
+  }
+  function speakCount(n){ if (n < 1 || n >= COUNT_YOMI.length) return; playVoice(String(n), COUNT_YOMI[n], 1.25); }
+  function playVerdict(attack){ playVoice(attack ? 'attack' : 'defend', attack ? '攻め' : '守り', 1.05); }
 
   function addTile(t) {
     const field = document.getElementById('qiText');
@@ -2759,6 +2799,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const attack = a.verdict==='attack';
+    playVerdict(attack);   // 判定を声で告げる（盤面から目を上げずに結果を受け取れる）
     lastAttack = attack;
     lastBorderline = a.borderline;
     lastPhoenix = a.yakumanReach;
