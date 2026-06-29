@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="189">
+<html lang="ja" data-ver="203">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -608,22 +608,25 @@
     /* 下段：左から 配牌枠＋枚数 / ドラ / 入力 / 判定ボタン */
     .hand {
       grid-area: hand; margin: 0;
-      height: 32px; min-height: 32px; max-height: 32px; padding: 4px 10px;
-      flex-wrap: nowrap; gap: 4px;   /* 折り返さず一列に。横幅フルなので13枚が余裕で並ぶ */
-      overflow: hidden; justify-content: flex-start; align-items: center;
+      height: 52px; min-height: 52px; max-height: 52px; padding: 4px 23px 4px 49px;
+      flex-wrap: nowrap; gap: 12px;   /* 折り返さず一列に。横幅フルなので13枚が余裕で並ぶ */
+      overflow: hidden; justify-content: space-between; align-items: center;
       box-sizing: border-box;
     }
     /* 配牌枠の高さは 32px に固定。空でも牌が入っても枠の高さが変わらないので、
        牌を出し入れしても上の盤面が上下に動かない。牌はこの高さに収まる寸法にする。 */
-    .hand .tile { width: 22px; height: 24px; font-size: 10px; flex: 0 0 auto; flex-direction: column; }
-    .hand .tile .suf { font-size: 6px; margin-bottom: 1px; }
+    .hand .tile { width: 36px; height: 42px; font-size: 16px; flex: 0 0 auto; flex-direction: column; }
+    .hand .tile .suf { font-size: 9px; margin-bottom: 1px; }
     .counter {
-      grid-area: hand;            /* 配牌枠の右下隅に枚数を小さく重ねる */
-      align-self: end; justify-self: end;
+      grid-area: hand;            /* 配牌枠の左の余白帯（最初の牌より左）に縦二段で置く。牌に被らない。 */
+      align-self: center; justify-self: start;
       font-size: 10px;
-      margin: 0 8px 5px 0; pointer-events: none;
+      margin: 0 0 0 4px; pointer-events: none;
+      display: flex; flex-direction: column; align-items: center;
+      line-height: 1.05; text-align: center;
     }
-    .counter b { font-size: 11px; }
+    .counter b { font-size: 13px; }
+    .counter .cap { font-size: 9px; white-space: nowrap; }
     .cat-btn {
       grid-column: 10 / span 1;
       height: 90%; width: auto; min-height: 0;
@@ -838,7 +841,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v189</div>
+  <div id="verTag">v203</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
   <div class="panel">
@@ -934,7 +937,7 @@
     </div>
 
     <div class="hand empty" id="hand"></div>
-    <div class="counter" id="counter"><b>0</b> / 10〜13 枚</div>
+    <div class="counter" id="counter"><b>0</b><span class="cap">10〜13 枚</span></div>
 
     <div class="quick-input">
       <label class="qi-label">数字で打つ — 打つそばから、上の配牌表示枠に並びますわ</label>
@@ -1175,7 +1178,7 @@ document.addEventListener('DOMContentLoaded', function () {
       el.onclick = () => { removeTileFromInput(t); };
       handEl.appendChild(el);
     });
-    counterEl.innerHTML = `<b>${hand.length}</b> / 10〜13 枚`;
+    counterEl.innerHTML = `<b>${hand.length}</b><span class="cap">10〜13 枚</span>`;
     counterEl.classList.toggle('full', hand.length>=10 && hand.length<=13);
     // 10〜13枚なら判定可能（13枚ちょうどが最も正確。14枚以上は多牌として弾く）
     judgeBtn.disabled = (hand.length < 10 || hand.length > 13);   // 10〜13枚で判定可。13枚キャップなので多牌は起きない
