@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="217">
+<html lang="ja" data-ver="218">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -843,7 +843,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v217</div>
+  <div id="verTag">v218</div>
   <div id="voiceCredit" class="voice-credit">VOICEVOX:ずんだもん</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
@@ -1145,19 +1145,42 @@ document.addEventListener('DOMContentLoaded', function () {
   _preloadVoices();
   function _stopAllAudio(){ for (const k in _audio){ try { _audio[k].pause(); _audio[k].currentTime = 0; } catch(e){} } }
   // ファイルがあればそれを、無ければOS音声で。連打時は前を止めて今のだけ。
+  let _playSeq = 0;   // 最新の再生要求だけを通す（連打・差し替え対策）
+  function _doPlayAudio(a){
+    try {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      _stopAllAudio();
+      a.currentTime = 0;
+      const p = a.play();
+      if (p && p.catch) p.catch(()=>{});
+    } catch(e){}
+  }
   function playVoice(name, osText, osRate){
+    const seq = ++_playSeq;
     const a = _audio[name];
-    if (_voiceReady[name] && a) {
-      try {
-        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-        _stopAllAudio();
-        a.currentTime = 0;
-        const p = a.play();
-        if (p && p.catch) p.catch(() => speakOS(osText, osRate));
+    if (a && _voiceReady[name]) { _doPlayAudio(a); return; }   // すぐ鳴らせる
+    // まだ準備中：このファイルが「鳴らない」と確定していなければ、準備でき次第すぐ鳴らす
+    if (_voiceReady[name] !== false) {
+      let ab = a;
+      if (!ab) {
+        // 候補の先頭で読み込みを起こす（preloadが拾えていない場合の保険）
+        try { ab = new Audio(VOICE_DIRS[0] + name + '.' + VOICE_EXTS[0]); ab.preload = 'auto'; _audio[name] = ab; } catch(e){}
+      }
+      if (ab) {
+        const onReady = () => { ab.removeEventListener('loadeddata', onReady); ab.removeEventListener('canplay', onReady);
+          _voiceReady[name] = true; _showVoiceCredit();
+          if (seq === _playSeq) _doPlayAudio(ab);   // 最新要求のときだけ鳴らす
+        };
+        ab.addEventListener('loadeddata', onReady, { once:true });
+        ab.addEventListener('canplay', onReady, { once:true });
+        ab.addEventListener('error', () => { _voiceReady[name] = false; if (seq === _playSeq) speakOS(osText, osRate); }, { once:true });
+        try { ab.load(); } catch(e){}
+        // 既に読める状態なら即時
+        if (ab.readyState >= 2) onReady();
         return;
-      } catch(e){}
+      }
     }
-    speakOS(osText, osRate);   // 未読込・失敗時はOS音声
+    speakOS(osText, osRate);   // 鳴らせないと確定した時だけOS音声
   }
   function speakCount(n){ if (n < 1 || n >= COUNT_YOMI.length) return; playVoice(String(n), COUNT_YOMI[n], 1.25); }
   function playVerdict(attack){ playVoice(attack ? 'attack' : 'defend', attack ? '攻め' : '守り', 1.05); }
