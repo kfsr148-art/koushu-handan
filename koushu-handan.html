@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="188">
+<html lang="ja" data-ver="189">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -396,6 +396,26 @@
     border-radius: 16px; padding: 26px 22px; text-align: center;
     border: 1px solid; position: relative; overflow: hidden;
   }
+  /* 判定後、カード右上に小さな猫牌。押すと猫牌の説明がカード内に開く */
+  .cat-help-btn {
+    position: absolute; top: 8px; right: 10px; z-index: 5;
+    width: 26px; height: 26px; border-radius: 6px;
+    border: 1px solid var(--bone-edge);
+    background: linear-gradient(180deg,#fdf9f1,#e7ddc8);
+    font-size: 15px; line-height: 1; padding: 0; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+  }
+  .cat-help-pop {
+    position: absolute; top: 40px; left: 8px; right: 8px; z-index: 4;
+    background: #16352a; border: 1px solid var(--gold);
+    border-radius: 8px; padding: 10px 12px;
+    color: var(--bone); font-size: 12px; line-height: 1.55;
+    text-align: left; box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    display: none;
+  }
+  .cat-help-pop.show { display: block; }
+  .cat-help-pop b { color: var(--gold); }
   .verdict-card.attack {
     background: linear-gradient(165deg, rgba(192,57,43,0.22), rgba(150,43,32,0.12));
     border-color: rgba(192,57,43,0.5);
@@ -818,7 +838,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v188</div>
+  <div id="verTag">v189</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
   <div class="panel">
@@ -2691,6 +2711,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   window.setTone = setTone;
   window.setDialect = setDialect;
+  // 判定カードの猫牌の印：押すたびに説明の開閉を切り替える
+  window.toggleCatHelp = function(e){
+    if(e){ e.stopPropagation(); e.preventDefault(); }
+    const pop = document.getElementById('catHelpPop');
+    if(pop) pop.classList.toggle('show');
+  };
 
   document.getElementById('judgeBtn').onclick = () => {
     const a = analyze();
@@ -2802,6 +2828,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     v.innerHTML = `
       <div class="verdict-card ${attack?'attack':'defend'}">
+        <button type="button" class="cat-help-btn" onclick="window.toggleCatHelp(event)" aria-label="猫牌について">🐱</button>
+        <div class="cat-help-pop" id="catHelpPop"><b>猫牌</b>　配牌を素早く13枚に埋めるための牌です。判定では「数牌の孤立牌1枚」として扱われ、受け入れを平均ぶん加算します。枚数と表示には乗りますが、特定の牌ではありません。</div>
         <div class="verdict-mascot">${attack ? (a.yakumanReach ? '🐦‍🔥' : (a.kokushiSeen ? '🐉' : '🐅')) : ((a.defHonors + a.defTerminals) >= 2 ? '🐑' : '🐭')}</div>
         <div class="verdict-kanji">${attack?'攻':'守'}</div>
         <div class="verdict-word${(a.borderline||a.yakumanReach||(a.kokushiSeen&&!a.yakumanReach))?' long':''}">${pickVerdictWord(attack)}</div>
