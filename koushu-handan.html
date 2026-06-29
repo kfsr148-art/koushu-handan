@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="172">
+<html lang="ja" data-ver="186">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -151,6 +151,7 @@
   .counter { font-size: 12px; color: rgba(243,236,224,0.65); text-align: right; }
   .counter b { color: var(--bone); font-size: 13px; }
   .counter.full b { color: var(--gold); }
+  .cat-btn { display: none; }   /* 横持ち専用。縦では出さない */
 
   /* ---- tile picker ---- */
   .picker { margin-top: 4px; }
@@ -364,7 +365,7 @@
     border: 1px solid var(--line);
   }
   .btn-del:disabled { opacity: 0.4; cursor: not-allowed; }
-  /* 順子・刻子のまとめ入力トグル。押すと金色に灯り、次に押した牌を起点に3枚入る。 */
+  /* 中三・両隣のまとめ入力トグル。押すと金色に灯る。中三=押した牌を中心に前後＋自身の3枚。両隣=前後の2枚。どちらも解除まで持続。 */
   .btn-group {
     flex: 0 0 auto; padding-left: 13px; padding-right: 13px;
     background: rgba(200,164,92,0.10); color: var(--gold);
@@ -575,7 +576,7 @@
     /* ドラ指定ボタンは4列目の升目に置き、サイズは盤面の牌(.pick)と同じに揃える。
        牌と同じ aspect-ratio・max寸法・height にして、上の牌・横の字牌と大きさを合わせる。 */
     .dora-toggle {
-      grid-column: 4 / span 1;
+      grid-column: 8 / span 1;
       height: 90%; width: auto; min-height: 0;
       aspect-ratio: 36 / 32; max-height: 54px; max-width: 61px;
       justify-self: center; align-self: center;
@@ -600,9 +601,21 @@
       grid-area: hand;            /* 配牌枠の右下隅に枚数を小さく重ねる */
       align-self: end; justify-self: end;
       font-size: 10px;
-      margin: 0 52px 5px 0; pointer-events: none;
+      margin: 0 8px 5px 0; pointer-events: none;
     }
     .counter b { font-size: 11px; }
+    .cat-btn {
+      grid-column: 10 / span 1;
+      height: 90%; width: auto; min-height: 0;
+      aspect-ratio: 36 / 32; max-height: 54px; max-width: 61px;
+      justify-self: center; align-self: center;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 5px; border: 1px solid var(--bone-edge);
+      background: linear-gradient(180deg, #fdf9f1 0%, #f4ecdc 60%, #e7ddc8 100%);
+      box-shadow: inset 0 1.5px 2px rgba(255,255,255,0.6), 0 3px 0 #c2b496, 0 4px 1px #a89a7d, 0 6px 9px rgba(0,0,0,0.30);
+      font-size: 26px; line-height: 1; padding: 0; cursor: pointer; box-sizing: border-box;
+    }
+    .cat-btn:active { transform: translateY(1px); }
     .value-col {
       grid-area: dora; margin: 0;
       display: flex; flex-direction: column; gap: 6px;
@@ -622,27 +635,27 @@
        中の「ドラ×0」文字は position:absolute で牌の流れから外すので、
        牌だけが升目の中央＝上の九萬・九筒・九索の真下に来る。
        文字は牌の右へ絶対配置で添える（位置の微調整は次段階）。 */
-    .dora-face-slot { grid-column: 5 / span 1; justify-self: center; align-self: center; align-items: center; justify-content: center; padding: 0; gap: 0; height: 100%; overflow: visible; position: relative; }
-    .dora-face-lab { display: inline; font-size: 11px; color: var(--gold); font-weight: 700; margin-right: 3px; }
+    .dora-face-slot { grid-column: 9 / span 1; justify-self: center; align-self: center; flex-direction: column; align-items: center; justify-content: center; padding: 0; gap: 0; height: 100%; overflow: visible; position: relative; transform: translateY(5px); }
+    .dora-face-lab { display: inline; font-size: 10px; color: var(--gold); font-weight: 700; margin-right: 3px; }
     /* ドラ表示牌は小ぶりの固定寸法のまま。サイズは上の牌より小さく保ち、
        位置(列・高さ)だけ揃える。牌種によらず同寸法で図柄は枠内中央に収める。 */
     .dora-face {
-      flex: 0 0 auto; width: 26px; height: 34px; padding: 0;
-      font-size: 17px; box-shadow: 0 1px 0 #b3a589; overflow: hidden;
+      flex: 0 0 auto; width: 21px; height: 26px; padding: 0;
+      font-size: 13px; box-shadow: 0 1px 0 #b3a589; overflow: hidden;
       display: inline-flex; align-items: center; justify-content: center;
       align-self: center;
     }
     .dora-face .suf { font-size: 8px; margin-bottom: 2px; }
     /* 萬子は数字と「萬」を縦に積む二段組（盤面の .tile.man と同じ作り）。 */
-    .dora-face.man { flex-direction: column; line-height: 1.05; font-size: 14px; }
+    .dora-face.man { flex-direction: column; line-height: 1.05; font-size: 12px; }
     .dora-face.man .suf { color: var(--vermilion); font-size: 0.85em; margin: 0; margin-bottom: 0; align-self: center; }
     /* 図柄(SVG)は高さ基準で置き縦横比を保つ（歪ませない）。横は枠内で中央、
        はみ出る左右は overflow:hidden で切る。これで牌種によらず同寸・図柄は歪まない。 */
     .dora-face .sou-svg, .dora-face .pin-svg { width: auto; height: 100%; flex: 0 0 auto; }
     /* 枚数の文字は表示牌の真下に小さく添える。右へずらすと東南西北の牌と重なるため下方向へ。 */
-    .dora-face-tail { position: absolute; left: 50%; top: 100%; transform: translateX(-50%); margin-top: 1px; display: inline-flex; align-items: center; white-space: nowrap; }
+    .dora-face-tail { margin-top: 1px; display: inline-flex; align-items: center; white-space: nowrap; }
     /* 横持ちのみ：右端に手牌枚数を金色で添え、何枚かを一目で示す。 */
-    .dora-face-cnt { display: inline; font-size: 12px; color: var(--gold); font-weight: 700; white-space: nowrap; }
+    .dora-face-cnt { display: inline; font-size: 11px; color: var(--gold); font-weight: 700; white-space: nowrap; }
     .dora-toggle .dora-lab { font-size: 9px; margin-right: 4px; }
     /* 下段のドラ読み取り欄の牌は、横では一段小さく詰める。
        上のパレットの牌とは連動させず独立指定（後で上の牌だけ大きくしても、ここは影響を受けない）。 */
@@ -805,7 +818,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v172</div>
+  <div id="verTag">v186</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
   <div class="panel">
@@ -839,14 +852,15 @@
           <div class="tile pick honor" data-suit="honor" data-label="白" data-num="0" data-code="P" data-red="0"></div>
           <div class="tile pick honor" data-suit="honor" data-label="發" data-num="0" data-code="F" data-red="0">發</div>
           <div class="tile pick honor" data-suit="honor" data-label="中" data-num="0" data-code="C" data-red="0">中</div>
-          <button type="button" class="dora-toggle" id="doraToggle">ドラ<br>指定</button>
-          <div class="dora-face-slot" id="doraFaceSlot"></div>
-          </div>
-          <div class="tile-row">
           <div class="tile pick honor" data-suit="honor" data-label="東" data-num="0" data-code="E" data-red="0">東</div>
           <div class="tile pick honor" data-suit="honor" data-label="南" data-num="0" data-code="S" data-red="0">南</div>
+          </div>
+          <div class="tile-row">
           <div class="tile pick honor" data-suit="honor" data-label="西" data-num="0" data-code="W" data-red="0">西</div>
           <div class="tile pick honor" data-suit="honor" data-label="北" data-num="0" data-code="N" data-red="0">北</div>
+          <button type="button" class="dora-toggle" id="doraToggle">ドラ<br>指定</button>
+          <div class="dora-face-slot" id="doraFaceSlot"></div>
+          <button type="button" class="cat-btn" id="catBtn" title="猫牌。表示と枚数には乗りますが、判定では無視されますわ。">🐱</button>
           </div>
         </div>
       </div>
@@ -855,8 +869,8 @@
     </div>
 
     <div class="actions">
-      <button type="button" class="btn btn-group" id="shuntsuBtn" onclick="window.setGroupMode('shuntsu')">順子</button>
-      <button type="button" class="btn btn-group" id="kotsuBtn" onclick="window.setGroupMode('kotsu')">刻子</button>
+      <button type="button" class="btn btn-group" id="shuntsuBtn" onclick="window.setGroupMode('shuntsu')">中三</button>
+      <button type="button" class="btn btn-group" id="ryotoBtn" onclick="window.setGroupMode('ryoto')">両隣</button>
       <button class="btn btn-go" id="judgeBtn" disabled>判定する</button>
       <button class="btn btn-clear" id="clearBtn">リセット</button>
       <button class="btn btn-shuffle" id="shuffleBtn">配牌</button>
@@ -1029,11 +1043,9 @@ document.addEventListener('DOMContentLoaded', function () {
         code: code,
         red: el.getAttribute('data-red') === '1'
       };
-      // 順子・刻子モードが立っていれば、起点としてまとめて入れ、モードは入れたら解除する
+      // 中三・両隣モードが立っていれば、起点としてまとめて入れる（どちらも解除まで持続）
       if(groupMode){
-        addGroupFrom(tile);
-        groupMode = null;
-        refreshGroupButtons();
+        addGroupFrom(tile);   // 順子・両隣とも解除（ボタン再押し）まで持続
         return;
       }
       addTile(tile);
@@ -1046,6 +1058,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // これでボタンとキーボードの食い違いが起きない。
   // 同種牌の上限：通常牌は4枚、五は通常2枚・赤2枚（赤ドラ運用）
   function canAddTile(t, tiles){
+    if(t.suit==='cat') return true;   // 猫牌は同種上限なし。総量13枚のみで止める。
     if(t.suit!=='honor' && t.num===5){
       const cnt = tiles.filter(x => x.suit===t.suit && x.num===5 && (!!x.red)===(!!t.red)).length;
       return cnt < (t.red ? 1 : 3);   // 雀魂標準：通常五は3枚・赤五は1枚
@@ -1063,46 +1076,55 @@ document.addEventListener('DOMContentLoaded', function () {
     rebuildHand();
   }
 
-  // ---- 順子・刻子のまとめ入力 ----
-  // 連番（順子）や同一牌3枚（刻子）がまとまって来る配牌のため、起点の1枚から3枚をまとめて入れる。
-  // モードボタンを押した直後に牌を押すと展開。普段の一枚押しには干渉しない（モードが立っているときだけ働く）。
-  let groupMode = null;   // null=通常 / 'shuntsu'=順子 / 'kotsu'=刻子
+  // ---- 順子・両隣のまとめ入力 ----
+  // 順子・両隣のまとめ入力。起点1枚から、押した牌の前後を環で取って入れる。両方とも解除まで持続。
+  // モードボタンを灯した状態で牌を押すと展開。普段の一枚押しには干渉しない（モードが立っているときだけ働く）。
+  let groupMode = null;   // null=通常 / 'shuntsu'=順子（中心3枚・持続） / 'ryoto'=両隣（前後2枚・持続）
 
   // 数牌の番号 n からタイル一枚ぶんの簡易オブジェクトを作る。red=true なら赤牌として作る。
   function numTileOf(suit, n, red){
     const code = ({man:'m',pin:'p',sou:'s'})[suit] + n;
     return { suit, label:String(n), num:n, code, red: !!red };
   }
-  // 順子の3つの番号を返す。端ははみ出さないよう内側へ寄せる（8→789, 9→789, 1→123）。
-  function shuntsuNums(n){
-    let start = n;
-    if(start > 7) start = 7;   // 8,9 は 789 に寄せる
-    return [start, start+1, start+2];
+  // 字牌を環にした並び（東南西北白發中）。順子・両隣の前後算出に使う。
+  const HONOR_RING = ['E','S','W','N','P','F','C'];
+  function honorTileOf(code){
+    return { suit:'honor', label: honorData[code].label, num:0, code, red:false };
   }
-  // 起点牌 t を受け、モードに応じて3枚をまとめて入れる
+  // 猫牌：判定では一切評価されない“謎の孤立牌”。表示と枚数にだけ乗る。内部文字列では「猫」一文字で持つ。
+  function catTile(){ return { suit:'cat', label:'🐱', num:0, code:'cat', red:false }; }
+  // 起点牌 t を受け、モードに応じてまとめて入れる。
+  // 順子・両隣とも「押した牌の前後」を環で取る（数牌は1-9、字牌は七枚を環に）。
+  //   順子＝前・自身・後の3枚（赤五を中心に押せば5は赤）。両隣＝前・後の2枚（自身なし・赤なし）。
   function addGroupFrom(t){
     if(t.suit === 'honor'){
-      // 字牌：順子は無効。刻子のみ3枚。
-      if(groupMode === 'kotsu'){
-        for(let i=0;i<3;i++) addTile({ suit:t.suit, label:t.label, num:t.num, code:t.code, red:false });
+      const i = HONOR_RING.indexOf(t.code);
+      if(i < 0) return;
+      const prev = HONOR_RING[(i - 1 + 7) % 7];
+      const next = HONOR_RING[(i + 1) % 7];
+      if(groupMode === 'shuntsu'){
+        addTile(honorTileOf(prev)); addTile(honorTileOf(t.code)); addTile(honorTileOf(next));
+      } else if(groupMode === 'ryoto'){
+        addTile(honorTileOf(prev)); addTile(honorTileOf(next));
       }
       return;
     }
-    // 起点が赤五のときは、順子・刻子で入れる「5」だけを赤で入れる（他の牌は通常牌）。
     const startRedFive = (t.red === true && t.num === 5);
+    const prev = t.num === 1 ? 9 : t.num - 1;
+    const next = t.num === 9 ? 1 : t.num + 1;
     if(groupMode === 'shuntsu'){
-      shuntsuNums(t.num).forEach(n => addTile(numTileOf(t.suit, n, startRedFive && n === 5)));
-    } else if(groupMode === 'kotsu'){
-      // 刻子は同じ牌3枚。起点が赤五でも赤は各色1枚のみなので、赤1枚＋通常2枚で入れる。
-      for(let i=0;i<3;i++) addTile(numTileOf(t.suit, t.num, startRedFive && i === 0));
+      [prev, t.num, next].forEach(n => addTile(numTileOf(t.suit, n, startRedFive && n === 5)));
+    } else if(groupMode === 'ryoto'){
+      addTile(numTileOf(t.suit, prev, false));
+      addTile(numTileOf(t.suit, next, false));
     }
   }
   // モードボタンの見た目を更新
   function refreshGroupButtons(){
     const sb = document.getElementById('shuntsuBtn');
-    const kb = document.getElementById('kotsuBtn');
+    const rb = document.getElementById('ryotoBtn');
     if(sb) sb.classList.toggle('armed', groupMode === 'shuntsu');
-    if(kb) kb.classList.toggle('armed', groupMode === 'kotsu');
+    if(rb) rb.classList.toggle('armed', groupMode === 'ryoto');
   }
   window.setGroupMode = function(mode){
     groupMode = (groupMode === mode) ? null : mode;   // 同じボタン再押しで解除
@@ -1112,7 +1134,7 @@ document.addEventListener('DOMContentLoaded', function () {
     handEl.innerHTML='';
     handEl.classList.toggle('empty', hand.length===0);
     // sort for display
-    const order = {man:0,pin:1,sou:2,honor:3};
+    const order = {man:0,pin:1,sou:2,honor:3,cat:4};
     const sorted = [...hand].sort((a,b)=> order[a.suit]-order[b.suit] || a.num-b.num);
     sorted.forEach(t => {
       const el = document.createElement('div');
@@ -1124,6 +1146,8 @@ document.addEventListener('DOMContentLoaded', function () {
         el.innerHTML = souSVG(t.num, t.red);
       } else if(t.suit==='man'){
         el.innerHTML = `${kanjiNum(t.num)}<span class="suf">萬</span>`;
+      } else if(t.suit==='cat'){
+        el.innerHTML = '🐱';
       } else {
         const suf = t.suit==='honor' ? '' : `<span class="suf">${SUITS.find(s=>s.key===t.suit).suf}</span>`;
         el.innerHTML = `${t.label}${suf}`;
@@ -1193,6 +1217,7 @@ document.addEventListener('DOMContentLoaded', function () {
         tiles.push({ suit:'honor', label:(ch==='发'?'發':ch), num:0, code:honorKanji[ch], red:false });
         continue;
       }
+      if(ch==='猫'){ tiles.push(catTile()); continue; }   // 猫牌（判定無視の謎牌）
       // 上記以外の文字（@ ; y k などローマ字や記号）は、エラーにせず黙って無視する
     }
     // 末尾に種類のつかない数字が残っても、エラーにはせず黙って捨てる（寛容）
@@ -1215,7 +1240,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const el = document.getElementById('qiStatus');
     el.className = 'qi-status';
     const c = {}; const over = {};
-    h.forEach(t=>{ c[t.code]=(c[t.code]||0)+1; if(c[t.code]>4) over[t.code]=c[t.code]; });
+    h.forEach(t=>{ if(t.suit==='cat') return; c[t.code]=(c[t.code]||0)+1; if(c[t.code]>4) over[t.code]=c[t.code]; });
     const overCodes = Object.keys(over);
     if(errs.length){
       el.classList.add('err'); el.textContent = errs[0] + 'の。'; return;
@@ -1253,6 +1278,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   document.getElementById('qiText').addEventListener('input', rebuildHand);
+  document.getElementById('catBtn')?.addEventListener('click', ()=> addTile(catTile()));   // 猫牌を一枚足す（13枚総量で止まる）
 
   document.getElementById('qiBack').addEventListener('click', ()=>{
     const field = document.getElementById('qiText');
@@ -1307,7 +1333,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const honorLabel = {E:'東',S:'南',W:'西',N:'北',P:'白',F:'發',C:'中'};
     const groups = {man:[],pin:[],sou:[]};
     const honors = [];
-    tiles.forEach(t=>{ if(t.suit==='honor') honors.push(t); else groups[t.suit].push(t); });
+    let cats = 0;
+    tiles.forEach(t=>{ if(t.suit==='cat'){ cats++; return; } if(t.suit==='honor') honors.push(t); else groups[t.suit].push(t); });
     const parts = [];
     ['man','pin','sou'].forEach(suit=>{
       if(groups[suit].length===0) return;
@@ -1322,6 +1349,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const sorted = [...honors].sort((a,b)=> order.indexOf(a.code)-order.indexOf(b.code));
       parts.push(sorted.map(t=> honorLabel[t.code]).join(''));
     }
+    if(cats>0) parts.push('猫'.repeat(cats));
     return parts.join(' ');
   }
 
@@ -1553,9 +1581,11 @@ document.addEventListener('DOMContentLoaded', function () {
   //  JUDGEMENT  —  配牌の第一感を攻守二択で固定（点棒・役・巡目は度外視）
   // ============================================================
   function analyze() {
+    // 猫牌は評価対象外。判定に進む前に取り除き、以降は本牌のみで計算する。
+    const rhand = hand.filter(t => t.suit !== 'cat');
     // 14枚以上（多牌）は配牌判定の対象外。受け入れ計算が成立しないため、
     // 計算には一切進ませず、入れ直しを促す印だけ返して断つ。
-    if(hand.length >= 14){
+    if(rhand.length >= 14){
       return { tooMany: true };
     }
     // counts
@@ -1563,7 +1593,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let redCount = 0;
     const suitNums = {man:[],pin:[],sou:[]};
     const honorCount = {};
-    hand.forEach(t=>{
+    rhand.forEach(t=>{
       cnt[t.code]=(cnt[t.code]||0)+1;
       if(t.red) redCount++;
       if(t.suit==='honor') honorCount[t.code]=(honorCount[t.code]||0)+1;
@@ -1822,7 +1852,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return Math.min(minSt, chiitoiSt, kokushiSt);
     }
 
-    const baseTiles = tilesArray(hand);
+    const baseTiles = tilesArray(rhand);
     // 枚数が13でなくても判定できるよう拡張：
     //   13枚 → そのまま
     //   13枚未満 → 不足分を「形に絡まないダミー字牌」で補い、13枚相当で向聴を測る
@@ -2101,7 +2131,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 七対子は単騎待ちで塔子の良し悪しが関わらず、揃った対子の数こそが攻めの根拠になる。
     // 面子手が近い手は従来の bestShapeOneSuit のまま（向かう役の物差しで測る）。
     {
-      const normT = normalizeForShanten(tilesArray(hand));
+      const normT = normalizeForShanten(tilesArray(rhand));
       const c2={}; normT.forEach(c=> c2[c]=(c2[c]||0)+1);
       let k2=0, p2=0; Object.values(c2).forEach(c=>{ k2++; if(c>=2) p2++; });
       const chiitoiShanten = 6 - p2 + Math.max(0, 7 - k2);
