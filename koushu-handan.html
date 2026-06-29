@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="218">
+<html lang="ja" data-ver="219">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -843,7 +843,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v218</div>
+  <div id="verTag">v219</div>
   <div id="voiceCredit" class="voice-credit">VOICEVOX:ずんだもん</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
@@ -1121,9 +1121,11 @@ document.addEventListener('DOMContentLoaded', function () {
   function _preloadVoices(){
     const names = ['attack','defend'].concat(Array.from({length:13}, (_,i)=>String(i+1)));
     names.forEach(n => {
-      // 候補URL（場所×形式）を順に試し、最初に読めたものを採用
+      // 候補URL（場所×区切り×形式）を順に試し、最初に読めたものを採用
+      // SEPS: 拡張子の前にスペースが紛れた名前（例 "1 .wav.wav"）にも対応する
+      const SEPS = ['.', ' .'];
       const cands = [];
-      VOICE_DIRS.forEach(d => VOICE_EXTS.forEach(ext => cands.push(d + n + '.' + ext)));
+      VOICE_DIRS.forEach(d => SEPS.forEach(sep => VOICE_EXTS.forEach(ext => cands.push(d + n + sep + ext))));
       let idx = 0;
       const tryNext = () => {
         if(idx >= cands.length){ _voiceReady[n] = false; return; }   // どこにも無ければOS音声へ
@@ -1163,8 +1165,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (_voiceReady[name] !== false) {
       let ab = a;
       if (!ab) {
-        // 候補の先頭で読み込みを起こす（preloadが拾えていない場合の保険）
-        try { ab = new Audio(VOICE_DIRS[0] + name + '.' + VOICE_EXTS[0]); ab.preload = 'auto'; _audio[name] = ab; } catch(e){}
+        // preloadが拾えていない場合の保険：直下の二重拡張子（空白なし→空白あり）を順に起こす
+        const guess = [name + '.wav.wav', name + ' .wav.wav', name + '.wav', name + ' .wav'];
+        for (const g of guess){ try { ab = new Audio(g); ab.preload = 'auto'; _audio[name] = ab; break; } catch(e){} }
       }
       if (ab) {
         const onReady = () => { ab.removeEventListener('loadeddata', onReady); ab.removeEventListener('canplay', onReady);
