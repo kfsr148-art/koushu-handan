@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="186">
+<html lang="ja" data-ver="188">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -818,7 +818,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v186</div>
+  <div id="verTag">v188</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
   <div class="panel">
@@ -1583,6 +1583,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function analyze() {
     // 猫牌は評価対象外。判定に進む前に取り除き、以降は本牌のみで計算する。
     const rhand = hand.filter(t => t.suit !== 'cat');
+    const catCount = hand.length - rhand.length;   // 猫の枚数。後で擬似受け入れを注入する。
     // 14枚以上（多牌）は配牌判定の対象外。受け入れ計算が成立しないため、
     // 計算には一切進ませず、入れ直しを促す印だけ返して断つ。
     if(rhand.length >= 14){
@@ -1881,7 +1882,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return t; // 14枚以上はそのまま渡し、下で捨て牌を選ぶ
     }
 
-    if(baseTiles.length >= 10 && baseTiles.length <= 18){
+    if((baseTiles.length + catCount) >= 10 && baseTiles.length <= 18){
       const allTiles=[];
       for(const su of ['m','p','s']) for(let n=1;n<=9;n++) allTiles.push(su+n);
       ['E','S','W','N','P','F','C'].forEach(h=>allTiles.push(h));
@@ -1939,6 +1940,18 @@ document.addEventListener('DOMContentLoaded', function () {
             if(bestSt < baseShanten){ acceptTypes++; acceptTiles += (4 - have); }
           }
         });
+      }
+      // 猫牌の擬似受け入れ：猫は判定で除外され字牌ダミーで埋まるが、実戦で孤立した数牌を
+      // 打てば字牌より受けが広い。その差（数牌孤立1枚=平均約22枚、字牌ダミー比+約13枚）を
+      // 猫1枚につき注入し、孤立牌を打った場合の受けへ寄せる。向聴は floater 扱いのまま動かさない。
+      if(catCount > 0){
+        // 孤立数牌の受け差は位置で決まる：端(1,2,8,9)平均+10枚、中(3-7)+16枚（隣の数=受けの差）。
+        // 配牌30万回の実測で、現れる孤立数牌は端60.6%・中39.4%。その割合で加重平均した
+        // +12.4枚/枚を注入する。端か中かを選ばせず、出現確率で按分した一律値。
+        acceptTiles += Math.round(catCount * 12.4);
+        acceptTypes += catCount * 4;
+        acceptTiles = Math.min(acceptTiles, 80);   // 暴走防止：受けが非常に広い域で頭打ち
+        acceptTypes = Math.min(acceptTypes, 34);
       }
     }
     // 広さの分類：シャンテン数が深いほど受け入れは多くて当然なので、
