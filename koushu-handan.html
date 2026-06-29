@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="213">
+<html lang="ja" data-ver="214">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -843,7 +843,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v213</div>
+  <div id="verTag">v214</div>
   <div id="voiceCredit" class="voice-credit">VOICEVOX:ずんだもん</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
@@ -1116,16 +1116,22 @@ document.addEventListener('DOMContentLoaded', function () {
   const _audio = {};            // name -> HTMLAudioElement
   const _voiceReady = {};       // name -> true(読込成功) / false(失敗)
   function _showVoiceCredit(){ const el = document.getElementById('voiceCredit'); if (el) el.style.display = 'block'; }
+  const VOICE_EXTS = ['wav','m4a','mp3'];   // 形式を問わず：wav が無ければ m4a→mp3 を順に試す
   function _preloadVoices(){
     const names = ['attack','defend'].concat(Array.from({length:13}, (_,i)=>String(i+1)));
     names.forEach(n => {
-      try {
-        const a = new Audio(VOICE_DIR + n + '.wav');
-        a.preload = 'auto';
-        a.addEventListener('canplaythrough', () => { _voiceReady[n] = true; _showVoiceCredit(); }, { once:true });
-        a.addEventListener('error', () => { _voiceReady[n] = false; }, { once:true });
-        _audio[n] = a;
-      } catch(e){}
+      let idx = 0;
+      const tryNext = () => {
+        if(idx >= VOICE_EXTS.length){ _voiceReady[n] = false; return; }   // どの形式も無ければOS音声へ
+        const ext = VOICE_EXTS[idx++];
+        try {
+          const a = new Audio(VOICE_DIR + n + '.' + ext);
+          a.preload = 'auto';
+          a.addEventListener('canplaythrough', () => { _voiceReady[n] = true; _audio[n] = a; _showVoiceCredit(); }, { once:true });
+          a.addEventListener('error', () => { tryNext(); }, { once:true });   // この形式が無ければ次の形式へ
+        } catch(e){ tryNext(); }
+      };
+      tryNext();
     });
   }
   _preloadVoices();
