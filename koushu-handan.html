@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="269">
+<html lang="ja" data-ver="271">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -694,7 +694,7 @@
     .wind-2step { display: flex; align-items: center; gap: 14px; width: 100%; }
     .w2-round { display: flex; gap: 8px; flex: 0 0 auto; }
     .w2-seat  { display: flex; gap: 10px; flex: 0 1 auto; min-width: 0; }
-    .w2-r { font-size: 15px; padding: 10px 18px; border-radius: 8px; line-height: 1.2; flex: 0 0 auto; }
+    .w2-r { font-size: 13px; padding: 8px 6px; border-radius: 8px; line-height: 1.2; flex: 0 0 auto; }
     .w2-s { font-size: 16px; padding: 10px 0; border-radius: 8px; line-height: 1.2; flex: 0 1 auto; width: 44px; min-width: 0; text-align: center; }
     .quick-input {
       display: none;   /* 横持ちは盤面タップで牌を並べるのでキーボード入力欄は省く。空いた幅は配牌表示枠へ回す */
@@ -832,6 +832,9 @@
   #verTag { position: fixed; top: 2px; left: 5px; font-size: 9px; letter-spacing:0.05em; color: rgba(243,236,224,0.32); z-index: 99; pointer-events: none; font-family: var(--sans); }
   .voice-credit { position: fixed; top: 2px; left: 44px; font-size: 9px; letter-spacing: 0.04em; color: rgba(243,236,224,0.40); z-index: 99; pointer-events: none; font-family: var(--sans); display: none; }
   #tauntBtn{width:88px;box-sizing:border-box;flex:0 0 auto;text-align:center;}
+  @media (orientation: landscape){
+    #tauntBtn,.btn-clear,.btn-shuffle{width:68px;padding-left:6px;padding-right:6px;box-sizing:border-box;flex:0 0 auto;text-align:center;}
+  }
 </style>
 </head>
 <body>
@@ -844,7 +847,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v269</div>
+  <div id="verTag">v271</div>
   <div id="voiceCredit" class="voice-credit">VOICEVOX:ずんだもん</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
