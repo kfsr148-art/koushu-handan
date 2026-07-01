@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="238">
+<html lang="ja" data-ver="245">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -347,6 +347,16 @@
     letter-spacing: 0.08em; cursor: pointer; transition: all 0.14s ease;
     white-space: nowrap;
   }
+  /* 判定・ボイス・リセットの3つを同じ幅で横並びにする（それぞれ均等に伸縮）。 */
+  /* ボイス・リセットは配牌ボタンと同じく内容なりの控えめな幅にする（風表示欄を圧迫しない）。 */
+  /* ボイス・リセットは風表示欄を圧迫しないよう、配牌より詰めた控えめ幅にする。 */
+  .btn-voice, .btn-trio-clear { flex: 0 0 auto; padding-left: 10px; padding-right: 10px; }
+  /* ボイスチェンジ：枚数読み上げ⇄両隣読み上げの切替。押すと金色に灯る。 */
+  .btn-voice {
+    background: rgba(200,164,92,0.10); color: var(--gold);
+    border: 1px solid var(--gold);
+  }
+  .btn-voice.armed { background: var(--gold); color: #1a1a1a; }
   .btn-go {
     background: linear-gradient(180deg, var(--vermilion), var(--vermilion-d));
     color: var(--bone); box-shadow: 0 4px 0 #7a2218, 0 6px 14px rgba(0,0,0,0.3);
@@ -694,7 +704,7 @@
     .wind-2step { display: flex; align-items: center; gap: 14px; width: 100%; }
     .w2-round { display: flex; gap: 8px; flex: 0 0 auto; }
     .w2-seat  { display: flex; gap: 10px; flex: 0 1 auto; min-width: 0; }
-    .w2-r { font-size: 15px; padding: 10px 18px; border-radius: 8px; line-height: 1.2; flex: 0 0 auto; }
+    .w2-r { font-size: 15px; padding: 10px 10px; border-radius: 8px; line-height: 1.2; flex: 0 0 auto; }   /* 東場・南場を詰め、座席(東南西北)表示に幅を回す */
     .w2-s { font-size: 16px; padding: 10px 0; border-radius: 8px; line-height: 1.2; flex: 0 1 auto; width: 44px; min-width: 0; text-align: center; }
     .quick-input {
       display: none;   /* 横持ちは盤面タップで牌を並べるのでキーボード入力欄は省く。空いた幅は配牌表示枠へ回す */
@@ -708,7 +718,10 @@
     .stepper { gap: 6px; }
     .btn { padding: 4px 16px; font-size: 14px; white-space: nowrap; }
     .btn-go { flex: none; }
-    .btn-clear { flex: none; }
+    /* 横向き：ボイス・リセットを詰めて、左の風表示欄に幅を回す（潰れ防止）。 */
+    .btn-clear { flex: none; padding-left: 9px; padding-right: 9px; }
+    /* ボイスは「ボイス」⇄「ボイス2」で文字数が変わる。固定幅にして押しても幅が動かないようにする。 */
+    .btn-voice { flex: none; width: 78px; padding-left: 0; padding-right: 0; text-align: center; box-sizing: border-box; }
     .btn-del { flex: none; padding-left: 12px; padding-right: 12px; }
     .qi-label { font-size: 9px; margin-bottom: 2px; line-height: 1.2; }
     .qi-field { padding: 7px 10px; font-size: 15px; }
@@ -843,7 +856,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v238</div>
+  <div id="verTag">v245</div>
   <div id="voiceCredit" class="voice-credit">VOICEVOX:ずんだもん</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
@@ -898,7 +911,8 @@
       <button type="button" class="btn btn-group" id="shuntsuBtn" onclick="window.setGroupMode('shuntsu')">中三</button>
       <button type="button" class="btn btn-group" id="ryotoBtn" onclick="window.setGroupMode('ryoto')">両隣</button>
       <button class="btn btn-go" id="judgeBtn" disabled>判定する</button>
-      <button class="btn btn-clear" id="clearBtn">リセット</button>
+      <button class="btn btn-trio-clear btn-clear" id="clearBtn">リセット</button>
+      <button type="button" class="btn btn-voice" id="voiceBtn" onclick="window.toggleRyotoVoice()">ボイス</button>
       <button class="btn btn-shuffle" id="shuffleBtn">配牌</button>
     </div>
 
@@ -1119,7 +1133,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const VOICE_EXTS = ['wav','wav.wav','m4a','mp3'];   // 形式：wav→wav.wav(二重拡張子)→m4a→mp3
   const VOICE_DIRS = ['voice/',''];                  // 置き場所：voice/ フォルダ内→リポジトリ直下、両方探す
   function _preloadVoices(){
-    const names = ['attack','defend'].concat(Array.from({length:13}, (_,i)=>String(i+1)));
+    const _ryoto = [];
+    ['m','p','s'].forEach(pfx => { for(let n=1;n<=9;n++){ _ryoto.push('ryoto_'+pfx+n); } });   // 両隣読み上げ27音声
+    const names = ['attack','defend'].concat(Array.from({length:13}, (_,i)=>String(i+1))).concat(_ryoto);
     names.forEach(n => {
       // 候補URL（場所×区切り×形式）を順に試し、最初に読めたものを採用
       // SEPS: 拡張子の前にスペースが紛れた名前（例 "1 .wav.wav"）にも対応する
@@ -1189,6 +1205,34 @@ document.addEventListener('DOMContentLoaded', function () {
   function playVerdict(attack){ playVoice(attack ? 'attack' : 'defend', attack ? '攻め' : '守り', 1.05); }
 
   let _yoshiNext = false;   // 猫牌タップ時だけ true：枚数読みの代わりにヨシを鳴らす
+  // ---- ボイスチェンジ：牌タップ時の読み上げを「枚数(連番)」⇄「両隣」で切り替える ----
+  // 両隣モードのときは、押した牌と同じ色の前後2枚を「よん、ろくまん」の要領で読む（端は環：1↔9）。
+  // 音声ファイル ryoto_m1〜s9（全27）を鳴らし、無ければOS音声にフォールバック。
+  let ryotoVoice = false;   // false=通常(枚数を連番で) / true=両隣読み上げ
+  const _RY_YOMI = ['','いち','に','さん','よん','ご','ろく','なな','はち','きゅう'];
+  const _RY_SUF  = { man:['m','まん'], pin:['p','ぴん'], sou:['s','そう'] };
+  // 押した牌 t から、両隣読み上げの {name, text} を返す。数牌以外は null（字牌・猫牌は両隣なし）。
+  function ryotoYomiOf(t){
+    if(!t || !(t.suit in _RY_SUF) || !t.num) return null;
+    const n = t.num;
+    const prev = (n === 1) ? 9 : n - 1;   // 環：1の前は9
+    const next = (n === 9) ? 1 : n + 1;   // 環：9の次は1
+    const [pfx, suf] = _RY_SUF[t.suit];
+    return { name: 'ryoto_' + pfx + n, text: _RY_YOMI[prev] + '、' + _RY_YOMI[next] + suf };
+  }
+  // 両隣モードで一枚押したときの読み上げ。数牌なら両隣を、字牌・猫牌はこれまで通り枚数を読む。
+  function speakRyotoOrCount(t, cnt){
+    const y = ryotoYomiOf(t);
+    if (y) { playVoice(y.name, y.text, 1.15); }
+    else { speakCount(cnt); }   // 字牌・猫牌は両隣が無いので枚数読み上げにフォールバック
+  }
+  // ボイスチェンジボタン：モードを反転して見た目を更新
+  window.toggleRyotoVoice = function(){
+    ryotoVoice = !ryotoVoice;
+    const b = document.getElementById('voiceBtn');
+    if (b){ b.classList.toggle('armed', ryotoVoice); b.textContent = ryotoVoice ? 'ボイス2' : 'ボイス'; }
+  };
+
   function addTile(t) {
     const speakYoshi = _yoshiNext; _yoshiNext = false;
     const field = document.getElementById('qiText');
@@ -1198,7 +1242,9 @@ document.addEventListener('DOMContentLoaded', function () {
     tiles.push(t);
     field.value = tilesToInput(tiles);
     rebuildHand();
-    if (speakYoshi) { playVoice('yoshi', 'ヨシ', 1.05); } else { speakCount(tiles.length); }   // 猫牌はヨシ、それ以外は枚数を声で
+    if (speakYoshi) { playVoice('yoshi', 'ヨシ', 1.05); }   // 猫牌はヨシ
+    else if (ryotoVoice) { speakRyotoOrCount(t, tiles.length); }   // 両隣モード：押した牌の両隣を読む
+    else { speakCount(tiles.length); }   // 通常：枚数を声で
   }
 
   // ---- 順子・両隣のまとめ入力 ----
