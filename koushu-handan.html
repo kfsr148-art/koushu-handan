@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="272">
+<html lang="ja" data-ver="273">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -847,7 +847,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v272</div>
+  <div id="verTag">v273</div>
   <div id="voiceCredit" class="voice-credit">VOICEVOX:ずんだもん</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
@@ -3137,7 +3137,7 @@ document.addEventListener('DOMContentLoaded', function () {
   };
   let currentTone = (()=>{ try { return localStorage.getItem('koushu_tone') || 'butler'; } catch(e){ return 'butler'; } })();
   let currentDialect = (()=>{ try { return localStorage.getItem('koushu_dialect') || ''; } catch(e){ return ''; } })();
-  let currentTaunt = 'normal';   // 3値トグルの器：ノーマル→デレデレ→ツンツンの循環。normal=素(据置) / dere=デレデレ(新設) / tsun=ドヤ煽り(旧taunt)。
+  let currentTaunt = (()=>{ try { return localStorage.getItem('koushu_taunt') || 'normal'; } catch(e){ return 'normal'; } })();   // 3値トグルの器：保存対応。normal=素 / dere=デレデレ / tsun=ドヤ煽り。
   let lastAttack = false;
   let lastBorderline = false;
   let lastPhoenix = false;
@@ -3235,6 +3235,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function toggleTaunt(){
     const i = TAUNT_CYCLE.indexOf(currentTaunt);
     currentTaunt = TAUNT_CYCLE[(i + 1) % TAUNT_CYCLE.length];   // ノーマル→デレデレ→ツンツン→…
+    try { localStorage.setItem('koushu_taunt', currentTaunt); } catch(e){}
     const b = document.getElementById('tauntBtn');
     if(b) b.textContent = TAUNT_LABEL[currentTaunt];
     applyVerdictWord(); applyRotateTone(); applySeatTone();
@@ -3429,6 +3430,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if(ss) seatWind  = ss;
   } catch(e){}
   refreshWind();
+  const tb0 = document.getElementById('tauntBtn');
+  if(tb0) tb0.textContent = TAUNT_LABEL[currentTaunt] || TAUNT_LABEL.normal;
   applyRotateTone();
 });
 </script>
