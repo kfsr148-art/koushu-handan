@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="246">
+<html lang="ja" data-ver="245">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -856,7 +856,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v246</div>
+  <div id="verTag">v245</div>
   <div id="voiceCredit" class="voice-credit">VOICEVOX:ずんだもん</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
@@ -1131,7 +1131,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const _voiceReady = {};       // name -> true(読込成功) / false(失敗)
   function _showVoiceCredit(){ const el = document.getElementById('voiceCredit'); if (el) el.style.display = 'block'; }
   const VOICE_EXTS = ['wav','wav.wav','m4a','mp3'];   // 形式：wav→wav.wav(二重拡張子)→m4a→mp3
-  const VOICE_DIRS = ['voice/'];                     // 置き場所：voice/ フォルダ内のみ（直下探索は404HTML誤認の元なので断つ）
+  const VOICE_DIRS = ['voice/',''];                  // 置き場所：voice/ フォルダ内→リポジトリ直下、両方探す
   function _preloadVoices(){
     const _ryoto = [];
     ['m','p','s'].forEach(pfx => { for(let n=1;n<=9;n++){ _ryoto.push('ryoto_'+pfx+n); } });   // 両隣読み上げ27音声
@@ -1149,11 +1149,7 @@ document.addEventListener('DOMContentLoaded', function () {
           const a = new Audio(cands[idx++]);
           a.preload = 'auto';
           // 短い音声では canplaythrough が出ないことがあるので、loadeddata / canplay でも準備OKと見なす
-          const markReady = () => {
-            // 404HTMLを掴んだ偽Audioは尺が有限にならない。本物だけ採用し、偽物は次候補へ
-            if (!(isFinite(a.duration) && a.duration > 0)) { tryNext(); return; }
-            if(!_voiceReady[n]){ _voiceReady[n] = true; _audio[n] = a; _showVoiceCredit(); }
-          };
+          const markReady = () => { if(!_voiceReady[n]){ _voiceReady[n] = true; _audio[n] = a; _showVoiceCredit(); } };
           a.addEventListener('loadeddata', markReady, { once:true });
           a.addEventListener('canplay', markReady, { once:true });
           a.addEventListener('canplaythrough', markReady, { once:true });
@@ -1185,14 +1181,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (_voiceReady[name] !== false) {
       let ab = a;
       if (!ab) {
-        // preloadが拾えていない場合の保険：voice/ 配下のみ試す（直下探索は404HTML誤認の元なので断つ）
-        const guess = ['voice/' + name + '.wav', 'voice/' + name + '.wav.wav'];
+        // preloadが拾えていない場合の保険：直下の二重拡張子（空白なし→空白あり）を順に起こす
+        const guess = [name + '.wav.wav', name + ' .wav.wav', name + '.wav', name + ' .wav'];
         for (const g of guess){ try { ab = new Audio(g); ab.preload = 'auto'; _audio[name] = ab; break; } catch(e){} }
       }
       if (ab) {
         const onReady = () => { ab.removeEventListener('loadeddata', onReady); ab.removeEventListener('canplay', onReady);
-          // 404HTMLを掴んだ偽Audioは尺が有限にならない。本物の音声だけ採用し、偽物はOS音声へ落とす
-          if (!(isFinite(ab.duration) && ab.duration > 0)) { _voiceReady[name] = false; if (seq === _playSeq) speakOS(osText, osRate); return; }
           _voiceReady[name] = true; _showVoiceCredit();
           if (seq === _playSeq) _doPlayAudio(ab);   // 最新要求のときだけ鳴らす
         };
