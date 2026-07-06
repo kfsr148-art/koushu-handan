@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="505">
+<html lang="ja" data-ver="506">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -855,7 +855,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v505</div>
+  <div id="verTag">v506</div>
   <div id="voiceCredit" class="voice-credit">VOICEVOX:ずんだもん</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
@@ -1419,9 +1419,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // 探偵モード：一度デルタ・プリンセス号へ辿り着いた盤では、猫牌ボタンが探偵猫へ姿を変え、押すと船へ飛ぶ。
   //            リセットで通常の猫牌へ戻る（resetBoard内で detectiveMode=false）。
   let detectiveMode = false;
-  function advUnlocked(){ try { return localStorage.getItem('koushu_adv') === '1'; } catch(e){ return false; } }
-  function refreshCatBtn(forceCat){
-    detectiveMode = forceCat ? false : advUnlocked();
+  let advReachedThisSession = false;   // その盤かぎりの解禁。ページを開き直せば false へ戻る。
+  function refreshCatBtn(){
+    detectiveMode = advReachedThisSession;
     const genba = document.querySelector('#catBtn img:not(#detectiveImg)');
     const det = document.getElementById('detectiveImg');
     if(genba) genba.style.display = detectiveMode ? 'none' : 'block';
@@ -1635,7 +1635,6 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('qiStatus').textContent = '';
     document.getElementById('qiStatus').className = 'qi-status';
     render();
-    if(typeof refreshCatBtn === 'function'){ refreshCatBtn(true); }   // リセットは一時的に猫牌へ戻す
   }
   window.resetBoard = resetBoard;   // 判定後に生成される次局ボタンのonclickから呼ぶため外へ公開
 
@@ -4187,7 +4186,8 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('judgeBtn').onclick = () => {
     // 猫牌10枚以上 → 隠しADVへ出航（解禁フラグを刻む）
     if(hand.filter(t => t.suit === 'cat').length >= 10){
-      try { localStorage.setItem('koushu_adv', '1'); } catch(e){}
+      advReachedThisSession = true;
+      if(typeof refreshCatBtn === 'function'){ refreshCatBtn(); }
       advStart();
       return;
     }
