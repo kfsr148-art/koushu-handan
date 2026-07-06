@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="500">
+<html lang="ja" data-ver="504">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -854,7 +854,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v500</div>
+  <div id="verTag">v504</div>
   <div id="voiceCredit" class="voice-credit">VOICEVOX:ずんだもん</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
@@ -3309,7 +3309,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // ============================================================
   // 猫牌隠しADV「デルタ・プリンセス号」 第一段階＝骨格（v313）
   // 起動: 猫牌10枚で判定ボタン → advStart()
-  // 経済: АР20 / 牌12で聴牌 / 犯人の嘘「中」でロン / АР8以下で殺人開始
+  // 経済: АР20 / 牌13で聴牌 / 犯人の嘘「中」でロン / АР8以下で殺人開始
   // ============================================================
   const ADV_ROOMS = [
     {k:'captain',   label:'船長室'},
@@ -3744,7 +3744,7 @@ document.addEventListener('DOMContentLoaded', function () {
       '港に、大きな客船がとまっている。\nその名は——デルタ・プリンセス号。',
       '現場猫が、船に乗りこんだ。\n指差し確認——「ヨシ！」',
       'だが現場猫室で、労災猫が悶絶していた。\n崩れた壁牌の下敷き。……誰も「ヨシ！」を、していなかったのだ。',
-      '船の部屋をまわり、証拠の牌を12枚あつめよ。\nそろったら——犯人の嘘に「ロン」！'
+      '船の部屋をまわり、証拠の牌を13枚あつめよ。\nそろったら——犯人の嘘に「ロン」！'
     ];
     advEndIdx = 0;
     advView = 'intro';
@@ -3774,7 +3774,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const inEnd = (advView === 'end' || advView === 'intro');
     const inDiff = (advView === 'diff');
     advEl.head.textContent = inEnd ? ('デルタ・プリンセス号　—— ' + (advView === 'intro' ? '乗船' : '終局'))
-      : ((inHall ? 'デルタ・プリンセス号・廊下' : room.label) + '　行動力:' + t.ap + '　証拠:' + advTiles() + '/12');
+      : ((inHall ? 'デルタ・プリンセス号・廊下' : room.label) + '　行動力:' + t.ap + '　証拠:' + advTiles() + '/13');
     advEl.hallRow.style.display = inHall ? 'flex' : 'none';
     advEl.diffRow.style.display = inDiff ? 'flex' : 'none';
     advEl.row.style.display = (inHall || inDiff) ? 'none' : 'flex';
@@ -3848,7 +3848,7 @@ document.addEventListener('DOMContentLoaded', function () {
       advEl.scene.textContent = ppl;
     }
     // コマンド活性
-    const tenpai = advTiles() >= 12;
+    const tenpai = advTiles() >= 13;
     const dis = t.over || advPausing || inEnd;
     advEl.bNext.style.display = (dis || inEnd) ? '' : 'none';
     advEl.bRon.style.display = (!dis && t.ron) ? '' : 'none';
@@ -3961,7 +3961,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const mev = t.movedEv[t.room];
       advGain(mev[0] + '【' + mev[1] + '】');
       if(!advSpend()) return;
-      advOut('「しらべる」…… ' + mev[0] + '【' + mev[1] + '】を みつけた！（' + advTiles() + '/12）' + (t.kitten ? '\n子猫「みつけたにゃ！」' : ''));
+      advOut('「しらべる」…… ' + mev[0] + '【' + mev[1] + '】を みつけた！（' + advTiles() + '/13）' + (t.kitten ? '\n子猫「みつけたにゃ！」' : ''));
     } else if(t.stolenRooms && t.stolenRooms.indexOf(t.room) >= 0 && !t.searched[t.room]){
       t.searched[t.room] = true;
       if(!advSpend()) return;
@@ -3971,12 +3971,12 @@ document.addEventListener('DOMContentLoaded', function () {
       const ev = ADV_EV[t.room];
       advGain(ev[0] + '【' + ev[1] + '】');
       if(!advSpend()) return;
-      advOut('「しらべる」…… ' + ev[0] + '【' + ev[1] + '】を みつけた！（' + advTiles() + '/12）' + (t.kitten ? '\n子猫「みつけたにゃ！」' : ''));
+      advOut('「しらべる」…… ' + ev[0] + '【' + ev[1] + '】を みつけた！（' + advTiles() + '/13）' + (t.kitten ? '\n子猫「みつけたにゃ！」' : ''));
     } else if(t.room !== 'office' && t.dead[t.room] && t.wits.indexOf(t.room) >= 0 && !t.witGiven[t.room] && !t.converted[t.room]){
       t.converted[t.room] = true;
       advGain(ADV_NAME[t.room] + 'の目撃談【' + t.witTile[t.room] + '】');
       if(!advSpend()) return;
-      advOut('現場をしらべた……' + ADV_NAME[t.room] + 'の目撃談【' + t.witTile[t.room] + '】が 証拠になった。（' + advTiles() + '/12）' + (t.kitten ? '\n子猫「……ちゃんと、とどいたにゃ」' : ''));
+      advOut('現場をしらべた……' + ADV_NAME[t.room] + 'の目撃談【' + t.witTile[t.room] + '】が 証拠になった。（' + advTiles() + '/13）' + (t.kitten ? '\n子猫「……ちゃんと、とどいたにゃ」' : ''));
     } else {
       if(!advSpend()) return;
       advOut('そこには なにもない。……ヨシ！' + (t.kitten ? '\n子猫「……なにもないにゃ。ヨシ！」' : ''));
@@ -3989,7 +3989,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if(!advSpend()) return;
         t.catHeard = true;
         advGain('労災猫の習慣【西】');
-        advOut('子猫「……おとうさんは、かくにんを おこたらない ねこだったにゃ」—— 証言「労災猫の習慣」【西】を得た。（' + advTiles() + '/12）');
+        advOut('子猫「……おとうさんは、かくにんを おこたらない ねこだったにゃ」—— 証言「労災猫の習慣」【西】を得た。（' + advTiles() + '/13）');
         return;
       }
       advMsg('「がんばるにゃ」');
@@ -3999,7 +3999,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if(!advSpend()) return;
       if(!t.bodyHeard){
         t.bodyHeard = true; advGain('相方の言葉【北】');
-        advOut('労災猫が薄目を開けた——「……壁牌、ヨシって言ったのに……」「相方の言葉」【北】を得た。（' + advTiles() + '/12）');
+        advOut('労災猫が薄目を開けた——「……壁牌、ヨシって言ったのに……」「相方の言葉」【北】を得た。（' + advTiles() + '/13）');
         // 一段目を読み終えたら地の文へ、その次に現場猫の一言、最後に立ち絵を消して廊下へ
         advSkip = function(){
           advEl.msg.textContent = '労災猫が気を失い、担架で運ばれていった。';
@@ -4031,7 +4031,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
     if(who === t.culprit){
-      if(advTiles() >= 12){
+      if(advTiles() >= 13){
         t.ron = true;
         advOut(ADV_NAME[who] + ADV_TALK.lie[who] + '——嘘だ。切られた牌は【中】。もう一度この部屋で、ロンを！' + (t.kitten ? '\n子猫「いまの、うそにゃ！」' : ''));
         return;
@@ -4047,7 +4047,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if(t.wits.indexOf(who) >= 0 && !t.witGiven[who]){
       t.witGiven[who] = true;
       advGain(ADV_NAME[who] + 'の目撃談【' + t.witTile[who] + '】');
-      advOut(ADV_NAME[who] + ADV_TALK.wit[who] + '—— ' + ADV_NAME[who] + 'の目撃談【' + t.witTile[who] + '】を得た。（' + advTiles() + '/12）' + (t.kitten ? '\n子猫「目撃かくにん、ヨシ！にゃ」' : ''));
+      advOut(ADV_NAME[who] + ADV_TALK.wit[who] + '—— ' + ADV_NAME[who] + 'の目撃談【' + t.witTile[who] + '】を得た。（' + advTiles() + '/13）' + (t.kitten ? '\n子猫「目撃かくにん、ヨシ！にゃ」' : ''));
       return;
     }
     if(t.allies.indexOf(who) >= 0 && !t.joined[who]){
@@ -4141,7 +4141,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     const diffRow = document.createElement('div');
     diffRow.style.cssText = 'display:none; gap:10px; padding:8px 12px; flex-wrap:wrap; justify-content:center;';
-    [['初歩',30,8],['中級',28,11],['上級',25,11]].forEach(function(dv){
+    [['初歩',30,8],['中級',28,11],['上級',28,11]].forEach(function(dv){
       const b = document.createElement('button');
       b.textContent = dv[0] + '（行動力' + dv[1] + '）';
       b.style.cssText = 'padding:10px 16px; border-radius:8px; border:1px solid #8a7f5c; background:#2c3644; color:#e8e2d0;';
