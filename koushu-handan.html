@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="510">
+<html lang="ja" data-ver="511">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -855,7 +855,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v510</div>
+  <div id="verTag">v511</div>
   <div id="voiceCredit" class="voice-credit">VOICEVOX:ずんだもん</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
@@ -3871,7 +3871,7 @@ document.addEventListener('DOMContentLoaded', function () {
     advEl.bNext.style.display = (dis || inEnd) ? '' : 'none';
     advEl.bRon.style.display = (!dis && t.ron) ? '' : 'none';
     advEl.bKitten.style.display = (!dis && t.room === 'office' && !t.kitten && t.catHeard) ? '' : 'none';
-    advEl.bSearch.style.display = (dis || advSt.room === 'captain') ? 'none' : '';
+    advEl.bSearch.style.display = dis ? 'none' : '';
     advEl.bHear.style.display = (dis || t.room === 'office' || t.room === 'room12' || t.room === 'room16' || t.joined[t.room]) ? 'none' : '';
     advEl.bPhone.style.display = (!dis && t.room === 'captain' && t.joined['captain'] && !t.hintsNamed) ? '' : 'none';
     advEl.bHearCat.style.display = (dis || t.room !== 'office' || t.catHeard) ? 'none' : '';
@@ -3980,7 +3980,7 @@ document.addEventListener('DOMContentLoaded', function () {
       t.searched[t.room] = true;
       if(!advSpend()) return;
       advOut('そこには なにもない。……ヨシ！' + (t.kitten ? '\n子猫「……なにもないにゃ。ヨシ！」' : ''));
-    } else if(!t.searched[t.room]){
+    } else if(t.room !== 'captain' && !t.searched[t.room]){
       t.searched[t.room] = true;
       const ev = ADV_EV[t.room];
       advGain(ev[0] + '【' + ev[1] + '】');
