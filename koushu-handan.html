@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="531">
+<html lang="ja" data-ver="532">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -855,7 +855,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v531</div>
+  <div id="verTag">v532</div>
   <div id="voiceCredit" class="voice-credit">VOICEVOX:ずんだもん</div>
   <div class="rotate-hint"><div>画面を横にしてお使いくださいまし</div><div class="rh-sub">このツールは横向き専用ですの</div></div>
 <div class="wrap">
@@ -3491,10 +3491,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if(!d) return null;
     const el = document.createElement('div');
     el.className = 'tile ' + d[0];
-    el.style.cssText = 'width:27px; height:36px; min-width:27px; display:inline-flex; flex-direction:column; align-items:center; justify-content:center; font-size:13px; line-height:1.05; margin:0 1px; padding:0; vertical-align:middle; box-sizing:border-box;';
+    el.style.cssText = 'width:32px; height:42px; min-width:32px; display:inline-flex; flex-direction:column; align-items:center; justify-content:center; font-size:15px; line-height:1.05; margin:0 1px; padding:0; vertical-align:middle; box-sizing:border-box;';
     if(d[0] === 'pin') el.innerHTML = pinSVG(d[1], false);
     else if(d[0] === 'sou') el.innerHTML = souSVG(d[1], false);
-    else if(d[0] === 'man') el.innerHTML = kanjiNum(d[1]) + '<span class="suf" style="font-size:8px;">萬</span>';
+    else if(d[0] === 'man') el.innerHTML = kanjiNum(d[1]) + '<span class="suf" style="font-size:9px;">萬</span>';
     else {
       el.textContent = d[1];
       if(d[1] === '中') el.style.color = '#b3301e';
@@ -3776,7 +3776,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function advPersonaTile(pk){
     const d = document.createElement('div');
     d.className = 'tile cat';
-    d.style.cssText = 'width:27px; height:36px; min-width:27px; max-height:36px; display:inline-flex; align-items:center; justify-content:center; padding:2px; overflow:hidden; box-sizing:border-box;';
+    d.style.cssText = 'width:32px; height:42px; min-width:32px; max-height:42px; display:inline-flex; align-items:center; justify-content:center; padding:2px; overflow:hidden; box-sizing:border-box;';
     const im = document.createElement('img');
     im.src = (pk === 'captain') ? ADV_CAPTAIN_IMG : ADV_FACE_IMG[pk];
     im.style.cssText = 'max-width:22px; max-height:22px; width:auto; height:auto; image-rendering:auto; filter:none;';
@@ -3898,7 +3898,7 @@ document.addEventListener('DOMContentLoaded', function () {
     party.style.cssText = 'margin-left:auto; display:inline-flex; gap:4px; align-items:center;';
     const me = document.createElement('div');
     me.className = 'tile cat';
-    me.style.cssText = 'width:27px; height:36px; min-width:27px; max-height:36px; display:inline-flex; align-items:center; justify-content:center; padding:2px; overflow:hidden; box-sizing:border-box;';
+    me.style.cssText = 'width:32px; height:42px; min-width:32px; max-height:42px; display:inline-flex; align-items:center; justify-content:center; padding:2px; overflow:hidden; box-sizing:border-box;';
     const im0 = document.createElement('img');
     im0.src = advReachedThisSession ? CAT_TILE_DETECTIVE : CAT_TILE_GENBA;   // 探偵猫化したら船の中の自分も探偵猫の姿
     im0.style.cssText = 'max-width:100%; max-height:100%; width:auto; height:auto; filter:none;';
@@ -3907,10 +3907,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if(t.kitten && advView !== 'intro'){
       const k = document.createElement('div');
       k.className = 'tile cat';
-      k.style.cssText = 'width:27px; height:36px; min-width:27px; max-height:36px; display:inline-flex; align-items:center; justify-content:center; padding:2px; overflow:hidden; box-sizing:border-box;';
+      k.style.cssText = 'width:32px; height:42px; min-width:32px; max-height:42px; display:inline-flex; align-items:center; justify-content:center; padding:2px; overflow:hidden; box-sizing:border-box;';
       const im = document.createElement('img');
       im.src = ADV_KITTEN_IMG;
-      im.style.cssText = 'max-width:15px; max-height:15px; width:auto; height:auto; filter:none;';
+      im.style.cssText = 'max-width:18px; max-height:18px; width:auto; height:auto; filter:none;';
       k.appendChild(im);
       party.appendChild(k);
     }
@@ -4133,7 +4133,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const head = document.createElement('div');
     head.style.cssText = 'padding:4px 12px; background:#1b222a; letter-spacing:.08em;';
     const inv = document.createElement('div');
-    inv.style.cssText = 'padding:3px 12px; background:#151b22; color:#c9bf9a; font-size:11px; letter-spacing:.03em; display:flex; align-items:center; flex-wrap:nowrap; min-height:38px; overflow:hidden;';
+    inv.style.cssText = 'padding:3px 12px; background:#151b22; color:#c9bf9a; font-size:12px; letter-spacing:.03em; display:flex; align-items:center; flex-wrap:nowrap; min-height:46px; overflow:hidden;';
     const scene = document.createElement('div');
     scene.style.cssText = 'flex:1; display:flex; align-items:center; justify-content:center; background:#243040; margin:6px 12px; border-radius:8px; letter-spacing:.1em; white-space:pre-wrap; text-align:center; padding:8px 20px; line-height:1.9;';
     scene.onclick = () => { if(advView === 'end' || advView === 'intro') advEndNext(); };
