@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="606">
+<html lang="ja" data-ver="607">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -947,7 +947,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v606</div>
+  <div id="verTag">v607</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -4855,7 +4855,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     v.innerHTML = `
       <div class="verdict-card ${attack?'attack':'defend'}">
-        <span class="cat-help-hint">説明・ミニゲーム➡️</span><button type="button" class="cat-help-btn" onclick="window.toggleCatHelp(event)" aria-label="猫牌について"><img id="catCardTileImg" src="${CAT_TILE_GENBA}" alt="現場猫" style="width:1.4em;height:1.4em;vertical-align:middle;object-fit:contain;display:inline-block"></button>
+        <span class="cat-help-hint">説明・ミニゲーム・戻る▶️</span><button type="button" class="cat-help-btn" onclick="window.toggleCatHelp(event)" aria-label="猫牌について"><img id="catCardTileImg" src="${CAT_TILE_GENBA}" alt="現場猫" style="width:1.4em;height:1.4em;vertical-align:middle;object-fit:contain;display:inline-block"></button>
         <div class="cat-help-pop" id="catHelpPop"><b>猫牌</b>　配牌を素早く13枚に埋めるための牌です。判定では「数牌の孤立牌1枚」として扱われ、受け入れを平均ぶん加算します。枚数と表示には乗りますが、特定の牌ではありません。<button type="button" class="engine-help-btn" onclick="window.toggleEngineHelp(event)">この道具、何がすごいの？</button><button type="button" class="engine-help-btn" onclick="window.watchOpen(event)">⚓ 船長の見張り台 — 配牌の攻守クイズ</button></div>
         <div class="verdict-mascot">${attack ? (a.yakumanReach ? '🐦‍🔥' : (a.kokushiSeen ? '🐉' : '🐅')) : ((a.defHonors + a.defTerminals) >= 2 ? '🐑' : '🐭')}</div>
         <div class="verdict-kanji">${attack?'攻':'守'}</div>
