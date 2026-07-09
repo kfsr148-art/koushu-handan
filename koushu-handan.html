@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="609">
+<html lang="ja" data-ver="616">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -403,12 +403,6 @@
     border: 1px solid; position: relative; overflow: hidden;
   }
   /* 判定後、カード右上に小さな猫牌。押すと猫牌の説明がカード内に開く */
-  .cat-help-hint {
-    position: absolute; top: 8px; right: 42px; z-index: 5; height: 26px;
-    display: flex; align-items: center;
-    white-space: nowrap; font-size: 10px; line-height: 1; letter-spacing: 0.02em;
-    color: rgba(243,236,224,0.45); pointer-events: none; font-family: var(--sans);
-  }
   .cat-help-btn {
     position: absolute; top: 8px; right: 10px; z-index: 5;
     width: 26px; height: 26px; border-radius: 6px;
@@ -947,7 +941,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v609</div>
+  <div id="verTag">v616</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -1317,7 +1311,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const VOICE_EXTS = ['wav','wav.wav','m4a','mp3'];   // 形式：wav→wav.wav(二重拡張子)→m4a→mp3
   const VOICE_DIRS = ['voice/',''];                  // 置き場所：voice/ フォルダ内→リポジトリ直下、両方探す
   function _preloadVoices(){
-    const names = ['attack','defend','yoshi','dame'].concat(Array.from({length:13}, (_,i)=>String(i+1)));
+    const names = ['attack','defend'].concat(Array.from({length:13}, (_,i)=>String(i+1)));
     names.forEach(n => {
       // 候補URL（場所×区切り×形式）を順に試し、最初に読めたものを採用
       // SEPS: 拡張子の前にスペースが紛れた名前（例 "1 .wav.wav"）にも対応する
@@ -3740,7 +3734,6 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
       watchStreak = 0;
     }
-    playVoice(ok ? 'yoshi' : 'dame', ok ? 'ヨシ' : 'ダメ', 1.05);   // 正解=ヨシ／不正解=むむっダメ
     const m = document.getElementById('watchMsg');
     if(m) m.textContent = msg;
     document.getElementById('watchAtk').style.display = 'none';
@@ -3764,7 +3757,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ov.id = 'phoneOverlay';
     ov.style.cssText = 'position:fixed; inset:0; z-index:1000; background:rgba(10,24,19,0.92); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:14px; box-sizing:border-box;';
     const ttl = document.createElement('div');
-    ttl.textContent = '📞 電話猫の相談窓口';
+    ttl.textContent = '\uD83D\uDCDE 電話猫の相談窓口';
     ttl.style.cssText = 'color:var(--gold); font-size:15px; letter-spacing:0.08em;';
     const disp = document.createElement('div');
     disp.id = 'phoneDial';
@@ -3772,15 +3765,15 @@ document.addEventListener('DOMContentLoaded', function () {
     disp.textContent = '';
     const pad = document.createElement('div');
     pad.style.cssText = 'display:grid; grid-template-columns:repeat(3, 64px); gap:8px;';
-    ['1','2','3','4','5','6','7','8','9','C','0','⌫'].forEach(function(k){
+    ['1','2','3','4','5','6','7','8','9','C','0','\u232B'].forEach(function(k){
       const b = document.createElement('button');
       b.type = 'button'; b.textContent = k;
       b.style.cssText = 'height:48px; border-radius:9px; border:1px solid var(--bone-edge); background:linear-gradient(180deg,#fdf9f1,#e7ddc8); font-size:19px; cursor:pointer;';
       b.onclick = function(){
         const d = document.getElementById('phoneDial');
         if(k === 'C'){ d.textContent = ''; return; }
-        if(k === '⌫'){ d.textContent = d.textContent.slice(0, -1); return; }
-        if(d.textContent.length < 8) d.textContent += k;   // まだ誰にも繋がらない。枠だけ
+        if(k === '\u232B'){ d.textContent = d.textContent.slice(0, -1); return; }
+        if(d.textContent.length < 8) d.textContent += k;
       };
       pad.appendChild(b);
     });
@@ -3881,7 +3874,7 @@ document.addEventListener('DOMContentLoaded', function () {
       room:startRoom, ap:25,
       culprit:p[0], hints:p.slice(1,3), wits:p.slice(4,6), allies:[p[3], p[6]],
       killOrder: advShuffle(p.slice(1)),
-      searched:{}, converted:{}, heard:{}, told:{}, dead:{}, joined:{}, gaugeUsed:{},
+      searched:{}, converted:{}, heard:{}, dead:{}, joined:{}, gaugeUsed:{},
       kitten:false, culpritKnown:false,
       catHeard:false, bodyHeard:false, bodyGone:false, witGiven:{}, hintPointed:[],
       tiles:0, deadCount:0, over:false, ron:false, nightAt:8
@@ -3916,7 +3909,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     if(t.ap <= t.nightAt){
       // 夜が来る：守られていない客が一人ずつ襲われる
-      const v = t.killOrder.find(k => !t.dead[k] && !t.told[k] && !t.joined[k]);
+      const v = t.killOrder.find(k => !t.dead[k] && !t.joined[k]);
       if(v){
         t.dead[v] = true; t.deadCount++;
         advMsgQueue('……悲鳴。' + ADV_NAME[v] + 'の部屋で、また壁牌が崩れた。' + (t.kitten ? '\n子猫「……まにあわなかったにゃ」' : ''));
@@ -4350,11 +4343,19 @@ document.addEventListener('DOMContentLoaded', function () {
     advEl.head.textContent = inEnd ? ('デルタ・プリンセス号　—— ' + (advView === 'intro' ? '乗船' : '終局'))
       : ((inHall ? 'デルタ・プリンセス号・廊下' : room.label) + '　行動力:' + t.ap + '　証拠:' + advTiles() + '/13');
     advEl.hallRow.style.display = inHall ? 'flex' : 'none';
-    advEl.phonecat.style.display = (inHall && agroundThisSession) ? '' : 'none';
     advEl.diffRow.style.display = inDiff ? 'flex' : 'none';
     advEl.row.style.display = (inHall || inDiff) ? 'none' : 'flex';
     advEl.doors.forEach(function(d){
-      d.btn.textContent = d.label + (t.dead[d.k] ? '（労災）' : (t.told[d.k] ? '（施錠）' : ''));
+      d.btn.textContent = d.label;   // 労災は赤色のみで示す（文字は足さない）
+      if(t.dead[d.k] || d.k === 'office'){   // 労災＝赤金で一目に。現場猫室は最初から労災猫がいるので常に赤
+        d.btn.style.border = '1.5px solid #d98a6a';
+        d.btn.style.background = '#4a2b28';
+        d.btn.style.color = '#f2c9bd';
+      } else {                // 通常
+        d.btn.style.border = '1px solid #8a7f5c';
+        d.btn.style.background = '#2c3644';
+        d.btn.style.color = '#e8e2d0';
+      }
     });
     // 場面パネル
     let ppl = '';
@@ -4363,7 +4364,7 @@ document.addEventListener('DOMContentLoaded', function () {
     } else if(inDiff){
       ppl = '航路はいかがなさいます？';
     } else if(inHall){
-      ppl = '入り口がならんでいる';
+      ppl = '入り口がならんでいる（赤＝労災）';
     } else if(t.room === 'office'){
       ppl = '子猫現場猫' + (t.kitten ? '（同行中）' : '') + '／労災猫';
     } else if(t.room === 'room12' || t.room === 'room16'){
@@ -4732,19 +4733,6 @@ document.addEventListener('DOMContentLoaded', function () {
       doors.push({ k: r.k, label: r.label, btn: b });
       hallRow.appendChild(b);
     });
-    // 電話猫牌：座礁達成×廊下で出現。かつて船長猫牌のあった座席（船長猫牌は退役）
-    const phonecat = document.createElement('button');
-    phonecat.type = 'button';
-    phonecat.title = '電話猫牌。押すと相談窓口が開きますわ。';
-    phonecat.style.cssText = 'position:absolute; right:10px; bottom:3px; z-index:6; height:30px; width:34px; padding:2px; box-sizing:border-box; cursor:pointer; border-radius:5px; border:1px solid var(--bone-edge); background:linear-gradient(180deg,#fdf9f1 0%,#f4ecdc 60%,#e7ddc8 100%); box-shadow:inset 0 1.5px 2px rgba(255,255,255,0.6), 0 2px 0 #c2b496, 0 3px 1px #a89a7d, 0 4px 7px rgba(0,0,0,0.30); display:none;';
-    const phonecatImg = document.createElement('img');
-    phonecatImg.src = CAT_TILE_PHONE;
-    phonecatImg.alt = '電話猫';
-    phonecatImg.style.cssText = 'width:100%; height:100%; object-fit:contain; display:block; pointer-events:none; image-rendering:pixelated; image-rendering:-webkit-optimize-contrast;';
-    phonecat.appendChild(phonecatImg);
-    phonecat.onclick = (e) => window.phoneOpen(e);
-    phonecat.addEventListener('click', (e) => window.phoneOpen(e));
-    root.appendChild(phonecat);
     const diffRow = document.createElement('div');
     diffRow.style.cssText = 'display:none; gap:10px; padding:8px 12px; flex-wrap:wrap; justify-content:center;';
     [['初歩',30,8],['中級',28,11],['上級',28,11]].forEach(function(dv){
@@ -4769,7 +4757,7 @@ document.addEventListener('DOMContentLoaded', function () {
     root.appendChild(inv); root.appendChild(scene); root.appendChild(msg);
     root.appendChild(diffRow); root.appendChild(hallRow); root.appendChild(row); root.appendChild(head);
     document.body.appendChild(root);
-    advEl = { root, head, inv, scene, msg, foot, diffRow, hallRow, row, doors, phonecat, bSearch, bHear, bPhone, bAuto, bHearCat, bHearBody, bKitten, bRon, bNext, bHall };
+    advEl = { root, head, inv, scene, msg, foot, diffRow, hallRow, row, doors, bSearch, bHear, bPhone, bAuto, bHearCat, bHearBody, bKitten, bRon, bNext, bHall };
   }
 
   document.getElementById('judgeBtn').onclick = () => {
@@ -4898,8 +4886,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     v.innerHTML = `
       <div class="verdict-card ${attack?'attack':'defend'}">
-        <span class="cat-help-hint">説明・ミニゲーム・戻る▶️</span><button type="button" class="cat-help-btn" onclick="window.toggleCatHelp(event)" aria-label="猫牌について"><img id="catCardTileImg" src="${CAT_TILE_GENBA}" alt="現場猫" style="width:1.4em;height:1.4em;vertical-align:middle;object-fit:contain;display:inline-block"></button>
-        <div class="cat-help-pop" id="catHelpPop"><b>猫牌</b>　配牌を素早く13枚に埋めるための牌です。判定では「数牌の孤立牌1枚」として扱われ、受け入れを平均ぶん加算します。枚数と表示には乗りますが、特定の牌ではありません。<button type="button" class="engine-help-btn" onclick="window.toggleEngineHelp(event)">この道具、何がすごいの？</button><button type="button" class="engine-help-btn" onclick="window.watchOpen(event)">⚓ 船長の見張り台 — 配牌の攻守クイズ</button></div>
+        <button type="button" class="cat-help-btn" onclick="window.toggleCatHelp(event)" aria-label="猫牌について"><img id="catCardTileImg" src="${CAT_TILE_GENBA}" alt="現場猫" style="width:1.4em;height:1.4em;vertical-align:middle;object-fit:contain;display:inline-block"></button>
+        <div class="cat-help-pop" id="catHelpPop"><b>猫牌</b>　配牌を素早く13枚に埋めるための牌です。判定では「数牌の孤立牌1枚」として扱われ、受け入れを平均ぶん加算します。枚数と表示には乗りますが、特定の牌ではありません。<button type="button" class="engine-help-btn" onclick="window.toggleEngineHelp(event)">この道具、何がすごいの？</button><button type="button" class="engine-help-btn" onclick="window.watchOpen(event)">⚓ 船長の見張り台 — 配牌の攻守クイズ</button><button type="button" class="engine-help-btn" onclick="window.phoneOpen(event)">📞 電話猫の相談窓口</button></div>
         <div class="verdict-mascot">${attack ? (a.yakumanReach ? '🐦‍🔥' : (a.kokushiSeen ? '🐉' : '🐅')) : ((a.defHonors + a.defTerminals) >= 2 ? '🐑' : '🐭')}</div>
         <div class="verdict-kanji">${attack?'攻':'守'}</div>
         <div class="verdict-word${(a.borderline||a.yakumanReach||(a.kokushiSeen&&!a.yakumanReach))?' long':''}">${pickVerdictWord(attack)}</div>
