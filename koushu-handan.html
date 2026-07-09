@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="616">
+<html lang="ja" data-ver="621">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -416,7 +416,7 @@
     position: absolute; top: 40px; left: 8px; right: 8px; z-index: 4;
     background: #16352a; border: 1px solid var(--gold);
     border-radius: 8px; padding: 10px 12px;
-    color: var(--bone); font-size: 12px; line-height: 1.55;
+    color: var(--bone); font-size: 10.5px; line-height: 1.45;
     text-align: left; box-shadow: 0 6px 16px rgba(0,0,0,0.4);
     display: none;
   }
@@ -941,7 +941,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v616</div>
+  <div id="verTag">v621</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -3889,11 +3889,7 @@ document.addEventListener('DOMContentLoaded', function () {
     advSt.movedEv = { room12: ADV_EV[_persRooms[0]], room16: ADV_EV[_persRooms[1]] };
   }
   function advTiles(){
-    const t = advSt;
-    let n = Object.keys(t.searched).length + Object.keys(t.converted).length;
-    if(t.catHeard) n++;
-    n += Object.keys(t.witGiven).length;
-    return n;
+    return advSt.inv.length;
   }
   function advSpend(){
     const t = advSt;
@@ -3992,10 +3988,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if(!d) return null;
     const el = document.createElement('div');
     el.className = 'tile ' + d[0];
-    el.style.cssText = 'width:36px; height:47px; min-width:36px; display:inline-flex; flex-direction:column; align-items:center; justify-content:center; font-size:16px; line-height:1.05; margin:0 1px; padding:0; vertical-align:middle; box-sizing:border-box;';
+    el.style.cssText = 'width:30px; height:38px; min-width:30px; display:inline-flex; flex-direction:column; align-items:center; justify-content:center; font-size:14px; line-height:1.05; margin:0 1px; padding:0; vertical-align:middle; box-sizing:border-box;';
     if(d[0] === 'pin') el.innerHTML = pinSVG(d[1], false);
     else if(d[0] === 'sou') el.innerHTML = souSVG(d[1], false);
-    else if(d[0] === 'man') el.innerHTML = kanjiNum(d[1]) + '<span class="suf" style="font-size:10px;">萬</span>';
+    else if(d[0] === 'man') el.innerHTML = kanjiNum(d[1]) + '<span class="suf" style="font-size:9px;">萬</span>';
     else {
       el.textContent = d[1];
       if(d[1] === '中') el.style.color = '#b3301e';
@@ -4326,7 +4322,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function advPersonaTile(pk){
     const d = document.createElement('div');
     d.className = 'tile cat';
-    d.style.cssText = 'width:36px; height:47px; min-width:36px; max-height:47px; display:inline-flex; align-items:center; justify-content:center; padding:2px; overflow:hidden; box-sizing:border-box;';
+    d.style.cssText = 'width:30px; height:38px; min-width:30px; max-height:38px; display:inline-flex; align-items:center; justify-content:center; padding:2px; overflow:hidden; box-sizing:border-box;';
     const im = document.createElement('img');
     im.src = (pk === 'captain') ? ADV_CAPTAIN_IMG : ADV_FACE_IMG[pk];
     im.style.cssText = 'width:22px; height:30px; object-fit:contain; image-rendering:auto; filter:none;';
@@ -4449,16 +4445,25 @@ document.addEventListener('DOMContentLoaded', function () {
     ADV_ORDER.forEach(function(name){
       const m = advMiniTile(name);
       if(!m) return;
-      const lit = (name === '中') ? !!t.ron : !!got[name];
+      const lit = !!got[name];
       if(!lit){ m.style.opacity = '0.18'; m.style.filter = 'grayscale(1)'; }
       advEl.inv.appendChild(m);
     });
+    // 14牌目：犯人が切る【中】。ロンが立った瞬間に点灯
+    const ronT = advMiniTile('中');
+    ronT.style.marginLeft = '12px';
+    if(t.ron){
+      ronT.style.boxShadow = '0 0 6px 2px rgba(212,175,55,0.55)';
+    } else {
+      ronT.style.opacity = '0.18'; ronT.style.filter = 'grayscale(1)';
+    }
+    advEl.inv.appendChild(ronT);
     // 右端は一行の面々：現場猫（あなた）＋同行の子猫探偵
     const party = document.createElement('div');
     party.style.cssText = 'margin-left:auto; display:inline-flex; gap:4px; align-items:center;';
     const me = document.createElement('div');
     me.className = 'tile cat';
-    me.style.cssText = 'width:36px; height:47px; min-width:36px; max-height:47px; display:inline-flex; align-items:center; justify-content:center; padding:2px; overflow:hidden; box-sizing:border-box;';
+    me.style.cssText = 'width:30px; height:38px; min-width:30px; max-height:38px; display:inline-flex; align-items:center; justify-content:center; padding:2px; overflow:hidden; box-sizing:border-box;';
     const im0 = document.createElement('img');
     im0.src = advReachedThisSession ? CAT_TILE_DETECTIVE : CAT_TILE_GENBA;   // 探偵猫化したら船の中の自分も探偵猫の姿
     im0.style.cssText = 'max-width:100%; max-height:100%; width:auto; height:auto; filter:none;';
@@ -4467,7 +4472,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if(t.kitten && advView !== 'intro'){
       const k = document.createElement('div');
       k.className = 'tile cat';
-      k.style.cssText = 'width:36px; height:47px; min-width:36px; max-height:47px; display:inline-flex; align-items:center; justify-content:center; padding:2px; overflow:hidden; box-sizing:border-box;';
+      k.style.cssText = 'width:30px; height:38px; min-width:30px; max-height:38px; display:inline-flex; align-items:center; justify-content:center; padding:2px; overflow:hidden; box-sizing:border-box;';
       const im = document.createElement('img');
       im.src = ADV_KITTEN_IMG;
       im.style.cssText = 'max-width:20px; max-height:20px; width:auto; height:auto; filter:none;';
@@ -4585,7 +4590,8 @@ document.addEventListener('DOMContentLoaded', function () {
         advOut('労災猫が薄目を開けた——「……壁牌、ヨシって言ったのに……」');
         // 一段目を読み終えたら地の文へ、その次に現場猫の一言、最後に立ち絵を消して廊下へ
         advSkip = function(){
-          advEl.msg.textContent = '労災猫が気を失い、担架で運ばれていった。';
+          advGain('相方の遺した牌【中】');
+          advEl.msg.textContent = '労災猫が気を失い、担架で運ばれていった。\n——その手から、赤い牌がこぼれ落ちた。相方の遺した牌【中】を得た。（' + advTiles() + '/13）';
           advRender();
           advSkip = function(){
             advEl.msg.textContent = '現場猫「どうして…。」';
@@ -4693,7 +4699,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const head = document.createElement('div');
     head.style.cssText = 'padding:4px 12px; background:#1b222a; letter-spacing:.08em;';
     const inv = document.createElement('div');
-    inv.style.cssText = 'padding:3px 12px; background:#151b22; color:#c9bf9a; font-size:13px; letter-spacing:.03em; display:flex; align-items:center; flex-wrap:nowrap; min-height:52px; overflow:hidden;';
+    inv.style.cssText = 'padding:2px 12px; background:#151b22; color:#c9bf9a; font-size:12px; letter-spacing:.03em; display:flex; align-items:center; flex-wrap:nowrap; min-height:42px; overflow:hidden;';
     const scene = document.createElement('div');
     scene.style.cssText = 'flex:1; display:flex; align-items:center; justify-content:center; background:#243040; margin:6px 12px; border-radius:8px; letter-spacing:.1em; white-space:pre-wrap; text-align:center; padding:8px 20px; line-height:1.9;';
     scene.onclick = () => { if(advView === 'end' || advView === 'intro') advEndNext(); };
