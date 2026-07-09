@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="614">
+<html lang="ja" data-ver="603">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -941,7 +941,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v614</div>
+  <div id="verTag">v603</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -3832,7 +3832,7 @@ document.addEventListener('DOMContentLoaded', function () {
       room:startRoom, ap:25,
       culprit:p[0], hints:p.slice(1,3), wits:p.slice(4,6), allies:[p[3], p[6]],
       killOrder: advShuffle(p.slice(1)),
-      searched:{}, converted:{}, heard:{}, dead:{}, joined:{}, gaugeUsed:{},
+      searched:{}, converted:{}, heard:{}, told:{}, dead:{}, joined:{}, gaugeUsed:{},
       kitten:false, culpritKnown:false,
       catHeard:false, bodyHeard:false, bodyGone:false, witGiven:{}, hintPointed:[],
       tiles:0, deadCount:0, over:false, ron:false, nightAt:8
@@ -3867,7 +3867,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     if(t.ap <= t.nightAt){
       // 夜が来る：守られていない客が一人ずつ襲われる
-      const v = t.killOrder.find(k => !t.dead[k] && !t.joined[k]);
+      const v = t.killOrder.find(k => !t.dead[k] && !t.told[k] && !t.joined[k]);
       if(v){
         t.dead[v] = true; t.deadCount++;
         advMsgQueue('……悲鳴。' + ADV_NAME[v] + 'の部屋で、また壁牌が崩れた。' + (t.kitten ? '\n子猫「……まにあわなかったにゃ」' : ''));
@@ -4304,16 +4304,7 @@ document.addEventListener('DOMContentLoaded', function () {
     advEl.diffRow.style.display = inDiff ? 'flex' : 'none';
     advEl.row.style.display = (inHall || inDiff) ? 'none' : 'flex';
     advEl.doors.forEach(function(d){
-      d.btn.textContent = d.label;   // 労災は赤色のみで示す（文字は足さない）
-      if(t.dead[d.k] || d.k === 'office'){   // 労災＝赤金で一目に。現場猫室は最初から労災猫がいるので常に赤
-        d.btn.style.border = '1.5px solid #d98a6a';
-        d.btn.style.background = '#4a2b28';
-        d.btn.style.color = '#f2c9bd';
-      } else {                // 通常
-        d.btn.style.border = '1px solid #8a7f5c';
-        d.btn.style.background = '#2c3644';
-        d.btn.style.color = '#e8e2d0';
-      }
+      d.btn.textContent = d.label + (t.dead[d.k] ? '（労災）' : (t.told[d.k] ? '（施錠）' : ''));
     });
     // 場面パネル
     let ppl = '';
@@ -4322,7 +4313,7 @@ document.addEventListener('DOMContentLoaded', function () {
     } else if(inDiff){
       ppl = '航路はいかがなさいます？';
     } else if(inHall){
-      ppl = '入り口がならんでいる（赤＝労災）';
+      ppl = '入り口がならんでいる';
     } else if(t.room === 'office'){
       ppl = '子猫現場猫' + (t.kitten ? '（同行中）' : '') + '／労災猫';
     } else if(t.room === 'room12' || t.room === 'room16'){
