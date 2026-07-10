@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="621">
+<html lang="ja" data-ver="627">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -941,7 +941,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v621</div>
+  <div id="verTag">v627</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -4336,8 +4336,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const room = ADV_ROOMS.find(r => r.k === t.room);
     const inEnd = (advView === 'end' || advView === 'intro');
     const inDiff = (advView === 'diff');
-    advEl.head.textContent = inEnd ? ('デルタ・プリンセス号　—— ' + (advView === 'intro' ? '乗船' : '終局'))
-      : ((inHall ? 'デルタ・プリンセス号・廊下' : room.label) + '　行動力:' + t.ap + '　証拠:' + advTiles() + '/13');
+    const advVer = '　v' + (document.documentElement.getAttribute('data-ver') || '?');
+    advEl.head.textContent = (inEnd ? ('デルタ・プリンセス号　—— ' + (advView === 'intro' ? '乗船' : '終局'))
+      : ((inHall ? 'デルタ・プリンセス号・廊下' : room.label) + '　行動力:' + t.ap + '　証拠:' + advTiles() + '/13')) + advVer;
     advEl.hallRow.style.display = inHall ? 'flex' : 'none';
     advEl.diffRow.style.display = inDiff ? 'flex' : 'none';
     advEl.row.style.display = (inHall || inDiff) ? 'none' : 'flex';
@@ -4373,7 +4374,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const spr = (t.room === 'room16' && t.knifeThrown && !t.knifeAvoided)
         ? '<div style="position:absolute; top:46%; width:11%; height:3%; animation:knifeFly .45s linear forwards;"><div style="position:absolute; left:0; top:30%; width:26%; height:40%; background:#5a3a1c; box-shadow:0 0 0 1px rgba(20,18,26,.9);"></div><div style="position:absolute; left:26%; top:0; width:60%; height:100%; background:linear-gradient(#e9edf2,#aab3bd); box-shadow:0 0 0 1px rgba(20,18,26,.9);"></div><div style="position:absolute; left:86%; top:0; width:0; height:0; border-top:solid transparent; border-bottom:solid transparent; border-left:solid #cfd6dd; border-top-width:calc(1.5% + 0px);"></div></div>'
         : (t.room === 'room12' && t.floorOpen && !t.floorAvoided)
-        ? '<div style="position:absolute; left:20%; bottom:10%; width:6%; height:6.5%; background:#000; box-shadow:inset 0 6px 12px rgba(0,0,0,1), 0 0 0 2px rgba(20,18,26,.9);"></div>'
+        ? '<div style="position:absolute; left:25%; bottom:4%; width:6%; height:5.5%; background:#000; box-shadow:inset 0 6px 12px rgba(0,0,0,1), 0 0 0 2px rgba(20,18,26,.9);"></div>'
         : (t.room === 'office')
         ? ((ADV_BODY_IMG && !t.bodyGone) ? '<img src="' + ADV_BODY_IMG + '" style="position:absolute; left:68%; bottom:19%; transform:translateX(-50%) scaleX(-1); height:21%; image-rendering:pixelated; image-rendering:-webkit-optimize-contrast; filter:drop-shadow(1px 0 0 rgba(20,18,26,1)) drop-shadow(-1px 0 0 rgba(20,18,26,1)) drop-shadow(0 1px 0 rgba(20,18,26,1)) drop-shadow(0 -1px 0 rgba(20,18,26,1));" alt="">' : '')
           + (t.kitten ? '' : '<img src="' + ADV_KITTEN_IMG + '" style="position:absolute; left:27%; bottom:19%; transform:translateX(-50%); height:22%; image-rendering:pixelated; image-rendering:-webkit-optimize-contrast; filter:drop-shadow(1px 0 0 rgba(20,18,26,1)) drop-shadow(-1px 0 0 rgba(20,18,26,1)) drop-shadow(0 1px 0 rgba(20,18,26,1)) drop-shadow(0 -1px 0 rgba(20,18,26,1));" alt="">')
@@ -4423,7 +4424,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tenpai = advTiles() >= 13;
     const dis = t.over || advPausing || inEnd;
     advEl.bNext.style.display = (dis || inEnd) ? '' : 'none';
-    advEl.bRon.style.display = (!dis && t.ron) ? '' : 'none';
+    advEl.bRon.style.display = (!dis && t.ron && t.room === t.culprit) ? '' : 'none';
     advEl.bKitten.style.display = (!dis && t.room === 'office' && !t.kitten && t.catHeard) ? '' : 'none';
     advEl.bSearch.style.display = (dis || t.searched[t.room] || t.converted[t.room]) ? 'none' : '';
     advEl.bHear.style.display = (dis || t.room === 'office' || t.room === 'room12' || t.room === 'room16' || t.joined[t.room]) ? 'none' : '';
@@ -4452,7 +4453,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 14牌目：犯人が切る【中】。ロンが立った瞬間に点灯
     const ronT = advMiniTile('中');
     ronT.style.marginLeft = '12px';
-    if(t.ron){
+    if(t.endKind === 'win'){
       ronT.style.boxShadow = '0 0 6px 2px rgba(212,175,55,0.55)';
     } else {
       ronT.style.opacity = '0.18'; ronT.style.filter = 'grayscale(1)';
@@ -4503,15 +4504,15 @@ document.addEventListener('DOMContentLoaded', function () {
           ichihime:  '支えたにゃ！ ……ねえ、いま何をどう見て「ヨシ」って言ったのにゃ？',
           sensei:    '無事で何より。——さて、何を見て「ヨシ」と言いましたか？'
         };
-        advSeq('「しらべる」…… その一歩の先、床が無い。\n現場猫「転落注意…足元…ヨシ！」', ADV_NAME[_saver] + '「' + _quip[_saver] + '」', function(){ t.floorAvoided = true; });
+        advSeq('「しらべる」…… その一歩の先、床が無い。現場猫「転落注意…足元…ヨシ！」', ADV_NAME[_saver] + '「' + _quip[_saver] + '」', function(){ t.floorAvoided = true; });
         return;
       }
       if(advReachedThisSession){
         t.floorAvoided = true;
-        advOut('「しらべる」…… \n探偵猫「……！？この部屋には何かある？……罠か？……トラップ解除！…」');
+        advOut('「しらべる」…… 探偵猫「！？……罠か？……トラップ解除！」');
         return;
       }
-      advOut('「しらべる」…… 足もとで、床板が鳴った。\n穴が、口を開ける。\n「ヨシ！」の声より早く、現場猫はまっさかさま。');
+      advOut('「しらべる」…… 床板が鳴り、穴が口を開ける。「ヨシ！」より早く、現場猫はまっさかさま。');
       advSkip = function(){ advEnd('floor'); };
       return;
     }
@@ -4548,7 +4549,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const mev = t.movedEv[t.room];
       advGain(mev[0] + '【' + mev[1] + '】');
       if(!advSpend()) return;
-      advOut('「しらべる」…… ' + mev[0] + '【' + mev[1] + '】を みつけた！（' + advTiles() + '/13）' + (t.kitten ? '\n子猫「みつけたにゃ！」' : ''));
+      advOut('「しらべる」…… ' + mev[0] + '【' + mev[1] + '】を みつけた！（' + advTiles() + '/13）' + (t.kitten ? ' 子猫「みつけたにゃ！」' : ''));
     } else if(t.stolenRooms && t.stolenRooms.indexOf(t.room) >= 0 && !t.searched[t.room]){
       t.searched[t.room] = true;
       if(!advSpend()) return;
@@ -4688,7 +4689,7 @@ document.addEventListener('DOMContentLoaded', function () {
     advOut('子猫に声をかけた。小さく頷いて、ついてきた。「……にげたって、ぜったい、みつけるにゃ」');
   }
   function advRon(){
-    const t = advSt; if(t.over || !t.ron) return;
+    const t = advSt; if(t.over || !t.ron || t.room !== t.culprit) return;
     advWin();
   }
 
