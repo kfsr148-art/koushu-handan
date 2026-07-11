@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="634">
+<html lang="ja" data-ver="644">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -942,7 +942,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v634</div>
+  <div id="verTag">v644</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -3756,36 +3756,65 @@ document.addEventListener('DOMContentLoaded', function () {
     if(phoneOverlayEl){ phoneOverlayEl.style.display = 'flex'; return; }
     const ov = document.createElement('div');
     ov.id = 'phoneOverlay';
-    ov.style.cssText = 'position:fixed; inset:0; z-index:1000; background:rgba(10,24,19,0.92); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:14px; box-sizing:border-box;';
-    const ttl = document.createElement('div');
-    ttl.textContent = '\uD83D\uDCDE 電話猫の相談窓口';
-    ttl.style.cssText = 'color:var(--gold); font-size:15px; letter-spacing:0.08em;';
+    ov.style.cssText = 'position:fixed; inset:0; z-index:1000; background:rgba(10,24,19,0.94); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:12px; box-sizing:border-box; touch-action:manipulation; user-select:none; -webkit-user-select:none;';
+    // ポートピア風の一枚画面：2×2 の四象限
+    const grid = document.createElement('div');
+    grid.style.cssText = 'width:100%; max-width:560px; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:8px; max-height:82vh; height:82vh;';
+    // 左上：背景欄（相談室）
+    const q1 = document.createElement('div');
+    q1.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:center; justify-content:center; color:rgba(243,236,224,0.45); font-size:12px; letter-spacing:0.1em; overflow:hidden;';
+    q1.textContent = '── 相談室 ──';
+    // 右上：ダイヤル
+    const q2 = document.createElement('div');
+    q2.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:rgba(10,24,19,0.6); display:flex; flex-direction:row; align-items:stretch; gap:6px; padding:6px; box-sizing:border-box;';
     const disp = document.createElement('div');
     disp.id = 'phoneDial';
-    disp.style.cssText = 'min-width:180px; text-align:center; color:var(--bone); font-size:22px; letter-spacing:0.25em; border-bottom:1px solid var(--line); padding:4px 10px; min-height:30px;';
+    disp.style.cssText = 'width:132px; box-sizing:border-box; text-align:center; color:var(--bone); font-size:16px; letter-spacing:0.06em; border-bottom:1px solid var(--line); padding:2px 4px; height:28px; line-height:24px; overflow:hidden; white-space:nowrap;';
     disp.textContent = '';
     const pad = document.createElement('div');
-    pad.style.cssText = 'display:grid; grid-template-columns:repeat(3, 64px); gap:8px;';
-    ['1','2','3','4','5','6','7','8','9','C','0','\u232B'].forEach(function(k){
+    pad.style.cssText = 'display:grid; grid-template-columns:repeat(3, 1fr); gap:4px; width:100%; max-width:132px;';
+    ['1','2','3','4','5','6','7','8','9','\uFF0A','0','\uFF03'].forEach(function(k){
       const b = document.createElement('button');
       b.type = 'button'; b.textContent = k;
-      b.style.cssText = 'height:48px; border-radius:9px; border:1px solid var(--bone-edge); background:linear-gradient(180deg,#fdf9f1,#e7ddc8); font-size:19px; cursor:pointer;';
+      b.style.cssText = 'aspect-ratio:4/3; border-radius:6px; border:1px solid var(--bone-edge); background:linear-gradient(180deg,#fdf9f1,#e7ddc8); font-size:14px; cursor:pointer;';
       b.onclick = function(){
         const d = document.getElementById('phoneDial');
-        if(k === 'C'){ d.textContent = ''; return; }
-        if(k === '\u232B'){ d.textContent = d.textContent.slice(0, -1); return; }
-        if(d.textContent.length < 8) d.textContent += k;
+        if(d.textContent.length < 10) d.textContent += k;
       };
       pad.appendChild(b);
     });
-    const note = document.createElement('div');
-    note.textContent = '……この電話は、まだ工事中ですわ。（回線はいずれ開通しますの）';
-    note.style.cssText = 'color:rgba(243,236,224,0.5); font-size:11px;';
+    // 電話帳の欄（左・見出しのみの空枠。中身は後日）
+    const book = document.createElement('div');
+    book.style.cssText = 'flex:1 1 auto; border:1px solid var(--line); border-radius:6px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:center; justify-content:center; color:rgba(243,236,224,0.45); font-size:12px; letter-spacing:0.1em; overflow:hidden;';
+    book.textContent = '── 電話帳 ──';
+    // ダイヤル一式（右詰め・縦積み）
+    const dialBox = document.createElement('div');
+    dialBox.style.cssText = 'flex:0 0 auto; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;';
+    dialBox.appendChild(disp); dialBox.appendChild(pad);
+    q2.appendChild(book); q2.appendChild(dialBox);
+    // 左下：コメント欄（セリフ帯）
+    const q3 = document.createElement('div');
+    q3.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:rgba(10,24,19,0.6); display:flex; align-items:center; padding:10px 12px; box-sizing:border-box; color:var(--bone); font-size:12px; line-height:1.6;';
+    q3.textContent = '電話猫「なんばんに かけますの？……回線は、まだ工事中ですわ」';
+    // 右下：操作ボタン（番号クリア／受話器を置く／電話をかける）
+    const q4 = document.createElement('div');
+    q4.style.cssText = 'display:flex; align-items:center; justify-content:center; gap:8px; padding:6px;';
+    const btnBase = 'flex:1 1 0; min-width:0; padding:8px 4px; border-radius:8px; font-size:12px; cursor:pointer; white-space:nowrap;';
+    const clr = document.createElement('button');
+    clr.type = 'button'; clr.textContent = '番号クリア';
+    clr.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.1); color:var(--bone);';
+    clr.onclick = function(){ document.getElementById('phoneDial').textContent = ''; };
     const close = document.createElement('button');
     close.type = 'button'; close.textContent = '受話器を置く';
-    close.style.cssText = 'margin-top:6px; padding:9px 22px; border-radius:8px; border:1px solid var(--gold); background:rgba(212,175,55,0.12); color:var(--gold); font-size:13px; cursor:pointer;';
+    close.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.1); color:var(--bone);';
     close.onclick = function(){ ov.style.display = 'none'; };
-    ov.appendChild(ttl); ov.appendChild(disp); ov.appendChild(pad); ov.appendChild(note); ov.appendChild(close);
+    const callBtn = document.createElement('button');
+    callBtn.type = 'button'; callBtn.textContent = '電話をかける';
+    callBtn.style.cssText = btnBase + 'border:1px solid var(--gold); background:rgba(212,175,55,0.12); color:var(--gold);';
+    callBtn.onclick = function(){ /* 回線は工事中（後日実装） */ };
+    q4.appendChild(clr); q4.appendChild(close); q4.appendChild(callBtn);
+    grid.appendChild(q1); grid.appendChild(q2); grid.appendChild(q3); grid.appendChild(q4);
+    ov.appendChild(grid);
     document.body.appendChild(ov);
     phoneOverlayEl = ov;
   };
