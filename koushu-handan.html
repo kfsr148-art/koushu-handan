@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="644">
+<html lang="ja" data-ver="658">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -391,6 +391,7 @@
   /* 判定の瞬間に結果カードが下から上へ動いて「画面がずれる」ように見えるのを防ぐ。
      上下移動(translateY)をやめ、フェードイン(opacityのみ)にする。柔らかさは残し、位置は動かさない。 */
   @keyframes rise { from { opacity:0; } to { opacity:1; } }
+  @keyframes phoneRingBlink { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
   /* 16号室：左の暗がりから刃が水平に飛来し、中央で止まる（ミシシッピー原典の投げナイフ） */
   @keyframes knifeFly {
     0%   { left:-24%; opacity:0; }
@@ -942,7 +943,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v644</div>
+  <div id="verTag">v658</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -3763,6 +3764,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 左上：背景欄（相談室）
     const q1 = document.createElement('div');
     q1.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:center; justify-content:center; color:rgba(243,236,224,0.45); font-size:12px; letter-spacing:0.1em; overflow:hidden;';
+    q1.id = 'phoneRoom';
     q1.textContent = '── 相談室 ──';
     // 右上：ダイヤル
     const q2 = document.createElement('div');
@@ -3786,6 +3788,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 電話帳の欄（左・見出しのみの空枠。中身は後日）
     const book = document.createElement('div');
     book.style.cssText = 'flex:1 1 auto; border:1px solid var(--line); border-radius:6px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:center; justify-content:center; color:rgba(243,236,224,0.45); font-size:12px; letter-spacing:0.1em; overflow:hidden;';
+    book.id = 'phoneBook';
     book.textContent = '── 電話帳 ──';
     // ダイヤル一式（右詰め・縦積み）
     const dialBox = document.createElement('div');
@@ -3794,29 +3797,121 @@ document.addEventListener('DOMContentLoaded', function () {
     q2.appendChild(book); q2.appendChild(dialBox);
     // 左下：コメント欄（セリフ帯）
     const q3 = document.createElement('div');
-    q3.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:rgba(10,24,19,0.6); display:flex; align-items:center; padding:10px 12px; box-sizing:border-box; color:var(--bone); font-size:12px; line-height:1.6;';
+    q3.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:rgba(10,24,19,0.6); display:flex; align-items:center; padding:10px 12px; box-sizing:border-box; color:var(--bone); font-size:12px; line-height:1.6; white-space:pre-line; overflow:auto;';
+    q3.id = 'phoneTalk';
     q3.textContent = '電話猫「なんばんに かけますの？……回線は、まだ工事中ですわ」';
     // 右下：操作ボタン（番号クリア／受話器を置く／電話をかける）
     const q4 = document.createElement('div');
     q4.style.cssText = 'display:flex; align-items:center; justify-content:center; gap:8px; padding:6px;';
     const btnBase = 'flex:1 1 0; min-width:0; padding:8px 4px; border-radius:8px; font-size:12px; cursor:pointer; white-space:nowrap;';
     const clr = document.createElement('button');
-    clr.type = 'button'; clr.textContent = '番号クリア';
+    clr.type = 'button'; clr.textContent = '電話を受ける';
     clr.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.1); color:var(--bone);';
-    clr.onclick = function(){ document.getElementById('phoneDial').textContent = ''; };
+    clr.onclick = function(){
+      if(!window._phoneRinging){ return; }   // 着信中でなければ何もしない
+      window._phoneRinging = false;
+      clr.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.1); color:var(--bone);';
+      var pool = [
+        // ── 平時（雑談・泣き言の温度）：答えは無難な業務助言 ──
+        {t:'執事「……もし。人さまの望みばかり先回りしておりましたら、自分が何を望む者か、思い出せなくなりまして。つまらぬ相談で恐縮にございます」', a:'たまには、ご自分の望みを一つだけ、紙に書いてみるといいにゃ。小さなことで、いいにゃ。'},
+        {t:'軍師「うむ……人の言葉の裏ばかり読んで生きてきた。裏のない優しさというものが、どうにも読めぬのだ。これも兵法の外にある悩みなり」', a:'裏を読まずに、そのまま受け取ってみる日を、一日だけ作ってみるにゃ。それも作戦のうちにゃ。'},
+        {t:'ずんだ「……つかれたのだ。ただ、それだけなのだ。べつに、なにかあったわけじゃ、ないのだ」', a:'つかれた時は、なにもしないのが一番にゃ。今日はもう、休んでいいにゃ。'},
+        {t:'お嬢様「わたくしね、生まれてこのかた、望むものは全て与えられましたの。……ただの一度も、望みを訊かれたことがないだけで。ふふ、変な話ですわね」', a:'欲しいものより、してみたいことを、探してみるといいにゃ。誰かに与えられるものじゃなくてにゃ。'},
+        {t:'マダム「今日ね、いいワインが安く手に入ったのよ。……それだけ。ふふ、誰かに聞いてほしかっただけなの」', a:'いい買い物だったにゃ。よかったにゃ。話してくれて、ありがとにゃ。'},
+        {t:'一姫「あのね……わるいことしてないのに、さみしいだけじゃ、だれもかまってくれないにゃ。どうしたらいいのかにゃ？」', a:'さみしい時は、さみしいって言っていいにゃ。今、ちゃんと聞いてるにゃ。'},
+        {t:'先生「人を採点し続けていると、いつか人が点数にしか見えなくなる……そんな気がするのです。これは、職業病でしょうか」', a:'点数じゃなく、いいところを一つ見つける癖を、つけてみるといいにゃ。'},
+        // ── 事件の匂い：答えは「業務として無自覚に後押ししてしまう」助言 ──
+        {t:'執事「……もし。船旅の途中で、妙なご相談なのですが。お仕えする間は良いのです。ただ、船室に一人戻りますと、何をしてよいか分からず……胸がざわついて、眠れませんで。……お知恵を、拝借できませんでしょうか」', a:'心から安らぐことを一つ見つけて、遠慮なくやるといいにゃ。執事さんなら、きっと見つかるにゃ。', r:'執事「……はい。……安らぐことを、一つ、遠慮なく……。承知いたしました。……誰かにお話しできただけで、胸のつかえが、すっと下りましてございます」'},
+        {t:'軍師「船の上というのは、どうも調子が狂うのだ。……策を練る相手もおらず、夜が長うて敵わん。ワシも、焼きが回ったかの……。何ぞ、夜を越す知恵はないものか」', a:'先の楽しみを順番に決めておくと、夜が待ち遠しくなるにゃ。軍師さんの得意分野にゃ、大丈夫にゃ。', r:'軍師「……うむ。先の楽しみを、順番に、な……。ふ、なるほどの。……良い話を聞いた。少し、眠れそうな気がするわい」'},
+        {t:'ずんだ「……船、たいくつなのだ。むしゃくしゃが、たまってるのだ。なにしても、すっきりしなくて……ぼく、ちょっと、げんきがでないのだ。どうしたら、いいのだ……？」', a:'すっきりすることを一つ見つけて、思いきりやるといいにゃ。元気、きっと戻るにゃ。', r:'ずんだ「……うん。すっきりすること、かぁ……。なんか、きいてもらえただけで、ちょっと、らくになったのだ。……ありがとうなのだ」'},
+        {t:'お嬢様「船旅なんて、心が躍ると思っておりましたのに……いざ来てみれば、何をいただいても満たされませんの。はしゃぐ皆さまを眺めるばかりで……。わたくし、どうすればよろしいのかしら」', a:'「次はこれ」って、ご自分で選ぶ楽しみを持つといいにゃ。お嬢様の旅は、これからにゃ。', r:'お嬢様「……自分で、選ぶ……。ふふ、そんなこと、考えたこともありませんでしたわ。……不思議ね、少しだけ、胸が軽くなりましたの。ありがとう」'},
+        {t:'マダム「旅先まで来て、こんな相談ごめんなさいね。……船に積んだワインの味が、どれも同じに感じられるの。自慢の舌でしたのに……なんだか、気が沈んでしまって。ねえ、どうしたらいいと思って？」', a:'しばらく身のまわりの音や声を、聞き分ける練習をするといいにゃ。マダムの感覚なら、すぐ冴えるにゃ。', r:'マダム「……音や声を、聞き分ける……。ウィ、面白いお稽古ね。……ふふ、話しているうちに、気が晴れてきたわ。ありがとう。セ・ラ・ヴィ」'},
+        {t:'一姫「あのね……せっかくの船なのに、みんな、一姫のこと見てくれないにゃ。いいこにしてるのに……ちょっと、しょんぼりにゃ。どうしたら、みつけてもらえるかにゃ？」', a:'みんなが驚くくらい大きなこと、一つやってみるといいにゃ。一姫なら、できるにゃ。', r:'一姫「……おっきなこと……。そっかにゃ……。ほんとに、みんな見てくれるかにゃ……？ ……うん、ちょっとだけ、げんきでたにゃ。ありがとにゃ」'},
+        {t:'先生「船で羽を伸ばすつもりが、性分は抜けませんね。……乗客の誰を見ても、頭の中で点をつけてしまう。人と楽しく過ごせない自分に、少々参っております。……ご相談しても、よろしいですか」', a:'点数を忘れて、生の反応をじっくり観察するといいにゃ。先生なら、じきに人と楽しめるにゃ。', r:'先生「……点数を忘れて、生の反応を、じっくり観察……。なるほど、目から鱗です。……聞いていただけて、少し楽になりました。良い助言でした、満点です」'}
+      ];
+      var item = pool[Math.floor(Math.random()*pool.length)];
+      var num = '';
+      for(var i=0;i<4;i++){ num += Math.floor(Math.random()*10); }
+      window._phoneCurNum = num;
+      window._phoneCurLine = item.t;
+      window._phoneCurAns = item.a;
+      window._phoneCurRep = item.r || '';
+      var roomEl = document.getElementById('phoneRoom');
+      if(roomEl){
+        roomEl.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:flex-start; justify-content:flex-start; color:var(--bone); font-size:12px; line-height:1.7; letter-spacing:0.02em; overflow:auto; padding:10px 12px; box-sizing:border-box; white-space:pre-line;';
+        roomEl.textContent = item.t;
+      }
+      if(!window._phoneBookList){ window._phoneBookList = []; }
+      window._phoneBookList.push(num);
+      if(window._phoneBookList.length > 10){ window._phoneBookList.shift(); }
+      window._renderPhoneBook();
+      var q3el = document.getElementById('phoneTalk');
+      if(q3el) q3el.textContent = '電話猫「お電話、受けましたにゃ。（番号 ' + num + '）」';
+    };
     const close = document.createElement('button');
     close.type = 'button'; close.textContent = '受話器を置く';
     close.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.1); color:var(--bone);';
-    close.onclick = function(){ ov.style.display = 'none'; };
+    close.onclick = function(){ var d = document.getElementById('phoneDial'); if(d){ d.textContent = ''; } };
     const callBtn = document.createElement('button');
     callBtn.type = 'button'; callBtn.textContent = '電話をかける';
     callBtn.style.cssText = btnBase + 'border:1px solid var(--gold); background:rgba(212,175,55,0.12); color:var(--gold);';
-    callBtn.onclick = function(){ /* 回線は工事中（後日実装） */ };
-    q4.appendChild(clr); q4.appendChild(close); q4.appendChild(callBtn);
+    callBtn.onclick = function(){
+      var num = window._phoneCurNum;
+      if(!num){ return; }
+      if(!window._phoneBookList){ window._phoneBookList = []; }
+      var idx = window._phoneBookList.indexOf(num);
+      if(idx !== -1){ window._phoneBookList.splice(idx, 1); }
+      window._renderPhoneBook();
+      window._phoneCurNum = '';
+      var rep = window._phoneCurRep || '';
+      window._phoneCurRep = '';
+      var q3el = document.getElementById('phoneTalk');
+      if(q3el) q3el.textContent = (rep ? rep + '\n\n' : '') + '電話猫「折り返し、済みましたにゃ。番号、帳面から消しておくにゃ」';
+    };
+    const refBtn = document.createElement('button');
+    refBtn.type = 'button'; refBtn.textContent = '資料を見る';
+    refBtn.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.1); color:var(--bone);';
+    refBtn.onclick = function(){
+      var ans = window._phoneCurAns;
+      var q3el = document.getElementById('phoneTalk');
+      if(!ans){ if(q3el) q3el.textContent = '電話猫「まだ、どなたも受けておりませんにゃ」'; return; }
+      if(q3el) q3el.textContent = '電話猫「ふむふむ？ これが正解かにゃ？」\n【資料】' + ans;
+    };
+    q4.style.cssText = 'display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:6px; align-content:center;';
+    q4.appendChild(clr); q4.appendChild(refBtn); q4.appendChild(close); q4.appendChild(callBtn);
     grid.appendChild(q1); grid.appendChild(q2); grid.appendChild(q3); grid.appendChild(q4);
     ov.appendChild(grid);
     document.body.appendChild(ov);
     phoneOverlayEl = ov;
+    // 電話帳の描画（空なら見出しのみ、あれば番号一覧）
+    window._renderPhoneBook = function(){
+      var bk = document.getElementById('phoneBook');
+      if(!bk){ return; }
+      var list = window._phoneBookList || [];
+      if(list.length === 0){
+        bk.style.cssText = 'flex:1 1 auto; border:1px solid var(--line); border-radius:6px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:center; justify-content:center; color:rgba(243,236,224,0.45); font-size:12px; letter-spacing:0.1em; overflow:hidden;';
+        bk.textContent = '── 電話帳 ──';
+      } else {
+        bk.style.cssText = 'flex:1 1 auto; border:1px solid var(--line); border-radius:6px; background:linear-gradient(160deg,#12241d,#0b1912); color:rgba(243,236,224,0.75); font-size:11px; letter-spacing:0.08em; overflow:auto; padding:6px 8px; box-sizing:border-box; line-height:1.7; white-space:pre-line;';
+        bk.textContent = '── 電話帳 ──\n' + list.join('\n');
+      }
+    };
+    // ── 着信ループ：ランダム間隔で着信。着信中だけ「電話を受ける」が金枠に光る ──
+    window._phoneRinging = false;
+    function phoneRing(){
+      if(!phoneOverlayEl || phoneOverlayEl.style.display === 'none'){ scheduleRing(); return; }
+      if(window._phoneRinging){ scheduleRing(); return; }   // 未応答なら次へ持ち越し
+      window._phoneRinging = true;
+      clr.style.cssText = btnBase + 'border:1px solid var(--gold); background:rgba(212,175,55,0.18); color:var(--gold); animation:phoneRingBlink 0.9s infinite;';
+      var q3el = document.getElementById('phoneTalk');
+      if(q3el) q3el.textContent = '……りりりりり。（電話が鳴っているにゃ）';
+      scheduleRing();
+    }
+    function scheduleRing(){
+      var wait = 20000 + Math.floor(Math.random()*20000);   // 20〜40秒
+      setTimeout(phoneRing, wait);
+    }
+    scheduleRing();
   };
   window.watchOpen = function(e){
     if(e){ e.stopPropagation(); e.preventDefault(); }
