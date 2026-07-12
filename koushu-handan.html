@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="678">
+<html lang="ja" data-ver="692">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -943,7 +943,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v678</div>
+  <div id="verTag">v692</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -1313,7 +1313,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const VOICE_EXTS = ['wav','wav.wav','m4a','mp3'];   // 形式：wav→wav.wav(二重拡張子)→m4a→mp3
   const VOICE_DIRS = ['voice/',''];                  // 置き場所：voice/ フォルダ内→リポジトリ直下、両方探す
   function _preloadVoices(){
-    const names = ['attack','defend'].concat(Array.from({length:13}, (_,i)=>String(i+1)));
+    const names = ['attack','defend','yoshi','mumu'].concat(Array.from({length:13}, (_,i)=>String(i+1)));
     names.forEach(n => {
       // 候補URL（場所×区切り×形式）を順に試し、最初に読めたものを採用
       // SEPS: 拡張子の前にスペースが紛れた名前（例 "1 .wav.wav"）にも対応する
@@ -3733,8 +3733,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if(ok){
       watchStreak++;
       if(watchStreak >= 3 && watchStreak % 3 === 0) msg += '\n現場猫「' + watchStreak + '問連続、ヨシ」';
+      playVoice('yoshi', 'ヨシ', 1.05);
     } else {
       watchStreak = 0;
+      playVoice('mumu', 'ムムッ', 1.0);
     }
     const m = document.getElementById('watchMsg');
     if(m) m.textContent = msg;
@@ -4070,8 +4072,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // 経済: АР20 / 牌13で聴牌 / 犯人の嘘「中」でロン / АР8以下で殺人開始
   // ============================================================
   const ADV_ROOMS = [
-    {k:'captain',   label:'船長室'},
-    {k:'office',    label:'現場猫室'},
+    {k:'captain',   label:'船長'},
+    {k:'office',    label:'猫室'},
     {k:'butler',    label:'執事'},
     {k:'strategist',label:'軍師'},
     {k:'blunt',     label:'ずんだ'},
@@ -4123,15 +4125,28 @@ document.addEventListener('DOMContentLoaded', function () {
       room:startRoom, ap:25,
       culprit:p[0], hints:p.slice(1,3), wits:p.slice(4,6), allies:[p[3], p[6]],
       killOrder: advShuffle(p.slice(1)),
-      searched:{}, converted:{}, heard:{}, dead:{}, joined:{}, gaugeUsed:{},
+      searched:{}, converted:{}, heard:{}, dead:{}, joined:{}, gaugeUsed:{}, detTrapUsed:false,
       kitten:false, culpritKnown:false,
       catHeard:false, bodyHeard:false, bodyGone:false, witGiven:{}, hintPointed:[],
       tiles:0, deadCount:0, over:false, ron:false, nightAt:8
     };
     advSt.inv = [];
     advSt.witTile = {};
-    advSt.witTile[advSt.wits[0]] = '白';
-    advSt.witTile[advSt.wits[1]] = '發';
+    // 開始時に一度、ランダムで2人のうち1人だけが目撃談（アイテム）を持つ。
+    // もう1人は目撃者の事実は残したまま、目撃談の中身だけが無い。
+    var _holder = advSt.wits[Math.floor(Math.random()*2)];
+    advSt.witTile[_holder] = '白';
+    // 協力者2人のうちランダムに1人が證拠牌【發】を差し出す。
+    advSt.allyTile = {};
+    advSt.allyTile[advSt.allies[Math.floor(Math.random()*2)]] = '發';
+    // アリバイ崩し層（添え・勝敗条件は不変）。
+    // 犯人は「犯行時刻は自室にいた」と主張する（lieに既に自室系の弁が乗る）。
+    advSt.witSpot = advShuffle(['廊下','船の甲板','別の船室の前'])[0];   // 目撃者が犯人を見た「自室の外」
+    // 協力者が裏を取る相手＝犯人・その協力者以外から一人。消去法で盤を狭める。
+    var _cand = ADV_P.filter(function(k){ return k !== advSt.culprit && advSt.allies.indexOf(k) < 0; });
+    advSt.allyAlibiFor = _cand[Math.floor(Math.random()*_cand.length)];
+    advSt.noteWit = '';    // 貼り込む目撃証言
+    advSt.noteAlly = '';   // 貼り込む協力者証言
     // 人柄部屋から2部屋の牌を抜き、12号室・16号室へ移す（開始時に1回・固定）
     var _persRooms = advShuffle(['butler','strategist','blunt','lady','french','ichihime','sensei']);
     advSt.stolenRooms = [_persRooms[0], _persRooms[1]];
@@ -4296,6 +4311,13 @@ document.addEventListener('DOMContentLoaded', function () {
       if(onDone){ var _fin = advSkip; advSkip = function(){ onDone(); _fin(); }; }
     };
   }
+  // 記録（廊下・16号室ボタンの右詰）。押すと探偵ノートの場面へ移る。中身の執筆は後日。手は消費しない。
+  window.advNote = function(ev){
+    if(ev){ ev.stopPropagation(); }
+    if(!advSt || advPausing || advSt.over) return;
+    advView = 'note';
+    advRender();
+  };
   function advMsgQueue(m){ advQ.push(m); }
   function advAutoSwitch(){
     const t = advSt;
@@ -4356,13 +4378,22 @@ document.addEventListener('DOMContentLoaded', function () {
       sensei:    '「良い質問です。{n}——あの者は何かを知っています。当たってみることです」'
     },
     wit: {
-      butler:    '「そういえばあの晩……給仕の帰りに、妙な物音を聞きました」',
-      strategist:'「あの晩のことなら覚えておる。……妙な影を見たのだ」',
-      blunt:     '「あの晩……変な音がしたのだ」',
-      lady:      '「あの晩ですけれど……妙な足音を聞きましたのよ」',
-      french:    '「あの晩ね……ウィ、たしかに何かを見たわ」',
-      ichihime:  '「あの晩にゃ……へんな音で目がさめたにゃ」',
-      sensei:    '「あの晩のことは記録しています。……妙な点がひとつ」'
+      butler:    '「そういえばあの晩……給仕の帰りに、{c}様が自室を出て{s}にいらっしゃるのを、確かに見ました」',
+      strategist:'「あの晩のことなら覚えておる。……{c}が自室を離れ、{s}をうろついておったわ」',
+      blunt:     '「あの晩……{c}が部屋にいなかったのだ。{s}で見たのだ」',
+      lady:      '「あの晩ですけれど……{c}さんが自室を出て、{s}にいらしたのを見ましたのよ」',
+      french:    '「あの晩ね……ウィ、{c}が自室を抜け出して{s}にいるのを見たわ」',
+      ichihime:  '「あの晩にゃ……{c}が部屋にいなくて、{s}をあるいてたにゃ」',
+      sensei:    '「あの晩のことは記録しています。……{c}が自室を離れ、{s}にいた。時刻も控えてあります」'
+    },
+    allyAlibi: {
+      butler:    '「あの時刻、わたくしは{n}様とご一緒でした。あの方は、ずっとわたくしの目の前に」',
+      strategist:'「あの時刻、ワシは{n}と碁を打っておった。{n}に、疑う余地はないぞ」',
+      blunt:     '「あの時刻、ボクは{n}とずんだ餅を食べてたのだ。{n}は、部屋を出てないのだ」',
+      lady:      '「あの時刻、わたくしは{n}さんとお茶をご一緒しておりましたわ。{n}さんは、ずっとそこに」',
+      french:    '「あの時刻、わたくしは{n}とワインを開けていたの。{n}は、ずっとわたくしの隣よ、ウィ」',
+      ichihime:  '「あの時刻、一姫は{n}といっしょにおさかな食べてたにゃ。{n}は、どこにも行ってないにゃ」',
+      sensei:    '「あの時刻、私は{n}と答案を見ておりました。{n}のアリバイは、私が保証します」'
     },
     join: {
       butler:    '「……およろしければ、この先はわたくしがお供いたします。あなた様の『ヨシ』が、ひとつでも多く通りますように」',
@@ -4429,11 +4460,15 @@ document.addEventListener('DOMContentLoaded', function () {
     if(kind === 'win'){
       const p = [
         '「——ロン！」',
-        '十三枚目の嘘、【中】。\n\n' + name + 'は、静かに項垂れた。',
-        name + 'は、ぽつりと動機を漏らした。\n\n' + ADV_MOTIVE[t.culprit],
-        ADV_FEAR[t.culprit],
-        ADV_GENBA[t.culprit]
+        '十三枚目の嘘、【中】。\n\n' + name + 'は、静かに項垂れた。'
       ];
+      if(t.noteWit && t.noteAlly){
+        var _wk = t.wits.filter(function(k){ return t.witTile[k]; })[0];
+        p.push('「あの晩は自室から一歩も出ていない」——だが、その嘘はもう崩れている。\n\nアリバイは崩れた——' + ADV_NAME[_wk] + 'が、あの時間、' + name + 'を' + t.witSpot + 'で見ている。');
+      }
+      p.push(name + 'は、ぽつりと動機を漏らした。\n\n' + ADV_MOTIVE[t.culprit]);
+      p.push(ADV_FEAR[t.culprit]);
+      p.push(ADV_GENBA[t.culprit]);
       var _pk = ['butler','strategist','blunt','lady','french','ichihime','sensei'].filter(function(k){ return t.joined[k]; });
       if(_pk.length >= 2 && ADV_PAIR[_pk[0] + '|' + _pk[1]]) p.push(ADV_PAIR[_pk[0] + '|' + _pk[1]]);
       if(d === 0){
@@ -4459,7 +4494,7 @@ document.addEventListener('DOMContentLoaded', function () {
         '船内は、静まり返っていた。',
         'もう、悲鳴すら聞こえない。\n\n港に着くと同時に、犯人は雑踏へ消えた。',
         t.kitten ? '子猫が袖を掴んだまま、震えている。\n「……こわかったにゃ」'
-                 : '現場猫室の毛布の上で、子猫がひとり、うずくまっている。',
+                 : '猫室の毛布の上で、子猫がひとり、うずくまっている。',
         '流　局\n—— 猫牌の説明から、また乗船できる ——'
       ];
     }
@@ -4468,7 +4503,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'うあー・・・\n現場猫の悲鳴が響く。',
         'やがて、遠くで汽笛が鳴った。\n\n——船は、犯人を乗せたまま港へ着く。',
         t.kitten ? '穴のふちから、子猫が見下ろしている。\n「……おとうさん、みたいになっちゃったにゃ」'
-                 : '現場猫室の毛布の上で、子猫がひとり、うずくまっている。',
+                 : '猫室の毛布の上で、子猫がひとり、うずくまっている。',
         '労　災\n—— 床、ヨシではなかった ——'
       ];
     }
@@ -4477,7 +4512,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'うあー・・・\n現場猫の悲鳴が響く。',
         'やがて、遠くで汽笛が鳴った。\n\n——船は、犯人を乗せたまま港へ着く。',
         t.kitten ? '倒れた現場猫のそばで、子猫がぺたりと座り込んでいる。\n「……いたそう、だったにゃ」'
-                 : '現場猫室の毛布の上で、子猫がひとり、うずくまっている。',
+                 : '猫室の毛布の上で、子猫がひとり、うずくまっている。',
         '労　災\n—— 死角なし、ヨシではなかった ——'
       ];
     }
@@ -4487,7 +4522,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'ゴゴゴ……という音とともに、船が大きく傾いた。',
         '船長「……すまん。舵に、誰もいなかった」',
         t.kitten ? '子猫が甲板で足を踏ん張っている。\n「……りく、みえてるにゃ」'
-                 : '現場猫室の毛布の上で、子猫がひとり、うずくまっている。',
+                 : '猫室の毛布の上で、子猫がひとり、うずくまっている。',
         '座　礁\n—— 操舵、ヨシではなかった ——'
       ];
     }
@@ -4496,7 +4531,7 @@ document.addEventListener('DOMContentLoaded', function () {
       '犯人が、桟橋でこちらを振り返った。',
       '何も言わず、ただ薄く笑って、人混みへ消えていく。\n\n——次はもっと上手くやる、とでも言いたげに。',
       t.kitten ? '子猫は桟橋の端で、遠ざかる背中を見ていた。\n「……ヨシ、じゃないにゃ」'
-               : '現場猫室の毛布の上で、子猫がひとり待っている。',
+               : '猫室の毛布の上で、子猫がひとり待っている。',
       '完　全　黙　秘\n—— 犯人は、また乗船する ——'
     ];
   }
@@ -4533,6 +4568,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   function advWin(){ advEnd('win'); }
 
+
+
   function advEntryRoom(){
     let t = null;
     try { t = localStorage.getItem('koushu_tone'); } catch(e){}
@@ -4555,7 +4592,7 @@ document.addEventListener('DOMContentLoaded', function () {
     advEndPages = [
       '港に、大きな客船がとまっている。\nその名は——デルタ・プリンセス号。',
       '現場猫が、船に乗りこんだ。\n指差し確認——「ヨシ！」',
-      'だが現場猫室で、労災猫が悶絶していた。\n崩れた壁牌の下敷き。……誰も「ヨシ！」を、していなかったのだ。',
+      'だが猫室で、労災猫が悶絶していた。\n崩れた壁牌の下敷き。……誰も「ヨシ！」を、していなかったのだ。',
       '船の部屋をまわり、証拠の牌を13枚あつめよ。\nそろったら——犯人の嘘に「ロン」！'
     ];
     advEndIdx = 0;
@@ -4585,15 +4622,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const room = ADV_ROOMS.find(r => r.k === t.room);
     const inEnd = (advView === 'end' || advView === 'intro');
     const inDiff = (advView === 'diff');
+    const inNote = (advView === 'note');
     const advVer = '　v' + (document.documentElement.getAttribute('data-ver') || '?');
-    advEl.head.textContent = (inEnd ? ('デルタ・プリンセス号　—— ' + (advView === 'intro' ? '乗船' : '終局'))
+    advEl.head.textContent = (inNote ? '探偵ノート'
+      : inEnd ? ('デルタ・プリンセス号　—— ' + (advView === 'intro' ? '乗船' : '終局'))
       : ((inHall ? 'デルタ・プリンセス号・廊下' : room.label) + '　行動力:' + t.ap + '　証拠:' + advTiles() + '/13')) + advVer;
     advEl.hallRow.style.display = inHall ? 'flex' : 'none';
     advEl.diffRow.style.display = inDiff ? 'flex' : 'none';
-    advEl.row.style.display = (inHall || inDiff) ? 'none' : 'flex';
+    advEl.row.style.display = (inHall || inDiff || inNote) ? 'none' : 'flex';
     advEl.doors.forEach(function(d){
       d.btn.textContent = d.label;   // 労災は赤色のみで示す（文字は足さない）
-      if(t.dead[d.k] || d.k === 'office'){   // 労災＝赤金で一目に。現場猫室は最初から労災猫がいるので常に赤
+      if(t.dead[d.k] || d.k === 'office'){   // 労災＝赤金で一目に。猫室は最初から労災猫がいるので常に赤
         d.btn.style.border = '1.5px solid #d98a6a';
         d.btn.style.background = '#4a2b28';
         d.btn.style.color = '#f2c9bd';
@@ -4605,7 +4644,19 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     // 場面パネル
     let ppl = '';
-    if(inEnd){
+    if(inNote){
+      var _slips = [];
+      if(t.noteWit) _slips.push('【一枚目】' + t.noteWit);
+      if(t.noteAlly) _slips.push('【二枚目】' + t.noteAlly);
+      if(_slips.length === 0){
+        ppl = '（……まだ何も書かれていない。ここに手がかりを綴るにゃ）';
+      } else {
+        ppl = _slips.join('\n\n');
+        if(t.noteWit && t.noteAlly){
+          ppl += '\n\n——犯人は「自室にいた」と言うはず。だが' + ADV_NAME[t.wits.filter(function(k){return t.witTile[k];})[0]] + 'は' + t.witSpot + 'で見ている。アリバイは合わない。';
+        }
+      }
+    } else if(inEnd){
       ppl = advEndPages[advEndIdx] || '';
     } else if(inDiff){
       ppl = '航路はいかがなさいます？';
@@ -4619,7 +4670,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var _rname = (t.room === 'captain') ? '船長' : ADV_NAME[t.room];
       ppl = t.dead[t.room] ? _rname + 'の部屋は現場になっている……' : (t.joined[t.room] ? '' : _rname + 'がいる');
     }
-    if(!inEnd && !inDiff && !inHall && ADV_ROOM_IMG[t.room]){
+    if(!inEnd && !inDiff && !inHall && !inNote && ADV_ROOM_IMG[t.room]){
       const spr = (t.room === 'room16' && t.knifeThrown && !t.knifeAvoided)
         ? '<div style="position:absolute; top:46%; width:11%; height:3%; animation:knifeFly .45s linear forwards;"><div style="position:absolute; left:0; top:30%; width:26%; height:40%; background:#5a3a1c; box-shadow:0 0 0 1px rgba(20,18,26,.9);"></div><div style="position:absolute; left:26%; top:0; width:60%; height:100%; background:linear-gradient(#e9edf2,#aab3bd); box-shadow:0 0 0 1px rgba(20,18,26,.9);"></div><div style="position:absolute; left:86%; top:0; width:0; height:0; border-top:solid transparent; border-bottom:solid transparent; border-left:solid #cfd6dd; border-top-width:calc(1.5% + 0px);"></div></div>'
         : (t.room === 'room12' && t.floorOpen && !t.floorAvoided)
@@ -4655,6 +4706,13 @@ document.addEventListener('DOMContentLoaded', function () {
         '<img src="' + ADV_CHART_IMG + '" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;" alt="">'
         + '<div style="position:absolute; inset:0; background:rgba(8,12,20,.5);"></div>'
         + '<div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:12px; white-space:pre-line; line-height:1.7;">' + ppl + '</div>';
+    } else if(inNote){
+      advEl.scene.style.position = 'relative';
+      advEl.scene.style.padding = '0';
+      advEl.scene.style.overflow = 'hidden';
+      advEl.scene.innerHTML =
+        '<div style="position:absolute; inset:0; background:#e8e0c8;"></div>'
+        + '<div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:12px; white-space:pre-line; line-height:1.9; color:#3a3226;">' + ppl + '</div>';
     } else if(inHall && ADV_HALL_IMG){
       advEl.scene.style.position = 'relative';
       advEl.scene.style.padding = '0';
@@ -4683,8 +4741,9 @@ document.addEventListener('DOMContentLoaded', function () {
     advEl.bHearBody.style.display = (dis || t.room !== 'office' || t.bodyHeard) ? 'none' : '';
     advEl.bHall.style.display = dis ? 'none' : '';
     [advEl.bSearch, advEl.bHear, advEl.bPhone, advEl.bAuto, advEl.bHearCat, advEl.bHearBody, advEl.bKitten, advEl.bRon, advEl.bHall].forEach(b => b.disabled = dis);
-    advEl.msg.style.display = (inEnd || inDiff) ? 'none' : '';
-    advEl.foot.textContent = inDiff ? '難易度を選んでくださいまし'
+    advEl.msg.style.display = (inEnd || inDiff || inNote) ? 'none' : '';
+    advEl.foot.textContent = inNote ? '画面をタップでノートを閉じますの'
+      : inDiff ? '難易度を選んでくださいまし'
       : inEnd ? '「次へ」で幕が進みますの'
       : (advPausing ? '読み終えたら「次へ」で廊下へ戻りますの'
       : (inHall ? '扉で部屋へ。✕ で卓に戻れますの（局は保存されますわ）' : '一手打つと結果が出ますの'));
@@ -4756,7 +4815,8 @@ document.addEventListener('DOMContentLoaded', function () {
         advSeq('「しらべる」…… その一歩の先、床が無い。現場猫「転落注意…足元…ヨシ！」', ADV_NAME[_saver] + '「' + _quip[_saver] + '」', function(){ t.floorAvoided = true; });
         return;
       }
-      if(advReachedThisSession){
+      if(advReachedThisSession && !t.detTrapUsed){
+        t.detTrapUsed = true;
         t.floorAvoided = true;
         advOut('「しらべる」…… 探偵猫「！？……罠か？……トラップ解除！」');
         return;
@@ -4784,7 +4844,8 @@ document.addEventListener('DOMContentLoaded', function () {
         t.knifeAvoided = true;
         return;
       }
-      if(advReachedThisSession){
+      if(advReachedThisSession && !t.detTrapUsed){
+        t.detTrapUsed = true;
         t.knifeAvoided = true;
         advOut('「しらべる」…… \n探偵猫「……！？この部屋には何かある？……罠か？……トラップ解除！…」');
         return;
@@ -4809,7 +4870,7 @@ document.addEventListener('DOMContentLoaded', function () {
       advGain(ev[0] + '【' + ev[1] + '】');
       if(!advSpend()) return;
       advOut('「しらべる」…… ' + ev[0] + '【' + ev[1] + '】を みつけた！（' + advTiles() + '/13）' + (t.kitten ? '\n子猫「みつけたにゃ！」' : ''));
-    } else if(t.room !== 'captain' && t.dead[t.room] && t.wits.indexOf(t.room) >= 0 && !t.witGiven[t.room] && !t.converted[t.room]){
+    } else if(t.room !== 'captain' && t.dead[t.room] && t.witTile[t.room] && !t.witGiven[t.room] && !t.converted[t.room]){
       t.converted[t.room] = true;
       advGain(ADV_NAME[t.room] + 'の目撃談【' + t.witTile[t.room] + '】');
       if(!advSpend()) return;
@@ -4893,18 +4954,28 @@ document.addEventListener('DOMContentLoaded', function () {
       advOut(ADV_NAME[who] + ADV_TALK.deny[who]);
       return;
     }
-    if(t.wits.indexOf(who) >= 0 && !t.witGiven[who]){
+    if(t.witTile[who] && !t.witGiven[who]){
       t.witGiven[who] = true;
       advGain(ADV_NAME[who] + 'の目撃談【' + t.witTile[who] + '】');
-      advOut(ADV_NAME[who] + ADV_TALK.wit[who] + '—— ' + ADV_NAME[who] + 'の目撃談【' + t.witTile[who] + '】を得た。（' + advTiles() + '/13）' + (t.kitten ? '\n子猫「目撃かくにん、ヨシ！にゃ」' : ''));
+      var _witLine = ADV_TALK.wit[who].replace('{c}', ADV_NAME[t.culprit]).replace('{s}', t.witSpot);
+      t.noteWit = ADV_NAME[who] + 'の目撃証言：' + _witLine;
+      advOut(ADV_NAME[who] + _witLine + '—— ' + ADV_NAME[who] + 'の目撃談【' + t.witTile[who] + '】を得た。（' + advTiles() + '/13）' + (t.kitten ? '\n子猫「目撃かくにん、ヨシ！にゃ」' : ''));
       return;
     }
     if(t.allies.indexOf(who) >= 0 && !t.joined[who]){
       t.joined[who] = true;
+      var _at = t.allyTile[who];
+      var _gift = _at ? '\n' + ADV_NAME[who] + 'が證拠牌【' + _at + '】を差し出した。（' + (advTiles()+1) + '/13）' : '';
+      if(_at){ advGain(ADV_NAME[who] + 'の證拠牌【' + _at + '】'); }
+      if(_at){
+        var _alibiLine = ADV_TALK.allyAlibi[who].replace(/\{n\}/g, ADV_NAME[t.allyAlibiFor]);
+        t.noteAlly = ADV_NAME[who] + 'の裏取り：' + _alibiLine + '（＝' + ADV_NAME[t.allyAlibiFor] + 'は消える）';
+        _gift += '\n' + _alibiLine;
+      }
       if(who === 'lady'){
-        advSeq('お嬢様「まあ、仕方のない方。少しだけ手を貸してさしあげますわ。……', '退屈しのぎですのよ、勘違いなさらないでくださいまし。ふふ」（仲間になった）');
+        advSeq('お嬢様「まあ、仕方のない方。少しだけ手を貸してさしあげますわ。……', '退屈しのぎですのよ、勘違いなさらないでくださいまし。ふふ」（仲間になった）' + _gift);
       } else {
-        advOut(ADV_NAME[who] + ADV_TALK.join[who] + '（仲間になった）');
+        advOut(ADV_NAME[who] + ADV_TALK.join[who] + '（仲間になった）' + _gift);
       }
       return;
     }
@@ -4952,7 +5023,10 @@ document.addEventListener('DOMContentLoaded', function () {
     inv.style.cssText = 'padding:2px 12px; background:#151b22; color:#c9bf9a; font-size:12px; letter-spacing:.03em; display:flex; align-items:center; flex-wrap:nowrap; min-height:42px; overflow:hidden;';
     const scene = document.createElement('div');
     scene.style.cssText = 'flex:1; display:flex; align-items:center; justify-content:center; background:#243040; margin:6px 12px; border-radius:8px; letter-spacing:.1em; white-space:pre-wrap; text-align:center; padding:8px 20px; line-height:1.9;';
-    scene.onclick = () => { if(advView === 'end' || advView === 'intro') advEndNext(); };
+    scene.onclick = () => {
+      if(advView === 'note'){ advView = 'hall'; advMsg('廊下に出た。'); return; }
+      if(advView === 'end' || advView === 'intro') advEndNext();
+    };
     const msg = document.createElement('div');
     msg.style.cssText = 'min-height:1.6em; max-height:4.4em; overflow-y:auto; padding:4px 10px; margin:0 12px; background:#000; border:1px solid #5a5340; border-top:none; border-radius:6px; font-size:12px; line-height:1.4;';
     msg.onclick = () => {
@@ -4989,6 +5063,12 @@ document.addEventListener('DOMContentLoaded', function () {
       doors.push({ k: r.k, label: r.label, btn: b });
       hallRow.appendChild(b);
     });
+    // 記録：16号室の右詰に置く（見た目のみの器・中身は後日）
+    const bNote = document.createElement('button');
+    bNote.textContent = '記録';
+    bNote.style.cssText = 'margin-left:auto; padding:8px 12px; border-radius:8px; border:1px solid #8a7f5c; background:#2c3644; color:#e8e2d0;';
+    bNote.onclick = () => window.advNote();
+    hallRow.appendChild(bNote);
     const diffRow = document.createElement('div');
     diffRow.style.cssText = 'display:none; gap:10px; padding:8px 12px; flex-wrap:wrap; justify-content:center;';
     [['初歩',30,8],['中級',28,11],['上級',28,11]].forEach(function(dv){
