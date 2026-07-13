@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="706">
+<html lang="ja" data-ver="719">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -601,6 +601,7 @@
     #advRoot { display: none !important; }   /* 探偵画面も縦では畳み、催促案内に委ねる */
     .watch-overlay { display: none !important; }   /* 見張り台も同じ流儀。横に戻せば開いたまま復帰 */
     .watch-guide-overlay { display: none !important; }
+    #titleScreen { display: none !important; }   /* タイトル画面も縦では畳み、催促案内に委ねる */
     .rotate-hint {
       display: flex; flex-direction: column; gap: 14px;
       position: fixed; inset: 0; z-index: 9999;
@@ -931,9 +932,35 @@
   @media (orientation: landscape){
     #tauntBtn,.btn-clear,.btn-shuffle{width:68px;padding-left:6px;padding-right:6px;box-sizing:border-box;flex:0 0 auto;text-align:center;letter-spacing:0;font-size:13px;}
   }
+  /* タイトル画面：起動時に最初に被さる全画面。選ぶまで裏の画面には触れられない */
+  #titleScreen {
+    position: fixed; inset: 0; z-index: 99999;
+    background: radial-gradient(ellipse at 50% 0%, var(--felt-light) 0%, var(--felt) 42%, var(--felt-dark) 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 2vh 20px; text-align: center; overflow-y: auto;
+  }
+  #titleScreen h1 {
+    font-family: var(--serif); color: var(--gold); font-size: clamp(14px, 4vh, 20px); letter-spacing: 0.06em;
+    margin-bottom: 1.6vh; text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  }
+  .title-btn {
+    display: block; width: 100%; max-width: 360px; margin-top: 1vh;
+    border: 1px solid var(--gold); border-radius: 8px;
+    background: rgba(212,180,110,0.10); color: var(--bone);
+    font-size: clamp(12px, 3vh, 15px); padding: 1.2vh 14px; cursor: pointer; text-align: left;
+  }
+  .title-btn:active { background: rgba(212,180,110,0.22); }
 </style>
 </head>
 <body>
+  <div id="titleScreen">
+    <h1>🀄️配牌攻守判定</h1>
+    <button type="button" class="title-btn" onclick="window.closeTitleScreen();">🀄 攻守判定</button>
+    <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.watchOpen();">⚓ 船長の見張り台</button>
+    <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.advStart();">🚢 ミシシッピー現場猫事件</button>
+    <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.phoneOpen();">📞 電話猫の相談窓口</button>
+    <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.toggleEngineHelp();">🐾 猫牌の説明</button>
+  </div>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
     <radialGradient id="gb" cx="38%" cy="34%" r="72%"><stop offset="0%" stop-color="#3f7ec4"/><stop offset="75%" stop-color="#1f5fa8"/><stop offset="100%" stop-color="#143f70"/></radialGradient>
     <radialGradient id="gr" cx="38%" cy="34%" r="72%"><stop offset="0%" stop-color="#d9594b"/><stop offset="75%" stop-color="#c0392b"/><stop offset="100%" stop-color="#8f281d"/></radialGradient>
@@ -943,27 +970,28 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v706</div>
+  <div id="verTag">v719</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
         <span>◆ この判定、信用できるの？</span>
-        <button type="button" class="engine-help-close" onclick="window.toggleEngineHelp(event)">閉じる ✕</button>
+        <button type="button" class="engine-help-close" onclick="window.closeEngineHelpToTitle(event)">閉じる ✕</button>
       </div>
       <div class="engine-help-body">
+      <b>猫牌（ミャオパイ）</b>　配牌（ハイパイ）を素早く13枚に埋めるための牌です。判定では「数牌（スウハイ）の孤立牌（コリツハイ）1枚」として扱われ、受け入れを平均ぶん加算します。枚数と表示には乗りますが、特定の牌ではありません。<br><br>
       <b>どんな時に役立つの？</b><br>
-      一番の出番は、雀魂で配牌をもらった直後。「この手、行っていいの？ 守るべき？」って迷う、あの数秒のため。手牌をポチポチ入れて判定を押せば、攻か守か一言で返ってくる。向聴数だの受け入れ枚数だのを自分で数えられなくても大丈夫——難しい計算はぜんぶこっちで済ませて、答えだけ渡す。<br><br>
+      一番の出番は、雀魂で配牌（ハイパイ）をもらった直後。「この手、行っていいの？ 守るべき？」って迷う、あの数秒のため。手牌をポチポチ入れて判定を押せば、攻か守か一言で返ってくる。向聴数（シャンテンスウ）だの受け入れ枚数だのを自分で数えられなくても大丈夫——難しい計算はぜんぶこっちで済ませて、答えだけ渡す。<br><br>
       配牌の良し悪しって、実は初心者が一番判断に困るところ。良い手を降り気味に打って損したり、バラバラの手で突っ張って振り込んだり。そこを最初の一手から間違えないための道具。<br><br>
-      もちろん実戦の途中で「今の形って聴牌に近いの？」を確かめる電卓代わりにも使えるし、牌効率の勉強——「この形とこの形、どっちが進みやすい？」の答え合わせにも使える。通信いらずでホーム画面からすぐ開くから、対局の合間にさっと引ける。<br><br>
+      もちろん実戦の途中で「今の形って聴牌（テンパイ）に近いの？」を確かめる電卓代わりにも使えるし、牌効率（ハイコウリツ）の勉強——「この形とこの形、どっちが進みやすい？」の答え合わせにも使える。通信いらずでホーム画面からすぐ開くから、対局の合間にさっと引ける。<br><br>
       <b>先に答えを——当てずっぽうはゼロ。</b>麻雀のルールと、昔から使われている計算式と、しらみつぶしの検査だけで答えを出している。<br><br>
       <b>その一：ちゃんと答え合わせ済み</b><br>
-      紙と鉛筆で正解を確かめられる14種類の手牌——和了形、いろんな形の聴牌、一向聴、二向聴、国士無双、七対子、バラバラ手——を全部通して、14問中14問正解だった。「動いているように見える」のと「答え合わせが済んでいる」のは、実は大違い。テストまで残してある個人ツールは、正直かなり珍しい。<br><br>
+      紙と鉛筆で正解を確かめられる14種類の手牌——和了形（ホーラケイ）、いろんな形の聴牌（テンパイ）、一向聴（イーシャンテン）、二向聴（リャンシャンテン）、国士無双（コクシムソウ）、七対子（チートイツ）、バラバラ手——を全部通して、14問中14問正解だった。「動いているように見える」のと「答え合わせが済んでいる」のは、実は大違い。テストまで残してある個人ツールは、正直かなり珍しい。<br><br>
       <b>その二：見落としが起きない作り</b><br>
       手牌の分け方（どこを3枚組と見るか、どこをあと1枚の組と見るか）を、一つ残らず全部試して一番いいものを選ぶ。人間の目分量と違って「もっといい分け方があったのに」が起こりようがない。手牌によっては数百〜数千通り。それを判定のたびに毎回、全部やっている。<br><br>
       <b>その三：三つの和了への道を全部見ている</b><br>
-      ふつうの形（4面子1雀頭）だけじゃなく、七対子と国士無双も同時に測って、一番近い道を答えにする。実はここ、自作ツールがよくつまずく所。「三三三四」みたいな紛らわしい形で分け方をミスったり、七対子の測り忘れがあったり——そういう定番の落とし穴を、ぜんぶ塞いで通してある。<br><br>
+      ふつうの形（4面子＝メンツ、1雀頭＝ジャントウ）だけじゃなく、七対子（チートイツ）と国士無双（コクシムソウ）も同時に測って、一番近い道を答えにする。実はここ、自作ツールがよくつまずく所。「三三三四」みたいな紛らわしい形で分け方をミスったり、七対子の測り忘れがあったり——そういう定番の落とし穴を、ぜんぶ塞いで通してある。<br><br>
       <b>その四：「あと何が来れば進む？」も全部数える</b><br>
-      34種類の牌を一枚ずつ「もし引いたら」と試して、そのたびに向聴を丸ごと測り直す。残り枚数も、見えている分を引いた本当の数で数える。予想じゃなくて実測。<br><br>
+      34種類の牌を一枚ずつ「もし引いたら」と試して、そのたびに向聴（シャンテン）を丸ごと測り直す。残り枚数も、見えている分を引いた本当の数で数える。予想じゃなくて実測。<br><br>
       <b>その五：いつでも同じ答え</b><br>
       運や気分や通信状況で答えが変わる要素がない。計算はぜんぶこのファイル一枚の中で完結していて、どこにも問い合わせず手元だけで動く。疑わしければ、何度でも同じ検証ができる。<br><br>
       <b>で、これってどれくらいすごいの？</b><br>
@@ -984,7 +1012,7 @@
       ・<b>点線＝有効牌</b>：抜いても遠さは同じだが、残すと受けや打点が保てる牌。切ると損。<br>
       ・<b>沈み＝浮き牌</b>：抜いても何も変わらない、切って良い候補。<br><br>
       <b>切り順の指針</b><br>
-      浮き牌から切り、有効牌は残し、面子候補は死守。この順が牌効率（ハイこうりつ）の基本。<br><br>
+      浮き牌から切り、有効牌は残し、面子候補は死守。この順が牌効率（ハイコウリツ）の基本。<br><br>
       <b>括弧の数字</b><br>
       向聴（シャンテン＝あがりまでの距離）／受け（手が進む牌の枚数）／赤（赤5の枚数）／面子候補・有効牌・浮き牌の内訳。<br><br>
       色は「一枚ずつ抜いて向聴と受けがどう変わるか」を全部試して決めている。当てずっぽうではない。<br><br>
@@ -4707,6 +4735,20 @@ document.addEventListener('DOMContentLoaded', function () {
     advRender();
   }
   window.advStart = advStart;
+  // タイトル画面：起動時の全画面選択。選択後は閉じるのみ（以後は出ない）
+  window.closeTitleScreen = function(){
+    const el = document.getElementById('titleScreen');
+    if(el) el.style.display = 'none';
+  };
+  // 猫牌の説明（この判定、信用できるの？）を閉じたらタイトルへ戻る
+  window.closeEngineHelpToTitle = function(e){
+    if(e){ e.stopPropagation(); e.preventDefault(); }
+    const ov = document.getElementById('engineHelpOverlay');
+    if(ov) ov.classList.remove('show');
+    const ts = document.getElementById('titleScreen');
+    if(ts) ts.style.display = 'flex';
+  };
+
 
   function advPersonsIn(roomK){
     if(roomK === 'office') return ['kitten','cat','body'];
@@ -5412,7 +5454,7 @@ document.addEventListener('DOMContentLoaded', function () {
     v.innerHTML = `
       <div class="verdict-card ${attack?'attack':'defend'}">
         <button type="button" class="cat-help-btn" onclick="window.toggleCatHelp(event)" aria-label="猫牌について"><img id="catCardTileImg" src="${CAT_TILE_GENBA}" alt="現場猫" style="width:1.4em;height:1.4em;vertical-align:middle;object-fit:contain;display:inline-block"></button>
-        <div class="cat-help-pop" id="catHelpPop"><b>猫牌</b>　配牌を素早く13枚に埋めるための牌です。判定では「数牌の孤立牌1枚」として扱われ、受け入れを平均ぶん加算します。枚数と表示には乗りますが、特定の牌ではありません。<button type="button" class="engine-help-btn" onclick="window.toggleEngineHelp(event)">この道具、何がすごいの？</button><button type="button" class="engine-help-btn" onclick="event.stopPropagation(); document.getElementById('catHelpPop').classList.remove('show'); window.advStart();">🚢 ミシシッピー現場猫事件</button><button type="button" class="engine-help-btn" onclick="window.watchOpen(event)">⚓ 船長の見張り台 — 配牌の攻守クイズ</button><button type="button" class="engine-help-btn" onclick="window.phoneOpen(event)">📞 電話猫の相談窓口</button></div>
+        <div class="cat-help-pop" id="catHelpPop"><b>猫牌（ミャオパイ）</b>　配牌を素早く13枚に埋めるための牌です。判定では「数牌の孤立牌1枚」として扱われ、受け入れを平均ぶん加算します。枚数と表示には乗りますが、特定の牌ではありません。<button type="button" class="engine-help-btn" onclick="window.toggleEngineHelp(event)">この道具、何がすごいの？</button><button type="button" class="engine-help-btn" onclick="event.stopPropagation(); document.getElementById('catHelpPop').classList.remove('show'); window.advStart();">🚢 ミシシッピー現場猫事件</button><button type="button" class="engine-help-btn" onclick="window.watchOpen(event)">⚓ 船長の見張り台 — 配牌の攻守クイズ</button><button type="button" class="engine-help-btn" onclick="window.phoneOpen(event)">📞 電話猫の相談窓口</button></div>
         <div class="verdict-mascot">${attack ? (a.yakumanReach ? '🐦‍🔥' : (a.kokushiSeen ? '🐉' : '🐅')) : ((a.defHonors + a.defTerminals) >= 2 ? '🐑' : '🐭')}</div>
         <div class="verdict-kanji">${attack?'攻':'守'}</div>
         <div class="verdict-word${(a.borderline||a.yakumanReach||(a.kokushiSeen&&!a.yakumanReach))?' long':''}">${pickVerdictWord(attack)}</div>
