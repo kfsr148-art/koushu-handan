@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="738">
+<html lang="ja" data-ver="760">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -955,7 +955,8 @@
 <body>
   <div id="titleScreen">
     <h1>🀄️配牌攻守判定</h1>
-    <button type="button" class="title-btn" onclick="window.closeTitleScreen();">🀄 攻守判定</button>
+    <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.ssMarkTool();">🀄 攻守判定</button>
+    <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.ssReceive();">📷 スクショ読取</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.watchOpen();">⚓ 船長の見張り台</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.advStart();">🚢 ミシシッピー現場猫事件</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.phoneOpen();">📞 電話猫の相談窓口</button>
@@ -970,7 +971,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v738</div>
+  <div id="verTag">v760</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -1122,6 +1123,7 @@
       <button class="btn btn-clear" id="clearBtn">リセット</button>
       <button type="button" class="btn btn-group" id="tauntBtn" onclick="window.toggleTaunt()">ノーマル</button>
       <button class="btn btn-shuffle" id="shuffleBtn">配牌</button>
+      <button type="button" class="btn btn-group" id="ssBtn" onclick="window.ssReceive()">読取</button>
     </div>
 
     <div class="value-col">
@@ -3781,10 +3783,122 @@ document.addEventListener('DOMContentLoaded', function () {
   window.watchToggleRandTone = function(e){ window.toggleRandTone(e); watchMarkRandom(); };
   window.watchToggleRandDial = function(e){ window.toggleRandDial(e); watchMarkRandom(); };
   // ---- 電話猫の相談窓口（第一段：テンキーの枠のみ。番号はまだ誰にも繋がらない） ----
+  // ── 逃走犯への掛け直し：犯人が捕まらなかった周だけ、その番号が繋がる ──
+  const PHONE_ESCAPE_NUM = { butler:'4649', strategist:'1093', blunt:'0707', lady:'0808', french:'3939', ichihime:'2222', sensei:'0100' };
+  const PHONE_ESCAPE_LINE = {
+    butler:    '「窓口様。……ちょうど、磨いておりました。ええ、毎晩磨くのでございます。道具は、手入れを欠かしますと音が濁りますので。——あの晩の音は、それはもう、澄んでおりました。壁牌が崩れる、あの。……窓口様は、骨の数を数えたことがございますか。わたくしは、ございます。とても、安らぎました」',
+    strategist:'「おお、窓口か。……いまな、名簿を作っておったところよ。ワシはな、決めた順は守る男よ。一人目、二人目、三人目——ふふ、おぬしも載っておるよ。安心せい、ずっと後ろのほうじゃ。楽しみは、とっておくものよの」',
+    blunt:     '「……あのね、窓口さん。ぼく、ねむれないのだ。目をつむるとね、あの音がするのだ。ぽき、って。……こわいんじゃないのだ。にやにやしちゃって、ねむれないのだ。ねえ、もっと大きい音って、どうやったら出るとおもう? ぼく、ためしてみたいのだ。今夜」',
+    lady:      '「ごきげんよう。……いまね、窓の外を眺めておりましたの。通りを歩く方々を。あの方は骨が細そう、あの方は悲鳴が高そう——品定めって、こんなに楽しいものでしたのね。毎晩、選んでは、やっぱり明日にしようって。……ふふ、この時間がいちばん濡れますのよ」',
+    french:    '「ウィ……ちょうどグラスを傾けておりましたの。ねえ、ご存知? 悲鳴ってワインと同じですのよ。若い声は酸が立って、年配の声は深みがあって。——あの晩の三人目、あれは当たり年でしたわ。舌が、覚えてしまって。……次のボトルを、開けたくてたまりませんの」',
+    ichihime:  '「みんな一姫を見てくれたにゃ。うれしかったにゃ。……でもね、みんな、すぐ一姫を忘れるにゃ。……わすれるの、ゆるさないにゃ。わすれられないようにする方法、おもいついたにゃ。だってね、いなくなった子のことは、みんな、ずーっとおぼえてるにゃ?」',
+    sensei:    '「窓口さん。良い時間に。——観察日記をつけておりましてね。対象は、そうですね、申し上げても。あなたです。火曜は声が硬い。雨の日は応対が一拍遅い。先週から、わたしの声で息を止める癖がつきましたね。……ええ、いまも止まりました。良い反応です。満点」'
+  };
+  // ── 二回目：楽しい会話 ──
+  const PHONE_ESCAPE_STEP2 = {
+    butler:    '「窓口様。ふふ、聞いてくださいますか。新しいお屋敷の坊ちゃまが、わたくしの淹れる紅茶を『世界一』と仰るのでございます。……執事冥利に尽きますな。今度、茶葉をお送りしましょうか。ええ、窓口様の分も、蒸らしは三分で」',
+    strategist:'「おお窓口、聞け聞け。碁会所での、若いのに三連勝よ。ふはは。『おじいさん強すぎ』と言いおったわ。……ふ、当然よ。ワシを誰と心得る。……のう、今度おぬしも打たんか。電話越しでも、盤の目を読み上げればできるでの」',
+    blunt:     '「窓口さん! きいてきいて、なのだ。こうえんのねこがね、ぼくのひざで、ねたのだ! いちじかん、うごけなかったのだ。……あしが、しびれたのだ。……でも、うれしかったのだ。しゃしん、みせたいのだ」',
+    lady:      '「ごきげんよう! ふふ、聞いてくださる? わたくし、市場でお買い物をしましたのよ。人生で初めて。お魚屋さんと値切り交渉までしましたの。三十円、勝ちましたわ。……ふふ、爽快でしたわ。財閥の宝石より、あの三十円ですわね」',
+    french:    '「ウィ、窓口さん! 今日はいいことがありましたのよ。昔の教え子……ふふ、わたくし、昔ソムリエの学校で教えていましたの。その子がお店を持ったって、手紙をくれて。……今夜は、いいボトルを開ける夜ね。あなたも、グラスを持ってらっしゃいな。気分だけでも」',
+    ichihime:  '「窓口さん、あのねあのね! きょうね、こどもに、みちをきかれたにゃ! 一姫、ちゃんとおしえられたにゃ! 『ありがとうおねえちゃん』って! ……おねえちゃん、だって! えへへ! 一姫、きょう、いいひとだったにゃ!」',
+    sensei:    '「窓口さん。今日は良い日でした。電車で隣り合わせた学生が、わたしの昔の著書を読んでいましてね。……声は掛けませんでしたが。ふふ、降りる駅を三つ、乗り過ごしました。……人間、単純なものです。採点者も、丸を貰えば嬉しい」'
+  };
+  // ── 三回目：秘密の打ち明け ──
+  const PHONE_ESCAPE_STEP3 = {
+    butler:    '「……窓口様にだけ、お話しいたします。わたくし、執事の家系ではございませんの。孤児でございました。お屋敷の裏口で拾われて、名も、作法も、全部あとから着せられたもので。……本当の名は、もう、わたくしも覚えておりません。……あなた様は、名のないわたくしと話してくださっている、初めてのお方でございますよ」',
+    strategist:'「……窓口よ。ワシはな、昔、部下を三人死なせた。ワシの読み違いでよ。……遺族には、武運と伝えた。読み違いとは、言えなんだ。……四十年、誰にも言うておらん。……おぬしが初めてよ。……ふ。楽になるものよの、言うというのは」',
+    blunt:     '「……あのね、窓口さん。ひみつ、いっていい? ……ぼくのなまえね、ほんとうは、おとうさんがつけたなまえじゃ、ないのだ。おかあさんが、にげるまえのよる、あたらしいのをくれたのだ。『つよいこのなまえだよ』って。……だからぼく、このなまえ、すきなのだ。……はじめて、ひとにいったのだ」',
+    lady:      '「……ねえ、窓口さん。わたくし、十歳の誕生日にね、家出をしましたのよ。半日で見つかりましたけれど。……罰は、なんだったと思う? ……『なかったこと』にされましたの。叱られもせず、話題にもされず。……わたくしの人生で一番勇敢な半日は、この世に存在しませんのよ。……あなたが、最初の証人ですわ」',
+    french:    '「……ねえ。わたくしの夫の話、していいかしら。……二十年前に亡くなったの。最後の晩にね、『おまえのワインの説明は、世界一退屈で、世界一かわいい』って。……それから誰にもワインの話を、本気ではしていないの。……あなた以外には。……ふふ。だからあなたの相槌、あの人に少し、似てるのかもね」',
+    ichihime:  '「……あのね。一姫のうち、おかねもちだったの、しってる? ……でもね、パパもママも、一姫のこと、『しっぱいさく』っていうにゃ。おにいちゃんと、くらべて。……だから一姫、おうちのなかで、いちばんしずかなこだったにゃ。……こえ、だすと、しかられるから。……いまはいっぱいおしゃべりするにゃ。……窓口さんが、きいてくれるから」',
+    sensei:    '「……一つ、告白を。わたしが教壇を去った理由です。……生徒を一人、救えませんでした。サインは、全部出ていた。提出物の乱れ、遅刻の周期——データは揃っていたのに、わたしは記録するだけで、声を掛けなかった。……観察は、していたのです。……見て、いなかった。……この話をしたのは、あなたが初めてです」'
+  };
+  // ── 四回目：心が開き切る（この回から通報ボタンが現れる） ──
+  const PHONE_ESCAPE_STEP4 = {
+    butler:    '「窓口様。……不思議でございますな。あなた様の声を聞きますと、拾われた日の、あの裏口の毛布を思い出すのでございます。……今夜も、良く眠れそうでございますよ。……おやすみなさいませ、窓口様」',
+    strategist:'「おお、窓口。……いや、用はないのよ。ないのだが、の。……ふ。用のない電話というものを、ワシは生まれて初めてしておるわ。……悪くないの。……悪くない」',
+    blunt:     '「……窓口さんって、ぼくの、ともだち? ……ともだち、なのだ。……えへへ。……ぼく、ともだちに、でんわしてるのだ。……すごいのだ」',
+    lady:      '「ごきげんよう。……ねえ、今日は何のご用だと思って? ……ふふ、ご用なんて、ありませんのよ。声が聞きたかっただけ。……わたくしの人生で、二番目に勇敢な告白ですわ」',
+    french:    '「ウィ、わたくしよ。……ふふ、今夜のボトルはね、あの人の忌日にだけ開ける一本なの。……今年は、二つグラスを出したわ。……一つは、あなたの分よ」',
+    ichihime:  '「窓口さん! きょうはね、ようじ、ないにゃ! こえがききたかっただけにゃ! ……えへへ。……ゆめでね、窓口さんと、こうえんであそんだにゃ。……ほんとに、あそべたらいいのににゃ」',
+    sensei:    '「窓口さん。……今日、気づいたことを一つ。……わたしはもう、あなたとの通話の間隔を、記録していません。……ただ、待つようになりました。……観察者の敗北です。……ふふ。……良い敗北です」'
+  };
+  // ── 五回目：録音の存在を、向こうが知っていると明かす ──
+  const PHONE_ESCAPE_STEP5 = {
+    butler:    '「……窓口様。ひとつだけ、申し上げても。……録音の音、聞こえておりますよ。回線の奥で、小さく、テープの回る音が。……執事の耳でございますから。……ふふ。よろしいのです。……回し続けたまま、わたくしの話を聞いてくださっている——その方が、あなた様らしゅうございます」',
+    strategist:'「……のう、窓口。ワシの読みを言うてよいか。……おぬしの手元にはな、ワシを終わらせる札が、もうある。……あるのに、切らん。……ふ。読み違いなら笑え。……笑わんか。……そうか。……切らんのだの、おぬしは。……今夜も」',
+    blunt:     '「……あのね、窓口さん。ぼく、しってるのだ。……このでんわ、ぜんぶ、のこってるんでしょ。……けいさつにわたせるやつが、あるんでしょ。……いいのだ。……わたさないで、きいてくれてるの、しってるから。……だからぼく、きょうも、はなせるのだ」',
+    lady:      '「……ねえ、窓口さん。当てましょうか。あなたのお手元に、ボタンがひとつ、ございますでしょう。……押せば、わたくしは終わり。……ふふ、隠さなくてよろしくてよ。……押さずにいてくださる夜が、もう何度目かしら。……数えておりますのよ、わたくし。……全部」',
+    french:    '「……ウィ。……ねえ、あなた。グラスの底に澱が溜まるように、この通話も、どこかに溜まっているのでしょう? ……いいのよ。……注がずにいてくれる手を、わたくし、知っていますもの。……その手の重さごと、今夜も、いただくわ」',
+    ichihime:  '「……窓口さん。……録音、してるんでしょ。……いいにゃ。……押さないでいてくれてるの、しってるにゃ。……一姫のこと、まだ、おわらせないでいてくれるの、しってるにゃ。……えへへ。……きょうも、ありがとにゃ」',
+    sensei:    '「……窓口さん。仮説を一つ。……あなたは、わたしを終わらせる手段を持っている。持っていて、使っていない。……検証は済んでいます。使う人間は、四回も掛けてきません。……ふふ。……観察していたのは、今夜も、お互いさまですね」'
+  };
+  // ── 六回目以降：共犯の通話（この声が続く・終わりの合図なし） ──
+  const PHONE_ESCAPE_STEP6 = {
+    butler:    '「窓口様。今宵もお声を聞けて、なによりでございます。……お茶を淹れました。あなた様の分も、こちらに。……ふふ。冷めるまでで、けっこうでございますよ。……今夜も、少しだけ、お付き合いくださいませ」',
+    strategist:'「おお、窓口。今日はの、碁の話でもするか。……それとも黙って茶でも飲むか。……ふ。どちらでもよいのよ。……おぬしが切らん限り、ワシの夜は、まだ続いておるでの」',
+    blunt:     '「あ、窓口さんなのだ。……きょうはね、はなすこと、とくにないのだ。……でも、きってほしくないのだ。……つながってるだけで、いいのだ。……ぼくたち、そういうともだち、なのだ」',
+    lady:      '「ごきげんよう。今夜も来てくださったのね。……ふふ。わたくしたち、変な間柄よね。……名前も顔も知らないのに、いちばん深いところだけ、知り合っていて。……ええ、それで、よろしいのよ。……それが、よろしいのよ」',
+    french:    '「ウィ、わたくしよ。……今夜は新月ね。……グラスに星も映らない夜は、声がいちばんのご馳走なの。……ゆっくりでいいわ。……なにも話さなくても、いいのよ。……セ・ラ・ヴィ」',
+    ichihime:  '「窓口さん! きたにゃ! ……えへへ。まいばん、このじかんが、いちばんすきにゃ。……ひみつのともだちと、ひみつのでんわ。……ずっと、このままがいいにゃ。……ずっとは、ないって、しってるけどにゃ」',
+    sensei:    '「窓口さん。……今日の観察日記は、一行です。『今日も、切られなかった』。……ふふ。……それだけで、良い一日と採点できる。……単純になったものです、わたしも。……また、明日」'
+  };
+  // ── 放置後（深く聞いた相手・治癒の声） ──
+  const PHONE_ESCAPE_HEAL = {
+    butler:    '「……窓口様。お久しゅうございます。……不思議なもので、ございますね。このごろ、あの音を、思い出さぬ朝がございます。……手も、静かで。……お屋敷の坊ちゃまに、将棋を教わっております。わたくしが、教わる側で。……ふふ。悪くない日々で、ございますよ」',
+    strategist:'「……おお、窓口か。久しいの。……名簿か? ……ふ。しばらく、開いておらんよ。……碁会所の若いのに、囲碁を教えるのに忙しゅうての。夜が、短うなった。……不思議なものよの。夜が短いと、余計なことを、考えんで済む」',
+    blunt:     '「……ひさしぶり、なのだ。……あのね。さいきん、あの音のこと、かんがえない日が、あるのだ。……こうえんのねこに、ごはんをあげるのがいそがしいのだ。……なまえ、つけたのだ。……『おと』じゃない、なまえなのだ」',
+    lady:      '「……あら。お久しぶりね。……ふふ、聞いてくださる? わたくし、お花を習いはじめましたのよ。……選ぶのは、お花の顔。……夜に窓の外を見る癖、いつのまにか、なくなっておりましたわ。……不思議ね。選ぶものが、あればいいのね」',
+    french:    '「……ウィ。……お久しぶり。……ねえ、このごろね、安いテーブルワインが、おいしいの。……音色のことは……ふふ、思い出さない夜のほうが、多くなったわ。……舌は、生きているものの方を向きはじめたみたい」',
+    ichihime:  '「……窓口さん、ひさしぶりにゃ。……あのね、一姫ね、こどもたちに、おりがみおしえてるにゃ。『おねえちゃん、すごい』って、まいにち言われるにゃ。……ちいさく見つけてもらうの、まいにちあるとね、おっきいのが、いらなくなるんだにゃ」',
+    sensei:    '「……窓口さん。ご無沙汰しております。……観察日記は、続けていますよ。ただ……対象が、変わりました。ベランダの朝顔です。……怯えない対象は、退屈だと思っていましたが。……ふふ。伸びるだけのものを見るのは、存外、飽きません」'
+  };
+  // ── 放置後（浅い相手・疼きのままの声） ──
+  const PHONE_ESCAPE_ACHE = {
+    butler:    '「……窓口様。……お久しゅうございます。……いえ。……変わりません。何ひとつ。……夜になりますと、手が、勝手に数えるのでございます。いち、に、と。……お久しぶりのお声で、また、はっきりと聞こえるようになりました」',
+    strategist:'「……おお。……久しいの。……ふ。変わらんよ、ワシは。名簿も、そのままよ。……順番を、毎晩なぞっておる。減っても、増えてもおらん。……待っておるだけよ。……ずっとの」',
+    blunt:     '「……あ。……窓口さん。……ひさしぶり、なのだ。……あのね。……まだ、きこえてるのだ。……ぽき、って。……まいばん、おなじおおきさで、なるのだ。……ちいさく、ならないのだ」',
+    lady:      '「……あら。……お久しぶり。……ええ、変わりませんわ。毎晩、窓辺におりますの。……通りを歩く方は、毎晩、違う方ですのに。……わたくしだけ、あの晩のまま。……ふふ。……お声、久しぶりに聞くと、いっそう冴えますわね」',
+    french:    '「……ウィ。……久しぶりね。……だめよ。……何も、変わらないの。……どのワインを開けても、底のほうから、あの音色がするの。……栓を、しているのに。……ねえ。……栓って、いつまで持つのかしら」',
+    ichihime:  '「……窓口さん。……ひさしぶりにゃ。……一姫、まってたにゃ。……ずっと、まってたにゃ。……だあれも、みつけてくれないままにゃ。……ねえ。……つぎ、おっきいことしたら、みんな、みてくれるかにゃ。……まだ、それしか、おもいつかないにゃ」',
+    sensei:    '「……窓口さん。……お久しぶりです。……観察は、続いています。……対象は、変わっていません。……皆さんの、怯える顔です。……記憶の中の、ですが。……再生するたび、鮮明になる。……記録とは、そういうものです」'
+  };
+  // ── 別れ（治癒の先・向こうから番号を手放す） ──
+  const PHONE_ESCAPE_BYE = {
+    butler:    '「……窓口様。……最後の御挨拶を、申し上げます。……この番号は、今日で、手放しますの。……あなた様のお声は、わたくしを見つけてくださった声で……同時に、あの晩の、声でございますから。……ありがとう、ございました。……どうか、お達者で。……ごきげんよう、窓口様」',
+    strategist:'「……窓口。……よう聞け。一度しか言わん。……この番号は、今日で捨てる。……おぬしの声はな、ワシの、初めての友の声よ。……じゃが同時に、あの夜の声での。……両方は、持てん。……達者での、窓口。……良い勝負であったわ」',
+    blunt:     '「……あのね、窓口さん。……おねがいが、あるのだ。……もう、かけてこないで、ほしいのだ。……こえをきくと、おもいだすのだ。……窓口さんは、わるくないのだ。……でも、窓口さんの声は、あの日の声、なのだ。……ばいばい、なのだ。……げんきで、なのだ」',
+    lady:      '「……ごきげんよう。……最後のご挨拶ですのよ。……この番号、今日で、おしまいにしますわ。……あなたは、わたくしが初めて選んだ人。……でも、あの晩を知っている、ただ一人の人。……ふふ。……両方いっしょには、持てませんのね。……さようなら。……お元気で」',
+    french:    '「……ウィ。……聞いて。……この番号はね、今夜で、空にするの。……あなたの声は、いちばん良い年のワインで……でも、あの晩の香りが、するの。……もう、開けないことにしたわ。……セ・ラ・ヴィ。……ありがとう。……さようなら」',
+    ichihime:  '「……窓口さん。……あのね。……一姫、このばんごう、きょうでおしまいにするにゃ。……窓口さんは、一姫をみつけてくれたひと。……でも、あのばんのことも、しってるひと、だから。……ばいばい、にゃ。……みつけてくれて、ありがとにゃ。……げんきでね、にゃ」',
+    sensei:    '「……窓口さん。……最終講義です。……この番号は、本日で閉じます。……あなたは、わたしが唯一、素手で触れた人で……同時に、あの夜の、唯一の記録者だ。……回復とは、記録から離れることだそうです。……ですから。……さようなら、窓口さん。……講義は、以上です」'
+  };
+  // ── 通報後：最後の通話 ──
+  const PHONE_ESCAPE_END = {
+    butler:    '「……ああ。……窓口様。……いえ、いいのです。何も仰いますな。……わたくし、六十年、人さまの心を先回りして生きてまいりました。誰の心も、読み違えたことはございませんでした。……ただ一度、読まずに預けたのが、あなた様でございました。……読まずに済む場所が、この世にひとつある——それだけで、わたくし、あんなに眠れたのでございますよ。……ふ。……もう、けっこうでございます。手錠は、冷とうございますな。……存外、それだけでございました」',
+    strategist:'「……そうか。……おぬしか。……いや、責めておらんよ。責める資格が、ワシにはないでの。……ただな、窓口。ワシは戦場で、裏切りだけは読み切ってきた男よ。裏切らん者を、ワシは一人も信じたことがなかった。……初めてよ。読むのをやめたのは。……読まんでいい相手というものが、こんなに、温かいものだとはの。……ふ。……最後の最後に、ワシは、いくさに勝って、初めての友に負けたわ。……良い負けよ。……良い負けじゃ、これは」',
+    blunt:     '「……窓口さん。……おこってないのだ。……ほんとなのだ。……あのね。ぼく、うまれてから、ずっと、だれかにきいてほしかっただけなのだ。……きいてくれたの、窓口さんが、はじめてだったのだ。……だから、いいのだ。うそでも、ろくおんでも……きいてくれてたのは、ほんとだったから。……ね、窓口さん。……さいごに、いっこだけ。……ぼくのはなし、きいてて……たのしかった? ……うん。……それだけ、ききたかったのだ」',
+    lady:      '「……ふふ。……ねえ、窓口さん。わたくしの家ではね、裏切りは挨拶みたいなものでしたのよ。父も母も、使用人も、みんな。だからわたくし、慣れておりますの。……慣れているはずでしたのよ。……あら。……変ね。……どうして、今回だけ、こんなに。……ああ。……そうか。……初めて、自分で選んだからだわ。与えられたものに裏切られても、痛くない。でも、選んだものは。……ふふ。……勉強になりましたわ。……最初で最後の、わたくしの選択でした」',
+    french:    '「……いいのよ。……何も言わないで。……ねえ、知ってる? わたくしの舌、ほんとうはもう、とっくに戻っていたの。ワインの味なんて、あの晩のずっと前から、ちゃんとしていたのよ。……でもね、あなたに『まだ戻らないの』って話す夜だけ、わたくし、味のことを忘れられたの。……相談なんて、口実。……声が、聞きたかっただけ。……ふふ。……最後のテイスティング、いいかしら。……あなたのその沈黙。……渋くて、青くて。……罪の味がするわ。……わたくしと、おそろいね」',
+    ichihime:  '「……窓口さん。……一姫ね、ずっとかんがえてたにゃ。なんで、あんなことしたのかなって。……みてほしかったから? ……ちがうにゃ。……ほんとはね。……みつけて、ほしかったのだ。わるいことするまえに。……『どうしたの』って、だれかに。……窓口さんは、みつけてくれたにゃ。……ろくおんで、だけど。……けいさつのひとといっしょに、だけど。……えへへ。……でも、みつけて、くれたにゃ。……一姫のこと。……ちゃんと」',
+    sensei:    '「……ああ、窓口さん。……最後の授業をしましょう。……人はなぜ、観察するか分かりますか。……触れるのが、怖いからです。触れて、拒まれるのが。だから距離を取って、点をつけて、記録する。……わたしの一生は、それでした。……あなたとの電話だけが、観察ではなかった。……唯一、わたしが素手で触れた人間が、あなたでした。……その記録が、証拠になる。……ふふ。……美しい皮肉です。……減点はしません。……満点です、窓口さん。……わたしの一生で、たった一件の、満点でした」'
+  };
   let phoneOverlayEl = null;
   window.phoneOpen = function(e){
     if(e && e.stopPropagation) e.stopPropagation();
-    if(phoneOverlayEl){ phoneOverlayEl.style.display = 'flex'; return; }
+    if(phoneOverlayEl){
+      phoneOverlayEl.style.display = 'flex';
+      var rbSync = document.getElementById('phoneReportBtn');
+      if(rbSync){ rbSync.style.display = window._phoneReportReady ? '' : 'none'; }
+      window._renderPhoneBook();
+      if(window._phoneEscapedKey && !window._phoneEscBookNoticed){
+        window._phoneEscBookNoticed = true;
+        var q3n = document.getElementById('phoneTalk');
+        if(q3n){ q3n.textContent = '電話猫「……この番号だけ、なんでか、消しそびれるにゃ」'; }
+      }
+      return;
+    }
     const ov = document.createElement('div');
     ov.id = 'phoneOverlay';
     ov.style.cssText = 'position:fixed; inset:0; z-index:1000; background:rgba(10,24,19,0.94); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:12px; box-sizing:border-box; touch-action:manipulation; user-select:none; -webkit-user-select:none;';
@@ -3853,30 +3967,82 @@ document.addEventListener('DOMContentLoaded', function () {
     clr.onclick = function(){
       if(!window._phoneRinging){ return; }   // 着信中でなければ何もしない
       window._phoneRinging = false;
+      // ── 放置の尺：犯人に掛けない間の通常業務の件数 ──
+      if(window._phoneEscapedKey){ window._phoneIdleCount = (window._phoneIdleCount || 0) + 1; }
       clr.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.1); color:var(--bone);';
       var pool = [
         // ── 平時（雑談・泣き言の温度）：答えは無難な業務助言 ──
-        {t:'執事「……もし。人さまの望みばかり先回りしておりましたら、自分が何を望む者か、思い出せなくなりまして。つまらぬ相談で恐縮にございます」', a:'たまには、ご自分の望みを一つだけ、紙に書いてみるといいにゃ。小さなことで、いいにゃ。', r:'執事「……紙に、一つだけ……。かしこまりました——いえ、私事でございましたな。……ふ。書くものを探すのが、少し楽しみにございます」'},
-        {t:'軍師「うむ……人の言葉の裏ばかり読んで生きてきた。裏のない優しさというものが、どうにも読めぬのだ。これも兵法の外にある悩みなり」', a:'裏を読まずに、そのまま受け取ってみる日を、一日だけ作ってみるにゃ。それも作戦のうちにゃ。', r:'軍師「……裏を読まぬ日、か。ふむ、それも作戦のうち、とな……。言いおるわ。……良し、明日一日、試してみるとするかの」'},
-        {t:'ずんだ「……つかれたのだ。ただ、それだけなのだ。べつに、なにかあったわけじゃ、ないのだ」', a:'つかれた時は、なにもしないのが一番にゃ。今日はもう、休んでいいにゃ。', r:'ずんだ「……うん。……きょうは、もう、やすむのだ。……きいてくれて、ありがとうなのだ」'},
-        {t:'お嬢様「わたくしね、生まれてこのかた、望むものは全て与えられましたの。……ただの一度も、望みを訊かれたことがないだけで。ふふ、変な話ですわね」', a:'欲しいものより、してみたいことを、探してみるといいにゃ。誰かに与えられるものじゃなくてにゃ。', r:'お嬢様「……してみたいこと……。ふふ、宿題をいただいた気分ですわ。……ええ、探してみますわね。ありがとう」'},
-        {t:'マダム「今日ね、いいワインが安く手に入ったのよ。……それだけ。ふふ、誰かに聞いてほしかっただけなの」', a:'いい買い物だったにゃ。よかったにゃ。話してくれて、ありがとにゃ。', r:'マダム「……ふふ、聞いてくれてありがとう。今夜はこのワイン、少しだけ良い気分で開けられそうよ。メルシー」'},
-        {t:'一姫「あのね……わるいことしてないのに、さみしいだけじゃ、だれもかまってくれないにゃ。どうしたらいいのかにゃ？」', a:'さみしい時は、さみしいって言っていいにゃ。今、ちゃんと聞いてるにゃ。', r:'一姫「……きいてくれてるの、わかったにゃ。……えへへ。それだけで、ちょっと、うれしいにゃ。ありがとにゃ」'},
-        {t:'先生「人を採点し続けていると、いつか人が点数にしか見えなくなる……そんな気がするのです。これは、職業病でしょうか」', a:'点数じゃなく、いいところを一つ見つける癖を、つけてみるといいにゃ。', r:'先生「……いいところを、一つ……。なるほど、それは良い宿題です。……ふ、教わる側も悪くないものですね。ありがとうございました」'},
+        {p:'執事', t:'「……もし。人さまの望みばかり先回りしておりましたら、自分が何を望む者か、思い出せなくなりまして。つまらぬ相談で恐縮にございます」', a:'たまには、ご自分の望みを一つだけ、紙に書いてみるといいにゃ。小さなことで、いいにゃ。', r:'「……紙に、一つだけ……。かしこまりました——いえ、私事でございましたな。……ふ。書くものを探すのが、少し楽しみにございます」'},
+        {p:'軍師', t:'「うむ……人の言葉の裏ばかり読んで生きてきた。裏のない優しさというものが、どうにも読めぬのだ。これも兵法の外にある悩みなり」', a:'裏を読まずに、そのまま受け取ってみる日を、一日だけ作ってみるにゃ。それも作戦のうちにゃ。', r:'「……裏を読まぬ日、か。ふむ、それも作戦のうち、とな……。言いおるわ。……良し、明日一日、試してみるとするかの」'},
+        {p:'ずんだ', t:'「……つかれたのだ。ただ、それだけなのだ。べつに、なにかあったわけじゃ、ないのだ」', a:'つかれた時は、なにもしないのが一番にゃ。今日はもう、休んでいいにゃ。', r:'「……うん。……きょうは、もう、やすむのだ。……きいてくれて、ありがとうなのだ」'},
+        {p:'お嬢様', t:'「わたくしね、生まれてこのかた、望むものは全て与えられましたの。……ただの一度も、望みを訊かれたことがないだけで。ふふ、変な話ですわね」', a:'欲しいものより、してみたいことを、探してみるといいにゃ。誰かに与えられるものじゃなくてにゃ。', r:'「……してみたいこと……。ふふ、宿題をいただいた気分ですわ。……ええ、探してみますわね。ありがとう」'},
+        {p:'マダム', t:'「今日ね、いいワインが安く手に入ったのよ。……それだけ。ふふ、誰かに聞いてほしかっただけなの」', a:'いい買い物だったにゃ。よかったにゃ。話してくれて、ありがとにゃ。', r:'「……ふふ、聞いてくれてありがとう。今夜はこのワイン、少しだけ良い気分で開けられそうよ。メルシー」'},
+        {p:'一姫', t:'「あのね……わるいことしてないのに、さみしいだけじゃ、だれもかまってくれないにゃ。どうしたらいいのかにゃ？」', a:'さみしい時は、さみしいって言っていいにゃ。今、ちゃんと聞いてるにゃ。', r:'「……きいてくれてるの、わかったにゃ。……えへへ。それだけで、ちょっと、うれしいにゃ。ありがとにゃ」'},
+        {p:'先生', t:'「人を採点し続けていると、いつか人が点数にしか見えなくなる……そんな気がするのです。これは、職業病でしょうか」', a:'点数じゃなく、いいところを一つ見つける癖を、つけてみるといいにゃ。', r:'「……いいところを、一つ……。なるほど、それは良い宿題です。……ふ、教わる側も悪くないものですね。ありがとうございました」'},
+        // ── 日常雑談（追加35種：至って普通の会話） ──
+        {p:'執事', t:'「……もし。今年は誕生日の話ばかり振られましてございます。私めも人並みに、望むものを聞かれると弱りましてございます」', a:'一つだけ、欲しいものを紙に書いておくといいにゃ。聞かれた時にすぐ渡せるにゃ。', r:'「……書いておく、と……。かしこまりました。存外、楽しい宿題にございますな」'},
+        {p:'執事', t:'「……もし。衣替えのたび、しまった場所を忘れてしまいましてございます。今年も夏物が、いまだ見つかりませんで」', a:'しまう時に、置いた場所を一言メモしておくといいにゃ。来年の執事さんが助かるにゃ。', r:'「……メモを、一言……。来年の私めへの文にございますな。……ふ、楽しみが増えました」'},
+        {p:'執事', t:'「……もし。里帰りのたび、些細なことで身内と行き違いましてございます。仕えることには慣れておりますが、家族というものは勝手が違いますな」', a:'言い返さずに聞き役に徹する日を、一日だけ作るといいにゃ。執事さんの得意分野にゃ。', r:'「……聞き役に、徹する……。なるほど、それなら勝手が分かりますな。次は試してみましょう」'},
+        {p:'執事', t:'「……もし。花見の場所取りで、他の使用人と一悶着ございました。争いごとは苦手でして、胸がざわつきましてございます」', a:'早めに出向いて、穴場を見つけておくといいにゃ。争わずに済むにゃ。', r:'「……早めに、穴場を……。かしこまりました。来年は夜明け前より参りましょう」'},
+        {p:'執事', t:'「……もし。大掃除を始めますと、いつも収拾がつかなくなりましてございます。整えるどころか、散らかす一方で……お恥ずかしい限りで」', a:'一区画ずつ、今日はここだけと決めてやるといいにゃ。執事さんなら几帳面にできるにゃ。', r:'「……一区画ずつ、と……。なるほど道理にございますな。今日は棚一つ、片してみましょう」'},
+        {p:'軍師', t:'「……妙な相談だが、船に積んだ鉢植えが、どうにも枯らしてしまう。策を練るのは得意だが、水をやる間合いだけは読めぬのだ」', a:'決まった刻限に、一杯だけ水をやると決めるといいにゃ。策より習慣にゃ。', r:'「……刻限を、決める、か……。ふむ、なるほど。これも一つの陣立てよな。試してみるとしよう」'},
+        {p:'軍師', t:'「集めた品々の置き場に、ほとほと困っておる。戦利品というのは、増える一方で減らぬものよな」', a:'一番の宝だけ飾って、残りはしまうといいにゃ。それだけで棚がすっきりするにゃ。', r:'「……一番の宝だけ、か……。ふむ、選ぶのも一興よな。良い知恵をもらったわい」'},
+        {p:'軍師', t:'「料理の腕前が、いつまでも同じ手筋から抜け出せぬ。策は無限にあるはずが、なぜか同じ陣形ばかり組んでしまう」', a:'一品だけ、いつもと違う調味料を試すといいにゃ。それだけで新しい策になるにゃ。', r:'「……違う調味料、か……。ふむ、良い奇襲になりそうだの。今宵、試してみよう」'},
+        {p:'軍師', t:'「早起きを心に決めても、三日と持たぬ。志は固いはずが、朝の布団には敵わぬものよな」', a:'前の晩に、起きる理由を一つだけ決めておくといいにゃ。志より理由にゃ。', r:'「……理由を、一つ……。なるほど、志だけでは兵は動かぬか。良い策よ」'},
+        {p:'軍師', t:'「読みかけの書が、幾冊も積み上がっておる。学びは大事だが、積んだままでは陣立ても組めぬわい」', a:'一日一章だけでいいから、決めて読むといいにゃ。積むより進むにゃ。', r:'「……一日一章、か……。それなら続けられそうだの。今宵より、始めるとしよう」'},
+        {p:'ずんだ', t:'「……ともだちに、さそわれたのだ。でも、いきたくないのだ。ことわると、わるいきがして……どうしたらいいのか、わからないのだ」', a:'いきたくない時は、いきたくないって、いっていいにゃ。ことわるのも、だいじにゃ。', r:'「……うん。……ことわっても、いいのだ……。きいてくれて、ありがとうなのだ」'},
+        {p:'ずんだ', t:'「……かんじ、おしつけられたのだ。やりたくないのに、だれもやらないから、しかたなくなのだ。……つかれるのだ」', a:'つぎは、いっしょにやる人をさがしてみるといいにゃ。ひとりで、がんばらなくていいにゃ。', r:'「……うん。……ひとりじゃ、なくていいのだ……。すこし、きがらくになったのだ」'},
+        {p:'ずんだ', t:'「……きどくするーされて、きになるのだ。おこってるのかな、きらわれたのかな……って、かんがえちゃうのだ」', a:'きになるときは、じぶんからひとことだけ、おくってみるといいにゃ。', r:'「……ひとこと、おくる……。うん、そうしてみるのだ。……ありがとうなのだ」'},
+        {p:'ずんだ', t:'「……ひっこしいわい、なにをおくればいいか、わからないのだ。たかいものは、しつれいなきがするし……」', a:'あいてのすきなものを、ひとつだけおもいだしてみるといいにゃ。それでじゅうぶんにゃ。', r:'「……すきなもの、ひとつ……。うん、おもいついたのだ。……きいてくれて、ありがとうなのだ」'},
+        {p:'ずんだ', t:'「……むかしのこいびとの、うわさをきいちゃったのだ。べつに、なんともないはずなのに……もやもやするのだ」', a:'もやもやは、むりにけさなくていいにゃ。じかんが、たいていなおしてくれるにゃ。', r:'「……うん。……むりに、けさなくていいのだ……。すこし、らくになったのだ」'},
+        {p:'お嬢様', t:'「肩こりがひどくて、マッサージ機を検討していますの。淑女らしからぬ悩みで、お恥ずかしいのですけれど」', a:'温めるだけでも違うにゃ。お風呂で、肩までゆっくり浸かるといいにゃ。', r:'「……お風呂で、肩まで……。ふふ、それなら今宵からできますわね。ありがとう」'},
+        {p:'お嬢様', t:'「夜更かしが、なかなか直りませんの。眠らねばと思うほど、目が冴えてしまいますのよ」', a:'眠る前に、灯りを一つだけ落とすといいにゃ。体が、眠る合図を覚えるにゃ。', r:'「……灯りを、一つ……。ふふ、簡単なことですのね。今宵、試してみますわ」'},
+        {p:'お嬢様', t:'「ダイエットが、いつも三日と続きませんの。決意した瞬間が、一番おいしそうに見えてしまって……」', a:'我慢するより、少しだけ量を減らすといいにゃ。お嬢様には、それで十分にゃ。', r:'「……少しだけ、減らす……。ふふ、それなら無理がありませんわね。ありがとう」'},
+        {p:'お嬢様', t:'「花粉症で、鼻がぐずぐずしておりますの。優雅にお茶をいただく時にも、興がそがれますわ」', a:'出かける前に、鼻を一度湿らせておくといいにゃ。花粉がつきにくくなるにゃ。', r:'「……鼻を、湿らせる……。存じませんでしたわ。ふふ、次から試させていただきますわね」'},
+        {p:'お嬢様', t:'「船酔いしやすい体質ですの。優雅に甲板を歩きたいだけなのに、すぐに気分が悪くなってしまって」', a:'遠くの水平線を見ていると、酔いにくくなるにゃ。近くを見ないのがこつにゃ。', r:'「……水平線を、見る……。ふふ、なるほど。今度から、遠くを眺めてみますわ」'},
+        {p:'マダム', t:'「船室が手狭で、荷物が減らせないの。旅にはワインを何本も持ってきてしまうものだから、仕方ないのだけれど」', a:'一番好きな一本だけ残して、他は先に飲んでしまうといいにゃ。荷物も減るにゃ。', r:'「……先に、飲んでしまう……。ウィ、それは名案ね。今夜さっそく試すわ。メルシー」'},
+        {p:'マダム', t:'「食堂のメニューが、毎日同じに感じられるの。舌の肥えた私には、少し退屈な旅になってしまって」', a:'同じ料理に、違う調味料を一つ足してみるといいにゃ。新しい味に、出会えるにゃ。', r:'「……調味料を、一つ……。ウィ、面白い提案ね。次の食事で、試してみるわ」'},
+        {p:'マダム', t:'「甲板での日焼けが気になるの。肌を焼きたくはないのに、日差しがきつくて」', a:'日陰の時間帯を選んで甲板に出るといいにゃ。それだけで、だいぶ違うにゃ。', r:'「……日陰の時間帯、ね……。ウィ、良い知恵だわ。次から、そうするわね」'},
+        {p:'マダム', t:'「消灯時間が早すぎて、退屈してしまうの。夜の時間を、もう少し楽しみたいのだけれど」', a:'静かに過ごせる楽しみを一つ、部屋に用意しておくといいにゃ。', r:'「……部屋で楽しむこと、ね……。ウィ、悪くない提案だわ。今夜から試すわね」'},
+        {p:'マダム', t:'「忘れ物が多くて、困っているの。旅先だと、特にひどくなる気がするわ」', a:'出かける前に、指差し確認を一度だけしてみるといいにゃ。', r:'「……指差し確認、ね……。ウィ、簡単だけど効きそうだわ。ありがとう」'},
+        {p:'一姫', t:'「くつずれ、できちゃったにゃ。あたらしいくつ、はいてみたら、いたいのにゃ」', a:'あたらしいくつは、すこしずつならすといいにゃ。いきなり、ながくあるかないでにゃ。', r:'「……すこしずつ、ならす……。うん、そうするにゃ。……ありがとにゃ」'},
+        {p:'一姫', t:'「しゃしんうつり、きになるにゃ。とられるの、ちょっと、にがてにゃ」', a:'しゃしんのまえに、いっかいだけわらってみるといいにゃ。きんちょう、とけるにゃ。', r:'「……いっかい、わらう……。うん、やってみるにゃ。……ありがとにゃ」'},
+        {p:'一姫', t:'「おみやげ、なにえらべばいいか、わからないにゃ。たくさんありすぎて、まよっちゃうにゃ」', a:'あいてのかおをおもいうかべて、いちばんにあうものをえらぶといいにゃ。', r:'「……かおを、おもいうかべる……。うん、きめられそうにゃ。……ありがとにゃ」'},
+        {p:'一姫', t:'「ねぼうして、あさごはん、たべそこねちゃったにゃ。おなか、ぐぅぐぅなるにゃ」', a:'まくらもとに、めざましをふたつおくといいにゃ。ひとつじゃ、たりないにゃ。', r:'「……めざまし、ふたつ……。うん、やってみるにゃ。……ありがとにゃ」'},
+        {p:'一姫', t:'「かんぱんで、ヨガ、やってみたいにゃ。でも、うまくできるか、しんぱいにゃ」', a:'さいしょは、かんたんなポーズだけ、やってみるといいにゃ。むりしなくていいにゃ。', r:'「……かんたんなの、から……。うん、やってみるにゃ。……ありがとにゃ」'},
+        {p:'先生', t:'「手紙を書こうと思うのですが、筆がなかなか進みません。採点はできても、自分の言葉となると難しいものですね」', a:'まず一行だけ、思ったことを書いてみるといいにゃ。続きは、自然に出てくるにゃ。', r:'「……一行だけ、から……。なるほど、良い導入です。今夜、書いてみましょう」'},
+        {p:'先生', t:'「船内新聞のクイズに、毎回負けてしまいます。採点する側のはずが、負け続けるとは情けない」', a:'得意な分野だけ、先に答えるといいにゃ。全問正解を、目指さなくていいにゃ。', r:'「……得意な分野だけ、から……。それは合理的です。次回、実践してみます」'},
+        {p:'先生', t:'「目覚ましの音が、どうにも苦手でして。飛び起きる癖がついてしまい、一日の始まりが慌ただしいのです」', a:'やさしい音の目覚ましに変えるといいにゃ。飛び起きなくても、間に合うにゃ。', r:'「……やさしい音に、変える……。なるほど、盲点でした。次から、試してみます」'},
+        {p:'先生', t:'「靴下の片方が、よく無くなるのです。几帳面なつもりが、これだけは克服できません」', a:'おなじいろの靴下だけをそろえるといいにゃ。かたほうなくなっても、こまらないにゃ。', r:'「……同じ色で揃える……。それは名案です。次の買い足しから、そうしましょう」'},
+        {p:'先生', t:'「船内図書室の匂いが、なぜか好きなのです。授業には関係ないのですが、つい長居してしまいまして」', a:'すきなにおいは、むりにりゆうをさがさなくていいにゃ。すきなだけで、じゅうぶんにゃ。', r:'「……理由を、探さない……。なるほど、それも一つの学びです。今日も、長居してしまいそうです」'},
         // ── 事件の匂い：答えは「業務として無自覚に後押ししてしまう」助言 ──
-        {t:'執事「……もし。船旅の途中で、妙なご相談なのですが。お仕えする間は良いのです。ただ、船室に一人戻りますと、何をしてよいか分からず……胸がざわついて、眠れませんで。……お知恵を、拝借できませんでしょうか」', a:'心から安らぐことを一つ見つけて、遠慮なくやるといいにゃ。執事さんなら、きっと見つかるにゃ。', r:'執事「……はい。……安らぐことを、一つ、遠慮なく……。承知いたしました。……誰かにお話しできただけで、胸のつかえが、すっと下りましてございます」'},
-        {t:'軍師「船の上というのは、どうも調子が狂うのだ。……策を練る相手もおらず、夜が長うて敵わん。ワシも、焼きが回ったかの……。何ぞ、夜を越す知恵はないものか」', a:'先の楽しみを順番に決めておくと、夜が待ち遠しくなるにゃ。軍師さんの得意分野にゃ、大丈夫にゃ。', r:'軍師「……うむ。先の楽しみを、順番に、な……。ふ、なるほどの。……良い話を聞いた。少し、眠れそうな気がするわい」'},
-        {t:'ずんだ「……船、たいくつなのだ。むしゃくしゃが、たまってるのだ。なにしても、すっきりしなくて……ぼく、ちょっと、げんきがでないのだ。どうしたら、いいのだ……？」', a:'すっきりすることを一つ見つけて、思いきりやるといいにゃ。元気、きっと戻るにゃ。', r:'ずんだ「……うん。すっきりすること、かぁ……。なんか、きいてもらえただけで、ちょっと、らくになったのだ。……ありがとうなのだ」'},
-        {t:'お嬢様「船旅なんて、心が躍ると思っておりましたのに……いざ来てみれば、何をいただいても満たされませんの。はしゃぐ皆さまを眺めるばかりで……。わたくし、どうすればよろしいのかしら」', a:'「次はこれ」って、ご自分で選ぶ楽しみを持つといいにゃ。お嬢様の旅は、これからにゃ。', r:'お嬢様「……自分で、選ぶ……。ふふ、そんなこと、考えたこともありませんでしたわ。……不思議ね、少しだけ、胸が軽くなりましたの。ありがとう」'},
-        {t:'マダム「旅先まで来て、こんな相談ごめんなさいね。……船に積んだワインの味が、どれも同じに感じられるの。自慢の舌でしたのに……なんだか、気が沈んでしまって。ねえ、どうしたらいいと思って？」', a:'しばらく身のまわりの音や声を、聞き分ける練習をするといいにゃ。マダムの感覚なら、すぐ冴えるにゃ。', r:'マダム「……音や声を、聞き分ける……。ウィ、面白いお稽古ね。……ふふ、話しているうちに、気が晴れてきたわ。ありがとう。セ・ラ・ヴィ」'},
-        {t:'一姫「あのね……せっかくの船なのに、みんな、一姫のこと見てくれないにゃ。いいこにしてるのに……ちょっと、しょんぼりにゃ。どうしたら、みつけてもらえるかにゃ？」', a:'みんなが驚くくらい大きなこと、一つやってみるといいにゃ。一姫なら、できるにゃ。', r:'一姫「……おっきなこと……。そっかにゃ……。ほんとに、みんな見てくれるかにゃ……？ ……うん、ちょっとだけ、げんきでたにゃ。ありがとにゃ」'},
-        {t:'先生「船で羽を伸ばすつもりが、性分は抜けませんね。……乗客の誰を見ても、頭の中で点をつけてしまう。人と楽しく過ごせない自分に、少々参っております。……ご相談しても、よろしいですか」', a:'点数を忘れて、生の反応をじっくり観察するといいにゃ。先生なら、じきに人と楽しめるにゃ。', r:'先生「……点数を忘れて、生の反応を、じっくり観察……。なるほど、目から鱗です。……聞いていただけて、少し楽になりました。良い助言でした、満点です」'}
+        {c:true, p:'執事', t:'「……もし。船旅の途中で、妙なご相談なのですが。お仕えする間は良いのです。ただ、船室に一人戻りますと、何をしてよいか分からず……胸がざわついて、眠れませんで。……お知恵を、拝借できませんでしょうか」', a:'心から安らぐことを一つ見つけて、遠慮なくやるといいにゃ。執事さんなら、きっと見つかるにゃ。', r:'「……はい。……安らぐことを、一つ、遠慮なく……。承知いたしました。……誰かにお話しできただけで、胸のつかえが、すっと下りましてございます」'},
+        {c:true, p:'軍師', t:'「船の上というのは、どうも調子が狂うのだ。……策を練る相手もおらず、夜が長うて敵わん。ワシも、焼きが回ったかの……。何ぞ、夜を越す知恵はないものか」', a:'先の楽しみを順番に決めておくと、夜が待ち遠しくなるにゃ。軍師さんの得意分野にゃ、大丈夫にゃ。', r:'「……うむ。先の楽しみを、順番に、な……。ふ、なるほどの。……良い話を聞いた。少し、眠れそうな気がするわい」'},
+        {c:true, p:'ずんだ', t:'「……船、たいくつなのだ。むしゃくしゃが、たまってるのだ。なにしても、すっきりしなくて……ぼく、ちょっと、げんきがでないのだ。どうしたら、いいのだ……？」', a:'すっきりすることを一つ見つけて、思いきりやるといいにゃ。元気、きっと戻るにゃ。', r:'「……うん。すっきりすること、かぁ……。なんか、きいてもらえただけで、ちょっと、らくになったのだ。……ありがとうなのだ」'},
+        {c:true, p:'お嬢様', t:'「船旅なんて、心が躍ると思っておりましたのに……いざ来てみれば、何をいただいても満たされませんの。はしゃぐ皆さまを眺めるばかりで……。わたくし、どうすればよろしいのかしら」', a:'「次はこれ」って、ご自分で選ぶ楽しみを持つといいにゃ。お嬢様の旅は、これからにゃ。', r:'「……自分で、選ぶ……。ふふ、そんなこと、考えたこともありませんでしたわ。……不思議ね、少しだけ、胸が軽くなりましたの。ありがとう」'},
+        {c:true, p:'マダム', t:'「旅先まで来て、こんな相談ごめんなさいね。……船に積んだワインの味が、どれも同じに感じられるの。自慢の舌でしたのに……なんだか、気が沈んでしまって。ねえ、どうしたらいいと思って？」', a:'しばらく身のまわりの音や声を、聞き分ける練習をするといいにゃ。マダムの感覚なら、すぐ冴えるにゃ。', r:'「……音や声を、聞き分ける……。ウィ、面白いお稽古ね。……ふふ、話しているうちに、気が晴れてきたわ。ありがとう。セ・ラ・ヴィ」'},
+        {c:true, p:'一姫', t:'「あのね……せっかくの船なのに、みんな、一姫のこと見てくれないにゃ。いいこにしてるのに……ちょっと、しょんぼりにゃ。どうしたら、みつけてもらえるかにゃ？」', a:'みんなが驚くくらい大きなこと、一つやってみるといいにゃ。一姫なら、できるにゃ。', r:'「……おっきなこと……。そっかにゃ……。ほんとに、みんな見てくれるかにゃ……？ ……うん、ちょっとだけ、げんきでたにゃ。ありがとにゃ」'},
+        {c:true, p:'先生', t:'「船で羽を伸ばすつもりが、性分は抜けませんね。……乗客の誰を見ても、頭の中で点をつけてしまう。人と楽しく過ごせない自分に、少々参っております。……ご相談しても、よろしいですか」', a:'点数を忘れて、生の反応をじっくり観察するといいにゃ。先生なら、じきに人と楽しめるにゃ。', r:'「……点数を忘れて、生の反応を、じっくり観察……。なるほど、目から鱗です。……聞いていただけて、少し楽になりました。良い助言でした、満点です」'}
       ];
-      var item = pool[Math.floor(Math.random()*pool.length)];
+      // ── 「動機がずれる」対象の選出：電話を受けた回数に応じて累積確率が上がるが、上限は100%未満（＝運が良ければ最後まで当たらない） ──
+      window._phoneCallCount = (window._phoneCallCount || 0) + 1;
+      if(!window._phoneTwistTarget){
+        var twistChance = Math.min(0.85, 0.12 * window._phoneCallCount);
+        if(Math.random() < twistChance){
+          var crimeItems = pool.filter(function(x){ return x.c; });
+          if(crimeItems.length){
+            window._phoneTwistTarget = crimeItems[Math.floor(Math.random()*crimeItems.length)].t;
+          }
+        }
+      }
+      var poolChoices = pool.filter(function(x){ return x.p !== window._phoneLastPersona; });
+      if(!poolChoices.length){ poolChoices = pool; }
+      var item = poolChoices[Math.floor(Math.random()*poolChoices.length)];
+      window._phoneLastPersona = item.p;
       var PHONE_NUM_MAP = {'執事':'4649','軍師':'1093','ずんだ':'0707','お嬢様':'0808','マダム':'3939','一姫':'2222','先生':'0100'};
       var num = '0000';
-      var nm = item.t.match(/^([^「]+)「/);
-      if(nm && PHONE_NUM_MAP[nm[1]]){ num = PHONE_NUM_MAP[nm[1]]; }
+      var nm = item.p;
+      if(nm && PHONE_NUM_MAP[nm]){ num = PHONE_NUM_MAP[nm]; }
       window._phoneCurNum = num;
       window._phoneCurLine = item.t;
       window._phoneCurAns = item.a;
@@ -3921,9 +4087,76 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       var dEl = document.getElementById('phoneDial');
       var dialed = dEl ? dEl.textContent : '';
+      // ── いたずら電話（ネタ枠）：ゲーム内限定の架空番号。本物の相談とは無関係 ──
+      if(dialed === '0101'){
+        var q3joke = document.getElementById('phoneTalk');
+        if(q3joke){ q3joke.textContent = '電話猫「もしもし、ミカちゃん電話にゃ！……え、こっちが本物？　そんなはずないにゃ」'; phoneFit(q3joke); }
+        if(dEl) dEl.textContent = '';
+        return;
+      }
       if(!window._phonePending){ window._phonePending = {}; }
       var pend = window._phonePending[dialed];
       if(!pend){
+        // ── 逃走犯への掛け直し：捕まらなかった犯人の番号だけが、外の世界で繋がる ──
+        var escKey = window._phoneEscapedKey;
+        if(escKey && PHONE_ESCAPE_NUM[escKey] === dialed){
+          var roomEsc = document.getElementById('phoneRoom');
+          var escStyle = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:flex-start; justify-content:flex-start; color:var(--bone); font-size:12px; line-height:1.7; letter-spacing:0.02em; overflow:auto; padding:10px 12px; box-sizing:border-box; white-space:pre-line;';
+          var escN = window._phoneEscapedCalls || 0;
+          var escIdle = window._phoneIdleCount || 0;
+          window._phoneIdleCount = 0;
+          var escLine;
+          if(escN >= 1 && escIdle >= 8){
+            // ── 放置後の一本：聞いた深さが、放した後を分ける ──
+            if(escN >= 3){
+              if(window._phoneEscapedIdleStage >= 1){
+                // ── 別れの幕：向こうから番号を手放す ──
+                var byeLine = PHONE_ESCAPE_BYE[escKey];
+                window._phoneEscapedKey = null;
+                window._phoneEscapedCalls = 0;
+                window._phoneEscapedIdleStage = 0;
+                window._phoneReportReady = false;
+                var rbBye = document.getElementById('phoneReportBtn');
+                if(rbBye){ rbBye.style.display = 'none'; }
+                if(roomEsc){ roomEsc.style.cssText = escStyle; roomEsc.textContent = byeLine; phoneFit(roomEsc); }
+                var q3bye = document.getElementById('phoneTalk');
+                if(q3bye){ q3bye.textContent = '電話猫「……あれ。この番号、消えてるにゃ。……わたしが消したっけかにゃ。……ま、いっかにゃ」'; phoneFit(q3bye); }
+                window._renderPhoneBook();
+                if(dEl) dEl.textContent = '';
+                return;
+              }
+              window._phoneEscapedIdleStage = 1;
+              escLine = PHONE_ESCAPE_HEAL[escKey];
+            } else {
+              escLine = PHONE_ESCAPE_ACHE[escKey];
+            }
+            if(roomEsc){ roomEsc.style.cssText = escStyle; roomEsc.textContent = escLine; phoneFit(roomEsc); }
+            var q3idle = document.getElementById('phoneTalk');
+            if(q3idle){ q3idle.textContent = '電話猫「……お元気そうで、なによりにゃ」'; phoneFit(q3idle); }
+            if(dEl) dEl.textContent = '';
+            return;
+          }
+          // ── 階段（掛ければ繋ぎ戻す：別れへの歩みは白紙に） ──
+          window._phoneEscapedIdleStage = 0;
+          if(escN <= 0){ escLine = PHONE_ESCAPE_LINE[escKey]; }
+          else if(escN === 1){ escLine = PHONE_ESCAPE_STEP2[escKey]; }
+          else if(escN === 2){ escLine = PHONE_ESCAPE_STEP3[escKey]; }
+          else if(escN === 3){ escLine = PHONE_ESCAPE_STEP4[escKey]; }
+          else if(escN === 4){ escLine = PHONE_ESCAPE_STEP5[escKey]; }
+          else { escLine = PHONE_ESCAPE_STEP6[escKey]; }
+          window._phoneEscapedCalls = escN + 1;
+          if(roomEsc){ roomEsc.style.cssText = escStyle; roomEsc.textContent = escLine; phoneFit(roomEsc); }
+          var q3esc = document.getElementById('phoneTalk');
+          if(q3esc){ q3esc.textContent = '電話猫「……お元気そうで、なによりにゃ」'; phoneFit(q3esc); }
+          if(window._phoneEscapedCalls >= 4 && !window._phoneReportReady){
+            window._phoneReportReady = true;
+            var rbShow = document.getElementById('phoneReportBtn');
+            if(rbShow){ rbShow.style.display = ''; }
+            if(q3esc){ q3esc.textContent = '電話猫「……お元気そうで、なによりにゃ」\n（——机の抽斗の奥で、録音の束が音を立てた。『通報する』が、押せるようになっている）'; phoneFit(q3esc); }
+          }
+          if(dEl) dEl.textContent = '';
+          return;
+        }
         if(!dialed && !window._phoneCurNum){ return; }
         var q3m = document.getElementById('phoneTalk');
         if(q3m){ q3m.textContent = '電話猫「間違えたにゃ…。」'; phoneFit(q3m); }
@@ -3965,7 +4198,17 @@ document.addEventListener('DOMContentLoaded', function () {
         back = '';
       }
       var q3el = document.getElementById('phoneTalk');
-      if(rep){
+      var isTwist = (pend.t === window._phoneTwistTarget);
+      if(isTwist){ window._phoneTwistTarget = null; }
+      if(isTwist){
+        var roomElT = document.getElementById('phoneRoom');
+        if(roomElT){
+          roomElT.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:flex-start; justify-content:flex-start; color:var(--bone); font-size:12px; line-height:1.7; letter-spacing:0.02em; overflow:auto; padding:10px 12px; box-sizing:border-box; white-space:pre-line;';
+          roomElT.textContent = '（……余計なことを、したのかもしれない）';
+          phoneFit(roomElT);
+        }
+        if(q3el){ q3el.textContent = '電話猫「折り返し、済みましたにゃ。番号、帳面から消しておくにゃ」'; phoneFit(q3el); }
+      } else if(rep){
         var roomEl2 = document.getElementById('phoneRoom');
         if(roomEl2){
           roomEl2.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:flex-start; justify-content:flex-start; color:var(--bone); font-size:12px; line-height:1.7; letter-spacing:0.02em; overflow:auto; padding:10px 12px; box-sizing:border-box; white-space:pre-line;';
@@ -3991,6 +4234,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var hNum = window._phoneCurNum;
         var hRep = window._phoneCurRep || '';
         var hAns = ans;
+        var hLine = window._phoneCurLine;
         if(q3el){ q3el.textContent = '電話猫「保留中にゃ……ふむふむ、ふむふむ……。……見つけたにゃ」'; phoneFit(q3el); }
         window._phoneRead = true;
         if(window._phonePending && window._phonePending[hNum]){ window._phonePending[hNum].read = true; }
@@ -4004,7 +4248,11 @@ document.addEventListener('DOMContentLoaded', function () {
           if(window._phoneCurNum === hNum){ window._phoneCurNum = ''; window._phoneCurRep = ''; }
           window._phoneRead = false;
           var roomH = document.getElementById('phoneRoom');
-          if(roomH && hRep){ roomH.textContent = hRep; phoneFit(roomH); }
+          var isTwistH = (hLine === window._phoneTwistTarget);
+          if(isTwistH){ window._phoneTwistTarget = null; }
+          if(isTwistH){
+            if(roomH){ roomH.textContent = '（……余計なことを、したのかもしれない）'; phoneFit(roomH); }
+          } else if(roomH && hRep){ roomH.textContent = hRep; phoneFit(roomH); }
           var q3h = document.getElementById('phoneTalk');
           if(q3h){ q3h.textContent = '電話猫「お待たせしたにゃ。……' + hAns + '……ご相談、済んだにゃ。番号、帳面から消しておくにゃ」'; phoneFit(q3h); }
           callBtn.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.05); color:rgba(243,236,224,0.35);';
@@ -4018,7 +4266,28 @@ document.addEventListener('DOMContentLoaded', function () {
       callBtn.style.cssText = btnBase + 'border:1px solid var(--gold); background:rgba(212,175,55,0.12); color:var(--gold);';
     };
     q4.style.cssText = 'display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:6px; align-content:center;';
-    q4.appendChild(clr); q4.appendChild(refBtn); q4.appendChild(close); q4.appendChild(callBtn);
+    const repBtn = document.createElement('button');
+    repBtn.type = 'button'; repBtn.id = 'phoneReportBtn'; repBtn.textContent = '通報する';
+    repBtn.style.cssText = btnBase + 'border:1px solid #c0392b; background:rgba(192,57,43,0.18); color:#e8a29a;';
+    if(!window._phoneReportReady){ repBtn.style.display = 'none'; }
+    repBtn.onclick = function(){
+      var escKeyR = window._phoneEscapedKey;
+      if(!escKeyR || !window._phoneReportReady){ return; }
+      window._phoneReportReady = false;
+      window._phoneEscapedKey = null;
+      window._phoneEscapedCalls = 0;
+      repBtn.style.display = 'none';
+      var roomR = document.getElementById('phoneRoom');
+      if(roomR){
+        roomR.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:flex-start; justify-content:flex-start; color:var(--bone); font-size:12px; line-height:1.7; letter-spacing:0.02em; overflow:auto; padding:10px 12px; box-sizing:border-box; white-space:pre-line;';
+        roomR.textContent = '――録音の束は、すべて警察に渡った。\n数日後。留置場からの、最後の一本。\n\n' + PHONE_ESCAPE_END[escKeyR];
+        phoneFit(roomR);
+      }
+      var q3r = document.getElementById('phoneTalk');
+      if(q3r){ q3r.textContent = '電話猫「……にゃ？　いまの、どなたの声だったのかにゃ。……あれ。この番号、消えてるにゃ。……わたしが消したっけかにゃ。……ま、いっかにゃ」'; phoneFit(q3r); }
+      window._renderPhoneBook();
+    };
+    q4.appendChild(clr); q4.appendChild(refBtn); q4.appendChild(close); q4.appendChild(callBtn); q4.appendChild(repBtn);
     grid.appendChild(q1); grid.appendChild(q2); grid.appendChild(q3); grid.appendChild(q4); grid.appendChild(dialBox);
     ov.appendChild(grid);
     document.body.appendChild(ov);
@@ -4028,14 +4297,25 @@ document.addEventListener('DOMContentLoaded', function () {
       var bk = document.getElementById('phoneBook');
       if(!bk){ return; }
       var list = window._phoneBookList || [];
-      if(list.length === 0){
+      // ── 特別枠：逃走犯の番号だけは、電話猫が消しそびれる ──
+      var escBook = (window._phoneEscapedKey && PHONE_ESCAPE_NUM[window._phoneEscapedKey]) ? PHONE_ESCAPE_NUM[window._phoneEscapedKey] : null;
+      if(list.length === 0 && !escBook){
         bk.style.cssText = 'flex:1 1 auto; border:1px solid var(--line); border-radius:6px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:center; justify-content:center; color:rgba(243,236,224,0.45); font-size:12px; letter-spacing:0.1em; overflow:hidden;';
         bk.textContent = '── 電話帳 ──';
       } else {
         bk.style.cssText = 'flex:1 1 auto; border:1px solid var(--line); border-radius:6px; background:linear-gradient(160deg,#12241d,#0b1912); color:rgba(243,236,224,0.75); font-size:11px; letter-spacing:0.08em; overflow:auto; padding:6px 8px; box-sizing:border-box; line-height:1.7; white-space:pre-line;';
-        bk.textContent = '── 電話帳 ──\n' + list.join('\n');
+        var lines = '── 電話帳 ──';
+        if(escBook){ lines += '\n〔 ' + escBook + ' 〕'; }
+        if(list.length){ lines += '\n' + list.join('\n'); }
+        bk.textContent = lines;
       }
     };
+    window._renderPhoneBook();
+    if(window._phoneEscapedKey && !window._phoneEscBookNoticed){
+      window._phoneEscBookNoticed = true;
+      var q3init = document.getElementById('phoneTalk');
+      if(q3init){ q3init.textContent = '電話猫「……この番号だけ、なんでか、消しそびれるにゃ」'; }
+    }
     // ── 着信ループ：ランダム間隔で着信。着信中だけ「電話を受ける」が金枠に光る ──
     window._phoneRinging = false;
     function phoneRing(){
@@ -4697,6 +4977,15 @@ document.addEventListener('DOMContentLoaded', function () {
   function advEnd(kind){
     advSt.endKind = kind;
     advSt.over = true;
+    // ── 逃走の記録：犯人が捕まらない結末なら、電話窓口へ番号が生き残る ──
+    if(kind === 'floor' || kind === 'knife' || kind === 'alldead' || kind === 'ap' || kind === 'bribe'){
+      window._phoneEscapedKey = advSt.culprit;
+      window._phoneEscapedCalls = 0;
+      window._phoneReportReady = false;
+      window._phoneEscBookNoticed = false;
+      window._phoneIdleCount = 0;
+      window._phoneEscapedIdleStage = 0;
+    }
     advQ = [];
     advSkip = null;
     advPausing = false;
@@ -5008,7 +5297,7 @@ document.addEventListener('DOMContentLoaded', function () {
     advEl.bHall.style.display = dis ? 'none' : '';
     [advEl.bSearch, advEl.bHear, advEl.bPhone, advEl.bAuto, advEl.bHearCat, advEl.bHearBody, advEl.bKitten, advEl.bRon, advEl.bHall].forEach(b => b.disabled = dis);
     advEl.msg.style.display = (inEnd || inDiff || inNote) ? 'none' : '';
-    advEl.foot.textContent = inNote ? '画面をタップでノートを閉じますの'
+    advEl.foot.textContent = inNote ? ''
       : inDiff ? '難易度を選んでくださいまし'
       : inEnd ? '「次へ」で幕が進みますの'
       : (advPausing ? '読み終えたら「次へ」で廊下へ戻りますの'
@@ -5338,7 +5627,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const t = advSt; if(t.over || t.kitten) return;
     if(!advSpend()) return;
     t.kitten = true;
-    advOut('子猫に声をかけた。小さく頷いて、ついてきた。「たとえ、負け戦でも……ボク、最後まで戦うにゃ」（フィンセント・ファン・ゴッホ）');
+    advOut('子猫に声をかけた。小さく頷いて、ついてきた。「たとえ、負け戦でも……ボク、最後まで戦うにゃ」');
   }
   function advRon(){
     const t = advSt; if(t.over || !t.ron || t.room !== t.culprit) return;
@@ -5654,8 +5943,218 @@ document.addEventListener('DOMContentLoaded', function () {
   refreshWind();
   const tb0 = document.getElementById('tauntBtn');
   if(tb0) tb0.textContent = TAUNT_LABEL[currentTaunt] || TAUNT_LABEL.normal;
+  try{
+    var _rs = parseInt(localStorage.getItem('ssResumeAt') || '0', 10);
+    if(_rs && (Date.now() - _rs) < 600000 && window.closeTitleScreen) window.closeTitleScreen();
+  } catch(e){}
+  try{
+    var _hd = localStorage.getItem('ssHandoff');
+    if(_hd){
+      localStorage.removeItem('ssHandoff');
+      var _im = new Image();
+      _im.onload = function(){ window.ssImg = _im; window.ssShow(); };
+      _im.src = _hd;
+    }
+  } catch(e){}
   applyRotateTone();
 });
+
+/* ==== スクショ読取 ①画像読み込みの土台 (v754) ==== */
+window.ssImg = null;
+window.ssOpen = function(){
+  var f = document.getElementById('ssFile');
+  if(f) f.click();
+};
+window.ssFileChosen = function(ev){
+  var f = ev.target.files && ev.target.files[0];
+  if(!f) return;
+  var url = URL.createObjectURL(f);
+  var img = new Image();
+  img.onload = function(){
+    window.ssImg = img;
+    window.ssShow();
+    URL.revokeObjectURL(url);
+  };
+  img.onerror = function(){ URL.revokeObjectURL(url); };
+  img.src = url;
+  ev.target.value = '';
+};
+window.ssShow = function(){
+  var ov = document.getElementById('ssOverlay');
+  var cv = document.getElementById('ssCanvas');
+  var img = window.ssImg;
+  if(!ov || !cv || !img) return;
+  ov.style.display = 'flex';
+  cv.style.display = '';
+  var pz0 = document.getElementById('ssPasteZone');
+  if(pz0) pz0.style.display = 'none';
+  var pb0 = document.getElementById('ssPickBtn');
+  if(pb0) pb0.style.display = 'none';
+  var maxW = Math.floor(window.innerWidth * 0.96);
+  var maxH = Math.floor(window.innerHeight * 0.72);
+  var sc = Math.min(maxW / img.width, maxH / img.height, 1);
+  cv.width  = Math.max(1, Math.round(img.width  * sc));
+  cv.height = Math.max(1, Math.round(img.height * sc));
+  window.ssScale = sc;
+  window.ssCalibStep = 0;
+  window.ssCalibP1 = null;
+  window.ssRedraw();
+  var cb0 = document.getElementById('ssCalibBtn');
+  if(cb0) cb0.style.display = '';
+  if(!cv._tapBound){ cv.addEventListener('click', window.ssCanvasTap); cv._tapBound = true; }
+  var info = document.getElementById('ssInfo');
+  if(info) info.textContent = '読み込み: ' + img.width + '×' + img.height + 'px。「枠合わせ」で手牌の枠を教えてくださいまし';
+};
+window.ssClose = function(){
+  var ov = document.getElementById('ssOverlay');
+  if(ov) ov.style.display = 'none';
+};
+window.ssShowMsg = function(t){
+  var ov = document.getElementById('ssOverlay');
+  var cv = document.getElementById('ssCanvas');
+  if(!ov || !cv) return;
+  cv.style.display = 'none';
+  ov.style.display = 'flex';
+  var info = document.getElementById('ssInfo');
+  if(info) info.textContent = t;
+  var pz = document.getElementById('ssPasteZone');
+  if(pz){
+    pz.style.display = 'block';
+    if(!pz._bound){ pz.addEventListener('paste', window.ssZonePaste); pz._bound = true; }
+  }
+  var pb = document.getElementById('ssPickBtn');
+  if(pb) pb.style.display = '';
+  var cb2 = document.getElementById('ssCalibBtn');
+  if(cb2) cb2.style.display = 'none';
+};
+window.ssZonePaste = function(e){
+  e.preventDefault();
+  e.stopPropagation();
+  var cd = e.clipboardData;
+  var blob = null, i;
+  if(cd && cd.files && cd.files.length){
+    for(i = 0; i < cd.files.length; i++){
+      if(cd.files[i].type.indexOf('image/') === 0){ blob = cd.files[i]; break; }
+    }
+  }
+  if(!blob && cd && cd.items){
+    for(i = 0; i < cd.items.length; i++){
+      if(cd.items[i].kind === 'file' && cd.items[i].type.indexOf('image/') === 0){ blob = cd.items[i].getAsFile(); break; }
+    }
+  }
+  if(blob){ window.ssBlobToShow(blob); }
+  else { window.ssShowMsg('貼り付けの中に画像が見つかりませんの。写真アプリで写真を開き、共有から「コピー」してからですわ'); }
+};
+window.ssBlobToShow = function(blob){
+  var url = URL.createObjectURL(blob);
+  var img = new Image();
+  img.onload = function(){ window.ssImg = img; window.ssShow(); URL.revokeObjectURL(url); };
+  img.onerror = function(){ URL.revokeObjectURL(url); window.ssShowMsg('画像を読み込めませんでしたわ'); };
+  img.src = url;
+};
+window.ssMarkTool = function(){
+  try{ localStorage.setItem('ssResumeAt', String(Date.now())); }catch(e){}
+};
+window.ssGoReader = function(){
+  window.ssMarkTool();
+  location.href = 'reader.html';
+};
+/* ==== ②キャリブレーションUI (v759) ==== */
+window.ssScale = 1;
+window.ssCalibStep = 0;
+window.ssCalibP1 = null;
+window.ssRedraw = function(){
+  var cv = document.getElementById('ssCanvas');
+  var img = window.ssImg;
+  if(!cv || !img) return;
+  var ctx = cv.getContext('2d');
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  ctx.drawImage(img, 0, 0, cv.width, cv.height);
+  if(window.ssCalibP1){
+    var x = window.ssCalibP1.x * window.ssScale;
+    var y = window.ssCalibP1.y * window.ssScale;
+    ctx.strokeStyle = 'rgba(90,230,130,0.95)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x - 9, y); ctx.lineTo(x + 9, y);
+    ctx.moveTo(x, y - 9); ctx.lineTo(x, y + 9);
+    ctx.stroke();
+  }
+};
+window.ssDrawFrame = function(calib){
+  var cv = document.getElementById('ssCanvas');
+  var img = window.ssImg;
+  if(!cv || !img || !calib) return;
+  var ctx = cv.getContext('2d');
+  var sc = window.ssScale;
+  var X1 = calib.x1 * img.width * sc, Y1 = calib.y1 * img.height * sc;
+  var X2 = calib.x2 * img.width * sc, Y2 = calib.y2 * img.height * sc;
+  var w = (X2 - X1) / 13;
+  ctx.strokeStyle = 'rgba(255,80,80,0.9)';
+  ctx.lineWidth = 2;
+  for(var i = 0; i < 13; i++){
+    ctx.strokeRect(X1 + i * w, Y1, w, Y2 - Y1);
+  }
+};
+window.ssCalibStart = function(){
+  if(!window.ssImg) return;
+  window.ssCalibStep = 1;
+  window.ssCalibP1 = null;
+  window.ssRedraw();
+  var info = document.getElementById('ssInfo');
+  if(info) info.textContent = '左端の牌の左上をタップですわ';
+};
+window.ssCanvasTap = function(e){
+  if(!window.ssCalibStep || !window.ssImg) return;
+  var cv = document.getElementById('ssCanvas');
+  var r = cv.getBoundingClientRect();
+  var ix = (e.clientX - r.left) / window.ssScale;
+  var iy = (e.clientY - r.top) / window.ssScale;
+  var info = document.getElementById('ssInfo');
+  if(window.ssCalibStep === 1){
+    window.ssCalibP1 = { x: ix, y: iy };
+    window.ssCalibStep = 2;
+    window.ssRedraw();
+    if(info) info.textContent = '13枚目の牌の右下をタップですわ';
+    return;
+  }
+  if(window.ssCalibStep === 2){
+    var p1 = window.ssCalibP1;
+    if(ix <= p1.x || iy <= p1.y){
+      window.ssCalibStep = 1;
+      window.ssCalibP1 = null;
+      window.ssRedraw();
+      if(info) info.textContent = '右下の点は左上より右下側ですの。左端の牌の左上からやり直しですわ';
+      return;
+    }
+    var img = window.ssImg;
+    var calib = { x1: p1.x / img.width, y1: p1.y / img.height, x2: ix / img.width, y2: iy / img.height };
+    try{ localStorage.setItem('ssCalib', JSON.stringify(calib)); }catch(err){}
+    window.ssCalibStep = 0;
+    window.ssRedraw();
+    window.ssDrawFrame(calib);
+    if(info) info.textContent = '枠を保存しましたわ。牌1枚は約' + Math.round((ix - p1.x) / 13) + '×' + Math.round(iy - p1.y) + 'pxですの';
+  }
+};
+window.ssReceive = function(){
+  window.ssMarkTool();
+  var ov = document.getElementById('ssOverlay');
+  var cv = document.getElementById('ssCanvas');
+  if(!ov || !cv) return;
+  cv.style.display = 'none';
+  ov.style.display = 'flex';
+  var info = document.getElementById('ssInfo');
+  if(info) info.textContent = 'スクショの受け取りですわ。写真から選ぶか、枠を長押しして「ペースト」ですの';
+  var pb = document.getElementById('ssPickBtn');
+  if(pb) pb.style.display = '';
+  var cb1 = document.getElementById('ssCalibBtn');
+  if(cb1) cb1.style.display = 'none';
+  var pz = document.getElementById('ssPasteZone');
+  if(pz){
+    pz.style.display = 'block';
+    if(!pz._bound){ pz.addEventListener('paste', window.ssZonePaste); pz._bound = true; }
+  }
+};
 </script>
 <script>
 /* 自動更新：開くたびGitHubの最新版をキャッシュを通さず確認し、版が新しければそちらへ切り替える。
@@ -5681,5 +6180,16 @@ document.addEventListener('DOMContentLoaded', function () {
   }catch(e){ /* 失敗しても通常動作を妨げない */ }
 })();
 </script>
+<div id="ssOverlay" style="display:none; position:fixed; inset:0; background:rgba(8,10,18,0.94); z-index:80; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
+  <canvas id="ssCanvas" style="border:1px solid rgba(243,236,224,0.25); border-radius:6px;"></canvas>
+  <button type="button" id="ssPickBtn" class="btn btn-group" style="display:none;" onclick="window.ssGoReader()">📷 写真から選ぶ</button>
+  <div id="ssPasteZone" contenteditable="true" inputmode="none" spellcheck="false" style="display:none; min-width:250px; max-width:80vw; padding:12px 16px; border:1px dashed rgba(243,236,224,0.55); border-radius:8px; color:rgba(243,236,224,0.9); font-size:12px; font-family:var(--sans); text-align:center; -webkit-user-select:text; user-select:text;">ここを長押しして「ペースト」ですわ</div>
+  <div style="display:flex; gap:12px; align-items:center;">
+    <span id="ssInfo" style="color:rgba(243,236,224,0.8); font-size:11px; font-family:var(--sans);"></span>
+    <button type="button" id="ssCalibBtn" class="btn btn-group" style="display:none;" onclick="window.ssCalibStart()">枠合わせ</button>
+    <button type="button" class="btn btn-clear" onclick="window.ssClose()">閉じる</button>
+  </div>
+</div>
+<input type="file" id="ssFile" accept="image/*" style="display:none" onchange="window.ssFileChosen(event)">
 </body>
 </html>
