@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="760">
+<html lang="ja" data-ver="766">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -971,7 +971,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v760</div>
+  <div id="verTag">v766</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -1574,6 +1574,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return { tiles, errs };
   }
 
+  window.ssRebuildHand = function(){ return rebuildHand(); };
   function rebuildHand(){
     const raw = document.getElementById('qiText').value;
     const { tiles, errs } = parseDigits(raw);
@@ -1698,6 +1699,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // 牌配列 → 「18m 1357p 3368s 南西」標準形式の入力文字列。赤五は 0、字牌は漢字。
+  window.ssTilesToInput = function(t){ return tilesToInput(t); };
   function tilesToInput(tiles){
     const suf = {man:'m',pin:'p',sou:'s'};
     const honorLabel = {E:'東',S:'南',W:'西',N:'北',P:'白',F:'發',C:'中'};
@@ -6001,9 +6003,24 @@ window.ssShow = function(){
   window.ssRedraw();
   var cb0 = document.getElementById('ssCalibBtn');
   if(cb0) cb0.style.display = '';
+  var ctb = document.getElementById('ssCutBtn');
+  if(ctb) ctb.style.display = '';
+  var ccv = document.getElementById('ssCutCanvas');
+  if(ccv) ccv.style.display = 'none';
+  var tbb = document.getElementById('ssTplBtn');
+  if(tbb) tbb.style.display = '';
+  var tpp = document.getElementById('ssTplPanel');
+  if(tpp) tpp.style.display = 'none';
+  var gob = document.getElementById('ssGoBtn');
+  if(gob) gob.style.display = '';
   if(!cv._tapBound){ cv.addEventListener('click', window.ssCanvasTap); cv._tapBound = true; }
+  window.ssActiveCalib = null;
+  window.ssDrawFrame(window.ssGetCalib());
   var info = document.getElementById('ssInfo');
-  if(info) info.textContent = '読み込み: ' + img.width + '×' + img.height + 'px。「枠合わせ」で手牌の枠を教えてくださいまし';
+  if(info) info.textContent = '読み込み: ' + img.width + '×' + img.height + 'px。既定の枠を重ねましたわ。ずれていれば「枠合わせ」でその写真だけ直せますの';
+  var _tplMode = false;
+  try{ _tplMode = localStorage.getItem('ssTplMode') === '1'; }catch(e){}
+  if(_tplMode && window.ssTplOpen) window.ssTplOpen();
 };
 window.ssClose = function(){
   var ov = document.getElementById('ssOverlay');
@@ -6026,6 +6043,16 @@ window.ssShowMsg = function(t){
   if(pb) pb.style.display = '';
   var cb2 = document.getElementById('ssCalibBtn');
   if(cb2) cb2.style.display = 'none';
+  var ctb2 = document.getElementById('ssCutBtn');
+  if(ctb2) ctb2.style.display = 'none';
+  var ccv2 = document.getElementById('ssCutCanvas');
+  if(ccv2) ccv2.style.display = 'none';
+  var tbb2 = document.getElementById('ssTplBtn');
+  if(tbb2) tbb2.style.display = 'none';
+  var tpp2 = document.getElementById('ssTplPanel');
+  if(tpp2) tpp2.style.display = 'none';
+  var gob2 = document.getElementById('ssGoBtn');
+  if(gob2) gob2.style.display = 'none';
 };
 window.ssZonePaste = function(e){
   e.preventDefault();
@@ -6051,6 +6078,14 @@ window.ssBlobToShow = function(blob){
   img.onload = function(){ window.ssImg = img; window.ssShow(); URL.revokeObjectURL(url); };
   img.onerror = function(){ URL.revokeObjectURL(url); window.ssShowMsg('画像を読み込めませんでしたわ'); };
   img.src = url;
+};
+/* 既定の手牌枠（雀魂・本人スキン。牌譜/実戦とも同位置。IMG_8440/IMG_8784実測 v761） */
+window.SS_DEFAULT_CALIB = { x1:0.1855, y1:0.8592, x2:0.7105, y2:0.9924 };
+window.ssActiveCalib = null; /* この写真の間だけ効く一時枠。次の読込で既定へ戻る */
+window.ssGetCalib = function(){
+  var c = window.ssActiveCalib;
+  if(c && c.x2 > c.x1 && c.y2 > c.y1) return c;
+  return window.SS_DEFAULT_CALIB;
 };
 window.ssMarkTool = function(){
   try{ localStorage.setItem('ssResumeAt', String(Date.now())); }catch(e){}
@@ -6096,6 +6131,233 @@ window.ssDrawFrame = function(calib){
     ctx.strokeRect(X1 + i * w, Y1, w, Y2 - Y1);
   }
 };
+window.ssCutTiles = function(calib){
+  var img = window.ssImg;
+  if(!img || !calib) return [];
+  var X1 = calib.x1 * img.width, Y1 = calib.y1 * img.height;
+  var X2 = calib.x2 * img.width, Y2 = calib.y2 * img.height;
+  var w = (X2 - X1) / 13, h = Y2 - Y1;
+  var tiles = [];
+  for(var i = 0; i < 13; i++){
+    tiles.push({ sx: X1 + i * w, sy: Y1, sw: w, sh: h });
+  }
+  return tiles;
+};
+window.ssCutShow = function(){
+  var img = window.ssImg;
+  var ccv = document.getElementById('ssCutCanvas');
+  if(!img || !ccv) return;
+  var tiles = window.ssCutTiles(window.ssGetCalib());
+  if(!tiles.length) return;
+  var maxW = Math.floor(window.innerWidth * 0.96);
+  var gap = 3, pad = 4;
+  var cw = Math.floor((maxW - pad * 2 - gap * 12) / 13);
+  var ar = tiles[0].sh / tiles[0].sw;
+  var ch = Math.round(cw * ar);
+  ccv.width = pad * 2 + cw * 13 + gap * 12;
+  ccv.height = pad * 2 + ch;
+  ccv.style.display = '';
+  var ctx = ccv.getContext('2d');
+  ctx.fillStyle = '#141a28';
+  ctx.fillRect(0, 0, ccv.width, ccv.height);
+  for(var i = 0; i < 13; i++){
+    var t = tiles[i];
+    var dx = pad + i * (cw + gap);
+    ctx.drawImage(img, t.sx, t.sy, t.sw, t.sh, dx, pad, cw, ch);
+    ctx.strokeStyle = 'rgba(243,236,224,0.25)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(dx + 0.5, pad + 0.5, cw - 1, ch - 1);
+  }
+  var info = document.getElementById('ssInfo');
+  if(info) info.textContent = '13マスに切り出しましたわ。1マスに牌が1枚ずつ収まっていれば枠は合っていますの';
+};
+/* ==== ④テンプレ登録 (v764) ==== */
+window.SS_TPL_KEYS = (function(){
+  var a = [];
+  ['m','p','s'].forEach(function(su){ for(var n=1;n<=9;n++) a.push(su+n); });
+  a.push('m5r','p5r','s5r');
+  ['E','S','W','N','P','F','C'].forEach(function(h){ a.push(h); });
+  return a;
+})();
+window.SS_TPL_LABEL = (function(){
+  var K=['一','二','三','四','五','六','七','八','九'];
+  var L={};
+  for(var n=1;n<=9;n++){ L['m'+n]=K[n-1]+'萬'; L['p'+n]=K[n-1]+'筒'; L['s'+n]=K[n-1]+'索'; }
+  L['m5r']='赤五萬'; L['p5r']='赤五筒'; L['s5r']='赤五索';
+  L['E']='東'; L['S']='南'; L['W']='西'; L['N']='北'; L['P']='白'; L['F']='發'; L['C']='中';
+  return L;
+})();
+window.SS_TPL_W = 24; window.SS_TPL_H = 32;
+window.ssTplLoad = function(){
+  try{ var r = localStorage.getItem('ssTemplates'); if(r) return JSON.parse(r) || {}; }catch(e){}
+  return {};
+};
+window.ssTplSave = function(obj){
+  try{ localStorage.setItem('ssTemplates', JSON.stringify(obj)); }catch(e){}
+};
+/* 画像の矩形を SS_TPL_W×SS_TPL_H の縮小RGB配列にする（照合の特徴ベクトル） */
+window.ssTileFeature = function(img, r){
+  var w = window.SS_TPL_W, h = window.SS_TPL_H;
+  var c = document.createElement('canvas'); c.width = w; c.height = h;
+  var g = c.getContext('2d');
+  g.drawImage(img, r.sx, r.sy, r.sw, r.sh, 0, 0, w, h);
+  var d = g.getImageData(0, 0, w, h).data;
+  var out = [];
+  for(var i = 0; i < d.length; i += 4){ out.push(d[i], d[i+1], d[i+2]); }
+  return out;
+};
+window.ssTplSelected = 0;
+window.ssTplOpen = function(){
+  if(!window.ssImg) return;
+  var panel = document.getElementById('ssTplPanel');
+  if(!panel) return;
+  try{ localStorage.setItem('ssTplMode', '1'); }catch(e){}
+  panel.style.display = 'block';
+  window.ssTplSelected = 0;
+  window.ssTplRenderStrip();
+  window.ssTplRenderKeys();
+  window.ssTplRenderProg();
+};
+window.ssTplClose = function(){
+  var panel = document.getElementById('ssTplPanel');
+  if(panel) panel.style.display = 'none';
+  try{ localStorage.removeItem('ssTplMode'); }catch(e){}
+};
+window.ssTplNextPhoto = function(){
+  try{ localStorage.setItem('ssTplMode', '1'); }catch(e){}
+  window.ssGoReader();
+};
+window.ssTplReset = function(){
+  window.ssTplSave({});
+  window.ssTplRenderKeys();
+  window.ssTplRenderProg();
+};
+window.ssTplRenderStrip = function(){
+  var img = window.ssImg;
+  var cv = document.getElementById('ssTplStrip');
+  if(!img || !cv) return;
+  var tiles = window.ssCutTiles(window.ssGetCalib());
+  var gap = 3, pad = 4;
+  var cw = 56;
+  var ar = tiles[0].sh / tiles[0].sw;
+  var ch = Math.round(cw * ar);
+  cv.width = pad * 2 + cw * 13 + gap * 12;
+  cv.height = pad * 2 + ch;
+  var g = cv.getContext('2d');
+  g.fillStyle = '#141a28'; g.fillRect(0, 0, cv.width, cv.height);
+  window._ssTplRects = [];
+  for(var i = 0; i < 13; i++){
+    var t = tiles[i], dx = pad + i * (cw + gap);
+    g.drawImage(img, t.sx, t.sy, t.sw, t.sh, dx, pad, cw, ch);
+    g.lineWidth = 2;
+    g.strokeStyle = (i === window.ssTplSelected) ? 'rgba(90,230,130,0.95)' : 'rgba(243,236,224,0.25)';
+    g.strokeRect(dx + 1, pad + 1, cw - 2, ch - 2);
+    window._ssTplRects.push({ x0: dx, x1: dx + cw });
+  }
+  if(!cv._tap){
+    cv.addEventListener('click', function(e){
+      var r = cv.getBoundingClientRect();
+      var sc = cv.width / r.width;
+      var x = (e.clientX - r.left) * sc;
+      var rs = window._ssTplRects || [];
+      for(var i = 0; i < rs.length; i++){ if(x >= rs[i].x0 && x < rs[i].x1){ window.ssTplSelected = i; window.ssTplRenderStrip(); break; } }
+    });
+    cv._tap = true;
+  }
+};
+window.ssTplRenderKeys = function(){
+  var box = document.getElementById('ssTplKeys');
+  if(!box) return;
+  var have = window.ssTplLoad();
+  box.innerHTML = '';
+  window.SS_TPL_KEYS.forEach(function(k){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = window.SS_TPL_LABEL[k];
+    var done = !!have[k];
+    b.style.cssText = 'font-size:11px; padding:4px 6px; border-radius:4px; border:1px solid ' +
+      (done ? 'rgba(90,230,130,0.8)' : 'rgba(243,236,224,0.3)') + '; background:' +
+      (done ? 'rgba(40,90,55,0.6)' : '#1c2233') + '; color:#f3ece0; font-family:var(--sans);';
+    b.onclick = function(){ window.ssTplAssign(k); };
+    box.appendChild(b);
+  });
+};
+window.ssTplRenderProg = function(){
+  var el = document.getElementById('ssTplProg');
+  if(!el) return;
+  var have = window.ssTplLoad();
+  var missing = window.SS_TPL_KEYS.filter(function(k){ return !have[k]; });
+  var n = window.SS_TPL_KEYS.length - missing.length;
+  if(missing.length === 0){
+    el.textContent = '37種すべて揃いましたわ！「閉じる」で戻れば、もう自動で判定できますの';
+  } else {
+    var names = missing.map(function(k){ return window.SS_TPL_LABEL[k]; }).join(' ');
+    el.textContent = '37種中 ' + n + '種。残り' + missing.length + '種：' + names + '（無い牌が写った写真は「別の写真」で足せますわ）';
+  }
+};
+window.ssTplAssign = function(key){
+  var img = window.ssImg;
+  if(!img) return;
+  var tiles = window.ssCutTiles(window.ssGetCalib());
+  var r = tiles[window.ssTplSelected || 0];
+  if(!r) return;
+  var have = window.ssTplLoad();
+  have[key] = window.ssTileFeature(img, r);
+  window.ssTplSave(have);
+  window.ssTplRenderKeys();
+  window.ssTplRenderProg();
+};
+/* ==== ⑤照合・自動入力 (v765) ==== */
+window.ssKeyToTile = function(key){
+  var honors = { E:'東', S:'南', W:'西', N:'北', P:'白', F:'發', C:'中' };
+  if(honors[key]){ return { suit:'honor', code:key, num:0, red:false, label:honors[key] }; }
+  var suitMap = { m:'man', p:'pin', s:'sou' };
+  var suit = suitMap[key[0]];
+  var red = key.length === 3 && key[2] === 'r';
+  var num = parseInt(key[1], 10);
+  return { suit:suit, num:num, code:key.slice(0,2), red:red, label:String(num) };
+};
+window.ssMatchTile = function(feat, tpl, keys){
+  var best = null, bestD = Infinity, second = null, secondD = Infinity;
+  for(var i = 0; i < keys.length; i++){
+    var t = tpl[keys[i]];
+    if(!t || t.length !== feat.length) continue;
+    var d = 0;
+    for(var j = 0; j < feat.length; j++){ var e = feat[j] - t[j]; d += e * e; }
+    if(d < bestD){ secondD = bestD; second = best; bestD = d; best = keys[i]; }
+    else if(d < secondD){ secondD = d; second = keys[i]; }
+  }
+  return { key:best, dist:bestD, key2:second, dist2:secondD };
+};
+window.ssRecognize = function(){
+  var img = window.ssImg;
+  if(!img) return;
+  var tpl = window.ssTplLoad();
+  var keys = Object.keys(tpl);
+  if(keys.length === 0){
+    var info0 = document.getElementById('ssInfo');
+    if(info0) info0.textContent = 'まだ見本が空ですの。「テンプレ登録」で牌を教えてくださいまし';
+    return;
+  }
+  var tiles = window.ssCutTiles(window.ssGetCalib());
+  window.ssRecog = [];
+  var result = [];
+  for(var i = 0; i < 13; i++){
+    var f = window.ssTileFeature(img, tiles[i]);
+    var m = window.ssMatchTile(f, tpl, keys);
+    window.ssRecog.push(m);
+    result.push(window.ssKeyToTile(m.key));
+  }
+  // 入力欄へ流して判定
+  var field = document.getElementById('qiText');
+  if(field && window.ssTilesToInput){
+    field.value = window.ssTilesToInput(result);
+    if(window.ssRebuildHand) window.ssRebuildHand();
+  }
+  window.ssClose();
+  var jb = document.getElementById('judgeBtn');
+  if(jb && !jb.disabled) jb.click();
+};
 window.ssCalibStart = function(){
   if(!window.ssImg) return;
   window.ssCalibStep = 1;
@@ -6129,15 +6391,16 @@ window.ssCanvasTap = function(e){
     }
     var img = window.ssImg;
     var calib = { x1: p1.x / img.width, y1: p1.y / img.height, x2: ix / img.width, y2: iy / img.height };
-    try{ localStorage.setItem('ssCalib', JSON.stringify(calib)); }catch(err){}
+    window.ssActiveCalib = calib;
     window.ssCalibStep = 0;
     window.ssRedraw();
     window.ssDrawFrame(calib);
-    if(info) info.textContent = '枠を保存しましたわ。牌1枚は約' + Math.round((ix - p1.x) / 13) + '×' + Math.round(iy - p1.y) + 'pxですの';
+    if(info) info.textContent = 'この写真だけ枠を直しましたわ。次の写真では既定へ戻りますの（牌1枚 約' + Math.round((ix - p1.x) / 13) + '×' + Math.round(iy - p1.y) + 'px）';
   }
 };
 window.ssReceive = function(){
   window.ssMarkTool();
+  try{ localStorage.removeItem('ssTplMode'); }catch(e){}
   var ov = document.getElementById('ssOverlay');
   var cv = document.getElementById('ssCanvas');
   if(!ov || !cv) return;
@@ -6149,6 +6412,16 @@ window.ssReceive = function(){
   if(pb) pb.style.display = '';
   var cb1 = document.getElementById('ssCalibBtn');
   if(cb1) cb1.style.display = 'none';
+  var ctb1 = document.getElementById('ssCutBtn');
+  if(ctb1) ctb1.style.display = 'none';
+  var ccv1 = document.getElementById('ssCutCanvas');
+  if(ccv1) ccv1.style.display = 'none';
+  var tbb1 = document.getElementById('ssTplBtn');
+  if(tbb1) tbb1.style.display = 'none';
+  var tpp1 = document.getElementById('ssTplPanel');
+  if(tpp1) tpp1.style.display = 'none';
+  var gob1 = document.getElementById('ssGoBtn');
+  if(gob1) gob1.style.display = 'none';
   var pz = document.getElementById('ssPasteZone');
   if(pz){
     pz.style.display = 'block';
@@ -6182,11 +6455,25 @@ window.ssReceive = function(){
 </script>
 <div id="ssOverlay" style="display:none; position:fixed; inset:0; background:rgba(8,10,18,0.94); z-index:80; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
   <canvas id="ssCanvas" style="border:1px solid rgba(243,236,224,0.25); border-radius:6px;"></canvas>
+  <canvas id="ssCutCanvas" style="display:none; margin-top:6px; border:1px solid rgba(243,236,224,0.2); border-radius:4px; background:#141a28;"></canvas>
+  <div id="ssTplPanel" style="display:none; width:96vw; max-width:960px; max-height:80vh; overflow:auto; background:#0f1420; border:1px solid rgba(243,236,224,.25); border-radius:8px; padding:8px; box-sizing:border-box;">
+    <canvas id="ssTplStrip" style="width:100%; border-radius:4px; background:#141a28;"></canvas>
+    <div id="ssTplProg" style="color:rgba(243,236,224,.85); font-size:11px; font-family:var(--sans); margin:6px 0; text-align:center;"></div>
+    <div id="ssTplKeys" style="display:flex; flex-wrap:wrap; gap:3px; justify-content:center;"></div>
+    <div style="position:sticky; bottom:0; text-align:center; margin-top:8px; padding-top:8px; background:linear-gradient(transparent, #0f1420 30%);">
+      <button type="button" class="btn btn-go" onclick="window.ssTplNextPhoto()">📷 別の写真</button>
+      <button type="button" class="btn btn-clear" onclick="window.ssTplClose()">閉じる</button>
+      <button type="button" class="btn btn-group" onclick="window.ssTplReset()">全消去</button>
+    </div>
+  </div>
   <button type="button" id="ssPickBtn" class="btn btn-group" style="display:none;" onclick="window.ssGoReader()">📷 写真から選ぶ</button>
   <div id="ssPasteZone" contenteditable="true" inputmode="none" spellcheck="false" style="display:none; min-width:250px; max-width:80vw; padding:12px 16px; border:1px dashed rgba(243,236,224,0.55); border-radius:8px; color:rgba(243,236,224,0.9); font-size:12px; font-family:var(--sans); text-align:center; -webkit-user-select:text; user-select:text;">ここを長押しして「ペースト」ですわ</div>
   <div style="display:flex; gap:12px; align-items:center;">
     <span id="ssInfo" style="color:rgba(243,236,224,0.8); font-size:11px; font-family:var(--sans);"></span>
     <button type="button" id="ssCalibBtn" class="btn btn-group" style="display:none;" onclick="window.ssCalibStart()">枠合わせ</button>
+    <button type="button" id="ssCutBtn" class="btn btn-group" style="display:none;" onclick="window.ssCutShow()">切り出し確認</button>
+    <button type="button" id="ssTplBtn" class="btn btn-group" style="display:none;" onclick="window.ssTplOpen()">テンプレ登録</button>
+    <button type="button" id="ssGoBtn" class="btn btn-go" style="display:none;" onclick="window.ssRecognize()">この配牌で判定</button>
     <button type="button" class="btn btn-clear" onclick="window.ssClose()">閉じる</button>
   </div>
 </div>
