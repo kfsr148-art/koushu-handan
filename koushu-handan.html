@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="804">
+<html lang="ja" data-ver="805">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -969,7 +969,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v804</div>
+  <div id="verTag">v805</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -6087,8 +6087,8 @@ window.ssShow = function(){
   if(cb0) cb0.style.display = '';
   var ctb = document.getElementById('ssCutBtn');
   if(ctb) ctb.style.display = '';
-  var ccv = document.getElementById('ssCutCanvas');
-  if(ccv) ccv.style.display = 'none';
+  var ccr = document.getElementById('ssCutRow');
+  if(ccr) ccr.style.display = 'none';
   var tbb = document.getElementById('ssTplBtn');
   if(tbb) tbb.style.display = '';
   var tpp = document.getElementById('ssTplPanel');
@@ -6102,7 +6102,8 @@ window.ssShow = function(){
   if(info) info.textContent = '読み込み: ' + img.width + '×' + img.height + 'px。既定の枠を重ねましたわ。ずれていれば「枠合わせ」でその写真だけ直せますの';
   var _tplMode = false;
   try{ _tplMode = localStorage.getItem('ssTplMode') === '1'; }catch(e){}
-  if(_tplMode && window.ssTplOpen) window.ssTplOpen();
+  if(_tplMode && window.ssTplOpen){ window.ssTplOpen(); }
+  else if(window.ssCutShow){ window.ssCutShow(); }
 };
 window.ssClose = function(){
   var ov = document.getElementById('ssOverlay');
@@ -6127,8 +6128,8 @@ window.ssShowMsg = function(t){
   if(cb2) cb2.style.display = 'none';
   var ctb2 = document.getElementById('ssCutBtn');
   if(ctb2) ctb2.style.display = 'none';
-  var ccv2 = document.getElementById('ssCutCanvas');
-  if(ccv2) ccv2.style.display = 'none';
+  var ccr2 = document.getElementById('ssCutRow');
+  if(ccr2) ccr2.style.display = 'none';
   var tbb2 = document.getElementById('ssTplBtn');
   if(tbb2) tbb2.style.display = 'none';
   var tpp2 = document.getElementById('ssTplPanel');
@@ -6239,6 +6240,8 @@ window.ssCutShow = function(){
   ccv.width = pad * 2 + cw * 13 + gap * 12;
   ccv.height = pad * 2 + ch;
   ccv.style.display = '';
+  var ccr = document.getElementById('ssCutRow');
+  if(ccr) ccr.style.display = 'flex';
   var ctx = ccv.getContext('2d');
   ctx.fillStyle = '#141a28';
   ctx.fillRect(0, 0, ccv.width, ccv.height);
@@ -6602,8 +6605,8 @@ window.ssReceive = function(){
   if(cb1) cb1.style.display = 'none';
   var ctb1 = document.getElementById('ssCutBtn');
   if(ctb1) ctb1.style.display = 'none';
-  var ccv1 = document.getElementById('ssCutCanvas');
-  if(ccv1) ccv1.style.display = 'none';
+  var ccr1 = document.getElementById('ssCutRow');
+  if(ccr1) ccr1.style.display = 'none';
   var tbb1 = document.getElementById('ssTplBtn');
   if(tbb1) tbb1.style.display = 'none';
   var tpp1 = document.getElementById('ssTplPanel');
@@ -6643,7 +6646,10 @@ window.ssReceive = function(){
 </script>
 <div id="ssOverlay" style="display:none; position:fixed; inset:0; background:rgba(8,10,18,0.94); z-index:80; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
   <canvas id="ssCanvas" style="border:1px solid rgba(243,236,224,0.25); border-radius:6px;"></canvas>
-  <canvas id="ssCutCanvas" style="display:none; margin-top:6px; border:1px solid rgba(243,236,224,0.2); border-radius:4px; background:#141a28;"></canvas>
+  <div id="ssCutRow" style="display:none; margin-top:6px; align-items:center; gap:10px;">
+    <canvas id="ssCutCanvas" style="border:2px solid var(--gold); border-radius:4px; background:#141a28;"></canvas>
+    <div id="ssCutDoneMsg" style="color:var(--gold); font-size:12px; font-family:var(--sans); white-space:nowrap;">写真で取込完了ですわ</div>
+  </div>
   <div id="ssTplPanel" style="display:none; width:96vw; max-width:960px; max-height:80vh; overflow:auto; background:#0f1420; border:1px solid rgba(243,236,224,.25); border-radius:8px; padding:8px; box-sizing:border-box;">
     <canvas id="ssTplStrip" style="width:100%; border-radius:4px; background:#141a28;"></canvas>
     <div id="ssTplProg" style="color:rgba(243,236,224,.85); font-size:11px; font-family:var(--sans); margin:6px 0; text-align:center;"></div>
