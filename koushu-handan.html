@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="815">
+<html lang="ja" data-ver="834">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -969,7 +969,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v815</div>
+  <div id="verTag">v834</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -3600,7 +3600,11 @@ document.addEventListener('DOMContentLoaded', function () {
     engine: { title: '◆ このツール、何がすごいの？', body: null },   // 既存の engineHelpOverlay をそのまま開く
     koushu: { title: '◆ 配牌攻守判定', body:
       '<b>これは何？</b><br>ハイパイ（配牌）13枚を入力すると、攻めるべきか守るべきかを一言で返す判定機。向聴数（シャンテンスウ）と受け入れ枚数を、可能な手の分け方をしらみつぶしに数えて答えを出す、このツールの中核。<br><br>' +
-      '雀魂で配牌をもらった直後、「この手、行っていいの？」と迷う数秒のために作った。難しい計算はぜんぶこちらで済ませて、答えだけ渡す道具。' },
+      '雀魂で配牌をもらった直後、「この手、行っていいの？」と迷う数秒のために作った。難しい計算はぜんぶこちらで済ませて、答えだけ渡す道具。<br><br>' +
+      '<b>写真読取が、いちばんの見どころ。</b><br>配牌を一枚ずつ入力するのは、少し手間だ。だから写真読取をつけた。雀魂の配牌スクショを撮って渡せば、13枚をそのまま読み取って判定へ流す。手入力は要らない。<br><br>' +
+      'それに——<b>枠を手で合わせれば、雀魂のほかのアプリやゲームの牌姿でも読み取れる。</b>手牌の左端と右端を二点そっと押して、枠の位置を教えるだけ。13等分して切り出すところは、ゲームの種類を選ばない。雀魂のために作った機能だけれど、そこは思いのほか幅広く使える。<br><br>' +
+      'ただ、牌の中身を見分ける部分は、あらかじめお手本の牌を覚えさせてある。別のゲームや別のスキンで使いたいときは、その牌姿を自分でお手本として登録する。ここで大事なのは、登録しただけだと消えること。スマホはしばらく開かないと覚えた内容を忘れてしまうので、登録したら必ず「固定保存」でファイルに書き出しておく。次からはそのファイルを「読み込み」で戻せばいい。少し手間はかかるけれど、一度仕込んでファイルに保存しておけば、別の牌でも読めるようになる。切り出しはどこでも、見分けはひと仕込み——そんな二段構えになっている。<br><br>' +
+      '正直に言えば、枠合わせは二点タップがシビアで、別のゲームなら牌を何十種も撮り直すことになる。「誰でも気軽に」ではなく、やる気のある人がひと通り仕込めば、という道具だ。' },
     watch: { title: '◆ 船長の見張り台', body:
       '<b>これは何？</b><br>攻守判定の見極めを、クイズ形式で練習できる部屋。船長猫の出す配牌に対して自分で「攻め」か「守り」かを答え、正誤をその場で確かめながら感覚を鍛える。<br><br>' +
       '負けなし、行動力の消費もなし。答え合わせ役は本物の判定エンジンなので、練習の答えそのものが信用できる。' },
@@ -3880,6 +3884,54 @@ document.addEventListener('DOMContentLoaded', function () {
   // ---- 電話猫の相談窓口（第一段：テンキーの枠のみ。番号はまだ誰にも繋がらない） ----
   // ── 逃走犯への掛け直し：犯人が捕まらなかった周だけ、その番号が繋がる ──
   const PHONE_ESCAPE_NUM = { butler:'4649', strategist:'1093', blunt:'0707', lady:'0808', french:'3939', ichihime:'2222', sensei:'0100' };
+  // ── 業務時間外の顔：相談が来ていない番号へ掛けると、本人が「用のない電話」を受ける（一回完結・番号→人格） ──
+  const PHONE_OFFHOURS = {
+    '4649': { m:'「……もし。執事は、休みの日も執事にございます。……はて、ご用がないのに、お掛けに? ……ふ。では、用のないお時間を、お淹れいたしましょう」', c:'電話猫「……用がなくても、いいって言われたにゃ。……なんか、あったかいにゃ」' },
+    '1093': { m:'「ふはは、掛けてくると読んでおったわ。用があるのではない、掛けたくなった——そういう顔よな。……ワシもよ。まあ、座れ」', c:'電話猫「……用がないの、見抜かれてるにゃ。……こわいような、うれしいような、にゃ」' },
+    '0707': { m:'「……あ。……ようじ、ないのに、かけてきたのだ? ……ぼくも、ようじ、ないのだ。……じゃあ、いっしょなのだ。……えへへ」', c:'電話猫「……用なし同士、みたいにゃ。……わるくないにゃ」' },
+    '0808': { m:'「あら、ごきげんよう。ご用? ……いいえ、なくてよろしいのよ。用のあるお電話ばかりで、くたびれておりましたの。……用のないあなた、大歓迎ですわ」', c:'電話猫「……いたずらのつもりが、歓迎されたにゃ。……調子が狂うにゃ」' },
+    '3939': { m:'「あら、無用のお電話。……いい趣ね。用のない時間ほど、上等なワインに似合うものはないのよ。……さ、なにも話さずに、少し」', c:'電話猫「……なにも話さなくていい電話、初めてにゃ。……ふしぎと、落ちつくにゃ」' },
+    '2222': { m:'「わー! ようじないのにかけてきてくれたにゃ!? うれしい! ……ねえ、ようじないなら、ずっとはなしてていい? ……だめ? ……ちょっとだけ?」', c:'電話猫「……用がないほど、喜ばれたにゃ。……ちょっとだけ、つきあうにゃ」' },
+    '0100': { m:'「ふむ。用件のない通話。……評価が難しいですね。ですが……用のない相手に掛ける、その勇気は。……加点しましょう。よく、掛けました」', c:'電話猫「……用がないのに、褒められたにゃ。……先生に褒められると、変な感じにゃ」' }
+  };
+  // ── いたずら電話の7人：番号ごとに3段階（1〜4回目=定型／5回目=素/6回目以降=和む）。壊れず、掛けるほど打ち解ける ──
+  const PHONE_PRANK7 = {
+    '4649': {
+      a:{ m:'「……もし。またお掛けくださいましたか。ご用がなくとも、私めはここに。……ふ、慣れたものにございます」', c:'電話猫「……今日も出てくれたにゃ」' },
+      b:{ m:'「……もし。あなたのお声、覚えてしまいましてございます。……いえ、執事の性でございますよ。ふ」', c:'電話猫「……覚えられてたにゃ。……悪い気は、しないにゃ」' },
+      c2:{ m:'「……もし。もう、ご用の有無は伺いますまい。お掛けくださること自体が、用にございます」', c:'電話猫「……用がないのが用って、ずるいにゃ」' }
+    },
+    '1093': {
+      a:{ m:'「ふはは、また掛けてきおったか。用のない電話も、続けば立派な習わしよ」', c:'電話猫「……習わしにされたにゃ」' },
+      b:{ m:'「ふむ……お主の掛ける刻限、読めてきたわ。……なに、敵情視察の癖でな。ふ」', c:'電話猫「……時間まで読まれてるにゃ。こわいにゃ」' },
+      c2:{ m:'「もはや掛かってこぬと調子が狂うわ。……これも兵法よ。掛けてまいれ」', c:'電話猫「……軍師が待ってるにゃ。……ふしぎにゃ」' }
+    },
+    '0707': {
+      a:{ m:'「……あ。またかけてきたのだ。……ぼく、うれしいのだ。えへへ」', c:'電話猫「……毎回よろこんでくれるにゃ」' },
+      b:{ m:'「……あのね。ぼく、あなたのこえ、すきなのだ。……なんとなく、なのだ」', c:'電話猫「……好きって言われたにゃ。……照れるにゃ」' },
+      c2:{ m:'「……もう、ようじなくても、いいのだ。かけてくれたら、それでいいのだ」', c:'電話猫「……用なしで、いいって。……らくにゃ」' }
+    },
+    '0808': {
+      a:{ m:'「あら、またあなた。ふふ、用のないお電話、癖になってらして?」', c:'電話猫「……癖にされてるにゃ」' },
+      b:{ m:'「……あのね。あなたのお電話、待つようになりましたの。……内緒ですわよ?」', c:'電話猫「……待たれてたにゃ。……どきっとするにゃ」' },
+      c2:{ m:'「もう、ご用件は結構。あなたのお声が聞ければ、それでよろしくてよ」', c:'電話猫「……声だけでいいって。……お嬢様は強いにゃ」' }
+    },
+    '3939': {
+      a:{ m:'「あら、また無用のお電話。……いい習慣ね。続けなさいな」', c:'電話猫「……習慣を推奨されたにゃ」' },
+      b:{ m:'「……ねえ。あなたの掛けてくる時間、好きになってきたわ。……セ・ラ・ヴィ」', c:'電話猫「……時間ごと好かれたにゃ。……大人にゃ」' },
+      c2:{ m:'「用なんて、なくてよろしい。無駄を楽しめる相手は、貴重よ。……ふふ」', c:'電話猫「……無駄を褒められたにゃ。勝てないにゃ」' }
+    },
+    '2222': {
+      a:{ m:'「わー! またかけてくれたにゃ! うれしい! もっとかけてにゃ!」', c:'電話猫「……毎回テンション高いにゃ」' },
+      b:{ m:'「……ねえ。一姫のこと、いちばんにかけてくれるの、あなただけにゃ。……うれしいにゃ」', c:'電話猫「……一番って言われたにゃ。……責任重いにゃ」' },
+      c2:{ m:'「ようじなくても、ずっとかけててにゃ! 一姫、ずっと出るにゃ!」', c:'電話猫「……ずっと出るって。……つきあうにゃ」' }
+    },
+    '0100': {
+      a:{ m:'「ふむ、再びの通話。……用件はなし。ですが、継続は評価します。加点」', c:'電話猫「……また加点されたにゃ」' },
+      b:{ m:'「……正直に言いましょう。あなたの電話、待つようになりました。……これは、減点材料ですかね。ふ」', c:'電話猫「……先生が待ってるにゃ。……珍しいにゃ」' },
+      c2:{ m:'「もう採点はやめましょう。用のない電話ほど、価値がある。……よく、掛けました」', c:'電話猫「……採点やめたにゃ。……先生が丸くなったにゃ」' }
+    }
+  };
   // ── いたずら電話：入手済みの番号を溜めていく器（削除しない・重複なし） ──
   const PRANK_INFO = { '0101': 'ミカちゃん電話' };
   if(!window._prankList){ window._prankList = []; }   // 入手した番号だけ溜まる（初期は空）
@@ -3987,7 +4039,43 @@ document.addEventListener('DOMContentLoaded', function () {
     ichihime:  '「……窓口さん。……一姫ね、ずっとかんがえてたにゃ。なんで、あんなことしたのかなって。……みてほしかったから? ……ちがうにゃ。……ほんとはね。……みつけて、ほしかったのだ。わるいことするまえに。……『どうしたの』って、だれかに。……窓口さんは、みつけてくれたにゃ。……ろくおんで、だけど。……けいさつのひとといっしょに、だけど。……えへへ。……でも、みつけて、くれたにゃ。……一姫のこと。……ちゃんと」',
     sensei:    '「……ああ、窓口さん。……最後の授業をしましょう。……人はなぜ、観察するか分かりますか。……触れるのが、怖いからです。触れて、拒まれるのが。だから距離を取って、点をつけて、記録する。……わたしの一生は、それでした。……あなたとの電話だけが、観察ではなかった。……唯一、わたしが素手で触れた人間が、あなたでした。……その記録が、証拠になる。……ふふ。……美しい皮肉です。……減点はしません。……満点です、窓口さん。……わたしの一生で、たった一件の、満点でした」'
   };
+  // ── 見逃し続けた末：犯人が窓口へ来て壁牌でトドメを刺す（人格別・叫びなし・ゲームオーバー） ──
+  const PHONE_DOOM = {
+    butler:    '足音は、しなかった。気づくと執事はもう、電話猫の真後ろに立っていた。冷めた茶を静かに下げ、受話器をそっと定位置へ戻す。その丁寧さが、かえって背筋を凍らせる。「お客様がお見えになる前に……お席を、空けておかねばなりませんので」。壁牌の要が、指先で抜かれた。崩れる音より先に、耳元へ囁きが落ちる。「長らくのご奉公、まことに、ございました」。\n\n——ゲームオーバー。',
+    strategist:'軍師は紙を広げ、これから起こることを先に読み上げた。牌の落ちる順、電話猫の逃げる方向、その手が届かないことまで。「三手先、貴殿は右へ逃げるなり。だが四手目、そこに退路は無し」。電話猫が右へ動いた瞬間、全身が総毛立った。読まれている。すべて、書かれた通りに。最後の一牌が抜かれ、軍師は結末を見ることなく呟いた。「読み通り。一分の狂いも、無し」。\n\n——ゲームオーバー。',
+    blunt:     '言葉は、ひとつだけだった。「邪魔なのだ」。溜めも、動機も、ためらいもない。壁牌が横から素手で薙ぎ倒される。轟音のあと、静けさ。ずんだは倒れた電話猫には目もくれず、散らばった牌をひとつひとつ、几帳面に積み直しはじめた。「散らかすのは……よくないのだ」。人ひとりより、床の乱れの方が気にかかる、その桁のずれた眼で。\n\n——ゲームオーバー。',
+    lady:      '扇が、壁牌にそっと触れた。ただ、触れただけ。あとは重力が仕事をする。崩れゆく牌の下で、お嬢様は潰れていく電話猫に、うっとりと微笑みかけた。「わたくし、なあんにも致しませんでしたわ。ねえ——そうでしょう?」。同意を求める声。被害者に、自らの無罪を証言させようとする、その罪のなさこそが底なしに冷たい。\n\n——ゲームオーバー。',
+    french:    'マダムはグラスを傾けながら、それを一枚の絵として眺めていた。崩落の轟きに「よい響きね」と目を細め、牌に沈んでいく電話猫の姿に「ああ……絵になるにゃ」と溜息をつく。手を下している当人が、いつまでも観客の顔をしている。この人には、悲鳴すら舞台の効果音にしか聞こえていない。\n\n——ゲームオーバー。',
+    ichihime:  '一姫は、本気で遊んでいた。壁牌をドミノだと思い込み、連鎖が長く伸びるほど「すごいにゃ! もういっかい、もういっかいにゃ!」と手を叩いて喜ぶ。電話猫が動かなくなっても、それが終わりだと分かっていない。牌の山を覗き込み、小首をかしげる。「……どうして、動かないにゃ? つまんないにゃ」。悪意が、無い。だから、どこにも救いが無い。\n\n——ゲームオーバー。',
+    sensei:    '先生は、最後まで授業をやめなかった。崩れゆく壁牌を指し、「いいですか、ここを抜くと、こう崩れます」と落牌の力学を解説する。埋もれていく電話猫に、なお問いかける。「では——なぜ、ここで崩れたか、分かりますか?」。答えは、返らない。先生は静かに首を振った。「復習が、足りませんでしたね」。死が、不合格として採点される。\n\n——ゲームオーバー。'
+  };
   let phoneOverlayEl = null;
+  // ── 壁牌トドメ：人格別トドメ文を全画面表示し、確認でタイトルへ戻す ──
+  window.phoneDoom = function(key){
+    var text = PHONE_DOOM[key] || PHONE_DOOM.butler;
+    var ov = document.createElement('div');
+    ov.id = 'phoneDoomOverlay';
+    ov.style.cssText = 'position:fixed; inset:0; z-index:99999; background:#05100b; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:28px; box-sizing:border-box;';
+    var box = document.createElement('div');
+    box.style.cssText = 'max-width:640px; width:100%; color:#e8e0d2; font-size:15px; line-height:2.0; letter-spacing:0.03em; white-space:pre-line; font-family:var(--serif,serif); text-align:left;';
+    box.textContent = text;
+    ov.appendChild(box);
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = 'タイトルへ戻る';
+    btn.style.cssText = 'margin-top:32px; padding:10px 28px; font-size:14px; color:rgba(232,224,210,0.85); background:rgba(20,40,30,0.7); border:1px solid var(--line,#2a3a30); border-radius:8px; cursor:pointer;';
+    btn.onclick = function(){
+      if(ov.parentNode){ ov.parentNode.removeChild(ov); }
+      if(phoneOverlayEl){ phoneOverlayEl.style.display = 'none'; }
+      window._phoneIdleCount = 0;
+      window._phoneEscapedKey = null;
+      window._phoneReportReady = false;
+      window._phoneTwistTarget = null;
+      window.ssGoTitle();
+    };
+    ov.appendChild(btn);
+    document.body.appendChild(ov);
+  };
   window.phoneOpen = function(e){
     if(e && e.stopPropagation) e.stopPropagation();
     if(phoneOverlayEl){
@@ -4012,7 +4100,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const q1 = document.createElement('div');
     q1.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:center; justify-content:center; color:rgba(243,236,224,0.45); font-size:12px; letter-spacing:0.1em; overflow:hidden;';
     q1.id = 'phoneRoom';
-    q1.textContent = '── 電話猫 ──';
+    q1.textContent = '── 相談室 ──';
     // 右上：ダイヤル
     const q2 = document.createElement('div');
     q2.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:rgba(10,24,19,0.6); display:flex; flex-direction:row; align-items:stretch; gap:6px; padding:6px; box-sizing:border-box;';
@@ -4072,12 +4160,29 @@ document.addEventListener('DOMContentLoaded', function () {
     q2.appendChild(book);
     // 左下：コメント欄（セリフ帯）
     const q3 = document.createElement('div');
-    q3.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:rgba(10,24,19,0.6); display:flex; align-items:center; padding:10px 12px; box-sizing:border-box; color:var(--bone); font-size:12px; line-height:1.6; white-space:pre-line; overflow:auto;';
+    q3.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:center; justify-content:center; padding:10px 12px; box-sizing:border-box; color:rgba(243,236,224,0.45); font-size:12px; letter-spacing:0.1em; line-height:1.6; white-space:pre-line; overflow:auto;';
     q3.id = 'phoneTalk';
-    q3.textContent = '電話猫「なんばんに かけますの？……回線は、まだ工事中ですわ」';
+    q3.textContent = '── 電話猫 ──';
     // 枠にあふれた文章を、収まるまで文字サイズを下げて全文見せる（下限9px）
     function phoneFit(el){
       if(!el){ return; }
+      // ── phoneTalk枠は、見出し文言（── ○○ ──）なら上二枠と同じ薄色、会話セリフなら元の濃色に戻す ──
+      if(el.id === 'phoneTalk'){
+        var isHeading = /^──.*──$/.test((el.textContent || '').trim());
+        if(isHeading){
+          el.style.background = 'linear-gradient(160deg,#12241d,#0b1912)';
+          el.style.color = 'rgba(243,236,224,0.45)';
+          el.style.letterSpacing = '0.1em';
+          el.style.justifyContent = 'center';
+          el.style.textAlign = '';
+        } else {
+          el.style.background = 'rgba(10,24,19,0.6)';
+          el.style.color = 'var(--bone)';
+          el.style.letterSpacing = 'normal';
+          el.style.justifyContent = 'flex-start';
+          el.style.textAlign = 'left';
+        }
+      }
       var fs = 12, lh = 1.7;
       el.style.fontSize = fs + 'px';
       el.style.lineHeight = lh;
@@ -4101,6 +4206,12 @@ document.addEventListener('DOMContentLoaded', function () {
       // ── 放置の尺：犯人に掛けない間の通常業務の件数 ──
       if(window._phoneEscapedKey){ window._phoneIdleCount = (window._phoneIdleCount || 0) + 1; }
       clr.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.1); color:var(--bone);';
+      // ── 見逃し続けた末：犯人が窓口へ来て壁牌でトドメを刺す ──
+      if(window._phoneEscapedKey && (window._phoneIdleCount || 0) >= 8 && PHONE_DOOM[window._phoneEscapedKey]){
+        window._phoneRinging = false;
+        window.phoneDoom(window._phoneEscapedKey);
+        return;
+      }
       var pool = [
         // ── 平時（雑談・泣き言の温度）：答えは無難な業務助言 ──
         {p:'執事', t:'「……もし。人さまの望みばかり先回りしておりましたら、自分が何を望む者か、思い出せなくなりまして。つまらぬ相談で恐縮にございます」', a:'たまには、ご自分の望みを一つだけ、紙に書いてみるといいにゃ。小さなことで、いいにゃ。', r:'「……紙に、一つだけ……。かしこまりました——いえ、私事でございましたな。……ふ。書くものを探すのが、少し楽しみにございます」'},
@@ -4174,6 +4285,9 @@ document.addEventListener('DOMContentLoaded', function () {
       var num = '0000';
       var nm = item.p;
       if(nm && PHONE_NUM_MAP[nm]){ num = PHONE_NUM_MAP[nm]; }
+      // ── 着信で判明した人格番号を控えておく：いたずら電話ボタンでメモに載せる元になる ──
+      if(!window._phoneSeenNums){ window._phoneSeenNums = []; }
+      if(window._phoneSeenNums.indexOf(num) === -1){ window._phoneSeenNums.push(num); }
       window._phoneCurNum = num;
       window._phoneCurLine = item.t;
       window._phoneCurAns = item.a;
@@ -4194,32 +4308,32 @@ document.addEventListener('DOMContentLoaded', function () {
       if(q3el){ q3el.textContent = '電話猫「お電話、受けましたにゃ。（番号 ' + num + '）」'; phoneFit(q3el); }
       window._phoneRead = false;
       refBtn.style.cssText = btnBase + 'border:1px solid var(--gold); background:rgba(212,175,55,0.18); color:var(--gold); animation:phoneRingBlink 0.9s infinite;';
-      callBtn.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.05); color:rgba(243,236,224,0.35);';
+      callBtn.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.05); color:var(--bone);';
     };
     const close = document.createElement('button');
     close.type = 'button'; close.textContent = 'いたずら電話';
     close.style.cssText = btnBase + 'border:1px solid #d9c36a; background:rgba(217,195,106,0.16); color:#e7d888;';
-    // ── ミカちゃん人形（リカちゃん電話の類い）：録音の甘い定型ボイス。電話猫はのんびり受ける ──
+    // ── ミカちゃん人形（リカちゃん電話の類い）：録音の甘い定型ボイス。壊れず、掛けるほど打ち解ける ──
+    // ── 1〜4回目：まったく同じ甘い定型録音 ──
     var MIKA_CALL = [
-      { m:'「もしもーし、ミカでーす♪　今日はどんなおはなし、する？」', c:'電話猫「……もしもし、ミカちゃん。……うん、聞いてるにゃ。……なんの話だったっけにゃ。……ま、いっかにゃ」' },
-      { m:'「わたしのお洋服、みてほしいな。ピンクのドレス、にあうかなあ？」', c:'電話猫「……お洋服？　うーん、ピンク、いいと思うにゃ。ミカちゃん、かわいいにゃ」' },
-      { m:'「ミカね、あなたとおともだちに、なりたいな♪」', c:'電話猫「おともだち……うん、いいにゃ。……あれ、さっきと同じこと言ってるにゃ。……ふふ、まあいいにゃ」' },
-      { m:'「ドレス、みせてあげるね♪　じゃーん！」', c:'電話猫「ドレス、みせて……あ、電話だから見えないにゃ。……えへへ、そうだったにゃ」' }
+      { m:'「もしもーし、ミカでーす♪　今日はどんなおはなし、する？」', c:'電話猫「……もしもし、ミカちゃん。……うん、聞いてるにゃ。……なんの話だったっけにゃ。……ま、いっかにゃ」' }
     ];
+    // ── 5回目：定型のはずが、ふっと素の声がのぞく（でも壊れない） ──
+    var MIKA_CRACK = { m:'「もしもーし、ミカでーす♪　……ふふ、あなた、よく掛けてくれるね。ミカ、うれしい」', c:'電話猫「……録音のはずにゃ。……でも、なんか、うれしそうにゃ。……気のせいかにゃ」' };
+    // ── 6回目以降：もう定型に戻らず、掛けてくる相手を面白がって受ける（和む・壊れない） ──
+    var MIKA_BROKEN = { m:'「……また、かけてきてくれたね。ミカ、あなたのこと、ちょっとすきかも。……なんてね♪」', c:'電話猫「……からかわれてるにゃ。……録音のくせに、生意気にゃ。……ふ、わるくないにゃ」' };
     close.onclick = function(){
+      // ── いたずら電話ボタンは番号の発見のみ：見つけた番号を、いたずら電話メモに載せる ──
       Object.keys(PRANK_INFO).forEach(function(k){
         if((window._prankList || []).indexOf(k) === -1){ window._prankUnlock(k); }
       });
+      // ── 着信を受けた人格の番号も、控えから拾ってメモに載せる ──
+      (window._phoneSeenNums || []).forEach(function(n){
+        if((window._prankList || []).indexOf(n) === -1){ window._prankUnlock(n); }
+      });
       if(window._renderPrankMemo){ window._renderPrankMemo(); }
-      var mk = MIKA_CALL[Math.floor(Math.random()*MIKA_CALL.length)];
-      var roomM = document.getElementById('phoneRoom');
-      if(roomM){
-        roomM.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:flex-start; justify-content:flex-start; color:var(--bone); font-size:12px; line-height:1.7; letter-spacing:0.02em; overflow:auto; padding:10px 12px; box-sizing:border-box; white-space:pre-line;';
-        roomM.textContent = mk.m;
-        phoneFit(roomM);
-      }
       var q3p = document.getElementById('phoneTalk');
-      if(q3p){ q3p.textContent = mk.c; phoneFit(q3p); }
+      if(q3p){ q3p.textContent = '電話猫「見つけた番号、メモに載せておくにゃ。……ダイヤルで掛けてみるにゃ」'; phoneFit(q3p); }
     };
     const callBtn = document.createElement('button');
     callBtn.type = 'button'; callBtn.textContent = '電話をかける';
@@ -4234,8 +4348,22 @@ document.addEventListener('DOMContentLoaded', function () {
       var dialed = dEl ? dEl.textContent : '';
       // ── いたずら電話（ネタ枠）：ゲーム内限定の架空番号。本物の相談とは無関係 ──
       if(dialed === '0101'){
+        // ── かけた回数で段階を拾う：4回まで同じ→5回目でひび→6回目以降は戻らない ──
+        window._mikaCount = (window._mikaCount || 0) + 1;
+        // ── いたずら電話は事件ルートの確率を前借りする：掛けるほど、次の着信で当たりやすくなる ──
+        window._phoneCallCount = (window._phoneCallCount || 0) + 1;
+        var mk;
+        if(window._mikaCount <= 4){ mk = MIKA_CALL[0]; }
+        else if(window._mikaCount === 5){ mk = MIKA_CRACK; }
+        else { mk = MIKA_BROKEN; }
+        var roomM = document.getElementById('phoneRoom');
+        if(roomM){
+          roomM.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:flex-start; justify-content:flex-start; color:var(--bone); font-size:12px; line-height:1.7; letter-spacing:0.02em; overflow:auto; padding:10px 12px; box-sizing:border-box; white-space:pre-line;';
+          roomM.textContent = mk.m;
+          phoneFit(roomM);
+        }
         var q3joke = document.getElementById('phoneTalk');
-        if(q3joke){ q3joke.textContent = '電話猫「もしもし、ミカちゃん電話にゃ！……え、こっちが本物？　そんなはずないにゃ」'; phoneFit(q3joke); }
+        if(q3joke){ q3joke.textContent = mk.c; phoneFit(q3joke); }
         if(dEl) dEl.textContent = '';
         return;
       }
@@ -4303,6 +4431,38 @@ document.addEventListener('DOMContentLoaded', function () {
           return;
         }
         if(!dialed && !window._phoneCurNum){ return; }
+        // ── いたずら電話の7人：番号ごとに掛けた回数を数え、3段階で打ち解ける（壊れない） ──
+        if(dialed && PHONE_PRANK7[dialed]){
+          if(!window._prank7Count){ window._prank7Count = {}; }
+          window._prank7Count[dialed] = (window._prank7Count[dialed] || 0) + 1;
+          var pc = window._prank7Count[dialed];
+          var p7 = PHONE_PRANK7[dialed];
+          var stg = (pc <= 4) ? p7.a : (pc === 5 ? p7.b : p7.c2);
+          var roomP7 = document.getElementById('phoneRoom');
+          if(roomP7){
+            roomP7.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:flex-start; justify-content:flex-start; color:var(--bone); font-size:12px; line-height:1.7; letter-spacing:0.02em; overflow:auto; padding:10px 12px; box-sizing:border-box; white-space:pre-line;';
+            roomP7.textContent = stg.m;
+            phoneFit(roomP7);
+          }
+          var q3p7 = document.getElementById('phoneTalk');
+          if(q3p7){ q3p7.textContent = stg.c; phoneFit(q3p7); }
+          if(dEl) dEl.textContent = '';
+          return;
+        }
+        // ── 業務時間外の顔：上記に載らない番号へ掛けた時の受け皿（保険） ──
+        if(dialed && PHONE_OFFHOURS[dialed]){
+          var off = PHONE_OFFHOURS[dialed];
+          var roomOff = document.getElementById('phoneRoom');
+          if(roomOff){
+            roomOff.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:flex-start; justify-content:flex-start; color:var(--bone); font-size:12px; line-height:1.7; letter-spacing:0.02em; overflow:auto; padding:10px 12px; box-sizing:border-box; white-space:pre-line;';
+            roomOff.textContent = off.m;
+            phoneFit(roomOff);
+          }
+          var q3off = document.getElementById('phoneTalk');
+          if(q3off){ q3off.textContent = off.c; phoneFit(q3off); }
+          if(dEl) dEl.textContent = '';
+          return;
+        }
         var q3m = document.getElementById('phoneTalk');
         if(q3m){ q3m.textContent = '電話猫「間違えたにゃ…。」'; phoneFit(q3m); }
         if(dEl) dEl.textContent = '';
@@ -4366,7 +4526,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       if(dEl) dEl.textContent = '';
       window._phoneRead = false;
-      callBtn.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.05); color:rgba(243,236,224,0.35);';
+      callBtn.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.05); color:var(--bone);';
     };
     const refBtn = document.createElement('button');
     refBtn.type = 'button'; refBtn.textContent = '資料を見る';
@@ -4400,7 +4560,7 @@ document.addEventListener('DOMContentLoaded', function () {
           } else if(roomH && hRep){ roomH.textContent = hRep; phoneFit(roomH); }
           var q3h = document.getElementById('phoneTalk');
           if(q3h){ q3h.textContent = '電話猫「お待たせしたにゃ。……' + hAns + '……ご相談、済んだにゃ。番号、帳面から消しておくにゃ」'; phoneFit(q3h); }
-          callBtn.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.05); color:rgba(243,236,224,0.35);';
+          callBtn.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.05); color:var(--bone);';
         }, 1200);
         return;
       }
