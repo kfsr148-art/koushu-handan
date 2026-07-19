@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="842">
+<html lang="ja" data-ver="844">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -969,7 +969,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v842</div>
+  <div id="verTag">v844</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -4357,13 +4357,36 @@ document.addEventListener('DOMContentLoaded', function () {
     callBtn.type = 'button'; callBtn.textContent = '電話をかける';
     callBtn.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.05); color:var(--bone);';
     callBtn.onclick = function(){
-      if(window._phoneHold){
+      var dEl = document.getElementById('phoneDial');
+      var dialed = dEl ? dEl.textContent : '';
+      // ── いたずら電話（PRANK7の7番号・0101）は、折り返し保留とは別物。保留中でも鳴らせるよう保留ガードより前で捌く ──
+      var isPrankNum = !!(dialed && (PHONE_PRANK7[dialed] || (typeof PRANK_INFO !== 'undefined' && PRANK_INFO[dialed])) && !(window._phonePending && window._phonePending[dialed]));
+      if(window._phoneHold && !isPrankNum){
         var q3hold = document.getElementById('phoneTalk');
         if(q3hold){ q3hold.textContent = '電話猫「いま、保留中にゃ。資料を見るにゃ……」'; phoneFit(q3hold); }
         return;
       }
-      var dEl = document.getElementById('phoneDial');
-      var dialed = dEl ? dEl.textContent : '';
+      // ── いたずら電話の7人：折り返しとは別物。折り返し保留より前で捌き、_phoneHold を立てない。ただし帳面に未処理の相談がある番号は折り返し優先 ──
+      if(dialed && PHONE_PRANK7[dialed] && !(window._phonePending && window._phonePending[dialed])){
+        if(!window._prank7Count){ window._prank7Count = {}; }
+        window._prank7Count[dialed] = (window._prank7Count[dialed] || 0) + 1;
+        var pcE = window._prank7Count[dialed];
+        if(pcE >= 5 && PRANK_NUM_PERSONA[dialed] && !window._phoneTwistTarget){
+          window._phonePrankTarget = PRANK_NUM_PERSONA[dialed];
+        }
+        var p7E = PHONE_PRANK7[dialed];
+        var stgE = (pcE <= 4) ? p7E.a : (pcE === 5 ? p7E.b : p7E.c2);
+        var roomP7E = document.getElementById('phoneRoom');
+        if(roomP7E){
+          roomP7E.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:flex-start; justify-content:flex-start; color:var(--bone); font-size:12px; line-height:1.7; letter-spacing:0.02em; overflow:auto; padding:10px 12px; box-sizing:border-box; white-space:pre-line;';
+          roomP7E.textContent = stgE.m;
+          phoneFit(roomP7E);
+        }
+        var q3p7E = document.getElementById('phoneTalk');
+        if(q3p7E){ q3p7E.textContent = stgE.c; phoneFit(q3p7E); }
+        if(dEl) dEl.textContent = '';
+        return;
+      }
       // ── いたずら電話（ネタ枠）：ゲーム内限定の架空番号。本物の相談とは無関係 ──
       if(dialed === '0101'){
         // ── かけた回数で段階を拾う：4回まで同じ→5回目でひび→6回目以降は戻らない ──
@@ -4449,28 +4472,6 @@ document.addEventListener('DOMContentLoaded', function () {
           return;
         }
         if(!dialed && !window._phoneCurNum){ return; }
-        // ── いたずら電話の7人：番号ごとに掛けた回数を数え、3段階で打ち解ける（壊れない） ──
-        if(dialed && PHONE_PRANK7[dialed]){
-          if(!window._prank7Count){ window._prank7Count = {}; }
-          window._prank7Count[dialed] = (window._prank7Count[dialed] || 0) + 1;
-          var pc = window._prank7Count[dialed];
-          // ── 同じ相手を5回つつくと、その人物が次の着信で事件になる（予約） ──
-          if(pc >= 5 && PRANK_NUM_PERSONA[dialed] && !window._phoneTwistTarget){
-            window._phonePrankTarget = PRANK_NUM_PERSONA[dialed];
-          }
-          var p7 = PHONE_PRANK7[dialed];
-          var stg = (pc <= 4) ? p7.a : (pc === 5 ? p7.b : p7.c2);
-          var roomP7 = document.getElementById('phoneRoom');
-          if(roomP7){
-            roomP7.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:flex-start; justify-content:flex-start; color:var(--bone); font-size:12px; line-height:1.7; letter-spacing:0.02em; overflow:auto; padding:10px 12px; box-sizing:border-box; white-space:pre-line;';
-            roomP7.textContent = stg.m;
-            phoneFit(roomP7);
-          }
-          var q3p7 = document.getElementById('phoneTalk');
-          if(q3p7){ q3p7.textContent = stg.c; phoneFit(q3p7); }
-          if(dEl) dEl.textContent = '';
-          return;
-        }
         // ── 業務時間外の顔：上記に載らない番号へ掛けた時の受け皿（保険） ──
         if(dialed && PHONE_OFFHOURS[dialed]){
           var off = PHONE_OFFHOURS[dialed];
