@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="769">
+<html lang="ja" data-ver="782">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -414,12 +414,11 @@
     box-shadow: 0 1px 2px rgba(0,0,0,0.25);
   }
   .cat-help-pop {
-    position: absolute; top: 10px; left: 8px; right: 8px; z-index: 4;
+    position: absolute; top: 10px; left: 8px; right: 44px; z-index: 4;
     background: #16352a; border: 1px solid var(--gold);
     border-radius: 8px; padding: 6px 10px;
     color: var(--bone); font-size: 10.5px; line-height: 1.45;
     text-align: left; box-shadow: 0 6px 16px rgba(0,0,0,0.4);
-    max-height: calc(100% - 20px); overflow-y: auto; -webkit-overflow-scrolling: touch;
     display: none;
   }
   .cat-help-pop.show { display: block; }
@@ -956,11 +955,10 @@
   <div id="titleScreen">
     <h1>🀄️配牌攻守判定</h1>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.ssMarkTool();">🀄 攻守判定</button>
-    <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.ssReceive();">📷 スクショ読取</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.watchOpen();">⚓ 船長の見張り台</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.advStart();">🚢 ミシシッピー現場猫事件</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.phoneOpen();">📞 電話猫の相談窓口</button>
-    <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.toggleEngineHelp();">🐾 猫牌の説明</button>
+    <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.toggleEngineHelp();">🐾 このツール、何がすごいの？</button>
   </div>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
     <radialGradient id="gb" cx="38%" cy="34%" r="72%"><stop offset="0%" stop-color="#3f7ec4"/><stop offset="75%" stop-color="#1f5fa8"/><stop offset="100%" stop-color="#143f70"/></radialGradient>
@@ -971,7 +969,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v769</div>
+  <div id="verTag">v782</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -979,7 +977,6 @@
         <button type="button" class="engine-help-close" onclick="window.closeEngineHelpToTitle(event)">閉じる ✕</button>
       </div>
       <div class="engine-help-body">
-      <b>猫牌（ミャオパイ）</b>　配牌（ハイパイ）を素早く13枚に埋めるための牌です。判定では「数牌（スウハイ）の孤立牌（コリツハイ）1枚」として扱われ、受け入れを平均ぶん加算します。枚数と表示には乗りますが、特定の牌ではありません。<br><br>
       <b>どんな時に役立つの？</b><br>
       一番の出番は、雀魂で配牌（ハイパイ）をもらった直後。「この手、行っていいの？ 守るべき？」って迷う、あの数秒のため。手牌をポチポチ入れて判定を押せば、攻か守か一言で返ってくる。向聴数（シャンテンスウ）だの受け入れ枚数だのを自分で数えられなくても大丈夫——難しい計算はぜんぶこっちで済ませて、答えだけ渡す。<br><br>
       配牌の良し悪しって、実は初心者が一番判断に困るところ。良い手を降り気味に打って損したり、バラバラの手で突っ張って振り込んだり。そこを最初の一手から間違えないための道具。<br><br>
@@ -1117,8 +1114,7 @@
     </div>
 
     <div class="actions">
-      <button type="button" class="btn btn-group" id="shuntsuBtn" onclick="window.setGroupMode('shuntsu')">中三</button>
-      <button type="button" class="btn btn-group" id="ryotoBtn" onclick="window.setGroupMode('ryoto')">両隣</button>
+      <button type="button" class="btn btn-group" id="topBtn" onclick="window.ssGoTitle()">トップ</button>
       <button class="btn btn-go" id="judgeBtn" disabled>判定する</button>
       <button class="btn btn-clear" id="clearBtn">リセット</button>
       <button type="button" class="btn btn-group" id="tauntBtn" onclick="window.toggleTaunt()">ノーマル</button>
@@ -3537,7 +3533,15 @@ document.addEventListener('DOMContentLoaded', function () {
   window.toggleCatHelp = function(e){
     if(e){ e.stopPropagation(); e.preventDefault(); }
     const pop = document.getElementById('catHelpPop');
-    if(pop) pop.classList.toggle('show');
+    if(!pop) return;
+    pop.classList.toggle('show');
+    if(pop.classList.contains('show')){
+      // 高さ制限なし・スクロールなし。全文が折り返して見える
+      pop.style.fontSize = '10.5px';
+      pop.style.lineHeight = '1.45';
+      pop.style.maxHeight = 'none';
+      pop.style.overflow = 'visible';
+    }
   };
   // 猫牌説明の下のボタン：判定の確かさの読み物パネル（全画面）を開閉する
   window.toggleEngineHelp = function(e){
@@ -4292,6 +4296,16 @@ document.addEventListener('DOMContentLoaded', function () {
     q4.appendChild(clr); q4.appendChild(refBtn); q4.appendChild(close); q4.appendChild(callBtn); q4.appendChild(repBtn);
     grid.appendChild(q1); grid.appendChild(q2); grid.appendChild(q3); grid.appendChild(q4); grid.appendChild(dialBox);
     ov.appendChild(grid);
+    // 最下部：独立した細い帯。パネル・操作ボタン・テンキーのいずれにも被らない位置にトップボタンを置く
+    const phoneBar = document.createElement('div');
+    phoneBar.style.cssText = 'width:100%; max-width:560px; display:flex; align-items:center; justify-content:flex-start;';
+    const phoneTop = document.createElement('button');
+    phoneTop.type = 'button';
+    phoneTop.textContent = 'トップ';
+    phoneTop.style.cssText = 'padding:2px 12px; font-size:11px; line-height:1.5; color:rgba(243,236,224,0.6); background:rgba(10,24,19,0.6); border:1px solid var(--line); border-radius:6px; cursor:pointer;';
+    phoneTop.onclick = function(e){ if(e){ e.stopPropagation(); e.preventDefault(); } if(phoneOverlayEl){ phoneOverlayEl.style.display = 'none'; } window.ssGoTitle(); };
+    phoneBar.appendChild(phoneTop);
+    ov.appendChild(phoneBar);
     document.body.appendChild(ov);
     phoneOverlayEl = ov;
     // 電話帳の描画（空なら見出しのみ、あれば番号一覧）
@@ -4363,6 +4377,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if(e){ e.stopPropagation(); e.preventDefault(); }
     const ov = document.getElementById('watchOverlay');
     if(ov) ov.classList.remove('show');
+    window.ssGoTitle();
   };
   window.watchGuide = function(e){
     if(e){ e.stopPropagation(); e.preventDefault(); }
@@ -5067,6 +5082,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const el = document.getElementById('titleScreen');
     if(el) el.style.display = 'none';
   };
+  window.ssGoTitle = function(){
+    try{ localStorage.removeItem('ssResumeAt'); localStorage.removeItem('ssTplMode'); }catch(e){}
+    const el = document.getElementById('titleScreen');
+    if(el) el.style.display = '';
+  };
   // ヒント券を1枚使って、消去法ヒントを得る。ただし「きく」と同じ一度きりのミスリードを共有：
   // まだ誰もミスリードを踏んでいなければ（!t.rhWhispered && t.redHerring）、ヒント券もレッドヘリングを教えてしまう（外れ）。
   // 踏んだ後は、通常どおり無料枠とは別種の確実な消去法ヒントになる。汎用の現場猫ではなく、ヒント役2人（advSt.hints）の口調で喋る。APは触らない。
@@ -5125,7 +5145,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const inDiff = (advView === 'diff');
     const inNote = (advView === 'note');
     const advVer = '　v' + (document.documentElement.getAttribute('data-ver') || '?');
-    advEl.head.textContent = (inNote ? '探偵ノート'
+    advEl.headText.textContent = (inNote ? '探偵ノート'
       : inEnd ? ('デルタ・プリンセス号　—— ' + (advView === 'intro' ? '乗船' : '終局'))
       : ((inHall ? 'デルタ・プリンセス号・廊下' : room.label) + '　行動力:' + t.ap + '　証拠:' + advTiles() + '/13')) + advVer;
     advEl.hallRow.style.display = inHall ? 'flex' : 'none';
@@ -5661,7 +5681,16 @@ document.addEventListener('DOMContentLoaded', function () {
     root.id = 'advRoot';
     root.style.cssText = 'display:none; position:fixed; inset:0; z-index:99999; background:#101418; color:#e8e2d0; flex-direction:column; font-size:14px;';
     const head = document.createElement('div');
-    head.style.cssText = 'padding:4px 12px; background:#1b222a; letter-spacing:.08em;';
+    head.style.cssText = 'padding:4px 12px; background:#1b222a; letter-spacing:.08em; display:flex; align-items:center; gap:8px;';
+    const headText = document.createElement('span');
+    headText.style.cssText = 'flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;';
+    const headTop = document.createElement('button');
+    headTop.type = 'button';
+    headTop.textContent = 'トップ';
+    headTop.style.cssText = 'flex:none; padding:1px 10px; font-size:11px; line-height:1.5; color:#c9bf9a; background:#243040; border:1px solid #5a5340; border-radius:6px;';
+    headTop.onclick = function(e){ if(e){ e.stopPropagation(); e.preventDefault(); } advEl.root.style.display = 'none'; window.ssGoTitle(); };
+    head.appendChild(headText);
+    head.appendChild(headTop);
     const inv = document.createElement('div');
     inv.style.cssText = 'padding:2px 12px; background:#151b22; color:#c9bf9a; font-size:12px; letter-spacing:.03em; display:flex; align-items:center; flex-wrap:nowrap; min-height:42px; overflow:hidden;';
     const scene = document.createElement('div');
@@ -5746,7 +5775,7 @@ document.addEventListener('DOMContentLoaded', function () {
     root.appendChild(inv); root.appendChild(scene); root.appendChild(msg);
     root.appendChild(diffRow); root.appendChild(hallRow); root.appendChild(row); root.appendChild(head);
     document.body.appendChild(root);
-    advEl = { root, head, inv, scene, msg, foot, diffRow, hallRow, row, doors, bSearch, bHear, bPhone, bAuto, bHearCat, bHearBody, bKitten, bRon, bBribeYes, bBribeNo, bNext, bHall };
+    advEl = { root, head, headText, inv, scene, msg, foot, diffRow, hallRow, row, doors, bSearch, bHear, bPhone, bAuto, bHearCat, bHearBody, bKitten, bRon, bBribeYes, bBribeNo, bNext, bHall };
   }
 
   document.getElementById('judgeBtn').onclick = () => {
@@ -5871,7 +5900,7 @@ document.addEventListener('DOMContentLoaded', function () {
     v.innerHTML = `
       <div class="verdict-card ${attack?'attack':'defend'}">
         <button type="button" class="cat-help-btn" onclick="window.toggleCatHelp(event)" aria-label="猫牌について"><img id="catCardTileImg" src="${CAT_TILE_GENBA}" alt="現場猫" style="width:1.4em;height:1.4em;vertical-align:middle;object-fit:contain;display:inline-block"></button>
-        <div class="cat-help-pop" id="catHelpPop"><b>猫牌（ミャオパイ）</b>　配牌を素早く13枚に埋めるための牌です。判定では「数牌の孤立牌1枚」として扱われ、受け入れを平均ぶん加算します。枚数と表示には乗りますが、特定の牌ではありません。<button type="button" class="engine-help-btn" onclick="window.toggleEngineHelp(event)">この道具、何がすごいの？</button><button type="button" class="engine-help-btn" onclick="event.stopPropagation(); document.getElementById('catHelpPop').classList.remove('show'); window.advStart();">🚢 ミシシッピー現場猫事件</button><button type="button" class="engine-help-btn" onclick="window.watchOpen(event)">⚓ 船長の見張り台 — 配牌の攻守クイズ</button><button type="button" class="engine-help-btn" onclick="window.phoneOpen(event)">📞 電話猫の相談窓口</button></div>
+        <div class="cat-help-pop" id="catHelpPop"><b>猫牌（ミャオパイ）</b>　配牌を素早く13枚に埋めるための牌です。判定では「数牌の孤立牌1枚」として扱われ、受け入れを平均ぶん加算します。枚数と表示には乗りますが、特定の牌ではありません。</div>
         <div class="verdict-mascot">${attack ? (a.yakumanReach ? '🐦‍🔥' : (a.kokushiSeen ? '🐉' : '🐅')) : ((a.defHonors + a.defTerminals) >= 2 ? '🐑' : '🐭')}</div>
         <div class="verdict-kanji">${attack?'攻':'守'}</div>
         <div class="verdict-word${(a.borderline||a.yakumanReach||(a.kokushiSeen&&!a.yakumanReach))?' long':''}">${pickVerdictWord(attack)}</div>
