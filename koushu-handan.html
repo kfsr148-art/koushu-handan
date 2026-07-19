@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="805">
+<html lang="ja" data-ver="815">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -958,7 +958,7 @@
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.watchOpen();">⚓ 船長の見張り台</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.advStart();">🚢 ミシシッピー現場猫事件</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.phoneOpen();">📞 電話猫の相談窓口</button>
-    <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.toggleEngineHelp();">🐾 このツール、何がすごいの？</button>
+    <button type="button" class="title-btn" onclick="window.openInfoList();">📖 説明欄</button>
   </div>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
     <radialGradient id="gb" cx="38%" cy="34%" r="72%"><stop offset="0%" stop-color="#3f7ec4"/><stop offset="75%" stop-color="#1f5fa8"/><stop offset="100%" stop-color="#143f70"/></radialGradient>
@@ -969,7 +969,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v805</div>
+  <div id="verTag">v815</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -995,6 +995,32 @@
       <b>で、これってどれくらいすごいの？</b><br>
       使っている式ややり方そのものは、大手の麻雀ゲームと同じ考え方。つまり発明ではない。そのかわり、商用エンジンと同じ「正しさの芯」を、通信なしのファイル一枚に、答え合わせのテストつきで収めてある。例えるなら——プロの厨房と同じ火加減を、家庭の台所で、レシピの検算表ごと再現したようなもの。この説明に誇張はひとつもない。それがこの道具のいちばんの取り柄。
       </div>
+    </div>
+  </div>
+  <div class="engine-help-overlay" id="infoListOverlay">
+    <div class="engine-help-sheet">
+      <div class="engine-help-head" style="position:relative;">
+        <span>◆ 説明欄</span>
+        <button type="button" class="cat-help-btn" id="infoListCatBtn" onclick="window.toggleCatHelp(event)" aria-label="猫牌について" style="position:static; margin-left:auto;"><img id="catCardTileImg" alt="現場猫" style="width:1.4em;height:1.4em;vertical-align:middle;object-fit:contain;display:inline-block"></button>
+        <button type="button" class="engine-help-close" onclick="window.closeInfoList(event)">閉じる ✕</button>
+      </div>
+      <div class="cat-help-pop" id="catHelpPop" style="position:static; margin:8px 14px 0;"><b>猫牌（ミャオパイ）</b>　配牌を素早く13枚に埋めるための牌です。判定では「数牌の孤立牌1枚」として扱われ、受け入れを平均ぶん加算します。枚数と表示には乗りますが、特定の牌ではありません。</div>
+      <div class="engine-help-body">
+        <button type="button" class="title-btn" onclick="window.openInfoDetail('engine')">🐾 このツール、何がすごいの？</button>
+        <button type="button" class="title-btn" onclick="window.openInfoDetail('koushu')">🀄️配牌攻守判定</button>
+        <button type="button" class="title-btn" onclick="window.openInfoDetail('watch')">⚓ 船長の見張り台</button>
+        <button type="button" class="title-btn" onclick="window.openInfoDetail('adv')">🚢 ミシシッピー現場猫事件</button>
+        <button type="button" class="title-btn" onclick="window.openInfoDetail('phone')">📞 電話猫の相談窓口</button>
+      </div>
+    </div>
+  </div>
+  <div class="engine-help-overlay" id="infoDetailOverlay">
+    <div class="engine-help-sheet">
+      <div class="engine-help-head">
+        <span id="infoDetailTitle">◆ 説明</span>
+        <button type="button" class="engine-help-close" onclick="window.closeInfoDetail(event)">閉じる ✕</button>
+      </div>
+      <div class="engine-help-body" id="infoDetailBody"></div>
     </div>
   </div>
   <div class="watch-guide-overlay" id="watchGuideOverlay">
@@ -3529,6 +3555,11 @@ document.addEventListener('DOMContentLoaded', function () {
     applyVerdictWord(); applyRotateTone(); applySeatTone();
   }
   window.toggleTaunt = toggleTaunt;
+  // 説明欄ヘッダーの現場猫アイコンへ画像を流し込む（HTMLは静的なのでJS側から設定）
+  (function(){
+    const im = document.getElementById('catCardTileImg');
+    if(im) im.src = CAT_TILE_GENBA;
+  })();
   // 判定カードの猫牌の印：押すたびに説明の開閉を切り替える
   window.toggleCatHelp = function(e){
     if(e){ e.stopPropagation(); e.preventDefault(); }
@@ -3548,6 +3579,64 @@ document.addEventListener('DOMContentLoaded', function () {
     if(e){ e.stopPropagation(); e.preventDefault(); }
     const ov = document.getElementById('engineHelpOverlay');
     if(ov) ov.classList.toggle('show');
+  };
+
+  // タイトル画面「説明欄」：5項目の一覧→詳細、の二段構え
+  window.openInfoList = function(e){
+    if(e){ e.stopPropagation(); e.preventDefault(); }
+    const ts = document.getElementById('titleScreen');
+    if(ts) ts.style.display = 'none';
+    const ov = document.getElementById('infoListOverlay');
+    if(ov) ov.classList.add('show');
+  };
+  window.closeInfoList = function(e){
+    if(e){ e.stopPropagation(); e.preventDefault(); }
+    const ov = document.getElementById('infoListOverlay');
+    if(ov) ov.classList.remove('show');
+    const ts = document.getElementById('titleScreen');
+    if(ts) ts.style.display = 'flex';
+  };
+  window.INFO_DETAIL = {
+    engine: { title: '◆ このツール、何がすごいの？', body: null },   // 既存の engineHelpOverlay をそのまま開く
+    koushu: { title: '◆ 配牌攻守判定', body:
+      '<b>これは何？</b><br>ハイパイ（配牌）13枚を入力すると、攻めるべきか守るべきかを一言で返す判定機。向聴数（シャンテンスウ）と受け入れ枚数を、可能な手の分け方をしらみつぶしに数えて答えを出す、このツールの中核。<br><br>' +
+      '雀魂で配牌をもらった直後、「この手、行っていいの？」と迷う数秒のために作った。難しい計算はぜんぶこちらで済ませて、答えだけ渡す道具。' },
+    watch: { title: '◆ 船長の見張り台', body:
+      '<b>これは何？</b><br>攻守判定の見極めを、クイズ形式で練習できる部屋。船長猫の出す配牌に対して自分で「攻め」か「守り」かを答え、正誤をその場で確かめながら感覚を鍛える。<br><br>' +
+      '負けなし、行動力の消費もなし。答え合わせ役は本物の判定エンジンなので、練習の答えそのものが信用できる。' },
+    adv: { title: '◆ ミシシッピー現場猫事件', body:
+      '<b>これは何？</b><br>ミシシッピー号を舞台にしたアドベンチャー。事件は現場猫がらみの謎解き。探偵ノートを片手に、誰の証言が誰と噛み合わないかを追いかける、本格ミステリの骨法を踏んだ物語。<br><br>' +
+      'クソゲー味を纏いながらも、答え合わせの筋道はきちんと通してある。' },
+    phone: { title: '◆ 電話猫の相談窓口', body:
+      '<b>これは何？</b><br>猫たちからの相談電話を受け、資料を見てから折り返す、小さな窓口。雑談めいた相談に混じって、事件の匂いがする相談も紛れ込む。<br><br>' +
+      '電話猫は業務として淡々と受け続ける。気づくかどうかは、あなた次第。' }
+  };
+  window.openInfoDetail = function(key){
+    if(key === 'engine'){
+      // 既存の詳細読み物をそのまま使う。閉じたら説明欄一覧へ戻す目印を付ける
+      const ov0 = document.getElementById('infoListOverlay');
+      if(ov0){ ov0.classList.remove('show'); ov0.classList.add('_fromInfoList'); }
+      const ov1 = document.getElementById('engineHelpOverlay');
+      if(ov1) ov1.classList.add('show');
+      return;
+    }
+    const d = window.INFO_DETAIL[key];
+    if(!d) return;
+    const t = document.getElementById('infoDetailTitle');
+    const b = document.getElementById('infoDetailBody');
+    if(t) t.textContent = d.title;
+    if(b) b.innerHTML = d.body;
+    const ov0 = document.getElementById('infoListOverlay');
+    if(ov0) ov0.classList.remove('show');
+    const ov2 = document.getElementById('infoDetailOverlay');
+    if(ov2) ov2.classList.add('show');
+  };
+  window.closeInfoDetail = function(e){
+    if(e){ e.stopPropagation(); e.preventDefault(); }
+    const ov2 = document.getElementById('infoDetailOverlay');
+    if(ov2) ov2.classList.remove('show');
+    const ov0 = document.getElementById('infoListOverlay');
+    if(ov0) ov0.classList.add('show');
   };
 
   // ============================================================
@@ -5164,11 +5253,17 @@ document.addEventListener('DOMContentLoaded', function () {
     advOut(ADV_NAME[speaker] + ADV_TALK.elimSay[speaker].replace('{n}', ADV_NAME[pick]));
   };
 
-  // 猫牌の説明（この判定、信用できるの？）を閉じたらタイトルへ戻る
+  // 猫牌の説明（この判定、信用できるの？）を閉じたら、開いた経路へ戻る
   window.closeEngineHelpToTitle = function(e){
     if(e){ e.stopPropagation(); e.preventDefault(); }
     const ov = document.getElementById('engineHelpOverlay');
     if(ov) ov.classList.remove('show');
+    const list = document.getElementById('infoListOverlay');
+    if(list && list.classList.contains('_fromInfoList')){
+      list.classList.remove('_fromInfoList');
+      list.classList.add('show');
+      return;
+    }
     const ts = document.getElementById('titleScreen');
     if(ts) ts.style.display = 'flex';
   };
@@ -5951,8 +6046,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     v.innerHTML = `
       <div class="verdict-card ${attack?'attack':'defend'}">
-        <button type="button" class="cat-help-btn" onclick="window.toggleCatHelp(event)" aria-label="猫牌について"><img id="catCardTileImg" src="${CAT_TILE_GENBA}" alt="現場猫" style="width:1.4em;height:1.4em;vertical-align:middle;object-fit:contain;display:inline-block"></button>
-        <div class="cat-help-pop" id="catHelpPop"><b>猫牌（ミャオパイ）</b>　配牌を素早く13枚に埋めるための牌です。判定では「数牌の孤立牌1枚」として扱われ、受け入れを平均ぶん加算します。枚数と表示には乗りますが、特定の牌ではありません。</div>
         <div class="verdict-mascot">${attack ? (a.yakumanReach ? '🐦‍🔥' : (a.kokushiSeen ? '🐉' : '🐅')) : ((a.defHonors + a.defTerminals) >= 2 ? '🐑' : '🐭')}</div>
         <div class="verdict-kanji">${attack?'攻':'守'}</div>
         <div class="verdict-word${(a.borderline||a.yakumanReach||(a.kokushiSeen&&!a.yakumanReach))?' long':''}">${pickVerdictWord(attack)}</div>
@@ -6541,13 +6634,15 @@ window.ssRecognize = function(){
     window.ssRecog.push(m);
     result.push(window.ssKeyToTile(m.key));
   }
-  // 入力欄へ流して、配牌表示だけ行う（判定は手動）
+  // 入力欄へ流し込み、そのまま判定へ進む
   var field = document.getElementById('qiText');
   if(field && window.ssTilesToInput){
     field.value = window.ssTilesToInput(result);
     if(window.ssRebuildHand) window.ssRebuildHand();
   }
   window.ssClose();
+  var jb = document.getElementById('judgeBtn');
+  if(jb && !jb.disabled) jb.click();
 };
 window.ssCalibStart = function(){
   if(!window.ssImg) return;
@@ -6672,9 +6767,9 @@ window.ssReceive = function(){
   <div style="display:flex; gap:12px; align-items:center;">
     <span id="ssInfo" style="color:rgba(243,236,224,0.8); font-size:11px; font-family:var(--sans);"></span>
     <button type="button" id="ssCalibBtn" class="btn btn-group" style="display:none;" onclick="window.ssCalibStart()">枠合わせ</button>
-    <button type="button" id="ssCutBtn" class="btn btn-group" style="display:none;" onclick="window.ssCutShow()">取込牌表示</button>
+    <button type="button" id="ssCutBtn" class="btn btn-group" style="display:none;" onclick="window.ssCutShow()">読取牌表示</button>
     <button type="button" id="ssTplBtn" class="btn btn-group" style="display:none;" onclick="window.ssTplOpen()">テンプレ登録</button>
-    <button type="button" id="ssGoBtn" class="btn btn-go" style="display:none;" onclick="window.ssRecognize()">この配牌で判定</button>
+    <button type="button" id="ssGoBtn" class="btn btn-go" style="display:none; background:linear-gradient(180deg,#e0392b,#a8241a); box-shadow:0 4px 0 #6e1610, 0 6px 14px rgba(0,0,0,0.35);" onclick="window.ssRecognize()">写真取込牌で判定</button>
     <button type="button" class="btn btn-clear" onclick="window.ssClose()">閉じる</button>
   </div>
 </div>
