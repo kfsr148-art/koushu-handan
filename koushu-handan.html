@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="782">
+<html lang="ja" data-ver="801">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -953,8 +953,8 @@
 </head>
 <body>
   <div id="titleScreen">
-    <h1>🀄️配牌攻守判定</h1>
-    <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.ssMarkTool();">🀄 攻守判定</button>
+    <h1>🀄️タイトル画面</h1>
+    <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.ssMarkTool();">🀄️配牌攻守判定</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.watchOpen();">⚓ 船長の見張り台</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.advStart();">🚢 ミシシッピー現場猫事件</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.phoneOpen();">📞 電話猫の相談窓口</button>
@@ -969,7 +969,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v782</div>
+  <div id="verTag">v801</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -3791,6 +3791,14 @@ document.addEventListener('DOMContentLoaded', function () {
   // ---- 電話猫の相談窓口（第一段：テンキーの枠のみ。番号はまだ誰にも繋がらない） ----
   // ── 逃走犯への掛け直し：犯人が捕まらなかった周だけ、その番号が繋がる ──
   const PHONE_ESCAPE_NUM = { butler:'4649', strategist:'1093', blunt:'0707', lady:'0808', french:'3939', ichihime:'2222', sensei:'0100' };
+  // ── いたずら電話：入手済みの番号を溜めていく器（削除しない・重複なし） ──
+  const PRANK_INFO = { '0101': 'ミカちゃん電話' };
+  if(!window._prankList){ window._prankList = []; }   // 入手した番号だけ溜まる（初期は空）
+  window._prankUnlock = function(num){
+    if(!window._prankList){ window._prankList = []; }
+    if(window._prankList.indexOf(num) === -1){ window._prankList.push(num); }
+    if(window._renderPrankMemo){ window._renderPrankMemo(); }
+  };
   const PHONE_ESCAPE_LINE = {
     butler:    '「窓口様。……ちょうど、磨いておりました。ええ、毎晩磨くのでございます。道具は、手入れを欠かしますと音が濁りますので。——あの晩の音は、それはもう、澄んでおりました。壁牌が崩れる、あの。……窓口様は、骨の数を数えたことがございますか。わたくしは、ございます。とても、安らぎました」',
     strategist:'「おお、窓口か。……いまな、名簿を作っておったところよ。ワシはな、決めた順は守る男よ。一人目、二人目、三人目——ふふ、おぬしも載っておるよ。安心せい、ずっと後ろのほうじゃ。楽しみは、とっておくものよの」',
@@ -3915,7 +3923,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const q1 = document.createElement('div');
     q1.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:center; justify-content:center; color:rgba(243,236,224,0.45); font-size:12px; letter-spacing:0.1em; overflow:hidden;';
     q1.id = 'phoneRoom';
-    q1.textContent = '── 相談室 ──';
+    q1.textContent = '── 電話猫 ──';
     // 右上：ダイヤル
     const q2 = document.createElement('div');
     q2.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:rgba(10,24,19,0.6); display:flex; flex-direction:row; align-items:stretch; gap:6px; padding:6px; box-sizing:border-box;';
@@ -3944,6 +3952,34 @@ document.addEventListener('DOMContentLoaded', function () {
     const dialBox = document.createElement('div');
     dialBox.style.cssText = 'grid-column:3; grid-row:1 / 3; border:1px solid var(--line); border-radius:8px; background:rgba(10,24,19,0.6); padding:6px; box-sizing:border-box; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:6px; min-height:0;';
     dialBox.appendChild(disp); dialBox.appendChild(pad);
+    // いたずらメモ（テンキーの右隣・dialBox基準の絶対配置）
+    const prankMemo = document.createElement('div');
+    prankMemo.id = 'phonePrankMemo';
+    prankMemo.style.cssText = 'position:absolute; top:16px; right:4px; bottom:16px; width:66px; display:flex; flex-direction:column; gap:4px; border:1px solid #d9c36a; border-radius:8px; background:rgba(10,24,19,0.9); padding:5px; box-sizing:border-box; overflow:auto; z-index:2;';
+    window._renderPrankMemo = function(){
+      var m = document.getElementById('phonePrankMemo');
+      if(!m){ return; }
+      m.innerHTML = '';
+      var head = document.createElement('div');
+      head.textContent = '☎ イタ電';
+      head.style.cssText = 'width:100%; text-align:center; color:#0b1912; background:#d9c36a; border-radius:5px; font-size:11px; font-weight:700; letter-spacing:0.06em; padding:3px 0; margin-bottom:2px; flex:0 0 auto;';
+      m.appendChild(head);
+      var list = window._prankList || [];
+      if(list.length === 0){
+        var empty = document.createElement('div');
+        empty.textContent = '（なし）';
+        empty.style.cssText = 'width:100%; text-align:center; color:rgba(217,195,106,0.45); font-size:10px; letter-spacing:0.04em; padding:4px 0; flex:0 0 auto;';
+        m.appendChild(empty);
+      }
+      list.forEach(function(num){
+        var row = document.createElement('button');
+        row.type = 'button';
+        row.textContent = num;
+        row.style.cssText = 'width:100%; text-align:center; border:1px solid rgba(217,195,106,0.6); border-radius:6px; background:rgba(10,24,19,0.85); color:#e7d888; font-size:12px; letter-spacing:0.04em; padding:5px 2px; cursor:pointer; flex:0 0 auto;';
+        row.onclick = function(){ var d = document.getElementById('phoneDial'); if(d){ d.textContent = num; } };
+        m.appendChild(row);
+      });
+    };
     q2.appendChild(book);
     // 左下：コメント欄（セリフ帯）
     const q3 = document.createElement('div');
@@ -3987,10 +4023,10 @@ document.addEventListener('DOMContentLoaded', function () {
         {p:'先生', t:'「人を採点し続けていると、いつか人が点数にしか見えなくなる……そんな気がするのです。これは、職業病でしょうか」', a:'点数じゃなく、いいところを一つ見つける癖を、つけてみるといいにゃ。', r:'「……いいところを、一つ……。なるほど、それは良い宿題です。……ふ、教わる側も悪くないものですね。ありがとうございました」'},
         // ── 日常雑談（追加35種：至って普通の会話） ──
         {p:'執事', t:'「……もし。今年は誕生日の話ばかり振られましてございます。私めも人並みに、望むものを聞かれると弱りましてございます」', a:'一つだけ、欲しいものを紙に書いておくといいにゃ。聞かれた時にすぐ渡せるにゃ。', r:'「……書いておく、と……。かしこまりました。存外、楽しい宿題にございますな」'},
-        {p:'執事', t:'「……もし。衣替えのたび、しまった場所を忘れてしまいましてございます。今年も夏物が、いまだ見つかりませんで」', a:'しまう時に、置いた場所を一言メモしておくといいにゃ。来年の執事さんが助かるにゃ。', r:'「……メモを、一言……。来年の私めへの文にございますな。……ふ、楽しみが増えました」'},
-        {p:'執事', t:'「……もし。里帰りのたび、些細なことで身内と行き違いましてございます。仕えることには慣れておりますが、家族というものは勝手が違いますな」', a:'言い返さずに聞き役に徹する日を、一日だけ作るといいにゃ。執事さんの得意分野にゃ。', r:'「……聞き役に、徹する……。なるほど、それなら勝手が分かりますな。次は試してみましょう」'},
+        {p:'執事', t:'「……もし。衣替えのたび、しまった場所を忘れてしまいましてございます。今年も夏物が、いまだ見つかりませんで」', a:'しまう時に、置いた場所を一言メモしておくといいにゃ。来年のあなたが助かるにゃ。', r:'「……メモを、一言……。来年の私めへの文にございますな。……ふ、楽しみが増えました」'},
+        {p:'執事', t:'「……もし。里帰りのたび、些細なことで身内と行き違いましてございます。仕えることには慣れておりますが、家族というものは勝手が違いますな」', a:'言い返さずに聞き役に徹する日を、一日だけ作るといいにゃ。あなたの得意分野にゃ。', r:'「……聞き役に、徹する……。なるほど、それなら勝手が分かりますな。次は試してみましょう」'},
         {p:'執事', t:'「……もし。花見の場所取りで、他の使用人と一悶着ございました。争いごとは苦手でして、胸がざわつきましてございます」', a:'早めに出向いて、穴場を見つけておくといいにゃ。争わずに済むにゃ。', r:'「……早めに、穴場を……。かしこまりました。来年は夜明け前より参りましょう」'},
-        {p:'執事', t:'「……もし。大掃除を始めますと、いつも収拾がつかなくなりましてございます。整えるどころか、散らかす一方で……お恥ずかしい限りで」', a:'一区画ずつ、今日はここだけと決めてやるといいにゃ。執事さんなら几帳面にできるにゃ。', r:'「……一区画ずつ、と……。なるほど道理にございますな。今日は棚一つ、片してみましょう」'},
+        {p:'執事', t:'「……もし。大掃除を始めますと、いつも収拾がつかなくなりましてございます。整えるどころか、散らかす一方で……お恥ずかしい限りで」', a:'一区画ずつ、今日はここだけと決めてやるといいにゃ。几帳面なあなたなら、できるにゃ。', r:'「……一区画ずつ、と……。なるほど道理にございますな。今日は棚一つ、片してみましょう」'},
         {p:'軍師', t:'「……妙な相談だが、船に積んだ鉢植えが、どうにも枯らしてしまう。策を練るのは得意だが、水をやる間合いだけは読めぬのだ」', a:'決まった刻限に、一杯だけ水をやると決めるといいにゃ。策より習慣にゃ。', r:'「……刻限を、決める、か……。ふむ、なるほど。これも一つの陣立てよな。試してみるとしよう」'},
         {p:'軍師', t:'「集めた品々の置き場に、ほとほと困っておる。戦利品というのは、増える一方で減らぬものよな」', a:'一番の宝だけ飾って、残りはしまうといいにゃ。それだけで棚がすっきりするにゃ。', r:'「……一番の宝だけ、か……。ふむ、選ぶのも一興よな。良い知恵をもらったわい」'},
         {p:'軍師', t:'「料理の腕前が、いつまでも同じ手筋から抜け出せぬ。策は無限にあるはずが、なぜか同じ陣形ばかり組んでしまう」', a:'一品だけ、いつもと違う調味料を試すといいにゃ。それだけで新しい策になるにゃ。', r:'「……違う調味料、か……。ふむ、良い奇襲になりそうだの。今宵、試してみよう」'},
@@ -4003,7 +4039,7 @@ document.addEventListener('DOMContentLoaded', function () {
         {p:'ずんだ', t:'「……むかしのこいびとの、うわさをきいちゃったのだ。べつに、なんともないはずなのに……もやもやするのだ」', a:'もやもやは、むりにけさなくていいにゃ。じかんが、たいていなおしてくれるにゃ。', r:'「……うん。……むりに、けさなくていいのだ……。すこし、らくになったのだ」'},
         {p:'お嬢様', t:'「肩こりがひどくて、マッサージ機を検討していますの。淑女らしからぬ悩みで、お恥ずかしいのですけれど」', a:'温めるだけでも違うにゃ。お風呂で、肩までゆっくり浸かるといいにゃ。', r:'「……お風呂で、肩まで……。ふふ、それなら今宵からできますわね。ありがとう」'},
         {p:'お嬢様', t:'「夜更かしが、なかなか直りませんの。眠らねばと思うほど、目が冴えてしまいますのよ」', a:'眠る前に、灯りを一つだけ落とすといいにゃ。体が、眠る合図を覚えるにゃ。', r:'「……灯りを、一つ……。ふふ、簡単なことですのね。今宵、試してみますわ」'},
-        {p:'お嬢様', t:'「ダイエットが、いつも三日と続きませんの。決意した瞬間が、一番おいしそうに見えてしまって……」', a:'我慢するより、少しだけ量を減らすといいにゃ。お嬢様には、それで十分にゃ。', r:'「……少しだけ、減らす……。ふふ、それなら無理がありませんわね。ありがとう」'},
+        {p:'お嬢様', t:'「ダイエットが、いつも三日と続きませんの。決意した瞬間が、一番おいしそうに見えてしまって……」', a:'我慢するより、少しだけ量を減らすといいにゃ。あなたには、それで十分にゃ。', r:'「……少しだけ、減らす……。ふふ、それなら無理がありませんわね。ありがとう」'},
         {p:'お嬢様', t:'「花粉症で、鼻がぐずぐずしておりますの。優雅にお茶をいただく時にも、興がそがれますわ」', a:'出かける前に、鼻を一度湿らせておくといいにゃ。花粉がつきにくくなるにゃ。', r:'「……鼻を、湿らせる……。存じませんでしたわ。ふふ、次から試させていただきますわね」'},
         {p:'お嬢様', t:'「船酔いしやすい体質ですの。優雅に甲板を歩きたいだけなのに、すぐに気分が悪くなってしまって」', a:'遠くの水平線を見ていると、酔いにくくなるにゃ。近くを見ないのがこつにゃ。', r:'「……水平線を、見る……。ふふ、なるほど。今度から、遠くを眺めてみますわ」'},
         {p:'マダム', t:'「船室が手狭で、荷物が減らせないの。旅にはワインを何本も持ってきてしまうものだから、仕方ないのだけれど」', a:'一番好きな一本だけ残して、他は先に飲んでしまうといいにゃ。荷物も減るにゃ。', r:'「……先に、飲んでしまう……。ウィ、それは名案ね。今夜さっそく試すわ。メルシー」'},
@@ -4022,13 +4058,13 @@ document.addEventListener('DOMContentLoaded', function () {
         {p:'先生', t:'「靴下の片方が、よく無くなるのです。几帳面なつもりが、これだけは克服できません」', a:'おなじいろの靴下だけをそろえるといいにゃ。かたほうなくなっても、こまらないにゃ。', r:'「……同じ色で揃える……。それは名案です。次の買い足しから、そうしましょう」'},
         {p:'先生', t:'「船内図書室の匂いが、なぜか好きなのです。授業には関係ないのですが、つい長居してしまいまして」', a:'すきなにおいは、むりにりゆうをさがさなくていいにゃ。すきなだけで、じゅうぶんにゃ。', r:'「……理由を、探さない……。なるほど、それも一つの学びです。今日も、長居してしまいそうです」'},
         // ── 事件の匂い：答えは「業務として無自覚に後押ししてしまう」助言 ──
-        {c:true, p:'執事', t:'「……もし。船旅の途中で、妙なご相談なのですが。お仕えする間は良いのです。ただ、船室に一人戻りますと、何をしてよいか分からず……胸がざわついて、眠れませんで。……お知恵を、拝借できませんでしょうか」', a:'心から安らぐことを一つ見つけて、遠慮なくやるといいにゃ。執事さんなら、きっと見つかるにゃ。', r:'「……はい。……安らぐことを、一つ、遠慮なく……。承知いたしました。……誰かにお話しできただけで、胸のつかえが、すっと下りましてございます」'},
-        {c:true, p:'軍師', t:'「船の上というのは、どうも調子が狂うのだ。……策を練る相手もおらず、夜が長うて敵わん。ワシも、焼きが回ったかの……。何ぞ、夜を越す知恵はないものか」', a:'先の楽しみを順番に決めておくと、夜が待ち遠しくなるにゃ。軍師さんの得意分野にゃ、大丈夫にゃ。', r:'「……うむ。先の楽しみを、順番に、な……。ふ、なるほどの。……良い話を聞いた。少し、眠れそうな気がするわい」'},
+        {c:true, p:'執事', t:'「……もし。船旅の途中で、妙なご相談なのですが。お仕えする間は良いのです。ただ、船室に一人戻りますと、何をしてよいか分からず……胸がざわついて、眠れませんで。……お知恵を、拝借できませんでしょうか」', a:'心から安らぐことを一つ見つけて、遠慮なくやるといいにゃ。あなたなら、きっと見つかるにゃ。', r:'「……はい。……安らぐことを、一つ、遠慮なく……。承知いたしました。……誰かにお話しできただけで、胸のつかえが、すっと下りましてございます」'},
+        {c:true, p:'軍師', t:'「船の上というのは、どうも調子が狂うのだ。……策を練る相手もおらず、夜が長うて敵わん。ワシも、焼きが回ったかの……。何ぞ、夜を越す知恵はないものか」', a:'先の楽しみを順番に決めておくと、夜が待ち遠しくなるにゃ。あなたの得意分野にゃ、大丈夫にゃ。', r:'「……うむ。先の楽しみを、順番に、な……。ふ、なるほどの。……良い話を聞いた。少し、眠れそうな気がするわい」'},
         {c:true, p:'ずんだ', t:'「……船、たいくつなのだ。むしゃくしゃが、たまってるのだ。なにしても、すっきりしなくて……ぼく、ちょっと、げんきがでないのだ。どうしたら、いいのだ……？」', a:'すっきりすることを一つ見つけて、思いきりやるといいにゃ。元気、きっと戻るにゃ。', r:'「……うん。すっきりすること、かぁ……。なんか、きいてもらえただけで、ちょっと、らくになったのだ。……ありがとうなのだ」'},
-        {c:true, p:'お嬢様', t:'「船旅なんて、心が躍ると思っておりましたのに……いざ来てみれば、何をいただいても満たされませんの。はしゃぐ皆さまを眺めるばかりで……。わたくし、どうすればよろしいのかしら」', a:'「次はこれ」って、ご自分で選ぶ楽しみを持つといいにゃ。お嬢様の旅は、これからにゃ。', r:'「……自分で、選ぶ……。ふふ、そんなこと、考えたこともありませんでしたわ。……不思議ね、少しだけ、胸が軽くなりましたの。ありがとう」'},
-        {c:true, p:'マダム', t:'「旅先まで来て、こんな相談ごめんなさいね。……船に積んだワインの味が、どれも同じに感じられるの。自慢の舌でしたのに……なんだか、気が沈んでしまって。ねえ、どうしたらいいと思って？」', a:'しばらく身のまわりの音や声を、聞き分ける練習をするといいにゃ。マダムの感覚なら、すぐ冴えるにゃ。', r:'「……音や声を、聞き分ける……。ウィ、面白いお稽古ね。……ふふ、話しているうちに、気が晴れてきたわ。ありがとう。セ・ラ・ヴィ」'},
-        {c:true, p:'一姫', t:'「あのね……せっかくの船なのに、みんな、一姫のこと見てくれないにゃ。いいこにしてるのに……ちょっと、しょんぼりにゃ。どうしたら、みつけてもらえるかにゃ？」', a:'みんなが驚くくらい大きなこと、一つやってみるといいにゃ。一姫なら、できるにゃ。', r:'「……おっきなこと……。そっかにゃ……。ほんとに、みんな見てくれるかにゃ……？ ……うん、ちょっとだけ、げんきでたにゃ。ありがとにゃ」'},
-        {c:true, p:'先生', t:'「船で羽を伸ばすつもりが、性分は抜けませんね。……乗客の誰を見ても、頭の中で点をつけてしまう。人と楽しく過ごせない自分に、少々参っております。……ご相談しても、よろしいですか」', a:'点数を忘れて、生の反応をじっくり観察するといいにゃ。先生なら、じきに人と楽しめるにゃ。', r:'「……点数を忘れて、生の反応を、じっくり観察……。なるほど、目から鱗です。……聞いていただけて、少し楽になりました。良い助言でした、満点です」'}
+        {c:true, p:'お嬢様', t:'「船旅なんて、心が躍ると思っておりましたのに……いざ来てみれば、何をいただいても満たされませんの。はしゃぐ皆さまを眺めるばかりで……。わたくし、どうすればよろしいのかしら」', a:'「次はこれ」って、ご自分で選ぶ楽しみを持つといいにゃ。あなたの旅は、これからにゃ。', r:'「……自分で、選ぶ……。ふふ、そんなこと、考えたこともありませんでしたわ。……不思議ね、少しだけ、胸が軽くなりましたの。ありがとう」'},
+        {c:true, p:'マダム', t:'「旅先まで来て、こんな相談ごめんなさいね。……船に積んだワインの味が、どれも同じに感じられるの。自慢の舌でしたのに……なんだか、気が沈んでしまって。ねえ、どうしたらいいと思って？」', a:'しばらく身のまわりの音や声を、聞き分ける練習をするといいにゃ。あなたの感覚なら、すぐ冴えるにゃ。', r:'「……音や声を、聞き分ける……。ウィ、面白いお稽古ね。……ふふ、話しているうちに、気が晴れてきたわ。ありがとう。セ・ラ・ヴィ」'},
+        {c:true, p:'一姫', t:'「あのね……せっかくの船なのに、みんな、一姫のこと見てくれないにゃ。いいこにしてるのに……ちょっと、しょんぼりにゃ。どうしたら、みつけてもらえるかにゃ？」', a:'みんなが驚くくらい大きなこと、一つやってみるといいにゃ。あなたなら、できるにゃ。', r:'「……おっきなこと……。そっかにゃ……。ほんとに、みんな見てくれるかにゃ……？ ……うん、ちょっとだけ、げんきでたにゃ。ありがとにゃ」'},
+        {c:true, p:'先生', t:'「船で羽を伸ばすつもりが、性分は抜けませんね。……乗客の誰を見ても、頭の中で点をつけてしまう。人と楽しく過ごせない自分に、少々参っております。……ご相談しても、よろしいですか」', a:'点数を忘れて、生の反応をじっくり観察するといいにゃ。あなたなら、じきに人と楽しめるにゃ。', r:'「……点数を忘れて、生の反応を、じっくり観察……。なるほど、目から鱗です。……聞いていただけて、少し楽になりました。良い助言でした、満点です」'}
       ];
       // ── 「動機がずれる」対象の選出：電話を受けた回数に応じて累積確率が上がるが、上限は100%未満（＝運が良ければ最後まで当たらない） ──
       window._phoneCallCount = (window._phoneCallCount || 0) + 1;
@@ -4072,19 +4108,33 @@ document.addEventListener('DOMContentLoaded', function () {
       callBtn.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.05); color:rgba(243,236,224,0.35);';
     };
     const close = document.createElement('button');
-    close.type = 'button'; close.textContent = '受話器を置く';
-    close.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.1); color:var(--bone);';
+    close.type = 'button'; close.textContent = 'いたずら電話';
+    close.style.cssText = btnBase + 'border:1px solid #d9c36a; background:rgba(217,195,106,0.16); color:#e7d888;';
+    // ── ミカちゃん人形（リカちゃん電話の類い）：録音の甘い定型ボイス。電話猫はのんびり受ける ──
+    var MIKA_CALL = [
+      { m:'「もしもーし、ミカでーす♪　今日はどんなおはなし、する？」', c:'電話猫「……もしもし、ミカちゃん。……うん、聞いてるにゃ。……なんの話だったっけにゃ。……ま、いっかにゃ」' },
+      { m:'「わたしのお洋服、みてほしいな。ピンクのドレス、にあうかなあ？」', c:'電話猫「……お洋服？　うーん、ピンク、いいと思うにゃ。ミカちゃん、かわいいにゃ」' },
+      { m:'「ミカね、あなたとおともだちに、なりたいな♪」', c:'電話猫「おともだち……うん、いいにゃ。……あれ、さっきと同じこと言ってるにゃ。……ふふ、まあいいにゃ」' },
+      { m:'「ドレス、みせてあげるね♪　じゃーん！」', c:'電話猫「ドレス、みせて……あ、電話だから見えないにゃ。……えへへ、そうだったにゃ」' }
+    ];
     close.onclick = function(){
-      var d = document.getElementById('phoneDial'); if(d){ d.textContent = ''; }
-      if(window._phoneHold){
-        window._phoneHold = null;
-        var q3c = document.getElementById('phoneTalk');
-        if(q3c){ q3c.textContent = '電話猫「……あ。切れちゃったにゃ。もう一度、かけ直すにゃ……」'; phoneFit(q3c); }
+      Object.keys(PRANK_INFO).forEach(function(k){
+        if((window._prankList || []).indexOf(k) === -1){ window._prankUnlock(k); }
+      });
+      if(window._renderPrankMemo){ window._renderPrankMemo(); }
+      var mk = MIKA_CALL[Math.floor(Math.random()*MIKA_CALL.length)];
+      var roomM = document.getElementById('phoneRoom');
+      if(roomM){
+        roomM.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:flex-start; justify-content:flex-start; color:var(--bone); font-size:12px; line-height:1.7; letter-spacing:0.02em; overflow:auto; padding:10px 12px; box-sizing:border-box; white-space:pre-line;';
+        roomM.textContent = mk.m;
+        phoneFit(roomM);
       }
+      var q3p = document.getElementById('phoneTalk');
+      if(q3p){ q3p.textContent = mk.c; phoneFit(q3p); }
     };
     const callBtn = document.createElement('button');
     callBtn.type = 'button'; callBtn.textContent = '電話をかける';
-    callBtn.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.05); color:rgba(243,236,224,0.35);';
+    callBtn.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.05); color:var(--bone);';
     callBtn.onclick = function(){
       if(window._phoneHold){
         var q3hold = document.getElementById('phoneTalk');
@@ -4296,6 +4346,7 @@ document.addEventListener('DOMContentLoaded', function () {
     q4.appendChild(clr); q4.appendChild(refBtn); q4.appendChild(close); q4.appendChild(callBtn); q4.appendChild(repBtn);
     grid.appendChild(q1); grid.appendChild(q2); grid.appendChild(q3); grid.appendChild(q4); grid.appendChild(dialBox);
     ov.appendChild(grid);
+    ov.appendChild(prankMemo);
     // 最下部：独立した細い帯。パネル・操作ボタン・テンキーのいずれにも被らない位置にトップボタンを置く
     const phoneBar = document.createElement('div');
     phoneBar.style.cssText = 'width:100%; max-width:560px; display:flex; align-items:center; justify-content:flex-start;';
@@ -4327,6 +4378,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     };
     window._renderPhoneBook();
+    window._renderPrankMemo();
     if(window._phoneEscapedKey && !window._phoneEscBookNoticed){
       window._phoneEscBookNoticed = true;
       var q3init = document.getElementById('phoneTalk');
@@ -4357,7 +4409,7 @@ document.addEventListener('DOMContentLoaded', function () {
         wait = 9000 + Math.floor(Math.random()*2000);   // 初回だけ 9〜11秒
         _phoneFirstRing = false;
       } else {
-        wait = 20000 + Math.floor(Math.random()*20000);   // 20〜40秒
+        wait = 50000 + Math.floor(Math.random()*20000);   // 50〜70秒
       }
       setTimeout(phoneRing, wait);
     }
@@ -6486,15 +6538,13 @@ window.ssRecognize = function(){
     window.ssRecog.push(m);
     result.push(window.ssKeyToTile(m.key));
   }
-  // 入力欄へ流して判定
+  // 入力欄へ流して、配牌表示だけ行う（判定は手動）
   var field = document.getElementById('qiText');
   if(field && window.ssTilesToInput){
     field.value = window.ssTilesToInput(result);
     if(window.ssRebuildHand) window.ssRebuildHand();
   }
   window.ssClose();
-  var jb = document.getElementById('judgeBtn');
-  if(jb && !jb.disabled) jb.click();
 };
 window.ssCalibStart = function(){
   if(!window.ssImg) return;
