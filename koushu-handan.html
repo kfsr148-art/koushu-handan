@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="848">
+<html lang="ja" data-ver="849">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -969,7 +969,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v848</div>
+  <div id="verTag">v849</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -3884,6 +3884,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // ---- 電話猫の相談窓口（第一段：テンキーの枠のみ。番号はまだ誰にも繋がらない） ----
   // ── 逃走犯への掛け直し：犯人が捕まらなかった周だけ、その番号が繋がる ──
   const PHONE_ESCAPE_NUM = { butler:'4649', strategist:'1093', blunt:'0707', lady:'0808', french:'3939', ichihime:'2222', sensei:'0100' };
+  const PHONE_P2K_REF = { '執事':'butler', '軍師':'strategist', 'ずんだ':'blunt', 'お嬢様':'lady', 'マダム':'french', '一姫':'ichihime', '先生':'sensei' };
   // ── 業務時間外の顔：相談が来ていない番号へ掛けると、本人が「用のない電話」を受ける（一回完結・番号→人格） ──
   const PHONE_OFFHOURS = {
     '4649': { m:'「……もし。執事は、休みの日も執事にございます。……はて、ご用がないのに、お掛けに? ……ふ。では、用のないお時間を、お淹れいたしましょう」', c:'電話猫「……用がなくても、いいって言われたにゃ。……なんか、あったかいにゃ」' },
@@ -4331,6 +4332,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       window._phoneLastPersona = item.p;
       var PHONE_NUM_MAP = {'執事':'4649','軍師':'1093','ずんだ':'0707','お嬢様':'0808','マダム':'3939','一姫':'2222','先生':'0100'};
+      var PHONE_P2K = {'執事':'butler','軍師':'strategist','ずんだ':'blunt','お嬢様':'lady','マダム':'french','一姫':'ichihime','先生':'sensei'};
       var num = '0000';
       var nm = item.p;
       if(nm && PHONE_NUM_MAP[nm]){ num = PHONE_NUM_MAP[nm]; }
@@ -4342,7 +4344,7 @@ document.addEventListener('DOMContentLoaded', function () {
       window._phoneCurAns = item.a;
       window._phoneCurRep = item.r || '';
       if(!window._phonePending){ window._phonePending = {}; }
-      window._phonePending[num] = { t:item.t, a:item.a, r:item.r || '', read:false };
+      window._phonePending[num] = { t:item.t, a:item.a, r:item.r || '', read:false, c:!!item.c, p:item.p };
       var roomEl = document.getElementById('phoneRoom');
       if(roomEl){
         roomEl.style.cssText = 'border:1px solid var(--line); border-radius:8px; background:linear-gradient(160deg,#12241d,#0b1912); display:flex; align-items:flex-start; justify-content:flex-start; color:var(--bone); font-size:12px; line-height:1.7; letter-spacing:0.02em; overflow:auto; padding:10px 12px; box-sizing:border-box; white-space:pre-line;';
@@ -4541,6 +4543,29 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
       if(!window._phoneBookList){ window._phoneBookList = []; }
+      // ── 事件の相談を折り返し終えた犯人は、通報／見逃しの対象になる（窓口単体で幕へ繋ぐ） ──
+      var caseKey = (pend && pend.c && pend.p && PHONE_P2K_REF[pend.p]) ? PHONE_P2K_REF[pend.p] : null;
+      if(caseKey && !window._phoneEscapedKey){
+        window._phoneEscapedKey = caseKey;
+        window._phoneEscapedCalls = 0;
+        window._phoneReportReady = false;
+        window._phoneEscBookNoticed = false;
+        window._phoneIdleCount = 0;
+        window._phoneEscapedIdleStage = 0;
+        if(window._phonePending){ delete window._phonePending[num]; }
+        var idxC = window._phoneBookList.indexOf(num);
+        if(idxC !== -1){ window._phoneBookList.splice(idxC, 1); }
+        window._renderPhoneBook();
+        window._phoneCurNum = '';
+        window._phoneCurRep = '';
+        window._phoneCurAns = '';
+        var q3case = document.getElementById('phoneTalk');
+        if(q3case){ q3case.textContent = '電話猫「折り返し、済みましたにゃ。……あれ。この番号だけ、なんでか、消しそびれるにゃ」'; phoneFit(q3case); }
+        if(dEl) dEl.textContent = '';
+        window._phoneRead = false;
+        callBtn.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.05); color:var(--bone);';
+        return;
+      }
       var idx = window._phoneBookList.indexOf(num);
       if(idx !== -1){ window._phoneBookList.splice(idx, 1); }
       if(window._phonePending){ delete window._phonePending[num]; }
