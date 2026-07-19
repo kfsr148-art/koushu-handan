@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="834">
+<html lang="ja" data-ver="838">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -969,7 +969,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v834</div>
+  <div id="verTag">v838</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -3932,6 +3932,8 @@ document.addEventListener('DOMContentLoaded', function () {
       c2:{ m:'「もう採点はやめましょう。用のない電話ほど、価値がある。……よく、掛けました」', c:'電話猫「……採点やめたにゃ。……先生が丸くなったにゃ」' }
     }
   };
+  // ── いたずら番号→人格：同じ相手を繰り返しつつくと、その人物が事件になる ──
+  const PRANK_NUM_PERSONA = {'4649':'執事','1093':'軍師','0707':'ずんだ','0808':'お嬢様','3939':'マダム','2222':'一姫','0100':'先生'};
   // ── いたずら電話：入手済みの番号を溜めていく器（削除しない・重複なし） ──
   const PRANK_INFO = { '0101': 'ミカちゃん電話' };
   if(!window._prankList){ window._prankList = []; }   // 入手した番号だけ溜まる（初期は空）
@@ -4117,6 +4119,10 @@ document.addEventListener('DOMContentLoaded', function () {
       b.onclick = function(){
         const d = document.getElementById('phoneDial');
         if(d.textContent.length < 10) d.textContent += k;
+        if(k >= '1' && k <= '9') playVoice(k, k, 1.25);
+        else if(k === '0') playVoice('0', 'ゼロ', 1.25);
+        else if(k === '\uFF0A') playVoice('star', 'こめ', 1.1);
+        else if(k === '\uFF03') playVoice('hash', 'シャープ', 1.1);
       };
       pad.appendChild(b);
     });
@@ -4203,6 +4209,7 @@ document.addEventListener('DOMContentLoaded', function () {
     clr.onclick = function(){
       if(!window._phoneRinging){ return; }   // 着信中でなければ何もしない
       window._phoneRinging = false;
+      playVoice('dame', 'ムムッ', 1.0);
       // ── 放置の尺：犯人に掛けない間の通常業務の件数 ──
       if(window._phoneEscapedKey){ window._phoneIdleCount = (window._phoneIdleCount || 0) + 1; }
       clr.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.1); color:var(--bone);';
@@ -4269,10 +4276,17 @@ document.addEventListener('DOMContentLoaded', function () {
       // ── 「動機がずれる」対象の選出：電話を受けた回数に応じて累積確率が上がるが、上限は100%未満（＝運が良ければ最後まで当たらない） ──
       window._phoneCallCount = (window._phoneCallCount || 0) + 1;
       if(!window._phoneTwistTarget){
-        var twistChance = Math.min(0.85, 0.12 * window._phoneCallCount);
-        if(Math.random() < twistChance){
-          var crimeItems = pool.filter(function(x){ return x.c; });
-          if(crimeItems.length){
+        var crimeItems = pool.filter(function(x){ return x.c; });
+        // ── 特定の人物を5回いたずらした予約があれば、その人物の事件を確定で出す ──
+        if(window._phonePrankTarget){
+          var targeted = crimeItems.filter(function(x){ return x.p === window._phonePrankTarget; });
+          if(targeted.length){
+            window._phoneTwistTarget = targeted[Math.floor(Math.random()*targeted.length)].t;
+          }
+          window._phonePrankTarget = null;
+        } else {
+          var twistChance = Math.min(0.85, 0.12 * window._phoneCallCount);
+          if(Math.random() < twistChance && crimeItems.length){
             window._phoneTwistTarget = crimeItems[Math.floor(Math.random()*crimeItems.length)].t;
           }
         }
@@ -4436,6 +4450,10 @@ document.addEventListener('DOMContentLoaded', function () {
           if(!window._prank7Count){ window._prank7Count = {}; }
           window._prank7Count[dialed] = (window._prank7Count[dialed] || 0) + 1;
           var pc = window._prank7Count[dialed];
+          // ── 同じ相手を5回つつくと、その人物が次の着信で事件になる（予約） ──
+          if(pc >= 5 && PRANK_NUM_PERSONA[dialed] && !window._phoneTwistTarget){
+            window._phonePrankTarget = PRANK_NUM_PERSONA[dialed];
+          }
           var p7 = PHONE_PRANK7[dialed];
           var stg = (pc <= 4) ? p7.a : (pc === 5 ? p7.b : p7.c2);
           var roomP7 = document.getElementById('phoneRoom');
@@ -4535,6 +4553,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var ans = window._phoneCurAns;
       var q3el = document.getElementById('phoneTalk');
       if(!ans){ if(q3el){ q3el.textContent = '電話猫「まだ、どなたも受けておりませんにゃ」'; phoneFit(q3el); } return; }
+      playVoice('yoshi', 'ヨシ', 1.05);
       if(window._phoneHold && window._phoneHold === window._phoneCurNum){
         var hNum = window._phoneCurNum;
         var hRep = window._phoneCurRep || '';
