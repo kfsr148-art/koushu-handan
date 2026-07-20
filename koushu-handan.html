@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="877">
+<html lang="ja" data-ver="878">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -969,7 +969,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v877</div>
+  <div id="verTag">v878</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -3815,18 +3815,22 @@ document.addEventListener('DOMContentLoaded', function () {
       box.appendChild(el);
     });
   }
-  // ☎ 電話猫の窓口：受け入れ枚数当てクイズ（核のみ・トリガー未接続）。
-  //    見張り台の乱数生成・analyze()連携をそのまま流用する。
+  // ☎ 電話猫の窓口：猫牌当てクイズ（核のみ・トリガー未接続）。
+  //    麻雀の実力には関係ない、猫牌の混入枚数を数える軽いクイズ。
   window._phoneQuizAnswer = null;
+  window._phoneQuizTiles = null;
   window.phoneQuizNew = function(){
-    const raw = watchGenRandom();
-    const a = watchAnalyzeTiles(raw);
-    window._phoneQuizAnswer = (a && typeof a.acceptTiles === 'number') ? a.acceptTiles : 0;
-    const sorted = watchSortHand(raw);
+    const catN = 1 + Math.floor(Math.random() * 4);   // 猫牌1〜4枚を混ぜる
+    const wall = watchShuffle(watchBuildWall());
+    const tiles = wall.slice(0, 13 - catN);
+    for(let i = 0; i < catN; i++){ tiles.push(catTile()); }
+    watchShuffle(tiles);   // 猫牌がどこに混ざるかも毎回変える
+    window._phoneQuizAnswer = catN;
+    window._phoneQuizTiles = tiles;
     const box = document.getElementById('phoneQuizHand');
     if(!box) return;
     box.innerHTML = '';
-    sorted.forEach(function(t){
+    tiles.forEach(function(t){
       const el = document.createElement('div');
       el.className = 'tile ' + t.suit + (t.red ? ' red' : '');
       el.style.cssText = 'transform:scale(0.55); transform-origin:center;';
@@ -3845,9 +3849,20 @@ document.addEventListener('DOMContentLoaded', function () {
     if(isNaN(guess)){
       talk.textContent = '電話猫「数字を打ってから合わせてほしいにゃ」';
     } else if(guess === window._phoneQuizAnswer){
-      talk.textContent = '電話猫「正解、' + window._phoneQuizAnswer + '枚にゃ」';
+      talk.textContent = '電話猫「正解、猫牌は' + window._phoneQuizAnswer + '枚にゃ」';
     } else {
-      talk.textContent = '電話猫「外れにゃ。正しくは' + window._phoneQuizAnswer + '枚にゃ」';
+      talk.textContent = '電話猫「外れにゃ。猫牌は' + window._phoneQuizAnswer + '枚にゃ」';
+    }
+    // 見張り台の骨牌と同じ金枠で、猫牌だけをその場で光らせる
+    const box = document.getElementById('phoneQuizHand');
+    if(box && window._phoneQuizTiles){
+      Array.from(box.children).forEach(function(el, i){
+        const t = window._phoneQuizTiles[i];
+        if(t && t.suit === 'cat'){
+          el.style.outline = '2px solid var(--gold)';
+          el.style.boxShadow = '0 0 9px rgba(212,175,55,0.55)';
+        }
+      });
     }
     if(d){ d.textContent = ''; }
     if(typeof phoneFit === 'function'){ phoneFit(talk); }
