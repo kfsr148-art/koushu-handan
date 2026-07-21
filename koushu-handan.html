@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="895">
+<html lang="ja" data-ver="899">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -969,7 +969,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v895</div>
+  <div id="verTag">v899</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -6384,20 +6384,18 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    // 猫牌スイッチ（特別ルームで設定）：ONなら「孤立牌の多寡」×「形の良し悪し」の四象限で診断・上書きする
+    // 猫牌スイッチ（特別ルームで設定）：ONでも判定には一切触れない（上書き廃止）。
+    // 猫バッジ判定（枚数：1〜3枚=攻め寄り／4枚以上=守り）と本判定（analyze()）を照合し、一行出すだけ。
     window._catSwitchNote = '';
-    if(localStorage.getItem('catSwitch') === '1'){
-      const isoFew = effectiveCatN < 4;
-      if(isoFew && a.shapeOK){
-        window._catSwitchNote = '猫指数・実際の形、ともに攻め（約16%）';
-      } else if(isoFew && !a.shapeOK){
-        a.verdict = 'defend';
-        window._catSwitchNote = '猫は少ないが形はスカスカ……隠れ守りです（約20%）';
-      } else if(!isoFew && a.shapeOK){
-        a.verdict = 'attack';
-        window._catSwitchNote = '猫は多いが形は上等……隠れ攻めです（約6%）';
+    if(localStorage.getItem('catSwitch') === '1' && effectiveCatN >= 1){
+      const catStanceAttack = (effectiveCatN <= 3);   // 猫の見立て：1〜3枚=攻め寄り、4枚以上=守り
+      const mainAttack = (a.verdict === 'attack');
+      if(catStanceAttack && !mainAttack){
+        window._catSwitchNote = '⚠現場猫アラート：ヨシと言ったが、危ない手';
+      } else if(!catStanceAttack && mainAttack){
+        window._catSwitchNote = '⚠現場猫アラート：逃げ腰だが、実は行ける手';
       } else {
-        window._catSwitchNote = '猫指数・実際の形、ともに守り（約58%）';
+        window._catSwitchNote = '本判定と一致、ダブルヨシ';
       }
     }
 
