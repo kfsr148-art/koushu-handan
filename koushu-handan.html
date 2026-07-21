@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="893">
+<html lang="ja" data-ver="894">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -969,7 +969,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v893</div>
+  <div id="verTag">v894</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -3819,6 +3819,24 @@ document.addEventListener('DOMContentLoaded', function () {
   //    麻雀の実力には関係ない、猫牌の混入枚数を数える軽いクイズ。
   window._phoneQuizAnswer = null;
   window._phoneQuizTiles = null;
+  // 本物の牌の中から「孤立牌」を自動で数える（猫牌スイッチ用。analyze()本体には触れない）。
+  //   数牌：同じ組内に前後2つ以内の牌が無く、同じ牌の重複も無ければ孤立。
+  //   字牌：他に同じ牌が無ければ孤立（対子・刻子になれない）。
+  function countIsolatedRealTiles(tiles){
+    let n = 0;
+    tiles.forEach(function(t){
+      if(t.suit === 'man' || t.suit === 'pin' || t.suit === 'sou'){
+        const same = tiles.filter(function(o){ return o.suit === t.suit; });
+        const hasNeighbor = same.some(function(o){ return o !== t && Math.abs(o.num - t.num) <= 2 && o.num !== t.num; });
+        const hasDup = same.filter(function(o){ return o.num === t.num; }).length > 1;
+        if(!hasNeighbor && !hasDup) n++;
+      } else if(t.suit === 'honor'){
+        const dup = tiles.filter(function(o){ return o.suit === 'honor' && o.code === t.code; }).length;
+        if(dup <= 1) n++;
+      }
+    });
+    return n;
+  }
   window.phoneQuizNew = function(){
     const catN = 1 + Math.floor(Math.random() * 4);   // 猫牌1〜4枚を混ぜる
     const wall = watchShuffle(watchBuildWall());
@@ -6350,6 +6368,8 @@ document.addEventListener('DOMContentLoaded', function () {
       catRoomOpen();
       return;
     }
+    // 猫牌バッジ・助言・猫牌スイッチで使う枚数：実際の猫牌＋本物の孤立牌を自動判別して合算
+    const effectiveCatN = catN + countIsolatedRealTiles(hand.filter(t => t.suit !== 'cat'));
 
     // 多牌（14枚以上）は配牌判定の対象外。攻守を出さず、入れ直しだけ促す。
     if(a.tooMany){
@@ -6367,14 +6387,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // 猫牌スイッチ（特別ルームで設定）：ONなら猫牌の枚数に応じて判定を上書き・注記する
     window._catSwitchNote = '';
     if(localStorage.getItem('catSwitch') === '1'){
-      if(catN >= 6){
+      if(effectiveCatN >= 6){
         a.verdict = 'defend';
         window._catSwitchNote = '猫牌指数：形での攻めは理論上不可能';
-      } else if(catN >= 4){
+      } else if(effectiveCatN >= 4){
         a.verdict = 'defend';
         window._catSwitchNote = '猫牌指数：攻め率約24〜19%、守り判定';
-      } else if(catN >= 2){
-        window._catSwitchNote = `猫牌${catN}枚混入、攻守は際どめ`;
+      } else if(effectiveCatN >= 2){
+        window._catSwitchNote = `猫牌${effectiveCatN}枚混入、攻守は際どめ`;
       }
     }
 
@@ -6473,9 +6493,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     v.innerHTML = `
       <div class="verdict-card ${attack?'attack':'defend'}">
-        ${catN > 0 ? `<div style="position:absolute; top:8px; right:10px; z-index:5; display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
-          <div style="font-size:11px; color:#e8e2d0; background:rgba(0,0,0,0.35); padding:3px 8px; border-radius:6px; border:1px solid #8a7f5c;">🐱 猫牌${catN}枚</div>
-          <div style="font-size:11px; font-weight:bold; color:#0c0f12; background:var(--gold); padding:3px 8px; border-radius:6px; border:1px solid #8a7f5c; white-space:nowrap;">${catN===1?'1枚、攻めヨシ！':catN===2?'2枚、攻めヨシ！':catN===3?'3枚、ご安全にヨシ！':'4枚以上、逃げヨシ！'}</div>
+        ${effectiveCatN > 0 ? `<div style="position:absolute; top:8px; right:10px; z-index:5; display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+          <div style="font-size:11px; color:#e8e2d0; background:rgba(0,0,0,0.35); padding:3px 8px; border-radius:6px; border:1px solid #8a7f5c;">🐱 猫牌${effectiveCatN}枚</div>
+          <div style="font-size:11px; font-weight:bold; color:#0c0f12; background:var(--gold); padding:3px 8px; border-radius:6px; border:1px solid #8a7f5c; white-space:nowrap;">${effectiveCatN===1?'1枚、攻めヨシ！':effectiveCatN===2?'2枚、攻めヨシ！':effectiveCatN===3?'3枚、ご安全にヨシ！':'4枚以上、逃げヨシ！'}</div>
         </div>` : ''}
         <div class="verdict-mascot">${attack ? (a.yakumanReach ? '🐦‍🔥' : (a.kokushiSeen ? '🐉' : '🐅')) : ((a.defHonors + a.defTerminals) >= 2 ? '🐑' : '🐭')}</div>
         <div class="verdict-kanji">${attack?'攻':'守'}</div>
