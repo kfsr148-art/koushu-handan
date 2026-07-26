@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1048">
+<html lang="ja" data-ver="1049">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -983,7 +983,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1048</div>
+  <div id="verTag">v1049</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -5066,6 +5066,9 @@ document.addEventListener('DOMContentLoaded', function () {
       if(q3el){ q3el.textContent = '電話猫「ふむふむ……これが正解かにゃ？ ええと……' + ans + '……よし、これで折り返すにゃ」'; phoneFit(q3el); }
       window._phoneRead = true;
       if(window._phonePending && window._phonePending[window._phoneCurNum]){ window._phonePending[window._phoneCurNum].read = true; }
+      // 折り返し番号をダイヤル欄へ自動転記：あとは「電話をかける」を押すだけで折り返せる
+      var dAuto = document.getElementById('phoneDial');
+      if(dAuto && window._phoneCurNum){ dAuto.textContent = window._phoneCurNum; }
       refBtn.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.1); color:var(--bone);';
       callBtn.style.cssText = btnBase + 'border:1px solid var(--gold); background:rgba(212,175,55,0.12); color:var(--gold);';
     };
