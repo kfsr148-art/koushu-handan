@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1046">
+<html lang="ja" data-ver="1048">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -983,7 +983,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1046</div>
+  <div id="verTag">v1048</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -6370,7 +6370,7 @@ document.addEventListener('DOMContentLoaded', function () {
       advEl.scene.style.overflow = 'hidden';
       advEl.scene.innerHTML =
         '<div style="position:absolute; inset:0; background:#e8e0c8;"></div>'
-        + '<div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:12px; white-space:pre-line; line-height:1.9; color:#3a3226;">' + ppl + '</div>'
+        + '<div style="position:absolute; inset:0; overflow-y:auto; -webkit-overflow-scrolling:touch; text-align:center; padding:12px; white-space:pre-line; line-height:1.9; color:#3a3226; box-sizing:border-box;">' + ppl + '</div>'
         + ((t.hintTickets > 0 && (( !t.rhWhispered && t.redHerring ) || ADV_P.filter(function(k){ var an2 = t.alibiNote || {}; var p2 = an2[k]; var clearByAlibi2 = (typeof p2 !== 'undefined') && an2[p2] === k; return k !== t.culprit && (!t.hintCleared || t.hintCleared.indexOf(k) < 0) && !clearByAlibi2; }).length > 0)) ? '<button type="button" onclick="event.stopPropagation(); window.advBuyHint();" style="position:absolute; right:10px; bottom:10px; padding:6px 12px; border-radius:8px; border:1px solid #8a7f5c; background:#2c3644; color:#e8e2d0; font-size:12px;">ヒントを見る（残り券' + t.hintTickets + '）</button>' : '');
     } else if(inHall && ADV_HALL_IMG){
       advEl.scene.style.position = 'relative';
@@ -7218,7 +7218,7 @@ document.addEventListener('DOMContentLoaded', function () {
     box.appendChild(head);
     // 横向きのときだけ、縦向きを勧める一行（向きの変化に追従して出し消し）
     const rot = document.createElement('div');
-    rot.style.cssText = 'margin-bottom:8px;';
+    rot.style.cssText = 'margin:14px 0; text-align:center;';
     const rw = misdiagRotWord();
     const rotMain = document.createElement('div');
     rotMain.style.cssText = 'font-size:11px; color:var(--gold); line-height:1.7;';
@@ -7228,7 +7228,15 @@ document.addEventListener('DOMContentLoaded', function () {
     rotSub.textContent = rw.sub;
     rot.appendChild(rotMain); rot.appendChild(rotSub);
     box.appendChild(rot);
-    const rotSync = function(){ rot.style.display = (window.innerWidth > window.innerHeight) ? 'block' : 'none'; };
+    const rotSync = function(){
+      const land = (window.innerWidth > window.innerHeight);
+      Array.from(box.children).forEach(function(ch){
+        if(ch === rot) ch.style.display = land ? 'block' : 'none';
+        else ch.style.display = land ? 'none' : '';
+      });
+      const ag = document.getElementById('misdiagAgain');
+      if(ag) ag.style.display = land ? 'none' : '';
+    };
     rotSync();
     window.addEventListener('resize', rotSync);
     window.addEventListener('orientationchange', rotSync);
@@ -7262,6 +7270,7 @@ document.addEventListener('DOMContentLoaded', function () {
     misdiagBubble(chat, 'left', genbaAv, '現場猫', last);
     const retreat = misdiagZundaRetreat(r);
     if(retreat) misdiagBubble(chat, 'right', '🫛', 'ずんだもん', retreat);
+    rotSync();   // 全要素を並べ終えてから向きを反映（横なら案内だけ・縦なら中身）
   }
   function misdiagBuild(){
     const ov = document.createElement('div');
@@ -7279,6 +7288,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const again = document.createElement('button');
     again.type = 'button';
     again.textContent = '🔄 別の標本を引く';
+    again.id = 'misdiagAgain';
     again.style.cssText = 'padding:6px 14px; border-radius:8px; border:1px solid #8a7f5c; background:#2c3644; color:#e8e2d0; font-size:12px;';
     again.onclick = function(){ misdiagRender(box); };
     const closeBtn = document.createElement('button');
