@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1052">
+<html lang="ja" data-ver="1064">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -983,7 +983,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1052</div>
+  <div id="verTag">v1064</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -5537,7 +5537,7 @@ document.addEventListener('DOMContentLoaded', function () {
       room:startRoom, ap:25,
       culprit:p[0], hints:p.slice(1,3), wits:p.slice(4,6), allies:[p[3], p[6]],
       killOrder: advShuffle(p.slice(1)),
-      searched:{}, converted:{}, convertedAlly:{}, heard:{}, dead:{}, joined:{}, gaugeUsed:{}, detTrapUsed:false,
+      searched:{}, gotHere:{}, converted:{}, convertedAlly:{}, heard:{}, dead:{}, joined:{}, gaugeUsed:{}, detTrapUsed:false,
       kitten:false, culpritKnown:false,
       catHeard:false, bodyHeard:false, bodyGone:false, witGiven:{}, witGiven2:false, traitSeen:{}, noteWit2:'', hintPointed:[], redHerring:null, rhKiku:false, rhWhispered:false, alibiWith:{}, alibiClaim:null,
       tiles:0, deadCount:0, over:false, ron:false, nightAt:8, hintLevel:0, hintTickets:0, lieTarget:null, lieExposed:false, idleSaid:{}
@@ -6270,7 +6270,9 @@ document.addEventListener('DOMContentLoaded', function () {
     advEl.diffRow.style.display = inDiff ? 'flex' : 'none';
     advEl.row.style.display = (inHall || inDiff || inNote) ? 'none' : 'flex';
     advEl.doors.forEach(function(d){
-      d.btn.textContent = d.label;   // 労災は赤色のみで示す（文字は足さない）
+      // 探索の印：収穫のあった扉は◎、調べて空振りだった扉は✕、未踏は無印。労災の赤とは別の軸で示す。
+      var _mark = t.searched[d.k] ? (t.gotHere[d.k] ? '◎' : '✕') : '';
+      d.btn.textContent = d.label + _mark;
       if(t.dead[d.k] || d.k === 'office'){   // 労災＝赤金で一目に。猫室は最初から茶色猫がいるので常に赤
         d.btn.style.border = '1.5px solid #d98a6a';
         d.btn.style.background = '#4a2b28';
@@ -6280,6 +6282,7 @@ document.addEventListener('DOMContentLoaded', function () {
         d.btn.style.background = '#2c3644';
         d.btn.style.color = '#e8e2d0';
       }
+      d.btn.style.opacity = (t.searched[d.k] && !t.gotHere[d.k]) ? '0.55' : '1';
     });
     // 場面パネル
     let ppl = '';
@@ -6353,7 +6356,7 @@ document.addEventListener('DOMContentLoaded', function () {
     } else if(inDiff){
       ppl = '航路はいかがなさいます？';
     } else if(inHall){
-      ppl = '入り口がならんでいる（赤＝労災）';
+      ppl = '入り口がならんでいる（赤＝労災　◎＝収穫あり　✕＝空振り）';
     } else if(t.room === 'office'){
       ppl = 'ワトソン猫' + (t.kitten ? '（同行中）' : '') + '／茶色猫';
     } else if(t.room === 'room12' || t.room === 'room16'){
@@ -6557,8 +6560,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       if(advReachedThisSession && !t.detTrapUsed){
         t.detTrapUsed = true;
-        t.floorAvoided = true;
-        advOut('「しらべる」…… 探偵猫「このトラップ、オレでなきゃ見逃しちゃうね、フンッ・・・。」');
+        advSeq('「しらべる」…… その一歩の先、床が無い。', '探偵猫「足元、ヨシじゃないね。踏まないのがオレの『ヨシ』だ。」', function(){ t.floorAvoided = true; });
         return;
       }
       advOut('「しらべる」…… 床板が鳴り、穴が口を開ける。「ヨシ！」より早く、現場猫はまっさかさま。');
@@ -6586,8 +6588,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       if(advReachedThisSession && !t.detTrapUsed){
         t.detTrapUsed = true;
-        t.knifeAvoided = true;
-        advOut('「しらべる」…… \n探偵猫「このトラップ、オレでなきゃ見逃しちゃうね、フンッ・・・。」');
+        advSeq('「しらべる」…… 左の暗がりで、何かが光った。', '探偵猫「見えた。この角度から飛ぶなら、ここの辺でナイフキャッチヨシ！」', function(){ t.knifeAvoided = true; });
         return;
       }
       advOut('「しらべる」…… 左の暗がりで、何かが光った。\n刃が、一直線に———。\n「ヨシ！」の声より早く、現場猫に届いた。');
@@ -6597,6 +6598,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if((t.room === 'room12' || t.room === 'room16') && t.movedEv && t.movedEv[t.room] && !t.searched[t.room]){
       t.searched[t.room] = true;
       const mev = t.movedEv[t.room];
+      t.gotHere[t.room] = true;
       advGain(mev[0] + '【' + mev[1] + '】');
       if(!advSpend()) return;
       advOut('「しらべる」…… ' + mev[0] + '【' + mev[1] + '】を みつけた！（' + advTiles() + '/13）' + (t.kitten ? ' ワトソン猫「見つけましたにゃ」' : ''));
@@ -6604,10 +6606,11 @@ document.addEventListener('DOMContentLoaded', function () {
       t.searched[t.room] = true;
       if(!advSpend()) return;
       var _rhClue0 = (t.room === t.redHerring) ? '\n……ただ、床に破れた袖飾りが落ちている。夜更けに動いた者がいたのか？（怪しい——だが、これは証拠ではない）' : '';
-      advOut('そこには なにもない。……ヨシ！' + _rhClue0 + (t.kitten ? '\nワトソン猫「……何もありませんにゃ。ヨシ！」' : ''));
+      advOut('棚に、四角い埃の跡。……何かが持ち去られている。ヨシ！' + _rhClue0 + (t.kitten ? '\nワトソン猫「……ここから運び出されていますにゃ」' : ''));
     } else if(!t.searched[t.room] && (ADV_EV[t.room] || t.room === 'office')){
       t.searched[t.room] = true;
       const ev = t.room === 'office' ? ['相方の言葉','北'] : ADV_EV[t.room];
+      t.gotHere[t.room] = true;
       advGain(ev[0] + '【' + ev[1] + '】');
       if(!advSpend()) return;
       // ② レッドヘリングの部屋には、疑わしい遺留（怪しいが、罪の証ではない）。
@@ -6617,6 +6620,7 @@ document.addEventListener('DOMContentLoaded', function () {
       advOut('「しらべる」…… ' + ev[0] + '【' + ev[1] + '】を みつけた！（' + advTiles() + '/13）' + _rhClue + _motiveClue + (t.kitten ? '\nワトソン猫「見つけましたにゃ」' : ''));
     } else if(t.room !== 'captain' && t.dead[t.room] && t.witTile[t.room] && !t.witGiven[t.room] && !t.converted[t.room]){
       t.converted[t.room] = true;
+      t.gotHere[t.room] = true;
       advGain(ADV_NAME[t.room] + 'の目撃談【' + t.witTile[t.room] + '】');
       if(!advSpend()) return;
       // 進行不能防止：本人から直接「きく」機会を失った分、遺品の走り書きとして目撃証言(noteWit)を補う。
@@ -6625,6 +6629,7 @@ document.addEventListener('DOMContentLoaded', function () {
       advOut('現場をしらべた……' + ADV_NAME[t.room] + 'の目撃談【' + t.witTile[t.room] + '】が 証拠になった。（' + advTiles() + '/13）\n' + _deadWitLine + (t.kitten ? '\nワトソン猫「……確かに、受け取りましたにゃ」' : ''));
     } else if(t.room !== 'captain' && t.dead[t.room] && t.allies.indexOf(t.room) >= 0 && t.allyTile[t.room] && !t.joined[t.room] && !t.convertedAlly[t.room]){
       t.convertedAlly[t.room] = true;
+      t.gotHere[t.room] = true;
       advGain(ADV_NAME[t.room] + 'の証拠牌【' + t.allyTile[t.room] + '】');
       if(!advSpend()) return;
       // 進行不能防止：仲間になる前に亡くなった協力者の分、遺品として証拠牌と裏取りを補う。
@@ -6724,12 +6729,14 @@ document.addEventListener('DOMContentLoaded', function () {
         );
         return;
       }
-      if(t.kitten && !t.culpritKnown){
-        t.culpritKnown = true;
-        advOut('ワトソン猫が目を細めた。「……只者では、ありませんにゃ」');
+      // 牌＝証拠。一度目は否認で済むが、証拠を持たぬまま二度目を叩けば見透かされて詰む。
+      if(t.heard[who] <= 1){
+        advOut(ADV_NAME[who] + ADV_TALK.deny[who] + (ADV_MOTIVE_HINT[who] || '') + advTraitMemo(who) + advAlibiLine(who));
         return;
       }
-      advOut(ADV_NAME[who] + ADV_TALK.deny[who] + (ADV_MOTIVE_HINT[who] || '') + advTraitMemo(who) + advAlibiLine(who));
+      t.ap = 0;
+      advOut(ADV_NAME[who] + 'は不敵な笑みを浮かべている。');
+      advSkip = function(){ advEnd('ap'); };
       return;
     }
     if(t.witTile[who] && !t.witGiven[who]){
@@ -6903,7 +6910,7 @@ document.addEventListener('DOMContentLoaded', function () {
     hallRow.appendChild(bNote);
     const diffRow = document.createElement('div');
     diffRow.style.cssText = 'display:none; gap:10px; padding:8px 12px; flex-wrap:wrap; justify-content:center;';
-    [['初歩',30,8,2,0,0],['中級',28,11,1,1,0.3],['上級',28,11,0,2,0.5]].forEach(function(dv){
+    [['初歩',34,8,2,0,0],['中級',32,11,1,1,0.3],['上級',30,11,0,2,0.5]].forEach(function(dv){
       const b = document.createElement('button');
       b.textContent = dv[0] + '（行動力' + dv[1] + '）';
       b.style.cssText = 'padding:10px 16px; border-radius:8px; border:1px solid #8a7f5c; background:#2c3644; color:#e8e2d0;';
@@ -7265,8 +7272,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const rotSync = function(){
       const land = (window.innerWidth > window.innerHeight);
       Array.from(box.children).forEach(function(ch){
+        // 元のdisplay（牌の列のflex等）を一度だけ控え、縦向きではそれを戻す
+        if(ch._mdDisp === undefined) ch._mdDisp = ch.style.display || '';
         if(ch === rot) ch.style.display = land ? 'block' : 'none';
-        else ch.style.display = land ? 'none' : '';
+        else ch.style.display = land ? 'none' : ch._mdDisp;
       });
       const ag = document.getElementById('misdiagAgain');
       if(ag) ag.style.display = land ? 'none' : '';
