@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1049">
+<html lang="ja" data-ver="1052">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -983,7 +983,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1049</div>
+  <div id="verTag">v1052</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -4329,9 +4329,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if(phoneOverlayEl){
       phoneOverlayEl.style.display = 'flex';
       var rbSync = document.getElementById('phoneReportBtn');
-      if(rbSync){ rbSync.style.display = window._phoneReportReady ? '' : 'none'; }
+      if(rbSync){ rbSync.style.display = 'none'; }   // 操作欄側の通報は出さない（通報はクイズ帯のみ）
       var rbSync2 = document.getElementById('phoneReportBtn2');
       if(rbSync2){ rbSync2.style.display = window._phoneReportReady ? '' : 'none'; }
+      if(window._phoneEscapedKey && !window._phoneReportReady && window._phoneCallGlowSync){ window._phoneCallGlowSync(); }
       window._renderPhoneBook();
       if(window._phoneEscapedKey && !window._phoneEscBookNoticed){
         window._phoneEscBookNoticed = true;
@@ -4539,11 +4540,23 @@ document.addEventListener('DOMContentLoaded', function () {
       if(window._phoneEscapedKey){ window._phoneIdleCount = (window._phoneIdleCount || 0) + 1; }
       clr.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.1); color:var(--bone);';
       // ── 見逃し続けた末：犯人が窓口へ来て壁牌でトドメを刺す ──
-      if(window._phoneEscapedKey && (window._phoneIdleCount || 0) >= 3 && PHONE_DOOM[window._phoneEscapedKey]){
+      if(window._phoneEscapedKey && (window._phoneIdleCount || 0) >= 6 && PHONE_DOOM[window._phoneEscapedKey]){
         window._phoneRinging = false;
         window.phoneDoom(window._phoneEscapedKey);
         return;
       }
+      // ── 前兆：来訪の気配を、受電の合間にひとこと挟む ──
+      var idleOmenN = window._phoneIdleCount || 0;
+      if(window._phoneEscapedKey && (idleOmenN === 3 || idleOmenN === 5)){
+        var omenLine = (idleOmenN === 3)
+          ? '電話猫「……気のせいかにゃ。窓口の外に、誰か立ってる気がするにゃ」'
+          : '電話猫「……足音が、近いにゃ。……あの番号、掛けるなら、早いほうがいい気がするにゃ」';
+        setTimeout(function(){
+          var q3o = document.getElementById('phoneTalk');
+          if(q3o){ q3o.textContent = q3o.textContent + '\n' + omenLine; phoneFit(q3o); }
+        }, 1400);
+      }
+      
       var pool = [
         // ── 平時（雑談・泣き言の温度）：答えは無難な業務助言 ──
         {p:'執事', t:'「……もし。人さまの望みばかり先回りしておりましたら、自分が何を望む者か、思い出せなくなりまして。つまらぬ相談で恐縮にございます」', a:'たまには、ご自分の望みを一つだけ、紙に書いてみるといいにゃ。小さなことで、いいにゃ。', r:'「……紙に、一つだけ……。かしこまりました——いえ、私事でございましたな。……ふ。書くものを探すのが、少し楽しみにございます」'},
@@ -4716,7 +4729,18 @@ document.addEventListener('DOMContentLoaded', function () {
     };
     const callBtn = document.createElement('button');
     callBtn.type = 'button'; callBtn.textContent = '電話をかける';
+    callBtn.id = 'phoneCallBtn';
     callBtn.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.05); color:var(--bone);';
+    // ── 折り返しの合図：逃走犯が生きていて通報が開くまで、かけるボタンを金色に点滅させる ──
+    window._phoneCallGlowSync = function(){
+      var cb = document.getElementById('phoneCallBtn');
+      if(!cb) return;
+      if(window._phoneEscapedKey && !window._phoneReportReady){
+        cb.style.cssText = btnBase + 'border:1px solid var(--gold); background:rgba(212,175,55,0.18); color:var(--gold); animation:phoneRingBlink 0.9s infinite;';
+      } else {
+        cb.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.05); color:var(--bone);';
+      }
+    };
     callBtn.onclick = function(){
       var dEl = document.getElementById('phoneDial');
       var dialed = dEl ? dEl.textContent : '';
@@ -4812,6 +4836,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 window._phoneReportReady = false;
                 var rbBye = document.getElementById('phoneReportBtn');
                 if(rbBye){ rbBye.style.display = 'none'; }
+                window._phoneCallGlowSync();
                 if(roomEsc){ roomEsc.style.cssText = escStyle; roomEsc.textContent = byeLine; phoneFit(roomEsc); }
                 var q3bye = document.getElementById('phoneTalk');
                 if(q3bye){ q3bye.textContent = '電話猫「……あれ。この番号、消えてるにゃ。……わたしが消したっけかにゃ。……ま、いっかにゃ」'; phoneFit(q3bye); }
@@ -4841,15 +4866,21 @@ document.addEventListener('DOMContentLoaded', function () {
           window._phoneEscapedCalls = escN + 1;
           if(roomEsc){ roomEsc.style.cssText = escStyle; roomEsc.textContent = escLine; phoneFit(roomEsc); }
           var q3esc = document.getElementById('phoneTalk');
-          if(q3esc){ q3esc.textContent = '電話猫「……お元気そうで、なによりにゃ」'; phoneFit(q3esc); }
+          if(q3esc){
+            q3esc.textContent = (window._phoneEscapedCalls < 3)
+              ? '電話猫「……お元気そうで、なによりにゃ。……もう少し、話せそうだったにゃ。また、掛けてみるにゃ」'
+              : '電話猫「……お元気そうで、なによりにゃ」';
+            phoneFit(q3esc);
+          }
           if(window._phoneEscapedCalls >= 3 && !window._phoneReportReady){
             window._phoneReportReady = true;
             var rbShow = document.getElementById('phoneReportBtn');
-            if(rbShow){ rbShow.style.display = ''; }
+            if(rbShow){ rbShow.style.display = 'none'; }   // 操作欄側は出さない
             var rbShow2 = document.getElementById('phoneReportBtn2');
             if(rbShow2){ rbShow2.style.display = ''; }
             if(q3esc){ q3esc.textContent = '電話猫「……お元気そうで、なによりにゃ」\n（——机の抽斗の奥で、録音の束が音を立てた。『通報する』が、押せるようになっている）'; phoneFit(q3esc); }
           }
+          window._phoneCallGlowSync();
           if(dEl) dEl.textContent = '';
           return;
         }
@@ -4909,10 +4940,10 @@ document.addEventListener('DOMContentLoaded', function () {
         window._phoneCurRep = '';
         window._phoneCurAns = '';
         var q3case = document.getElementById('phoneTalk');
-        if(q3case){ q3case.textContent = '電話猫「折り返し、済みましたにゃ。……あれ。この番号だけ、なんでか、消しそびれるにゃ」'; phoneFit(q3case); }
+        if(q3case){ q3case.textContent = '電話猫「折り返し、済みましたにゃ。……あれ。この番号だけ、なんでか、消しそびれるにゃ。……折り返して、様子を聞いてみるにゃ？」'; phoneFit(q3case); }
         if(dEl) dEl.textContent = '';
         window._phoneRead = false;
-        callBtn.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.05); color:var(--bone);';
+        window._phoneCallGlowSync();
         return;
       }
             var idx = window._phoneBookList.indexOf(num);
@@ -4999,8 +5030,8 @@ document.addEventListener('DOMContentLoaded', function () {
             if(window._phoneCurNum === hNum){ window._phoneCurNum = ''; window._phoneCurRep = ''; }
             window._phoneRead = false;
             var q3case2 = document.getElementById('phoneTalk');
-            if(q3case2){ q3case2.textContent = '電話猫「折り返し、済みましたにゃ。……あれ。この番号だけ、なんでか、消しそびれるにゃ」'; phoneFit(q3case2); }
-            callBtn.style.cssText = btnBase + 'border:1px solid var(--bone-edge); background:rgba(243,236,224,0.05); color:var(--bone);';
+            if(q3case2){ q3case2.textContent = '電話猫「折り返し、済みましたにゃ。……あれ。この番号だけ、なんでか、消しそびれるにゃ。……折り返して、様子を聞いてみるにゃ？」'; phoneFit(q3case2); }
+            window._phoneCallGlowSync();
             return;
           }
           if(window._phoneBookList){ var ix = window._phoneBookList.indexOf(hNum); if(ix !== -1){ window._phoneBookList.splice(ix, 1); } }
@@ -5152,7 +5183,7 @@ document.addEventListener('DOMContentLoaded', function () {
       // ── 見逃しの累積：逃走犯を放置している間は、着信が鳴るたびに見逃しが積もる（受けても受けなくても進む） ──
       if(window._phoneEscapedKey){
         window._phoneIdleCount = (window._phoneIdleCount || 0) + 1;
-        if((window._phoneIdleCount || 0) >= 3 && PHONE_DOOM[window._phoneEscapedKey]){
+        if((window._phoneIdleCount || 0) >= 6 && PHONE_DOOM[window._phoneEscapedKey]){
           window._phoneRinging = false;
           window.phoneDoom(window._phoneEscapedKey);
           return;
