@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1213">
+<html lang="ja" data-ver="1214">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1062,7 +1062,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1213</div>
+  <div id="verTag">v1214</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -5339,7 +5339,9 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
       advView = 'hall';
-      if(advEl) advEl.root.style.display = 'none';   // 終局の幕引き。卓へ。
+      if(advEl) advEl.root.style.display = 'none';   // 終局の幕引き。タイトルへ戻す（原典と同じく、押すとタイトル画面）。
+      var _ts = document.getElementById('titleScreen');
+      if(_ts) _ts.style.display = 'flex';
       return;
     }
     advRender();
