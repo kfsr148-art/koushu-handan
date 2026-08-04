@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1262">
+<html lang="ja" data-ver="1272">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1073,7 +1073,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1262</div>
+  <div id="verTag">v1272</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -6246,18 +6246,6 @@ document.addEventListener('DOMContentLoaded', function () {
     tiles._doraCode = indicatorToDora(ind.code);
     return tiles;
   }
-  function misdiagReason(a, tiles){
-    const bits = [];
-    if(a.yakumanReach) bits.push('役満（' + a.yakumanName + '）が射程');
-    if(a.kokushiSeen) bits.push('国士無双の一本道（' + a.kokushiKinds + '種）');
-    if(a.yakuhaiPair) bits.push('役牌の対子・暗刻あり');
-    if(a.doraValue >= 2) bits.push('打点 ' + a.doraValue + '（ドラ・赤）');
-    else if(a.doraValue === 1) bits.push('打点 1');
-    if(a.goodShapes >= a.shapeNeeded) bits.push('良形 ' + a.goodShapes + '（要 ' + a.shapeNeeded + '）');
-    if(a.acceptTiles >= 40) bits.push('受け入れ ' + a.acceptTiles + ' 枚と広い');
-    if(bits.length === 0) bits.push('際どい線を親番などで攻めへ寄せた手');
-    return bits.join('／');
-  }
   // 手の中で対子になっている役牌（白・發・中）の名前を拾う
   function misdiagYakuhaiName(tiles){
     const cnt = {};
@@ -6280,30 +6268,34 @@ document.addEventListener('DOMContentLoaded', function () {
       const cnt = {};
       tiles.forEach(t => { cnt[t.code] = (cnt[t.code] || 0) + 1; });
       const eda = Object.keys(cnt).filter(k => cnt[k] >= 2).length;
-      // 二つの物差しが揃って同じ向きを指している手だけを拾う（現場猫が自分と食い違わないように）
-      // AIスイッチの回は、その物差しひとつだけで拾う（記事に出す物差しは一つに絞る）
+      // 三本の物差しの向きを出す（空文字＝沈黙帯。二本が逆を向いた手だけを後で拾う）
       const cntH = {};
       tiles.forEach(t => { if(t.suit === 'honor') cntH[t.code] = (cntH[t.code] || 0) + 1; });
       const omN = tiles.filter(t => t.suit === 'honor' && cntH[t.code] === 1).length;
       const yaochuPre = tiles.filter(t => t.suit === 'honor' || t.num === 1 || t.num === 9).length;
       const leans = {
         cat: (cn === 0) ? 'attack' : (cn >= 4) ? 'defend' : '',
-        eda: (eda >= 2) ? 'attack' : 'defend',
+        // 枝豆は判定画面の枝豆スイッチと同じ目盛り：4組以上で攻め、
+        // 猫牌3〜4枚の灰色帯に限り1組以下で守り、それ以外は沈黙。
+        eda: (eda >= 4) ? 'attack' : ((cn >= 3 && cn <= 4 && eda <= 1) ? 'defend' : ''),
         om:  (omN >= 3) ? 'defend' : ((omN === 0 && yaochuPre <= 2) ? 'attack' : '')
       };
       const la = leans[pair[0]], lb = leans[pair[1]];
       if(!la || !lb || la === lb) continue;
       let a = null;
-      const keepDora = doraCount;
+      // 席風・場風は判定の間だけ中立化——盤の設定が無作為の標本を揺らさないように。
+      // ドラは標本ごとに表示牌から決めるので、こちらは差し替えたうえで戻す。
+      const keepDora = doraCount, keepSeat = seatWind, keepRound = roundWind;
       try{
         hand = tiles.slice();
         doraCount = hand.filter(t => t.code === tiles._doraCode).length;
+        seatWind = null; roundWind = null;
         a = analyze();
       }catch(e){ a = null; }
-      finally{ doraCount = keepDora; }
+      finally{ doraCount = keepDora; seatWind = keepSeat; roundWind = keepRound; }
       if(!a || a.tooMany) continue;
-      // 見やすさのため、表示だけ萬→筒→索→字の順に並べ替える（判定はこの前に済んでいる）
       // 三本目の物差し：一枚きりで浮いている字牌の枚数（対子・暗刻の字牌は切れないので数えない）
+      // 牌は表示のためだけ萬→筒→索→字に並べ替える（判定はこの前に済んでいる）
       const loneHonor = tiles.filter(t => t.suit === 'honor' && cnt[t.code] === 1).length;
       const doraReal = tiles.filter(t => t.code === tiles._doraCode).length;
       const redReal = tiles.filter(t => t.red).length;
@@ -6311,9 +6303,10 @@ document.addEventListener('DOMContentLoaded', function () {
         dora: doraReal + redReal, doraPlain: doraReal, red: redReal,
         doraCode: tiles._doraCode, indCode: tiles._indCode,
         leans: leans, verdict: a.verdict,
-        reason: misdiagReason(a, tiles), sh: a.baseShanten,
+        sh: a.baseShanten,
         yakuhaiPair: !!a.yakuhaiPair, goodShapes: a.goodShapes, shapeNeeded: a.shapeNeeded,
         acceptTiles: a.acceptTiles, doraValue: a.doraValue,
+        widthLabel: a.widthLabel, widthGood: !!a.widthGood,
         yakumanReach: !!a.yakumanReach, yakumanName: a.yakumanName,
         kokushiSeen: !!a.kokushiSeen, kokushiKinds: a.kokushiKinds,
         yakuhai: misdiagYakuhaiName(tiles) });
@@ -6321,30 +6314,27 @@ document.addEventListener('DOMContentLoaded', function () {
     hand = keep;
     return out;
   }
-  function misdiagTileRow(tiles, doraCode){
+  function misdiagTileRow(tiles){
     const row = document.createElement('div');
     row.style.cssText = 'display:flex; flex-direction:row; gap:2px; zoom:0.8; margin:2px 0 4px;';
-    const draw = function(t){
+    tiles.forEach(function(t){
       const el = document.createElement('div');
-      el.className = 'tile ' + t.suit + (t.red ? ' red' : '');
       el.setAttribute('data-code', t.code);
+      // 猫牌は判定カードと同じ描き方（大きさを他の牌に合わせる）
+      if(t.suit === 'cat'){
+        el.className = 'tile cat';
+        el.style.zoom = '0.72';
+        el.innerHTML = '🐱';
+        row.appendChild(el);
+        return;
+      }
+      el.className = 'tile ' + t.suit + (t.red ? ' red' : '');
       if(t.suit === 'pin') el.innerHTML = pinSVG(t.num, t.red);
       else if(t.suit === 'sou') el.innerHTML = souSVG(t.num, t.red);
       else if(t.suit === 'man') el.innerHTML = kanjiNum(t.num) + '<span class="suf">萬</span>';
       else el.innerHTML = t.label;
       row.appendChild(el);
-    };
-    tiles.forEach(draw);
-    if(doraCode){
-      if(tiles.length){
-        const gap = document.createElement('div');
-        gap.style.cssText = 'width:10px; flex:0 0 10px;';
-        row.appendChild(gap);
-      }
-      draw(('mps'.includes(doraCode[0]))
-        ? numTileOf({m:'man', p:'pin', s:'sou'}[doraCode[0]], +doraCode[1], false)
-        : honorTileOf(doraCode));
-    }
+    });
     return row;
   }
   // 麻雀用語にカタカナのルビを振る
@@ -6405,15 +6395,19 @@ document.addEventListener('DOMContentLoaded', function () {
         : ('猫牌' + r.cat + '枚。4枚以上は手がバラバラってことだ。逃げヨシ！');
     }
     if(who === 'eda'){
+      if(!lean) return '枝豆' + r.eda + '組なのだ。4組そろえば攻め、'
+        + '猫牌が散らかった手で1組以下なら守りなのだ。この手はどちらでもないのだ';
       return (lean === 'attack')
-        ? ('枝豆' + r.eda + '組なのだ。同じ牌の組が2組以上あるのだ。手の軸はできてるのだ。攻めなのだ')
-        : ('枝豆' + r.eda + '組なのだ。同じ牌の組が1組以下なのだ。手の軸が無いのだ。守りなのだ');
+        ? ('枝豆' + r.eda + '組なのだ。同じ牌の組が4組もあるのだ。手の軸はできてるのだ。攻めなのだ')
+        : ('枝豆' + r.eda + '組なのだ。猫牌' + r.cat + '枚の迷いの帯で組が1組以下——'
+           + '枝豆も薄い、守りヨシなのだ');
     }
     if(!lean) return 'この手は、わたしには判じられません。1枚だけ余っている'
       + rb('字牌', 'ジハイ') + 'が' + r.om + '枚——0枚でも3枚以上でもない、平均の付近です。';
     return (lean === 'attack')
-      ? ('この手は攻めです。1枚だけ余っている' + rb('字牌', 'ジハイ') + 'が0枚、1と9も'
-         + (r.yaochu - r.om) + '枚だけ。牌が真ん中に集まっています。')
+      ? ('この手は攻めです。1枚だけ余っている' + rb('字牌', 'ジハイ') + 'が0枚、'
+         + '1・9・' + rb('字牌', 'ジハイ') + 'を合わせても' + r.yaochu
+         + '枚だけ。牌が真ん中に集まっています。')
       : ('この手は守りです。1枚だけ余っている' + rb('字牌', 'ジハイ') + 'が' + r.om
          + '枚。切って逃げられる牌をそれだけ抱えた手は、たいてい守りに回ります。');
   }
@@ -6424,8 +6418,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const B = [];
     const split = (r.split !== false);   // 二人が割れているか（揃っている回もある）
     if(who === 'cat'){
-      B.push('猫牌が' + r.cat + '枚、一枚きりの' + rb('字牌', 'ジハイ') + 'が' + r.om + '枚');
-      B.push('1・9・字牌は' + r.yaochu + '枚');
+      // 現場猫が見るのは猫牌（バラバラに浮いた牌）の散らばりだけ
+      B.push('猫牌が' + r.cat + '枚。0枚なら攻め、4枚以上なら逃げの目安だ');
       B.push(atk ? '真ん中に寄ってる手だ' : '端と字牌に散ってる手だ');
       return 'ちょっと待て。' + B.join('。')
         + (split ? '。数え方が割れたときは、牌の散らばりを見るしかない'
@@ -6439,12 +6433,16 @@ document.addEventListener('DOMContentLoaded', function () {
         + (split ? '。数え方が割れても、形の数を見れば分かるのだ'
                  : '。二人が揃っていても、形の数までは数えていないのだ');
     }
-    // ドラは標本を選ぶ物差しと同じ doraValue で語る（赤ドラ込みの枚数 r.dora とは別物）
+    // doraValue はドラの枚数ではなく、ドラ・赤・役牌を合わせた打点の値。
+    // 上の行に出ている「ドラ ◯枚」とは別物なので、語も「打点」で通す。
     const dv = (typeof r.doraValue === 'number') ? r.doraValue : 0;
+    // 広い・狭いの境目は向聴数で変わるので、判定エンジンが付けた札をそのまま使う
     B.push('手が進む牌が' + r.acceptTiles + '枚残っています');
-    B.push(r.acceptTiles >= 40 ? '40枚を超えれば広い方です' : '40枚を切れば狭い方です');
-    B.push(dv >= 2 ? ('ドラが' + dv + '枚、打点は充分です')
-      : (dv <= 0 ? 'ドラはありません' : 'ドラは1枚です'));
+    if(r.widthLabel) B.push('この' + rb('向聴', 'シャンテン') + '数なら「' + r.widthLabel + '」の部類です');
+    B.push(dv >= 2 ? (rb('打点', 'ダテン') + 'は' + dv + '、ドラ・赤・' + rb('役牌', 'ヤクハイ')
+        + 'を合わせて充分です')
+      : (dv <= 0 ? (rb('打点', 'ダテン') + 'は0、ドラも赤も' + rb('役牌', 'ヤクハイ') + 'もありません')
+                 : (rb('打点', 'ダテン') + 'は1、ぎりぎり値が付く手です')));
     return '数えます。' + B.join('。')
       + (split ? '。数え方が割れたときは、枚数が答えを決めます。'
                : '。二人が同じ方を向いても、枚数までは数えていません。');
@@ -6493,89 +6491,48 @@ document.addEventListener('DOMContentLoaded', function () {
     return list[Math.floor(Math.random() * list.length)]
       .replace('${cat}', r.cat).replace('${eda}', r.eda);
   }
-  // ずんだもんの反論を、手牌の中身から組み立てる（数字・境目・意味の三点で書く）
-  function misdiagZundaLines(r){
-    const bits = [];
-    const attack = (r.kind === 'split') ? (r.verdict === 'attack')
-      : (r.kind === 'cat' || r.kind === 'eda');
-    if(attack){
-      if(r.yakumanReach) bits.push('役満（' + r.yakumanName + '）が見えてるのだ。滅多に無い手なのだ');
-      if(r.kokushiSeen) bits.push('国士無双が' + r.kokushiKinds + '種そろってるのだ。あと少しなのだ');
-      if(r.yakuhaiPair){
-        const y = r.yakuhai;
-        if(y && y.n >= 3) bits.push(y.name + 'が' + y.n + '枚そろってるのだ。もう'
-          + rb('役牌', 'ヤクハイ') + 'が確定してるのだ');
-        else bits.push((y ? y.name : '役になる字牌') + 'が2枚そろってるのだ。あと1枚で'
-          + rb('役牌', 'ヤクハイ') + 'が確定するのだ');
-      }
-      if(r.goodShapes >= r.shapeNeeded) bits.push('形になっているまとまりが' + r.goodShapes
-        + 'つあるのだ。この手に必要なのは' + r.shapeNeeded + 'つ、足りてるのだ');
-      if(r.acceptTiles >= 40) bits.push('手が進む牌が' + r.acceptTiles
-        + '枚残ってるのだ。40枚を超えたら広い方なのだ');
-      if(r.doraValue >= 2) bits.push('ドラが' + r.doraValue + '枚あるのだ。2枚以上あると'
-        + rb('打点', 'ダテン') + 'が跳ねるのだ');
-      if(bits.length === 0) bits.push(r.sh + rb('向聴', 'シャンテン') + 'なのだ。あと' + r.sh
-        + '回いい牌を引けば' + rb('聴牌', 'テンパイ') + 'なのだ');
-    } else {
-      if(!r.yakuhaiPair) bits.push(rb('役牌', 'ヤクハイ') + 'の' + rb('対子', 'トイツ')
-        + 'が無いのだ。' + rb('上がり', 'アガリ') + 'の形が作れないのだ');
-      if(r.acceptTiles < 40) bits.push('手が進む牌が' + r.acceptTiles
-        + '枚しか残ってないのだ。40枚を切ったら狭い方なのだ');
-      if(r.goodShapes < r.shapeNeeded) bits.push('形になっているまとまりが' + r.goodShapes
-        + 'つしか無いのだ。この手に必要なのは' + r.shapeNeeded + 'つ、足りてないのだ');
-      if(r.doraValue <= 0) bits.push('ドラが1枚も無いのだ。'
-        + rb('上がり', 'アガリ') + 'の値打ちが小さいのだ');
-      if(bits.length === 0) bits.push(r.sh + rb('向聴', 'シャンテン') + 'なのだ。'
-        + rb('聴牌', 'テンパイ') + 'までまだ遠いのだ');
+  // 撤退予約線。仲裁役が自分の口調で述べる（三人ぶんの言い回しを持つ）
+  function misdiagRetreatBody(r, who){
+    if(r.yakumanReach || r.kokushiSeen) return '';
+    const w = who || 'eda';
+    const ish = rb('一向聴', 'イーシャンテン');
+    if(r.cat >= 4){
+      // 攻めと出たのに猫牌が多い回。食い違いを認めた上で線を引く。
+      if(w === 'cat') return 'ただし猫牌は' + r.cat + '枚だ。攻めと出ても、散らばった手は期限が引けん。'
+        + '伸びなかったら早めに守りへ回れ';
+      if(w === 'om')  return 'ただし猫牌が' + r.cat + '枚あります。攻めと出ましたが、'
+        + '散らばった手では期限が引けません。伸びなければ早めに守りへ回ってください。';
+      return 'ただし猫牌が' + r.cat + '枚もあるのだ。攻めと出ても、散らばった手は期限が引けないのだ。'
+        + '伸びなかったら早めに守りに回るのだ';
     }
-    return bits.slice(0, 2);
-  }
-  // 撤退予約線（攻守判定と同じ表・同じ分岐）をずんだもんの口調で
-  function misdiagZundaRetreat(r){
-    if(r.kind === 'split') return (r.verdict === 'attack') ? misdiagRetreatBody(r) : '';
-    if(!(r.kind === 'cat' || r.kind === 'eda')) return '';
-    if(r.yakumanReach || r.kokushiSeen) return '';
-    return misdiagRetreatBody(r);
-  }
-  function misdiagRetreatBody(r){
-    if(r.yakumanReach || r.kokushiSeen) return '';
-    if(r.cat >= 4) return 'ただし猫牌が多い手は、期限が引けないのだ。伸びなかったら早めに守りに回るのだ';
-    if(r.sh <= 1) return 'この手は最初から' + rb('一向聴', 'イーシャンテン')
-      + '以上なのだ。期限を引くまでもなく、押して伸ばすのだ';
+    if(r.sh <= 1){
+      if(w === 'cat') return 'この手は最初から' + ish + '以上だ。期限を引くまでもない、押して伸ばせ';
+      if(w === 'om')  return 'この手は最初から' + ish + '以上です。期限を引くまでもなく、押して伸ばせます。';
+      return 'この手は最初から' + ish + '以上なのだ。期限を引くまでもなく、押して伸ばすのだ';
+    }
     const TURN_BY_SHANTEN = { 2: 3, 3: 6, 4: 7, 5: 8 };
     const t = TURN_BY_SHANTEN[r.sh] || 8;
-    return 'ただし攻めっぱなしは駄目なのだ。' + t + '巡目までに' + rb('一向聴', 'イーシャンテン')
+    if(w === 'cat') return 'ただし攻めっぱなしは駄目だ。' + t + '巡目までに' + ish
+      + 'に届かなかったら守りへ回れ。引き際を先に決めておけ';
+    if(w === 'om')  return 'ただし攻めきりは勧めません。' + t + '巡目までに' + ish
+      + 'へ届かなければ、守りへ回ってください。引き際を先に決めておくことです。';
+    return 'ただし攻めっぱなしは駄目なのだ。' + t + '巡目までに' + ish
       + 'に届かなかったら、守りに回るのだ。先に引き際を決めておくのだ';
   }
-  function misdiagZundaClose(r){
-    if(r.kind === 'cat')  return '猫牌の数だけじゃ、この良さは見えないのだ';
-    if(r.kind === 'eda')  return '枝豆の数だけじゃ、この良さは見えないのだ';
-    if(r.kind === 'catD') return 'バラけてなくても中身が無いのだ';
-    if(r.kind === 'split') return (r.verdict === 'attack')
-      ? '数え方が二つに割れても、中身を見れば分かるのだ'
-      : '数え方が二つに割れても、中身が無いのは変わらないのだ';
-    return '軸があっても中身が無いのだ';
+  // 手の中に実物の猫牌があれば内訳を添える（猫牌＝実物＋孤立した数牌なので数と並びがずれて見える）
+  function mdCatBreak(r){
+    if(!Array.isArray(r.tiles)) return '';
+    const n = r.tiles.filter(function(t){ return t.suit === 'cat'; }).length;
+    return n ? ('（うち🐱' + n + '枚）') : '';
   }
-  // AIスイッチの一言目：自分の目盛りで攻守を言い切る（数えるのは一枚きりの字牌）
-  function misdiagAiOpen(r){
-    if(r.aiLean === 'defend'){
-      return 'この手は守りです。1枚だけ余っている' + rb('字牌', 'ジハイ') + 'が' + r.om
-        + '枚。切って逃げられる牌をそれだけ抱えた手は、たいてい守りに回ります。';
-    }
-    return 'この手は攻めです。1枚だけ余っている' + rb('字牌', 'ジハイ') + 'が0枚、'
-      + '1と9も' + (r.yaochu - r.om) + '枚だけ。牌が真ん中に集まっています。';
-  }
-  // 決着の一言。外した側が折れ、当てた側が引き取る。
-  function misdiagAiClose(r){
-    return (r.aiLean === r.verdict)
-      ? 'わたしの見立てが残りました。ただし数えたのは' + rb('字牌', 'ジハイ')
-        + 'の枚数だけで、中身は見ていません。'
-      : 'わたしの負けです。' + rb('字牌', 'ジハイ') + 'の枚数では、そこまで見えませんでした。';
-  }
-  function misdiagGenbaClose(r){
-    return (r.catLean === r.verdict)
-      ? '……オレの見立てが残ったな。猫牌' + r.cat + '枚、数えただけだがヨシ！'
-      : '……オレの負けだ。猫牌' + r.cat + '枚じゃ、そこまで見えなかった';
+  // 判定した手は盤の設定を効かせて判じている。無作為の標本は中立なので、違いを見せる。
+  function mdBoardNote(r){
+    if(!r.fromLog) return '';
+    const W = { E: '東', S: '南', W: '西', N: '北' };
+    if(!r.seat && !r.round) return '／盤の設定なし';
+    const a = r.round ? (W[r.round] + '場') : '';
+    const b = r.seat ? (W[r.seat] + '家' + (r.seat === 'E' ? '（親）' : '')) : '';
+    return '／' + [a, b].filter(Boolean).join('・') + 'で判定';
   }
   function misdiagBubble(box, side, avatarHTML, name, html, tint){
     const row = document.createElement('div');
@@ -6718,7 +6675,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function misdiagShapeLogRow(row){
     if(!row) return null;
     const r = Object.assign({}, row);
-    r.tiles = watchSortHand(r.tiles.slice());
+    r.tiles = watchSortHand(r.tiles.slice());   // 会話用に一度だけ並べ替える
     const pairs = Object.keys(MD_PAIRS);
     let kind = null;
     for(let i = 0; i < pairs.length; i++){
@@ -6767,13 +6724,17 @@ document.addEventListener('DOMContentLoaded', function () {
       const when = (r.ts ? (two(d.getMonth() + 1) + '/' + two(d.getDate()) + ' ' + two(d.getHours()) + ':' + two(d.getMinutes())) : '—');
       const head2 = document.createElement('div');
       head2.style.cssText = 'display:flex; align-items:center; gap:6px; width:100%;';
+      // 色は上の行と同じ（判定カードの攻めゾーン・守りゾーンの色）
+      const lc = (r.verdict === 'attack') ? 'rgba(255,123,98,0.95)' : 'rgba(120,170,220,0.95)';
+      // 「字牌」は一枚きりで浮いた字牌の数（誤診記録はこの呼び方で通す）
       head2.innerHTML = '<span style="opacity:.7;">' + when + '</span>'
-        + '<span style="color:' + (r.verdict === 'attack' ? '#ff7b62' : '#5fd3a6') + ';">'
+        + '<span style="color:' + lc + ';">'
         + (r.verdict === 'attack' ? '攻' : '守') + '</span>'
-        + '<span>猫牌' + r.cat + '／枝豆' + r.eda + '／字牌' + r.om + '／' + r.sh + '向聴</span>';
+        + '<span>猫牌' + r.cat + mdCatBreak(r) + '／枝豆' + r.eda
+        + '／字牌' + r.om + '／' + r.sh + '向聴</span>';
       b.appendChild(head2);
       if(Array.isArray(r.tiles) && r.tiles.length){
-        const tr = misdiagTileRow(watchSortHand(r.tiles.slice()));
+        const tr = misdiagTileRow(watchSortHand(r.tiles.slice()));   // 一覧はここで一度だけ並べ替える
         tr.className = 'md-log-tiles';
         tr.style.zoom = '0.5';   // 記事の牌の6割強。13枚を一行に収める
         tr.style.margin = '0';
@@ -6791,7 +6752,7 @@ document.addEventListener('DOMContentLoaded', function () {
     head.style.cssText = 'font-size:11px; color:rgba(232,226,208,0.65); line-height:1.7; margin-bottom:8px;';
     head.textContent = fromLog
       ? '「判定する」を押した手から1件だけ拾います。現場猫、AIスイッチ、ずんだもんのやり取りで、どこで線を引いているかをたどります。'
-      : '荒い物差しが外れた手を、無作為の配牌から1件だけ拾います。現場猫、AIスイッチ、ずんだもんのやり取りで、どこで線を引いているかをたどります。';
+      : '二本の物差しが逆を向いた手を、無作為の配牌から1件だけ拾います。現場猫、AIスイッチ、ずんだもんのやり取りで、どこで線を引いているかをたどります。';
     box.appendChild(head);
     // 横向きのときだけ、縦向きを勧める一行（向きの変化に追従して出し消し）
     const rot = document.createElement('div');
@@ -6842,19 +6803,20 @@ document.addEventListener('DOMContentLoaded', function () {
     box.appendChild(misdiagTileRow(r.tiles));
     const note = document.createElement('div');
     note.style.cssText = 'font-size:10.5px; line-height:1.9; color:rgba(232,226,208,0.7); margin:8px 0 4px; padding-top:2px;';
-    note.style.cssText += 'display:flex; align-items:center; gap:6px; flex-wrap:nowrap;';
+    note.style.cssText += 'display:flex; align-items:center; gap:6px 10px; flex-wrap:wrap;';
     // ドラは判定カードと同じ形：表示牌 → ドラ の小さな牌を二つ並べる
     const chip = function(code){ return '<span class="md-dora-chip">' + tileChip(code) + '</span>'; };
     const noteText = document.createElement('span');
-    noteText.style.cssText = 'white-space:nowrap;';
+    // ドラの小牌が途中で割れないよう区切りの前後だけ折り返しを許す
+    noteText.style.cssText = 'white-space:normal; word-break:keep-all; overflow-wrap:anywhere;';
     // 本判定（攻／守）を先頭に。色は判定カードの攻めゾーン・守りゾーンと同じ。
     const _vJP = (r.verdict === 'attack') ? '攻' : '守';
     const _vCol = (r.verdict === 'attack') ? 'rgba(255,123,98,0.95)' : 'rgba(120,170,220,0.95)';
     const _vBg  = (r.verdict === 'attack') ? 'rgba(255,123,98,0.12)' : 'rgba(120,170,220,0.12)';
     noteText.innerHTML = '<b style="color:' + _vCol + '; border:1px solid ' + _vCol + '; background:' + _vBg + '; border-radius:4px; padding:0 5px; margin-right:6px;">' + _vJP + '</b>'
-      + '猫牌 ' + r.cat + '枚／枝豆 ' + r.eda + '組／' + r.sh + rb('向聴', 'シャンテン')
+      + '猫牌 ' + r.cat + '枚' + mdCatBreak(r) + '／枝豆 ' + r.eda + '組／' + r.sh + rb('向聴', 'シャンテン')
       + '／ドラ ' + (r.indCode ? (chip(r.indCode) + '→' + chip(r.doraCode) + ' ') : '')
-      + (r.dora - r.red) + '枚' + (r.red ? '＋赤' + r.red : '');
+      + (r.dora - r.red) + '枚' + (r.red ? '＋赤' + r.red : '') + mdBoardNote(r);
     note.appendChild(noteText);
     box.appendChild(note);
     const chat = document.createElement('div');
@@ -6871,15 +6833,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     // 残る一人が手の中身を挙げる
     misdiagBubble(chat, SIDE[judge], AV[judge], MD_WHO[judge], mdContents(judge, r), judge === 'om' ? 'ai' : '');
-    // 外した側が折れ、当てた側が引き取る
-    const loser = pair.filter(function(w){ return r.leans[w] && r.leans[w] !== r.verdict; })[0];
-    const winner = pair.filter(function(w){ return r.leans[w] === r.verdict; })[0];
-    const mute = pair.filter(function(w){ return !r.leans[w]; })[0];
-    if(mute) misdiagBubble(chat, SIDE[mute], AV[mute], MD_WHO[mute], mdClose(mute, r), mute === 'om' ? 'ai' : '');
-    if(loser)  misdiagBubble(chat, SIDE[loser],  AV[loser],  MD_WHO[loser],  mdClose(loser, r),  loser === 'om' ? 'ai' : '');
-    if(winner) misdiagBubble(chat, SIDE[winner], AV[winner], MD_WHO[winner], mdClose(winner, r), winner === 'om' ? 'ai' : '');
-    const retreat = (r.verdict === 'attack') ? misdiagRetreatBody(r) : '';
-    if(retreat) misdiagBubble(chat, 'right', '🫛', 'ずんだもん', retreat);
+    // 締めは必ず二人ぶん。沈黙 → 外した側 → 当てた側 の順で並べる。
+    const rank = function(w){ return !r.leans[w] ? 0 : (r.leans[w] !== r.verdict ? 1 : 2); };
+    pair.slice().sort(function(a, b){ return rank(a) - rank(b); }).forEach(function(w){
+      misdiagBubble(chat, SIDE[w], AV[w], MD_WHO[w], mdClose(w, r), w === 'om' ? 'ai' : '');
+    });
+    // 撤退予約線は仲裁役が自分の口調で足す（別の者が割り込まないように）
+    const retreat = (r.verdict === 'attack') ? misdiagRetreatBody(r, judge) : '';
+    if(retreat) misdiagBubble(chat, SIDE[judge], AV[judge], MD_WHO[judge], retreat, judge === 'om' ? 'ai' : '');
     rotSync();   // 全要素を並べ終えてから向きを反映（横なら案内だけ・縦なら中身）
   }
   function misdiagBuild(){
@@ -7079,9 +7040,11 @@ document.addEventListener('DOMContentLoaded', function () {
       mine[b]++; n++;
       if(r.atk === true){ mineAtk[b]++; atkN++; }
       if(typeof r.eda === 'number' && typeof r.om === 'number'){
+        // 目盛りは判定画面・誤診記録と同じものを使う
+        const c3 = (c >= 3 && c <= 4);
         const lc = (c === 0) ? 1 : (c >= 4 ? -1 : 0);
-        const le = (r.eda >= 2) ? 1 : -1;
-        const lo = (r.om >= 3) ? -1 : ((r.om === 0) ? 1 : 0);
+        const le = (r.eda >= 4) ? 1 : ((c3 && r.eda <= 1) ? -1 : 0);
+        const lo = (r.om >= 3) ? -1 : ((r.om === 0 && (r.yaochu || 0) <= 2) ? 1 : 0);
         const ls = [lc, le, lo].filter(function(x){ return x !== 0; });
         if(ls.length >= 2 && ls.indexOf(1) >= 0 && ls.indexOf(-1) >= 0) split++;
       }
@@ -7463,7 +7426,9 @@ document.addEventListener('DOMContentLoaded', function () {
       hand.forEach(function(t){ if(t.suit === 'honor') _h[t.code] = (_h[t.code] || 0) + 1; });
       const _om = hand.filter(function(t){ return t.suit === 'honor' && _h[t.code] === 1; }).length;
       const _c = {};
-      hand.forEach(function(t){ _c[t.code] = (_c[t.code] || 0) + 1; });
+      // 猫牌は同じ code を持つ置き牌なので、対子として数えない（枝豆スイッチと同じ扱い）
+      hand.filter(function(t){ return t.suit !== 'cat'; })
+          .forEach(function(t){ _c[t.code] = (_c[t.code] || 0) + 1; });
       const _eda = Object.keys(_c).filter(function(k){ return _c[k] >= 2; }).length;
       const _yaochu = hand.filter(function(t){ return t.suit === 'honor' || t.num === 1 || t.num === 9; }).length;
       const _redN = hand.filter(function(t){ return t.red; }).length;
@@ -7471,7 +7436,9 @@ document.addEventListener('DOMContentLoaded', function () {
       const _dCode = _ind ? indicatorToDora(_ind) : null;
       const _leans = {
         cat: (effectiveCatN === 0) ? 'attack' : (effectiveCatN >= 4 ? 'defend' : ''),
-        eda: (_eda >= 2) ? 'attack' : 'defend',
+        // 枝豆スイッチと同じ目盛り（4組以上で攻め／灰色帯かつ1組以下で守り／他は沈黙）
+        eda: (_eda >= 4) ? 'attack'
+             : ((effectiveCatN >= 3 && effectiveCatN <= 4 && _eda <= 1) ? 'defend' : ''),
         om:  (_om >= 3) ? 'defend' : ((_om === 0 && _yaochu <= 2) ? 'attack' : '')
       };
       const _rows = haipaiLogLoad();
@@ -7481,9 +7448,11 @@ document.addEventListener('DOMContentLoaded', function () {
                    tiles: hand.map(function(t){ return { suit:t.suit, num:t.num, code:t.code, label:t.label, red:!!t.red }; }),
                    yaochu: _yaochu, red: _redN, dora: doraCount + _redN, doraPlain: doraCount,
                    doraCode: _dCode, indCode: _ind, leans: _leans, verdict: a.verdict,
-                   reason: misdiagReason(a, hand), sh: a.baseShanten,
+                   seat: seatWind, round: roundWind,   // どの盤の設定で判じたか
+                   sh: a.baseShanten,
                    yakuhaiPair: !!a.yakuhaiPair, goodShapes: a.goodShapes, shapeNeeded: a.shapeNeeded,
                    acceptTiles: a.acceptTiles, doraValue: a.doraValue,
+                   widthLabel: a.widthLabel, widthGood: !!a.widthGood,
                    yakumanReach: !!a.yakumanReach, yakumanName: a.yakumanName,
                    kokushiSeen: !!a.kokushiSeen, kokushiKinds: a.kokushiKinds,
                    yakuhai: misdiagYakuhaiName(hand) });
