@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1214">
+<html lang="ja" data-ver="1221">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1062,7 +1062,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1214</div>
+  <div id="verTag">v1221</div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -5042,14 +5042,34 @@ document.addEventListener('DOMContentLoaded', function () {
     ichihime:  '現場猫「いるのは、わかってるぞ。……さっきから、確認済みだ。ヨシ」\n\n一姫は、ぱちくりした。\n「……かくにん、ずみ……？」',
     sensei:    '現場猫「わかった。……ちゃんと、覚えとくよ」\n\n先生は、初めて言葉に詰まった。\n「……わたしの、授業を……？」'
   };
+  // 放免された犯人が、去り際に船長へ落としていく一言。全部「もう始まっている」報告の形。
+  const ADV_NEXT = {
+    butler:    '執事「……船長。あなた様の値打ち、今夜、拝見いたします」',
+    strategist:'軍師「……船長。おぬしの番は今夜よ。……もう、動かせぬ」',
+    blunt:     'ずんだ「……船長さん。おおきいのは、さいごに たべるのだ。……もう、さいごなのだ」',
+    lady:      'お嬢様「……船長。今夜は、あなたを選びますわ。……もう、決めましたの」',
+    french:    'マダム「……船長。最後の一本は今夜よ。……もう、栓は抜いてあるの」',
+    ichihime:  '一姫「……せんちょう。つぎ、せんちょうのばんにゃ。……もう、はじまってるにゃ」',
+    sensei:    '先生「……船長。あなたの答案、いま採点しています」'
+  };
+  // 弁護のあとに堰が切れる「茶色猫の悪事」。中身は全部しょうもない実害で、全員が真顔で並べる。
+  const ADV_GRUDGE = {
+    butler:    '執事「……磨いたばかりの床を、泥のまま歩かれました。三度でございます」',
+    strategist:'軍師「……ワシの茶を、飲んだ」',
+    blunt:     'ずんだ「……ぼくの餅、ひとつ足りなかったのだ」',
+    lady:      'お嬢様「……わたくしの扇を、うちわ代わりに」',
+    french:    'マダム「……わたくしのワインを、水で割ったのよ」',
+    ichihime:  '一姫「……おさかな、とられたにゃ」',
+    sensei:    '先生「……答案の上で、寝ていました」'
+  };
   const ADV_DEFEND = {
-    butler:    '執事「恐れながら。……値打ちのある牌ほど、狙われるものでございます。あの壁は、積まれた場所が悪うございました」',
-    strategist:'軍師「兵法で申せば、崩れる壁は攻め口なり。……崩れぬ積み方をせなんだ側にも、隙はあったのよ」',
-    blunt:     'ずんだ「壁は、形が悪かったのだ。ちゃんと積めば崩れないのだ。つまり悪いのは、積んだ……あ、あれ？　……と、とにかく、形なのだ」',
-    lady:      'お嬢様「守りの牌は、ご自分でお持ちになるものですわ。……備えのなかった方にも、隙はございましたのよ」',
-    french:    'マダム「浮いた牌が、落ちただけよ、ウィ。……重力に、罪はないわ。セ・ラ・ヴィ」',
-    ichihime:  '一姫「この人から、わるい役は見えないにゃ。……見えない役は、数えないにゃ。だから、むざいにゃ」',
-    sensei:    '先生「加点法で見ましょう。……この方、自首まであと一歩でした。その一歩を、加点します」'
+    butler:    '執事「恐れながら、申し上げます。……あの方は、壁牌に寄りかかって眠っておいででした。崩れて当然の場所に、ご自分から」',
+    strategist:'軍師「あの位置に居座ったは、本人の判断よ。陣を敷き違えた者が倒れる。……それだけのことなり」',
+    blunt:     'ずんだ「あそこ、危ないって言われてたのだ。……言われてたのに行くほうが、悪いのだ」',
+    lady:      'お嬢様「危険な場所にいらしたのは、あの方のご意思でしょう。……守りの牌は、ご自分でお持ちになるものですわ」',
+    french:    'マダム「あの子、いつも人の樽の陰にいたわね。……見えない場所にいるほうが悪いのよ、ウィ」',
+    ichihime:  '一姫「あそこ、ねちゃだめって、いわれてたにゃ。……ルールいはんにゃ。だから、しかたないにゃ」',
+    sensei:    '先生「減点法で見ましょう。……危険区域への立ち入り。まず、そこが減点です」'
   };
   const ADV_CONFESS = {
     butler:    ['執事は幼い頃から人の顔色で予定を組む役でしたわ。何が欲しいかを訊かれた記憶がないまま、望みという機能が萎びた。',
@@ -5197,19 +5217,24 @@ document.addEventListener('DOMContentLoaded', function () {
         p.push('廊下が、騒がしくなった。\n\n誰も呼んでいないのに、みんな集まってくる。');
         if(_pk.length >= 2 && ADV_PAIR[_pk[0] + '|' + _pk[1]]) p.push(ADV_PAIR[_pk[0] + '|' + _pk[1]]);
         p.push('……誰に頼まれたわけでもなく、\n客たちは真顔で、' + name + 'を庇いはじめた。');
-        _lv.slice().sort(function(a,b){ return (t.joined[b]?1:0) - (t.joined[a]?1:0); }).slice(0,5).forEach(function(k){ p.push(ADV_DEFEND[k]); });
+        _lv.slice().sort(function(a,b){ return (t.joined[b]?1:0) - (t.joined[a]?1:0); }).slice(0,3).forEach(function(k){ p.push(ADV_DEFEND[k]); });
+        p.push('……そういえば、と誰かが言った。\n\n「あの方は」');
+        _lv.slice().sort(function(a, b){ return (t.joined[b]?1:0) - (t.joined[a]?1:0); }).slice(0,3).forEach(function(k){ p.push(ADV_GRUDGE[k]); });
+        p.push('——誰も、笑わなかった。\n\n全員、真顔だった。');
         p.push('口々の庇いは、いつしか称賛に変わっていた。\n\n「見事なご判断」「よい手際だ」\n\n……拍手まで、起きた。');
       } else {
         p.push('廊下は、静かなままだった。\n\n……庇いに来る者は、もういない。');
       }
       p.push('ネルソン「——話は、聞かせてもらった」\n\nネルソン「' + name + '。壁牌に触れる前、指差し確認は、したか」\n\n' + name + 'は、小さく頷いた。');
       p.push('ネルソン「……確認をしておったなら、手順に非はない。\n——本件、ヨシとする」\n\n誰も、おかしいとは言わなかった。');
-      p.push(name + 'は、深く頭を下げ、自分の船室へ戻っていった。\n\n誰も、止めなかった。');
+      p.push(name + 'は、深く頭を下げた。\n\n' + ADV_NEXT[t.culprit]);
+      p.push('ネルソンは、しばらくしてから言った。\n\n「……いま、なんと言った」\n\nだが、もう誰も、その話をしていなかった。');
+      p.push(name + 'は、自分の船室へ戻っていった。\n\n誰も、止めなかった。');
       var _bl = _lv.filter(function(k){ return ADV_BLAME_OK[k] && ADV_BLAME_OK[k](t, k); })
                    .sort(function(a, b){ return (t.joined[b]?1:0) - (t.joined[a]?1:0); });
       if(_bl.length){
         p.push('……それで、と誰かが言った。\n\n「そもそも、この騒ぎを掘り返したのは、誰なんだ」\n\n視線が、いっせいに、こちらを向いた。');
-        _bl.forEach(function(k){ p.push(ADV_BLAME[k]); });
+        _bl.slice(0,4).forEach(function(k){ p.push(ADV_BLAME[k]); });
         p.push('最後に、誰かが静かに言った。\n\n「——警察猫には、もう報せてある」');
       } else if(_lv.length){
         p.push('……それで、と誰かが言った。\n\n「そもそも、この騒ぎを掘り返したのは、誰なんだ」\n\n視線が、いっせいに、こちらを向いた。\n\n——けれど、誰も、続けなかった。');
@@ -5240,13 +5265,14 @@ document.addEventListener('DOMContentLoaded', function () {
         p.push('だが、' + d + ' 人は担架で降りた。\nワトソン猫は桟橋の端に立って、担架の列を数えていた。\n「ひとり、ふたり……。少々、多すぎますにゃ」\n\n担架の人\n「いやらしい目で見ないで……」');
         p.push(_nakaPage);
         p.push(_goPage);
-        p.push('事 件 解 決\n—— 何だか知らんがとにかくヨシ！——');
+        p.push('事 件 解 決\n—— 何だか知らんがとにかくヨシ！——\n\nおめでとう　現場猫君\n担架の数は、数えないことにしよう。');
       }
       p.push('桟橋の人垣が、割れた。\n\n制帽の猫が、まっすぐこちらへ歩いてくる。\n——手帳を、開いて見せた。');
       p.push('警察猫「毎晩、船内を見回っては『なにもない。ヨシ』と\n確認していたのは、あんただな。\n\n——異常は、あったぞ」');
       p.push('手錠が、小さく鳴った。\n\n警察猫は、確保した現場猫を指差す。\n「被疑者確保……ヨシ！」' + (t.kitten ? '\n\nワトソン猫「せ、先生ーーッ!!」' : ''));
+      p.push('現場猫は、桟橋の人垣を見ていた。\n\n現場猫「……人、集まってるな。\n……こんなに集まったの、初めてだ」');
       if(_bl.length) p.push('連れられていきながら、現場猫が振り返った。\n\n現場猫「……なあ、あんた。\n——次の船は、いつ出るんだ」\n\n警察猫は、答えなかった。');
-      p.push('犯人は、また乗船する。\n\n探偵は、しばらく乗船できない。');
+      p.push('この航海に、犯人はいなかった。\n\n——乗船できないのは、探偵だけだ。');
       if(t.capAuto){
         capendThisSession = true;   // 船長猫牌の解禁。この回のセッション限り（閉じれば消える）
       }
