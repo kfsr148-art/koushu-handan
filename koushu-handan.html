@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1238">
+<html lang="ja" data-ver="1243">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -689,6 +689,7 @@
     .watch-overlay { display: none !important; }   /* 見張り台も同じ流儀。横に戻せば開いたまま復帰 */
     .watch-guide-overlay { display: none !important; }
     #titleScreen { display: none !important; }   /* タイトル画面も縦では畳み、催促案内に委ねる */
+    #catRoomOverlay { display: none !important; }   /* 設定画面も同じ流儀。横に戻せば開いたまま復帰 */
     .rotate-hint {
       display: flex; flex-direction: column; gap: 14px;
       position: fixed; inset: 0; z-index: 9999;
@@ -1042,6 +1043,16 @@
     font-size: clamp(12px, 3vh, 15px); padding: 1.2vh 14px; cursor: pointer; text-align: left;
   }
   .title-btn:active { background: rgba(212,180,110,0.22); }
+  #portraitWarn { display: none; }
+  @media (orientation: portrait) {
+    #portraitWarn { display: flex; position: fixed; inset: 0; z-index: 9999;
+      background: rgba(10,14,18,0.96); color: #f3ece0;
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 14px; text-align: center; font-family: var(--sans);
+      padding: 24px; }
+    #portraitWarn .pw-icon { font-size: 44px; }
+    #portraitWarn .pw-text { font-size: 17px; letter-spacing: 0.06em; line-height: 1.7; }
+  }
 </style>
 </head>
 <body>
@@ -1062,7 +1073,11 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1238</div>
+  <div id="verTag">v1243</div>
+  <div id="portraitWarn" aria-hidden="true">
+    <div class="pw-icon">📱➡️🔄</div>
+    <div class="pw-text">画面を横向きにしてください</div>
+  </div>
   <div class="engine-help-overlay" id="engineHelpOverlay">
     <div class="engine-help-sheet">
       <div class="engine-help-head">
@@ -7321,7 +7336,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ledgerBtn.onclick = function(){ haipaiLedgerOpen(); };
     const jibakuBtn = document.createElement('button');
     jibakuBtn.type = 'button';
-    jibakuBtn.textContent = '▶ 再生';
+    jibakuBtn.textContent = '▶ ずんだもんと現場猫';
     jibakuBtn.style.cssText = 'padding:6px 12px; border-radius:8px; border:1px solid #8a7f5c; background:#2c3644; color:#e8e2d0; font-size:11px; white-space:nowrap;';
     jibakuBtn.onclick = function(){
       var v = window._roomVideo, st = window._roomStill;   // 押した時だけ一度流す
@@ -7345,6 +7360,9 @@ document.addEventListener('DOMContentLoaded', function () {
     [switchBtn, edamameBtn, shinshiBtn, ledgerBtn, misdiagBtn, jibakuBtn, close].forEach(function(b){
       b.style.cssText = 'padding:7px 8px; border-radius:8px; border:1px solid #8a7f5c; background:#2c3644; color:#e8e2d0; font-size:11px; line-height:1.25; white-space:nowrap; text-align:center; width:100%; box-sizing:border-box;';
     });
+    // 三群の見分け：枠色で分ける。スイッチ=金茶(既定 #8a7f5c)／記録=青灰／再生=赤茶
+    [ledgerBtn, misdiagBtn].forEach(function(b){ b.style.borderColor = '#5c7f8a'; });
+    jibakuBtn.style.borderColor = '#8a5c62';
     close.style.gridColumn = 'span 2';
     rightCol.appendChild(buttonRow);
     row.appendChild(artWrap); row.appendChild(rightCol);
