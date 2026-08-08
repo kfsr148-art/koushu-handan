@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1311">
+<html lang="ja" data-ver="1312">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1075,7 +1075,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1311</div>
+  <div id="verTag">v1312</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -6394,9 +6394,8 @@ document.addEventListener('DOMContentLoaded', function () {
       if(!lean){
         // 守りの条件は「猫牌3〜4枚」かつ「1組以下」。どちらが外れているかを言い分ける。
         const few = (r.eda <= 1), band = (r.cat >= 3 && r.cat <= 4);
-        if(few && !band) return '枝豆' + r.eda + '組なのだ。組は1組以下だけど、'
-          + '守りと言えるのは猫牌が3〜4枚の迷いの帯のときだけなのだ。'
-          + 'この手は猫牌' + r.cat + '枚だから、ずんだは黙るのだ';
+        // 黙る理由が猫牌しかない回は、ずんだの担当材料の外。何も言わずに形の話へ渡す。
+        if(few && !band) return '';
         return '枝豆' + r.eda + '組なのだ。攻めと言えるのは4組からで、この手は届いてないのだ。'
           + '守りと言えるのは猫牌3〜4枚で1組以下のときだけなのだ。どちらでもないのだ';
       }
@@ -6593,6 +6592,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return '／' + [a, b].filter(Boolean).join('・') + 'で判定';
   }
   function misdiagBubble(box, side, avatarHTML, name, html, tint){
+    if(!html) return;   // 発話を省いた回は、吹き出しごと出さない
     const row = document.createElement('div');
     row.style.cssText = 'display:flex; flex-direction:' + (side === 'left' ? 'row' : 'row-reverse')
       + '; align-items:flex-start; gap:6px; margin:6px 0;';
