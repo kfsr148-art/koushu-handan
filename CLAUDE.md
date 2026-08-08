@@ -24,8 +24,15 @@
 
 ## 4. バージョン表記の同時更新
 
-`data-ver` 属性と `verTag` div は、**必ず同時に更新する**。
-片方だけを更新してはならない。
+`data-ver` 属性・`verTag` div・`ver.txt` の3箇所は、**必ず同時に更新する**。
+どれか一つだけを更新してはならない。
+
+- `koushu-handan.html` の `data-ver` 属性
+- `koushu-handan.html` の `verTag` div
+- リポジトリ直下の `ver.txt`
+
+`ver.txt` は更新確認が読みに行くファイル。ここが古いと、新版を置いても
+利用者に配信されない。
 
 ## 5. 変更禁止
 

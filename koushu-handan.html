@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1309">
+<html lang="ja" data-ver="1310">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1073,7 +1073,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1309</div>
+  <div id="verTag">v1310</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -8627,15 +8627,31 @@ window.ssReceive = function(){
       try{ history.replaceState(null, '', base); }catch(e){}
       return;
     }
-    fetch(base + '?_chk=' + Date.now(), { cache: 'no-store' })
+    /* 版番号だけを書いた ver.txt を確認する。HTML本体は8MB近くあり、版を読むためだけに
+       毎回それを取りに行くのは重い。ver.txt が置かれていない環境（HTML1枚で配った場合など）
+       では、従来どおりHTML本体から data-ver を読む。 */
+    var dir = base.replace(/[^/]*$/, '');
+    var bust = '?_chk=' + Date.now();
+    var jump = function(NEW){
+      if(NEW && Number(NEW) > Number(CUR)){
+        location.replace(base + '?_v=' + encodeURIComponent(NEW));
+      }
+    };
+    var checkHtml = function(){
+      return fetch(base + bust, { cache: 'no-store' })
+        .then(function(r){ return r.ok ? r.text() : null; })
+        .then(function(html){
+          if(!html) return;
+          var m = html.match(/data-ver="([^"]*)"/);
+          jump(m ? m[1] : '');
+        });
+    };
+    fetch(dir + 'ver.txt' + bust, { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : null; })
-      .then(function(html){
-        if(!html) return;
-        var m = html.match(/data-ver="([^"]*)"/);
-        var NEW = m ? m[1] : '';
-        if(NEW && Number(NEW) > Number(CUR)){
-          location.replace(base + '?_v=' + encodeURIComponent(NEW));
-        }
+      .then(function(t){
+        if(t === null) return checkHtml();   /* ver.txt が無い→従来方式へ */
+        var m = String(t).match(/\d+/);
+        jump(m ? m[0] : '');
       })
       .catch(function(){ /* オフライン等：今の版のまま使う */ });
   }catch(e){ /* 失敗しても通常動作を妨げない */ }
