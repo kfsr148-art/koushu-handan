@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1308">
+<html lang="ja" data-ver="1309">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1073,7 +1073,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1308</div>
+  <div id="verTag">v1309</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -8619,9 +8619,14 @@ window.ssReceive = function(){
   try{
     var CUR = document.documentElement.getAttribute('data-ver') || '';
     var vt = document.getElementById('verTag'); if(vt){ vt.textContent = 'v' + CUR; }
-    /* 既に更新先（_v=付き）に居るなら、再確認しない＝ループ防止 */
-    if(location.search.indexOf('_v=') !== -1) return;
     var base = location.href.split('?')[0].split('#')[0];
+    /* 既に更新先（_v=付き）に居るなら、再確認しない＝ループ防止。
+       ただしURLは元に戻しておく。_v=付きのままホーム画面に追加されると、
+       以後そのアイコンからは永久に更新確認が走らなくなるため。 */
+    if(location.search.indexOf('_v=') !== -1){
+      try{ history.replaceState(null, '', base); }catch(e){}
+      return;
+    }
     fetch(base + '?_chk=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : null; })
       .then(function(html){
