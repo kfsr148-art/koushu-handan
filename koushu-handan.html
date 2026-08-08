@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1306">
+<html lang="ja" data-ver="1307">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1073,7 +1073,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1306</div>
+  <div id="verTag">v1307</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -8628,7 +8628,7 @@ window.ssReceive = function(){
         if(!html) return;
         var m = html.match(/data-ver="([^"]*)"/);
         var NEW = m ? m[1] : '';
-        if(NEW && NEW !== CUR){
+        if(NEW && Number(NEW) > Number(CUR)){
           location.replace(base + '?_v=' + encodeURIComponent(NEW));
         }
       })
