@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1314">
+<html lang="ja" data-ver="1315">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -456,6 +456,13 @@
     10%  { opacity:1; }
     100% { left:78%; opacity:1; }
   }
+  /* 探偵画面の絵の枠は flex:1 の「余り」なので、下の操作面（台詞・コマンド・扉・難易度）が
+     場面ごとに伸び縮みすると、絵の大きさまで一緒に変わってしまう。操作面を高さの決まった器に
+     入れて外形を固定し、絵は頁が変わっても一定にする。器に収まらない端末では器の中だけが縦に送られる。
+     96px は台詞が上限(4.4em=52.8px)まで伸びた部屋の場面（52.8＋コマンド41＝93.8）、
+     128px は扉が二段に折り返す狭い画面の廊下（25.8＋扉98＝123.8）に合わせた値。 */
+  #advDeck { flex: none; height: 96px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  @media (max-width: 760px) { #advDeck { height: 128px; } }
 
   .verdict-card {
     border-radius: 16px; padding: 26px 22px; text-align: center;
@@ -1076,7 +1083,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1314</div>
+  <div id="verTag">v1315</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -6234,8 +6241,12 @@ document.addEventListener('DOMContentLoaded', function () {
     root.appendChild(bClose);
     const foot = document.createElement('div');
     foot.style.cssText = 'padding:1px 12px 2px; margin:0 12px; color:#8a94a6; font-size:10px; letter-spacing:.04em; min-height:1.1em;';
-    root.appendChild(inv); root.appendChild(scene); root.appendChild(msg);
-    root.appendChild(diffRow); root.appendChild(hallRow); root.appendChild(row); root.appendChild(head);
+    // 操作面は高さの決まった器にまとめる（#advDeck）。場面ごとの display 切替で外形が動かなくなり、
+    // 余りをもらう絵の枠(scene)の高さが一定になる。
+    const deck = document.createElement('div');
+    deck.id = 'advDeck';
+    deck.appendChild(msg); deck.appendChild(diffRow); deck.appendChild(hallRow); deck.appendChild(row);
+    root.appendChild(inv); root.appendChild(scene); root.appendChild(deck); root.appendChild(head);
     document.body.appendChild(root);
     advEl = { root, head, headText, inv, scene, msg, foot, diffRow, hallRow, row, doors, bSearch, bHear, bPhone, bAuto, bHearCat, bHearBody, bKitten, bRon, bBribeYes, bBribeNo, bNext, bHall };
   }
