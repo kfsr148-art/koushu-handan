@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1318">
+<html lang="ja" data-ver="1319">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1104,7 +1104,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1318</div>
+  <div id="verTag">v1319</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1608,7 +1608,6 @@ document.addEventListener('DOMContentLoaded', function () {
     } catch(e){}
   }
   // 音声ファイル層（任意）。読み込めた名前だけファイル再生、それ以外はOS音声。
-  const VOICE_DIR = 'voice/';
   const _audio = {};            // name -> HTMLAudioElement
   const _voiceReady = {};       // name -> true(読込成功) / false(失敗)
   function _showVoiceCredit(){ const el = document.getElementById('voiceCredit'); if (el) el.style.display = 'block'; }
@@ -1747,10 +1746,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if(sb) sb.classList.toggle('armed', groupMode === 'shuntsu');
     if(rb) rb.classList.toggle('armed', groupMode === 'ryoto');
   }
-  window.setGroupMode = function(mode){
-    groupMode = (groupMode === mode) ? null : mode;   // 同じボタン再押しで解除
-    refreshGroupButtons();
-  };
   function render() {
     handEl.innerHTML='';
     handEl.classList.toggle('empty', hand.length===0);
@@ -2734,7 +2729,6 @@ document.addEventListener('DOMContentLoaded', function () {
       directions.push('タンヤオ');
     }
 
-    const directionsTrimmed = directions.slice(0,3);
 
     // ============================================================
     //  国士無双の芽（么九字牌の distinct 種類数で測る）
@@ -2772,7 +2766,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const hc = code => (honorCount[code] || 0);
     const dragonCounts = [hc('P'), hc('F'), hc('C')];          // 白・發・中
     const windCounts   = [hc('E'), hc('S'), hc('W'), hc('N')]; // 東南西北
-    const dragonTiles  = dragonCounts.reduce((a,b)=>a+b,0);
     const windTiles    = windCounts.reduce((a,b)=>a+b,0);
     const dragonsPair  = dragonCounts.filter(c=>c>=2).length;  // 対子以上の三元牌の種類
     const dragonsTrip  = dragonCounts.filter(c=>c>=3).length;  // 刻子の三元牌の種類
@@ -3958,8 +3951,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if(im) im.src = CAT_TILE_GENBA;
   })();
   // 判定カードの猫牌の印：押すたびに説明の開閉を切り替える
+  // 同じ2文が10箇所に並んでいたのでまとめた。押した先の要素へ伝わるのと既定の動作を止める。
+  function stopEv(e){ if(e){ e.stopPropagation(); e.preventDefault(); } }
   window.toggleCatHelp = function(e){
-    if(e){ e.stopPropagation(); e.preventDefault(); }
+    stopEv(e);
     const pop = document.getElementById('catHelpPop');
     if(!pop) return;
     pop.classList.toggle('show');
@@ -3972,22 +3967,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   };
   // 猫牌説明の下のボタン：判定の確かさの読み物パネル（全画面）を開閉する
-  window.toggleEngineHelp = function(e){
-    if(e){ e.stopPropagation(); e.preventDefault(); }
-    const ov = document.getElementById('engineHelpOverlay');
-    if(ov) ov.classList.toggle('show');
-  };
 
   // タイトル画面「説明欄」：5項目の一覧→詳細、の二段構え
   window.openInfoList = function(e){
-    if(e){ e.stopPropagation(); e.preventDefault(); }
+    stopEv(e);
     const ts = document.getElementById('titleScreen');
     if(ts) ts.style.display = 'none';
     const ov = document.getElementById('infoListOverlay');
     if(ov) ov.classList.add('show');
   };
   window.closeInfoList = function(e){
-    if(e){ e.stopPropagation(); e.preventDefault(); }
+    stopEv(e);
     const ov = document.getElementById('infoListOverlay');
     if(ov) ov.classList.remove('show');
     const ts = document.getElementById('titleScreen');
@@ -4035,7 +4025,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if(ov2) ov2.classList.add('show');
   };
   window.closeInfoDetail = function(e){
-    if(e){ e.stopPropagation(); e.preventDefault(); }
+    stopEv(e);
     const ov2 = document.getElementById('infoDetailOverlay');
     if(ov2) ov2.classList.remove('show');
     const ov0 = document.getElementById('infoListOverlay');
@@ -4279,9 +4269,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     return n;
   }
-  const _catQuizBtnBase = 'padding:8px 4px; border-radius:8px; font-size:12px; cursor:pointer; white-space:nowrap; border:1px solid var(--bone-edge); background:rgba(243,236,224,0.1); color:var(--bone);';
-    ;
-  ;
   function watchReasonLine(a){
     const bits = [ a.baseShanten === 0 ? '聴牌' : (a.baseShanten + '向聴') ];
     if(typeof a.acceptTiles === 'number') bits.push('受け' + a.acceptTiles + '枚');
@@ -4468,7 +4455,6 @@ document.addEventListener('DOMContentLoaded', function () {
   };
   // ── AIスイッチ練習：一枚きりの字牌を数え、答え合わせで見立てと本判定の突き合わせを見せる ──
   let watchAiLeanCur = null;
-  window.watchSetModeForce = function(m){ watchMode = m; watchModeButtons(); window.watchDeal(); };
   window.watchCatKey = function(k){
     const d = document.getElementById('watchCatDisp');
     if(!d) return;
@@ -4571,7 +4557,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if(nx) nx.style.display = '';
   };
   window.watchOpen = function(e){
-    if(e){ e.stopPropagation(); e.preventDefault(); }
+    stopEv(e);
     const ov = document.getElementById('watchOverlay');
     if(!ov || ov.classList.contains('show')) return;   // 開いている間の再発火は無視
     watchStreak = 0;
@@ -4584,18 +4570,18 @@ document.addEventListener('DOMContentLoaded', function () {
     window.watchDeal();
   };
   window.watchClose = function(e){
-    if(e){ e.stopPropagation(); e.preventDefault(); }
+    stopEv(e);
     const ov = document.getElementById('watchOverlay');
     if(ov) ov.classList.remove('show');
     window.ssGoTitle();
   };
   window.watchGuide = function(e){
-    if(e){ e.stopPropagation(); e.preventDefault(); }
+    stopEv(e);
     const ov = document.getElementById('watchGuideOverlay');
     if(ov) ov.classList.add('show');
   };
   window.watchGuideClose = function(e){
-    if(e){ e.stopPropagation(); e.preventDefault(); }
+    stopEv(e);
     const ov = document.getElementById('watchGuideOverlay');
     if(ov) ov.classList.remove('show');
   };
@@ -4634,7 +4620,6 @@ document.addEventListener('DOMContentLoaded', function () {
   };
   function advHPhrase(h){ return h==='高い' ? '背の高い' : (h==='小柄' ? '小柄な' : '中背の'); }
   function advWPhrase(w){ return w==='白手袋' ? '白手袋をした' : (w==='眼鏡' ? '眼鏡をかけた' : '帽子を被った'); }
-  function advTraitDesc(k){ var tr=ADV_TRAIT[k]; return (tr.h==='高い'?'背が高く':(tr.h==='小柄'?'小柄で':'中背で')) + '、' + advWPhrase(tr.w).replace('した','し').replace('かけた','かけ').replace('被った','被り') + '……'; }
   function advTraitMemo(who){
     var t = advSt;
     if(!ADV_TRAIT[who] || t.traitSeen[who]) return '';
@@ -4795,45 +4780,6 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     } catch(e){}
   }
-  function advPlayFall(){
-    try {
-      advAC = advAC || new (window.AudioContext || window.webkitAudioContext)();
-      const build = function(){
-        try {
-          const t0 = advAC.currentTime + 0.01;
-          // 下降トーン：ヒュ〜（saw波を高→低へ滑らせる）
-          const o = advAC.createOscillator(), g = advAC.createGain();
-          o.type = 'sawtooth';
-          o.frequency.setValueAtTime(880, t0);
-          o.frequency.exponentialRampToValueAtTime(70, t0 + 0.5);
-          g.gain.setValueAtTime(0.0001, t0);
-          g.gain.exponentialRampToValueAtTime(0.18, t0 + 0.03);
-          g.gain.exponentialRampToValueAtTime(0.02, t0 + 0.48);
-          o.connect(g); g.connect(advAC.destination);
-          o.start(t0); o.stop(t0 + 0.52);
-          // 着地：ドッ（短いホワイトノイズのバースト）
-          const dur = 0.14, tn = t0 + 0.5;
-          const buf = advAC.createBuffer(1, Math.floor(advAC.sampleRate * dur), advAC.sampleRate);
-          const ch = buf.getChannelData(0);
-          for(let i = 0; i < ch.length; i++){ ch[i] = (Math.random() * 2 - 1) * (1 - i / ch.length); }
-          const src = advAC.createBufferSource(); src.buffer = buf;
-          const ng = advAC.createGain(), lp = advAC.createBiquadFilter();
-          lp.type = 'lowpass'; lp.frequency.value = 500;
-          ng.gain.setValueAtTime(0.35, tn);
-          ng.gain.linearRampToValueAtTime(0.0001, tn + dur);
-          src.connect(lp); lp.connect(ng); ng.connect(advAC.destination);
-          src.start(tn);
-        } catch(e){}
-      };
-      if(advAC.state === 'suspended'){
-        const r = advAC.resume();
-        if(r && typeof r.then === 'function'){ r.then(build).catch(build); }
-        else build();
-      } else {
-        build();
-      }
-    } catch(e){}
-  }
   function advGain(label){ advSt.inv.push(label); advPlayGet(); if(advSt.inv.length === 13){ advMsgQueue('現場猫「……この十三枚、おれ一人で拾った牌じゃないな」'); } }
   const ADV_ORDER = ['一萬','九萬','一筒','九筒','一索','九索','東','南','西','北','白','發','中'];
   const ADV_TILE = {'一萬':['man',1],'九萬':['man',9],'一筒':['pin',1],'九筒':['pin',9],'一索':['sou',1],'九索':['sou',9],
@@ -4855,22 +4801,6 @@ document.addEventListener('DOMContentLoaded', function () {
     return el;
   }
   function advTileOf(e){ const m = e.match(/【(.+?)】/); return m ? m[1] : ''; }
-  function advInvSorted(){
-    return advSt.inv.slice().sort(function(a,b){ return ADV_ORDER.indexOf(advTileOf(a)) - ADV_ORDER.indexOf(advTileOf(b)); });
-  }
-  function advBanner(text){
-    if(!advBn){
-      advBn = document.createElement('div');
-      advBn.style.cssText = 'position:fixed; top:0; left:0; right:0; z-index:99998; background:rgba(16,20,24,.96); color:#e8e2d0; padding:10px 14px; font-size:13px; line-height:1.55; border-bottom:1px solid #8a7f5c; white-space:pre-wrap; letter-spacing:.03em;';
-      advBn.onclick = () => { advBn.style.display = 'none'; };
-      document.body.appendChild(advBn);
-    }
-    advBn.textContent = text;
-    advBn.style.display = '';
-    if(advBnTimer) clearTimeout(advBnTimer);
-    // 読み終える頃にひとりでに消える（短文3秒〜長文8秒。タップなら即）
-    advBnTimer = setTimeout(function(){ advBn.style.display = 'none'; }, Math.min(8000, 2500 + text.length * 55));
-  }
   function advReplayTile(name){
     // 出所メモの再生：その牌を得たときの inv ラベルを帯に映す。手は進めない（AP消費なし）。
     const t = advSt;
@@ -5449,11 +5379,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-  function advEntryRoom(){
-    let t = null;
-    try { t = localStorage.getItem('koushu_tone'); } catch(e){}
-    return (t && ADV_P.indexOf(t) >= 0) ? t : 'office';
-  }
   function advStart(){
     if(!advEl) advBuild();
     advBoardedThisSession = true;                                  // 乗船した時点で卓側の探偵猫牌を解禁（船内の演出・罠は advReachedThisSession のまま）
@@ -5517,7 +5442,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 猫牌の説明（この判定、信用できるの？）を閉じたら、開いた経路へ戻る
   window.closeEngineHelpToTitle = function(e){
-    if(e){ e.stopPropagation(); e.preventDefault(); }
+    stopEv(e);
     const ov = document.getElementById('engineHelpOverlay');
     if(ov) ov.classList.remove('show');
     const list = document.getElementById('infoListOverlay');
@@ -5531,10 +5456,6 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
 
-  function advPersonsIn(roomK){
-    if(roomK === 'office') return ['kitten','cat','body'];
-    return [roomK];
-  }
   function advPersonaTile(pk){
     const d = document.createElement('div');
     d.className = 'tile cat';
@@ -5569,6 +5490,13 @@ document.addEventListener('DOMContentLoaded', function () {
     return d;
   }
 
+  // 絵の枠の下ごしらえ。画像を敷く場面では position/padding/overflow を絵向きにし、
+  // 文字だけの場面では既定へ戻す。同じ3行が場面ごとに6回並んでいたのでまとめた。
+  function advSceneCanvas(on){
+    advEl.scene.style.position = on ? 'relative' : '';
+    advEl.scene.style.padding  = on ? '0' : '';
+    advEl.scene.style.overflow = on ? 'hidden' : '';
+  }
   function advRender(){
     const t = advSt;
     const inHall = (advView === 'hall');
@@ -5692,9 +5620,7 @@ document.addEventListener('DOMContentLoaded', function () {
         : (t.room !== 'office' && t.room !== 'room12' && t.room !== 'room16' && t.room !== 'captain' && !t.dead[t.room] && !t.joined[t.room])
         ? '<img src="' + ADV_CHAR_IMG[t.room] + '" style="position:absolute; left:32%; bottom:' + (t.room==='sensei'?'8%':(t.room==='butler'||t.room==='strategist'||t.room==='lady'?'12%':'19%')) + '; transform:translateX(-50%); height:36%; image-rendering:pixelated; image-rendering:-webkit-optimize-contrast; filter:drop-shadow(1px 0 0 rgba(20,18,26,1)) drop-shadow(-1px 0 0 rgba(20,18,26,1)) drop-shadow(0 1px 0 rgba(20,18,26,1)) drop-shadow(0 -1px 0 rgba(20,18,26,1));" alt="">'
         : '';
-      advEl.scene.style.position = 'relative';
-      advEl.scene.style.padding = '0';
-      advEl.scene.style.overflow = 'hidden';
+      advSceneCanvas(true);
       advEl.scene.innerHTML =
         '<img src="' + ADV_ROOM_IMG[t.room] + '" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; image-rendering:pixelated;" alt="">'
         + spr
@@ -5712,45 +5638,34 @@ document.addEventListener('DOMContentLoaded', function () {
       var _tint = (advSt && advSt.endKind && advSt.endKind !== 'aground' && _tintMap[advSt.endKind]) || null;
       var _tintF = _tint ? (' filter:' + _tint.f + ';') : '';
       var _tintO = _tint ? _tint.o : 'rgba(8,12,20,.5)';
-      advEl.scene.style.position = 'relative';
-      advEl.scene.style.padding = '0';
-      advEl.scene.style.overflow = 'hidden';
+      advSceneCanvas(true);
       advEl.scene.innerHTML =
         '<img src="' + ((advSt.endKind === 'aground' && ADV_AGROUND_IMG) ? ADV_AGROUND_IMG : ADV_SHIP_IMG) + '" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center ' + (advSt.endKind === 'aground' ? '35%' : '88%') + '; image-rendering:pixelated;' + _tintF + '" alt="">'
         + '<div style="position:absolute; inset:0; background:' + _tintO + ';"></div>'
         + '<div style="position:absolute; inset:0; display:flex; align-items:flex-start; justify-content:center; text-align:center; padding:18px 12px 12px; white-space:pre-line; line-height:1.7; overflow-y:auto; -webkit-overflow-scrolling:touch;">' + '<span style="display:inline-block; max-width:34em; padding:10px 14px; border-radius:10px; background:rgba(6,10,16,.55); box-shadow:0 0 18px 10px rgba(6,10,16,.32); text-shadow:0 1px 3px rgba(0,0,0,.85);">' + ppl.replace(/\n\n+/g,'\n') + '</span></div>';
     } else if(inDiff && ADV_CHART_IMG){
-      advEl.scene.style.position = 'relative';
-      advEl.scene.style.padding = '0';
-      advEl.scene.style.overflow = 'hidden';
+      advSceneCanvas(true);
       advEl.scene.innerHTML =
         '<img src="' + ADV_CHART_IMG + '" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;" alt="">'
         + '<div style="position:absolute; inset:0; background:rgba(8,12,20,.5);"></div>'
         + '<div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:12px; white-space:pre-line; line-height:1.7;">' + ppl + '</div>';
     } else if(inNote){
-      advEl.scene.style.position = 'relative';
-      advEl.scene.style.padding = '0';
-      advEl.scene.style.overflow = 'hidden';
+      advSceneCanvas(true);
       advEl.scene.innerHTML =
         '<div style="position:absolute; inset:0; background:#e8e0c8;"></div>'
         + '<div style="position:absolute; inset:0; overflow-y:auto; -webkit-overflow-scrolling:touch; text-align:center; padding:12px; white-space:pre-line; line-height:1.9; color:#3a3226; box-sizing:border-box;">' + ppl + '</div>'
         + ((t.hintTickets > 0 && (( !t.rhWhispered && t.redHerring ) || ADV_P.filter(function(k){ var an2 = t.alibiNote || {}; var p2 = an2[k]; var clearByAlibi2 = (typeof p2 !== 'undefined') && an2[p2] === k; return k !== t.culprit && (!t.hintCleared || t.hintCleared.indexOf(k) < 0) && !clearByAlibi2; }).length > 0)) ? '<button type="button" onclick="event.stopPropagation(); window.advBuyHint();" style="position:absolute; right:10px; bottom:10px; padding:6px 12px; border-radius:8px; border:1px solid #8a7f5c; background:#2c3644; color:#e8e2d0; font-size:12px;">ヒントを見る（残り券' + t.hintTickets + '）</button>' : '');
     } else if(inHall && ADV_HALL_IMG){
-      advEl.scene.style.position = 'relative';
-      advEl.scene.style.padding = '0';
-      advEl.scene.style.overflow = 'hidden';
+      advSceneCanvas(true);
       advEl.scene.innerHTML =
         '<img src="' + ADV_HALL_IMG + '" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center center;" alt="">'
         + '<div style="position:absolute; inset:0; background:rgba(8,12,20,.5);"></div>'
         + '<div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:12px; white-space:pre-line; line-height:1.7;">' + ppl + '</div>';
     } else {
-      advEl.scene.style.position = '';
-      advEl.scene.style.padding = '';
-      advEl.scene.style.overflow = '';
+      advSceneCanvas(false);
       advEl.scene.textContent = ppl;
     }
     // コマンド活性
-    const tenpai = advTiles() >= 13;
     const dis = t.over || advPausing || inEnd;
     advEl.bNext.style.display = (dis || inEnd) ? '' : 'none';
     advEl.bRon.style.display = (!dis && t.ron && t.room === t.culprit) ? '' : 'none';
@@ -6171,7 +6086,7 @@ document.addEventListener('DOMContentLoaded', function () {
     headTop.type = 'button';
     headTop.textContent = 'トップ';
     headTop.style.cssText = 'flex:none; padding:1px 10px; font-size:11px; line-height:1.5; color:#c9bf9a; background:#243040; border:1px solid #5a5340; border-radius:6px;';
-    headTop.onclick = function(e){ if(e){ e.stopPropagation(); e.preventDefault(); } advEl.root.style.display = 'none'; window.ssGoTitle(); };
+    headTop.onclick = function(e){ stopEv(e); advEl.root.style.display = 'none'; window.ssGoTitle(); };
     head.appendChild(headText);
     head.appendChild(headTop);
     const inv = document.createElement('div');
@@ -7261,45 +7176,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const cat = countIsolatedRealTiles(tiles);   // 猫牌の枚数（法則：猫牌＝1〜9の孤立牌）
     return { ts: Date.now(), cat: cat };
   }
-  function haipaiImportFiles(ev, box, note){
-    const files = Array.from((ev.target && ev.target.files) || []);
-    if(files.length === 0) return;
-    if(Object.keys(window.ssTplLoad()).length === 0){
-      note.textContent = '牌の見本がまだ登録されていません。先に写真読取のテンプレ登録を済ませてください。';
-      ev.target.value = '';
-      return;
-    }
-    note.textContent = '読み取り中… 0 / ' + files.length;
-    const rows = haipaiLogLoad();
-    let done = 0, ok = 0;
-    const step = function(){
-      if(done >= files.length){
-        try{ localStorage.setItem('haipaiLog', JSON.stringify(rows)); }catch(e){}
-        note.textContent = files.length + ' 枚中 ' + ok + ' 件を記録しました。';
-        haipaiLedgerRender(box);
-        ev.target.value = '';
-        return;
-      }
-      const f = files[done];
-      const url = URL.createObjectURL(f);
-      const img = new Image();
-      img.onload = function(){
-        const rec = haipaiScanImage(img);
-        if(rec){ rows.push(rec); ok++; }
-        URL.revokeObjectURL(url);
-        done++;
-        note.textContent = '読み取り中… ' + done + ' / ' + files.length;
-        setTimeout(step, 0);
-      };
-      img.onerror = function(){
-        URL.revokeObjectURL(url);
-        done++;
-        setTimeout(step, 0);
-      };
-      img.src = url;
-    };
-    step();
-  }
   function haipaiLedgerBuild(){
     const ov = document.createElement('div');
     ov.id = 'haipaiLedgerOverlay';
@@ -8048,10 +7924,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /* ==== スクショ読取 ①画像読み込みの土台 (v754) ==== */
 window.ssImg = null;
-window.ssOpen = function(){
-  var f = document.getElementById('ssFile');
-  if(f) f.click();
-};
 window.ssFileChosen = function(ev){
   var f = ev.target.files && ev.target.files[0];
   if(!f) return;
@@ -8440,9 +8312,6 @@ window.ssTplDelete = function(key){
   window.ssTplRenderReview();
   window.ssTplRenderKeys();
   window.ssTplRenderProg();
-};
-window.ssTplToggleReview = function(){
-  window.ssTplRenderReview();
 };
 /* ==== テンプレの固定保存（書き出し／読み込み）(v769) ==== */
 window.ssTplExport = function(){
