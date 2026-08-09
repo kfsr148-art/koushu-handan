@@ -16,7 +16,10 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const ROOT = __dirname;
-const HTML_PATH = path.join(ROOT, 'koushu-handan.html');
+/* 検査する本体は引数でも指定できる（例：`node check ../old.html`）。
+   省略時はリポジトリ直下。旧版に当てて検査そのものの効きを確かめるために要る。
+   音声やファイルの実在確認は、指定に関わらずリポジトリ直下を見る。 */
+const HTML_PATH = process.argv[2] ? path.resolve(process.argv[2]) : path.join(ROOT, 'koushu-handan.html');
 const VER_PATH = path.join(ROOT, 'ver.txt');
 
 /* ---- 出力 ---- */
@@ -269,10 +272,244 @@ section('④', '音声ファイルの突き合わせ', () => {
   else ng('ファイル名に空白が入っている ' + spaced.length + '件: ' + spaced.join(', '));
 });
 
+/* ⑦で本体の写しに差し込む一片。#board / #watch / #adv で画面を開き、
+   はみ出し・重なり・横溢れを数えて、結果を base64 の目印つきで DOM に置く。
+   --dump-dom で吐かれた HTML から、その目印を拾って読む。本体には入れない。 */
+const VIEW_PROBE = `
+<script>
+window.addEventListener('load', function(){
+  var screen = (location.hash || '').replace('#','') || 'board';
+  var res = { w: 0, h: 0, out: [], hit: [], wide: [] };
+  setTimeout(function(){
+    try{
+      if(screen === 'adv'){ window.closeTitleScreen(); window.advStart(); }
+      else if(screen === 'watch'){ window.closeTitleScreen(); window.watchOpen(); }
+      else {
+        window.closeTitleScreen(); window.ssMarkTool();
+        var f = document.getElementById('qiText');
+        /* 14枚（13枚＋1）を並べた、いちばん幅の要る状態で測る */
+        if(f){ f.value = '3455m2367p1189s37z'; f.dispatchEvent(new Event('input', {bubbles:true})); }
+      }
+    }catch(e){ res.error = e.message; emit(); return; }
+    setTimeout(measure, 700);
+  }, 400);
+
+  function vis(el){
+    var s = getComputedStyle(el);
+    if(s.display === 'none' || s.visibility === 'hidden' || s.opacity === '0') return false;
+    var r = el.getBoundingClientRect();
+    return r.width > 0 && r.height > 0;
+  }
+  /* 別のレイヤー同士（覆いと下の盤面）を重なりと数えないよう、position:fixed の祖先で層を分ける */
+  function layer(el){
+    var n = el, k = 'base';
+    while(n && n !== document.body){
+      if(getComputedStyle(n).position === 'fixed') k = (n.id || n.className || 'fixed').toString().slice(0,20);
+      n = n.parentElement;
+    }
+    return k;
+  }
+  function name(el){
+    return el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') +
+      (el.className && typeof el.className === 'string' ? '.' + el.className.trim().split(/\\s+/).slice(0,2).join('.') : '');
+  }
+  function measure(){
+    var W = res.w = window.innerWidth, H = res.h = window.innerHeight;
+    var over = [];
+    document.querySelectorAll('body *').forEach(function(el){
+      if(!vis(el)) return;
+      var r = el.getBoundingClientRect();
+      if(r.width < 8 || r.height < 8) return;
+      if(r.right > W + 1 || r.bottom > H + 1 || r.left < -1) over.push({ el: el, r: r });
+    });
+    /* 親が既に挙がっているものは子を挙げない（同じ溢れを何度も言わない） */
+    over.filter(function(o){ return !over.some(function(p){ return p.el !== o.el && p.el.contains(o.el); }); })
+      .slice(0, 8)
+      .forEach(function(o){ res.out.push({ el: name(o.el), right: Math.round(o.r.right), bottom: Math.round(o.r.bottom) }); });
+
+    var bs = [].slice.call(document.querySelectorAll('button')).filter(vis);
+    bs.forEach(function(a, i){
+      bs.slice(i + 1).forEach(function(b){
+        if(layer(a) !== layer(b)) return;
+        var ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+        var ox = Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left);
+        var oy = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top);
+        if(ox > 1 && oy > 1 && res.hit.length < 8) res.hit.push({
+          a: (a.textContent||'').trim().slice(0,8), b: (b.textContent||'').trim().slice(0,8),
+          w: Math.round(ox), h: Math.round(oy) });
+      });
+    });
+
+    document.querySelectorAll('body *').forEach(function(el){
+      if(!vis(el) || res.wide.length >= 8) return;
+      if(el.scrollWidth > el.clientWidth && el.clientWidth > 60)
+        res.wide.push({ el: name(el), sw: el.scrollWidth, cw: el.clientWidth, over: el.scrollWidth - el.clientWidth });
+    });
+    emit();
+  }
+  function emit(){
+    var b = btoa(unescape(encodeURIComponent(JSON.stringify(res))));
+    var d = document.createElement('div');
+    d.textContent = 'KOUSHU_VIEW_BEGIN' + b + 'KOUSHU_VIEW_END';
+    d.style.display = 'none';
+    document.body.appendChild(d);
+  }
+});
+<\/script>
+`;
+
+/* base64 の中身は識別子と紛れるので、行を保ったまま伏せた写しを作る。⑤⑥で使う。 */
+const srcNoB64 = src.replace(/(data:[a-z/+.-]+;base64,)[A-Za-z0-9+/=]+/g, '$1B64');
+/* 写しは元より短いので、位置→行の索引は元と共用できない。改行の数は変わらないため行番号は一致する。 */
+let nlPos2 = null;
+function lineOfNoB64(idx) {
+  if (!nlPos2) {
+    nlPos2 = [];
+    for (let i = 0; i < srcNoB64.length; i++) if (srcNoB64.charCodeAt(i) === 10) nlPos2.push(i);
+  }
+  let lo = 0, hi = nlPos2.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (nlPos2[mid] < idx) lo = mid + 1; else hi = mid;
+  }
+  return lo + 1;
+}
+
+/* ============================================================
+   ⑤ 死にコード（どこからも参照されていない宣言）
+   ============================================================ */
+section('⑤', '死にコード', () => {
+  const decls = new Map();   // 名前 -> {種類, 行}
+  const put = (name, kind, idx) => { if (name && !decls.has(name)) decls.set(name, { kind, line: lineOfNoB64(idx) }); };
+  let m;
+  const reFn = /\bfunction\s+([A-Za-z_$][\w$]*)\s*\(/g;
+  while ((m = reFn.exec(srcNoB64))) put(m[1], '関数', m.index);
+  const reVar = /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=/g;
+  while ((m = reVar.exec(srcNoB64))) put(m[1], '変数', m.index);
+  const reWin = /\bwindow\.([A-Za-z_$][\w$]*)\s*=\s*function/g;
+  while ((m = reWin.exec(srcNoB64))) put('window.' + m[1], 'window', m.index);
+
+  const dead = [];
+  decls.forEach((d, name) => {
+    const bare = name.replace(/^window\./, '');
+    const re = new RegExp('\\b' + bare.replace(/\$/g, '\\$') + '\\b', 'g');
+    let c = 0;
+    while (re.exec(srcNoB64)) c++;
+    if (c <= 1) dead.push({ name, ...d });
+  });
+  dead.sort((a, b) => a.line - b.line);
+
+  note('宣言の総数 : ' + decls.size + '（関数・変数・window.*）');
+  if (dead.length === 0) { ok('宣言だけで参照されていないものは無し'); return; }
+  ng('参照されていない宣言 ' + dead.length + '件');
+  dead.forEach(d => note(String(d.line).padStart(5) + '行  ' + d.kind.padEnd(7) + d.name));
+  note('※ window[\'名前\'] のように文字列で呼ぶ書き方は参照と見なせない。心当たりがあれば個別に確かめること');
+});
+
+/* ============================================================
+   ⑥ 未使用の埋め込み画像・音声
+   （音声ファイルの孤児は④が見ているので、ここは data: で埋め込んだ資産に絞る）
+   ============================================================ */
+section('⑥', '未使用の埋め込み画像・音声', () => {
+  /* 「名前 = 'data:...'」の形だけを対象にする。
+     オブジェクトの値として持つ物（ADV_CHAR_IMG['x'] など）は、鍵を組み立てて引くことがあり
+     参照の有無を字面では決められないため、ここでは数えない。 */
+  const re = /(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*['"]data:([a-z]+)\/[a-z0-9.+-]+;base64,([A-Za-z0-9+/=]+)['"]/g;
+  let m, total = 0, count = 0;
+  const dead = [];
+  while ((m = re.exec(src))) {
+    count++;
+    const kb = Math.round(Buffer.from(m[3], 'base64').length / 1024);
+    total += kb;
+    const refs = srcNoB64.split(new RegExp('\\b' + m[1] + '\\b')).length - 1;
+    if (refs <= 1) dead.push({ name: m[1], kind: m[2], kb, line: lineOf(m.index) });
+  }
+  note('名前つきで埋め込まれた資産 : ' + count + '件 / 合計 ' + total + 'KB');
+  if (dead.length === 0) { ok('参照されていない埋め込み資産は無し'); return; }
+  const sum = dead.reduce((a, b) => a + b.kb, 0);
+  ng('参照されていない埋め込み資産 ' + dead.length + '件（計 ' + sum + 'KB）');
+  dead.forEach(d => note(String(d.line).padStart(5) + '行  ' + d.kind.padEnd(6) + d.name + '  ' + d.kb + 'KB'));
+});
+
+/* ============================================================
+   ⑦ 狭い画面での溢れ（headless ブラウザで実測）
+   ============================================================ */
+let viewSkipped = false;   // ブラウザが無くて測れなかったか（まとめで PASS と紛れないように持つ）
+section('⑦', '狭い画面での溢れ', () => {
+  /* headless の窓は視野より 幅+24 / 高さ+92 大きい。測るのは実際の innerWidth/innerHeight。 */
+  const VIEWS = [[568, 320], [667, 375], [844, 390], [932, 430]];
+  const SCREENS = ['board', 'watch', 'adv'];
+  /* 横溢れは4pxまで見逃す。.tile.pick::before が当たり判定を牌の外へ4px広げており（押し損じ対策）、
+     その意図的なはみ出しが3px計上されるため。これを咎めると当たり判定を痩せさせる方向に効いてしまう。 */
+  const SLACK = 4;
+
+  const browser = [
+    process.env['ProgramFiles(x86)'] && process.env['ProgramFiles(x86)'] + '\\Microsoft\\Edge\\Application\\msedge.exe',
+    process.env['ProgramFiles'] && process.env['ProgramFiles'] + '\\Microsoft\\Edge\\Application\\msedge.exe',
+    process.env['ProgramFiles(x86)'] && process.env['ProgramFiles(x86)'] + '\\Google\\Chrome\\Application\\chrome.exe',
+    process.env['ProgramFiles'] && process.env['ProgramFiles'] + '\\Google\\Chrome\\Application\\chrome.exe',
+    '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'
+  ].filter(p => p && fs.existsSync(p))[0];
+
+  if (!browser) {
+    note('ブラウザが見つからないため測定を飛ばす（Edge か Chrome があれば実測する）');
+    viewSkipped = true;
+    ok('測定なし');
+    return;
+  }
+  note('測定に使うブラウザ : ' + path.basename(browser));
+
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'koushu-view-'));
+  try {
+    const probe = path.join(tmpDir, 'probe.html');
+    fs.writeFileSync(probe, src.replace(/<\/body>\s*$/m, VIEW_PROBE + '</body>'), 'utf8');
+
+    let bad = 0, done = 0;
+    VIEWS.forEach(([vw, vh]) => {
+      SCREENS.forEach(screen => {
+        const args = ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1',
+          '--window-size=' + (vw + 24) + ',' + (vh + 92),
+          '--user-data-dir=' + path.join(tmpDir, 'prof'),
+          '--virtual-time-budget=9000', '--dump-dom',
+          'file:///' + probe.replace(/\\/g, '/') + '#' + screen];
+        const r = spawnSync(browser, args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
+        const hit = /KOUSHU_VIEW_BEGIN([A-Za-z0-9+/=]+)KOUSHU_VIEW_END/.exec(String(r.stdout || ''));
+        if (!hit) { ng(screen + ' ' + vw + 'x' + vh + '：測定結果を取り出せない'); bad++; return; }
+        let d;
+        try { d = JSON.parse(Buffer.from(hit[1], 'base64').toString('utf8')); }
+        catch (e) { ng(screen + ' ' + vw + 'x' + vh + '：結果を読めない'); bad++; return; }
+        done++;
+        if (d.error) { ng(screen + ' ' + vw + 'x' + vh + '：画面を開けない（' + d.error + '）'); bad++; return; }
+
+        const wide = (d.wide || []).filter(x => x.over > SLACK);
+        const lines = [];
+        (d.out || []).forEach(x => lines.push('はみ出し ' + x.el + ' right=' + x.right + ' bottom=' + x.bottom));
+        (d.hit || []).forEach(x => lines.push('重なり 「' + x.a + '」×「' + x.b + '」 ' + x.w + 'x' + x.h + 'px'));
+        wide.forEach(x => lines.push('横溢れ ' + x.el + ' ' + x.sw + ' > ' + x.cw));
+        const label = screen + ' ' + d.w + 'x' + d.h;
+        if (lines.length === 0) { note(label.padEnd(18) + '溢れなし'); return; }
+        bad += lines.length;
+        ng(label + '：' + lines.length + '件');
+        lines.slice(0, 6).forEach(l => note('  ' + l));
+      });
+    });
+    note('測った組み合わせ : ' + done + ' / ' + (VIEWS.length * SCREENS.length) +
+      '（視野 ' + VIEWS.map(v => v[0] + 'x' + v[1]).join(' ') + '）');
+    note('横溢れは ' + SLACK + 'px まで見逃す（.tile.pick::before の当たり判定ぶん）');
+    if (bad === 0) ok('どの視野でも、はみ出し・重なり・横溢れなし');
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
 /* ---- まとめ ---- */
 console.log('');
 console.log('='.repeat(52));
-sections.forEach(s => console.log((s.ok ? 'PASS  ' : 'FAIL  ') + s.title));
+sections.forEach(s => {
+  /* 測れなかった項目を PASS と並べない。通ったのか、見ていないのかを取り違えないため。 */
+  const mark = !s.ok ? 'FAIL  ' : (viewSkipped && /狭い画面/.test(s.title) ? 'SKIP  ' : 'PASS  ');
+  console.log(mark + s.title);
+});
 console.log('='.repeat(52));
 if (failCount === 0) {
   console.log('納品前チェック：問題なし');
