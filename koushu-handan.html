@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1319">
+<html lang="ja" data-ver="1320">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1104,7 +1104,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1319</div>
+  <div id="verTag">v1320</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1740,12 +1740,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
   // モードボタンの見た目を更新
-  function refreshGroupButtons(){
-    const sb = document.getElementById('shuntsuBtn');
-    const rb = document.getElementById('ryotoBtn');
-    if(sb) sb.classList.toggle('armed', groupMode === 'shuntsu');
-    if(rb) rb.classList.toggle('armed', groupMode === 'ryoto');
-  }
   function render() {
     handEl.innerHTML='';
     handEl.classList.toggle('empty', hand.length===0);
@@ -7157,25 +7151,6 @@ document.addEventListener('DOMContentLoaded', function () {
     box.textContent = lines.join('\n');
   }
   // 一枚のスクショから13枚を読み、帳簿一件分の数値にする
-  function haipaiScanImage(img){
-    const tpl = window.ssTplLoad();
-    const keys = Object.keys(tpl);
-    if(keys.length === 0) return null;
-    const cal = window.SS_DEFAULT_CALIB;
-    const X1 = cal.x1 * img.width, Y1 = cal.y1 * img.height;
-    const X2 = cal.x2 * img.width, Y2 = cal.y2 * img.height;
-    const w = (X2 - X1) / 13, h = Y2 - Y1;
-    const tiles = [];
-    for(let i = 0; i < 13; i++){
-      const rect = { sx: X1 + i * w, sy: Y1, sw: w, sh: h };
-      const f = window.ssTileFeature(img, rect);
-      const m = window.ssMatchTile(f, tpl, keys);
-      if(!m.key) return null;
-      tiles.push(window.ssKeyToTile(m.key));
-    }
-    const cat = countIsolatedRealTiles(tiles);   // 猫牌の枚数（法則：猫牌＝1〜9の孤立牌）
-    return { ts: Date.now(), cat: cat };
-  }
   function haipaiLedgerBuild(){
     const ov = document.createElement('div');
     ov.id = 'haipaiLedgerOverlay';
