@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Bash(grep *)",
+      "Bash(awk *)",
+      "Bash(cat *)",
+      "Bash(ls *)",
+      "Bash(head *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(node --check *)"
+    ],
+    "ask": [
+      "Write",
+      "Edit",
+      "Bash(rm *)",
+      "Bash(git rm *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
+    ],
+    "defaultMode": "acceptEdits"
+  }
+}
