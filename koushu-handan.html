@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1321">
+<html lang="ja" data-ver="1322">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -242,8 +242,17 @@
   .verdict-zones .vz-def { justify-content: flex-end; }
   .verdict-zones .vz-chip { font-size: 10px; line-height: 1.4; padding: 0 3px; border-radius: 4px;
     background: rgba(0,0,0,0.30); color: #e8e2d0; }
+  /* 投票欄そのものは pointer-events:none で下の牌へタップを素通りさせているので、
+     押させたいアイコンにだけ当たり判定を戻す。アイコンは20px角と小さいため、
+     見た目は変えずに ::after で判定だけ外へ5px広げる（.tile.pick::before と同じ流儀）。 */
+  .verdict-zones .vz-chip { pointer-events: auto; cursor: pointer; position: relative; z-index: 6; }
+  /* 広げた判定は中央の虎（.verdict-mascot）と重なる位置に出るので、こちらを上に置く */
+  .verdict-zones .vz-chip::after { content: ""; position: absolute; inset: -5px; z-index: 6; }
+  .verdict-zones .vz-chip:active { transform: translateY(1px); }
+  /* overflow:hidden は外した。画像は object-fit:contain で収まるため要らず、
+     付けたままだと当たり判定を広げる ::after まで切り取られて押せる範囲が広がらない。 */
   .verdict-zones .vz-face { padding: 0; width: 20px; height: 20px; border-radius: 50%;
-    overflow: hidden; display: inline-flex; align-items: center; justify-content: center;
+    display: inline-flex; align-items: center; justify-content: center;
     border: 1px solid rgba(138,127,92,0.6); background: rgba(0,0,0,0.35); }
   /* 全身が入るように収める（切り抜かない） */
   .verdict-zones .vz-face img { width: 100%; height: 100%; object-fit: contain; display: block;
@@ -1117,7 +1126,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1321</div>
+  <div id="verTag">v1322</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -3816,9 +3825,20 @@ document.addEventListener('DOMContentLoaded', function () {
       { key:'french',     mark:'マ', lean: (fl <= 1) ? 'a' : (fl >= 5 ? 'd' : '') },
       { key:'ichihime',   mark:'姫', lean: (a.yakumanReach || a.kokushiSeen || pairKinds >= 4 || a.yakuhaiPair) ? 'a' : '' },
       { key:'sensei',     mark:'先', lean: (sh <= 2) ? 'a' : (sh >= 5 ? 'd' : '') },
-      { key:'cat',        mark:'🐱', lean: (catN === 0) ? 'a' : (catN >= 4 ? 'd' : '') },
-      { key:'eda',        mark:'🫛', lean: (pairKinds >= 2) ? 'a' : 'd' },
-      { key:'ai',         mark:'🎩', lean: (om >= 3) ? 'd' : ((om === 0 && yaochu <= 2) ? 'a' : '') }
+      // say は投票欄のアイコンを押したときに助言欄へ出す一行。人柄のある七人は人柄側の
+      // toneAngleLine が言い分を持っているので、ここでは持たない三つの道具にだけ添える。
+      // 文面は誤診記録（mdOpen）の言い回しに合わせる。
+      { key:'cat',        mark:'🐱', lean: (catN === 0) ? 'a' : (catN >= 4 ? 'd' : ''),
+        say: (catN === 0)
+          ? '猫牌0枚。数牌に浮いた牌が一枚も無い、繋がった手だ。攻めヨシ！'
+          : ('猫牌' + catN + '枚。4枚以上は数牌がバラバラってことだ。逃げヨシ！') },
+      { key:'eda',        mark:'🫛', lean: (pairKinds >= 2) ? 'a' : 'd',
+        say: '🫛対子・暗刻が' + pairKinds + '種。'
+          + (pairKinds >= 2 ? '2種以上あれば攻めの軸になる。' : '2種に届かないと、手の軸が立たない。') },
+      { key:'ai',         mark:'🎩', lean: (om >= 3) ? 'd' : ((om === 0 && yaochu <= 2) ? 'a' : ''),
+        say: (om >= 3)
+          ? ('この手は守りです。1枚だけ余っている字牌が' + om + '枚。切って逃げられる牌をそれだけ抱えた手は、たいてい守りに回ります。')
+          : ('この手は攻めです。1枚だけ余っている字牌が0枚、1・9・字牌を合わせても' + yaochu + '枚だけ。牌が真ん中に集まっています。') }
     ];
   }
   function toneAngleLine(a){
@@ -3941,6 +3961,24 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   window.setTone = setTone;
   window.setDialect = setDialect;
+  // 判定カード上部の投票欄：アイコンを押すと、その判定者の言い分が助言欄（.tone-angle）に出る。
+  // 人柄のある七人は人柄そのものを切り替えるので、下の人柄ボタンの選択も一緒に動く。
+  // 猫・枝豆・AIは人柄を持たないので、tenLeans が添えた一行をそのまま助言欄へ置く。
+  // 攻側・守側の区別はしない。箱に出ている判定者は、どちらの側でも押せる。
+  window.vzTap = function(key, e){
+    stopEv(e);
+    if(TONE_WORDS[key]){
+      // 同じ人柄をもう一度押しても解除しない。言い分を読みに来ているので、消えると用を成さない。
+      if(currentTone !== key) setTone(key); else applyVerdictWord();
+      return;
+    }
+    const say = (window._vzSay || {})[key];
+    if(!say) return;
+    const ang = document.querySelector('.tone-angle');
+    if(!ang) return;
+    ang.textContent = say;
+    ang.style.display = '';
+  };
   const TAUNT_CYCLE = ['normal','dere','tsun'];
   const TAUNT_LABEL = { normal:'ノーマル', dere:'デレデレ', tsun:'ツンツン' };
   function toggleTaunt(){
@@ -7805,12 +7843,17 @@ document.addEventListener('DOMContentLoaded', function () {
       <div class="verdict-card ${attack?'attack':'defend'}">
         ${(function(){
           const L = tenLeans(a, effectiveCatN);
+          // 道具三つの言い分は、押されたときに引けるよう控えておく（人柄七人は setTone 側が持つ）
+          window._vzSay = {};
+          L.forEach(function(x){ if(x.say) window._vzSay[x.key] = x.say; });
           const chip = function(x){
             const img = (typeof ADV_FACE_IMG !== 'undefined' && ADV_FACE_IMG[x.key]) ? ADV_FACE_IMG[x.key]
               : (x.key === 'cat' && typeof CAT_TILE_GENBA !== 'undefined' ? CAT_TILE_GENBA : null);
+            // 押すとその判定者の言い分が助言欄に出る。人柄のある七人は人柄ボタンの選択も連れて動く。
+            const tap = ' onclick="window.vzTap(\'' + x.key + '\', event)"';
             return img
-              ? '<span class="vz-chip vz-face" data-who="' + x.key + '"><img src="' + img + '" alt="' + x.mark + '"></span>'
-              : '<span class="vz-chip">' + x.mark + '</span>';
+              ? '<span class="vz-chip vz-face" data-who="' + x.key + '"' + tap + '><img src="' + img + '" alt="' + x.mark + '"></span>'
+              : '<span class="vz-chip" data-who="' + x.key + '"' + tap + '>' + x.mark + '</span>';
           };
           const atkSide = L.filter(function(x){ return x.lean === 'a'; }).map(chip).join('');
           const defSide = L.filter(function(x){ return x.lean === 'd'; }).map(chip).join('');
