@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1322">
+<html lang="ja" data-ver="1323">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -73,11 +73,6 @@
     margin-bottom: 18px;
     box-shadow: inset 0 1px 0 rgba(243,236,224,0.06), 0 12px 30px rgba(0,0,0,0.28);
   }
-  .panel-label {
-    font-size: 11px; letter-spacing: 0.3em; text-indent: 0.3em;
-    color: var(--gold); font-weight: 700; margin-bottom: 4px;
-  }
-  .panel-sub { font-size: 12px; color: rgba(243,236,224,0.6); margin-bottom: 16px; }
 
   /* ---- hand display ---- */
   .hand {
@@ -227,7 +222,6 @@
   .dora-face .suf  { font-size: 11px; margin-left: 1px; align-self: flex-end; margin-bottom: 5px; }
   /* ラベルと枚数は横持ち専用。縦持ちは下の読み取り行に委ね、口は牌だけに保つ。 */
   .dora-face-lab, .dora-face-cnt { display: none; }
-  .dora-toggle .dora-lab { font-size: 12px; color: var(--gold); font-weight: 700; margin-right: 7px; }
   /* 誤診記録：ドラを同じ行に収めるための小さな牌 */
   /* 判定カード上部の攻守ゾーン。攻めなら左（赤）、守りなら右（青）にアイコンが乗る */
   .verdict-zones {
@@ -339,11 +333,6 @@
   }
 
   /* ---- dora ---- */
-  .dora-note {
-    margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line);
-    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-  }
-  .dora-note span { font-size: 12.5px; color: rgba(243,236,224,0.78); }
   .chip {
     font-size: 12px; padding: 5px 12px; border-radius: 20px;
     border: 1px solid rgba(243,236,224,0.28); background: transparent;
@@ -352,14 +341,6 @@
   }
   .chip.on { background: var(--gold); color: var(--ink); border-color: var(--gold); font-weight: 700; }
 
-  .stepper { display: flex; align-items: center; gap: 10px; }
-  .step-btn {
-    width: 56px; height: 56px; border-radius: 10px;
-    border: 1px solid rgba(243,236,224,0.28); background: rgba(0,0,0,0.2);
-    color: var(--bone); font-size: 30px; cursor: pointer; font-family: inherit;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.1s ease; line-height: 1; padding: 0;
-  }
 
   .quick-input {
     margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line);
@@ -393,19 +374,6 @@
   .qi-status.err  { color: #e98a7c; }
   .qi-hint { margin-top: 9px; font-size: 11px; color: rgba(243,236,224,0.5); line-height:1.6; }
   .qi-hint b { color: var(--gold); font-weight: 700; }
-  .step-btn {
-    width: 56px; height: 56px; border-radius: 10px;
-    border: 1px solid rgba(243,236,224,0.28); background: rgba(0,0,0,0.2);
-    color: var(--bone); font-size: 30px; cursor: pointer; font-family: inherit;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.1s ease; line-height: 1; padding: 0;
-  }
-  .step-btn:active { transform: translateY(1px); background: rgba(0,0,0,0.35); }
-  .step-val {
-    font-family: var(--serif); font-weight: 700; font-size: 28px;
-    color: var(--gold); min-width: 36px; text-align: center;
-  }
-  .step-cap { font-size: 14px; color: rgba(243,236,224,0.6); margin-left: 4px; }
 
   /* ---- buttons ---- */
   .actions { display: flex; gap: 10px; margin-bottom: 22px; }
@@ -426,13 +394,6 @@
     background: rgba(0,0,0,0.2); color: rgba(243,236,224,0.8);
     border: 1px solid var(--line);
   }
-  /* 牌を一枚だけ戻すデリート。リセット（丸ごと消去）とは別物として、控えめに隣へ。 */
-  .btn-del {
-    flex: 0 0 auto; padding-left: 13px; padding-right: 13px;
-    background: rgba(0,0,0,0.14); color: rgba(243,236,224,0.78);
-    border: 1px solid var(--line);
-  }
-  .btn-del:disabled { opacity: 0.4; cursor: not-allowed; }
   /* 中三・両隣のまとめ入力トグル。押すと金色に灯る。中三=押した牌を中心に前後＋自身の3枚。両隣=前後の2枚。どちらも解除まで持続。 */
   .btn-group {
     flex: 0 0 auto; padding-left: 13px; padding-right: 13px;
@@ -497,13 +458,6 @@
   }
   .cat-help-pop.show { display: block; }
   .cat-help-pop b { color: var(--gold); }
-  /* 猫牌説明の下：判定の確かさを開く小ボタン。本文は全画面の読み物パネルで開く */
-  .engine-help-btn {
-    display: block; width: 100%; margin-top: 4px;
-    border: 1px solid var(--gold); border-radius: 6px;
-    background: rgba(212,175,55,0.12); color: var(--gold);
-    font-size: 12px; padding: 3px 8px; cursor: pointer; text-align: center;
-  }
   .engine-help-overlay {
     display: none; position: fixed; inset: 0; z-index: 300;
     background: rgba(6,20,15,0.92);
@@ -582,7 +536,6 @@
   .watch-cat-row { display: flex; gap: 2px; justify-content: center; }
   .watch-cat-key { width: 34px; height: 22px; border-radius: 5px; border: 1px solid var(--bone-edge);
     background: linear-gradient(180deg,#fdf9f1,#e7ddc8); font-size: 13px; line-height: 1; cursor: pointer; }
-  .watch-cat-side { display: flex; flex-direction: column; gap: 3px; }
   #watchCatOk, #watchCatClr { font-size: 18px; padding: 8px 30px; }
   #watchCatDial { gap: 4px; }
   #watchCatDial .watch-btn { font-size: 15px; padding: 5px 10px; border-radius: 7px; }
@@ -630,13 +583,6 @@
   /* 判定カードの添えもの（撤退予約線・三つのスイッチ）は、判定の一言より一回り小さく。
      画面の幅・向き・判定の前後で大きさを変えない。指定はこの一組だけ。 */
   .retreat-line, .cat-switch-note, .edamame-note, .shinshi-note { font-size: 10px; }
-  .verdict-edge {
-    display: inline-block; margin-top: 8px;
-    font-size: 11px; letter-spacing: 0.18em; text-indent: 0.18em;
-    padding: 3px 13px; border-radius: 12px;
-    background: rgba(232,192,96,0.13); color: #e8c060;
-    border: 1px solid rgba(232,192,96,0.42);
-  }
   .tone-row { display: flex; gap: 6px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
   .tone-btn {
     font-family: inherit; font-size: 12px; padding: 5px 12px;
@@ -656,7 +602,6 @@
   .watch-overlay .engine-help-head { padding: 10px 10px; gap: 8px; }
   .tone-btn:active { transform: translateY(1px); }
   .dialect-row { display: flex; gap: 6px; justify-content: center; align-items: center; margin-top: 7px; flex-wrap: wrap; }
-  .dialect-label { font-size: 11px; color: rgba(243,236,224,0.4); letter-spacing: 0.1em; margin-right: 2px; }
   .dialect-btn {
     font-family: inherit; font-size: 12px; padding: 5px 12px;
     border-radius: 14px; border: 1px solid rgba(232,192,96,0.3);
@@ -695,9 +640,6 @@
     color: rgba(243,236,224,0.5); font-family: var(--serif);
   }
 
-  /* 「次の配牌へ」戻りボタン。横持ちで盤面を畳んだときだけ使う。
-     縦持ち・PCでは盤面が常に見えているので不要＝既定では隠す。 */
-  .back-to-board { display: none; }
   .next-hand-row { display: none; }   /* 次局の二択も横持ち専用。縦持ち・PCでは盤面が見えているので不要。 */
 
   /* 横向き専用ツール：縦にしたら本体を隠し、横向きを促す案内だけ出す */
@@ -855,11 +797,6 @@
       align-items: center; justify-content: center; min-width: 0;
       overflow: hidden;   /* 列が細ったとき、中身を隣の列へはみ出させない歯止め */
     }
-    .dora-note {
-      margin: 0; padding: 0; border: none; flex-direction: column; gap: 4px;
-      align-items: center; justify-content: center;
-    }
-    .dora-help { display: none; }   /* 横では説明文を省き、風の選択の場所を作る */
     /* 横ではドラの読み取りを字牌右のボタンへ集約。下段の長い読み取り行は畳んで、判定ボタンを一画面に収める。
        refreshDora がインラインで display を書くため !important で上書きする。 */
     .value-col .dora-readout { display: none !important; }
@@ -890,7 +827,6 @@
     .dora-face-tail { margin-top: 1px; display: inline-flex; align-items: center; white-space: nowrap; }
     /* 横持ちのみ：右端に手牌枚数を金色で添え、何枚かを一目で示す。 */
     .dora-face-cnt { display: inline; font-size: 11px; color: var(--gold); font-weight: 700; white-space: nowrap; }
-    .dora-toggle .dora-lab { font-size: 9px; margin-right: 4px; }
     /* 下段のドラ読み取り欄の牌は、横では一段小さく詰める。
        上のパレットの牌とは連動させず独立指定（後で上の牌だけ大きくしても、ここは影響を受けない）。 */
     .value-col .dora-readout .dr-tile { min-width: 16px !important; height: 20px !important; font-size: 11px !important; padding: 0 3px !important; }
@@ -914,14 +850,9 @@
     .actions { grid-area: act; margin: 0; flex-direction: row; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 
     /* 操作群のパーツを横向き用に詰める */
-    .step-btn { width: 40px; height: 40px; font-size: 22px; }
-    .step-val { font-size: 20px; min-width: 26px; }
-    .step-cap { display: none; }
-    .stepper { gap: 6px; }
     .btn { padding: 4px 16px; font-size: 14px; white-space: nowrap; }
     .btn-go { flex: none; }
     .btn-clear { flex: none; }
-    .btn-del { flex: none; padding-left: 12px; padding-right: 12px; }
     .qi-label { font-size: 9px; margin-bottom: 2px; line-height: 1.2; }
     .qi-field { padding: 7px 10px; font-size: 15px; }
     .qi-btn { width: 38px; font-size: 15px; }
@@ -1010,7 +941,6 @@
     body.judged .tone-row { margin-top: 5px; gap: 4px; }
     body.judged .dialect-row { margin-top: 3px; gap: 4px; }
     body.judged .tone-btn, body.judged .dialect-btn { font-size: 10px; padding: 3px 8px; border-radius: 11px; }
-    body.judged .dialect-label { font-size: 9px; margin-right: 1px; }
     body.judged .seat-foot { font-size: 9px; margin-top: 2px; }
     body.judged .r-detail { display: block; font-size: 9px; line-height: 1.4; margin-top: 1px; color: rgba(243,236,224,0.58); }
     body.judged .verdict-foot { display: none; }
@@ -1021,21 +951,6 @@
     body.judged .panel { display: none; }
     /* ボタンは結果カードの末尾にすなおに置く。固定で宙に浮かせると他要素を覆い位置も狂うため。
        結果カードを画面高に収めることで、末尾のボタンも自然に画面内へ入る。 */
-    body.judged .back-to-board {
-      display: block; width: 100%; margin-top: 6px;
-      padding: 10px 14px; border: none; border-radius: 12px;
-      background: rgba(243,236,224,0.16); color: rgba(243,236,224,0.95);
-      font-family: var(--serif); font-size: 13px; letter-spacing: 0.15em;
-      cursor: pointer;
-    }
-    .back-to-board {
-      display: block; width: 100%; margin-top: 10px;
-      padding: 11px 14px; border: none; border-radius: 12px;
-      background: rgba(243,236,224,0.12); color: rgba(243,236,224,0.92);
-      font-family: var(--serif); font-size: 14px; letter-spacing: 0.15em;
-      cursor: pointer;
-    }
-    .back-to-board:active { background: rgba(243,236,224,0.2); }
     /* 次局の二択：横持ちで判定後、連チャン・親流れを横並び半々に置く。 */
     body.judged .next-hand-row { display: flex; gap: 8px; margin-top: 6px; }
     body.judged .next-hand-row .nh-btn {
@@ -1126,7 +1041,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1322</div>
+  <div id="verTag">v1323</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
