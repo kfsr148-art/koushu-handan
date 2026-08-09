@@ -375,6 +375,21 @@ function lineOfNoB64(idx) {
   return lo + 1;
 }
 
+/* <script> の外（CSS・HTML）は、字面が同じでも別物。たとえば .reasons というCSSの規則は
+   JSの変数 reasons の読み出しではない。位置と行はそのままに、外側を空白で伏せた写しを作る。⑧で使う。 */
+const jsOnly = (function () {
+  const out = new Array(srcNoB64.length).fill(' ');
+  for (let i = 0; i < srcNoB64.length; i++) if (srcNoB64.charCodeAt(i) === 10) out[i] = '\n';
+  const re = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
+  let m;
+  while ((m = re.exec(srcNoB64))) {
+    if (/\bsrc\s*=/i.test(m[1])) continue;               // 外部読み込みは中身が無い
+    const start = m.index + m[0].indexOf('>') + 1;
+    for (let i = 0; i < m[2].length; i++) out[start + i] = m[2][i];
+  }
+  return out.join('');
+})();
+
 /* ============================================================
    ⑤ 死にコード（どこからも参照されていない宣言）
    ============================================================ */
@@ -500,6 +515,42 @@ section('⑦', '狭い画面での溢れ', () => {
   } finally {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   }
+});
+
+/* ============================================================
+   ⑧ 組み立てているのに画面に出していない入れ物
+   （配列や連想配列を作って詰めるだけで、一度も読み出していないもの。
+     v1321 まで残っていた「判定の根拠リスト」がこの形だった）
+   ============================================================ */
+section('⑧', '組み立てて出していない入れ物', () => {
+  /* 空の配列・連想配列で始まる宣言だけを見る。組み立てて使う入れ物の形はこれになる。 */
+  const re = /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(\[\s*\]|\{\s*\})/g;
+  let m;
+  const boxes = [];
+  while ((m = re.exec(jsOnly))) boxes.push({ name: m[1], line: lineOfNoB64(m.index) });
+
+  const dead = [];
+  boxes.forEach(b => {
+    const re2 = new RegExp('\\b' + b.name.replace(/\$/g, '\\$') + '\\b', 'g');
+    let m2, reads = 0, writes = 0;
+    while ((m2 = re2.exec(jsOnly))) {
+      const after = jsOnly.slice(m2.index + b.name.length, m2.index + b.name.length + 24);
+      const before = jsOnly.slice(Math.max(0, m2.index - 24), m2.index);
+      if (/^\s*=\s*(\[\s*\]|\{\s*\})/.test(after) && /(?:const|let|var)\s+$/.test(before)) continue;   // 宣言そのもの
+      /* 詰める側：push などの破壊的な呼び出しと、添字・属性への代入 */
+      if (/^\s*\.\s*(push|unshift|splice|sort|reverse|fill|pop|shift)\s*\(/.test(after)) { writes++; continue; }
+      if (/^\s*\[[^\]]*\]\s*=[^=]/.test(after)) { writes++; continue; }
+      if (/^\s*\.\s*[A-Za-z_$][\w$]*\s*=[^=]/.test(after)) { writes++; continue; }
+      reads++;
+    }
+    if (writes >= 1 && reads === 0) dead.push({ ...b, writes });
+  });
+
+  note('空の配列・連想配列で始まる宣言 : ' + boxes.length + '件');
+  if (dead.length === 0) { ok('組み立てたきり読み出していない入れ物は無し'); return; }
+  ng('組み立てているのに読み出していない入れ物 ' + dead.length + '件');
+  dead.forEach(d => note(String(d.line).padStart(5) + '行  ' + d.name + '（詰める操作 ' + d.writes + '回・読み出し 0回）'));
+  note('※ 同じ名前を別の場所でも使っていると数がまざる。挙がったものは前後を見て確かめること');
 });
 
 /* ---- まとめ ---- */
