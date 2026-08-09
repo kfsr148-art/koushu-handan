@@ -4,24 +4,23 @@
       "Read",
       "Glob",
       "Grep",
+      "Write",
+      "Edit",
       "Bash(grep *)",
       "Bash(awk *)",
       "Bash(cat *)",
       "Bash(ls *)",
       "Bash(head *)",
+      "Bash(rm *)",
       "Bash(git status *)",
       "Bash(git diff *)",
       "Bash(git log *)",
-      "Bash(node --check *)"
-    ],
-    "ask": [
-      "Write",
-      "Edit",
-      "Bash(rm *)",
       "Bash(git rm *)",
       "Bash(git commit *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(node --check *)"
     ],
+    "ask": [],
     "defaultMode": "acceptEdits"
   }
 }
