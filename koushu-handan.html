@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1320">
+<html lang="ja" data-ver="1321">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1050,6 +1050,19 @@
     .watch-tones { gap: 2px; padding: 0 6px 2px; }
     .watch-msg { padding: 2px 12px; }
   }
+  /* 小さい横画面では、判定後の根拠は見出しと○×だけに畳む。解説まで出すと縦が足りず、
+     末尾の「連チャン／親流れ」が画面外へ落ちる。どの項目が○でどれが×かは残るので骨格は読める。
+     背の低さ（320px級）だけでなく幅の狭さ（667px級）でも折り返しが増えて縦が伸びるため、
+     「背が低い または 幅が狭い」の二条件で畳む。844x390・932x430 では解説まで出す。 */
+  @media (orientation: landscape) and (max-height: 380px),
+         (orientation: landscape) and (max-width: 745px) {
+    body.judged .r-detail { display: none; }
+    /* 解説を畳んでも、守りの手のように見出しが二行に折れる回は数px足りない。
+       根拠欄の余白と見出しの行間も詰めて、末尾の二択が画面内に残る余地を作る。 */
+    body.judged .reasons { margin-top: 2px; padding: 0 12px; }
+    body.judged .reason { padding: 1px 0; }
+    body.judged .r-title { line-height: 1.2; }
+  }
   #verTag { position: fixed; top: 2px; left: 5px; font-size: 9px; letter-spacing:0.05em; color: rgba(243,236,224,0.32); z-index: 99; pointer-events: none; font-family: var(--sans); }
   .voice-credit { position: fixed; top: 2px; left: 44px; font-size: 9px; letter-spacing: 0.04em; color: rgba(243,236,224,0.40); z-index: 99; pointer-events: none; font-family: var(--sans); display: none; }
   #tauntBtn{width:88px;box-sizing:border-box;flex:0 0 auto;text-align:center;}
@@ -1104,7 +1117,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1320</div>
+  <div id="verTag">v1321</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -7836,6 +7849,16 @@ document.addEventListener('DOMContentLoaded', function () {
           <button type="button" class="dialect-btn${advRandDialOn()?' active':''}" onclick="window.toggleRandDial(event)">ランダム</button>
         </div>
         ${seatLine ? `<div class="seat-foot">${seatLine}</div>` : ''}
+        <div class="reasons">
+          ${reasons.map(r=>`
+            <div class="reason">
+              <div class="r-mark ${r.ok?'yes':'no'}">${r.ok?'✓':'×'}</div>
+              <div class="r-body">
+                <div class="r-title">${r.title}</div>
+                <div class="r-detail">${r.detail}</div>
+              </div>
+            </div>`).join('')}
+        </div>
         <div class="judged-hand" style="display:flex; flex-direction:row; gap:2px; justify-content:center; align-items:flex-end; flex-wrap:nowrap; margin-top:8px;">
           ${judgedHandHTML}
         </div>
