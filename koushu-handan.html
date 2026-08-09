@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1312">
+<html lang="ja" data-ver="1313">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1075,7 +1075,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1312</div>
+  <div id="verTag">v1313</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -6360,16 +6360,6 @@ document.addEventListener('DOMContentLoaded', function () {
     r.split = true;   // 集める段で割れた手だけに絞っている
     return r;
   }
-  // 現場猫の一言目（荒い物差しの見立てと、その線引きの意味）
-  function misdiagGenbaOpen(r){
-    if(r.kind === 'cat')  return '猫牌' + r.cat + '枚。4枚以上は手がバラバラってことだ。逃げヨシ！';
-    if(r.kind === 'eda')  return '枝豆' + r.eda + '組。同じ牌が2枚そろった組が1組以下。手の軸がないってことだ。逃げヨシ！';
-    if(r.kind === 'catD') return '猫牌0枚。バラバラの牌が一枚も無い、きれいにまとまった手だ。攻めヨシ！';
-    if(r.kind === 'split') return (r.catLean === 'attack')
-      ? '猫牌0枚。バラバラの牌が一枚も無い、きれいにまとまった手だ。攻めヨシ！'
-      : ('猫牌' + r.cat + '枚。4枚以上は手がバラバラってことだ。逃げヨシ！');
-    return '枝豆' + r.eda + '組。同じ牌の組が2組以上。手の軸はできてる。攻めヨシ！';
-  }
   // ── 三人の物差し。回ごとに二人が割れ、残る一人が手の中身を挙げて決着させる ──
   //   現場猫＝猫牌（0枚=攻め／4枚以上=守り）
   //   ずんだもん＝枝豆（2組以上=攻め／1組以下=守り）
@@ -6384,7 +6374,7 @@ document.addEventListener('DOMContentLoaded', function () {
         + 'この帯じゃオレは何も言えん';
       // 猫牌は数牌の浮きだけを数える。字牌が残る手では、その断りを攻め・守りの両方で言う。
       const noteJi = (r.om > 0)
-        ? ('。オレの目は数牌までだ。浮いた' + rb('字牌', 'ジハイ') + r.om + '枚は見えてない')
+        ? ('。オレの目は数牌までだ。浮いた' + rb('字牌', 'ジハイ') + 'は見えてない')
         : '';
       return (lean === 'attack')
         ? ('猫牌0枚。数牌に浮いた牌が一枚も無い、繋がった手だ' + noteJi + '。攻めヨシ！')
@@ -6397,12 +6387,12 @@ document.addEventListener('DOMContentLoaded', function () {
         // 黙る理由が猫牌しかない回は、ずんだの担当材料の外。何も言わずに形の話へ渡す。
         if(few && !band) return '';
         return '枝豆' + r.eda + '組なのだ。攻めと言えるのは4組からで、この手は届いてないのだ。'
-          + '守りと言えるのは猫牌3〜4枚で1組以下のときだけなのだ。どちらでもないのだ';
+          + '守りと言えるのは1組以下のときだけで、この手はそこにも入らないのだ。どちらでもないのだ';
       }
       return (lean === 'attack')
         ? ('枝豆' + r.eda + '組なのだ。同じ牌の組が4組もあるのだ。手の軸はできてるのだ。攻めなのだ')
-        : ('枝豆' + r.eda + '組なのだ。猫牌' + r.cat + '枚の迷いの帯で組が1組以下——'
-           + '枝豆も薄い、守りヨシなのだ');
+        : ('枝豆' + r.eda + '組なのだ。同じ牌の組が1組以下では、手の軸が立たないのだ。'
+           + '枝豆が薄い、守りヨシなのだ');
     }
     if(!lean){
       // 沈黙帯は二通り：枚数が平均付近のときと、0枚でも1・9・字牌が3枚以上あるとき
@@ -6432,7 +6422,7 @@ document.addEventListener('DOMContentLoaded', function () {
       B.push('数牌のうち' + r.cat + '枚が浮いてる');
       B.push(r.cat === 0 ? '数牌は一枚も浮いてない、繋がった手だ'
         : (r.cat >= 4 ? '数牌が端まで散ってる手だ' : 'どっちつかずに散らかった手だ'));
-      B.push(r.sh + rb('向聴', 'シャンテン') + 'だ');
+      B.push('散らばりと上がりの近さは別だ。この手は' + r.sh + rb('向聴', 'シャンテン') + 'だ');
       return '中身を見るぞ。' + B.join('。')
         + (silent ? '。オレの物差しは黙りだが、散らばり方だけは見ておけ'
           : (split ? '。数え方が割れたときは、牌の散らばりを見るしかない'
