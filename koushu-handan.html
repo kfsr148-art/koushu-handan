@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1315">
+<html lang="ja" data-ver="1316">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1083,7 +1083,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1315</div>
+  <div id="verTag">v1316</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -5747,11 +5747,6 @@ document.addEventListener('DOMContentLoaded', function () {
     advEl.bHall.style.display = dis ? 'none' : '';
     [advEl.bSearch, advEl.bHear, advEl.bPhone, advEl.bAuto, advEl.bHearCat, advEl.bHearBody, advEl.bKitten, advEl.bRon, advEl.bHall].forEach(b => b.disabled = dis);
     advEl.msg.style.display = (inEnd || inDiff || inNote) ? 'none' : '';
-    advEl.foot.textContent = inNote ? ''
-      : inDiff ? '難易度を選んでくださいまし'
-      : inEnd ? '「次へ」で幕が進みますの'
-      : (advPausing ? '読み終えたら「次へ」で廊下へ戻りますの'
-      : (inHall ? '扉で部屋へ。✕ で卓に戻れますの（局は保存されますわ）' : '一手打つと結果が出ますの'));
     advEl.inv.innerHTML = '';
     advEl.inv.appendChild(document.createTextNode('手牌：'));
     const got = {};
@@ -6239,8 +6234,6 @@ document.addEventListener('DOMContentLoaded', function () {
     bClose.style.cssText = 'position:absolute; top:4px; right:8px; background:none; border:none; color:#6a7486; font-size:16px; padding:4px 10px;';
     bClose.onclick = () => { root.style.display = 'none'; };
     root.appendChild(bClose);
-    const foot = document.createElement('div');
-    foot.style.cssText = 'padding:1px 12px 2px; margin:0 12px; color:#8a94a6; font-size:10px; letter-spacing:.04em; min-height:1.1em;';
     // 操作面は高さの決まった器にまとめる（#advDeck）。場面ごとの display 切替で外形が動かなくなり、
     // 余りをもらう絵の枠(scene)の高さが一定になる。
     const deck = document.createElement('div');
@@ -6248,7 +6241,7 @@ document.addEventListener('DOMContentLoaded', function () {
     deck.appendChild(msg); deck.appendChild(diffRow); deck.appendChild(hallRow); deck.appendChild(row);
     root.appendChild(inv); root.appendChild(scene); root.appendChild(deck); root.appendChild(head);
     document.body.appendChild(root);
-    advEl = { root, head, headText, inv, scene, msg, foot, diffRow, hallRow, row, doors, bSearch, bHear, bPhone, bAuto, bHearCat, bHearBody, bKitten, bRon, bBribeYes, bBribeNo, bNext, bHall };
+    advEl = { root, head, headText, inv, scene, msg, diffRow, hallRow, row, doors, bSearch, bHear, bPhone, bAuto, bHearCat, bHearBody, bKitten, bRon, bBribeYes, bBribeNo, bNext, bHall };
   }
 
   // ===== 誤診記録（標本箱）=====
@@ -6394,12 +6387,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     if(who === 'eda'){
       if(!lean){
-        // 守りの条件は「猫牌3〜4枚」かつ「1組以下」。どちらが外れているかを言い分ける。
-        const few = (r.eda <= 1), band = (r.cat >= 3 && r.cat <= 4);
-        // 黙る理由が猫牌しかない回は、ずんだの担当材料の外。何も言わずに形の話へ渡す。
-        if(few && !band) return '';
+        // ずんだの担当材料は組の数だけ。守りの目盛りには猫牌の帯も要るが、それは担当外なので持ち出さない。
         return '枝豆' + r.eda + '組なのだ。攻めと言えるのは4組からで、この手は届いてないのだ。'
-          + '守りと言えるのは1組以下のときだけで、この手はそこにも入らないのだ。どちらでもないのだ';
+          + '組の数だけでは、どっちとも言えないのだ';
       }
       return (lean === 'attack')
         ? ('枝豆' + r.eda + '組なのだ。同じ牌の組が4組もあるのだ。手の軸はできてるのだ。攻めなのだ')
