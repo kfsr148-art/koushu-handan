@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1333">
+<html lang="ja" data-ver="1334">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1120,7 +1120,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1333</div>
+  <div id="verTag">v1334</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -5734,7 +5734,14 @@ document.addEventListener('DOMContentLoaded', function () {
       ppl = t.dead[t.room] ? _rname + 'の部屋は現場になっている……' : (t.joined[t.room] ? '' : _rname + 'がいる');
     }
     if(!inEnd && !inDiff && !inHall && !inNote && ADV_ROOM_IMG[t.room]){
-      const spr = (t.room === 'room16' && t.knifeThrown && !t.knifeAvoided)
+      /* ナイフは一度の発動につき一回だけ飛ばす。
+         この絵は advRender のたびに作り直され、作り直すと CSS アニメが頭から流れる。
+         発動の直後は advRender が続けて何度も呼ばれる（advSearch が明示で一回、
+         そのあと advOut／advSeq が中でもう一回）ので、素直に書くと二回飛ぶ。
+         飛ばした時点で knifeFlown を立て、以後の再描画・部屋の出入り・連打では出さない。 */
+      const knifeNow = (t.room === 'room16' && t.knifeThrown && !t.knifeAvoided && !t.knifeFlown);
+      if(knifeNow) t.knifeFlown = true;
+      const spr = knifeNow
         ? '<div style="position:absolute; top:46%; width:11%; height:3%; animation:knifeFly .45s linear forwards;"><div style="position:absolute; left:0; top:30%; width:26%; height:40%; background:#5a3a1c; box-shadow:0 0 0 1px rgba(20,18,26,.9);"></div><div style="position:absolute; left:26%; top:0; width:60%; height:100%; background:linear-gradient(#e9edf2,#aab3bd); box-shadow:0 0 0 1px rgba(20,18,26,.9);"></div><div style="position:absolute; left:86%; top:0; width:0; height:0; border-top:solid transparent; border-bottom:solid transparent; border-left:solid #cfd6dd; border-top-width:calc(1.5% + 0px);"></div></div>'
         : (t.room === 'room12' && t.floorOpen && !t.floorAvoided)
         ? '<div style="position:absolute; inset:0; overflow:hidden; pointer-events:none;"><div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); min-width:100%; min-height:100%; aspect-ratio:1920/408;"><div style="position:absolute; left:23.9%; bottom:4.2%; width:6.1%; height:5.2%; background:#000; box-shadow:inset 0 6px 12px rgba(0,0,0,1), 0 0 0 2px rgba(20,18,26,.9);"></div></div></div>'
