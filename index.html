@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>配牌 攻守判定</title>
+<!-- 空のアイコンを宣言しておく。宣言が無いとブラウザが /favicon.ico を勝手に取りに行き、起動のたび404になる -->
+<link rel="icon" href="data:,">
+<!-- 本体はファイル名まで含めた URL でしか開けなかったので、入口をここに置いて送る。
+     置換なので戻る操作で入口に戻ってしまうことがない。 -->
+<meta http-equiv="refresh" content="0; url=koushu-handan.html">
+<style>
+  html, body { height: 100%; margin: 0; background: #14241c; }
+  body { display: flex; align-items: center; justify-content: center;
+    color: rgba(243,236,224,0.9); font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+    font-size: 15px; letter-spacing: 0.08em; text-align: center; padding: 24px; }
+  a { color: #d4af37; }
+</style>
+</head>
+<body>
+  <div>
+    配牌 攻守判定 を開いています……<br>
+    <a href="koushu-handan.html">開かないときはこちら</a>
+  </div>
+  <script>
+    /* meta の refresh が効かない場合の受け皿。履歴に入口を残さないよう置換で送る。 */
+    location.replace('koushu-handan.html');
+  </script>
+</body>
+</html>
