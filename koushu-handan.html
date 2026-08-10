@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1330">
+<html lang="ja" data-ver="1331">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -532,6 +532,29 @@
     background: rgba(212,175,55,0.12); color: var(--gold);
     font-size: 13px; padding: 6px 12px; cursor: pointer;
   }
+  /* ---- ミニゲーム「一索の鳥」の見た目 ---- */
+  .tori-overlay { display: none; position: fixed; inset: 0; z-index: 100002; background: #0d1b16;
+    overflow: hidden; touch-action: none; -webkit-user-select: none; user-select: none; }
+  .tori-overlay.show { display: block; }
+  .tori-bird { position: absolute; will-change: transform; pointer-events: none; }
+  .tori-bird svg { display: block; width: 100%; height: 100%; }
+  .tori-hud { position: absolute; top: 6px; left: 10px; right: 10px; z-index: 3;
+    display: flex; align-items: center; gap: 12px; pointer-events: none;
+    color: var(--bone); font-size: 13px; letter-spacing: .06em; text-shadow: 0 1px 3px rgba(0,0,0,.8); }
+  .tori-hud .tori-close { margin-left: auto; pointer-events: auto; }
+  .tori-panel { position: absolute; inset: 0; z-index: 4; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 14px; background: rgba(6,16,12,.86);
+    color: var(--bone); text-align: center; padding: 16px; }
+  .tori-panel h2 { font-family: var(--serif); font-size: 20px; letter-spacing: .12em; margin: 0; color: var(--gold); }
+  .tori-panel .tori-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .tori-btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #8a7f5c;
+    background: #2c3644; color: #e8e2d0; font-family: inherit; font-size: 14px; cursor: pointer; }
+  .tori-btn:active { transform: translateY(1px); }
+  /* 勝敗の絵の差し込み口。絵は未用意なので、今は枠と仮の文字だけを置く。 */
+  .tori-art { width: min(60vw, 220px); height: min(34vh, 130px); border: 1px dashed rgba(243,236,224,.35);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    color: rgba(243,236,224,.45); font-size: 12px; }
+
   /* ⚓ 船長の見張り台：船長猫牌から開く攻守クイズ */
   .watch-overlay {
     display: none; position: fixed; inset: 0; z-index: 100001;   /* ADV土台(99999)より上。下に潜って見えない事故の根治 */
@@ -1084,6 +1107,7 @@
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.ssMarkTool();">🀄️配牌攻守判定</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.watchOpen();">⚓ 船長の見張り台</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.advStart();">🚢 ミシシッピー現場猫事件</button>
+    <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.toriOpen();">🐦 一索の鳥</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.catRoomOpen();">⚙️ 設定</button>
     <button type="button" class="title-btn" onclick="window.openInfoList();">📖 説明欄</button>
   </div>
@@ -1096,7 +1120,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1330</div>
+  <div id="verTag">v1331</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1495,6 +1519,7 @@ document.addEventListener('DOMContentLoaded', function () {
      ミニゲーム中も勝敗の絵でも、吹き出し・文字表示はいっさい出さない。
      鳥が勝った絵で泣く現場猫の縦書き「どうして…」だけは、鳥の台詞ではないので出してよい。 */
   const BIRD_SVG = `<path d="M38,56 L29,75 L40,67 L46,73 L52,67 L63,75 L54,56 Z" fill="url(#bd2)"/><ellipse cx="46" cy="48" rx="15" ry="16" fill="url(#bd)"/><path d="M33,44 q-7,7 -3,17 q7,-3 8,-13 Z" fill="#15622f"/><path d="M59,44 q7,7 3,17 q-7,-3 -8,-13 Z" fill="#15622f"/><circle cx="46" cy="27" r="11" fill="url(#bd)"/><path d="M40,18 q-3,-9 1,-13 q2,5 1,12 Z" fill="#1f7a3d"/><path d="M46,16 q0,-10 0,-14 q1,6 1,13 Z" fill="#1f7a3d"/><path d="M52,18 q3,-9 -1,-13 q-2,5 -1,12 Z" fill="#1f7a3d"/><path d="M56,27 L66,24 L57,31 Z" fill="#d98a2b"/><circle cx="50" cy="25" r="2.4" fill="#0e3a1c"/><circle cx="50.7" cy="24.3" r="0.9" fill="#fff"/><path d="M42,63 L40,72 M42,72 L37,74 M42,72 L43,75" stroke="#c0392b" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M50,63 L52,72 M50,72 L49,75 M50,72 L55,74" stroke="#c0392b" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
+  window.BIRD_SVG = BIRD_SVG;   // ミニゲーム「一索の鳥」から使う（絵は一つだけ持つ）
   function souSVG(n, red){
     if(n===1) return `<svg class="sou-svg" viewBox="0 0 92 82">${BIRD_SVG}</svg>`;
     let L = SOU_LAYOUT[n]||[];
@@ -8679,6 +8704,239 @@ window.ssReceive = function(){
     </div>
   </div>
   <button type="button" id="ssPickBtn" class="btn btn-group" style="display:none;" onclick="window.ssGoReader()">📷 写真から選ぶ</button>
+<script>
+/* ==================== ミニゲーム「一索の鳥」 ====================
+   一索の鳥を捕まえる。鳥は台詞を持たない（吹き出しも文字も出さない）。
+   遊びの数値はすべて下の TORI 一箇所に置く。実測して30秒に収まる値にしてある。 */
+(function(){
+  'use strict';
+  const TORI = {
+    /* 速さは「画面の短辺を1としたときの毎秒の移動量」。0.30なら短辺の3割を1秒で進む。 */
+    levels: [
+      { key:'easy',   label:'初級', speed:0.30, turn:2.0, birds:2, quota:3 },
+      { key:'normal', label:'中級', speed:0.45, turn:1.2, birds:3, quota:5 },
+      { key:'hard',   label:'上級', speed:0.65, turn:0.7, birds:4, quota:7 }
+    ],
+    timeLimit:   30,    // 制限時間（秒）
+    speedUpStep: 0.10,  // 一羽捕まえるごとに残りが速くなる割合（最後の一羽がいちばん速い）
+    dodgeRadius: 0.25,  // 空振りが届く半径（短辺に対する割合）
+    dodgeBoost:  1.8,   // 逃げるときの速さの倍率
+    dodgeTime:   0.30,  // 逃げる時間（秒）
+    flashTime:   0.25,  // 転換のとき羽に色が乗る時間（秒）
+    birdSize:    0.13,  // 鳥の大きさ（短辺に対する割合）
+    edgeMargin:  0.02   // 「壁際」とみなす幅（短辺に対する割合）
+  };
+  /* 方言八種を八方位へ等間隔に。角度は画面座標（右が0度、下が正）。 */
+  const TORI_DIRS = [
+    { key:'aomori',   label:'青森', deg:-90,  color:'#9fc6e8' },  // 北
+    { key:'yoji',     label:'幼児', deg:-45,  color:'#f2c9dd' },  // 北東
+    { key:'bushi',    label:'武士', deg:0,    color:'#c8c2a8' },  // 東
+    { key:'miyazaki', label:'宮崎', deg:45,   color:'#f0c58a' },  // 南東
+    { key:'okinawa',  label:'沖縄', deg:90,   color:'#8fd2c2' },  // 南
+    { key:'hakata',   label:'博多', deg:135,  color:'#d9a3a3' },  // 南西
+    { key:'osaka',    label:'大阪', deg:180,  color:'#e0b76a' },  // 西
+    { key:'kyoto',    label:'京都', deg:-135, color:'#b9a8d4' }   // 北西
+  ];
+  const rad = d => d * Math.PI / 180;
+
+  let el = null, birds = [], raf = 0, level = null;
+  let caught = 0, endAt = 0, lastT = 0, running = false;
+
+  function build(){
+    if(el) return el;
+    const root = document.createElement('div');
+    root.className = 'tori-overlay';
+    root.id = 'toriRoot';
+    root.innerHTML =
+      '<div class="tori-hud"><span id="toriCount"></span><span id="toriTime"></span>' +
+      '<button type="button" class="tori-btn tori-close" onclick="window.toriClose()">✕</button></div>' +
+      '<div class="tori-panel" id="toriPanel"></div>';
+    document.body.appendChild(root);
+    /* 捕獲は touchstart だけ。なぞって撫でても捕まらない。
+       指が触れていない環境（PCでの確認）だけ mousedown も受ける。 */
+    root.addEventListener('touchstart', function(ev){
+      if(!running) return;
+      ev.preventDefault();
+      const t = ev.changedTouches[0];   // 同時に触れても一点だけ有効
+      if(t) hit(t.clientX, t.clientY);
+    }, { passive:false });
+    if(!('ontouchstart' in window)){
+      root.addEventListener('mousedown', function(ev){ if(running) hit(ev.clientX, ev.clientY); });
+    }
+    el = root;
+    return root;
+  }
+  const short = () => Math.min(window.innerWidth, window.innerHeight);
+
+  function panel(html){
+    const p = document.getElementById('toriPanel');
+    if(!p) return;
+    p.innerHTML = html;
+    p.style.display = html ? 'flex' : 'none';
+  }
+  function menu(){
+    panel('<h2>一索の鳥</h2><div>' + TORI.timeLimit + '秒。触れて捕まえる。</div><div class="tori-row">' +
+      TORI.levels.map(function(l){
+        return '<button type="button" class="tori-btn" onclick="window.toriStart(\'' + l.key + '\')">' +
+          l.label + '（' + l.quota + '羽）</button>';
+      }).join('') + '</div>');
+  }
+  function newBird(fromEdge){
+    const s = short(), size = s * TORI.birdSize;
+    const W = window.innerWidth, H = window.innerHeight;
+    let x, y;
+    if(fromEdge){
+      /* 補充は外周から入ってくる。いきなり真ん中に湧かせない。 */
+      const side = Math.floor(Math.random() * 4);
+      if(side === 0){ x = Math.random() * W; y = -size; }
+      else if(side === 1){ x = W + size; y = Math.random() * H; }
+      else if(side === 2){ x = Math.random() * W; y = H + size; }
+      else { x = -size; y = Math.random() * H; }
+    } else {
+      x = size + Math.random() * Math.max(1, W - size * 2);
+      y = size + Math.random() * Math.max(1, H - size * 2);
+    }
+    const node = document.createElement('div');
+    node.className = 'tori-bird';
+    node.style.width = size + 'px';
+    node.style.height = size + 'px';
+    node.innerHTML = '<svg viewBox="0 0 92 82">' + (window.BIRD_SVG || '') + '</svg>';
+    el.appendChild(node);
+    const b = { node:node, x:x, y:y, size:size, dirIdx:-1, deg:0, turnLeft:0, dodgeLeft:0, flashLeft:0 };
+    turn(b, true);
+    birds.push(b);
+    return b;
+  }
+  /* 方角を変える。直前と同じ方言は引き直す。壁際で外を向く引きも引き直す。 */
+  function turn(b, force){
+    const W = window.innerWidth, H = window.innerHeight, m = short() * TORI.edgeMargin;
+    for(let i = 0; i < 24; i++){
+      const idx = Math.floor(Math.random() * TORI_DIRS.length);
+      if(idx === b.dirIdx && !force) continue;
+      const d = TORI_DIRS[idx], vx = Math.cos(rad(d.deg)), vy = Math.sin(rad(d.deg));
+      if(b.x <= m && vx < 0) continue;
+      if(b.x >= W - m && vx > 0) continue;
+      if(b.y <= m && vy < 0) continue;
+      if(b.y >= H - m && vy > 0) continue;
+      b.dirIdx = idx; b.deg = d.deg;
+      b.flashLeft = TORI.flashTime;
+      b.node.style.filter = 'drop-shadow(0 0 6px ' + d.color + ')';
+      b.turnLeft = level.turn;
+      return;
+    }
+    b.turnLeft = level.turn;   // 引けなければ今の向きのまま次を待つ
+  }
+  function speedNow(){
+    return short() * level.speed * (1 + TORI.speedUpStep * caught);
+  }
+  function step(now){
+    if(!running) return;
+    const dt = Math.min(0.05, (now - lastT) / 1000);
+    lastT = now;
+    const W = window.innerWidth, H = window.innerHeight;
+    birds.forEach(function(b){
+      const sp = speedNow() * (b.dodgeLeft > 0 ? TORI.dodgeBoost : 1);
+      b.x += Math.cos(rad(b.deg)) * sp * dt;
+      b.y += Math.sin(rad(b.deg)) * sp * dt;
+      /* 端は入射角どおりに跳ね返る。跳ね返りでは色を出さない。 */
+      if(b.x < 0){ b.x = 0; b.deg = 180 - b.deg; }
+      else if(b.x > W){ b.x = W; b.deg = 180 - b.deg; }
+      if(b.y < 0){ b.y = 0; b.deg = -b.deg; }
+      else if(b.y > H){ b.y = H; b.deg = -b.deg; }
+      b.node.style.transform = 'translate(' + (b.x - b.size / 2) + 'px,' + (b.y - b.size / 2) + 'px)';
+      if(b.flashLeft > 0){ b.flashLeft -= dt; if(b.flashLeft <= 0) b.node.style.filter = ''; }
+      if(b.dodgeLeft > 0){ b.dodgeLeft -= dt; }
+      else { b.turnLeft -= dt; if(b.turnLeft <= 0) turn(b, false); }
+    });
+    const left = Math.max(0, (endAt - Date.now()) / 1000);
+    const c = document.getElementById('toriCount'), tm = document.getElementById('toriTime');
+    if(c) c.textContent = caught + ' / ' + level.quota + ' 羽';
+    if(tm) tm.textContent = left.toFixed(1) + ' 秒';
+    if(caught >= level.quota) return finish(true);
+    if(left <= 0) return finish(false);
+    raf = requestAnimationFrame(step);
+  }
+  /* 触れた点の始末。鳥に当たれば捕獲、外れれば近くの一羽が逃げる。 */
+  function hit(px, py){
+    for(let i = 0; i < birds.length; i++){
+      const b = birds[i], h = b.size / 2;
+      if(px >= b.x - h && px <= b.x + h && py >= b.y - h && py <= b.y + h){
+        b.node.remove();
+        birds.splice(i, 1);
+        caught++;
+        newBird(true);   // 常に規定数を保つ
+        return;
+      }
+    }
+    /* 空振り：半径の内でいちばん近い一羽が、触点の反対に最も近い方角へ逃げる */
+    const r = short() * TORI.dodgeRadius;
+    let best = null, bestD = r;
+    birds.forEach(function(b){
+      const d = Math.hypot(b.x - px, b.y - py);
+      if(d < bestD){ bestD = d; best = b; }
+    });
+    if(!best) return;   // 半径の内に居なければ何も起きない
+    const away = Math.atan2(best.y - py, best.x - px) * 180 / Math.PI;
+    let pick = 0, diff = 999;
+    TORI_DIRS.forEach(function(d, i){
+      let g = Math.abs(((d.deg - away + 540) % 360) - 180);
+      g = 180 - g;
+      if(g < diff){ diff = g; pick = i; }
+    });
+    best.dirIdx = pick;
+    best.deg = TORI_DIRS[pick].deg;
+    best.dodgeLeft = TORI.dodgeTime;
+    best.flashLeft = TORI.flashTime;
+    best.node.style.filter = 'drop-shadow(0 0 6px ' + TORI_DIRS[pick].color + ')';
+  }
+  function clearBirds(){
+    birds.forEach(function(b){ b.node.remove(); });
+    birds = [];
+  }
+  function finish(win){
+    running = false;
+    cancelAnimationFrame(raf);
+    clearBirds();
+    /* 勝敗の絵は未用意。差し込み口だけ置き、今は枠と仮の文字を出す。
+       遊んでいる最中の画面に現場猫は出さない。鳥は勝っても負けても無言。 */
+    panel('<h2>' + (win ? '捕まえた' : '逃げられた') + '</h2>' +
+      '<div class="tori-art" id="toriArt">' +
+        (win ? '［絵の差し込み口］鳥が泣き、現場猫が勝つ' : '［絵の差し込み口］鳥が勝ち、現場猫が泣く') +
+      '</div>' +
+      '<div>' + caught + ' / ' + level.quota + ' 羽</div>' +
+      '<div class="tori-row">' +
+        '<button type="button" class="tori-btn" onclick="window.toriMenu()">もう一度</button>' +
+        '<button type="button" class="tori-btn" onclick="window.toriClose()">やめる</button>' +
+      '</div>');
+  }
+  window.toriOpen = function(){
+    build();
+    el.classList.add('show');
+    clearBirds();
+    running = false;
+    menu();
+  };
+  window.toriMenu = function(){ clearBirds(); running = false; menu(); };
+  window.toriStart = function(key){
+    level = TORI.levels.filter(function(l){ return l.key === key; })[0] || TORI.levels[0];
+    clearBirds();
+    caught = 0;
+    panel('');
+    for(let i = 0; i < level.birds; i++) newBird(false);
+    endAt = Date.now() + TORI.timeLimit * 1000;
+    lastT = performance.now();
+    running = true;
+    raf = requestAnimationFrame(step);
+  };
+  window.toriClose = function(){
+    running = false;
+    cancelAnimationFrame(raf);
+    clearBirds();
+    if(el) el.classList.remove('show');
+    if(window.ssGoTitle) window.ssGoTitle();
+  };
+})();
+</script>
   <div id="ssPasteZone" contenteditable="true" inputmode="none" spellcheck="false" style="display:none; min-width:250px; max-width:80vw; padding:12px 16px; border:1px dashed rgba(243,236,224,0.55); border-radius:8px; color:rgba(243,236,224,0.9); font-size:12px; font-family:var(--sans); text-align:center; -webkit-user-select:text; user-select:text;">ここを長押しして「ペースト」ですわ</div>
   <div style="display:flex; gap:12px; align-items:center;">
     <span id="ssInfo" style="color:rgba(243,236,224,0.8); font-size:11px; font-family:var(--sans);"></span>
