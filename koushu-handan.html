@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1335">
+<html lang="ja" data-ver="1336">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1120,7 +1120,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1335</div>
+  <div id="verTag">v1336</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1184,6 +1184,7 @@
         <button type="button" class="title-btn" onclick="window.openInfoDetail('koushu')">🀄️配牌攻守判定</button>
         <button type="button" class="title-btn" onclick="window.openInfoDetail('watch')">⚓ 船長の見張り台</button>
         <button type="button" class="title-btn" onclick="window.openInfoDetail('adv')">🚢 ミシシッピー現場猫事件</button>
+        <button type="button" class="title-btn" onclick="window.openInfoDetail('tori')">🐦 一索の鳥</button>
       </div>
     </div>
   </div>
@@ -4129,6 +4130,15 @@ document.addEventListener('DOMContentLoaded', function () {
       '<b>難易度</b><br>初歩・中級・上級の三段階。上級ほど証言に嘘が混じる分、疑ってかかる読みが要る。<br><br>' +
       '<b>どれくらい遊べるの？</b><br>行動力を一手ずつ、文章を読みながら消費していく造りなので、目安はおよそ6分から10分ほど。<br><br>' +
       'クソゲー味を纏いながらも、答え合わせの筋道はきちんと通してある。' },
+    tori: { title: '◆ 一索の鳥', body:
+      '<b>これは何？</b><br>一索の鳥を捕まえる、30秒のミニゲーム。タイトル画面から入る。<br><br>' +
+      '<b>遊び方</b><br>画面を飛び回る鳥に、指で触れると捕まえられる。なぞっても捕まらないので、狙って触れること。' +
+      '捕まえた鳥は消え、すぐに別の一羽が外から入ってくる。<br><br>' +
+      '<b>難易度</b><br>初級・中級・上級の三段階。上へ行くほど鳥は速く、向きを変える間隔も短くなり、同時に飛ぶ数とノルマも増える。' +
+      '30秒でノルマぶんを捕まえれば勝ち、届かなければ鳥の勝ち。<br><br>' +
+      '<b>覚えておくと少し楽</b><br>鳥は一定の間隔で向きを変え、壁では跳ね返る。触れそこねると、近くの一羽が驚いて逃げる——' +
+      'つまり、外すと難しくなる。焦って連打するより、進む先へ指を置いて待つほうが早い。<br><br>' +
+      '一羽捕まえるごとに、残った鳥は少しずつ速くなる。最後の一羽がいちばん速い。' },
   };
   window.openInfoDetail = function(key){
     if(key === 'engine'){
