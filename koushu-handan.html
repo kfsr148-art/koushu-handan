@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1326">
+<html lang="ja" data-ver="1327">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -224,30 +224,67 @@
   .dora-face-lab, .dora-face-cnt { display: none; }
   /* 誤診記録：ドラを同じ行に収めるための小さな牌 */
   /* 判定カード上部の攻守ゾーン。攻めなら左（赤）、守りなら右（青）にアイコンが乗る */
+  /* 投票欄と台詞行の寸法は、ここ一箇所で決める。
+     指で押す的は44px以上。見た目は40pxで、足りない4pxは当たり判定だけ外へ広げる。 */
+  :root {
+    --vz-icon: 40px;   /* 投票欄アイコンの見た目 */
+    --vz-hit: 44px;    /* 当たり判定の一辺 */
+    --vz-gap: 8px;     /* アイコン同士の間隔 */
+    --say-icon: 24px;  /* 台詞行の行頭アイコンの箱 */
+    --vz-show: 5.5;    /* 箱に見せるアイコンの数。端数で端が半分見切れ、送れると分かる */
+    --vz-show-narrow: 2.5;
+  }
+  /* 攻の箱・中央・守の箱を一行に。以前は中央へ重ねていたが、アイコンを40pxにすると
+     虎・攻守の字・台詞に被る。横に並べれば中央より低い箱は縦を増やさない。 */
   .verdict-zones {
-    position: absolute; top: 6px; left: 8px; right: 8px; z-index: 5;
-    display: flex; justify-content: space-between; pointer-events: none;
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    pointer-events: none;
   }
+  .vz-mid { flex: 1 1 auto; min-width: 0; }
   .verdict-zones .vz {
-    width: 34%; min-height: 24px; border-radius: 8px; padding: 2px 4px;
-    display: flex; align-items: center; flex-wrap: wrap; gap: 2px;
+    flex: 0 0 auto; border-radius: 8px; padding: 0 4px;
+    width: calc(var(--vz-hit) * var(--vz-show) + var(--vz-gap) * (var(--vz-show) - 0.5));
+    min-height: calc(var(--vz-hit) + 4px);
+    display: flex; align-items: center; flex-wrap: nowrap; gap: var(--vz-gap);
+    overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch;
   }
+  @media (max-width: 745px) { :root { --vz-show: var(--vz-show-narrow); } }
   .verdict-zones .vz-atk { justify-content: flex-start; }
   .verdict-zones .vz-def { justify-content: flex-end; }
-  .verdict-zones .vz-chip { font-size: 10px; line-height: 1.4; padding: 0 3px; border-radius: 4px;
-    background: rgba(0,0,0,0.30); color: #e8e2d0; }
+  /* 外箱が当たり判定（44px）、中身が見た目（40px）。
+     箱の外へ疑似要素で広げる手は使えない——欄が overflow:auto で送れる作りのため、
+     はみ出した判定ごと切り取られてしまう。箱そのものを44pxにするのが確実。 */
+  .verdict-zones .vz-chip { width: var(--vz-hit); height: var(--vz-hit); flex: none; padding: 0;
+    background: none; border: none;
+    display: inline-flex; align-items: center; justify-content: center; }
+  .verdict-zones .vz-ic { width: var(--vz-icon); height: var(--vz-icon); border-radius: 8px;
+    background: rgba(0,0,0,0.30); color: #e8e2d0; font-size: 22px; line-height: 1;
+    display: inline-flex; align-items: center; justify-content: center; }
   /* 投票欄そのものは pointer-events:none で下の牌へタップを素通りさせているので、
      押させたいアイコンにだけ当たり判定を戻す。アイコンは20px角と小さいため、
      見た目は変えずに ::after で判定だけ外へ5px広げる（.tile.pick::before と同じ流儀）。 */
   .verdict-zones .vz-chip { pointer-events: auto; cursor: pointer; position: relative; z-index: 6; }
-  /* 広げた判定は中央の虎（.verdict-mascot）と重なる位置に出るので、こちらを上に置く */
-  .verdict-zones .vz-chip::after { content: ""; position: absolute; inset: -5px; z-index: 6; }
   .verdict-zones .vz-chip:active { transform: translateY(1px); }
-  /* overflow:hidden は外した。画像は object-fit:contain で収まるため要らず、
-     付けたままだと当たり判定を広げる ::after まで切り取られて押せる範囲が広がらない。 */
-  .verdict-zones .vz-face { padding: 0; width: 20px; height: 20px; border-radius: 50%;
-    display: inline-flex; align-items: center; justify-content: center;
+  /* いま喋っている話者だけ点灯。人柄チップの選択中と同じ白（金枠は使わない）。 */
+  .verdict-zones .vz-chip.on .vz-ic { background: rgba(243,236,224,0.92); border-color: transparent;
+    box-shadow: 0 0 0 1px rgba(243,236,224,0.92); }
+  /* 顔は丸く縁取る。overflow:hidden は付けない（object-fit:contain で収まるため要らない）。 */
+  .verdict-zones .vz-face { border-radius: 50%;
     border: 1px solid rgba(138,127,92,0.6); background: rgba(0,0,0,0.35); }
+  /* 台詞行：行頭に話者の箱を置き、本文はその後ろ。箱の寸法は絵文字でも画像でも同じ。 */
+  .tone-angle { display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .say-icon { flex: none; width: var(--say-icon); height: var(--say-icon); border-radius: 5px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.30); border: 1px solid rgba(138,127,92,0.6);
+    font-size: calc(var(--say-icon) * 0.62); line-height: 1; }
+  .say-icon img { width: 100%; height: 100%; object-fit: contain; display: block; image-rendering: pixelated; }
+  .say-text { min-width: 0; }
+  /* 獣（虎・羊・鼠ほか）は【4】で押せるようにする。見た目を小さくしても的は44pxを保つ。
+     箱を44pxにすると中央ブロックが縦に太ってカードが画面から溢れるので、
+     的だけを疑似要素で外へ広げる（この位置は overflow の箱に入っていないので切られない）。 */
+  .verdict-mascot { position: relative; }
+  .verdict-mascot::after { content: ""; position: absolute; left: 50%; top: 50%;
+    width: var(--vz-hit); height: var(--vz-hit); transform: translate(-50%, -50%); }
   /* 全身が入るように収める（切り抜かない） */
   .verdict-zones .vz-face img { width: 100%; height: 100%; object-fit: contain; display: block;
     image-rendering: pixelated; }
@@ -930,7 +967,8 @@
     /* 判定後は上段をさらに切り詰め、理由欄に高さを回す。
        方言ボタンの段が増えたぶん上段が重くなり、理由欄が見切れるのを防ぐ。
        マスコットと字を一回り小さく、各段の余白を最小限にする。 */
-    body.judged .verdict-mascot { font-size: 28px; margin-bottom: 0; line-height: 1; }
+    /* 判定後は絵だけ一回り小さくして縦を稼ぐ。的（44px）は .verdict-mascot の箱で保つので縮まない。 */
+    body.judged .verdict-mascot { font-size: 22px; margin-bottom: 0; line-height: 1; }
     body.judged .verdict-kanji { font-size: 26px; line-height: 1; }
     body.judged .verdict-word,
     body.judged .retreat-line, body.judged .cat-switch-note,
@@ -991,6 +1029,9 @@
     /* 見出しを列の幅で止めるには、包んでいる側が縮める形でなければならない。
        flex の既定（min-width:auto）のままだと縮まず、隣の列へ字がはみ出す。 */
     body.judged .r-body { min-width: 0; }
+    /* 助言欄も一行に切り詰める。狭い画面では、これが無いと末尾の二択が画面外へ出る。
+       広い画面（844x390 など）では全文のまま出す。 */
+    body.judged .say-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   }
   #verTag { position: fixed; top: 2px; left: 5px; font-size: 9px; letter-spacing:0.05em; color: rgba(243,236,224,0.32); z-index: 99; pointer-events: none; font-family: var(--sans); }
   .voice-credit { position: fixed; top: 2px; left: 44px; font-size: 9px; letter-spacing: 0.04em; color: rgba(243,236,224,0.40); z-index: 99; pointer-events: none; font-family: var(--sans); display: none; }
@@ -1046,7 +1087,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1326</div>
+  <div id="verTag">v1327</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -3830,16 +3871,38 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     return '';
   }
+  /* ---- 台詞行の行頭アイコンと、投票欄の点灯 ----
+     話者の鍵（butler など）から行頭の箱を作る。人柄七人は顔の画像。
+     猫・枝豆・紳士・獣の割り当ては【5】で足す。 */
+  function sayIconHTML(key){
+    const img = (typeof ADV_FACE_IMG !== 'undefined' && ADV_FACE_IMG[key]) ? ADV_FACE_IMG[key] : null;
+    if(img) return '<span class="say-icon"><img src="' + img + '" alt=""></span>';
+    return '';
+  }
+  /* 行頭アイコン＋本文。台詞そのものは変えず、印を前に足すだけ。 */
+  function sayHTML(key, text){
+    if(!text) return '';
+    return sayIconHTML(key) + '<span class="say-text">' + text + '</span>';
+  }
+  /* 投票欄で、いま喋っている話者のアイコンだけ点灯させる */
+  function markSayWho(key){
+    document.querySelectorAll('.verdict-zones .vz-chip').forEach(function(c){
+      c.classList.toggle('on', !!key && c.getAttribute('data-who') === key);
+    });
+  }
+  /* 助言欄の差し替えと点灯を、いつも同時に行う（片方だけ替わると誰の言い分か分からなくなる） */
+  function saySet(key, text){
+    const ang = document.querySelector('.tone-angle');
+    if(!ang) return;
+    ang.innerHTML = sayHTML(key, text);
+    ang.style.display = text ? '' : 'none';
+    markSayWho(text ? key : null);
+  }
   function applyVerdictWord(){
     const w = document.querySelector('.verdict-word');
     if(w){ w.textContent = pickVerdictWord(lastAttack); w.classList.toggle('long', lastBorderline || lastPhoenix || lastDragon); w.style.setProperty('font-size', '13px', 'important'); }
     applyToneMark();
-    const ang = document.querySelector('.tone-angle');
-    if(ang){
-      const line = toneAngleLine(window._lastA);
-      ang.textContent = line;
-      ang.style.display = line ? '' : 'none';
-    }
+    saySet(currentTone, toneAngleLine(window._lastA));
   }
   function markToneButtons(){
     document.querySelectorAll('.tone-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-tone')===currentTone));
@@ -3894,10 +3957,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     const say = (window._vzSay || {})[key];
     if(!say) return;
-    const ang = document.querySelector('.tone-angle');
-    if(!ang) return;
-    ang.textContent = say;
-    ang.style.display = '';
+    saySet(key, say);
   };
   const TAUNT_CYCLE = ['normal','dere','tsun'];
   const TAUNT_LABEL = { normal:'ノーマル', dere:'デレデレ', tsun:'ツンツン' };
@@ -7773,25 +7833,33 @@ document.addEventListener('DOMContentLoaded', function () {
               : (x.key === 'cat' && typeof CAT_TILE_GENBA !== 'undefined' ? CAT_TILE_GENBA : null);
             // 押すとその判定者の言い分が助言欄に出る。人柄のある七人は人柄ボタンの選択も連れて動く。
             const tap = ' onclick="window.vzTap(\'' + x.key + '\', event)"';
-            return img
-              ? '<span class="vz-chip vz-face" data-who="' + x.key + '"' + tap + '><img src="' + img + '" alt="' + x.mark + '"></span>'
-              : '<span class="vz-chip" data-who="' + x.key + '"' + tap + '>' + x.mark + '</span>';
+            const lit = (x.key === currentTone) ? ' on' : '';   // 初手はいま選ばれている人柄が喋っている
+            // 外箱＝当たり判定、中身＝見た目。中身を包んでおかないと判定を広げられない。
+            const inner = img
+              ? '<span class="vz-ic vz-face"><img src="' + img + '" alt="' + x.mark + '"></span>'
+              : '<span class="vz-ic">' + x.mark + '</span>';
+            return '<span class="vz-chip' + lit + '" data-who="' + x.key + '"' + tap + '>' + inner + '</span>';
           };
           const atkSide = L.filter(function(x){ return x.lean === 'a'; }).map(chip).join('');
           const defSide = L.filter(function(x){ return x.lean === 'd'; }).map(chip).join('');
+          // 攻の箱・中央・守の箱を一行に並べる。中央より低い箱は縦を増やさないので、
+          // アイコンを大きくしてもカードの高さが伸びない。
           return `<div class="verdict-zones">
             <div class="vz vz-atk">${atkSide}</div>
+            <div class="vz-mid">
+              <div class="verdict-mascot">${attack ? (a.yakumanReach ? '🐦‍🔥' : (a.kokushiSeen ? '🐉' : '🐅')) : ((a.defHonors + a.defTerminals) >= 2 ? '🐑' : '🐭')}</div>
+              <div class="verdict-kanji">${attack?'攻':'守'}</div>
+            </div>
             <div class="vz vz-def">${defSide}</div>
           </div>`;
         })()}
-        <div class="verdict-mascot">${attack ? (a.yakumanReach ? '🐦‍🔥' : (a.kokushiSeen ? '🐉' : '🐅')) : ((a.defHonors + a.defTerminals) >= 2 ? '🐑' : '🐭')}</div>
-        <div class="verdict-kanji">${attack?'攻':'守'}</div>
+        <!-- 台詞は行の外。列に入れると幅が狭まって余計に折れ、カードが縦に太る -->
         <div class="verdict-word${(a.borderline||a.yakumanReach||(a.kokushiSeen&&!a.yakumanReach))?' long':''}" style="font-size:13px !important;">${pickVerdictWord(attack)}</div>
         ${retreatLine ? `<div class="retreat-line" style="font-size:10px !important; color:#c9b98a; margin-top:6px; letter-spacing:.04em;">${retreatLine}</div>` : ''}
         ${window._catSwitchNote ? `<div class="cat-switch-note" style="font-size:10px !important; color:#d4af37; margin-top:4px; letter-spacing:.04em;">${window._catSwitchNote}</div>` : ''}
         ${window._edamameNote ? `<div class="edamame-note" style="font-size:10px !important; color:#8fbf5f; margin-top:4px; letter-spacing:.04em;">${window._edamameNote}</div>` : ''}
         ${window._shinshiNote ? `<div class="shinshi-note" style="font-size:10px !important; color:#a9b8c9; margin-top:4px; letter-spacing:.04em;">${window._shinshiNote}</div>` : ''}
-        <div class="tone-angle" style="font-size:10px !important; color:rgba(243,236,224,0.7); margin-top:4px; letter-spacing:.04em;${toneAngleLine(a) ? '' : ' display:none;'}">${toneAngleLine(a)}</div>
+        <div class="tone-angle" style="font-size:10px !important; color:rgba(243,236,224,0.7); margin-top:4px; letter-spacing:.04em;${toneAngleLine(a) ? '' : ' display:none;'}">${sayHTML(currentTone, toneAngleLine(a))}</div>
         <div class="tone-row">
           <button type="button" class="tone-btn${currentTone==='butler'?' active':''}" data-tone="butler" onclick="window.setTone('butler')">執事</button>
           <button type="button" class="tone-btn${currentTone==='strategist'?' active':''}" data-tone="strategist" onclick="window.setTone('strategist')">軍師</button>
