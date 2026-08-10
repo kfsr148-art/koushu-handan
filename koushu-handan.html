@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1334">
+<html lang="ja" data-ver="1335">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1120,7 +1120,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1334</div>
+  <div id="verTag">v1335</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -8748,6 +8748,7 @@ window.ssReceive = function(){
 
   let el = null, birds = [], raf = 0, level = null;
   let caught = 0, endAt = 0, lastT = 0, running = false;
+  let paused = false, leftMs = 0;   // 画面が隠れている間の休止と、そのとき残っていた時間
 
   function build(){
     if(el) return el;
@@ -8762,13 +8763,17 @@ window.ssReceive = function(){
     /* 捕獲は touchstart だけ。なぞって撫でても捕まらない。
        指が触れていない環境（PCでの確認）だけ mousedown も受ける。 */
     root.addEventListener('touchstart', function(ev){
-      if(!running) return;
       ev.preventDefault();
+      if(paused) return resume();   // 休止中の一触りは、捕獲ではなく再開に使う
+      if(!running) return;
       const t = ev.changedTouches[0];   // 同時に触れても一点だけ有効
       if(t) hit(t.clientX, t.clientY);
     }, { passive:false });
     if(!('ontouchstart' in window)){
-      root.addEventListener('mousedown', function(ev){ if(running) hit(ev.clientX, ev.clientY); });
+      root.addEventListener('mousedown', function(ev){
+        if(paused) return resume();
+        if(running) hit(ev.clientX, ev.clientY);
+      });
     }
     el = root;
     return root;
@@ -8916,6 +8921,29 @@ window.ssReceive = function(){
         '<button type="button" class="tori-btn" onclick="window.toriClose()">やめる</button>' +
       '</div>');
   }
+  /* 画面が隠れたら止める。裏で時間だけ過ぎて負ける、という理不尽を作らない。
+     復帰は自動で始めず、一度触ってもらってから動かす（見ていない間に鳥が動くのを避ける）。 */
+  function pause(){
+    if(!running || paused) return;
+    paused = true;
+    running = false;
+    cancelAnimationFrame(raf);
+    leftMs = Math.max(0, endAt - Date.now());
+    panel('<h2>休止中</h2><div>画面に触れると続きから始まります。</div>' +
+      '<div>残り ' + (leftMs / 1000).toFixed(1) + ' 秒 ／ ' + caught + ' / ' + level.quota + ' 羽</div>');
+  }
+  function resume(){
+    if(!paused) return;
+    paused = false;
+    panel('');
+    endAt = Date.now() + leftMs;   // 止めた時点の残り時間から続ける
+    lastT = performance.now();
+    running = true;
+    raf = requestAnimationFrame(step);
+  }
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden) pause();
+  });
   window.toriOpen = function(){
     build();
     el.classList.add('show');
@@ -8923,10 +8951,11 @@ window.ssReceive = function(){
     running = false;
     menu();
   };
-  window.toriMenu = function(){ clearBirds(); running = false; menu(); };
+  window.toriMenu = function(){ clearBirds(); running = false; paused = false; menu(); };
   window.toriStart = function(key){
     level = TORI.levels.filter(function(l){ return l.key === key; })[0] || TORI.levels[0];
     clearBirds();
+    paused = false;   // 前の回の休止を持ち越さない
     caught = 0;
     panel('');
     for(let i = 0; i < level.birds; i++) newBird(false);
@@ -8937,6 +8966,7 @@ window.ssReceive = function(){
   };
   window.toriClose = function(){
     running = false;
+    paused = false;
     cancelAnimationFrame(raf);
     clearBirds();
     if(el) el.classList.remove('show');
