@@ -553,6 +553,122 @@ section('⑧', '組み立てて出していない入れ物', () => {
   note('※ 同じ名前を別の場所でも使っていると数がまざる。挙がったものは前後を見て確かめること');
 });
 
+/* ============================================================
+   ⑨ 「ヨシ」の混入
+   （「ヨシ」「ダブルヨシ」は現場猫だけの言葉。枝豆・紳士・虎の側に紛れていないか）
+   ============================================================ */
+section('⑨', '「ヨシ」の混入', () => {
+  /* 話者ごとの受け持ち範囲を、字面で切り出す */
+  function slice(from, to){
+    const i = jsOnly.indexOf(from);
+    if (i < 0) return null;
+    const j = to ? jsOnly.indexOf(to, i) : -1;
+    return jsOnly.slice(i, j > 0 ? j : i + 2000);
+  }
+  function entryOf(key){
+    const i = jsOnly.indexOf("{ key:'" + key + "'");
+    if (i < 0) return null;
+    let d = 0;
+    for (let j = i; j < jsOnly.length; j++) {
+      if (jsOnly[j] === '{') d++;
+      else if (jsOnly[j] === '}') { d--; if (!d) return jsOnly.slice(i, j + 1); }
+    }
+    return null;
+  }
+  const zones = [
+    ['枝豆の助言',   (jsOnly.match(/window\._edamameNote\s*=\s*[^;]+;/g) || []).join('\n')],
+    ['紳士の助言',   (jsOnly.match(/window\._shinshiNote\s*=\s*[^;]+;/g) || []).join('\n')],
+    ['虎の台詞',     (slice('const MASCOT_WORDS = {', '};') || '')],
+    ['投票欄（枝豆）', entryOf('eda') || ''],
+    ['投票欄（紳士）', entryOf('ai') || '']
+  ];
+  let bad = 0;
+  zones.forEach(z => {
+    const [name, text] = z;
+    if (!text) { note(name + ' : 範囲を切り出せない'); return; }
+    const hit = (text.match(/ヨシ/g) || []).length;
+    if (hit) { ng(name + ' に「ヨシ」が ' + hit + '件'); bad++; }
+    else note(name + ' : 混入なし');
+  });
+  /* 現場猫の側には在ってよい（在ることも確かめる） */
+  const catText = (jsOnly.match(/window\._catSwitchNote\s*=\s*[^;]+;/g) || []).join('\n');
+  note('現場猫の助言 : 「ヨシ」' + (catText.match(/ヨシ/g) || []).length + '件（この話者の言葉なので在ってよい）');
+  if (bad === 0) ok('枝豆・紳士・虎の側に「ヨシ」は無い');
+});
+
+/* ============================================================
+   ⑩ ミニゲームの定数と八方位、親補正の境目の写し
+   ============================================================ */
+section('⑩', 'ミニゲームの定数と八方位・親補正の写し', () => {
+  /* --- ミニゲームの定数 --- */
+  const want = {
+    easy:   { speed:0.30, turn:2.0, birds:2, quota:3 },
+    normal: { speed:0.45, turn:1.2, birds:3, quota:5 },
+    hard:   { speed:0.65, turn:0.7, birds:4, quota:7 }
+  };
+  let bad = 0;
+  Object.keys(want).forEach(k => {
+    const m = jsOnly.match(new RegExp("key:'" + k + "'[^}]*}"));
+    if (!m) { ng(k + ' の段が見つからない'); bad++; return; }
+    const row = m[0];
+    Object.keys(want[k]).forEach(f => {
+      const v = (row.match(new RegExp(f + ':\\s*([0-9.]+)')) || [])[1];
+      if (Number(v) !== want[k][f]) { ng(k + ' の ' + f + ' が ' + v + '（仕様は ' + want[k][f] + '）'); bad++; }
+    });
+  });
+  const t30 = (jsOnly.match(/timeLimit:\s*(\d+)/) || [])[1];
+  if (Number(t30) !== 30) { ng('制限時間が ' + t30 + '秒（仕様は30秒）'); bad++; }
+  ['speedUpStep', 'dodgeRadius', 'dodgeBoost', 'dodgeTime', 'flashTime', 'birdSize'].forEach(f => {
+    const v = (jsOnly.match(new RegExp(f + ':\\s*([0-9.]+)')) || [])[1];
+    if (v === undefined) { ng(f + ' が定数表に無い'); bad++; }
+  });
+  note('三段の速度・転換・同時羽数・ノルマ、制限時間、逃げと加速の値を照合');
+
+  /* --- 八方位の割り当て --- */
+  const dirBlock = jsOnly.slice(jsOnly.indexOf('const TORI_DIRS'), jsOnly.indexOf('const TORI_DIRS') + 1200);
+  const dirs = [];
+  const re = /key:'(\w+)'[^}]*deg:\s*(-?\d+)/g;
+  let m;
+  while ((m = re.exec(dirBlock))) dirs.push({ key: m[1], deg: Number(m[2]) });
+  const WANT_DIRS = { aomori:-90, yoji:-45, bushi:0, miyazaki:45, okinawa:90, hakata:135, osaka:180, kyoto:-135 };
+  if (dirs.length !== 8) { ng('方位が ' + dirs.length + '件（8件のはず）'); bad++; }
+  else {
+    const degs = dirs.map(d => d.deg).sort((a, b) => a - b);
+    const uniq = new Set(degs);
+    if (uniq.size !== 8) { ng('角度に重なりがある'); bad++; }
+    for (let i = 1; i < degs.length; i++) {
+      if (degs[i] - degs[i - 1] !== 45) { ng('角度が45度の等間隔でない : ' + degs.join(' ')); bad++; break; }
+    }
+    dirs.forEach(d => {
+      if (WANT_DIRS[d.key] === undefined) { ng('知らない方言 ' + d.key); bad++; }
+      else if (WANT_DIRS[d.key] !== d.deg) { ng(d.key + ' が ' + d.deg + '度（仕様は ' + WANT_DIRS[d.key] + '度）'); bad++; }
+    });
+    note('方言八種を八方位へ、45度の等間隔で重なりなく割り当て');
+  }
+
+  /* --- 親補正の境目の写し ---
+     analyze() は window に出ていないので、実際の手を通した照合はできない。
+     ここでは analyze() 側の字面と、虎（mascotDealerNudged）が持つ写しを突き合わせる。
+     どちらかを直したときに、もう一方が取り残されるのを捕まえるのが狙い。 */
+  const nd = (src.match(/acceptTiles\s*<\s*\(isDealer\s*\?\s*(\d+)\s*:\s*(\d+)\)/) || []);
+  const wa = (src.match(/acceptTiles\s*>=\s*\(isDealer\s*\?\s*(\d+)\s*:\s*(\d+)\)/) || []);
+  const cp = (src.match(/r\s*>=\s*(\d+)\s*&&\s*r\s*<\s*(\d+)\s*\)\s*:\s*\(d\s*>=\s*1\s*&&\s*r\s*>=\s*(\d+)\s*&&\s*r\s*<\s*(\d+)/) || []);
+  if (!nd.length || !wa.length || !cp.length) {
+    ng('境目の数値を読み取れない（analyze 側または写し側の書き方が変わった）');
+    bad++;
+  } else {
+    const a = [Number(nd[1]), Number(nd[2]), Number(wa[1]), Number(wa[2])];   // 親6 子8 親20 子24
+    const b = [Number(cp[1]), Number(cp[2]), Number(cp[3]), Number(cp[4])];
+    note('analyze の境目 : 親' + a[0] + '/子' + a[1] + '・親' + a[2] + '/子' + a[3]);
+    note('虎が持つ写し   : ' + b[0] + '〜' + b[1] + '枚・' + b[2] + '〜' + b[3] + '枚');
+    if (a[0] !== b[0] || a[1] !== b[1] || a[2] !== b[2] || a[3] !== b[3]) {
+      ng('写しが analyze の境目とずれている');
+      bad++;
+    } else note('写しは一致（※実際の手を通した照合ではなく、字面の照合）');
+  }
+  if (bad === 0) ok('定数・八方位・境目の写し、いずれも仕様どおり');
+});
+
 /* ---- まとめ ---- */
 console.log('');
 console.log('='.repeat(52));
