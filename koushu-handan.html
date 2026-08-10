@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1329">
+<html lang="ja" data-ver="1330">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -271,8 +271,14 @@
   /* 顔は丸く縁取る。overflow:hidden は付けない（object-fit:contain で収まるため要らない）。 */
   .verdict-zones .vz-face { border-radius: 50%;
     border: 1px solid rgba(138,127,92,0.6); background: rgba(0,0,0,0.35); }
-  /* 台詞行：行頭に話者の箱を置き、本文はその後ろ。箱の寸法は絵文字でも画像でも同じ。 */
-  .tone-angle { display: flex; align-items: center; justify-content: center; gap: 6px; }
+  /* 台詞行：行頭に話者の箱を置き、本文はその後ろ。箱の寸法は絵文字でも画像でも同じ。
+     ⚠などの記号は本文の側に置く（行頭は話者の印だけが座る）。 */
+  .tone-angle, .cat-switch-note, .edamame-note, .shinshi-note {
+    display: flex; align-items: center; justify-content: center; gap: 6px; }
+  /* 現場猫の顔：猫牌の絵（480x480）の x124 y56 から 200x200 を切り出して箱いっぱいに出す */
+  .say-cat { background-repeat: no-repeat; image-rendering: pixelated;
+    background-size: calc(var(--say-icon) * 2.4) calc(var(--say-icon) * 2.4);
+    background-position: calc(var(--say-icon) * -0.62) calc(var(--say-icon) * -0.28); }
   .say-icon { flex: none; width: var(--say-icon); height: var(--say-icon); border-radius: 5px;
     display: inline-flex; align-items: center; justify-content: center;
     background: rgba(0,0,0,0.30); border: 1px solid rgba(138,127,92,0.6);
@@ -1090,7 +1096,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1329</div>
+  <div id="verTag">v1330</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -3926,6 +3932,13 @@ document.addEventListener('DOMContentLoaded', function () {
   function sayIconHTML(key){
     const img = (typeof ADV_FACE_IMG !== 'undefined' && ADV_FACE_IMG[key]) ? ADV_FACE_IMG[key] : null;
     if(img) return '<span class="say-icon"><img src="' + img + '" alt=""></span>';
+    // 現場猫は専用の顔画像を持たないので、猫牌の絵から頭部を切り出して使う（元画像は差し替えない）
+    if(key === 'cat' && typeof CAT_TILE_GENBA !== 'undefined'){
+      return '<span class="say-icon say-cat" style="background-image:url(' + CAT_TILE_GENBA + ')"></span>';
+    }
+    // 獣は判定ごとに姿が変わる（攻＝虎ほか／守＝羊・鼠）。台詞行の印も同じ絵に合わせる。
+    const glyph = { eda: '🫛', ai: '🎩', mascot: (window._mascotGlyph || '') }[key];
+    if(glyph) return '<span class="say-icon">' + glyph + '</span>';
     return '';
   }
   /* 行頭アイコン＋本文。台詞そのものは変えず、印を前に足すだけ。 */
@@ -7686,6 +7699,10 @@ document.addEventListener('DOMContentLoaded', function () {
     lastAttack = attack;
     window._lastA = a;   // 人柄を切り替えたときに材料の一行を引き直すため
     mascotTalking = false;   // 新しい判定は、いつも人柄の台詞から始める
+    // 台詞行の行頭に出す獣の絵。判定ごとに姿が変わるので、描くときに控えておく。
+    window._mascotGlyph = (a.verdict === 'attack')
+      ? (a.yakumanReach ? '🐦‍🔥' : (a.kokushiSeen ? '🐉' : '🐅'))
+      : (((a.defHonors + a.defTerminals) >= 2) ? '🐑' : '🐭');
     applyToneMark();
     lastBorderline = a.borderline;
     lastPhoenix = a.yakumanReach;
@@ -7924,9 +7941,9 @@ document.addEventListener('DOMContentLoaded', function () {
         <!-- 台詞は行の外。列に入れると幅が狭まって余計に折れ、カードが縦に太る -->
         <div class="verdict-word${(a.borderline||a.yakumanReach||(a.kokushiSeen&&!a.yakumanReach))?' long':''}" style="font-size:13px !important;">${pickVerdictWord(attack)}</div>
         ${retreatLine ? `<div class="retreat-line" style="font-size:10px !important; color:#c9b98a; margin-top:6px; letter-spacing:.04em;">${retreatLine}</div>` : ''}
-        ${window._catSwitchNote ? `<div class="cat-switch-note" style="font-size:10px !important; color:#d4af37; margin-top:4px; letter-spacing:.04em;">${window._catSwitchNote}</div>` : ''}
-        ${window._edamameNote ? `<div class="edamame-note" style="font-size:10px !important; color:#8fbf5f; margin-top:4px; letter-spacing:.04em;">${window._edamameNote}</div>` : ''}
-        ${window._shinshiNote ? `<div class="shinshi-note" style="font-size:10px !important; color:#a9b8c9; margin-top:4px; letter-spacing:.04em;">${window._shinshiNote}</div>` : ''}
+        ${window._catSwitchNote ? `<div class="cat-switch-note" style="font-size:10px !important; color:#d4af37; margin-top:4px; letter-spacing:.04em;">${sayHTML('cat', window._catSwitchNote)}</div>` : ''}
+        ${window._edamameNote ? `<div class="edamame-note" style="font-size:10px !important; color:#8fbf5f; margin-top:4px; letter-spacing:.04em;">${sayHTML('eda', window._edamameNote)}</div>` : ''}
+        ${window._shinshiNote ? `<div class="shinshi-note" style="font-size:10px !important; color:#a9b8c9; margin-top:4px; letter-spacing:.04em;">${sayHTML('ai', window._shinshiNote)}</div>` : ''}
         <div class="tone-angle" style="font-size:10px !important; color:rgba(243,236,224,0.7); margin-top:4px; letter-spacing:.04em;${toneAngleLine(a) ? '' : ' display:none;'}">${sayHTML(currentTone, toneAngleLine(a))}</div>
         <div class="tone-row">
           <button type="button" class="tone-btn${currentTone==='butler'?' active':''}" data-tone="butler" onclick="window.setTone('butler')">執事</button>
