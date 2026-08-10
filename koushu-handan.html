@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1327">
+<html lang="ja" data-ver="1328">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1087,7 +1087,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1327</div>
+  <div id="verTag">v1328</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1482,6 +1482,9 @@ document.addEventListener('DOMContentLoaded', function () {
     8:[[30,24,28,'g',0],[62,24,28,'g',0],[30,58,28,'g',0],[62,58,28,'g',0],[40,30,20,'g',32],[52,30,20,'g',-32],[40,52,20,'g',-32],[52,52,20,'g',32]],
     9:[[28,18,20,'g'],[46,18,20,'r'],[64,18,20,'g'],[28,41,20,'g'],[46,41,20,'r'],[64,41,20,'g'],[28,64,20,'g'],[46,64,20,'r'],[64,64,20,'g']],
   };
+  /* 一索の鳥は台詞を持たない。これは仕様であって、書き忘れではない。
+     ミニゲーム中も勝敗の絵でも、吹き出し・文字表示はいっさい出さない。
+     鳥が勝った絵で泣く現場猫の縦書き「どうして…」だけは、鳥の台詞ではないので出してよい。 */
   const BIRD_SVG = `<path d="M38,56 L29,75 L40,67 L46,73 L52,67 L63,75 L54,56 Z" fill="url(#bd2)"/><ellipse cx="46" cy="48" rx="15" ry="16" fill="url(#bd)"/><path d="M33,44 q-7,7 -3,17 q7,-3 8,-13 Z" fill="#15622f"/><path d="M59,44 q7,7 3,17 q-7,-3 -8,-13 Z" fill="#15622f"/><circle cx="46" cy="27" r="11" fill="url(#bd)"/><path d="M40,18 q-3,-9 1,-13 q2,5 1,12 Z" fill="#1f7a3d"/><path d="M46,16 q0,-10 0,-14 q1,6 1,13 Z" fill="#1f7a3d"/><path d="M52,18 q3,-9 -1,-13 q-2,5 -1,12 Z" fill="#1f7a3d"/><path d="M56,27 L66,24 L57,31 Z" fill="#d98a2b"/><circle cx="50" cy="25" r="2.4" fill="#0e3a1c"/><circle cx="50.7" cy="24.3" r="0.9" fill="#fff"/><path d="M42,63 L40,72 M42,72 L37,74 M42,72 L43,75" stroke="#c0392b" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M50,63 L52,72 M50,72 L49,75 M50,72 L55,74" stroke="#c0392b" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
   function souSVG(n, red){
     if(n===1) return `<svg class="sou-svg" viewBox="0 0 92 82">${BIRD_SVG}</svg>`;
@@ -3791,15 +3794,13 @@ document.addEventListener('DOMContentLoaded', function () {
       // 文面は誤診記録（mdOpen）の言い回しに合わせる。
       { key:'cat',        mark:'🐱', lean: (catN === 0) ? 'a' : (catN >= 4 ? 'd' : ''),
         say: (catN === 0)
-          ? '猫牌0枚。数牌に浮いた牌が一枚も無い、繋がった手だ。攻めヨシ！'
-          : ('猫牌' + catN + '枚。4枚以上は数牌がバラバラってことだ。逃げヨシ！') },
+          ? '猫牌0枚、指差し確認——攻めヨシ！'
+          : ('猫牌' + catN + '枚、指差し確認——逃げヨシ！') },
       { key:'eda',        mark:'🫛', lean: (pairKinds >= 2) ? 'a' : 'd',
-        say: '🫛対子・暗刻が' + pairKinds + '種。'
-          + (pairKinds >= 2 ? '2種以上あれば攻めの軸になる。' : '2種に届かないと、手の軸が立たない。') },
+        say: pairKinds + '種。'
+          + (pairKinds >= 2 ? '揃い' : '薄い——守り') },
       { key:'ai',         mark:'🎩', lean: (om >= 3) ? 'd' : ((om === 0 && yaochu <= 2) ? 'a' : ''),
-        say: (om >= 3)
-          ? ('この手は守りです。1枚だけ余っている字牌が' + om + '枚。切って逃げられる牌をそれだけ抱えた手は、たいてい守りに回ります。')
-          : ('この手は攻めです。1枚だけ余っている字牌が0枚、1・9・字牌を合わせても' + yaochu + '枚だけ。牌が真ん中に集まっています。') }
+        say: '一枚きりの字牌' + om + '枚。気配は' + (om >= 3 ? '守り' : '攻め') + 'です' }
     ];
   }
   function toneAngleLine(a){
@@ -7537,12 +7538,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if(localStorage.getItem('catSwitch') === '1' && catStanceLean){
       const catStanceAttack = (catStanceLean === 'attack');
       const mainAttack = (a.verdict === 'attack');
+      // 文頭の絵文字は付けない。話者の印は台詞行の行頭アイコンが持つ。
+      // 「ヨシ」「ダブルヨシ」は現場猫だけの言葉。外しても謝らず、言い直さない。
       if(catStanceAttack && !mainAttack){
-        window._catSwitchNote = '🐱⚠現場猫アラート：ヨシと言ったが、危ない手';
+        window._catSwitchNote = '⚠現場猫アラート：ヨシと言ったが、危ない手';
       } else if(!catStanceAttack && mainAttack){
-        window._catSwitchNote = '🐱⚠現場猫アラート：逃げ腰だが、実は行ける手';
+        window._catSwitchNote = '⚠現場猫アラート：逃げ腰だが、実は行ける手';
       } else {
-        window._catSwitchNote = '🐱本判定と一致、ダブルヨシ';
+        window._catSwitchNote = '猫牌' + effectiveCatN + '枚、指差し確認——ダブルヨシ！';
       }
     }
 
@@ -7553,18 +7556,19 @@ document.addEventListener('DOMContentLoaded', function () {
       const cntE = {};
       realTilesE.forEach(t => { cntE[t.code] = (cntE[t.code]||0)+1; });
       const pairTripletN = Object.values(cntE).filter(c => c>=2).length;
+      // 枝豆は自分の計器（組の数）だけを言う。一致は「揃い」で、「ヨシ」は使わない（現場猫の言葉）。
       if(pairTripletN >= 4){
         if(a.verdict === 'attack'){
-          window._edamameNote = '🫛枝豆も本判定と一致、ダブルヨシ（対子・暗刻' + pairTripletN + '組）';
+          window._edamameNote = pairTripletN + '組。揃い';
         } else {
-          window._edamameNote = '🫛枝豆は攻めと言ったが、本判定は守り──珍しい食い違い（対子・暗刻' + pairTripletN + '組）';
+          window._edamameNote = pairTripletN + '組。だが本判定は守——珍しい食い違い';
         }
       } else if(effectiveCatN >= 3 && effectiveCatN <= 4 && pairTripletN <= 1){
         // 灰色帯（猫牌3〜4枚）に限り、下側も開く。実測では枝豆0組で攻め2%、1組で15%と守りがほぼ決まる。
         if(a.verdict === 'defend'){
-          window._edamameNote = '🫛枝豆も薄い、守りヨシ（対子・暗刻' + pairTripletN + '組）';
+          window._edamameNote = pairTripletN + '組。薄い——守り';
         } else {
-          window._edamameNote = '🫛枝豆は守りと言ったが、本判定は攻め──珍しい食い違い（対子・暗刻' + pairTripletN + '組）';
+          window._edamameNote = pairTripletN + '組。薄いが本判定は攻——珍しい食い違い';
         }
       }
     }
@@ -7593,10 +7597,11 @@ document.addEventListener('DOMContentLoaded', function () {
       const shinshiLean = (omamoriN === 0 && yaochuS <= 2) ? 'attack'
         : (omamoriN >= 3) ? 'defend'
         : '';
+      // 紳士は丁寧語で通し、「気配」を自分の言葉として使う。外れを認めるのはこの一人だけ。
       if(shinshiLean){
         window._shinshiNote = (a.verdict === shinshiLean)
-          ? '🎩AIの気配も本判定と一致、ダブルヨシ'
-          : ('🎩AIの気配は外れ、本判定は' + (a.verdict === 'attack' ? '攻め' : '守り'));
+          ? ('一枚きりの字牌' + omamoriN + '枚。気配は' + (shinshiLean === 'attack' ? '攻め' : '守り') + '——一致です')
+          : ('気配は外れました。本判定は' + (a.verdict === 'attack' ? '攻' : '守') + 'です');
       }
     }
 
