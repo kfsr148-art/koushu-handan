@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1328">
+<html lang="ja" data-ver="1329">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -282,7 +282,10 @@
   /* 獣（虎・羊・鼠ほか）は【4】で押せるようにする。見た目を小さくしても的は44pxを保つ。
      箱を44pxにすると中央ブロックが縦に太ってカードが画面から溢れるので、
      的だけを疑似要素で外へ広げる（この位置は overflow の箱に入っていないので切られない）。 */
-  .verdict-mascot { position: relative; }
+  /* 投票欄の器は pointer-events:none なので、獣にも判定を戻さないと指で押せない
+     （コードから click() は通るが、実機では反応しない）。 */
+  .verdict-mascot { position: relative; cursor: pointer; pointer-events: auto; }
+  .verdict-mascot:active { transform: translateY(1px); }
   .verdict-mascot::after { content: ""; position: absolute; left: 50%; top: 50%;
     width: var(--vz-hit); height: var(--vz-hit); transform: translate(-50%, -50%); }
   /* 全身が入るように収める（切り抜かない） */
@@ -1087,7 +1090,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1328</div>
+  <div id="verTag">v1329</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -3747,9 +3750,12 @@ document.addEventListener('DOMContentLoaded', function () {
   //   マダム＝撤退予約線／一姫＝見える手／先生＝向聴
   // 人柄ごとに、その人が見ている牌へ印を出す。bodyの印を差し替えるだけ。
   const TONE_MARKS = ['butler','blunt','lady','strategist','french','ichihime','sensei'];
+  /* 虎（判定エンジン）が喋っている間は true。人柄の担当ではないので、
+     この間は担当牌の金枠を全て消す。人柄チップを押せば従来どおり戻る。 */
+  let mascotTalking = false;
   function applyToneMark(){
     TONE_MARKS.forEach(function(t){
-      document.body.classList.toggle('tone-' + t, currentTone === t);
+      document.body.classList.toggle('tone-' + t, !mascotTalking && currentTone === t);
     });
   }
   window.applyToneMark = applyToneMark;
@@ -3802,6 +3808,48 @@ document.addEventListener('DOMContentLoaded', function () {
       { key:'ai',         mark:'🎩', lean: (om >= 3) ? 'd' : ((om === 0 && yaochu <= 2) ? 'a' : ''),
         say: '一枚きりの字牌' + om + '枚。気配は' + (om >= 3 ? '守り' : '攻め') + 'です' }
     ];
+  }
+  /* ---- 虎（判定エンジンの声）の台詞 ----
+     八人目の人格ではない。方言チップには反応せず、いつも同じ口調で話す。
+     数字は analyze() の返り値から取り、ここで計算し直さない。 */
+  const MASCOT_WORDS = {
+    shapeAttack:  '良形{n}、要求{m}。足りている。——攻。',
+    wideAttack:   '形は{n}、要求{m}に足りぬ。だが受け{r}枚。広さも力だ。——攻。',
+    bigAttack:    '{名}が見えている。物差しは仕舞え。——攻。',
+    narrowDefend: '形は届いている。だが受け{r}枚、打点{d}。狭くて安い。——守。',
+    shortDefend:  '良形{n}、要求{m}。届かん。——守。',
+    dealer:       '親だ。半歩、前へ倒した。'
+  };
+  /* 親の甘め補正が判定を実際に動かした回だけ true。
+     6/8/20/24 は analyze() が使う境目の写し（あちらには触れないため、ここに置く）。
+     子の基準なら守りになる帯に居て、親だから攻めに残った回を拾う。
+     国士・役満で攻めへ上書きされた回は、補正が効いた回ではないので外す。 */
+  function mascotDealerNudged(a){
+    if(!a || !a.isDealer || a.kokushiSeen || a.yakumanReach) return false;
+    const r = a.acceptTiles, d = a.doraValue;
+    if(typeof r !== 'number') return false;
+    return a.shapeOK ? (d <= 1 && r >= 6 && r < 8) : (d >= 1 && r >= 20 && r < 24);
+  }
+  function mascotSay(a){
+    if(!a) return '';
+    const atk = (a.verdict === 'attack');
+    let s;
+    if(a.kokushiSeen || a.yakumanReach){
+      const name = a.yakumanReach ? (a.yakumanName || '役満') : '国士無双';
+      s = MASCOT_WORDS.bigAttack.replace('{名}', name);
+    } else if(a.shapeOK && atk){
+      s = MASCOT_WORDS.shapeAttack;
+    } else if(!a.shapeOK && atk){
+      s = MASCOT_WORDS.wideAttack;
+    } else if(a.shapeOK && !atk){
+      s = MASCOT_WORDS.narrowDefend;
+    } else {
+      s = MASCOT_WORDS.shortDefend;
+    }
+    s = s.replace('{n}', a.goodShapes).replace('{m}', a.shapeNeeded)
+         .replace('{r}', a.acceptTiles).replace('{d}', a.doraValue);
+    if(mascotDealerNudged(a)) s += MASCOT_WORDS.dealer;
+    return s;
   }
   function toneAngleLine(a){
     if(!a) return '';
@@ -3924,6 +3972,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if(ev && ev.target && ev.target.classList) ev.target.classList.toggle('active', on);
   };
   function setTone(t){
+    mascotTalking = false;   // 人柄を選べば虎は口を閉じ、担当牌の金枠が戻る
     try { localStorage.setItem('koushu_rand_tone', '0'); } catch(e){}   // 手動選択でランダム解除
     if(currentTone === t){                                      // 同じ人柄を再度押せば解除＝素へ戻る
       currentTone = '';
@@ -3958,7 +4007,20 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     const say = (window._vzSay || {})[key];
     if(!say) return;
+    mascotTalking = false;   // 道具が喋るなら虎は口を閉じる
+    applyToneMark();
     saySet(key, say);
+  };
+  /* 中央の獣（虎・羊・鼠ほか）を押すと、判定エンジン自身が理由を述べる。
+     人柄の担当ではないので、喋っている間は担当牌の金枠を全て消す。
+     自動で戻すタイマーは付けない。人柄チップを押すか、次の判定で人柄へ戻る。 */
+  window.mascotTap = function(e){
+    stopEv(e);
+    const line = mascotSay(window._lastA);
+    if(!line) return;
+    mascotTalking = true;
+    applyToneMark();
+    saySet('mascot', line);
   };
   const TAUNT_CYCLE = ['normal','dere','tsun'];
   const TAUNT_LABEL = { normal:'ノーマル', dere:'デレデレ', tsun:'ツンツン' };
@@ -7623,6 +7685,7 @@ document.addEventListener('DOMContentLoaded', function () {
     playVerdict(attack);   // 判定を声で告げる（盤面から目を上げずに結果を受け取れる）
     lastAttack = attack;
     window._lastA = a;   // 人柄を切り替えたときに材料の一行を引き直すため
+    mascotTalking = false;   // 新しい判定は、いつも人柄の台詞から始める
     applyToneMark();
     lastBorderline = a.borderline;
     lastPhoenix = a.yakumanReach;
@@ -7852,7 +7915,7 @@ document.addEventListener('DOMContentLoaded', function () {
           return `<div class="verdict-zones">
             <div class="vz vz-atk">${atkSide}</div>
             <div class="vz-mid">
-              <div class="verdict-mascot">${attack ? (a.yakumanReach ? '🐦‍🔥' : (a.kokushiSeen ? '🐉' : '🐅')) : ((a.defHonors + a.defTerminals) >= 2 ? '🐑' : '🐭')}</div>
+              <div class="verdict-mascot" onclick="window.mascotTap(event)">${attack ? (a.yakumanReach ? '🐦‍🔥' : (a.kokushiSeen ? '🐉' : '🐅')) : ((a.defHonors + a.defTerminals) >= 2 ? '🐑' : '🐭')}</div>
               <div class="verdict-kanji">${attack?'攻':'守'}</div>
             </div>
             <div class="vz vz-def">${defSide}</div>
