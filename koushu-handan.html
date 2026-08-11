@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1341">
+<html lang="ja" data-ver="1342">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -653,10 +653,12 @@
   .verdict-word { font-size: 13px; letter-spacing: 0.04em; text-indent: 0; margin-top: 10px; color: rgba(243,236,224,0.85); }
   .verdict-word.long { letter-spacing: 0.04em; text-indent: 0; margin-left: auto; margin-right: auto; }
   /* iOSの文字自動拡大を全体で止める。これが効いていないと、小さく指定した行だけが
-     端末側で勝手に大きくされ、判定の一言より添えものが大きく見える。 */
+     端末側で勝手に大きくされ、判定の一言より添えものが大きく見える。
+     値は none ではなく 100%。none は自動拡大だけでなく、利用者が端末側で選んだ文字の
+     大きさまで殺してしまう。100% なら「勝手に膨らませない」は保ったまま、その設定は生きる。 */
   html, body, .verdict-card, .verdict-word,
   .retreat-line, .cat-switch-note, .edamame-note, .shinshi-note {
-    -webkit-text-size-adjust: none; text-size-adjust: none;
+    -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
   }
   /* 判定カードの添えもの（撤退予約線・三つのスイッチ）は、判定の一言より一回り小さく。
      画面の幅・向き・判定の前後で大きさを変えない。指定はこの一組だけ。 */
@@ -1141,7 +1143,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1341</div>
+  <div id="verTag">v1342</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
