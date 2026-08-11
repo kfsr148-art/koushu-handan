@@ -284,6 +284,11 @@ window.addEventListener('load', function(){
     try{
       if(screen === 'adv'){ window.closeTitleScreen(); window.advStart(); }
       else if(screen === 'watch'){ window.closeTitleScreen(); window.watchOpen(); }
+      /* タイトルは開いた直後の姿そのもの。閉じずに測る。 */
+      else if(screen === 'title'){ /* 何もしない */ }
+      else if(screen === 'settings'){ window.closeTitleScreen(); window.catRoomOpen(); }
+      else if(screen === 'torimenu'){ window.closeTitleScreen(); window.toriOpen(); }
+      else if(screen === 'advroom'){ advRoom(); }
       else if(screen === 'judged'){
         window.closeTitleScreen(); window.ssMarkTool();
         var g = document.getElementById('qiText');
@@ -307,6 +312,22 @@ window.addEventListener('load', function(){
     var r = el.getBoundingClientRect();
     return r.width > 0 && r.height > 0;
   }
+  /* 探偵編の部屋まで開く。乗船の幕を送り、難易度を選び、廊下から猫室へ入る。
+     16号室と14号室は罠が待っているので使わない。 */
+  function advRoom(){
+    window.closeTitleScreen(); window.advStart();
+    var deck = document.getElementById('advDeck');
+    var pick = function(box, label){
+      var out = null;
+      [].slice.call(box.querySelectorAll('button')).forEach(function(b){
+        if(!out && (b.textContent || '').indexOf(label) === 0) out = b;
+      });
+      return out;
+    };
+    for(var i = 0; i < 5; i++){ var n = pick(deck.children[3], '次へ'); if(n) n.click(); }
+    var d = pick(deck.children[1], '初歩'); if(d) d.click();
+    var r = pick(deck.children[2], '猫室'); if(r) r.click();
+  }
   /* 別のレイヤー同士（覆いと下の盤面）を重なりと数えないよう、position:fixed の祖先で層を分ける */
   function layer(el){
     var n = el, k = 'base';
@@ -318,7 +339,7 @@ window.addEventListener('load', function(){
   }
   function name(el){
     return el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') +
-      (el.className && typeof el.className === 'string' ? '.' + el.className.trim().split(/\\s+/).slice(0,2).join('.') : '');
+      (el.className && typeof el.className === 'string' ? '.' + el.className.trim().split(/\s+/).slice(0,2).join('.') : '');
   }
   function measure(){
     var W = res.w = window.innerWidth, H = res.h = window.innerHeight;
@@ -369,6 +390,14 @@ window.addEventListener('load', function(){
     if(judged){
       var tail = document.querySelector('.next-hand-row');
       res.tail = tail ? { bottom: Math.round(tail.getBoundingClientRect().bottom * 10) / 10, vis: vis(tail) } : null;
+    }
+    /* 目当ての画面に本当に着いているかを持ち帰る。着けないまま別の画面を測って
+       「溢れなし」と言うのが、いちばん質の悪い通り方なので。 */
+    if(screen === 'advroom'){
+      /* 見出しは器のいちばん最後の段（head）の中の span。先頭の span は味方牌なので拾わない。 */
+      var rootAdv = document.getElementById('advRoot');
+      var hd = rootAdv && rootAdv.lastElementChild ? rootAdv.lastElementChild.querySelector('span') : null;
+      res.state = hd ? (hd.textContent || '').slice(0, 12) : '';
     }
     emit();
   }
@@ -478,8 +507,10 @@ let viewSkipped = false;   // ブラウザが無くて測れなかったか（�
 section('⑦', '狭い画面での溢れ', () => {
   /* headless の窓は視野より 幅+24 / 高さ+92 大きい。測るのは実際の innerWidth/innerHeight。 */
   const VIEWS = [[568, 320], [667, 375], [844, 390], [932, 430]];
-  /* judged＝判定後のカード。判定前だけを測っていると、根拠欄のように結果側にしか出ない溢れを見逃す。 */
-  const SCREENS = ['board', 'watch', 'adv', 'judged'];
+  /* judged＝判定後のカード。判定前だけを測っていると、根拠欄のように結果側にしか出ない溢れを見逃す。
+     title/settings/advroom/torimenu は、指で触る場所があるのに測っていなかった画面。
+     ミニゲームの結果画面は、遊びを実際に通さないと出せず、ヘッドレスでは安定しないので保留。 */
+  const SCREENS = ['title', 'board', 'judged', 'settings', 'watch', 'adv', 'advroom', 'torimenu'];
   /* 横溢れは4pxまで見逃す。.tile.pick::before が当たり判定を牌の外へ4px広げており（押し損じ対策）、
      その意図的なはみ出しが3px計上されるため。これを咎めると当たり判定を痩せさせる方向に効いてしまう。 */
   const SLACK = 4;
@@ -531,6 +562,10 @@ section('⑦', '狭い画面での溢れ', () => {
         if (screen === 'judged') {
           if (!d.tail || !d.tail.vis) lines.push('二択（連チャン／親流れ）が出ていない');
           else if (d.tail.bottom > d.h + 1) lines.push('二択が画面の下へ出ている bottom=' + d.tail.bottom + ' > ' + d.h);
+        }
+        /* 目当ての画面に着けていない回は、溢れの有無に関わらず落とす。 */
+        if (screen === 'advroom' && (d.state || '').indexOf('猫室') < 0) {
+          lines.push('探偵編の部屋に入れていない（いまの見出し：' + (d.state || '空') + '）');
         }
         const label = screen + ' ' + d.w + 'x' + d.h;
         if (lines.length === 0) {
