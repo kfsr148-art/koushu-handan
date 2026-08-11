@@ -14,6 +14,9 @@ const { spawnSync } = require('child_process');
 
 const ROOT = __dirname;
 const args = process.argv.slice(2);
+/* --fast は速い版（⑦の実測を 568x320 のひと視野に絞る）。目安2〜3分。
+   通常の納品と push 前はこちら。台詞・レイアウトを触った回と、まとめ報告の前はフル版（約9分）。 */
+const FAST = args.indexOf('--fast') >= 0;
 
 const RUNS = [
   { name: 'check    ', file: 'check.js', title: '本体の納品前チェック' },
@@ -30,7 +33,7 @@ RUNS.forEach(run => {
 });
 
 console.log('');
-console.log('まとめ（納品前チェック）');
+console.log('まとめ（納品前チェック・' + (FAST ? '速い版' : 'フル版') + '）');
 console.log('─'.repeat(52));
 results.forEach(r => {
   console.log('  ' + (r.ok ? 'PASS' : 'FAIL') + '  ' + r.name + '  ' + r.title +
