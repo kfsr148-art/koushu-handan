@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1336">
+<html lang="ja" data-ver="1337">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -233,6 +233,7 @@
     --say-icon: 24px;  /* 台詞行の行頭アイコンの箱 */
     --vz-show: 5.5;    /* 箱に見せるアイコンの数。端数で端が半分見切れ、送れると分かる */
     --vz-show-narrow: 2.5;
+    --vz-min: calc(var(--vz-hit) + 10px);   /* 票ゼロの側に残すアイコン1枠ぶん。当たり判定44px＋左右の余白8px＋枠2px（box-sizing:border-box のため） */
   }
   /* 攻の箱・中央・守の箱を一行に。以前は中央へ重ねていたが、アイコンを40pxにすると
      虎・攻守の字・台詞に被る。横に並べれば中央より低い箱は縦を増やさない。 */
@@ -243,11 +244,17 @@
   .vz-mid { flex: 1 1 auto; min-width: 0; }
   .verdict-zones .vz {
     flex: 0 0 auto; border-radius: 8px; padding: 0 4px;
-    width: calc(var(--vz-hit) * var(--vz-show) + var(--vz-gap) * (var(--vz-show) - 0.5));
     min-height: calc(var(--vz-hit) + 4px);
     display: flex; align-items: center; flex-wrap: nowrap; gap: var(--vz-gap);
     overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch;
   }
+  /* 攻守二箱の幅は、票数の比で配る。以前は両方とも同じ固定幅（半々）だったので、
+     全員が片側に寄った回は、空の箱が半分を占めたまま反対側だけが横スクロールになっていた。
+     二箱の合計 --vz-pair は以前の固定幅×2のまま据え置くので、余りをもらう中央の列（.vz-mid）は動かない。
+     比は判定のたびに --vz-a として器に乗る。clamp の下限・上限で、票ゼロの側にも1枠ぶんは残す。 */
+  .verdict-zones { --vz-pair: calc((var(--vz-hit) * var(--vz-show) + var(--vz-gap) * (var(--vz-show) - 0.5)) * 2); }
+  .verdict-zones .vz-atk { width: var(--vz-a, calc(var(--vz-pair) / 2)); }
+  .verdict-zones .vz-def { width: calc(var(--vz-pair) - var(--vz-a, calc(var(--vz-pair) / 2))); }
   @media (max-width: 745px) { :root { --vz-show: var(--vz-show-narrow); } }
   .verdict-zones .vz-atk { justify-content: flex-start; }
   .verdict-zones .vz-def { justify-content: flex-end; }
@@ -1120,7 +1127,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1336</div>
+  <div id="verTag">v1337</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -7967,11 +7974,16 @@ document.addEventListener('DOMContentLoaded', function () {
               : '<span class="vz-ic">' + x.mark + '</span>';
             return '<span class="vz-chip' + lit + '" data-who="' + x.key + '"' + tap + '>' + inner + '</span>';
           };
-          const atkSide = L.filter(function(x){ return x.lean === 'a'; }).map(chip).join('');
-          const defSide = L.filter(function(x){ return x.lean === 'd'; }).map(chip).join('');
+          const atkList = L.filter(function(x){ return x.lean === 'a'; });
+          const defList = L.filter(function(x){ return x.lean === 'd'; });
+          const atkSide = atkList.map(chip).join('');
+          const defSide = defList.map(chip).join('');
+          // 攻守の箱は票数の比で配る。棄権（lean が空）はどちらの箱にも出ないので、比は攻票:守票で取る。
+          // 二箱の合計幅は据え置きなので、中央の獣の列は動かない。幅の下限・上限はCSS側の clamp が持つ。
+          const vzRatio = (atkList.length + defList.length) ? (atkList.length / (atkList.length + defList.length)) : 0.5;
           // 攻の箱・中央・守の箱を一行に並べる。中央より低い箱は縦を増やさないので、
           // アイコンを大きくしてもカードの高さが伸びない。
-          return `<div class="verdict-zones">
+          return `<div class="verdict-zones" style="--vz-a: clamp(var(--vz-min), calc(var(--vz-pair) * ${vzRatio.toFixed(3)}), calc(var(--vz-pair) - var(--vz-min)));">
             <div class="vz vz-atk">${atkSide}</div>
             <div class="vz-mid">
               <div class="verdict-mascot" onclick="window.mascotTap(event)">${attack ? (a.yakumanReach ? '🐦‍🔥' : (a.kokushiSeen ? '🐉' : '🐅')) : ((a.defHonors + a.defTerminals) >= 2 ? '🐑' : '🐭')}</div>
