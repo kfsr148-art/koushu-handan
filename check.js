@@ -704,6 +704,55 @@ section('⑩', 'ミニゲームの定数と八方位・親補正の写し', () =
   if (bad === 0) ok('定数・八方位・境目の写し、いずれも仕様どおり');
 });
 
+/* ============================================================
+   ⑫ プレースホルダの未置換
+   （台詞の {n} {h} {w} {s} などが、置換されないまま画面へ出ないか）
+   ============================================================ */
+section('⑫', 'プレースホルダの未置換', () => {
+  /* 差し込み口：文字列の中の {名前}。テンプレート文字列の ${…} は別物なので除く。 */
+  const holes = new Map();     // 名前 -> 出現数
+  const fills = new Map();     // 名前 -> 置換の数
+  let m;
+  const reHole = /(?<!\$)\{([A-Za-z][\w]*)\}/g;
+  while ((m = reHole.exec(jsOnly))) holes.set(m[1], (holes.get(m[1]) || 0) + 1);
+  /* 埋める側：replace('{n}', …) と replace(/\{n\}/g, …) の二つの形。 */
+  const reFill = /replace\(\s*(?:['"]\{(\w+)\}['"]|\/\\\{(\w+)\\\}\/[gimsuy]*)/g;
+  while ((m = reFill.exec(jsOnly))) {
+    const k = m[1] || m[2];
+    fills.set(k, (fills.get(k) || 0) + 1);
+  }
+
+  note('差し込み口 : ' + ([...holes.entries()].map(x => '{' + x[0] + '}×' + x[1]).join('  ') || 'なし'));
+  note('埋める側   : ' + ([...fills.entries()].map(x => '{' + x[0] + '}×' + x[1]).join('  ') || 'なし'));
+
+  const naked = [...holes.keys()].filter(k => !fills.has(k));
+  const idle = [...fills.keys()].filter(k => !holes.has(k));
+
+  if (naked.length === 0) ok('埋める側の無い差し込み口は無し');
+  else {
+    ng('埋める側の無い差し込み口 ' + naked.length + '件: ' + naked.map(k => '{' + k + '}').join(' '));
+    naked.forEach(k => {
+      const i = jsOnly.indexOf('{' + k + '}');
+      note('  {' + k + '} ' + lineOfNoB64(i) + '行あたり  ' + jsOnly.slice(Math.max(0, i - 30), i + 20).replace(/\s+/g, ' ').trim());
+    });
+  }
+  if (idle.length === 0) ok('差し込み口の無い置換は無し');
+  else ng('差し込み口の無い置換 ' + idle.length + '件（綴り違いか、消し忘れ）: ' + idle.map(k => '{' + k + '}').join(' '));
+
+  /* 画面へ直に書いてある本文（<script> の外）に差し込み口が残っていないか。
+     こちらは埋める処理が通らないので、書いた時点で出てしまう。 */
+  const outside = [];
+  const reOut = /(?<!\$)\{([A-Za-z][\w]*)\}/g;
+  /* <script> の中身だけを空白で伏せる（行番号は保つ）。残るのが HTML と CSS の側。 */
+  const htmlOnly = srcNoB64.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, s => s.replace(/[^\n]/g, ' '));
+  while ((m = reOut.exec(htmlOnly))) outside.push({ k: m[1], line: lineOfNoB64(m.index) });
+  if (outside.length === 0) ok('<script> の外の本文に差し込み口は無し');
+  else {
+    ng('<script> の外に差し込み口が ' + outside.length + '件（そのまま画面に出る）');
+    outside.slice(0, 8).forEach(o => note(String(o.line).padStart(5) + '行  {' + o.k + '}'));
+  }
+});
+
 /* ---- まとめ ---- */
 console.log('');
 console.log('='.repeat(52));
