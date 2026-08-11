@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1338">
+<html lang="ja" data-ver="1339">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1075,6 +1075,14 @@
     /* 助言欄も一行に切り詰める。狭い画面では、これが無いと末尾の二択が画面外へ出る。
        広い画面（844x390 など）では全文のまま出す。 */
     body.judged .say-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* 縦を9px詰めて、末尾の二択（連チャン／親流れ）を画面の中に残す。
+       カードは縦中央寄せなので、中身を9px削ると下端は半分の4.5px上がる。568x320 では
+       二択が2.3px下へ出ており、同時に投票欄の上端が4.3px切れていた。両方これで収まる。
+       削るのは余白だけ。字の大きさも、当たり判定44pxも、間隔8pxも、根拠欄も減らさない。
+       手牌と註の余白は要素側に直接書いてあるので、!important でないと上書きできない。 */
+    body.judged .judged-hand { margin-top: 4px !important; }
+    body.judged .judged-note { margin-top: 3px !important; }
+    body.judged .next-hand-row { margin-top: 4px; }
   }
   #verTag { position: fixed; top: 2px; left: 5px; font-size: 9px; letter-spacing:0.05em; color: rgba(243,236,224,0.32); z-index: 99; pointer-events: none; font-family: var(--sans); }
   .voice-credit { position: fixed; top: 2px; left: 44px; font-size: 9px; letter-spacing: 0.04em; color: rgba(243,236,224,0.40); z-index: 99; pointer-events: none; font-family: var(--sans); display: none; }
@@ -1131,7 +1139,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1338</div>
+  <div id="verTag">v1339</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>

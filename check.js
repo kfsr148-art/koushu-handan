@@ -279,7 +279,7 @@ const VIEW_PROBE = `
 <script>
 window.addEventListener('load', function(){
   var screen = (location.hash || '').replace('#','') || 'board';
-  var res = { w: 0, h: 0, out: [], hit: [], wide: [] };
+  var res = { w: 0, h: 0, out: [], hit: [], wide: [], tail: null };
   setTimeout(function(){
     try{
       if(screen === 'adv'){ window.closeTitleScreen(); window.advStart(); }
@@ -363,6 +363,13 @@ window.addEventListener('load', function(){
       if(el.scrollWidth > el.clientWidth && el.clientWidth > 60)
         res.wide.push({ el: name(el), sw: el.scrollWidth, cw: el.clientWidth, over: el.scrollWidth - el.clientWidth });
     });
+
+    /* 判定後は、末尾の二択（連チャン／親流れ）が画面の中に残っているかまで見る。
+       ここが画面の下へ出ると、判定を読んでも次の手へ進めない。 */
+    if(judged){
+      var tail = document.querySelector('.next-hand-row');
+      res.tail = tail ? { bottom: Math.round(tail.getBoundingClientRect().bottom * 10) / 10, vis: vis(tail) } : null;
+    }
     emit();
   }
   function emit(){
@@ -520,8 +527,16 @@ section('⑦', '狭い画面での溢れ', () => {
         (d.out || []).forEach(x => lines.push('はみ出し ' + x.el + ' right=' + x.right + ' bottom=' + x.bottom));
         (d.hit || []).forEach(x => lines.push('重なり 「' + x.a + '」×「' + x.b + '」 ' + x.w + 'x' + x.h + 'px'));
         wide.forEach(x => lines.push('横溢れ ' + x.el + ' ' + x.sw + ' > ' + x.cw));
+        /* 判定後は、末尾の二択が画面の中に残っていることまでを合格の条件にする。 */
+        if (screen === 'judged') {
+          if (!d.tail || !d.tail.vis) lines.push('二択（連チャン／親流れ）が出ていない');
+          else if (d.tail.bottom > d.h + 1) lines.push('二択が画面の下へ出ている bottom=' + d.tail.bottom + ' > ' + d.h);
+        }
         const label = screen + ' ' + d.w + 'x' + d.h;
-        if (lines.length === 0) { note(label.padEnd(18) + '溢れなし'); return; }
+        if (lines.length === 0) {
+          note(label.padEnd(18) + '溢れなし' + (d.tail ? '（二択 bottom=' + d.tail.bottom + ' / ' + d.h + '）' : ''));
+          return;
+        }
         bad += lines.length;
         ng(label + '：' + lines.length + '件');
         lines.slice(0, 6).forEach(l => note('  ' + l));
