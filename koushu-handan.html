@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1351">
+<html lang="ja" data-ver="1352">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1146,7 +1146,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1351</div>
+  <div id="verTag">v1352</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -6428,6 +6428,8 @@ document.addEventListener('DOMContentLoaded', function () {
         yakuhaiPair: !!a.yakuhaiPair, goodShapes: a.goodShapes, shapeNeeded: a.shapeNeeded,
         acceptTiles: a.acceptTiles, doraValue: a.doraValue,
         widthLabel: a.widthLabel,
+        // 判定獣の見立てを組むための材料（形が足りているか・守りの牌の数）
+        shapeOK: !!a.shapeOK, defHonors: a.defHonors, defTerminals: a.defTerminals,
         yakumanReach: !!a.yakumanReach, yakumanName: a.yakumanName,
         kokushiSeen: !!a.kokushiSeen, kokushiKinds: a.kokushiKinds });
     }
@@ -6710,8 +6712,9 @@ document.addEventListener('DOMContentLoaded', function () {
     nm.style.cssText = 'font-size:9px; color:rgba(232,226,208,0.55); margin:0 2px 2px; letter-spacing:.04em;';
     const bl = document.createElement('div');
     bl.innerHTML = html;
-    // 話者ごとの色：現場猫＝青、ずんだもん＝緑、AIスイッチ＝赤
+    // 話者ごとの色：現場猫＝青、ずんだもん＝緑、AIスイッチ＝赤、判定エンジン＝金
     const skin = (tint === 'ai') ? '#a8604f; background:#331f1c; color:#f0dcd6;'
+      : (tint === 'engine') ? '#8a7f2c; background:#332c14; color:#f0e6c8;'
       : (side === 'left' ? '#8a7f5c; background:#2c3644; color:#e8e2d0;'
                          : '#7fa05c; background:#26331f; color:#e6f0d8;');
     bl.style.cssText = 'font-size:11.5px; line-height:2.0; padding:7px 9px; border-radius:10px;'
@@ -7083,6 +7086,15 @@ document.addEventListener('DOMContentLoaded', function () {
     // 仲裁役が黙っていて締めを飛ばされた回でも、撤退線だけは残す
     if(retreat && !r.leans[judge]){
       misdiagBubble(chat, SIDE[judge], AV[judge], MD_WHO[judge], retreat, judge === 'om' ? 'ai' : '');
+    }
+    // 最後に判定獣。三人の物差しではなく、判定エンジン自身がどこで倒したかを述べる。
+    // 材料を持たない古い記録では出さない（言えないことを言わせない）。
+    if(typeof r.shapeOK === 'boolean' && typeof r.defHonors === 'number'
+       && typeof r.defTerminals === 'number'){
+      const beast = (r.verdict === 'attack')
+        ? '🐅'
+        : (((r.defHonors + r.defTerminals) >= 2) ? '🐑' : '🐭');
+      misdiagBubble(chat, 'left', beast, '判定エンジン', mascotSay(r), 'engine');
     }
     rotSync();   // 全要素を並べ終えてから向きを反映（横なら案内だけ・縦なら中身）
   }
@@ -7661,6 +7673,8 @@ document.addEventListener('DOMContentLoaded', function () {
                    yakuhaiPair: !!a.yakuhaiPair, goodShapes: a.goodShapes, shapeNeeded: a.shapeNeeded,
                    acceptTiles: a.acceptTiles, doraValue: a.doraValue,
                    widthLabel: a.widthLabel,
+                   // 判定獣の見立てを組むための材料（形が足りているか・守りの牌の数）
+                   shapeOK: !!a.shapeOK, defHonors: a.defHonors, defTerminals: a.defTerminals,
                    yakumanReach: !!a.yakumanReach, yakumanName: a.yakumanName,
                    kokushiSeen: !!a.kokushiSeen, kokushiKinds: a.kokushiKinds });
       if(_rows.length > 500) _rows.splice(0, _rows.length - 500);
