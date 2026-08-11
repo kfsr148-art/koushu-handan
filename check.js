@@ -289,6 +289,11 @@ window.addEventListener('load', function(){
       else if(screen === 'settings'){ window.closeTitleScreen(); window.catRoomOpen(); }
       else if(screen === 'torimenu'){ window.closeTitleScreen(); window.toriOpen(); }
       else if(screen === 'advroom'){ advRoom(); }
+      else if(screen === 'toriend'){
+        window.closeTitleScreen(); window.toriOpen(); window.toriStart('easy');
+        toriSweep(0);   /* 勝ち抜けた時点で自分で measure を呼ぶ */
+        return;
+      }
       else if(screen === 'judged'){
         window.closeTitleScreen(); window.ssMarkTool();
         var g = document.getElementById('qiText');
@@ -327,6 +332,26 @@ window.addEventListener('load', function(){
     for(var i = 0; i < 5; i++){ var n = pick(deck.children[3], '次へ'); if(n) n.click(); }
     var d = pick(deck.children[1], '初歩'); if(d) d.click();
     var r = pick(deck.children[2], '猫室'); if(r) r.click();
+  }
+  /* ミニゲームの結果画面まで進める。鳥は逃げるので狙い撃ちは当てにならない。
+     画面を24px刻みで一面叩くと、どこに居ても当たる。初級のノルマ3羽で結果画面に着く。 */
+  function toriSweep(n){
+    var root = document.getElementById('toriRoot');
+    var panel = document.getElementById('toriPanel');
+    var done = panel && /捕まえた|逃げられた/.test(panel.textContent || '');
+    if(done || n > 40 || !root){ setTimeout(measure, 300); return; }
+    for(var y = 10; y < window.innerHeight; y += 24){
+      for(var x = 10; x < window.innerWidth; x += 24){
+        root.dispatchEvent(new MouseEvent('mousedown', { clientX: x, clientY: y, bubbles: true }));
+        if('ontouchstart' in window){
+          try{
+            var t = new Touch({ identifier: 1, target: root, clientX: x, clientY: y });
+            root.dispatchEvent(new TouchEvent('touchstart', { changedTouches: [t], bubbles: true, cancelable: true }));
+          }catch(e){}
+        }
+      }
+    }
+    setTimeout(function(){ toriSweep(n + 1); }, 120);
   }
   /* 別のレイヤー同士（覆いと下の盤面）を重なりと数えないよう、position:fixed の祖先で層を分ける */
   function layer(el){
@@ -393,7 +418,10 @@ window.addEventListener('load', function(){
     }
     /* 目当ての画面に本当に着いているかを持ち帰る。着けないまま別の画面を測って
        「溢れなし」と言うのが、いちばん質の悪い通り方なので。 */
-    if(screen === 'advroom'){
+    if(screen === 'toriend'){
+      var tp = document.getElementById('toriPanel');
+      res.state = tp ? (tp.textContent || '').slice(0, 12) : '';
+    } else if(screen === 'advroom'){
       /* 見出しは器のいちばん最後の段（head）の中の span。先頭の span は味方牌なので拾わない。 */
       var rootAdv = document.getElementById('advRoot');
       var hd = rootAdv && rootAdv.lastElementChild ? rootAdv.lastElementChild.querySelector('span') : null;
@@ -509,8 +537,8 @@ section('⑦', '狭い画面での溢れ', () => {
   const VIEWS = [[568, 320], [667, 375], [844, 390], [932, 430]];
   /* judged＝判定後のカード。判定前だけを測っていると、根拠欄のように結果側にしか出ない溢れを見逃す。
      title/settings/advroom/torimenu は、指で触る場所があるのに測っていなかった画面。
-     ミニゲームの結果画面は、遊びを実際に通さないと出せず、ヘッドレスでは安定しないので保留。 */
-  const SCREENS = ['title', 'board', 'judged', 'settings', 'watch', 'adv', 'advroom', 'torimenu'];
+     toriend は実際に遊びを通して出す結果画面（画面を一面叩いて勝ち抜ける）。 */
+  const SCREENS = ['title', 'board', 'judged', 'settings', 'watch', 'adv', 'advroom', 'torimenu', 'toriend'];
   /* 横溢れは4pxまで見逃す。.tile.pick::before が当たり判定を牌の外へ4px広げており（押し損じ対策）、
      その意図的なはみ出しが3px計上されるため。これを咎めると当たり判定を痩せさせる方向に効いてしまう。 */
   const SLACK = 4;
@@ -564,6 +592,9 @@ section('⑦', '狭い画面での溢れ', () => {
           else if (d.tail.bottom > d.h + 1) lines.push('二択が画面の下へ出ている bottom=' + d.tail.bottom + ' > ' + d.h);
         }
         /* 目当ての画面に着けていない回は、溢れの有無に関わらず落とす。 */
+        if (screen === 'toriend' && !/捕まえた|逃げられた/.test(d.state || '')) {
+          lines.push('ミニゲームの結果画面に届いていない（いまの表示：' + (d.state || '空') + '）');
+        }
         if (screen === 'advroom' && (d.state || '').indexOf('猫室') < 0) {
           lines.push('探偵編の部屋に入れていない（いまの見出し：' + (d.state || '空') + '）');
         }
