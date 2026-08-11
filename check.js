@@ -421,6 +421,32 @@ window.addEventListener('load', function(){
       var tail = document.querySelector('.next-hand-row');
       res.tail = tail ? { bottom: Math.round(tail.getBoundingClientRect().bottom * 10) / 10, vis: vis(tail) } : null;
     }
+    /* ミニゲームのメニューは、指が本当にボタンへ届くかまで見る。
+       覆いの touchstart で既定動作を止めていると、iOS はタップから click を作らないので
+       「見えているのに一枚も押せない」状態になる（v1331〜v1347 の実機がこれだった）。 */
+    if(screen === 'torimenu'){
+      var bad = [];
+      var rt = document.getElementById('toriRoot');
+      [].slice.call(rt ? rt.querySelectorAll('button') : []).forEach(function(b){
+        var br = b.getBoundingClientRect();
+        if(br.width < 4 || br.height < 4) return;
+        var cx = br.left + br.width / 2, cy = br.top + br.height / 2;
+        var label = (b.textContent || '').trim().slice(0, 10);
+        var top = document.elementFromPoint(cx, cy);
+        if(!(top === b || b.contains(top))){
+          bad.push(label + '：指が別の物に当たる（' + (top ? (top.id || top.className || top.tagName) : 'なし') + '）');
+          return;
+        }
+        try{
+          var tt = new Touch({ identifier: 1, target: b, clientX: cx, clientY: cy });
+          var tev = new TouchEvent('touchstart', { changedTouches: [tt], touches: [tt], bubbles: true, cancelable: true });
+          b.dispatchEvent(tev);
+          if(tev.defaultPrevented) bad.push(label + '：touchstart が止められている（iOSでは反応しない）');
+        }catch(e){ /* Touch を作れない環境では、当たり判定の確認だけで済ませる */ }
+      });
+      res.tap = bad;
+      res.tapCount = rt ? rt.querySelectorAll('button').length : 0;
+    }
     /* 目当ての画面に本当に着いているかを持ち帰る。着けないまま別の画面を測って
        「溢れなし」と言うのが、いちばん質の悪い通り方なので。 */
     if(screen === 'toriend'){
@@ -601,6 +627,10 @@ section('⑦', '狭い画面での溢れ', () => {
         /* 目当ての画面に着けていない回は、溢れの有無に関わらず落とす。 */
         if (screen === 'toriend' && !/捕まえた|逃げられた/.test(d.state || '')) {
           lines.push('ミニゲームの結果画面に届いていない（いまの表示：' + (d.state || '空') + '）');
+        }
+        if (screen === 'torimenu') {
+          if (!d.tapCount) lines.push('メニューにボタンが出ていない');
+          (d.tap || []).forEach(x => lines.push('タップが届かない ' + x));
         }
         if (screen === 'advroom' && (d.state || '').indexOf('猫室') < 0) {
           lines.push('探偵編の部屋に入れていない（いまの見出し：' + (d.state || '空') + '）');

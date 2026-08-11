@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1347">
+<html lang="ja" data-ver="1348">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -284,10 +284,9 @@
      ⚠などの記号は本文の側に置く（行頭は話者の印だけが座る）。 */
   .tone-angle, .cat-switch-note, .edamame-note, .shinshi-note {
     display: flex; align-items: center; justify-content: center; gap: 6px; }
-  /* 現場猫の顔：猫牌の絵（480x480）の x124 y56 から 200x200 を切り出して箱いっぱいに出す */
-  .say-cat { background-repeat: no-repeat; image-rendering: pixelated;
-    background-size: calc(var(--say-icon) * 2.4) calc(var(--say-icon) * 2.4);
-    background-position: calc(var(--say-icon) * -0.62) calc(var(--say-icon) * -0.28); }
+  /* 現場猫の行頭は、投票欄と同じく猫牌の絵を img で箱に収める（.say-icon img が効く）。
+     背景で切り出す形はやめた——下の .say-icon が background 一括指定で寸法と位置を
+     初期値へ戻すため、24pxの枠に原寸の左上隅（空白）だけが出ていた。 */
   .say-icon { flex: none; width: var(--say-icon); height: var(--say-icon); border-radius: 5px;
     display: inline-flex; align-items: center; justify-content: center;
     background: rgba(0,0,0,0.30); border: 1px solid rgba(138,127,92,0.6);
@@ -547,7 +546,9 @@
   .tori-overlay.show { display: block; }
   .tori-bird { position: absolute; will-change: transform; pointer-events: none; }
   .tori-bird svg { display: block; width: 100%; height: 100%; }
-  .tori-hud { position: absolute; top: 6px; left: 10px; right: 10px; z-index: 3;
+  /* HUD は札（.tori-panel、z:4）より上に置く。下にすると全面の札に覆われて、✕ に指が届かない。
+     箱そのものは pointer-events:none なので、✕ 以外は下へ透ける。 */
+  .tori-hud { position: absolute; top: 6px; left: 10px; right: 10px; z-index: 5;
     display: flex; align-items: center; gap: 12px; pointer-events: none;
     color: var(--bone); font-size: 13px; letter-spacing: .06em; text-shadow: 0 1px 3px rgba(0,0,0,.8); }
   .tori-hud .tori-close { margin-left: auto; pointer-events: auto; }
@@ -1145,7 +1146,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1347</div>
+  <div id="verTag">v1348</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -3983,9 +3984,11 @@ document.addEventListener('DOMContentLoaded', function () {
   function sayIconHTML(key){
     const img = (typeof ADV_FACE_IMG !== 'undefined' && ADV_FACE_IMG[key]) ? ADV_FACE_IMG[key] : null;
     if(img) return '<span class="say-icon"><img src="' + img + '" alt=""></span>';
-    // 現場猫は専用の顔画像を持たないので、猫牌の絵から頭部を切り出して使う（元画像は差し替えない）
+    // 現場猫は投票欄と同じ絵を同じ出し方で使う（猫牌の絵をそのまま箱に収める）。
+    // 以前は背景で頭部を切り出していたが、.say-icon の background 一括指定が
+    // 切り出しの寸法と位置を初期値へ戻してしまい、24pxの枠に原寸の左上隅＝空白だけが出ていた。
     if(key === 'cat' && typeof CAT_TILE_GENBA !== 'undefined'){
-      return '<span class="say-icon say-cat" style="background-image:url(' + CAT_TILE_GENBA + ')"></span>';
+      return '<span class="say-icon"><img src="' + CAT_TILE_GENBA + '" alt=""></span>';
     }
     // 獣は判定ごとに姿が変わる（攻＝虎ほか／守＝羊・鼠）。台詞行の印も同じ絵に合わせる。
     const glyph = { eda: '🫛', ai: '🎩', mascot: (window._mascotGlyph || '') }[key];
@@ -4071,9 +4074,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     const say = (window._vzSay || {})[key];
     if(!say) return;
+    // 見立てが本判定と食い違った回は、その断りをこの一言の後ろに繋げる（カードには常設しない）
+    const miss = (window._vzMiss || {})[key];
     mascotTalking = false;   // 道具が喋るなら虎は口を閉じる
     applyToneMark();
-    saySet(key, say);
+    saySet(key, miss ? (say + '　' + miss) : say);
   };
   /* 中央の獣（虎・羊・鼠ほか）を押すと、判定エンジン自身が理由を述べる。
      人柄の担当ではないので、喋っている間は担当牌の金枠を全て消す。
@@ -7678,6 +7683,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // 猫牌スイッチ（特別ルームで設定）：ONでも判定には一切触れない（上書き廃止）。
     // 目盛り（v1090で改訂・確定配牌24000回）：0枚=攻め（47.0%・地+18.7pt）／4枚以上=守り（84.3%）
     // 1〜3枚は地の攻め率28.3%とほぼ変わらないため沈黙。改訂前は1〜3枚も攻め帯にしていた。
+    /* スイッチ三者の「見立てと本判定の食い違い」は、カードに常設せず、
+       投票欄のアイコンを押したときの一言の後ろへ回す（中央の積みを減らす）。
+       ただし現場猫の⚠アラートだけは誤診記録の収集告知なので常設のまま。 */
+    window._vzMiss = {};
     window._catSwitchNote = '';
     const catStanceLean = (effectiveCatN === 0) ? 'attack'
       : (effectiveCatN >= 4) ? 'defend' : '';
@@ -7707,14 +7716,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if(a.verdict === 'attack'){
           window._edamameNote = pairTripletN + '組。揃い';
         } else {
-          window._edamameNote = pairTripletN + '組。だが本判定は守——珍しい食い違い';
+          window._vzMiss.eda = pairTripletN + '組。だが本判定は守——珍しい食い違い';
         }
       } else if(effectiveCatN >= 3 && effectiveCatN <= 4 && pairTripletN <= 1){
         // 灰色帯（猫牌3〜4枚）に限り、下側も開く。実測では枝豆0組で攻め2%、1組で15%と守りがほぼ決まる。
         if(a.verdict === 'defend'){
           window._edamameNote = pairTripletN + '組。薄い——守り';
         } else {
-          window._edamameNote = pairTripletN + '組。薄いが本判定は攻——珍しい食い違い';
+          window._vzMiss.eda = pairTripletN + '組。薄いが本判定は攻——珍しい食い違い';
         }
       }
     }
@@ -7745,9 +7754,12 @@ document.addEventListener('DOMContentLoaded', function () {
         : '';
       // 紳士は丁寧語で通し、「気配」を自分の言葉として使う。外れを認めるのはこの一人だけ。
       if(shinshiLean){
-        window._shinshiNote = (a.verdict === shinshiLean)
-          ? ('一枚きりの字牌' + omamoriN + '枚。気配は' + (shinshiLean === 'attack' ? '攻め' : '守り') + '——一致です')
-          : ('気配は外れました。本判定は' + (a.verdict === 'attack' ? '攻' : '守') + 'です');
+        if(a.verdict === shinshiLean){
+          window._shinshiNote = '一枚きりの字牌' + omamoriN + '枚。気配は' + (shinshiLean === 'attack' ? '攻め' : '守り') + '——一致です';
+        } else {
+          // 外れはカードに常設せず、投票欄の紳士を押したときの一言の後ろへ回す
+          window._vzMiss.ai = '気配は外れました。本判定は' + (a.verdict === 'attack' ? '攻' : '守') + 'です';
+        }
       }
     }
 
@@ -8807,9 +8819,13 @@ window.ssReceive = function(){
     /* 捕獲は touchstart だけ。なぞって撫でても捕まらない。
        指が触れていない環境（PCでの確認）だけ mousedown も受ける。 */
     root.addEventListener('touchstart', function(ev){
-      ev.preventDefault();
-      if(paused) return resume();   // 休止中の一触りは、捕獲ではなく再開に使う
-      if(!running) return;
+      /* 札（メニュー・結果・休止）のボタンの上は、何も止めずに素通しする。
+         ここで既定動作を止めると iOS はタップから click を作らないので、
+         難易度も✕も一枚残らず無反応になる。捕獲の最中だけ止めればよい。 */
+      if(ev.target && ev.target.closest && ev.target.closest('button')) return;
+      if(paused){ ev.preventDefault(); resume(); return; }   // 休止中の一触りは、捕獲ではなく再開に使う
+      if(!running) return;                                   // 札が出ている間は止めない
+      ev.preventDefault();                                   // 遊んでいる最中だけ、拡大や選択に取られないよう止める
       const t = ev.changedTouches[0];   // 同時に触れても一点だけ有効
       if(t) hit(t.clientX, t.clientY);
     }, { passive:false });
