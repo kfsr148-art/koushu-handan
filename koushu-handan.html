@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1342">
+<html lang="ja" data-ver="1343">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1143,7 +1143,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1342</div>
+  <div id="verTag">v1343</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -8832,7 +8832,7 @@ window.ssReceive = function(){
     panel('<h2>一索の鳥</h2><div>' + TORI.timeLimit + '秒。触れて捕まえる。</div><div class="tori-row">' +
       TORI.levels.map(function(l){
         return '<button type="button" class="tori-btn" onclick="window.toriStart(\'' + l.key + '\')">' +
-          l.label + '（' + l.quota + '羽）</button>';
+          l.label + '（ノルマ' + l.quota + '羽）</button>';
       }).join('') + '</div>');
   }
   function newBird(fromEdge){
