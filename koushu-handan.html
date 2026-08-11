@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1340">
+<html lang="ja" data-ver="1341">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1141,7 +1141,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1340</div>
+  <div id="verTag">v1341</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -7575,9 +7575,13 @@ document.addEventListener('DOMContentLoaded', function () {
     };
     buttonRow.appendChild(switchBtn); buttonRow.appendChild(edamameBtn); buttonRow.appendChild(shinshiBtn); buttonRow.appendChild(ledgerBtn); buttonRow.appendChild(misdiagBtn); buttonRow.appendChild(jibakuBtn); buttonRow.appendChild(close);
     // ── ボタンの整列：2列のグリッド。長いラベルの4つは横いっぱい、短い4つは2列に揃える ──
-    buttonRow.style.cssText = 'display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%; max-width:340px; box-sizing:border-box;';
+    // 列は minmax(0,1fr)。ただの 1fr だと、格子の項目が中身の min-content まで列を押し広げるので、
+    // 狭い画面（568x320）で二列ぶんが器を超え、右端のボタンが枠の外へはみ出していた。
+    buttonRow.style.cssText = 'display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px; width:100%; max-width:340px; box-sizing:border-box;';
     [switchBtn, edamameBtn, shinshiBtn, ledgerBtn, misdiagBtn, jibakuBtn, close].forEach(function(b){
-      b.style.cssText = 'padding:7px 8px; border-radius:8px; border:1px solid #8a7f5c; background:#2c3644; color:#e8e2d0; font-size:11px; line-height:1.25; white-space:nowrap; text-align:center; width:100%; box-sizing:border-box;';
+      // 字は折り返させる。nowrap のままだと、いちばん長い札（▶ ずんだもんと現場猫）の min-content が
+      // 列より広くなり、狭い画面で枠からはみ出す。折り返せば列の幅に収まり、字も削らずに済む。
+      b.style.cssText = 'padding:7px 8px; border-radius:8px; border:1px solid #8a7f5c; background:#2c3644; color:#e8e2d0; font-size:11px; line-height:1.25; text-align:center; width:100%; box-sizing:border-box;';
     });
     // 三群の見分け：枠色で分ける。スイッチ=金茶(既定 #8a7f5c)／記録=青灰／再生=赤茶
     [ledgerBtn, misdiagBtn].forEach(function(b){ b.style.borderColor = '#5c7f8a'; });
