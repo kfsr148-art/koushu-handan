@@ -779,10 +779,10 @@ section('⑫', 'プレースホルダの未置換', () => {
   const holes = new Map();     // 名前 -> 出現数
   const fills = new Map();     // 名前 -> 置換の数
   let m;
-  const reHole = /(?<!\$)\{([A-Za-z][\w]*)\}/g;
+  const reHole = /(?<!\$)\{([A-Za-z぀-ヿ一-鿿][\w぀-ヿ一-鿿]*)\}/g;   /* {名} のような日本語の差し込み口も拾う */
   while ((m = reHole.exec(jsOnly))) holes.set(m[1], (holes.get(m[1]) || 0) + 1);
   /* 埋める側：replace('{n}', …) と replace(/\{n\}/g, …) の二つの形。 */
-  const reFill = /replace\(\s*(?:['"]\{(\w+)\}['"]|\/\\\{(\w+)\\\}\/[gimsuy]*)/g;
+  const reFill = /replace\(\s*(?:['"]\{([^{}'"]+)\}['"]|\/\\\{([^{}/]+)\\\}\/[gimsuy]*)/g;
   while ((m = reFill.exec(jsOnly))) {
     const k = m[1] || m[2];
     fills.set(k, (fills.get(k) || 0) + 1);
@@ -808,7 +808,7 @@ section('⑫', 'プレースホルダの未置換', () => {
   /* 画面へ直に書いてある本文（<script> の外）に差し込み口が残っていないか。
      こちらは埋める処理が通らないので、書いた時点で出てしまう。 */
   const outside = [];
-  const reOut = /(?<!\$)\{([A-Za-z][\w]*)\}/g;
+  const reOut = /(?<!\$)\{([A-Za-z぀-ヿ一-鿿][\w぀-ヿ一-鿿]*)\}/g;   /* {名} のような日本語の差し込み口も拾う */
   /* <script> の中身だけを空白で伏せる（行番号は保つ）。残るのが HTML と CSS の側。 */
   const htmlOnly = srcNoB64.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, s => s.replace(/[^\n]/g, ' '));
   while ((m = reOut.exec(htmlOnly))) outside.push({ k: m[1], line: lineOfNoB64(m.index) });
