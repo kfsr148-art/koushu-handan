@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1350">
+<html lang="ja" data-ver="1351">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1146,7 +1146,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1350</div>
+  <div id="verTag">v1351</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -7910,9 +7910,10 @@ document.addEventListener('DOMContentLoaded', function () {
     reasons.push({
       ok: a.hasValue,
       title: a.hasValue ? `打点 ${a.doraValue} — ${a.valueSources.join('・')}` : '打点の種なし',
-      detail: a.hasValue
+      detail: (a.hasValue
         ? `打点 ${a.doraValue} 。手が高いほど、形が多少悪くても押す価値が出ます。`
-        : `ドラ・赤・役牌対子なし。安手は良形でないと押す価値が出にくい。`
+        : `ドラ・赤・役牌対子なし。安手は良形でないと押す価値が出にくい。`)
+        + (attack ? `役の芽は『見える手』欄に。` : ``)
     });
     reasons.push({
       ok: a.shapeOK,
@@ -7925,7 +7926,11 @@ document.addEventListener('DOMContentLoaded', function () {
     reasons.push({
       ok: a.widthGood,
       title: `伸びしろ ${a.widthLabel} — 有効牌 ${a.acceptTypes}種 ${a.acceptTiles}枚`,
-      detail: a.widthGood
+      detail: (a.widthLabel === '非常に広い')
+        ? `${a.baseShanten}向聴。有効牌 ${a.acceptTiles} 枚。どこからでも育つ広さです。`
+        : (a.widthLabel === 'ふつう')
+        ? `${a.baseShanten}向聴。有効牌 ${a.acceptTiles} 枚。広くも狭くもなく、手なりで進みます。`
+        : a.widthGood
         ? `${a.baseShanten}向聴。手が進む有効牌 ${a.acceptTiles} 枚と受けが広く、ツモのたびに育ちます。`
         : `${a.baseShanten}向聴。有効牌 ${a.acceptTiles} 枚と狭く、ツモを重ねても足踏みしがちです。`
     });
