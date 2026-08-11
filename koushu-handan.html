@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1339">
+<html lang="ja" data-ver="1340">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -554,6 +554,8 @@
     color: var(--bone); text-align: center; padding: 16px; }
   .tori-panel h2 { font-family: var(--serif); font-size: 20px; letter-spacing: .12em; margin: 0; color: var(--gold); }
   .tori-panel .tori-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  /* 結果画面のクリアタイムと自己ベスト。難易度ごとに別々に残る一行。 */
+  .tori-panel .tori-best { font-size: 12px; letter-spacing: .04em; color: #c9bf9a; }
   .tori-btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #8a7f5c;
     background: #2c3644; color: #e8e2d0; font-family: inherit; font-size: 14px; cursor: pointer; }
   .tori-btn:active { transform: translateY(1px); }
@@ -1139,7 +1141,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1339</div>
+  <div id="verTag">v1340</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -8939,10 +8941,37 @@ window.ssReceive = function(){
     birds.forEach(function(b){ b.node.remove(); });
     birds = [];
   }
+  /* 自己ベストは難易度ごとに別々に残す（初級の記録と上級の記録を混ぜない）。
+     読めない・書けない環境（プライベート閲覧など）でも遊びは止めない。 */
+  function bestKey(k){ return 'koushu_tori_best_' + k; }
+  function bestGet(k){
+    try{
+      var v = localStorage.getItem(bestKey(k));
+      if(v === null) return null;
+      var n = Number(v);
+      return isFinite(n) ? n : null;
+    }catch(e){ return null; }
+  }
+  function bestSet(k, sec){
+    try{ localStorage.setItem(bestKey(k), String(Math.round(sec * 10) / 10)); }catch(e){}
+  }
   function finish(win){
     running = false;
     cancelAnimationFrame(raf);
     clearBirds();
+    /* かかった時間は、制限時間から残りを引いて出す。捕まえた回だけ記録に残す。 */
+    var bestLine = '';
+    if(win){
+      var used = Math.max(0, TORI.timeLimit * 1000 - Math.max(0, endAt - Date.now())) / 1000;
+      var prev = bestGet(level.key);
+      var fresh = (prev === null || used < prev);
+      if(fresh) bestSet(level.key, used);
+      bestLine = 'CLEAR TIME ' + used.toFixed(1) + '秒　自己ベスト ' + (fresh ? used : prev).toFixed(1) + '秒'
+        + (fresh ? '（更新）' : '');
+    } else {
+      var b = bestGet(level.key);
+      if(b !== null) bestLine = '自己ベスト ' + b.toFixed(1) + '秒';
+    }
     /* 勝敗の絵は未用意。差し込み口だけ置き、今は枠と仮の文字を出す。
        遊んでいる最中の画面に現場猫は出さない。鳥は勝っても負けても無言。 */
     panel('<h2>' + (win ? '捕まえた' : '逃げられた') + '</h2>' +
@@ -8950,6 +8979,7 @@ window.ssReceive = function(){
         (win ? '［絵の差し込み口］鳥が泣き、現場猫が勝つ' : '［絵の差し込み口］鳥が勝ち、現場猫が泣く') +
       '</div>' +
       '<div>' + caught + ' / ' + level.quota + ' 羽</div>' +
+      (bestLine ? '<div class="tori-best">' + bestLine + '</div>' : '') +
       '<div class="tori-row">' +
         '<button type="button" class="tori-btn" onclick="window.toriMenu()">もう一度</button>' +
         '<button type="button" class="tori-btn" onclick="window.toriClose()">やめる</button>' +
