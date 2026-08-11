@@ -19,7 +19,12 @@ const ROOT = __dirname;
 /* 検査する本体は引数でも指定できる（例：`node check ../old.html`）。
    省略時はリポジトリ直下。旧版に当てて検査そのものの効きを確かめるために要る。
    音声やファイルの実在確認は、指定に関わらずリポジトリ直下を見る。 */
-const HTML_PATH = process.argv[2] ? path.resolve(process.argv[2]) : path.join(ROOT, 'koushu-handan.html');
+/* --fast は「速い版」。⑦の実測を、いちばん狭い視野ひとつに絞る（画面は全部まわる）。
+   通常の納品と push 前はこちら、台詞やレイアウトを触った回はフル版を回す。 */
+const ARGS = process.argv.slice(2);
+const FAST = ARGS.indexOf('--fast') >= 0;
+const TARGET = ARGS.filter(a => a.charAt(0) !== '-')[0];
+const HTML_PATH = TARGET ? path.resolve(TARGET) : path.join(ROOT, 'koushu-handan.html');
 const VER_PATH = path.join(ROOT, 'ver.txt');
 
 /* ---- 出力 ---- */
@@ -534,7 +539,8 @@ section('⑥', '未使用の埋め込み画像・音声', () => {
 let viewSkipped = false;   // ブラウザが無くて測れなかったか（まとめで PASS と紛れないように持つ）
 section('⑦', '狭い画面での溢れ', () => {
   /* headless の窓は視野より 幅+24 / 高さ+92 大きい。測るのは実際の innerWidth/innerHeight。 */
-  const VIEWS = [[568, 320], [667, 375], [844, 390], [932, 430]];
+  /* 速い版はいちばん狭い視野だけ。狭いほど溢れやすいので、画面の取りこぼしは作らずに時間だけ縮む。 */
+  const VIEWS = FAST ? [[568, 320]] : [[568, 320], [667, 375], [844, 390], [932, 430]];
   /* judged＝判定後のカード。判定前だけを測っていると、根拠欄のように結果側にしか出ない溢れを見逃す。
      title/settings/advroom/torimenu は、指で触る場所があるのに測っていなかった画面。
      toriend は実際に遊びを通して出す結果画面（画面を一面叩いて勝ち抜ける）。 */
@@ -609,6 +615,7 @@ section('⑦', '狭い画面での溢れ', () => {
         lines.slice(0, 6).forEach(l => note('  ' + l));
       });
     });
+    if (FAST) note('速い版：視野は 568x320 のみ。フル版（4視野）は --fast を外して回す');
     note('測った組み合わせ : ' + done + ' / ' + (VIEWS.length * SCREENS.length) +
       '（視野 ' + VIEWS.map(v => v[0] + 'x' + v[1]).join(' ') + '）');
     note('横溢れは ' + SLACK + 'px まで見逃す（.tile.pick::before の当たり判定ぶん）');

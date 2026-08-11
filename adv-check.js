@@ -21,7 +21,10 @@ const { spawnSync } = require('child_process');
 const ROOT = __dirname;
 /* 検査する本体は引数でも指定できる（例：`node adv-check ../old.html`）。
    旧版に当てて、検査そのものの効きを確かめるために要る。 */
-const HTML_PATH = process.argv[2] ? path.resolve(process.argv[2]) : path.join(ROOT, 'koushu-handan.html');
+/* --fast などの旗は本体のパスと取り違えない（探偵編の回帰は2経路だけなので、速い版でも中身は同じ）。 */
+const ARGS = process.argv.slice(2);
+const TARGET = ARGS.filter(function(a){ return a.charAt(0) !== '-'; })[0];
+const HTML_PATH = TARGET ? path.resolve(TARGET) : path.join(ROOT, 'koushu-handan.html');
 
 /* ---- 出力（check.js と同じ体裁） ---- */
 let failCount = 0;
