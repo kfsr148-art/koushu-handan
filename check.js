@@ -570,7 +570,8 @@ section('⑦', '狭い画面での溢れ', () => {
         const args = ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1',
           '--window-size=' + (vw + 24) + ',' + (vh + 92),
           '--user-data-dir=' + path.join(tmpDir, 'prof'),
-          '--virtual-time-budget=9000', '--dump-dom',
+          /* ミニゲームだけは、遊びを通すぶんの時間が要る（9秒だと勝ち抜けきる前に打ち切られる回がある）。 */
+          '--virtual-time-budget=' + (screen === 'toriend' ? 20000 : 9000), '--dump-dom',
           'file:///' + probe.replace(/\\/g, '/') + '#' + screen];
         const r = spawnSync(browser, args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
         const hit = /KOUSHU_VIEW_BEGIN([A-Za-z0-9+/=]+)KOUSHU_VIEW_END/.exec(String(r.stdout || ''));
