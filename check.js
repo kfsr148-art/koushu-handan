@@ -284,6 +284,13 @@ window.addEventListener('load', function(){
     try{
       if(screen === 'adv'){ window.closeTitleScreen(); window.advStart(); }
       else if(screen === 'watch'){ window.closeTitleScreen(); window.watchOpen(); }
+      else if(screen === 'judged'){
+        window.closeTitleScreen(); window.ssMarkTool();
+        var g = document.getElementById('qiText');
+        /* 13枚。14枚だと多牌で判定ボタンが押せず、カードが出ないまま測ることになる。 */
+        if(g){ g.value = '3455m2367p1189s7z'; g.dispatchEvent(new Event('input', {bubbles:true})); }
+        setTimeout(function(){ var jb = document.getElementById('judgeBtn'); if(jb) jb.click(); }, 300);
+      }
       else {
         window.closeTitleScreen(); window.ssMarkTool();
         var f = document.getElementById('qiText');
@@ -315,12 +322,14 @@ window.addEventListener('load', function(){
   }
   function measure(){
     var W = res.w = window.innerWidth, H = res.h = window.innerHeight;
+    /* 判定後は body.judged が縦に送れる作りなので、縦の溢れは咎めない（横だけを見る）。 */
+    var judged = (screen === 'judged');
     var over = [];
     document.querySelectorAll('body *').forEach(function(el){
       if(!vis(el)) return;
       var r = el.getBoundingClientRect();
       if(r.width < 8 || r.height < 8) return;
-      if(r.right > W + 1 || r.bottom > H + 1 || r.left < -1) over.push({ el: el, r: r });
+      if(r.right > W + 1 || (!judged && r.bottom > H + 1) || r.left < -1) over.push({ el: el, r: r });
     });
     /* 親が既に挙がっているものは子を挙げない（同じ溢れを何度も言わない） */
     over.filter(function(o){ return !over.some(function(p){ return p.el !== o.el && p.el.contains(o.el); }); })
@@ -342,6 +351,15 @@ window.addEventListener('load', function(){
 
     document.querySelectorAll('body *').forEach(function(el){
       if(!vis(el) || res.wide.length >= 8) return;
+      /* 判定後の画面には、送れるのが仕様の箱がある（投票欄＝端が半分見切れて送れると分かる作り）。
+         指で送れる箱の中身は「隠れた溢れ」ではないので数えない。overflow:hidden の箱は数える。 */
+      if(judged){
+        var cs = getComputedStyle(el);
+        if(cs.overflowX === 'auto' || cs.overflowX === 'scroll') return;
+        /* 「…」で切ってあるものも、切れていることが読み手に分かるので溢れとは数えない
+           （狭い横画面の根拠欄の見出しが、意図してこの形になっている）。 */
+        if(cs.textOverflow === 'ellipsis') return;
+      }
       if(el.scrollWidth > el.clientWidth && el.clientWidth > 60)
         res.wide.push({ el: name(el), sw: el.scrollWidth, cw: el.clientWidth, over: el.scrollWidth - el.clientWidth });
     });
@@ -453,7 +471,8 @@ let viewSkipped = false;   // ブラウザが無くて測れなかったか（�
 section('⑦', '狭い画面での溢れ', () => {
   /* headless の窓は視野より 幅+24 / 高さ+92 大きい。測るのは実際の innerWidth/innerHeight。 */
   const VIEWS = [[568, 320], [667, 375], [844, 390], [932, 430]];
-  const SCREENS = ['board', 'watch', 'adv'];
+  /* judged＝判定後のカード。判定前だけを測っていると、根拠欄のように結果側にしか出ない溢れを見逃す。 */
+  const SCREENS = ['board', 'watch', 'adv', 'judged'];
   /* 横溢れは4pxまで見逃す。.tile.pick::before が当たり判定を牌の外へ4px広げており（押し損じ対策）、
      その意図的なはみ出しが3px計上されるため。これを咎めると当たり判定を痩せさせる方向に効いてしまう。 */
   const SLACK = 4;
@@ -511,6 +530,7 @@ section('⑦', '狭い画面での溢れ', () => {
     note('測った組み合わせ : ' + done + ' / ' + (VIEWS.length * SCREENS.length) +
       '（視野 ' + VIEWS.map(v => v[0] + 'x' + v[1]).join(' ') + '）');
     note('横溢れは ' + SLACK + 'px まで見逃す（.tile.pick::before の当たり判定ぶん）');
+    note('judged だけは縦の溢れと、送れる箱（overflow-x:auto/scroll）・「…」で切る箱の横溢れを数えない');
     if (bad === 0) ok('どの視野でも、はみ出し・重なり・横溢れなし');
   } finally {
     fs.rmSync(tmpDir, { recursive: true, force: true });

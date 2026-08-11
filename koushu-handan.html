@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1337">
+<html lang="ja" data-ver="1338">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1068,6 +1068,10 @@
     /* 見出しを列の幅で止めるには、包んでいる側が縮める形でなければならない。
        flex の既定（min-width:auto）のままだと縮まず、隣の列へ字がはみ出す。 */
     body.judged .r-body { min-width: 0; }
+    /* 列そのものも縮める形にする。根拠欄は四列のグリッドだが、格子の項目は既定（min-width:auto）だと
+       中身の min-content まで列が広がる。見出しは上で nowrap にしてあるので min-content が見出し全長になり、
+       四列ぶんが器を超えて、はみ出した四列目がカードの overflow:hidden で「…」も付かずに切り落とされていた。 */
+    body.judged .reason { min-width: 0; }
     /* 助言欄も一行に切り詰める。狭い画面では、これが無いと末尾の二択が画面外へ出る。
        広い画面（844x390 など）では全文のまま出す。 */
     body.judged .say-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1127,7 +1131,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1337</div>
+  <div id="verTag">v1338</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
