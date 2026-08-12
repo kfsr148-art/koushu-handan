@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1353">
+<html lang="ja" data-ver="1354">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1146,7 +1146,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1353</div>
+  <div id="verTag">v1354</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -3871,12 +3871,12 @@ document.addEventListener('DOMContentLoaded', function () {
      八人目の人格ではない。方言チップには反応せず、いつも同じ口調で話す。
      数字は analyze() の返り値から取り、ここで計算し直さない。 */
   const MASCOT_WORDS = {
-    shapeAttack:  '形になったまとまりが{n}、この手に要るのは{m}。足りている。——攻。',
-    wideAttack:   'まとまりは{n}、要る数{m}に届かぬ。だが受け{r}枚。広い手は追いつく。——攻。',
-    bigAttack:    '{名}が見えている。物差しは仕舞え。——攻。',
-    narrowDefend: 'まとまりは足りている。だが受け{r}枚・打点{d}。狭いうえに安い。——守。',
-    shortDefend:  'まとまりが{n}、要るのは{m}。届かん。——守。',
-    dealer:       '親だ。基準を半歩、攻めに寄せた。'
+    shapeAttack:  '形のまとまりが{n}つあり、この手に必要な{m}つに足りています。判定は攻めです。',
+    wideAttack:   '形のまとまりは{n}つで、必要な{m}つには足りません。ただ受けが{r}枚と広いので、判定は攻めです。',
+    bigAttack:    '{名}が見えています。ここは文句なしの攻めです。',
+    narrowDefend: '形のまとまりは足りていますが、受け{r}枚・打点{d}と狭くて安いので、判定は守りです。',
+    shortDefend:  '形のまとまりが{n}つで、必要な{m}つに届きません。判定は守りです。',
+    dealer:       '親番なので、基準を少し攻め寄りにしています。'
   };
   /* 親の甘め補正が判定を実際に動かした回だけ true。
      6/8/20/24 は analyze() が使う境目の写し（あちらには触れないため、ここに置く）。
