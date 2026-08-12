@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1352">
+<html lang="ja" data-ver="1353">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1146,7 +1146,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1352</div>
+  <div id="verTag">v1353</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -3871,11 +3871,11 @@ document.addEventListener('DOMContentLoaded', function () {
      八人目の人格ではない。方言チップには反応せず、いつも同じ口調で話す。
      数字は analyze() の返り値から取り、ここで計算し直さない。 */
   const MASCOT_WORDS = {
-    shapeAttack:  '良い待ちの組が{n}、必要は{m}。足りている。——攻。',
-    wideAttack:   '良い待ちの組は{n}、必要{m}に足りぬ。だが受け{r}枚。広い手は追いつく。——攻。',
+    shapeAttack:  '形になったまとまりが{n}、この手に要るのは{m}。足りている。——攻。',
+    wideAttack:   'まとまりは{n}、要る数{m}に届かぬ。だが受け{r}枚。広い手は追いつく。——攻。',
     bigAttack:    '{名}が見えている。物差しは仕舞え。——攻。',
-    narrowDefend: '良い待ちの組は足りている。だが受け{r}枚・打点{d}。狭いうえに安い。——守。',
-    shortDefend:  '良い待ちの組が{n}、必要は{m}。届かん。——守。',
+    narrowDefend: 'まとまりは足りている。だが受け{r}枚・打点{d}。狭いうえに安い。——守。',
+    shortDefend:  'まとまりが{n}、要るのは{m}。届かん。——守。',
     dealer:       '親だ。基準を半歩、攻めに寄せた。'
   };
   /* 親の甘め補正が判定を実際に動かした回だけ true。
@@ -4756,7 +4756,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // ============================================================
   // 猫牌隠しADV「デルタ・プリンセス号」 第一段階＝骨格（v313）
   // 起動: 猫牌説明ポップの「ミシシッピー現場猫事件」ボタン → advStart()
-  // 経済: АР20 / 牌13で聴牌 / 犯人の嘘「中」でロン / АР8以下で殺人開始
+  // 経済: AP20 / 牌13で聴牌 / 犯人の嘘「中」でロン / AP8以下で殺人開始
   // ============================================================
   const ADV_ROOMS = [
     {k:'captain',   label:'ネルソン'},
