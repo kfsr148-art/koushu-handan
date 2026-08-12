@@ -857,6 +857,43 @@ section('⑫', 'プレースホルダの未置換', () => {
   }
 });
 
+section('⑬', '非日本語文字の混入', () => {
+  /* キリル・ハングルなど、日本語でも記号でもない字が紛れていないか。
+     Ａ と А のような見た目の同じ字は目では気づけないので、機械で当たる。
+     既知例外は置かない。1件でも出たら FAIL。 */
+  const allow = cp =>
+    cp < 0x80                                   /* ASCII */
+    || cp === 0x00B1 || cp === 0x00D7 || cp === 0x00F7   /* ±×÷ */
+    || (cp >= 0x2000 && cp <= 0x206F)           /* ‐–—…※⁈ ほか約物 */
+    || (cp >= 0x2190 && cp <= 0x21FF)           /* 矢印 */
+    || (cp >= 0x2200 && cp <= 0x23FF)           /* ≦≧−⌫ ほか記号 */
+    || (cp >= 0x2460 && cp <= 0x24FF)           /* 丸数字 */
+    || (cp >= 0x2500 && cp <= 0x257F)           /* 罫線 */
+    || (cp >= 0x25A0 && cp <= 0x27BF)           /* ■●▶✓ ほか */
+    || (cp >= 0x2B00 && cp <= 0x2BFF)
+    || cp === 0x200D                            /* 絵文字の連結 */
+    || (cp >= 0xFE00 && cp <= 0xFE0F)           /* 異体字セレクタ */
+    || (cp >= 0x1F000 && cp <= 0x1FAFF)         /* 絵文字 */
+    || (cp >= 0x3000 && cp <= 0x30FF)           /* 　、。「」＋かな */
+    || (cp >= 0x4E00 && cp <= 0x9FFF)           /* 漢字 */
+    || (cp >= 0xFF01 && cp <= 0xFF60)           /* 全角英数・記号 */
+    || (cp >= 0xFFE0 && cp <= 0xFFE6);
+  /* 埋め込みの base64 は字面ではないので、伏せた側を見る */
+  const lines = srcNoB64.split('\n');
+  const hits = [];
+  lines.forEach((ln, i) => {
+    for (const ch of ln) {
+      const cp = ch.codePointAt(0);
+      if (allow(cp)) continue;
+      hits.push({ line: i + 1, ch: ch, cp: cp, text: ln.trim().slice(0, 60) });
+    }
+  });
+  if (hits.length === 0) { ok('日本語・記号・絵文字のほかに紛れた字は無し'); return; }
+  ng('日本語でない字が ' + hits.length + '件');
+  hits.slice(0, 10).forEach(h => note(String(h.line).padStart(5) + '行  U+'
+    + h.cp.toString(16).toUpperCase().padStart(4, '0') + ' 「' + h.ch + '」  ' + h.text));
+});
+
 /* ---- まとめ ---- */
 console.log('');
 console.log('='.repeat(52));
