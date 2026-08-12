@@ -894,6 +894,73 @@ section('⑬', '非日本語文字の混入', () => {
     + h.cp.toString(16).toUpperCase().padStart(4, '0') + ' 「' + h.ch + '」  ' + h.text));
 });
 
+section('⑭', '良形の順位付けの写し', () => {
+  /* analyze() の bestShapeOneSuit は、まとまりのうち良形に使った牌しか控えない。
+     弱形（嵌張・辺張）まで控える写しが toneBlocksOneSuit として外に置いてあり、
+     ずんだと一姫はそちらを見て牌を名指す。片方だけ直すと、名指した中身と
+     判定の数字が静かにズレるので、条件と再帰の引数を字面で突き合わせる。 */
+  const cut = (name) => {
+    const at = src.indexOf('function ' + name + '(c){');
+    if (at < 0) return null;
+    let i = src.indexOf('{', at), depth = 0, end = -1;
+    for (let j = i; j < src.length; j++) {
+      const ch = src[j];
+      if (ch === '{') depth++;
+      else if (ch === '}') { depth--; if (depth === 0) { end = j; break; } }
+    }
+    return end < 0 ? null : src.slice(at, end + 1);
+  };
+  /* 丸括弧の釣り合いを取って、キーワードの引数をそのまま抜き出す */
+  const args = (body, kw) => {
+    const out = [];
+    let at = 0;
+    while ((at = body.indexOf(kw + '(', at)) >= 0) {
+      let depth = 0, end = -1;
+      for (let j = at + kw.length; j < body.length; j++) {
+        if (body[j] === '(') depth++;
+        else if (body[j] === ')') { depth--; if (depth === 0) { end = j; break; } }
+      }
+      if (end < 0) break;
+      out.push(body.slice(at + kw.length + 1, end).replace(/\s+/g, ''));
+      at = end;
+    }
+    return out;
+  };
+  const src1 = cut('bestShapeOneSuit'), src2 = cut('toneBlocksOneSuit');
+  if (!src1 || !src2) { ng('bestShapeOneSuit か toneBlocksOneSuit が見つからない'); return; }
+
+  /* ① 順位付けの式そのもの */
+  const betterOf = b => {
+    const m = /const better\s*=\s*([^;]+);/.exec(b);
+    return m ? m[1].replace(/\s+/g, '') : null;
+  };
+  const b1 = betterOf(src1), b2 = betterOf(src2);
+  if (b1 && b2 && b1 === b2) ok('順位付けの式が一致（good最大 → 面子最大 → 弱形最大）');
+  else { ng('順位付けの式が食い違っている'); note('  本体 : ' + b1); note('  写し : ' + b2); }
+
+  /* ② 枝の条件の並び */
+  const if1 = args(src1, 'if'), if2 = args(src2, 'if');
+  if (if1.join('|') === if2.join('|')) ok('枝の条件が ' + if1.length + '本とも同じ並び');
+  else {
+    ng('枝の条件が食い違っている（本体 ' + if1.length + '本／写し ' + if2.length + '本）');
+    const n = Math.max(if1.length, if2.length);
+    for (let i = 0; i < n && i < 12; i++) {
+      if (if1[i] !== if2[i]) note('  ' + (i + 1) + '番目  本体: ' + (if1[i] || '(なし)') + '  写し: ' + (if2[i] || '(なし)'));
+    }
+  }
+
+  /* ③ 再帰の引数の並び（暗刻→順子→対子→辺張／両面→嵌張→浮き牌の順に効く） */
+  const r1 = args(src1, 'rec'), r2 = args(src2, 'rec');
+  if (r1.join('|') === r2.join('|')) ok('再帰の引数が ' + r1.length + '本とも同じ並び');
+  else {
+    ng('再帰の引数が食い違っている（本体 ' + r1.length + '本／写し ' + r2.length + '本）');
+    const n = Math.max(r1.length, r2.length);
+    for (let i = 0; i < n && i < 12; i++) {
+      if (r1[i] !== r2[i]) note('  ' + (i + 1) + '番目  本体: ' + (r1[i] || '(なし)') + '  写し: ' + (r2[i] || '(なし)'));
+    }
+  }
+});
+
 /* ---- まとめ ---- */
 console.log('');
 console.log('='.repeat(52));
