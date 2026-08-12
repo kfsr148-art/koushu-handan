@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1354">
+<html lang="ja" data-ver="1355">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -307,17 +307,17 @@
     image-rendering: pixelated; }
   .verdict-zones .vz-atk { border: 1px solid rgba(255,123,98,0.75); background: rgba(255,123,98,0.10); }
   .verdict-zones .vz-def { border: 1px solid rgba(120,170,220,0.75); background: rgba(120,170,220,0.10); }
-  /* ずんだもん＝形になっているまとまり／お嬢様＝切って逃げられる牌 */
-  body.tone-blunt .judged-hand .tile.shape-mark,
+  /* ずんだもん＝待ちがかぶっている牌／お嬢様＝盾のうち切る予定に入っている牌 */
+  body.tone-blunt .judged-hand .tile.dup-mark,
   body.tone-lady .judged-hand .tile.safe-mark,
-  body.tone-strategist .judged-hand .tile.wide-mark,
+  body.tone-strategist .judged-hand .tile.naki-mark,
   body.tone-french .judged-hand .tile.float-mark,
-  body.tone-ichihime .judged-hand .tile.yaku-mark,
+  body.tone-ichihime .judged-hand .tile.edge-mark,
   body.tone-sensei .judged-hand .tile.head-mark {
     box-shadow: 0 0 0 2px var(--gold), inset 0 1px 1.5px rgba(255,255,255,0.6), 0 2px 0 #c2b496;
   }
-  /* 打点を担当する執事を選んでいるときだけ、ドラと赤ドラを金枠で囲う */
-  body.tone-butler .judged-hand .tile.dora-mark {
+  /* 掛け持ちを点検する執事を選んでいるときだけ、二役以上を兼ねる牌を金枠で囲う */
+  body.tone-butler .judged-hand .tile.multi-mark {
     box-shadow: 0 0 0 2px var(--gold), inset 0 1px 1.5px rgba(255,255,255,0.6), 0 2px 0 #c2b496;
   }
   .md-dora-chip { display:inline-flex; vertical-align:-2px; margin:0 1px; }
@@ -1146,7 +1146,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1354</div>
+  <div id="verTag">v1355</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1238,13 +1238,13 @@
       ・<b>枝豆（エダマメ）</b>：同じ牌（ハイ）が2枚以上そろっている組の数を答える。攻めの芽を見つける目。<br><br>
       <b>七人はそれぞれ別の材料を見ている</b><br>
       判定カードの人柄を押し替えると、同じ13枚について別の理由が出る。担当する牌は<b>金の枠</b>で囲まれる。<br>
-      ・<b>執事</b>＝打点。ドラと赤ドラが光る。<br>
-      ・<b>軍師</b>＝受け入れ枚数。抜くと手が細くなる牌が光る。<br>
-      ・<b>ずんだもん</b>＝形。判定が良形として数えた牌がそのまま光る。<br>
-      ・<b>お嬢様</b>＝守りの弾。切って逃げられる<ruby>字牌<rt>ジハイ</rt></ruby>と1・9牌が光る。<br>
-      ・<b>マダム</b>＝浮き牌。どのまとまりにも入らず守りにも使えない牌が光る。引き際に最初に手放す候補。<br>
-      ・<b>一姫</b>＝見える役。役満・国士・七対子・役牌のうち、見えているものに関わる牌が光る。<br>
-      ・<b>先生</b>＝距離と雀頭。<ruby>雀頭<rt>ジャントウ</rt></ruby>になれる牌が光る。<br>
+      ・<b>執事</b>＝掛け持ち点検。盾・雀頭・攻めの種のうち二役以上を兼ねている牌が光る。<br>
+      ・<b>軍師</b>＝鳴きの適性。<ruby>役牌<rt>ヤクハイ</rt></ruby>の対子と、染めに寄せる色が光る。<br>
+      ・<b>ずんだもん</b>＝待ちのかぶり。同じ牌や同じ筋を取り合っているまとまりが光る。<br>
+      ・<b>お嬢様</b>＝盾の寿命。盾のうち、切る当てに入っている<ruby>字牌<rt>ジハイ</rt></ruby>と1・9牌が光る。<br>
+      ・<b>マダム</b>＝浮き牌。どのまとまりにも入らず守りにも使えない牌が光る。攻めている間に、最初に整理する候補。<br>
+      ・<b>一姫</b>＝待ちの端がかり。端にかかるターツと<ruby>字牌<rt>ジハイ</rt></ruby>の対子が光る。<br>
+      ・<b>先生</b>＝<ruby>雀頭<rt>ジャントウ</rt></ruby>。雀頭になれる牌が光る。<br>
       七人の言うことが食い違う手ほど、際どい手ということになる。<br><br>
       <b>攻守を見抜く手順</b><br>
       判定エンジンが見ているものは決まっている。同じ順に数えれば当たる。<br>
@@ -3804,8 +3804,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // 台詞が配列なら毎回ランダムで1つ選ぶ。文字列ならそのまま返す（従来互換）。
   function pickOne(s){ return Array.isArray(s) ? s[Math.floor(Math.random()*s.length)] : s; }
   // 人柄ごとに「見ている材料」を分ける。結論は同じでも、そこへ至る道が七通り見える。
-  //   執事＝打点／軍師＝受け入れ枚数／ずんだ＝形の数／お嬢様＝守りの弾
-  //   マダム＝撤退予約線／一姫＝見える手／先生＝向聴
+  //   執事＝掛け持ち点検／軍師＝鳴きの適性／ずんだ＝待ちのかぶり／お嬢様＝盾の寿命
+  //   マダム＝浮き牌／一姫＝待ちの端がかり／先生＝雀頭
+  //   （投票欄の傾き＝tenLeans の物差しは別物。あちらは触っていない）
   // 人柄ごとに、その人が見ている牌へ印を出す。bodyの印を差し替えるだけ。
   const TONE_MARKS = ['butler','blunt','lady','strategist','french','ichihime','sensei'];
   /* 虎（判定エンジン）が喋っている間は true。人柄の担当ではないので、
@@ -3909,72 +3910,286 @@ document.addEventListener('DOMContentLoaded', function () {
     if(mascotDealerNudged(a)) s += MASCOT_WORDS.dealer;
     return s;
   }
+  /* ---- 牌の呼び名。台詞の中で牌を名指すときは、必ずここを通す ---- */
+  const TONE_KAN = ['一','二','三','四','五','六','七','八','九'];
+  const TONE_SUF = { man:'萬', pin:'筒', sou:'索' };
+  const TONE_SUIT_JP = { man:'萬子', pin:'筒子', sou:'索子' };
+  function toneTileName(t){
+    if(t.suit === 'honor') return (honorData[t.code] || {}).label || t.code;
+    return (t.red ? '赤' : '') + TONE_KAN[t.num - 1] + TONE_SUF[t.suit];
+  }
+  function toneCodeName(code){
+    if('mps'.indexOf(code.charAt(0)) >= 0){
+      const su = { m:'man', p:'pin', s:'sou' }[code.charAt(0)];
+      return TONE_KAN[+code.charAt(1) - 1] + TONE_SUF[su];
+    }
+    return (honorData[code] || {}).label || code;
+  }
+  function toneBlockName(b){
+    if(b.suit === 'honor') return (honorData[b.code] || {}).label || b.code;
+    const uniq = b.n.filter(function(x, i){ return b.n.indexOf(x) === i; });
+    return uniq.map(function(x){ return TONE_KAN[x - 1]; }).join('') + TONE_SUF[b.suit];
+  }
+  /* ---- 良形の順位付けの写し ----
+     analyze() の bestShapeOneSuit は、まとまりに使った牌のうち良形だけを控える。
+     弱形（嵌張・辺張）に使った牌はどこにも残らないので、ずんだと一姫が名指すために
+     ここで同じ規則の分解をもう一度行い、弱形も含めて控える。あちらには触れない。
+
+     ＊写し表（この順位付けを、向こうと必ず同じに保つ）＊
+       ① good（面子＋良形塔子）が最大  ② 面子が最大  ③ 弱形が最大
+       枝の順  暗刻 → 順子 → 対子 → 隣接（辺張／両面） → 嵌張 → 浮き牌
+     片方だけ直すと、ずんだの数える「まとまり」と判定の数字が静かにズレる。
+     check.js の ⑭ が、両方の条件と再帰の引数を字面で突き合わせて見張っている。 */
+  function toneBlocksOneSuit(c){
+    let best = null;
+    const better = (a,b)=> a[0]!==b[0] ? a[0]>b[0] : (a[1]!==b[1] ? a[1]>b[1] : a[2]>b[2]);
+    const path = [];
+    function rec(i, meld, goodP, weak){
+      if(i>9){
+        const cand=[meld+goodP, meld, weak];
+        if(best===null || better(cand,best)) best=[cand[0],cand[1],cand[2],path.slice()];
+        return;
+      }
+      if(c[i]===0){ rec(i+1, meld, goodP, weak); return; }
+      if(c[i]>=3){ c[i]-=3; path.push({t:'暗刻',n:[i,i,i]}); rec(i, meld+1, goodP, weak); path.pop(); c[i]+=3; }
+      if(i<=7 && c[i]>0 && c[i+1]>0 && c[i+2]>0){
+        c[i]--;c[i+1]--;c[i+2]--; path.push({t:'順子',n:[i,i+1,i+2]});
+        rec(i, meld+1, goodP, weak);
+        path.pop(); c[i]++;c[i+1]++;c[i+2]++;
+      }
+      if(c[i]>=2){ c[i]-=2; path.push({t:'対子',n:[i,i]}); rec(i, meld, goodP+1, weak); path.pop(); c[i]+=2; }
+      if(i<=8 && c[i]>0 && c[i+1]>0){
+        const penchan = (i===1)||(i+1===9);
+        c[i]--;c[i+1]--;
+        if(penchan){ path.push({t:'辺張',n:[i,i+1]}); rec(i, meld, goodP, weak+1); path.pop(); }
+        else { path.push({t:'両面',n:[i,i+1]}); rec(i, meld, goodP+1, weak); path.pop(); }
+        c[i]++;c[i+1]++;
+      }
+      if(i<=7 && c[i]>0 && c[i+2]>0){ c[i]--;c[i+2]--; path.push({t:'嵌張',n:[i,i+2]}); rec(i, meld, goodP, weak+1); path.pop(); c[i]++;c[i+2]++; }
+      c[i]--; rec(i, meld, goodP, weak); c[i]++;
+    }
+    rec(1,0,0,0);
+    return best[3];
+  }
+  /* まとまりが待っている牌。配牌では待ちそのものではないので、受けの口として使う。 */
+  function toneWaits(b, suit){
+    const p = { man:'m', pin:'p', sou:'s' }[suit];
+    if(b.t === '順子' || b.t === '暗刻') return [];
+    if(b.t === '対子') return [p + b.n[0]];
+    if(b.t === '両面') return [p + (b.n[0] - 1), p + (b.n[1] + 1)];
+    if(b.t === '嵌張') return [p + (b.n[0] + 1)];
+    if(b.t === '辺張') return [p + (b.n[0] === 1 ? 3 : 7)];
+    return [];
+  }
+  function toneBlocks(tiles){
+    const out = [], hon = {};
+    const cc = { man:[0,0,0,0,0,0,0,0,0,0], pin:[0,0,0,0,0,0,0,0,0,0], sou:[0,0,0,0,0,0,0,0,0,0] };
+    tiles.forEach(function(t){
+      if(t.suit === 'cat') return;
+      if(t.suit === 'honor') hon[t.code] = (hon[t.code] || 0) + 1; else cc[t.suit][t.num]++;
+    });
+    Object.keys(hon).forEach(function(code){
+      if(hon[code] >= 3) out.push({ t:'暗刻', suit:'honor', code:code, waits:[] });
+      else if(hon[code] === 2) out.push({ t:'対子', suit:'honor', code:code, waits:[code] });
+    });
+    ['man','pin','sou'].forEach(function(su){
+      toneBlocksOneSuit(cc[su].slice()).forEach(function(b){
+        out.push({ t:b.t, suit:su, n:b.n, waits: toneWaits(b, su) });
+      });
+    });
+    return out;
+  }
+  /* ---- 人柄七人の見立ての材料 ----
+     判定のたび一度だけ組み、金枠の印と助言欄の台詞が同じものを見る。
+     人柄チップを押すたびに数え直さないよう、判定時に window._lastFacts へ控える。 */
+  function toneFacts(a, tiles){
+    const F = { multi:null, multiIdx:new Set(), naki:null, nakiIdx:new Set(),
+                dup:null, dupIdx:new Set(), lady:{ kind:'late' }, ladyIdx:new Set(),
+                ichi:{ kind:'none' }, edgeIdx:new Set(),
+                sensei:{ n:0, top:'' }, headIdx:new Set(), floatIdx:new Set() };
+    if(!a || !tiles) return F;
+    // まとまりに入っている牌（判定の数字と同じ引き算）
+    const need = {};
+    (a.shapeTiles || []).forEach(function(w){
+      const key = (w.suit === 'honor') ? ('h' + w.code) : (w.suit + w.num);
+      need[key] = (need[key] || 0) + (w.n || 1);
+    });
+    const inShape = [];
+    tiles.forEach(function(t, i){
+      if(t.suit === 'cat'){ inShape[i] = true; return; }
+      const key = (t.suit === 'honor') ? ('h' + t.code) : (t.suit + t.num);
+      if(need[key] > 0){ need[key]--; inShape[i] = true; } else inShape[i] = false;
+    });
+    const cnt = {}, honCnt = {};
+    tiles.forEach(function(t){
+      if(t.suit === 'cat') return;
+      cnt[t.code] = (cnt[t.code] || 0) + 1;
+      if(t.suit === 'honor') honCnt[t.code] = (honCnt[t.code] || 0) + 1;
+    });
+    const pairKinds = Object.keys(cnt).filter(function(k){ return cnt[k] >= 2; }).length;
+    const dCode = doraIndicator ? indicatorToDora(doraIndicator) : null;
+    const isYao = function(t){ return t.suit === 'honor' || t.num === 1 || t.num === 9; };
+    // 見えている役に関わる牌（掛け持ちの「攻めの種」に数える）
+    const yakuHit = [];
+    tiles.forEach(function(t, i){
+      if(t.suit === 'cat'){ yakuHit[i] = false; return; }
+      yakuHit[i] = (a.yakumanReach || a.kokushiSeen) ? isYao(t)
+        : (pairKinds >= 4 ? cnt[t.code] >= 2
+          : (!!a.yakuhaiPair && t.suit === 'honor' && cnt[t.code] >= 2));
+    });
+    /* 執事＝一枚二役の掛け持ち。役割は盾・雀頭・攻めの種の三つで数える。 */
+    let bestN = 0;
+    tiles.forEach(function(t, i){
+      if(t.suit === 'cat') return;
+      const roles = [];
+      if(isYao(t)) roles.push('盾');
+      if(cnt[t.code] >= 2) roles.push('雀頭');
+      if(t.red || t.code === dCode || inShape[i] || yakuHit[i]) roles.push('攻めの種');
+      if(roles.length >= 2){
+        F.multiIdx.add(i);
+        if(roles.length > bestN){ bestN = roles.length; F.multi = { name: toneTileName(t), roles: roles }; }
+      }
+    });
+    /* 軍師＝鳴いて仕掛けられる種。役牌の対子が先、無ければ染めの色。 */
+    let yakuhaiCode = null;
+    ['P','F','C','E','S','W','N'].forEach(function(code){
+      if(yakuhaiCode || (honCnt[code] || 0) < 2) return;
+      if(YAKUHAI.has(code) || code === seatWind || code === roundWind) yakuhaiCode = code;
+    });
+    if(yakuhaiCode){
+      F.naki = { kind:'yakuhai', name: toneCodeName(yakuhaiCode) };
+      tiles.forEach(function(t, i){ if(t.suit === 'honor' && t.code === yakuhaiCode) F.nakiIdx.add(i); });
+    } else {
+      let someSuit = null;
+      (a.directions || []).forEach(function(d){
+        ['man','pin','sou'].forEach(function(su){
+          if(!someSuit && d.indexOf(TONE_SUIT_JP[su]) === 0) someSuit = su;
+        });
+      });
+      if(someSuit){
+        F.naki = { kind:'somete', name: TONE_SUIT_JP[someSuit] };
+        tiles.forEach(function(t, i){ if(t.suit === someSuit) F.nakiIdx.add(i); });
+      }
+    }
+    /* ずんだ＝待ちのかぶり。同じ牌の取り合いを先に見て、無ければ同じ筋の重なり。 */
+    const blocks = toneBlocks(tiles);
+    const waiting = blocks.filter(function(b){ return b.waits.length > 0; });
+    const markInto = function(b, set){
+      if(b.suit === 'honor'){
+        let left = 2;
+        tiles.forEach(function(t, i){ if(left > 0 && t.suit === 'honor' && t.code === b.code){ set.add(i); left--; } });
+        return;
+      }
+      const left = {};
+      b.n.forEach(function(x){ left[x] = (left[x] || 0) + 1; });
+      tiles.forEach(function(t, i){
+        if(t.suit !== b.suit) return;
+        if(left[t.num] > 0){ set.add(i); left[t.num]--; }
+      });
+    };
+    for(let i = 0; i < waiting.length && !F.dup; i++){
+      for(let j = i + 1; j < waiting.length && !F.dup; j++){
+        const share = waiting[i].waits.filter(function(w){ return waiting[j].waits.indexOf(w) >= 0; });
+        if(share.length){
+          F.dup = { kind:'double', name: toneCodeName(share[0]) };
+          markInto(waiting[i], F.dupIdx); markInto(waiting[j], F.dupIdx);
+        }
+      }
+    }
+    for(let i = 0; i < waiting.length && !F.dup; i++){
+      for(let j = i + 1; j < waiting.length && !F.dup; j++){
+        const hit = waiting[i].waits.some(function(x){
+          return waiting[j].waits.some(function(y){
+            return 'mps'.indexOf(x.charAt(0)) >= 0 && x.charAt(0) === y.charAt(0)
+              && Math.abs(+x.charAt(1) - +y.charAt(1)) === 3;
+          });
+        });
+        if(hit){
+          F.dup = { kind:'suji', a: toneBlockName(waiting[i]), b: toneBlockName(waiting[j]) };
+          markInto(waiting[i], F.dupIdx); markInto(waiting[j], F.dupIdx);
+        }
+      }
+    }
+    /* お嬢様＝盾の寿命。切る当ての中に盾が何枚混じり、まとまりに何枚残るか。 */
+    let plan = 0, planTate = 0;
+    tiles.forEach(function(t, i){
+      if(t.suit === 'cat' || inShape[i]) return;
+      plan++;
+      if(isYao(t)){ planTate++; F.ladyIdx.add(i); }
+      else F.floatIdx.add(i);
+    });
+    const restTate = (a.defHonors || 0) + (a.defTerminals || 0) - planTate;
+    F.lady = { kind: (plan <= 2) ? 'thin' : (restTate <= 1 ? 'early' : 'late'), rest: restTate, plan: plan };
+    /* 一姫＝端がかり。端にかかるターツが先、無ければ字牌の対子。印は両方に出す。 */
+    const edgeBlocks = blocks.filter(function(b){
+      if(b.suit === 'honor') return false;
+      if(b.t === '辺張') return true;
+      return (b.t === '両面' || b.t === '嵌張') && b.n.some(function(x){ return x <= 2 || x >= 8; });
+    });
+    const honPairs = Object.keys(honCnt).filter(function(c){ return honCnt[c] >= 2; });
+    if(edgeBlocks.length) F.ichi = { kind:'edge' };
+    else if(honPairs.length) F.ichi = { kind:'honor', name: toneCodeName(honPairs[0]) };
+    edgeBlocks.forEach(function(b){ markInto(b, F.edgeIdx); });
+    honPairs.forEach(function(c){
+      tiles.forEach(function(t, i){ if(t.suit === 'honor' && t.code === c) F.edgeIdx.add(i); });
+    });
+    /* 先生＝雀頭の候補。役牌・そのほかの字牌・端に近い数牌の順に筆頭を選ぶ。 */
+    const heads = Object.keys(cnt).filter(function(c){ return cnt[c] >= 2; });
+    heads.forEach(function(c){
+      tiles.forEach(function(t, i){ if(t.suit !== 'cat' && t.code === c) F.headIdx.add(i); });
+    });
+    const headScore = function(code){
+      if('mps'.indexOf(code.charAt(0)) < 0){
+        return (YAKUHAI.has(code) || code === seatWind || code === roundWind) ? 0 : 1;
+      }
+      const n = +code.charAt(1);
+      return 2 + Math.min(Math.abs(n - 1), Math.abs(n - 9));
+    };
+    heads.sort(function(x, y){ return headScore(x) - headScore(y); });
+    F.sensei = { n: heads.length, top: heads.length ? toneCodeName(heads[0]) : '' };
+    return F;
+  }
   function toneAngleLine(a){
     if(!a) return '';
     const t = currentTone;
-    const dora = a.doraValue;
-    const acc  = (typeof a.acceptTiles === 'number') ? a.acceptTiles : null;
-    const good = a.goodShapes, need = a.shapeNeeded;
-    const def  = (a.defHonors || 0) + (a.defTerminals || 0);
-    const sh   = a.baseShanten;
+    const F = window._lastFacts || toneFacts(a, hand);
     if(t === 'butler'){
-      return dora > 0
-        ? ('打点は ' + dora + ' ございます。' + (dora >= 2 ? '押す値打ちのある手かと。' : '種はございますが、まだ細うございます。'))
-        : '打点の種がございません。安手は形が整ってこそでございます。';
+      return F.multi
+        ? (F.multi.name + 'に、' + F.multi.roles[0] + 'と' + F.multi.roles[1] + 'を掛け持ちさせております。人手が足りませぬ。')
+        : '持ち場の重なりはございません。皆、専任でございます。';
     }
     if(t === 'strategist'){
-      if(acc === null || typeof sh !== 'number') return '';
-      // 実測50000回：同じ向聴の中では、受けが広いほど攻めに寄る。
-      //   2向聴以内＝どの広さでも攻め／3向聴＝30枚が境／4向聴＝70枚が境／5向聴以上＝守り
-      const line = (sh <= 2) ? 0 : (sh === 3 ? 30 : (sh === 4 ? 70 : 999));
-      const wide = (acc >= line);
-      return (sh === 0 ? '聴牌' : (sh + '向聴')) + 'で受け ' + acc + ' 枚。'
-        + (sh <= 2 ? 'この距離ならもう広さは問わぬ。押して構わぬ。'
-          : (sh >= 5 ? 'この距離では、どれだけ広くとも遠すぎる。退くが上策。'
-            : (wide ? 'この距離としては広い。押して構わぬ。'
-                    : 'この距離としては細い。無理を通せば陣が崩れる。')));
+      if(!F.naki) return 'この手に仕掛けの種は無い。門前で行くほかなし。';
+      return (F.naki.kind === 'yakuhai')
+        ? (F.naki.name + 'が二枚。鳴けば一気に仕掛かるぞ。門前に縛られるな。')
+        : (F.naki.name + 'に寄せて鳴く道もある。仕掛けは我の領分なり。');
     }
     if(t === 'blunt'){
-      return '形になっているまとまりが ' + good + ' つあるのだ。必要なのは ' + need + ' つ。'
-        + (good >= need ? '足りてるのだ。' : '足りてないのだ。');
+      if(!F.dup) return 'かぶりは無いのだ。ぜんぶ別々に働いてるのだ。';
+      return (F.dup.kind === 'double')
+        ? (F.dup.name + 'を二つのまとまりで取り合ってるのだ。損なのだ。')
+        : (F.dup.a + 'と' + F.dup.b + '、待ちが同じ筋にかぶるのだ。もったいないのだ！');
     }
     if(t === 'lady'){
-      if(typeof sh !== 'number') return '';
-      // 実測50000回：同じ向聴の中でも、弾が多い手ほど攻め率が下がる。
-      //   1・9・字牌が多いぶん形が整いにくい、という現れ。3向聴＝4枚／4向聴＝5枚が境。
-      // 実測の中央あたりに境を置く（3向聴以内は5枚、4向聴以上は6枚）
-      const line = (sh <= 3) ? 5 : 6;
-      if(a.kokushiSeen || a.yakumanReach){
-        return '切って逃げられる牌が ' + def + ' 枚ございますわ。'
-          + 'もっとも、この手はその牌そのものが狙いですのね。';
-      }
-      return '切って逃げられる牌が ' + def + ' 枚ございますわ。'
-        + (def >= line
-            ? 'この距離では多いほうですの。1・9・字牌が多いぶん、形は整いにくうございますわ。'
-            : 'この距離では少ないほうですの。形は整いやすうございますが、逃げ道は心もとのうございますわ。');
+      if(F.lady.kind === 'thin') return '切れる牌が、ほとんどありませんの。窮屈な手ですわ。';
+      return (F.lady.kind === 'early')
+        ? 'この手、序盤で盾を使い切る算段ですわ。終盤は丸腰でしてよ。'
+        : '盾は終盤まで残る並びですわ。良い心がけですの。';
     }
     if(t === 'french'){
-      return '引くときに、まず手放すのはこの牌ですわ。'
+      return '最初に整理するなら、この牌ですわ。'
         + 'どのまとまりにも入らず、身を守る役にも立ちませんの。';
     }
     if(t === 'ichihime'){
-      if(a.yakumanReach) return '役満が見えるにゃ！ ' + a.yakumanName + 'にゃ！';
-      if(a.kokushiSeen) return '国士の芽があるにゃ！';
-      const _c = {};
-      hand.forEach(function(x){ if(x.suit !== 'cat') _c[x.code] = (_c[x.code] || 0) + 1; });
-      const _pk = Object.keys(_c).filter(function(k){ return _c[k] >= 2; }).length;
-      if(_pk >= 4) return '対子が ' + _pk + ' 組。七対子の芽があるにゃ！';
-      if(a.yakuhaiPair) return '役牌の対子があるにゃ。役はつくにゃ';
-      return '狙える役は、まだ見えないにゃ';
+      if(F.ichi.kind === 'edge') return '待ちが端の道にかかりそうにゃ。端の道は、獲物がよく通るにゃ。';
+      if(F.ichi.kind === 'honor') return F.ichi.name + 'の対子は、いい罠にゃ。飛び込んでくるにゃ。';
+      return 'この手の道は、ど真ん中にゃ。みんな警戒する道にゃ。';
     }
     if(t === 'sensei'){
-      const c2 = {};
-      hand.forEach(function(x){ if(x.suit !== 'cat') c2[x.code] = (c2[x.code] || 0) + 1; });
-      const heads = Object.keys(c2).filter(function(k){ return c2[k] >= 2; }).length;
-      return (sh === 0 ? '聴牌です。あと1枚であがりです。' : (sh + '向聴。あがりまでの距離がこれです。'))
-        + (heads > 0
-            ? ('雀頭になれる牌が ' + heads + ' 種あります。')
-            : '雀頭になれる牌がまだありません。後から作る必要があります。');
+      if(F.sensei.n === 0) return '雀頭の当てがありません。字牌の重なりを、ひとつ残しなさい。';
+      return (F.sensei.n === 1)
+        ? ('雀頭の候補は' + F.sensei.top + 'です。軸を決めて、迷いを減らしなさい。')
+        : ('雀頭は' + F.sensei.n + '種。筆頭は' + F.sensei.top + 'です。');
     }
     return '';
   }
@@ -7809,89 +8024,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 理由欄の代わりに、判定した13枚と根拠の数字を出す
     const judgedTiles = watchSortHand(hand.slice());
-    const _dCodeHand = doraIndicator ? indicatorToDora(doraIndicator) : null;
-    // 形になっているまとまり＝判定が良形として数えた牌そのもの（数字と必ず一致する）
-    const _shapeIdx = new Set();
-    (function(){
-      const want = (a && Array.isArray(a.shapeTiles)) ? a.shapeTiles : null;
-      if(!want) return;
-      const need = {};
-      want.forEach(function(w){
-        const key = (w.suit === 'honor') ? ('h' + w.code) : (w.suit + w.num);
-        need[key] = (need[key] || 0) + (w.n || 1);
-      });
-      judgedTiles.forEach(function(t, i){
-        if(t.suit === 'cat') return;
-        const key = (t.suit === 'honor') ? ('h' + t.code) : (t.suit + t.num);
-        if(need[key] > 0){ need[key]--; _shapeIdx.add(i); }
-      });
-    })();
-    // 軍師＝広さを支えている牌。一枚ずつ埋め草に置き換えて、受け入れが減る牌を拾う。
-    const _wideIdx = new Set();
-    (function(){
-      const baseAcc = (typeof a.acceptTiles === 'number') ? a.acceptTiles : null;
-      if(baseAcc === null) return;
-      const inert = watchInertTile(judgedTiles);
-      if(!inert) return;
-      const keepHand = hand, keepDora = doraCount, keepInd = doraIndicator;
-      try{
-        for(let i = 0; i < judgedTiles.length; i++){
-          const sub = judgedTiles.slice();
-          sub[i] = inert;
-          hand = sub;
-          let a2 = null;
-          try{ a2 = analyze(); }catch(e){ a2 = null; }
-          if(!a2 || typeof a2.acceptTiles !== 'number'){ continue; }
-          // 埋め草そのものが受けを少し持つので、枚数だけでは差が出にくい。
-          // 向聴が戻る牌も「広さを支えている」側として拾う。
-          const worseSh = (typeof a2.baseShanten === 'number' && typeof a.baseShanten === 'number'
-                           && a2.baseShanten > a.baseShanten);
-          if(worseSh || a2.acceptTiles < baseAcc) _wideIdx.add(i);
-        }
-      } finally { hand = keepHand; doraCount = keepDora; doraIndicator = keepInd; }
-    })();
-    // 一姫＝見えている役に関わる牌。役満・国士・七対子・役牌の順に一つだけ選ぶ。
-    const _yakuIdx = new Set();
-    (function(){
-      const isYao = function(t){ return t.suit === 'honor' || t.num === 1 || t.num === 9; };
-      const cnt = {};
-      judgedTiles.forEach(function(t){ if(t.suit !== 'cat') cnt[t.code] = (cnt[t.code] || 0) + 1; });
-      if(a.yakumanReach || a.kokushiSeen){
-        judgedTiles.forEach(function(t, i){ if(t.suit !== 'cat' && isYao(t)) _yakuIdx.add(i); });
-        return;
-      }
-      const pairKinds = Object.keys(cnt).filter(function(k){ return cnt[k] >= 2; });
-      if(pairKinds.length >= 4){   // 七対子の芽
-        judgedTiles.forEach(function(t, i){ if(t.suit !== 'cat' && cnt[t.code] >= 2) _yakuIdx.add(i); });
-        return;
-      }
-      if(a.yakuhaiPair){           // 役牌の対子
-        judgedTiles.forEach(function(t, i){
-          if(t.suit === 'honor' && cnt[t.code] >= 2) _yakuIdx.add(i);
-        });
-      }
-    })();
-    // 先生＝雀頭になれる牌。四面子一雀頭の枠のうち、雀頭の側を指す。
-    const _headIdx = new Set();
-    (function(){
-      const cnt = {};
-      judgedTiles.forEach(function(t){ if(t.suit !== 'cat') cnt[t.code] = (cnt[t.code] || 0) + 1; });
-      judgedTiles.forEach(function(t, i){
-        if(t.suit !== 'cat' && cnt[t.code] >= 2) _headIdx.add(i);
-      });
-    })();
+    /* 人柄七人の見立ての材料を、判定のたび一度だけ組む。
+       金枠の印も助言欄の台詞も、ここで組んだ同じものを見る（人柄チップを押しても数え直さない）。 */
+    const _F = toneFacts(a, judgedTiles);
+    window._lastFacts = _F;
     let _hi = 0;
     const judgedHandHTML = judgedTiles.map(function(t){
       if(t.suit === 'cat'){ _hi++; return '<div class="tile cat" style="zoom:0.72;">🐱</div>'; }
-      // 打点の中身（表示牌から決まるドラ・赤ドラ）に印。執事のときだけ金枠として見える。
-      const isDora = (t.red || (_dCodeHand && t.code === _dCodeHand));
-      const cls = 'tile ' + t.suit + (t.red ? ' red' : '') + (isDora ? ' dora-mark' : '')
-        + (_shapeIdx.has(_hi) ? ' shape-mark' : '')
-        + ((t.suit === 'honor' || t.num === 1 || t.num === 9) ? ' safe-mark' : '')
-        + (_wideIdx.has(_hi) ? ' wide-mark' : '')
-        + ((!_shapeIdx.has(_hi) && t.suit !== 'honor' && t.num !== 1 && t.num !== 9) ? ' float-mark' : '')
-        + (_yakuIdx.has(_hi) ? ' yaku-mark' : '')
-        + (_headIdx.has(_hi) ? ' head-mark' : '');
+      const cls = 'tile ' + t.suit + (t.red ? ' red' : '')
+        + (_F.multiIdx.has(_hi) ? ' multi-mark' : '')   // 執事＝二役以上を兼ねる牌
+        + (_F.nakiIdx.has(_hi)  ? ' naki-mark'  : '')   // 軍師＝仕掛けの種
+        + (_F.dupIdx.has(_hi)   ? ' dup-mark'   : '')   // ずんだ＝待ちがかぶっている牌
+        + (_F.ladyIdx.has(_hi)  ? ' safe-mark'  : '')   // お嬢様＝盾のうち切る当てに入っている牌
+        + (_F.floatIdx.has(_hi) ? ' float-mark' : '')   // マダム＝浮き牌
+        + (_F.edgeIdx.has(_hi)  ? ' edge-mark'  : '')   // 一姫＝端にかかるターツと字牌の対子
+        + (_F.headIdx.has(_hi)  ? ' head-mark'  : '');  // 先生＝雀頭の候補
       _hi++;
       const inner = (t.suit === 'honor') ? t.label
         : (t.suit === 'pin') ? pinSVG(t.num, t.red)
