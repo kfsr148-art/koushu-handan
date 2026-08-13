@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1362">
+<html lang="ja" data-ver="1363">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1158,7 +1158,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1362</div>
+  <div id="verTag">v1363</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -4092,6 +4092,18 @@ document.addEventListener('DOMContentLoaded', function () {
       if(someSuit){
         F.naki = { kind:'somete', name: TONE_SUIT_JP[someSuit] };
         tiles.forEach(function(t, i){ if(t.suit === someSuit) F.nakiIdx.add(i); });
+      } else {
+        /* 仕掛けの種が無い手は、いちばん厚い色を染めへの近道として光らせる。
+           数えるのは数牌だけ、同数なら萬→筒→索の順で一つ。字牌は選ばない。 */
+        let thickSuit = null, thickN = 0;
+        ['man','pin','sou'].forEach(function(su){
+          const n = tiles.filter(function(t){ return t.suit === su; }).length;
+          if(n > thickN){ thickN = n; thickSuit = su; }
+        });
+        if(thickSuit){
+          F.naki = { kind:'atsumi', name: TONE_SUIT_JP[thickSuit] };
+          tiles.forEach(function(t, i){ if(t.suit === thickSuit) F.nakiIdx.add(i); });
+        }
       }
     }
     /* ずんだ＝待ちのかぶり。同じ牌の取り合いを先に見て、無ければ同じ筋の重なり。 */
@@ -4208,6 +4220,12 @@ document.addEventListener('DOMContentLoaded', function () {
         return (a.baseShanten <= 3)
           ? '仕掛けの種は無いが、門前でも十分に速い。このまま進むべし。'
           : '仕掛けの種が無く、門前では遠い。辛抱の一局になるぞ。';
+      }
+      if(F.naki.kind === 'atsumi'){
+        // 仕掛けの種が無い手。厚い色を名指して、門前の速さで二つに分ける。
+        return (a.baseShanten <= 3)
+          ? ('仕掛けの種は無いが、' + F.naki.name + 'が一番厚い。門前でも十分に速い、このまま進むべし。')
+          : ('仕掛けの種が無く、門前では遠い。' + F.naki.name + 'が伸びれば、仕掛けの道も開くなり。');
       }
       return (F.naki.kind === 'yakuhai')
         ? (F.naki.name + 'が二枚。鳴けば一気に仕掛かるぞ。門前に縛られるな。')
