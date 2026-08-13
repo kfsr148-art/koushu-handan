@@ -1020,6 +1020,62 @@ section('⑭', '良形の順位付けの写し', () => {
   }
 });
 
+section('⑮', '猫牌の判定条件の写し', () => {
+  /* 猫牌＝1〜9の孤立牌。この判定は枚数を返す関数・位置を拾う側・見張り台の答え合わせと、
+     本体の中に何箇所も写しがある（枚数しか返さない関数からは位置が拾えないため）。
+     片方だけ直すと、数えた枚数と光る牌が静かにズレる。核の3行を字面で突き合わせる。 */
+  const lines = src.split('\n');
+  const marks = [];
+  lines.forEach((ln, i) => { if (/const hasNeighbor\s*=/.test(ln)) marks.push(i); });
+  if (marks.length < 2) { ng('猫牌の判定条件が ' + marks.length + '箇所しか見つからない（目印を変えたか）'); return; }
+
+  /* 直前の関数名を拾う。宣言の形は三通りある（function 名( ／ window.名 = function ／ const 名 = function）。
+     行の途中に出てくる無名関数を名前と取り違えないよう、行頭からの宣言だけを見る。 */
+  const ownerOf = (idx) => {
+    for (let j = idx; j >= 0; j--) {
+      /* 字下げ2桁までの宣言＝この一枚岩の中の「外側の関数」。入れ子の無名関数は拾わない。 */
+      const m = /^ {0,2}function\s+([A-Za-z_$][\w$]*)\s*\(/.exec(lines[j])
+        || /^ {0,2}window\.([A-Za-z_$][\w$]*)\s*=\s*function\s*\(/.exec(lines[j]);
+      if (m) return m[1];
+    }
+    return '(不明)';
+  };
+  /* 並びの変数名だけ伏せて、核を比べられる形に均す */
+  const norm = s => s.replace(/\s+/g, ' ').trim()
+    .replace(/[A-Za-z_$][\w$]*\.filter\(function\(o\)\{ return o\.suit === t\.suit; \}\)/, '«並び».filter(...)');
+
+  const cores = [], owners = [], bad = [];
+  marks.forEach(i => {
+    const owner = ownerOf(i);
+    owners.push(owner);
+    const core = norm(lines[i - 1] + ' ' + lines[i] + ' ' + lines[i + 1]);
+    cores.push(core);
+    /* 拾う条件が同じか（n++ / add / hit= の違いは問わない） */
+    if (!/!hasNeighbor\s*&&\s*!hasDup/.test(lines[i + 2])) {
+      bad.push(owner + '：拾う条件が「!hasNeighbor && !hasDup」でない → ' + lines[i + 2].trim().slice(0, 50));
+    }
+    /* 数牌だけを見ているか（肯定形・早期returnのどちらでもよいが、三色を名指していること） */
+    const guard = lines[i - 2] || '';
+    if (!(/'man'/.test(guard) && /'pin'/.test(guard) && /'sou'/.test(guard))) {
+      bad.push(owner + '：数牌の絞り込みが三色を名指していない → ' + guard.trim().slice(0, 50));
+    }
+  });
+
+  note('見つかった写し : ' + marks.length + '箇所（' + owners.join(' / ') + '）');
+  const uniq = [...new Set(cores)];
+  if (uniq.length === 1) ok('核の3行が ' + marks.length + '箇所とも同じ字面（同色±2に相棒なし・同じ数の重複なし）');
+  else {
+    ng('猫牌の判定条件が食い違っている（' + uniq.length + '通りある）');
+    uniq.forEach((u, k) => {
+      const who = owners.filter((o, n) => cores[n] === u).join('・');
+      note('  ' + (k + 1) + '通り目（' + who + '）');
+      note('    ' + u.slice(0, 150));
+    });
+  }
+  if (bad.length === 0) ok('拾う条件と数牌の絞り込みも、どの写しも揃っている');
+  else { ng('揃っていない写しが ' + bad.length + '件'); bad.slice(0, 6).forEach(b => note('  ' + b)); }
+});
+
 /* ---- まとめ ---- */
 console.log('');
 console.log('='.repeat(52));
