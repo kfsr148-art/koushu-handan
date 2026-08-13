@@ -420,6 +420,34 @@ window.addEventListener('load', function(){
     if(judged){
       var tail = document.querySelector('.next-hand-row');
       res.tail = tail ? { bottom: Math.round(tail.getBoundingClientRect().bottom * 10) / 10, vis: vis(tail) } : null;
+      /* 人柄七人ぶんの見立て行を、実際に押し替えて測る。
+         既定の一人（執事）だけを見ていると、長い台詞を持つ人柄の折り返しを見逃す。
+         同じ人柄をもう一度押すと解除されて空行になるので、body の印が付くまで押す。 */
+      var TONES = ['strategist','blunt','lady','french','ichihime','sensei','butler'];
+      res.tones = [];
+      TONES.forEach(function(tn){
+        try{
+          window.setTone(tn);
+          if(!document.body.classList.contains('tone-' + tn)) window.setTone(tn);
+        }catch(e){ res.tones.push({ tone: tn, err: e.message }); return; }
+        var ang = document.querySelector('.tone-angle');
+        var st  = ang ? ang.querySelector('.say-text') : null;
+        var ic  = ang ? ang.querySelector('.say-icon') : null;
+        var tl  = document.querySelector('.next-hand-row');
+        var txt = st ? (st.textContent || '').trim() : '';
+        res.tones.push({
+          tone: tn,
+          chars: txt.length,
+          /* 一行かどうかは、話者の箱（.say-icon）の高さを物差しにする。
+             一行なら行の高さは箱の高さのまま。折り返すと箱より高くなる。 */
+          angH: ang ? Math.round(ang.getBoundingClientRect().height * 10) / 10 : null,
+          iconH: ic ? Math.round(ic.getBoundingClientRect().height * 10) / 10 : null,
+          sw: st ? st.scrollWidth : null,
+          cw: st ? st.clientWidth : null,
+          tailBottom: tl ? Math.round(tl.getBoundingClientRect().bottom * 10) / 10 : null,
+          tailVis: tl ? vis(tl) : false
+        });
+      });
     }
     /* ミニゲームのメニューは、指が本当にボタンへ届くかまで見る。
        覆いの touchstart で既定動作を止めていると、iOS はタップから click を作らないので
@@ -596,58 +624,89 @@ section('⑦', '狭い画面での溢れ', () => {
     const probe = path.join(tmpDir, 'probe.html');
     fs.writeFileSync(probe, src.replace(/<\/body>\s*$/m, VIEW_PROBE + '</body>'), 'utf8');
 
-    let bad = 0, done = 0;
-    VIEWS.forEach(([vw, vh]) => {
-      SCREENS.forEach(screen => {
-        const args = ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1',
-          '--window-size=' + (vw + 24) + ',' + (vh + 92),
-          '--user-data-dir=' + path.join(tmpDir, 'prof'),
-          /* ミニゲームだけは、遊びを通すぶんの時間が要る（9秒だと勝ち抜けきる前に打ち切られる回がある）。 */
-          '--virtual-time-budget=' + (screen === 'toriend' ? 20000 : 9000), '--dump-dom',
-          'file:///' + probe.replace(/\\/g, '/') + '#' + screen];
-        const r = spawnSync(browser, args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
-        const hit = /KOUSHU_VIEW_BEGIN([A-Za-z0-9+/=]+)KOUSHU_VIEW_END/.exec(String(r.stdout || ''));
-        if (!hit) { ng(screen + ' ' + vw + 'x' + vh + '：測定結果を取り出せない'); bad++; return; }
-        let d;
-        try { d = JSON.parse(Buffer.from(hit[1], 'base64').toString('utf8')); }
-        catch (e) { ng(screen + ' ' + vw + 'x' + vh + '：結果を読めない'); bad++; return; }
-        done++;
-        if (d.error) { ng(screen + ' ' + vw + 'x' + vh + '：画面を開けない（' + d.error + '）'); bad++; return; }
+    let bad = 0, done = 0, extra = 0;
+    const TONE_JP = { butler:'執事', strategist:'軍師', blunt:'ずんだ', lady:'お嬢様',
+                      french:'マダム', ichihime:'一姫', sensei:'先生' };
+    const run = (vw, vh, screen) => {
+      const args = ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1',
+        '--window-size=' + (vw + 24) + ',' + (vh + 92),
+        '--user-data-dir=' + path.join(tmpDir, 'prof'),
+        /* ミニゲームだけは、遊びを通すぶんの時間が要る（9秒だと勝ち抜けきる前に打ち切られる回がある）。 */
+        '--virtual-time-budget=' + (screen === 'toriend' ? 20000 : 9000), '--dump-dom',
+        'file:///' + probe.replace(/\\/g, '/') + '#' + screen];
+      const r = spawnSync(browser, args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
+      const hit = /KOUSHU_VIEW_BEGIN([A-Za-z0-9+/=]+)KOUSHU_VIEW_END/.exec(String(r.stdout || ''));
+      if (!hit) { ng(screen + ' ' + vw + 'x' + vh + '：測定結果を取り出せない'); bad++; return; }
+      let d;
+      try { d = JSON.parse(Buffer.from(hit[1], 'base64').toString('utf8')); }
+      catch (e) { ng(screen + ' ' + vw + 'x' + vh + '：結果を読めない'); bad++; return; }
+      done++;
+      if (d.error) { ng(screen + ' ' + vw + 'x' + vh + '：画面を開けない（' + d.error + '）'); bad++; return; }
 
-        const wide = (d.wide || []).filter(x => x.over > SLACK);
-        const lines = [];
-        (d.out || []).forEach(x => lines.push('はみ出し ' + x.el + ' right=' + x.right + ' bottom=' + x.bottom));
-        (d.hit || []).forEach(x => lines.push('重なり 「' + x.a + '」×「' + x.b + '」 ' + x.w + 'x' + x.h + 'px'));
-        wide.forEach(x => lines.push('横溢れ ' + x.el + ' ' + x.sw + ' > ' + x.cw));
-        /* 判定後は、末尾の二択が画面の中に残っていることまでを合格の条件にする。 */
-        if (screen === 'judged') {
-          if (!d.tail || !d.tail.vis) lines.push('二択（連チャン／親流れ）が出ていない');
-          else if (d.tail.bottom > d.h + 1) lines.push('二択が画面の下へ出ている bottom=' + d.tail.bottom + ' > ' + d.h);
+      const wide = (d.wide || []).filter(x => x.over > SLACK);
+      const lines = [];
+      (d.out || []).forEach(x => lines.push('はみ出し ' + x.el + ' right=' + x.right + ' bottom=' + x.bottom));
+      (d.hit || []).forEach(x => lines.push('重なり 「' + x.a + '」×「' + x.b + '」 ' + x.w + 'x' + x.h + 'px'));
+      wide.forEach(x => lines.push('横溢れ ' + x.el + ' ' + x.sw + ' > ' + x.cw));
+      /* 判定後は、末尾の二択が画面の中に残っていることまでを合格の条件にする。 */
+      if (screen === 'judged') {
+        if (!d.tail || !d.tail.vis) lines.push('二択（連チャン／親流れ）が出ていない');
+        else if (d.tail.bottom > d.h + 1) lines.push('二択が画面の下へ出ている bottom=' + d.tail.bottom + ' > ' + d.h);
+        /* 見立て行は人柄で長さが変わる。既定の一人だけ見ていると、長い台詞を持つ人柄が
+           折り返して二択を画面の外へ押し出す回を取りこぼす。七人ぶん押し替えて確かめる。
+           横の切れ（「…」）は狭い視野の設計どおりなので数えない——数えるのは折り返しと二択。 */
+        const T = d.tones || [];
+        if (T.length !== 7) lines.push('見立て行を七人ぶん測れていない（' + T.length + '人）');
+        T.forEach(x => {
+          const who = TONE_JP[x.tone] || x.tone;
+          if (x.err) { lines.push(who + '：人柄を押し替えられない（' + x.err + '）'); return; }
+          if (!x.chars) { lines.push(who + '：見立て行が空'); return; }
+          if (x.angH !== null && x.iconH !== null && x.angH > x.iconH + 1) {
+            lines.push(who + '：見立て行が折り返している 行' + x.angH + 'px > 話者の箱' + x.iconH + 'px（' + x.chars + '字）');
+          }
+          if (!x.tailVis) lines.push(who + '：二択が出ていない');
+          else if (x.tailBottom > d.h + 1) {
+            lines.push(who + '：二択が画面の下へ出ている bottom=' + x.tailBottom + ' > ' + d.h);
+          }
+        });
+      }
+      /* 目当ての画面に着けていない回は、溢れの有無に関わらず落とす。 */
+      if (screen === 'toriend' && !/捕まえた|逃げられた/.test(d.state || '')) {
+        lines.push('ミニゲームの結果画面に届いていない（いまの表示：' + (d.state || '空') + '）');
+      }
+      if (screen === 'torimenu') {
+        if (!d.tapCount) lines.push('メニューにボタンが出ていない');
+        (d.tap || []).forEach(x => lines.push('タップが届かない ' + x));
+      }
+      if (screen === 'advroom' && (d.state || '').indexOf('猫室') < 0) {
+        lines.push('探偵編の部屋に入れていない（いまの見出し：' + (d.state || '空') + '）');
+      }
+      const label = screen + ' ' + d.w + 'x' + d.h;
+      if (lines.length === 0) {
+        note(label.padEnd(18) + '溢れなし' + (d.tail ? '（二択 bottom=' + d.tail.bottom + ' / ' + d.h + '）' : ''));
+        const T = d.tones || [];
+        if (T.length) {
+          const long = T.slice().sort((x, y) => (y.sw || 0) - (x.sw || 0))[0];
+          const clipped = T.filter(x => x.sw > x.cw).map(x => TONE_JP[x.tone] || x.tone);
+          note(''.padEnd(18) + '見立て行 七人とも一行（最長 ' + (TONE_JP[long.tone] || long.tone)
+            + ' ' + long.chars + '字 / ' + long.sw + 'px）'
+            + (clipped.length ? '　「…」で切る人柄 : ' + clipped.join('・') : ''));
         }
-        /* 目当ての画面に着けていない回は、溢れの有無に関わらず落とす。 */
-        if (screen === 'toriend' && !/捕まえた|逃げられた/.test(d.state || '')) {
-          lines.push('ミニゲームの結果画面に届いていない（いまの表示：' + (d.state || '空') + '）');
-        }
-        if (screen === 'torimenu') {
-          if (!d.tapCount) lines.push('メニューにボタンが出ていない');
-          (d.tap || []).forEach(x => lines.push('タップが届かない ' + x));
-        }
-        if (screen === 'advroom' && (d.state || '').indexOf('猫室') < 0) {
-          lines.push('探偵編の部屋に入れていない（いまの見出し：' + (d.state || '空') + '）');
-        }
-        const label = screen + ' ' + d.w + 'x' + d.h;
-        if (lines.length === 0) {
-          note(label.padEnd(18) + '溢れなし' + (d.tail ? '（二択 bottom=' + d.tail.bottom + ' / ' + d.h + '）' : ''));
-          return;
-        }
-        bad += lines.length;
-        ng(label + '：' + lines.length + '件');
-        lines.slice(0, 6).forEach(l => note('  ' + l));
-      });
-    });
-    if (FAST) note('速い版：視野は 568x320 のみ。フル版（4視野）は --fast を外して回す');
-    note('測った組み合わせ : ' + done + ' / ' + (VIEWS.length * SCREENS.length) +
-      '（視野 ' + VIEWS.map(v => v[0] + 'x' + v[1]).join(' ') + '）');
+        return;
+      }
+      bad += lines.length;
+      ng(label + '：' + lines.length + '件');
+      lines.slice(0, 8).forEach(l => note('  ' + l));
+    };
+
+    VIEWS.forEach(([vw, vh]) => { SCREENS.forEach(screen => run(vw, vh, screen)); });
+    /* 速い版でも、見立て行の折り返しだけは 844x390 でも見る。
+       568x320 は一行に切り詰める指定（nowrap＋「…」）が効いていて折り返しようがなく、
+       折り返しが出るのは切り詰めの外れる 844x390——しかも二択の余白がいちばん薄い視野だから。 */
+    if (!VIEWS.some(v => v[0] === 844 && v[1] === 390)) { run(844, 390, 'judged'); extra = 1; }
+    if (FAST) note('速い版：視野は 568x320 のみ（judged だけ 844x390 も回す）。フル版（4視野）は --fast を外す');
+    note('測った組み合わせ : ' + done + ' / ' + (VIEWS.length * SCREENS.length + extra) +
+      '（視野 ' + VIEWS.map(v => v[0] + 'x' + v[1]).join(' ') + (extra ? ' ＋ judged だけ 844x390' : '') + '）');
     note('横溢れは ' + SLACK + 'px まで見逃す（.tile.pick::before の当たり判定ぶん）');
     note('judged だけは縦の溢れと、送れる箱（overflow-x:auto/scroll）・「…」で切る箱の横溢れを数えない');
     if (bad === 0) ok('どの視野でも、はみ出し・重なり・横溢れなし');
