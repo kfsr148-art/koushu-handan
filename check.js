@@ -295,6 +295,11 @@ window.addEventListener('load', function(){
       else if(screen === 'torimenu'){ window.closeTitleScreen(); window.toriOpen(); }
       else if(screen === 'advroom'){ advRoom(); }
       else if(screen === 'toriend'){
+        /* headless は最初の2秒ほどで描き直しを止める。遊びの輪は requestAnimationFrame に
+           乗っているので、そのままだと鳥が凍り、制限時間も減らず結果画面に届かない。
+           写しの中だけタイマー駆動に差し替える（本体はそのまま）。 */
+        window.requestAnimationFrame = function(fn){ return setTimeout(function(){ fn(Date.now()); }, 16); };
+        window.cancelAnimationFrame = function(id){ clearTimeout(id); };
         window.closeTitleScreen(); window.toriOpen(); window.toriStart('easy');
         toriSweep(0);   /* 勝ち抜けた時点で自分で measure を呼ぶ */
         return;
@@ -340,23 +345,36 @@ window.addEventListener('load', function(){
   }
   /* ミニゲームの結果画面まで進める。鳥は逃げるので狙い撃ちは当てにならない。
      画面を24px刻みで一面叩くと、どこに居ても当たる。初級のノルマ3羽で結果画面に着く。 */
+  /* v1365 から捕獲は「画面中央の枝豆が鞭を振る」形になった。画面を撫でるように叩いても
+     当たらないので、鳥の位置を DOM から読み、届く範囲にいる一羽の方角へ振る。
+     連打はクールダウンで捨てられるため、間隔を空けて何度も振る。 */
   function toriSweep(n){
     var root = document.getElementById('toriRoot');
     var panel = document.getElementById('toriPanel');
     var done = panel && /捕まえた|逃げられた/.test(panel.textContent || '');
-    if(done || n > 40 || !root){ setTimeout(measure, 300); return; }
-    for(var y = 10; y < window.innerHeight; y += 24){
-      for(var x = 10; x < window.innerWidth; x += 24){
-        root.dispatchEvent(new MouseEvent('mousedown', { clientX: x, clientY: y, bubbles: true }));
-        if('ontouchstart' in window){
-          try{
-            var t = new Touch({ identifier: 1, target: root, clientX: x, clientY: y });
-            root.dispatchEvent(new TouchEvent('touchstart', { changedTouches: [t], bubbles: true, cancelable: true }));
-          }catch(e){}
-        }
+    if(done || n > 450 || !root){ setTimeout(measure, 300); return; }
+    var cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+    var reach = Math.min(window.innerWidth, window.innerHeight) * 0.35;
+    var near = null, nearD = reach * 0.9;   // 端すれすれは狙わない
+    [].forEach.call(document.querySelectorAll('.tori-bird'), function(b){
+      var r = b.getBoundingClientRect();
+      var bx = (r.left + r.right) / 2, by = (r.top + r.bottom) / 2;
+      var d = Math.hypot(bx - cx, by - cy);
+      if(d < nearD){ nearD = d; near = [bx, by]; }
+    });
+    if(near){
+      /* 触点は鳥そのものでなく、中央から鳥の方角へ伸ばした点。角度だけが効く。 */
+      var a = Math.atan2(near[1] - cy, near[0] - cx);
+      var x = cx + Math.cos(a) * reach * 0.5, y = cy + Math.sin(a) * reach * 0.5;
+      root.dispatchEvent(new MouseEvent('mousedown', { clientX: x, clientY: y, bubbles: true }));
+      if('ontouchstart' in window){
+        try{
+          var t = new Touch({ identifier: 1, target: root, clientX: x, clientY: y });
+          root.dispatchEvent(new TouchEvent('touchstart', { changedTouches: [t], bubbles: true, cancelable: true }));
+        }catch(e){}
       }
     }
-    setTimeout(function(){ toriSweep(n + 1); }, 120);
+    setTimeout(function(){ toriSweep(n + 1); }, 80);
   }
   /* 別のレイヤー同士（覆いと下の盤面）を重なりと数えないよう、position:fixed の祖先で層を分ける */
   function layer(el){
@@ -535,10 +553,6 @@ const jsOnly = (function () {
    ⑤ 死にコード（どこからも参照されていない宣言）
    ============================================================ */
 section('⑤', '死にコード', () => {
-  /* 先に置いた素材だけは、まだ呼び手が無くても咎めない。
-     EDA_WHIP（枝豆の鞭・九方向の立ち絵）と EDA_FOOT（その足元の行）は v1364 で埋め込んだもので、
-     一索の鳥に組み込むのはこれから。使い始めたらこの表から外すこと。 */
-  const PENDING = new Set(['EDA_WHIP', 'EDA_FOOT']);
   const decls = new Map();   // 名前 -> {種類, 行}
   const put = (name, kind, idx) => { if (name && !decls.has(name)) decls.set(name, { kind, line: lineOfNoB64(idx) }); };
   let m;
@@ -555,7 +569,7 @@ section('⑤', '死にコード', () => {
     const re = new RegExp('\\b' + bare.replace(/\$/g, '\\$') + '\\b', 'g');
     let c = 0;
     while (re.exec(srcNoB64)) c++;
-    if (c <= 1 && !PENDING.has(bare)) dead.push({ name, ...d });
+    if (c <= 1) dead.push({ name, ...d });
   });
   dead.sort((a, b) => a.line - b.line);
 
@@ -636,7 +650,9 @@ section('⑦', '狭い画面での溢れ', () => {
         '--window-size=' + (vw + 24) + ',' + (vh + 92),
         '--user-data-dir=' + path.join(tmpDir, 'prof'),
         /* ミニゲームだけは、遊びを通すぶんの時間が要る（9秒だと勝ち抜けきる前に打ち切られる回がある）。 */
-        '--virtual-time-budget=' + (screen === 'toriend' ? 20000 : 9000), '--dump-dom',
+        /* toriend は制限時間（30秒）を跨げるだけ回す。捕まえられなくても「逃げられた」で
+           結果画面には必ず届く。捕獲の条件が鞭になって、叩けば必ず勝てるとは限らなくなった。 */
+        '--virtual-time-budget=' + (screen === 'toriend' ? 45000 : 9000), '--dump-dom',
         'file:///' + probe.replace(/\\/g, '/') + '#' + screen];
       const r = spawnSync(browser, args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
       const hit = /KOUSHU_VIEW_BEGIN([A-Za-z0-9+/=]+)KOUSHU_VIEW_END/.exec(String(r.stdout || ''));
@@ -827,7 +843,10 @@ section('⑩', 'ミニゲームの定数と八方位・親補正の写し', () =
   note('三段の速度・転換・同時羽数・ノルマ、制限時間、逃げと加速の値を照合');
 
   /* --- 八方位の割り当て --- */
-  const dirBlock = jsOnly.slice(jsOnly.indexOf('const TORI_DIRS'), jsOnly.indexOf('const TORI_DIRS') + 1200);
+  /* 切り出しは TORI_DIRS の配列が閉じるところまで。固定の文字数で切ると、
+     後ろにある別の方位表（EDA_DIRS＝枝豆の振りの向き）を巻き込んで数が合わなくなる。 */
+  const dirStart = jsOnly.indexOf('const TORI_DIRS');
+  const dirBlock = jsOnly.slice(dirStart, jsOnly.indexOf('];', dirStart) + 2);
   const dirs = [];
   const re = /key:'(\w+)'[^}]*deg:\s*(-?\d+)/g;
   let m;
