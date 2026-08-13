@@ -1,5 +1,5 @@
 koushu-handan 全台詞
-版 v1360 / 本体から機械的に書き出したもの（レビュー用・本体は未変更）
+版 v1361 / 本体から機械的に書き出したもの（レビュー用・本体は未変更）
 各行は  行番号 ｜ 話者 ｜ 鍵の道筋 ｜ 本文
 行番号は台詞そのものが書かれている行。{n} は実行時に名前が入る。
 ==============================================================================
@@ -179,14 +179,14 @@ koushu-handan 全台詞
    2907 ｜ お嬢様　　　 ｜ お嬢様(lady) / dr ｜ ふふっ、国士無双とは……なんて心躍りますこと。
    2907 ｜ お嬢様　　　 ｜ お嬢様(lady) / dr ｜ この配牌、わたくしが完成させますわ。国士無双、必ず成し遂げますの。
    2907 ｜ お嬢様　　　 ｜ お嬢様(lady) / dr ｜ まあ、夢のような配牌……么九を一つずつ、丁寧に集めましょう。
-   2908 ｜ マダム　　　 ｜ マダム(french) / 攻め(a) ｜ ふっ、ここは攻めるのですわ、ウィ
+   2908 ｜ マダム　　　 ｜ マダム(french) / 攻め(a) ｜ 今よ、攻めなさい、ウィ
    2908 ｜ マダム　　　 ｜ マダム(french) / 攻め(a) ｜ 攻めずして勝利はなし、ウィ
-   2908 ｜ マダム　　　 ｜ マダム(french) / 攻め(a) ｜ 前へ。セ・トレ・ボンですわ
-   2908 ｜ マダム　　　 ｜ マダム(french) / 守り(d) ｜ ノン、無理は禁物ですわ。セ・ラ・ヴィ、ここは退きますの
-   2908 ｜ マダム　　　 ｜ マダム(french) / 守り(d) ｜ 引き際の美しさこそ、エレガンスですわ。退いておきますの
-   2908 ｜ マダム　　　 ｜ マダム(french) / 守り(d) ｜ 損ねを小さく、それも勝負の品格ですわ、ウィ
-   2908 ｜ マダム　　　 ｜ マダム(french) / 守り(d) ｜ 追わずに待つ。それがシックな選択ですわ
-   2908 ｜ マダム　　　 ｜ マダム(french) / 守り(d) ｜ ノン、ここは引いて。次の機を待ちましょう、ウィ
+   2908 ｜ マダム　　　 ｜ マダム(french) / 攻め(a) ｜ 前へ。セ・トレ・ボンよ
+   2908 ｜ マダム　　　 ｜ マダム(french) / 守り(d) ｜ 無理は禁物。退きましょう、ね。セ・ラ・ヴィ
+   2908 ｜ マダム　　　 ｜ マダム(french) / 守り(d) ｜ 引き際の美しさこそ、エレガンスよ。退いておくわ
+   2908 ｜ マダム　　　 ｜ マダム(french) / 守り(d) ｜ 損ねを小さく、それも勝負の品格よ、ウィ
+   2908 ｜ マダム　　　 ｜ マダム(french) / 守り(d) ｜ 追わずに待つ。それがシックな選択ね
+   2908 ｜ マダム　　　 ｜ マダム(french) / 守り(d) ｜ ノン、ここは退くの。次の機を待ちましょう、ウィ
    2908 ｜ マダム　　　 ｜ マダム(french) / ae ｜ ふっ、これは際どいですわね……。でも、わたくし前に出ますわ、ウィ。攻めずして勝利はございませんもの。
    2908 ｜ マダム　　　 ｜ マダム(french) / ae ｜ 際どいこと……。でも、この手なら攻めが利くわ。
    2908 ｜ マダム　　　 ｜ マダム(french) / ae ｜ ここが正念場ですわ。わたくし、攻めますの、ウィ。どうか一緒に、前へ。
@@ -782,9 +782,9 @@ koushu-handan 全台詞
    2972 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / v / 攻め(a) ｜ ここは攻めるが華、トレビアンですわっちゃ
    2972 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / v / 攻め(a) ｜ 攻めずしてどうなさるの、ノンっちゃ
    2972 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / v / 攻め(a) ｜ エレガントに攻めますわ、ウィっちゃ
-   2972 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / v / 守り(d) ｜ ノン、引くっちゃですわ
-   2972 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / v / 守り(d) ｜ ここは引きますわ、ノンっちゃ
+   2972 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / v / 守り(d) ｜ ノン、ここは退くのっちゃ
    2972 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / v / 守り(d) ｜ 無理は禁物っちゃ、退きましょう、ね
+   2972 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / v / 守り(d) ｜ 無理は禁物、退きますわ、ノンっちゃ
    2972 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / v / 守り(d) ｜ 攻めるなんてノン、退きますわっちゃ
    2972 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / v / 守り(d) ｜ 美しく退くのもエレガンス、ウィっちゃ
    2972 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / v / デレデレ(dere) / 攻め(a) ｜ 攻めますわ、ウィっちゃ……！ モナミ、あなたの勝ち姿を思うと、胸が高鳴ってしまいますのっちゃ。ご一緒に、前へ。
@@ -851,22 +851,22 @@ koushu-handan 全台詞
    2974 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向き専用よっちゃ
    2975 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / r / variants / 本文(main) ｜ オーララ、縦のまま？ わたし、横でないと困るのよっちゃ
    2975 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向きで、お待ちしているわっちゃ
-   2976 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / r / variants / 本文(main) ｜ シル・ヴ・プレ、どうか横に。縦のままでは、わたくし手も足も出ませんっちゃ
+   2976 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / r / variants / 本文(main) ｜ お願いっちゃ。どうか横に
    2976 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 伏してお願いいたしますわっちゃ、ウィ
    2977 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / r / variants / 本文(main) ｜ また縦ですのっちゃ……ノン、ノン。わたくし、少々あきれておりますのよ。横に
    2977 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向き専用と、何度も言っているでしょうっちゃ
    2978 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / r / variants / 本文(main) ｜ 画面を横に。そうしてこそ、エレガントな勝負が始まりますっちゃ、ウィ
    2978 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向きにて、トレビアンな一手をご覧に入れますわっちゃ
-   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 親(dealer) ｜ 親番ですもの、際どい配牌はちっと甘めに見ちょりますわ、ウィ
-   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 親(dealer) ｜ 親は連荘の値がございますもの、際どきは甘めに見ちょりますわ、ウィ
-   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 親(dealer) ｜ 親番のうちは攻めの一手、際どい手も強気に見ちょりますわ、ウィ
-   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 親(dealer) ｜ 親なればこそ、ここは甘めに踏み込みますわ、セ・マニフィーク
-   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 親(dealer) ｜ 親のうちは、際どさもエレガンスに大目に見ちょりますわ、ウィ
-   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 子(child) ｜ 子の基準で見ちょりますわ、ノン・プロブレム
-   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、常のままの基準で見ちょりますわ、ノン
-   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 子(child) ｜ 子の間は無理せず、平らかに見ちょりますわ、ノン・プロブレム
-   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 子(child) ｜ 子ですもの、等身大の基準で見ちょりますわ、ウィ
-   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、優雅に控えめに見ちょりますわ、トレビアン
+   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 親(dealer) ｜ 親番よ、際どい配牌はちっと甘めに見ちょるわ、ウィ
+   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 親(dealer) ｜ 親は連荘の値があるもの、際どきは甘めに見ちょるわ、ウィ
+   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 親(dealer) ｜ 親番のうちは攻めの一手、際どい手も強気に見ちょるわ、ウィ
+   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 親(dealer) ｜ 親なればこそ、ここは甘めに踏み込むわっちゃ、セ・マニフィーク
+   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 親(dealer) ｜ 親のうちは、際どさもエレガンスに大目に見ちょるわ、ウィ
+   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 子(child) ｜ 子の基準で見ちょるわ、ノン・プロブレム
+   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、常のままの基準で見ちょるわ、ノン
+   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 子(child) ｜ 子の間は無理せず、平らかに見ちょるわ、ノン・プロブレム
+   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 子(child) ｜ 子よ、等身大の基準で見ちょるわ、ウィ
+   2980 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、優雅に控えめに見ちょるわ、トレビアン
    2981 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / ae ｜ ふっ、これは際どいことっちゃ……。でも、わたくし前に出ますわ、ウィ。攻めずして勝利はございませんもの。
    2981 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / ae ｜ 際どいことっちゃ……。でも、この手なら攻めが利くわっちゃ。
    2981 ｜ マダム　　　 ｜ 宮崎(miyazaki) / byTone / マダム(french) / ae ｜ ここが正念場ですわっちゃ。わたくし、攻めますの、ウィ。どうか一緒に、前へ。
@@ -1622,9 +1622,9 @@ koushu-handan 全台詞
    3065 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / v / 攻め(a) ｜ ここは攻めるが華、トレビアンですわばい
    3065 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / v / 攻め(a) ｜ 攻めずしてどうなさるの、ノンと
    3065 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / v / 攻め(a) ｜ エレガントに攻めますわ、ウィばい
-   3065 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / v / 守り(d) ｜ ノン、引くとですわ
-   3065 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / v / 守り(d) ｜ ここは引きますわ、ノンばい
+   3065 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / v / 守り(d) ｜ ノン、ここは退くのばい
    3065 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / v / 守り(d) ｜ 無理は禁物ばい、退きましょう、ね
+   3065 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / v / 守り(d) ｜ 無理は禁物、退きますわ、ノンばい
    3065 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / v / 守り(d) ｜ 攻めるなんてノン、退きますわと
    3065 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / v / 守り(d) ｜ 美しく退くのもエレガンス、ウィばい
    3065 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / v / デレデレ(dere) / 攻め(a) ｜ 攻めますわ、ウィばい……！ モナミ、あなたの勝ち姿を思うと、胸が高鳴ってしまいますのばい。ご一緒に、前へ。
@@ -1691,22 +1691,22 @@ koushu-handan 全台詞
    3067 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向き専用よばい
    3068 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / r / variants / 本文(main) ｜ オーララ、縦のまま？ わたし、横でないと困るのよばい
    3068 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向きで、お待ちしているわばい
-   3069 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / r / variants / 本文(main) ｜ シル・ヴ・プレ、どうか横に。縦のままでは、わたくし手も足も出ませんばい
+   3069 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / r / variants / 本文(main) ｜ お願いばい。どうか横に
    3069 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 伏してお願いいたしますわばい、ウィ
    3070 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / r / variants / 本文(main) ｜ また縦ですのばい……ノン、ノン。わたくし、少々あきれておりますのよ。横に
    3070 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向き専用と、何度も言うとるでしょうばい
    3071 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / r / variants / 本文(main) ｜ 画面を横に。そうしてこそ、エレガントな勝負が始まりますばい、ウィ
    3071 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向きにて、トレビアンな一手をご覧に入れますわばい
-   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 親(dealer) ｜ 親番ですもの、際どい配牌はちっと甘めに見とりますわ、ウィ
-   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 親(dealer) ｜ 親は連荘の値がございますもの、際どきは甘めに見とりますわ、ウィ
-   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 親(dealer) ｜ 親番のうちは攻めの一手、際どい手も強気に見とりますわ、ウィ
-   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 親(dealer) ｜ 親なればこそ、ここは甘めに踏み込みますわ、セ・マニフィーク
-   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 親(dealer) ｜ 親のうちは、際どさもエレガンスに大目に見とりますわ、ウィ
-   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 子(child) ｜ 子の基準で見とりますわ、ノン・プロブレム
-   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、常のままの基準で見とりますわ、ノン
-   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 子(child) ｜ 子の間は無理せず、平らかに見とりますわ、ノン・プロブレム
-   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 子(child) ｜ 子ですもの、等身大の基準で見とりますわ、ウィ
-   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、優雅に控えめに見とりますわ、トレビアン
+   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 親(dealer) ｜ 親番よ、際どい配牌はちっと甘めに見とるわ、ウィ
+   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 親(dealer) ｜ 親は連荘の値があるもの、際どきは甘めに見とるわ、ウィ
+   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 親(dealer) ｜ 親番のうちは攻めの一手、際どい手も強気に見とるわ、ウィ
+   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 親(dealer) ｜ 親なればこそ、ここは甘めに踏み込むわばい、セ・マニフィーク
+   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 親(dealer) ｜ 親のうちは、際どさもエレガンスに大目に見とるわ、ウィ
+   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 子(child) ｜ 子の基準で見とるわ、ノン・プロブレム
+   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、常のままの基準で見とるわ、ノン
+   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 子(child) ｜ 子の間は無理せず、平らかに見とるわ、ノン・プロブレム
+   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 子(child) ｜ 子よ、等身大の基準で見とるわ、ウィ
+   3073 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、優雅に控えめに見とるわ、トレビアン
    3074 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / ae ｜ ふっ、これは際どいことばい……。でも、わたくし前に出ますわ、ウィ。攻めずして勝利はございませんもの。
    3074 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / ae ｜ 際どいことばい……。でも、この手なら攻めが利くわばい。
    3074 ｜ マダム　　　 ｜ 博多(hakata) / byTone / マダム(french) / ae ｜ ここが正念場ですわばい。わたくし、攻めますの、ウィ。どうか一緒に、前へ。
@@ -2462,9 +2462,9 @@ koushu-handan 全台詞
    3158 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / v / 攻め(a) ｜ ここは攻めるが華、トレビアンですわや
    3158 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / v / 攻め(a) ｜ 攻めずしてどないしますの、ノンや
    3158 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / v / 攻め(a) ｜ エレガントに攻めますわ、ウィや
-   3158 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / v / 守り(d) ｜ ノン、引くんやわ
-   3158 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / v / 守り(d) ｜ ここは引きますわ、ノンや
+   3158 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / v / 守り(d) ｜ ノン、ここは退くのやわ
    3158 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / v / 守り(d) ｜ 無理は禁物や、退きましょう、ね
+   3158 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / v / 守り(d) ｜ 無理は禁物、退きますわ、ノンや
    3158 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / v / 守り(d) ｜ 攻めるなんてノン、退きますわや
    3158 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / v / 守り(d) ｜ 美しく退くのもエレガンス、ウィや
    3158 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / v / デレデレ(dere) / 攻め(a) ｜ 攻めますわ、ウィや……！ モナミ、あなたの勝ち姿を思うと、胸が高鳴ってしまいますのやわ。ご一緒に、前へ。
@@ -2531,22 +2531,22 @@ koushu-handan 全台詞
    3160 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向き専用やで
    3161 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / r / variants / 本文(main) ｜ オーララ、縦のまま？ わたし、横でないと困るのやで
    3161 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向きで、お待ちしてるわや
-   3162 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / r / variants / 本文(main) ｜ シル・ヴ・プレ、どうか横に。縦のままでは、わたくし手も足も出ませんわ
+   3162 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / r / variants / 本文(main) ｜ お願いや。どうか横に
    3162 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 伏してお願いいたしますわ、ウィ
    3163 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / r / variants / 本文(main) ｜ また縦ですの……ノン、ノン。わたくし、少々あきれておりますのよ。横に
    3163 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向き専用と、何度も言うてるやろ
    3164 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / r / variants / 本文(main) ｜ 画面を横に。そうしてこそ、エレガントな勝負が始まりますのやわ、ウィ
    3164 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向きにて、トレビアンな一手をご覧に入れますわ
-   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 親(dealer) ｜ 親番ですもの、際どい配牌はちょい甘めに見とりますわ、ウィ
-   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 親(dealer) ｜ 親は連荘の値がございますもの、際どきはちょい甘めに見とりますわ、ウィ
-   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 親(dealer) ｜ 親番のうちは攻めの一手、際どい手も強気に見とりますわ、ウィ
-   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 親(dealer) ｜ 親なればこそ、ここはちょい甘めに踏み込みますわ、セ・マニフィーク
-   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 親(dealer) ｜ 親のうちは、際どさもエレガンスに大目に見とりますわ、ウィ
-   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 子(child) ｜ 子の基準で見とりますわ、ノン・プロブレム
-   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、常のままの基準で見とりますわ、ノン
-   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 子(child) ｜ 子の間は無理せず、平らかに見とりますわ、ノン・プロブレム
-   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 子(child) ｜ 子ですもの、等身大の基準で見とりますわ、ウィ
-   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、優雅に控えめに見とりますわ、トレビアン
+   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 親(dealer) ｜ 親番やで、際どい配牌はちょい甘めに見とるわ、ウィ
+   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 親(dealer) ｜ 親は連荘の値があるもん、際どきはちょい甘めに見とるわ、ウィ
+   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 親(dealer) ｜ 親番のうちは攻めの一手、際どい手も強気に見とるわ、ウィ
+   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 親(dealer) ｜ 親なればこそ、ここはちょい甘めに踏み込むわや、セ・マニフィーク
+   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 親(dealer) ｜ 親のうちは、際どさもエレガンスに大目に見とるわ、ウィ
+   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 子(child) ｜ 子の基準で見とるわ、ノン・プロブレム
+   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、常のままの基準で見とるわ、ノン
+   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 子(child) ｜ 子の間は無理せず、平らかに見とるわ、ノン・プロブレム
+   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 子(child) ｜ 子やで、等身大の基準で見とるわ、ウィ
+   3166 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、優雅に控えめに見とるわ、トレビアン
    3167 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / ae ｜ ふっ、これは際どいことやわ……。でも、わたくし前に出ますわ、ウィ。攻めずして勝利はございませんもの。
    3167 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / ae ｜ 際どいことや……。でも、この手なら攻めが利くわや。
    3167 ｜ マダム　　　 ｜ 大阪(osaka) / byTone / マダム(french) / ae ｜ ここが正念場ですわや。わたくし、攻めますの、ウィ。どうか一緒に、前へ。
@@ -3302,9 +3302,9 @@ koushu-handan 全台詞
    3251 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / v / 攻め(a) ｜ ここは攻めるが華、トレビアンどすえ
    3251 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / v / 攻め(a) ｜ 攻めずしてどないしますの、ノンえ
    3251 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / v / 攻め(a) ｜ エレガントに攻めますわ、ウィえ
-   3251 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / v / 守り(d) ｜ ノン、引いておきますえ
-   3251 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / v / 守り(d) ｜ ここは引きますわ、ノンえ
+   3251 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / v / 守り(d) ｜ ノン、ここは退くのえ
    3251 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / v / 守り(d) ｜ 無理は禁物どすえ、退きましょう、ね
+   3251 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / v / 守り(d) ｜ 無理は禁物、退きますわ、ノンえ
    3251 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / v / 守り(d) ｜ 攻めるなんてノン、退きますわえ
    3251 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / v / 守り(d) ｜ 美しく退くのもエレガンス、ウィえ
    3251 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / v / デレデレ(dere) / 攻め(a) ｜ 攻めますわ、ウィえ……！ モナミ、あなたの勝ち姿を思うと、胸が高鳴ってしまいますのえ。ご一緒に、前へ。
@@ -3371,22 +3371,22 @@ koushu-handan 全台詞
    3253 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向き専用どすえ
    3254 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / r / variants / 本文(main) ｜ オーララ、縦のまま？ わたし、横でないと困るのどすえ
    3254 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向きで、お待ちしているわえ
-   3255 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / r / variants / 本文(main) ｜ シル・ヴ・プレ、どうか横に。縦のままでは、わたくし手も足も出ませんのえ
+   3255 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / r / variants / 本文(main) ｜ お願いどすえ。どうか横に
    3255 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 伏してお願いいたしますわえ、ウィ
    3256 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / r / variants / 本文(main) ｜ また縦どすの……ノン、ノン。わたくし、少々あきれておりますのえ。横に
    3256 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向き専用と、何度も言うてますえ
    3257 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / r / variants / 本文(main) ｜ 画面を横に。そうしてこそ、エレガントな勝負が始まりますのえ、ウィ
    3257 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向きにて、トレビアンな一手をご覧に入れますわえ
-   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 親(dealer) ｜ 親番ですもの、際どい配牌はちょっと甘めに見ておりますえ、ウィ
-   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 親(dealer) ｜ 親は連荘の値がございますもの、際どきは甘めに見ておりますえ、ウィ
-   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 親(dealer) ｜ 親番のうちは攻めの一手、際どい手も強気に見ておりますえ、ウィ
-   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 親(dealer) ｜ 親なればこそ、ここは甘めに踏み込みますえ、セ・マニフィーク
-   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 親(dealer) ｜ 親のうちは、際どさもエレガンスに大目に見ておりますえ、ウィ
-   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 子(child) ｜ 子の基準で見ておりますえ、ノン・プロブレム
-   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、常のままの基準で見ておりますえ、ノン
-   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 子(child) ｜ 子の間は無理せず、平らかに見ておりますえ、ノン・プロブレム
-   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 子(child) ｜ 子ですもの、等身大の基準で見ておりますえ、ウィ
-   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、優雅に控えめに見ておりますえ、トレビアン
+   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 親(dealer) ｜ 親番どすえ、際どい配牌はちょっと甘めに見てるえ、ウィ
+   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 親(dealer) ｜ 親は連荘の値があるもの、際どきは甘めに見てるえ、ウィ
+   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 親(dealer) ｜ 親番のうちは攻めの一手、際どい手も強気に見てるえ、ウィ
+   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 親(dealer) ｜ 親なればこそ、ここは甘めに踏み込むわえ、セ・マニフィーク
+   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 親(dealer) ｜ 親のうちは、際どさもエレガンスに大目に見てるえ、ウィ
+   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 子(child) ｜ 子の基準で見てるえ、ノン・プロブレム
+   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、常のままの基準で見てるえ、ノン
+   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 子(child) ｜ 子の間は無理せず、平らかに見てるえ、ノン・プロブレム
+   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 子(child) ｜ 子どすえ、等身大の基準で見てるえ、ウィ
+   3259 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、優雅に控えめに見てるえ、トレビアン
    3260 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / ae ｜ ふっ、これは際どいことどすなぁ……。でも、わたくし前に出ますえ、ウィ。攻めずして勝利はございませんもの。
    3260 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / ae ｜ 際どいことどすえ……。でも、この手なら攻めが利くわえ。
    3260 ｜ マダム　　　 ｜ 京都(kyoto) / byTone / マダム(french) / ae ｜ ここが正念場ですわえ。わたくし、攻めますの、ウィ。どうか一緒に、前へ。
@@ -4142,9 +4142,9 @@ koushu-handan 全台詞
    3344 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / v / 攻め(a) ｜ ここは攻めるが華、トレビアンですわびょん
    3344 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / v / 攻め(a) ｜ 攻めずしてどうするの、ノンびょん
    3344 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / v / 攻め(a) ｜ エレガントに攻めますわ、ウィびょん
-   3344 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / v / 守り(d) ｜ ノン、引いておきますびょん
-   3344 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / v / 守り(d) ｜ ここは引きますわ、ノンびょん
+   3344 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / v / 守り(d) ｜ ノン、ここは退くのびょん
    3344 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / v / 守り(d) ｜ 無理は禁物びょん、退きましょう、ね
+   3344 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / v / 守り(d) ｜ 無理は禁物、退きますわ、ノンびょん
    3344 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / v / 守り(d) ｜ 攻めるなんてノン、退きますわびょん
    3344 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / v / 守り(d) ｜ 美しく退くのもエレガンス、ウィびょん
    3344 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / v / デレデレ(dere) / 攻め(a) ｜ 攻めますわ、ウィびょん……！ モナミ、あなたの勝ち姿を思うと、胸が高鳴ってしまいますのびょん。ご一緒に、前へ。
@@ -4211,22 +4211,22 @@ koushu-handan 全台詞
    3346 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向き専用よびょん
    3347 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / r / variants / 本文(main) ｜ オーララ、縦のまま？ わたし、横でないと困るのよびょん
    3347 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向きで、お待ちしているわびょん
-   3348 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / r / variants / 本文(main) ｜ シル・ヴ・プレ、どうか横に。縦のままでは、わたくし手も足も出ませんのびょん
+   3348 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / r / variants / 本文(main) ｜ お願いびょん。どうか横に
    3348 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 伏してお願いいたしますわびょん、ウィ
    3349 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / r / variants / 本文(main) ｜ また縦ですのびょん……ノン、ノン。わたくし、少々あきれておりますのよ。横に
    3349 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向き専用と、何度も言っているでしょうびょん
    3350 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / r / variants / 本文(main) ｜ 画面を横に。そうしてこそ、エレガントな勝負が始まりますのびょん、ウィ
    3350 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向きにて、トレビアンな一手をご覧に入れますわびょん
-   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 親(dealer) ｜ 親番ですもの、際どい配牌はちょっと甘めに見ておりますびょん、ウィ
-   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 親(dealer) ｜ 親は連荘の値がございますもの、際どきは甘めに見ておりますびょん、ウィ
-   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 親(dealer) ｜ 親番のうちは攻めの一手、際どい手も強気に見ておりますびょん、ウィ
-   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 親(dealer) ｜ 親なればこそ、ここは甘めに踏み込みますびょん、セ・マニフィーク
-   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 親(dealer) ｜ 親のうちは、際どさもエレガンスに大目に見ておりますびょん、ウィ
-   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 子(child) ｜ 子の基準で見ておりますびょん、ノン・プロブレム
-   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、常のままの基準で見ておりますびょん、ノン
-   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 子(child) ｜ 子の間は無理せず、平らかに見ておりますびょん、ノン・プロブレム
-   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 子(child) ｜ 子ですもの、等身大の基準で見ておりますびょん、ウィ
-   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、優雅に控えめに見ておりますびょん、トレビアン
+   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 親(dealer) ｜ 親番よびょん、際どい配牌はちょっと甘めに見てるびょん、ウィ
+   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 親(dealer) ｜ 親は連荘の値があるもの、際どきは甘めに見てるびょん、ウィ
+   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 親(dealer) ｜ 親番のうちは攻めの一手、際どい手も強気に見てるびょん、ウィ
+   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 親(dealer) ｜ 親なればこそ、ここは甘めに踏み込むわびょん、セ・マニフィーク
+   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 親(dealer) ｜ 親のうちは、際どさもエレガンスに大目に見てるびょん、ウィ
+   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 子(child) ｜ 子の基準で見てるびょん、ノン・プロブレム
+   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、常のままの基準で見てるびょん、ノン
+   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 子(child) ｜ 子の間は無理せず、平らかに見てるびょん、ノン・プロブレム
+   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 子(child) ｜ 子よびょん、等身大の基準で見てるびょん、ウィ
+   3352 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、優雅に控えめに見てるびょん、トレビアン
    3353 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / ae ｜ ふっ、これは際どいことだびょん……。でも、わたくし前に出ますびょん、ウィ。攻めずして勝利はございませんもの。
    3353 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / ae ｜ 際どいことびょん……。でも、この手なら攻めが利くわびょん。
    3353 ｜ マダム　　　 ｜ 青森(aomori) / byTone / マダム(french) / ae ｜ ここが正念場ですわびょん。わたくし、攻めますの、ウィ。どうか一緒に、前へ。
@@ -4982,9 +4982,9 @@ koushu-handan 全台詞
    3437 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / v / 攻め(a) ｜ ここは攻めるが華、トレビアンですわさー
    3437 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / v / 攻め(a) ｜ 攻めずしてどうするの、ノンさー
    3437 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / v / 攻め(a) ｜ エレガントに攻めますわ、ウィさー
-   3437 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / v / 守り(d) ｜ ノン、引いておきますさー
-   3437 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / v / 守り(d) ｜ ここは引きますわ、ノンさー
+   3437 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / v / 守り(d) ｜ ノン、ここは退くのさー
    3437 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / v / 守り(d) ｜ 無理は禁物さー、退きましょう、ね
+   3437 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / v / 守り(d) ｜ 無理は禁物、退きますわ、ノンさー
    3437 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / v / 守り(d) ｜ 攻めるなんてノン、退きますわさー
    3437 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / v / 守り(d) ｜ 美しく退くのもエレガンス、ウィさー
    3437 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / v / デレデレ(dere) / 攻め(a) ｜ 攻めますわ、ウィさー……！ モナミ、あなたの勝ち姿を思うと、胸が高鳴ってしまいますのさー。ご一緒に、前へ。
@@ -5051,22 +5051,22 @@ koushu-handan 全台詞
    3439 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / r / variants / 添え(sub) ｜ よーこー向き専用よさー
    3440 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / r / variants / 本文(main) ｜ オーララ、たてのまま？ わたし、よーこーでないと困るのよさー
    3440 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / r / variants / 添え(sub) ｜ よーこー向きで、お待ちしているわさー
-   3441 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / r / variants / 本文(main) ｜ シル・ヴ・プレ、どうかよーこーに。たてのままでは、わたくし手も足も出ませんのさー
+   3441 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / r / variants / 本文(main) ｜ お願いさー。どうかよーこーに
    3441 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 伏してお願いいたしますわさー、ウィ
    3442 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / r / variants / 本文(main) ｜ またたてですのさー……ノン、ノン。わたくし、少々あきれておりますのよ。よーこーに
    3442 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / r / variants / 添え(sub) ｜ よーこー向き専用と、何度も言っているでしょうさー
    3443 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / r / variants / 本文(main) ｜ 画面をよーこーに。そうしてこそ、エレガントな勝負が始まりますのさー、ウィ
    3443 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / r / variants / 添え(sub) ｜ よーこー向きにて、トレビアンな一手をご覧に入れますわさー
-   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 親(dealer) ｜ 親番ですもの、際どい配牌さぁちューささぁ甘めに見ておりますさー、ウィ
-   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 親(dealer) ｜ 親は連荘の値がございますもの、際どきはちューささぁ甘めに見ておりますさー、ウィ
-   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 親(dealer) ｜ 親番のうちは攻めの一手、際どい手も強気に見ておりますさー、ウィ
-   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 親(dealer) ｜ 親なればこそ、ここは甘めに踏み込みますさー、セ・マニフィーク
-   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 親(dealer) ｜ 親のうちは、際どさもエレガンスに大目に見ておりますさー、ウィ
-   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 子(child) ｜ 子の基準さぁ見ておりますさー、ノン・プロブレム
-   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、常のままの基準さぁ見ておりますさー、ノン
-   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 子(child) ｜ 子の間は無理せず、平らかに見ておりますさー、ノン・プロブレム
-   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 子(child) ｜ 子ですもの、等身大の基準さぁ見ておりますさー、ウィ
-   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、優雅に控えめに見ておりますさー、トレビアン
+   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 親(dealer) ｜ 親番よさー、際どい配牌さぁちューささぁ甘めに見てるさー、ウィ
+   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 親(dealer) ｜ 親は連荘の値があるもの、際どきはちューささぁ甘めに見てるさー、ウィ
+   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 親(dealer) ｜ 親番のうちは攻めの一手、際どい手も強気に見てるさー、ウィ
+   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 親(dealer) ｜ 親なればこそ、ここは甘めに踏み込むわさー、セ・マニフィーク
+   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 親(dealer) ｜ 親のうちは、際どさもエレガンスに大目に見てるさー、ウィ
+   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 子(child) ｜ 子の基準さぁ見てるさー、ノン・プロブレム
+   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、常のままの基準さぁ見てるさー、ノン
+   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 子(child) ｜ 子の間は無理せず、平らかに見てるさー、ノン・プロブレム
+   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 子(child) ｜ 子よさー、等身大の基準さぁ見てるさー、ウィ
+   3445 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、優雅に控えめに見てるさー、トレビアン
    3446 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / ae ｜ ふっ、これは際どいことやさぁー……。でも、わたくし前に出ますさー、ウィ。攻めずして勝利はございませんもの。
    3446 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / ae ｜ 際どいことさー……。でも、この手なら攻めが利くわさー。
    3446 ｜ マダム　　　 ｜ 沖縄(okinawa) / byTone / マダム(french) / ae ｜ ここが正念場ですわさー。わたくし、攻めますの、ウィ。どうか一緒に、前へ。
@@ -5822,9 +5822,9 @@ koushu-handan 全台詞
    3530 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / v / 攻め(a) ｜ ここは攻めるが華、トレビアンにございまする
    3530 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / v / 攻め(a) ｜ 攻めずしていかがなさるの、ノン
    3530 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / v / 攻め(a) ｜ エレガントに攻めまする、ウィ
-   3530 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / v / 守り(d) ｜ ノン、退いておきまする
-   3530 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / v / 守り(d) ｜ ここは退きまする、ノン
+   3530 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / v / 守り(d) ｜ ノン、ここは退くぞ
    3530 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / v / 守り(d) ｜ 無理は禁物なり、退きましょうぞ
+   3530 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / v / 守り(d) ｜ 無理は禁物、退きまする、ノン
    3530 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / v / 守り(d) ｜ 攻めるなどノン、退きまする
    3530 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / v / 守り(d) ｜ 美しく退くのもエレガンス、ウィ
    3530 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / v / デレデレ(dere) / 攻め(a) ｜ 攻めまするわ、ウィ……！ モナミ、あなたの勝ち姿を思うと、胸が高鳴ってしまいまするの。ご一緒に、前へ。
@@ -5891,22 +5891,22 @@ koushu-handan 全台詞
    3532 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向き専用ぞ
    3533 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / r / variants / 本文(main) ｜ オーララ、縦のままか？ わたし、横でのうては困るのぞ
    3533 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向きにて、お待ちしておるぞ
-   3534 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / r / variants / 本文(main) ｜ シル・ヴ・プレ、どうか横に。縦のままでは、わたくし手も足も出ませぬ
+   3534 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / r / variants / 本文(main) ｜ 頼みまするぞ。どうか横に
    3534 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 伏してお願いいたしまするわ、ウィ
    3535 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / r / variants / 本文(main) ｜ また縦にございますの……ノン、ノン。わたくし、少々あきれておりまするのよ。横に
    3535 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向き専用と、幾度も申しておるぞ
    3536 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / r / variants / 本文(main) ｜ 画面を横に。そうしてこそ、エレガントなる勝負が始まりまするの、ウィ
    3536 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / r / variants / 添え(sub) ｜ 横向きにて、トレビアンなる一手をご覧に入れまするわ
-   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 親(dealer) ｜ 親番にございますゆえ、際どき配牌はやや甘めに見ておりまする、ウィ
-   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 親(dealer) ｜ 親は連荘の値ございますゆえ、際どきはやや甘めに見ておりまする、ウィ
-   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 親(dealer) ｜ 親番のうちは攻めの一手、際どき手も強気に見ておりまする、ウィ
-   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 親(dealer) ｜ 親なればこそ、ここは甘めに踏み込みまする、セ・マニフィーク
-   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 親(dealer) ｜ 親のうちは、際どさもエレガンスにやや大目に見ておりまする、ウィ
-   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 子(child) ｜ 子の基準にて見ておりまする、ノン・プロブレム
-   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、常のままの基準にて見ておりまする、ノン
-   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 子(child) ｜ 子の間は無理せず、平らかに見ておりまする、ノン・プロブレム
-   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 子(child) ｜ 子にございますゆえ、等身大の基準にて見ておりまする、ウィ
-   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、優雅に控えめに見ておりまする、トレビアン
+   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 親(dealer) ｜ 親番ぞ、際どき配牌はやや甘めに見ておる、ウィ
+   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 親(dealer) ｜ 親は連荘の値あるゆえ、際どきはやや甘めに見ておる、ウィ
+   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 親(dealer) ｜ 親番のうちは攻めの一手、際どき手も強気に見ておる、ウィ
+   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 親(dealer) ｜ 親なればこそ、ここは甘めに踏み込むぞ、セ・マニフィーク
+   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 親(dealer) ｜ 親のうちは、際どさもエレガンスにやや大目に見ておる、ウィ
+   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 子(child) ｜ 子の基準にて見ておる、ノン・プロブレム
+   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、常のままの基準にて見ておる、ノン
+   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 子(child) ｜ 子の間は無理せず、平らかに見ておる、ノン・プロブレム
+   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 子(child) ｜ 子ぞ、等身大の基準にて見ておる、ウィ
+   3538 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / s / 子(child) ｜ 子のうちは、優雅に控えめに見ておる、トレビアン
    3539 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / ae ｜ ふっ、これは際どきことにございまする……。でも、わたくし前に出まする、ウィ。攻めずして勝利はございませんもの。
    3539 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / ae ｜ 際どきことよ……。なれど、この手なら攻めが利くぞ。
    3539 ｜ マダム　　　 ｜ 武士(bushi) / byTone / マダム(french) / ae ｜ ここが正念場にございまする。わたくし、攻めまする、ウィ。どうか一緒に、前へ。
@@ -6662,9 +6662,9 @@ koushu-handan 全台詞
    3623 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / v / 攻め(a) ｜ ここはせめるのがはな、トレビアンでちゅわ
    3623 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / v / 攻め(a) ｜ せめないでどうするの、ノンでちゅ
    3623 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / v / 攻め(a) ｜ エレガントにせめまちゅわ、ウィ
-   3623 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / v / 守り(d) ｜ ノン、ひいておきまちゅわ
-   3623 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / v / 守り(d) ｜ ここはひきまちゅわ、ノン
+   3623 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / v / 守り(d) ｜ ノン、ここはひくの
    3623 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / v / 守り(d) ｜ むりはだめでちゅ、ひきまちょう、ね
+   3623 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / v / 守り(d) ｜ むりはだめ、ひきまちゅわ、ノン
    3623 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / v / 守り(d) ｜ せめるなんてノン、ひきまちゅわ
    3623 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / v / 守り(d) ｜ うつくちくひくのもエレガンス、ウィでちゅ
    3623 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / v / デレデレ(dere) / 攻め(a) ｜ せめまちゅわ、ウィ……！ モナミ、あなたのかちすがたをおもうと、むねがどきどきちまちゅの。いっちょにまえへ。
@@ -6731,22 +6731,22 @@ koushu-handan 全台詞
    3625 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / r / variants / 添え(sub) ｜ よこむきせんよーよ
    3626 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / r / variants / 本文(main) ｜ オーララ、たてのまま？ わたち、よこでないとこまるのよ
    3626 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / r / variants / 添え(sub) ｜ よこむきで、おまちちてるわ
-   3627 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / r / variants / 本文(main) ｜ シル・ヴ・プレ、どうかよこに。たてだと、わたくしおてあげでちゅ
+   3627 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / r / variants / 本文(main) ｜ おねがい。どうかよこに
    3627 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / r / variants / 添え(sub) ｜ ふしておねがいいたちまちゅわ、ウィ
    3628 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / r / variants / 本文(main) ｜ またたてでちゅの……ノン、ノン。わたくし、ちょっとあきれてまちゅのよ。よこに
    3628 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / r / variants / 添え(sub) ｜ よこむきせんよーって、なんかいもいってるでちょ
    3629 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / r / variants / 本文(main) ｜ がめんをよこに。そうちてこそ、エレガントなしょうぶがはじまるのでちゅ、ウィ
    3629 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / r / variants / 添え(sub) ｜ よこむきで、トレビアンないってをごらんにいれまちゅわ
-   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 親(dealer) ｜ おやばんでちゅもの、ちゃどいはいぱいはちょっとあまめにしてまちゅわ、ウィ
-   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 親(dealer) ｜ おやはれんちゃんのねうちがあるでちゅもの、ちゃどいはあまめにしてまちゅわ、ウィ
-   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 親(dealer) ｜ おやばんのうちはせめのいって、ちゃどいてもつよきでちゅわ、ウィ
-   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 親(dealer) ｜ おやばんだからこそ、ここはあまめにふみこむでちゅわ、セ・マニフィーク
-   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 親(dealer) ｜ おやのうちは、ちゃどさもエレガンスにあまめにしてまちゅわ、ウィ
-   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 子(child) ｜ このきじゅんでみてまちゅわ、ノン・プロブレム
-   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 子(child) ｜ このうちは、つねのままのきじゅんでみてまちゅわ、ノン
-   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 子(child) ｜ このあいだはむりせず、たいらにみてまちゅわ、ノン・プロブレム
-   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 子(child) ｜ こでちゅもの、とうしんだいのきじゅんでみてまちゅわ、ウィ
-   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 子(child) ｜ このうちは、ゆうがにひかえめにみてまちゅわ、トレビアン
+   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 親(dealer) ｜ おやばんよ、ちゃどいはいぱいはちょっとあまめにみてるわ、ウィ
+   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 親(dealer) ｜ おやはれんちゃんのねうちがあるもん、ちゃどいはあまめにみてるわ、ウィ
+   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 親(dealer) ｜ おやばんのうちはせめのいって、ちゃどいてもつよきによ、ウィ
+   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 親(dealer) ｜ おやばんだからこそ、ここはあまめにふみこむわ、セ・マニフィーク
+   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 親(dealer) ｜ おやのうちは、ちゃどさもエレガンスにあまめにみてるわ、ウィ
+   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 子(child) ｜ このきじゅんでみてるわ、ノン・プロブレム
+   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 子(child) ｜ このうちは、つねのままのきじゅんでみてるわ、ノン
+   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 子(child) ｜ このあいだはむりせず、たいらにみてるわ、ノン・プロブレム
+   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 子(child) ｜ こよ、とうしんだいのきじゅんでみてるわ、ウィ
+   3631 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / s / 子(child) ｜ このうちは、ゆうがにひかえめにみてるわ、トレビアン
    3632 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / ae ｜ ふっ、これはちゃどいことでちゅわー……。でも、わたくしまえにでまちゅわ、ウィ。せめずしてしょーりはないもの。
    3632 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / ae ｜ ちゃどいこと……。でも、このてならせめがきくわ。
    3632 ｜ マダム　　　 ｜ 幼児(yoji) / byTone / マダム(french) / ae ｜ ここがしょーぶどころでちゅわ。わたくし、せめまちゅ、ウィ。どうかいっしょに、まえへ。
@@ -7031,16 +7031,16 @@ koushu-handan 全台詞
    3731 ｜ お嬢様　　　 ｜ お嬢様(lady) / 子(child) ｜ 子の間は無理をせず、平らかに見ておりますの。
    3731 ｜ お嬢様　　　 ｜ お嬢様(lady) / 子(child) ｜ 子ですから、等身大の基準で判じておりますの。
    3731 ｜ お嬢様　　　 ｜ お嬢様(lady) / 子(child) ｜ 子のうちは、たしなみとして控えめに見ておりますの。
-   3732 ｜ マダム　　　 ｜ マダム(french) / 親(dealer) ｜ 親番ですもの、際どい配牌は少し甘めに、ウィ。
-   3732 ｜ マダム　　　 ｜ マダム(french) / 親(dealer) ｜ 親は連荘の値がございますもの、際どきは甘めに、ウィ。
-   3732 ｜ マダム　　　 ｜ マダム(french) / 親(dealer) ｜ 親番のうちは攻めの一手、際どい手も強気に、ウィ。
-   3732 ｜ マダム　　　 ｜ マダム(french) / 親(dealer) ｜ 親なればこそ、ここは甘めに踏み込みますわ、セ・マニフィーク。
-   3732 ｜ マダム　　　 ｜ マダム(french) / 親(dealer) ｜ 親のうちは、際どさもエレガンスに大目に、ウィ。
-   3732 ｜ マダム　　　 ｜ マダム(french) / 子(child) ｜ 子の基準で見ておりますわ、ノン・プロブレム。
-   3732 ｜ マダム　　　 ｜ マダム(french) / 子(child) ｜ 子のうちは、常のままの基準で見ておりますわ、ノン。
-   3732 ｜ マダム　　　 ｜ マダム(french) / 子(child) ｜ 子の間は無理せず、平らかに見ておりますわ、ノン・プロブレム。
-   3732 ｜ マダム　　　 ｜ マダム(french) / 子(child) ｜ 子ですもの、等身大の基準で見ておりますわ、ウィ。
-   3732 ｜ マダム　　　 ｜ マダム(french) / 子(child) ｜ 子のうちは、優雅に控えめに見ておりますわ、トレビアン。
+   3732 ｜ マダム　　　 ｜ マダム(french) / 親(dealer) ｜ 親番よ、際どい配牌は少し甘めに見ているわ、ウィ。
+   3732 ｜ マダム　　　 ｜ マダム(french) / 親(dealer) ｜ 親は連荘の値があるもの、際どきは甘めに見ているわ、ウィ。
+   3732 ｜ マダム　　　 ｜ マダム(french) / 親(dealer) ｜ 親番のうちは攻めの一手、際どい手も強気に見ているわ、ウィ。
+   3732 ｜ マダム　　　 ｜ マダム(french) / 親(dealer) ｜ 親なればこそ、ここは甘めに踏み込むわ、セ・マニフィーク。
+   3732 ｜ マダム　　　 ｜ マダム(french) / 親(dealer) ｜ 親のうちは、際どさもエレガンスに大目に見ているわ、ウィ。
+   3732 ｜ マダム　　　 ｜ マダム(french) / 子(child) ｜ 子の基準で見ているわ、ノン・プロブレム。
+   3732 ｜ マダム　　　 ｜ マダム(french) / 子(child) ｜ 子のうちは、常のままの基準で見ているわ、ノン。
+   3732 ｜ マダム　　　 ｜ マダム(french) / 子(child) ｜ 子の間は無理せず、平らかに見ているわ、ノン・プロブレム。
+   3732 ｜ マダム　　　 ｜ マダム(french) / 子(child) ｜ 子ね、等身大の基準で見ているわ、ウィ。
+   3732 ｜ マダム　　　 ｜ マダム(french) / 子(child) ｜ 子のうちは、優雅に控えめに見ているわ、トレビアン。
    3733 ｜ 一姫　　　 ｜ 一姫(ichihime) / 親(dealer) ｜ 親番にゃ、際どい配牌はちょっと甘めに見るにゃ。
    3733 ｜ 一姫　　　 ｜ 一姫(ichihime) / 親(dealer) ｜ 親は点が大きいにゃ、際どいのも甘めに見るにゃ。
    3733 ｜ 一姫　　　 ｜ 一姫(ichihime) / 親(dealer) ｜ 親番は攻めどきにゃ、際どい手もいっけー気味に見るにゃ。
@@ -7139,7 +7139,7 @@ koushu-handan 全台詞
    3706 ｜ マダム　　　 ｜ マダム(french) / variants / 添え(sub) ｜ 横向き専用よ
    3707 ｜ マダム　　　 ｜ マダム(french) / variants / 本文(main) ｜ オーララ、縦のまま？ わたし、横でないと困るのよ
    3707 ｜ マダム　　　 ｜ マダム(french) / variants / 添え(sub) ｜ 横向きで、お待ちしているわ
-   3708 ｜ マダム　　　 ｜ マダム(french) / variants / 本文(main) ｜ シル・ヴ・プレ、どうか横に。縦のままでは、わたくし手も足も出ませんの
+   3708 ｜ マダム　　　 ｜ マダム(french) / variants / 本文(main) ｜ お願い。どうか横に
    3708 ｜ マダム　　　 ｜ マダム(french) / variants / 添え(sub) ｜ 伏してお願いいたしますわ、ウィ
    3709 ｜ マダム　　　 ｜ マダム(french) / variants / 本文(main) ｜ また縦ですの……ノン、ノン。わたくし、少々あきれておりますのよ。横に
    3709 ｜ マダム　　　 ｜ マダム(french) / variants / 添え(sub) ｜ 横向き専用と、何度も言っているでしょう
