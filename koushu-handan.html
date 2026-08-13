@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1357">
+<html lang="ja" data-ver="1358">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -319,6 +319,18 @@
   /* 掛け持ちを点検する執事を選んでいるときだけ、二役以上を兼ねる牌を金枠で囲う */
   body.tone-butler .judged-hand .tile.multi-mark {
     box-shadow: 0 0 0 2px var(--gold), inset 0 1px 1.5px rgba(255,255,255,0.6), 0 2px 0 #c2b496;
+  }
+  /* スイッチ三者は人柄の担当ではないので金枠を使わない。見張り台の答え合わせと
+     同じ色・同じ光らせ方（outline＋ぼかし）で出す。outline は場所を取らないので、
+     当たり判定も欄の高さも動かない。 */
+  body.tool-cat .judged-hand .tile.cat-mark {
+    outline: 2px solid rgba(120,170,220,0.9); box-shadow: 0 0 9px rgba(120,170,220,0.5);
+  }
+  body.tool-eda .judged-hand .tile.eda-mark {
+    outline: 2px solid var(--jade); box-shadow: 0 0 9px rgba(58,157,120,0.55);
+  }
+  body.tool-ai .judged-hand .tile.om-mark {
+    outline: 2px solid #c0392b; box-shadow: 0 0 9px rgba(192,57,43,0.55);
   }
   .md-dora-chip { display:inline-flex; vertical-align:-2px; margin:0 1px; }
   .md-dora-chip > * { display:inline-flex; align-items:center; justify-content:center;
@@ -1146,7 +1158,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1357</div>
+  <div id="verTag">v1358</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1245,6 +1257,9 @@
       ・<b>マダム</b>＝浮き牌。どのまとまりにも入らず守りにも使えない牌が光る。攻めている間に、最初に整理する候補。<br>
       ・<b>一姫</b>＝待ちの端がかり。端にかかるターツと<ruby>字牌<rt>ジハイ</rt></ruby>の対子が光る。<br>
       ・<b>先生</b>＝<ruby>雀頭<rt>ジャントウ</rt></ruby>。雀頭になれる牌が光る。<br>
+      投票欄のスイッチ三者を押すと、その物差しが数えている牌が光る（金枠は使わず、<b>見張り台と同じ色</b>）。<br>
+      ・<b>現場猫</b>＝猫牌。青く光る。　・<b>枝豆</b>＝二枚以上ある種類の牌。緑に光る。　・<b>紳士</b>＝一枚きりの<ruby>字牌<rt>ジハイ</rt></ruby>。赤く光る。<br>
+      光るのは一度にひとりだけ。同じ印をもう一度押すか、人柄を押せば元へ戻る。<br>
       七人の言うことが食い違う手ほど、際どい手ということになる。<br><br>
       <b>攻守を見抜く手順</b><br>
       判定エンジンが見ているものは決まっている。同じ順に数えれば当たる。<br>
@@ -3812,9 +3827,16 @@ document.addEventListener('DOMContentLoaded', function () {
   /* 虎（判定エンジン）が喋っている間は true。人柄の担当ではないので、
      この間は担当牌の金枠を全て消す。人柄チップを押せば従来どおり戻る。 */
   let mascotTalking = false;
+  /* スイッチ三者のうち、いま牌を光らせている一人（'cat' / 'eda' / 'ai'。誰も点いていなければ空）。
+     点灯は常に一つだけ。三者が点いている間は人柄の金枠を消す。 */
+  let toolMark = '';
+  const TOOL_MARKS = ['cat', 'eda', 'ai'];
   function applyToneMark(){
     TONE_MARKS.forEach(function(t){
-      document.body.classList.toggle('tone-' + t, !mascotTalking && currentTone === t);
+      document.body.classList.toggle('tone-' + t, !mascotTalking && !toolMark && currentTone === t);
+    });
+    TOOL_MARKS.forEach(function(k){
+      document.body.classList.toggle('tool-' + k, !mascotTalking && toolMark === k);
     });
   }
   window.applyToneMark = applyToneMark;
@@ -4006,7 +4028,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const F = { multi:null, multiIdx:new Set(), naki:null, nakiIdx:new Set(),
                 dup:null, dupIdx:new Set(), lady:{ kind:'late' }, ladyIdx:new Set(),
                 ichi:{ kind:'none' }, edgeIdx:new Set(),
-                sensei:{ n:0, top:'' }, headIdx:new Set(), floatIdx:new Set(), floatTop:'' };
+                sensei:{ n:0, top:'' }, headIdx:new Set(), floatIdx:new Set(), floatTop:'',
+                catIdx:new Set(), edaIdx:new Set(), omIdx:new Set() };
     if(!a || !tiles) return F;
     // まとまりに入っている牌（判定の数字と同じ引き算）
     const need = {};
@@ -4152,6 +4175,21 @@ document.addEventListener('DOMContentLoaded', function () {
     };
     heads.sort(function(x, y){ return headScore(x) - headScore(y); });
     F.sensei = { n: heads.length, top: heads.length ? toneCodeName(heads[0]) : '' };
+    /* ---- スイッチ三者の物差しが数えている牌 ----
+       人柄の担当ではないので金枠は使わない。見張り台と同じ色・同じ光らせ方で出す。
+       猫牌＝1〜9の孤立牌（実物の猫牌もその一枚として数える。字牌は猫牌ではない）
+       枝豆＝二枚以上ある種類の牌／紳士＝一枚きりの字牌 */
+    tiles.forEach(function(t, i){
+      if(t.suit === 'cat'){ F.catIdx.add(i); return; }
+      if(t.suit === 'man' || t.suit === 'pin' || t.suit === 'sou'){
+        const same = tiles.filter(function(o){ return o.suit === t.suit; });
+        const hasNeighbor = same.some(function(o){ return o !== t && Math.abs(o.num - t.num) <= 2 && o.num !== t.num; });
+        const hasDup = same.filter(function(o){ return o.num === t.num; }).length > 1;
+        if(!hasNeighbor && !hasDup) F.catIdx.add(i);
+      }
+      if(watchEdaIsMember(tiles, t)) F.edaIdx.add(i);
+      if(t.suit === 'honor' && cnt[t.code] === 1) F.omIdx.add(i);
+    });
     return F;
   }
   function toneAngleLine(a){
@@ -4278,6 +4316,7 @@ document.addEventListener('DOMContentLoaded', function () {
   };
   function setTone(t){
     mascotTalking = false;   // 人柄を選べば虎は口を閉じ、担当牌の金枠が戻る
+    toolMark = '';           // 道具の点灯も解除する（点くのは常に一つだけ）
     try { localStorage.setItem('koushu_rand_tone', '0'); } catch(e){}   // 手動選択でランダム解除
     if(currentTone === t){                                      // 同じ人柄を再度押せば解除＝素へ戻る
       currentTone = '';
@@ -4307,6 +4346,7 @@ document.addEventListener('DOMContentLoaded', function () {
     stopEv(e);
     if(TONE_WORDS[key]){
       // 同じ人柄をもう一度押しても解除しない。言い分を読みに来ているので、消えると用を成さない。
+      toolMark = '';   // 道具が点いていれば消し、人柄の金枠へ戻す
       if(currentTone !== key) setTone(key); else applyVerdictWord();
       return;
     }
@@ -4315,6 +4355,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // 見立てが本判定と食い違った回は、その断りをこの一言の後ろに繋げる（カードには常設しない）
     const miss = (window._vzMiss || {})[key];
     mascotTalking = false;   // 道具が喋るなら虎は口を閉じる
+    // 同じ道具をもう一度押せば消灯して元へ戻る。別の道具なら、そちらへ移る。
+    toolMark = (toolMark === key) ? '' : key;
     applyToneMark();
     saySet(key, miss ? (say + '　' + miss) : say);
   };
@@ -4326,6 +4368,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const line = mascotSay(window._lastA);
     if(!line) return;
     mascotTalking = true;
+    toolMark = '';   // 虎が喋る間は、人柄の金枠も道具の点灯も消す
     applyToneMark();
     saySet('mascot', line);
   };
@@ -8053,7 +8096,12 @@ document.addEventListener('DOMContentLoaded', function () {
     window._lastFacts = _F;
     let _hi = 0;
     const judgedHandHTML = judgedTiles.map(function(t){
-      if(t.suit === 'cat'){ _hi++; return '<div class="tile cat" style="zoom:0.72;">🐱</div>'; }
+      // 実物の猫牌も猫牌の一枚。現場猫を点けたときは、この牌も一緒に光る。
+      if(t.suit === 'cat'){
+        const cc = 'tile cat' + (_F.catIdx.has(_hi) ? ' cat-mark' : '');
+        _hi++;
+        return '<div class="' + cc + '" style="zoom:0.72;">🐱</div>';
+      }
       const cls = 'tile ' + t.suit + (t.red ? ' red' : '')
         + (_F.multiIdx.has(_hi) ? ' multi-mark' : '')   // 執事＝二役以上を兼ねる牌
         + (_F.nakiIdx.has(_hi)  ? ' naki-mark'  : '')   // 軍師＝仕掛けの種
@@ -8061,7 +8109,10 @@ document.addEventListener('DOMContentLoaded', function () {
         + (_F.ladyIdx.has(_hi)  ? ' safe-mark'  : '')   // お嬢様＝盾のうち切る当てに入っている牌
         + (_F.floatIdx.has(_hi) ? ' float-mark' : '')   // マダム＝浮き牌
         + (_F.edgeIdx.has(_hi)  ? ' edge-mark'  : '')   // 一姫＝端にかかるターツと字牌の対子
-        + (_F.headIdx.has(_hi)  ? ' head-mark'  : '');  // 先生＝雀頭の候補
+        + (_F.headIdx.has(_hi)  ? ' head-mark'  : '')   // 先生＝雀頭の候補
+        + (_F.catIdx.has(_hi)   ? ' cat-mark'   : '')   // 現場猫＝猫牌（孤立した数牌）
+        + (_F.edaIdx.has(_hi)   ? ' eda-mark'   : '')   // 枝豆＝二枚以上ある種類の牌
+        + (_F.omIdx.has(_hi)    ? ' om-mark'    : '');  // 紳士＝一枚きりの字牌
       _hi++;
       const inner = (t.suit === 'honor') ? t.label
         : (t.suit === 'pin') ? pinSVG(t.num, t.red)
