@@ -535,6 +535,10 @@ const jsOnly = (function () {
    ⑤ 死にコード（どこからも参照されていない宣言）
    ============================================================ */
 section('⑤', '死にコード', () => {
+  /* 先に置いた素材だけは、まだ呼び手が無くても咎めない。
+     EDA_WHIP（枝豆の鞭・九方向の立ち絵）と EDA_FOOT（その足元の行）は v1364 で埋め込んだもので、
+     一索の鳥に組み込むのはこれから。使い始めたらこの表から外すこと。 */
+  const PENDING = new Set(['EDA_WHIP', 'EDA_FOOT']);
   const decls = new Map();   // 名前 -> {種類, 行}
   const put = (name, kind, idx) => { if (name && !decls.has(name)) decls.set(name, { kind, line: lineOfNoB64(idx) }); };
   let m;
@@ -551,7 +555,7 @@ section('⑤', '死にコード', () => {
     const re = new RegExp('\\b' + bare.replace(/\$/g, '\\$') + '\\b', 'g');
     let c = 0;
     while (re.exec(srcNoB64)) c++;
-    if (c <= 1) dead.push({ name, ...d });
+    if (c <= 1 && !PENDING.has(bare)) dead.push({ name, ...d });
   });
   dead.sort((a, b) => a.line - b.line);
 
