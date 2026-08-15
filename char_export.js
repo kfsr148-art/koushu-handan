@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 /* 主人公の素材1枚の差し替えを一本で行う。キャラが替わっても使える名前にしてある。
-     透過 → 切り出し → 本体の8枚と緑面積で大きさ合わせ → 計測 → data URL
+     透過 → 切り出し → 本体の他の絵と面積で大きさ合わせ → 計測 → data URL
+   揃えに使うのは「倍率」と「元絵での足元」の二つ。顔比は参考で、揃えの判断には使わない
+   （上から5分の1の帯に振り上げた刃が入るコマがあり、姿勢によって指標が成立しないため）。
    使い方: node char_export.js <元絵.png> [koushu-handan.html] [向き] [体軸]   向きの既定は d、体軸の既定は 0.5
    出力: eda_<向き>.png（透過済み）／eda_<向き>.txt（data URL）／標準出力に埋める値
 
@@ -360,14 +362,14 @@ console.log(res.from === '止めてある'
   : '角度 ' + res.ang.toFixed(1) + '度 （真下なら -70〜-110。' + res.from + ' '
     + (res.from === '火花' ? res.sparks : res.chain) + '画素で測った'
     + (res.from === '鎖' ? '。火花が無いので鎖で代用した' : '') + '）');
-console.log('顔比 ' + (res.headRatio > 0 ? res.headRatio.toFixed(3) : '測れず')
+console.log('顔比（参考・揃えには使わない） ' + (res.headRatio > 0 ? res.headRatio.toFixed(3) : '測れず')
   + ' （頭の幅 ' + res.head + ' ÷ 全身の高さ ' + res.height
   + '。本体の' + refKeys.length + '枚は ' + res.refRatio[0].toFixed(3) + '〜' + res.refRatio[1].toFixed(3) + '）');
-console.log('EDA_FOOT.' + KEY + ' に入れる値: ' + res.foot
-  + ' （本体の' + refKeys.length + '枚は ' + res.refFeet[0] + '〜' + res.refFeet[1] + '）');
+console.log('（参考）画布に載せ直したあとの足元: ' + res.foot
+  + ' ／ 本体の' + refKeys.length + '枚は ' + res.refFeet[0] + '〜' + res.refFeet[1] + '。実寸で使ういまの本体では見ない値');
 console.log('data URL ' + (out.url.length / 1024).toFixed(0) + 'KB → eda_' + KEY + '.txt');
 console.log('半透明の明るさ ' + res.halo.toFixed(0) + '（140以下なら白残りなし。半透明 ' + res.semiN + '画素）');
-console.log('元絵での足元 ' + res.srcFoot + '（実寸で使うなら EDA_FOOT に入れるのはこの値）');
+console.log('EDA_FOOT.' + KEY + ' に入れる値: ' + res.srcFoot + '（元絵のままの足元。揃えはこの値と倍率の二つで行う）');
 console.log('確認画像 → eda_' + KEY + '_check.png（左＝角度の目盛り／中＝本番の暗地／右＝白地）');
 console.log('※ 縮小は双三次（LANCZOS ではない。この環境に画像の外部部品が無いため）');
 if (res.clipped) console.log('!! 元絵が画像の縁で切れている。描き直しが要る');
