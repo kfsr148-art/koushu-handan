@@ -1099,12 +1099,134 @@ section('⑮', '猫牌の判定条件の写し', () => {
   else { ng('揃っていない写しが ' + bad.length + '件'); bad.slice(0, 6).forEach(b => note('  ' + b)); }
 });
 
+/* ============================================================
+   ⑯ 攻撃のあとの待機の向き
+   仕様：開始は正面／真上・真下のあとは正面／ur・r・dr のあとは右／dl・l・ul のあとは左。
+   字面では見ない。実際に画面を叩いて、出ている絵で確かめる。
+   叩く場所は二通り持つ——鞭が届く内側と、豆投げに落ちる外側。
+   v1377 まで外側だけが壊れていた（豆投げが体の向きを左右にしか振らず、真上・真下で
+   正面へ戻れなかった）のに、内側しか叩いていない検査では「期待どおり」で通ってしまう。
+   ============================================================ */
+let idleSkipped = false;   // ブラウザが無くて測れなかったか（まとめで PASS と紛れないように持つ）
+section('⑯', '攻撃のあとの待機の向き', () => {
+  const browser = [
+    process.env['ProgramFiles(x86)'] && process.env['ProgramFiles(x86)'] + '\\Microsoft\\Edge\\Application\\msedge.exe',
+    process.env['ProgramFiles'] && process.env['ProgramFiles'] + '\\Microsoft\\Edge\\Application\\msedge.exe',
+    process.env['ProgramFiles(x86)'] && process.env['ProgramFiles(x86)'] + '\\Google\\Chrome\\Application\\chrome.exe',
+    process.env['ProgramFiles'] && process.env['ProgramFiles'] + '\\Google\\Chrome\\Application\\chrome.exe',
+    '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'
+  ].filter(p => p && fs.existsSync(p))[0];
+  if (!browser) {
+    note('ブラウザが見つからないため測定を飛ばす（Edge か Chrome があれば実測する）');
+    idleSkipped = true;
+    ok('測定なし');
+    return;
+  }
+  note('測定に使うブラウザ : ' + path.basename(browser));
+
+  /* 本体から鞭の絵の鍵の並びを取り出す。build() は Object.keys の順に img を appendChild
+     するので、この並びがそのまま DOM の並びになる。probe は添字だけで絵を見分ける
+     （window に診断口は生やさない＝CLAUDE.md §15）。 */
+  const wi = src.indexOf('const EDA_WHIP = {');
+  if (wi < 0) { ng('EDA_WHIP が見つからない'); return; }
+  const wblock = src.slice(wi, src.indexOf('};', wi) + 2);
+  const KEYS = [];
+  const kre = /(\w+):'data:image\/png;base64,/g;
+  let km;
+  while ((km = kre.exec(wblock))) KEYS.push(km[1]);
+  if (KEYS.length < 11) { ng('鞭の絵が足りない（' + KEYS.length + '枚）'); return; }
+
+  const IDLE_PROBE = `
+<script>
+window.addEventListener('load', function(){ setTimeout(function(){
+  var KEYS = ${JSON.stringify(KEYS)};
+  var NAGE = ['prepare','grasp','flick','flight','action','tama'];
+  var DIRS = [{k:'r',deg:0},{k:'dr',deg:45},{k:'d',deg:90},{k:'dl',deg:135},
+              {k:'l',deg:180},{k:'ul',deg:-135},{k:'u',deg:-90},{k:'ur',deg:-45}];
+  var out = { trials: [], err: null };
+  function sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+  function shown(){
+    var all = document.querySelectorAll('#toriRoot .tori-eda');
+    var names = KEYS.concat(NAGE.map(function(n){ return '投:' + n; }));
+    var vis = [];
+    for(var i = 0; i < names.length && i < all.length; i++){
+      if(all[i].style.display === 'block') vis.push(names[i]);
+    }
+    return vis.length === 1 ? vis[0] : ('(' + vis.join('|') + ')');
+  }
+  (async function(){
+    try{
+      /* headless は最初の2秒ほどで描き直しを止める。写しの中だけタイマー駆動に差し替える。 */
+      window.requestAnimationFrame = function(fn){ return setTimeout(function(){ fn(Date.now()); }, 16); };
+      window.cancelAnimationFrame = function(id){ clearTimeout(id); };
+      window.closeTitleScreen(); window.toriOpen();
+      await sleep(60);
+      var cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+      var reach = Math.min(window.innerWidth, window.innerHeight) * 0.35;
+      var SPOTS = [{ tag:'鞭', r: Math.round(reach) - 20 }, { tag:'豆', r: Math.round(reach) + 60 }];
+      for(var s = 0; s < SPOTS.length; s++){
+        for(var d = 0; d < DIRS.length; d++){
+          /* 毎回始めからやり直す。edaShow(true) が体の向きを正面へ戻すので、
+             その一撃だけの結果が見える。 */
+          window.toriStart('hard');
+          await sleep(60);
+          var deg = DIRS[d].deg * Math.PI / 180;
+          var root = document.getElementById('toriRoot');
+          root.dispatchEvent(new MouseEvent('mousedown', { bubbles:true, cancelable:true,
+            clientX: cx + Math.cos(deg) * SPOTS[s].r, clientY: cy + Math.sin(deg) * SPOTS[s].r }));
+          await sleep(1600);
+          out.trials.push({ dir: DIRS[d].k, spot: SPOTS[s].tag, got: shown() });
+        }
+      }
+    }catch(e){ out.err = String(e && e.stack || e); }
+    var n = document.createElement('div');
+    n.textContent = 'KOUSHU_IDLE_BEGIN' + btoa(unescape(encodeURIComponent(JSON.stringify(out)))) + 'KOUSHU_IDLE_END';
+    document.body.appendChild(n);
+  })();
+}, 100); });
+</script>
+`;
+
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'koushu-idle-'));
+  try {
+    const probe = path.join(tmpDir, 'probe.html');
+    fs.writeFileSync(probe, src.replace(/<\/body>\s*$/m, IDLE_PROBE + '</body>'), 'utf8');
+    const r = spawnSync(browser, ['--headless=new', '--disable-gpu', '--hide-scrollbars',
+      '--force-device-scale-factor=1', '--window-size=390,844',
+      '--user-data-dir=' + path.join(tmpDir, 'prof'),
+      '--virtual-time-budget=120000', '--dump-dom',
+      'file:///' + probe.replace(/\\/g, '/')],
+      { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
+    const hit = /KOUSHU_IDLE_BEGIN([A-Za-z0-9+/=]+)KOUSHU_IDLE_END/.exec(String(r.stdout || ''));
+    if (!hit) { ng('測定結果を取り出せない'); return; }
+    const got = JSON.parse(Buffer.from(hit[1], 'base64').toString('utf8'));
+    if (got.err) { ng('測定中に例外： ' + got.err.slice(0, 200)); return; }
+
+    const WANT = { u:'idleFront', d:'idleFront', r:'idleRight', ur:'idleRight', dr:'idleRight',
+                   l:'idleLeft', ul:'idleLeft', dl:'idleLeft' };
+    const bad = [];
+    got.trials.forEach(t => {
+      if (t.got !== WANT[t.dir]) {
+        bad.push(t.spot + 'で ' + t.dir + ' → ' + t.got + '（' + WANT[t.dir] + ' のはず）');
+      }
+    });
+    note('叩いた組み合わせ : ' + got.trials.length + '（八方位 × 鞭の届く内側／豆投げに落ちる外側）');
+    note('豆投げの側も必ず叩く。内側だけ見ていると、真上・真下が正面へ戻らない不良を素通しする');
+    if (got.trials.length !== 16) { ng('叩き切れていない（' + got.trials.length + ' / 16）'); return; }
+    if (bad.length === 0) ok('八方位とも、鞭でも豆投げでも仕様どおりの待機に戻る');
+    else { ng('待機の向きが仕様と違う ' + bad.length + '件'); bad.forEach(b => note('  ' + b)); }
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
 /* ---- まとめ ---- */
 console.log('');
 console.log('='.repeat(52));
 sections.forEach(s => {
   /* 測れなかった項目を PASS と並べない。通ったのか、見ていないのかを取り違えないため。 */
-  const mark = !s.ok ? 'FAIL  ' : (viewSkipped && /狭い画面/.test(s.title) ? 'SKIP  ' : 'PASS  ');
+  const skipped = (viewSkipped && /狭い画面/.test(s.title)) || (idleSkipped && /待機の向き/.test(s.title));
+  const mark = !s.ok ? 'FAIL  ' : (skipped ? 'SKIP  ' : 'PASS  ');
   console.log(mark + s.title);
 });
 console.log('='.repeat(52));
