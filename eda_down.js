@@ -86,6 +86,19 @@ function flattenToWhite(d){
   }
   return d;
 }
+/* 白背景から作った絵の後処理。半透明の画素に残った「白の混ざり」を取り除く。
+   これをしないと残像が白いまま薄く残り、暗い背景で白く光る。 */
+function unmatteWhite(d){
+  for(let i=0;i<d.length;i+=4){
+    const a = d[i+3]/255;
+    if(a <= 0){ d[i] = d[i+1] = d[i+2] = 0; continue; }
+    if(a >= 1) continue;
+    for(let k=0;k<3;k++){
+      d[i+k] = Math.max(0, Math.min(255, Math.round((d[i+k] - 255*(1-a)) / a)));
+    }
+  }
+  return d;
+}
 function greenCount(g){ let n=0; const d=g.d.data;
   for(let p=0;p<d.length;p+=4) if(isGreen(d,p)) n++; return n; }
 function footRow(d,w,h){ let f=-1;
@@ -144,22 +157,51 @@ function measure(d,w,h){
     const g = grab(im);
     const w = g.w, h = g.h, d = g.d.data;
     flattenToWhite(d);   /* 透明を白へ。これをしないと透明が黒として焼き付く */
-    const mn = new Uint8Array(w*h), cand = new Uint8Array(w*h);
+    const mn = new Uint8Array(w*h);
     for(let p=0;p<w*h;p++){
       const q = p*4;
       mn[p] = Math.min(d[q],d[q+1],d[q+2]);
-      cand[p] = (mn[p] >= WHITE) ? 1 : 0;   /* 透明は白に合成済みなので、明るさだけで決まる */
     }
-    const bg = new Uint8Array(w*h); const st = [];
-    for(let x=0;x<w;x++){ for(const y of [0,h-1]){ const p=y*w+x; if(cand[p]&&!bg[p]){bg[p]=1;st.push(p);} } }
-    for(let y=0;y<h;y++){ for(const x of [0,w-1]){ const p=y*w+x; if(cand[p]&&!bg[p]){bg[p]=1;st.push(p);} } }
-    while(st.length){ const p=st.pop(); const x=p%w, y=(p-x)/w;
+    /* 濃さをそのまま不透明度にする（白＝完全透過）。ただし太い塊は不透明のまま残す。
+       鎖は太くて連なった構造、煙の霞は細い。半径4の円で「開いて」太いものだけ拾えば、
+       霞を横切って切り刻まないので縞にならない。 */
+    const dark = new Uint8Array(w*h);
+    for(let p=0;p<w*h;p++) dark[p] = mn[p] < 205 ? 1 : 0;
+    const R = 4, off = [];
+    for(let dy=-R;dy<=R;dy++) for(let dx=-R;dx<=R;dx++) if(dy*dy+dx*dx <= R*R) off.push([dx,dy]);
+    const ero = new Uint8Array(w*h);
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+      let all = 1;
+      for(const [dx,dy] of off){ const nx=x+dx, ny=y+dy;
+        if(nx<0||ny<0||nx>=w||ny>=h || !dark[ny*w+nx]){ all=0; break; } }
+      if(all) ero[y*w+x] = 1;
+    }
+    const solid = new Uint8Array(w*h);
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+      if(!ero[y*w+x]) continue;
+      for(const [dx,dy] of off){ const nx=x+dx, ny=y+dy;
+        if(nx>=0&&ny>=0&&nx<w&&ny<h) solid[ny*w+nx] = 1; }
+    }
+    /* 太い塊の内側の穴を埋め、さらに2px広げて「絵の本体」とする。
+       輪郭の白いキーラインや鎖の光沢は本体の縁にあるので、広げないと透けて消える。 */
+    const notSolid = new Uint8Array(w*h), st2 = [];
+    for(let x=0;x<w;x++){ for(const y of [0,h-1]){ const p=y*w+x; if(!solid[p]&&!notSolid[p]){notSolid[p]=1;st2.push(p);} } }
+    for(let y=0;y<h;y++){ for(const x of [0,w-1]){ const p=y*w+x; if(!solid[p]&&!notSolid[p]){notSolid[p]=1;st2.push(p);} } }
+    while(st2.length){ const p=st2.pop(); const x=p%w, y=(p-x)/w;
       const nb=[]; if(x>0)nb.push(p-1); if(x<w-1)nb.push(p+1); if(y>0)nb.push(p-w); if(y<h-1)nb.push(p+w);
-      for(const q of nb) if(cand[q]&&!bg[q]){ bg[q]=1; st.push(q); } }
-    for(let p=0;p<w*h;p++){
-      if(!bg[p]) continue;
-      d[p*4+3] = Math.max(0, Math.min(255, (250 - mn[p]) * 8));   /* にじみは半透明で残す */
+      for(const q of nb) if(!solid[q]&&!notSolid[q]){ notSolid[q]=1; st2.push(q); } }
+    const filled = new Uint8Array(w*h);
+    for(let p=0;p<w*h;p++) filled[p] = (solid[p] || !notSolid[p]) ? 1 : 0;   /* 囲まれた穴も本体 */
+    const G = 2, goff = [];
+    for(let dy=-G;dy<=G;dy++) for(let dx=-G;dx<=G;dx++) if(dy*dy+dx*dx <= G*G) goff.push([dx,dy]);
+    const body = new Uint8Array(w*h);
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+      if(!filled[y*w+x]) continue;
+      for(const [dx,dy] of goff){ const nx=x+dx, ny=y+dy;
+        if(nx>=0&&ny>=0&&nx<w&&ny<h) body[ny*w+nx] = 1; }
     }
+    for(let p=0;p<w*h;p++) d[p*4+3] = body[p] ? 255 : (255 - mn[p]);
+    unmatteWhite(d);   /* 半透明に残った白の混ざりを取る（暗い背景で白く光らせない） */
     g.x.putImageData(g.d, 0, 0);
 
     /* ---------- 2. 切り出し ---------- */
@@ -207,7 +249,12 @@ function measure(d,w,h){
     for(const u of REFS){ const r = grab(await load(u)); refM.push(measure(r.d.data, r.w, r.h)); }
     const ratios = refM.map(r => r.headRatio).filter(v => v > 0).sort((a,b)=>a-b);
     const angs = refM.map(r => r.ang).filter(v => isFinite(v));   /* 火花のない待機は入らない */
-    out.res = { srcSize:[w,h], cut:[cw,ch], cutAt:[x0,y0], clipped:clipped,
+    /* 半透明の画素が明るすぎないか（白残りの点検） */
+    let semiN=0, semiV=0;
+    for(let p=0;p<OUTW*OUTH;p++){ const q=p*4, al=fd[q+3];
+      if(al > 8 && al < 200){ semiN++; semiV += (fd[q]+fd[q+1]+fd[q+2])/3; } }
+    const halo = semiN ? semiV/semiN : 0;
+    out.res = { halo:halo, semiN:semiN, srcSize:[w,h], cut:[cw,ch], cutAt:[x0,y0], clipped:clipped,
                 refGreen:refGreen, myGreen:myGreen, scale:scale, small:[sw,sh],
                 at:[dx,dy], foot:me.foot, top:me.top, alphaBottom:me.alphaBottom,
                 height:me.height, head:me.head, headRatio:me.headRatio, ang:me.ang,
@@ -258,5 +305,6 @@ console.log('顔比 ' + (res.headRatio > 0 ? res.headRatio.toFixed(3) : '測れ�
 console.log('EDA_FOOT.' + KEY + ' に入れる値: ' + res.foot
   + ' （本体の' + refKeys.length + '枚は ' + res.refFeet[0] + '〜' + res.refFeet[1] + '）');
 console.log('data URL ' + (out.url.length / 1024).toFixed(0) + 'KB → eda_' + KEY + '.txt');
+console.log('半透明の明るさ ' + res.halo.toFixed(0) + '（140以下なら白残りなし。半透明 ' + res.semiN + '画素）');
 console.log('※ 縮小は双三次（LANCZOS ではない。この環境に画像の外部部品が無いため）');
 if (res.clipped) console.log('!! 元絵が画像の縁で切れている。描き直しが要る');
