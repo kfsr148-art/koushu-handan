@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1372">
+<html lang="ja" data-ver="1373">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1160,7 +1160,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1372</div>
+  <div id="verTag">v1373</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9048,6 +9048,9 @@ window.ssReceive = function(){
   /* 体軸＝緑の重心 x の割合。横は画像の中央ではなく、この軸を立ち位置に合わせる。
      左を狙って反転させるときは 1−値 に置き換える。 */
   const EDA_AXIS = {prepare:0.514, grasp:0.552, flick:0.425, flight:0.416, action:0.448};
+  /* 待機の絵の体軸（緑の重心 x の割合）。左を向かせるときは 1−値 に置き換え、
+     そのぶん箱をずらして、画面の上では立ち位置から動かないようにする。 */
+  const EDA_IDLE_AXIS = 0.400;
   const TORI = {
     /* 速さは「画面の短辺を1としたときの毎秒の移動量」。0.30なら短辺の3割を1秒で進む。 */
     levels: [
@@ -9110,6 +9113,7 @@ window.ssReceive = function(){
   let edaNodes = null, edaDir = 'idle', edaTimers = [], edaCoolAt = 0, edaVisible = false;
   /* 豆投げ。edaCoolAt は鞭と共通の入力止めで、どちらかが動いている間は次を受けない。 */
   let nageNodes = null, nageTimers = [], nageFlip = false, bean = null;
+  let edaFacing = 1;   // 体の向き。1=右、-1=左。攻めるたびに更新し、待機の絵に効かせる
   let caught = 0, endAt = 0, lastT = 0, running = false;
   let paused = false, leftMs = 0;   // 画面が隠れている間の休止と、そのとき残っていた時間
 
@@ -9188,8 +9192,13 @@ window.ssReceive = function(){
     const w = (im.naturalWidth || EDA_SIZE[0]) * k, h = (im.naturalHeight || EDA_SIZE[1]) * k;
     im.style.width  = w + 'px';
     im.style.height = h + 'px';
-    im.style.left   = (window.innerWidth / 2 - w / 2) + 'px';
+    /* 待機だけ、直前に攻めた向きへ体を向ける。鏡に写すと体軸も裏返るので、
+       そのぶん箱をずらして立ち位置を動かさない。 */
+    const flip = (edaDir === 'idle' && edaFacing < 0);
+    const slide = flip ? 2 * (EDA_IDLE_AXIS - 0.5) * w : 0;
+    im.style.left   = (window.innerWidth / 2 - w / 2 + slide) + 'px';
     im.style.top    = (window.innerHeight / 2 - EDA_FOOT[edaDir] * k) + 'px';
+    im.style.transform = flip ? 'scaleX(-1)' : '';
   }
   /* 鞭と投げは同じ場所に立つので、出すときは両方を伏せてから一枚だけ見せる。 */
   function edaHideAll(){
@@ -9228,6 +9237,7 @@ window.ssReceive = function(){
     nageTimers = [];
     beanDrop();
     edaCoolAt = 0;
+    edaFacing = 1;
     edaVisible = on;
     edaHideAll();
     edaDir = 'idle';
@@ -9242,6 +9252,7 @@ window.ssReceive = function(){
   /* 投げる。構え → 掴む → 弾く（ここで豆が出る）→ 投げ切り → 着弾のあと戻し → 待機。 */
   function nageThrow(px, py){
     nageFlip = (px < window.innerWidth / 2);
+    edaFacing = nageFlip ? -1 : 1;
     nageTimers.forEach(clearTimeout);
     nageTimers = [];
     beanDrop();
@@ -9308,6 +9319,8 @@ window.ssReceive = function(){
     const lead = EDA_DIRS[(at + n - 1) % n].key;   // 反時計回り隣
     const hitK = EDA_DIRS[at].key;                 // 狙った向き
     const foll = EDA_DIRS[(at + 1) % n].key;       // 時計回り隣
+    if(hitK === 'r' || hitK === 'ur' || hitK === 'dr') edaFacing = 1;
+    else if(hitK === 'l' || hitK === 'ul' || hitK === 'dl') edaFacing = -1;   // u と d は変えない
     edaTimers.forEach(clearTimeout);
     edaTimers = [];
     edaFrame(lead);
