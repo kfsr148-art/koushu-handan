@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1376">
+<html lang="ja" data-ver="1377">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1164,7 +1164,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1376</div>
+  <div id="verTag">v1377</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9276,6 +9276,7 @@ window.ssReceive = function(){
   }
   /* 豆の発射。頭の高さから触点へ、直線に山なりを足して飛ばす。 */
   function beanFire(px, py){
+    toriSe('toss');
     const s = short();
     const x0 = window.innerWidth / 2, y0 = window.innerHeight / 2 - s * EDA.artRatio * EDA.beanHead;
     const dist = Math.hypot(px - x0, py - y0);
@@ -9308,6 +9309,7 @@ window.ssReceive = function(){
       birds[i].node.remove();
       birds.splice(i, 1);
       caught++;
+      toriSe('take');
       newBird(true);       // 常に規定数を保つ
       return beanEnd();
     }
@@ -9318,6 +9320,7 @@ window.ssReceive = function(){
      絵は三枚続き——狙いの反時計回り隣 → 狙い → 時計回り隣 → 待機。振りは常に時計回り。
      当たり判定に使うのは狙いの向きだけで、前後の二枚は絵として出すだけ。 */
   function edaSwing(px, py){
+    toriSe('swing');
     const deg = Math.atan2(py - window.innerHeight / 2, px - window.innerWidth / 2) * 180 / Math.PI;
     let at = 0, best = 999;
     EDA_DIRS.forEach(function(d, i){
@@ -9341,6 +9344,50 @@ window.ssReceive = function(){
     return EDA_DIRS[at].deg;
   }
 
+  /* 効果音。音源ファイルは増やさず、その場で作った波を鳴らす（探偵編の正解音と同じ作り）。
+     iOS の Safari は、画面に触れる前に作った AudioContext を止めたままにする。だから
+     難易度ボタンを押した瞬間に作り、鳴らすたびに止まっていないか見て起こし直す。
+     音が出ない端末でも遊びは止めない（全て try で包む）。 */
+  let toriAC = null;
+  function toriAudio(){
+    try{
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if(!AC) return null;
+      toriAC = toriAC || new AC();
+      if(toriAC.state === 'suspended') toriAC.resume();
+      return toriAC;
+    }catch(e){ return null; }
+  }
+  /* 一音。wait は鳴り始めの遅れ（秒）、f0 → f1 は高さの滑り。 */
+  function toriTone(type, f0, f1, wait, dur, vol){
+    const ac = toriAC;
+    if(!ac) return;
+    const t0 = ac.currentTime + 0.01 + wait;
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = type;
+    o.frequency.value = f0;
+    o.frequency.setValueAtTime(f0, t0);
+    if(f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t0 + dur);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g); g.connect(ac.destination);
+    o.start(t0); o.stop(t0 + dur + 0.02);
+  }
+  /* swing＝鞭を振り出す／take＝捕まえる／toss＝豆を放つ。音量は探偵編（0.22）より控えめ。 */
+  function toriSe(kind){
+    try{
+      if(!toriAudio()) return;
+      if(kind === 'swing'){
+        toriTone('sawtooth', 900, 300, 0, 0.09, 0.15);
+      } else if(kind === 'take'){
+        toriTone('triangle', 880, 880, 0, 0.06, 0.15);
+        toriTone('triangle', 1318.5, 1318.5, 0.06, 0.06, 0.15);
+      } else if(kind === 'toss'){
+        toriTone('triangle', 330, 330, 0, 0.07, 0.15);
+      }
+    }catch(e){}
+  }
   function panel(html){
     const p = document.getElementById('toriPanel');
     if(!p) return;
@@ -9462,6 +9509,7 @@ window.ssReceive = function(){
       birds[take].node.remove();
       birds.splice(take, 1);
       caught++;
+      toriSe('take');
       newBird(true);   // 常に規定数を保つ
       return;
     }
@@ -9568,6 +9616,7 @@ window.ssReceive = function(){
   };
   window.toriMenu = function(){ clearBirds(); edaShow(false); running = false; paused = false; menu(); };
   window.toriStart = function(key){
+    toriAudio();   // 押した指の中で作る。iOS はこれをしないと止まったままになる
     level = TORI.levels.filter(function(l){ return l.key === key; })[0] || TORI.levels[0];
     clearBirds();
     paused = false;   // 前の回の休止を持ち越さない
