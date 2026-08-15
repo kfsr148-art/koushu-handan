@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1375">
+<html lang="ja" data-ver="1376">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -565,6 +565,10 @@
   .tori-hud { position: absolute; top: 6px; left: 10px; right: 10px; z-index: 5;
     display: flex; align-items: center; gap: 12px; pointer-events: none;
     color: var(--bone); font-size: 13px; letter-spacing: .06em; text-shadow: 0 1px 3px rgba(0,0,0,.8); }
+  /* 残り時間は桁が入れ替わっても幅が動かないよう、等幅の数字で出す。
+     字の大きさは HUD のまま（高さを増やさない）。 */
+  .tori-hud #toriTime { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; letter-spacing: .08em; }
   .tori-hud .tori-close { margin-left: auto; pointer-events: auto; }
   .tori-panel { position: absolute; inset: 0; z-index: 4; display: flex; flex-direction: column;
     align-items: center; justify-content: center; gap: 14px; background: rgba(6,16,12,.86);
@@ -1160,7 +1164,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1375</div>
+  <div id="verTag">v1376</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9117,6 +9121,8 @@ window.ssReceive = function(){
   /* 豆投げ。edaCoolAt は鞭と共通の入力止めで、どちらかが動いている間は次を受けない。 */
   let nageNodes = null, nageTimers = [], nageFlip = false, bean = null;
   let edaFacing = 0;   // 体の向き。0=正面、1=右、-1=左。攻めるたびに更新し、待機の絵を選ぶ
+  const TORI_TIME_LABEL = '[TIME] ';   // 残り時間の見出し
+  let hudAt = 0;   // 残り時間を最後に書き換えた時刻（100ms ごとに更新する）
   /* 待機は三枚とも本物の絵なので、反転はしない。 */
   const edaIdleKey = () => (edaFacing > 0 ? 'idleRight' : edaFacing < 0 ? 'idleLeft' : 'idleFront');
   let caught = 0, endAt = 0, lastT = 0, running = false;
@@ -9420,7 +9426,14 @@ window.ssReceive = function(){
     const left = Math.max(0, (endAt - Date.now()) / 1000);
     const c = document.getElementById('toriCount'), tm = document.getElementById('toriTime');
     if(c) c.textContent = caught + ' / ' + level.quota + ' 羽';
-    if(tm) tm.textContent = left.toFixed(1) + ' 秒';
+    /* 残り時間は 0.1秒 を 1 と数えた三桁。開始 300、終わり 000。
+       中の制限時間（秒）は変えていない。書き換えは 100ms ごとで足りる（毎フレームは無駄）。 */
+    const now2 = Date.now();
+    if(tm && (now2 - hudAt >= 100 || left <= 0)){
+      hudAt = now2;
+      /* 切り上げ。開始の一瞬を 300 と出し、0 になったときだけ 000 にする。 */
+      tm.textContent = TORI_TIME_LABEL + String(Math.ceil(left * 10)).padStart(3, '0');
+    }
     if(caught >= level.quota) return finish(true);
     if(left <= 0) return finish(false);
     raf = requestAnimationFrame(step);
@@ -9563,6 +9576,9 @@ window.ssReceive = function(){
     edaShow(true);
     for(let i = 0; i < level.birds; i++) newBird(false);
     endAt = Date.now() + TORI.timeLimit * 1000;
+    hudAt = 0;
+    const tm0 = document.getElementById('toriTime');
+    if(tm0) tm0.textContent = TORI_TIME_LABEL + String(TORI.timeLimit * 10).padStart(3, '0');
     lastT = performance.now();
     running = true;
     raf = requestAnimationFrame(step);
