@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* 主人公の素材1枚の差し替えを一本で行う。キャラが替わっても使える名前にしてある。
      透過 → 切り出し → 本体の8枚と緑面積で大きさ合わせ → 計測 → data URL
-   使い方: node char_export.js <元絵.png> [koushu-handan.html] [向き]   向きの既定は d
+   使い方: node char_export.js <元絵.png> [koushu-handan.html] [向き] [体軸]   向きの既定は d、体軸の既定は 0.5
    出力: eda_<向き>.png（透過済み）／eda_<向き>.txt（data URL）／標準出力に埋める値
 
    画像の読み書きは headless の Edge / Chrome にやらせる（この環境には画像の外部部品が無い）。
@@ -14,13 +14,18 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const KEY = (process.argv[4] || 'd');   // 差し替える向き（idle/u/ur/r/dr/d/dl/l/ul）
+/* 体軸（0〜1）。角度の目盛りをどこを中心に重ねるかに使う。省くと画布の中央。
+   足元の重心は刃や弧に引かれるので自動では測らない。本体の EDA_WHIP_AXIS の値を渡すこと。 */
+const AXIS = (process.argv[5] !== undefined) ? Number(process.argv[5]) : 0.5;
 const WHITE = 240;        // これ以上明るい画素を白＝背景の候補とみなす
+const ALPHA = 32;         // これ以上のアルファを「絵がある」とみなす。倍率・足元・顔比の土台
+const USE_ANGLE = false;  // 角度の自動判定。剣士では刃と弧を取り違えるので止めてある
 const OUTW = 494, OUTH = 290;   // 本体に入れる画布（EDA_SIZE と同じ）
 const FOOT_WANT = 279;    // 既存8枚が揃えている足元の行（EDA_FOOT）
 
 const SRC = process.argv[2];
 const HTML = process.argv[3] || path.join(__dirname, 'koushu-handan.html');
-if (!SRC) { console.error('使い方: node char_export.js <元絵.png> [koushu-handan.html] [向き]'); process.exit(2); }
+if (!SRC) { console.error('使い方: node char_export.js <元絵.png> [koushu-handan.html] [向き] [体軸]'); process.exit(2); }
 if (!fs.existsSync(SRC)) { console.error('元絵が無い: ' + SRC); process.exit(2); }
 if (!fs.existsSync(HTML)) { console.error('本体が無い: ' + HTML); process.exit(2); }
 
@@ -58,6 +63,7 @@ const page = `<!doctype html><meta charset="utf-8"><body><script>
 const MK = '#' + 'EDA' + 'DOWN#';
 const REFS = ${JSON.stringify(refKeys.map(k => refs[k]))};
 const WHITE = ${WHITE}, OUTW = ${OUTW}, OUTH = ${OUTH}, FOOT_WANT = ${FOOT_WANT};
+const ALPHA = ${ALPHA}, USE_ANGLE = ${USE_ANGLE}, AXIS = ${AXIS};
 function load(s){ return new Promise((ok,ng)=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=ng; i.src=s; }); }
 function grab(im, w, h){
   const c = document.createElement('canvas'); c.width = w||im.naturalWidth; c.height = h||im.naturalHeight;
@@ -65,8 +71,8 @@ function grab(im, w, h){
   x.drawImage(im, 0, 0, c.width, c.height);
   return { c:c, x:x, w:c.width, h:c.height, d:x.getImageData(0,0,c.width,c.height) };
 }
-const isGreen = (d,p) => d[p+3] >= 32 && d[p+1] > d[p]+20 && d[p+1] > d[p+2]+20;
-const isSkin  = (d,p) => d[p+3] >= 32 && d[p] > 150 && d[p]-d[p+2] > 50 && d[p] >= d[p+1] && d[p+1] > d[p+2];
+/* 絵があるかどうかは色ではなくアルファで見る。主人公が替わっても通る。 */
+const isInk = (d,p) => d[p+3] >= ALPHA;
 /* 火花＝明るい黄橙。鞭の当たっている先にだけ出るので、振りの向きはこれで測る。
    肌（228,171,141 など）は黄みが足りない（G-B が 30 前後）ので、G-B で分ける。 */
 const isSpark = (d,p) => d[p+3] >= 32 && d[p] >= 200 && d[p+1]-d[p+2] >= 40 && d[p+2] <= 140;
@@ -99,19 +105,21 @@ function unmatteWhite(d){
   }
   return d;
 }
-function greenCount(g){ let n=0; const d=g.d.data;
-  for(let p=0;p<d.length;p+=4) if(isGreen(d,p)) n++; return n; }
+function inkCount(g){ let n=0; const d=g.d.data;
+  for(let p=0;p<d.length;p+=4) if(isInk(d,p)) n++; return n; }
+/* 足元＝絵のある画素が3つ以上ある、いちばん下の行。
+   足より下へ伸びる描き込み（斬撃の弧など）があるコマでは、これは足の高さと一致しない。 */
 function footRow(d,w,h){ let f=-1;
   for(let y=0;y<h;y++){ let n=0;
-    for(let x=0;x<w;x++) if(isGreen(d,(y*w+x)*4)) n++;
+    for(let x=0;x<w;x++) if(isInk(d,(y*w+x)*4)) n++;
     if(n>=3) f=y; }
   return f; }
-/* 顔比 ＝ 頭の幅 ÷ 全身の高さ。肌色は使わない。
-   全身の高さは緑の上端から下端まで、頭はその上から5分の1の帯で、緑がいちばん広い行の幅。 */
+/* 顔比 ＝ 頭の幅 ÷ 全身の高さ。色は使わない。
+   全身の高さは絵の上端から下端まで、頭はその上から5分の1の帯で、いちばん広い行の幅。 */
 function faceRatio(d,w,h){
   let top=-1, bottom=-1;
   for(let y=0;y<h;y++){
-    for(let x=0;x<w;x++){ if(isGreen(d,(y*w+x)*4)){ if(top<0) top=y; bottom=y; break; } }
+    for(let x=0;x<w;x++){ if(isInk(d,(y*w+x)*4)){ if(top<0) top=y; bottom=y; break; } }
   }
   if(top<0) return null;
   const height = bottom - top + 1;
@@ -119,7 +127,7 @@ function faceRatio(d,w,h){
   let head = 0;
   for(let y=top;y<top+band;y++){
     let left=-1, right=-1;
-    for(let x=0;x<w;x++) if(isGreen(d,(y*w+x)*4)){ if(left<0) left=x; right=x; }
+    for(let x=0;x<w;x++) if(isInk(d,(y*w+x)*4)){ if(left<0) left=x; right=x; }
     if(left>=0) head = Math.max(head, right - left + 1);
   }
   return { ratio: head/height, head:head, height:height, top:top, bottom:bottom };
@@ -132,7 +140,7 @@ function measure(d,w,h){
     const x=p%w, y=(p-x)/w;
     if(top<0) top=y;
     alphaBottom = y;
-    if(isGreen(d,q)||isSkin(d,q)){ gx+=x; gy+=y; gn++; }
+    if(isInk(d,q)){ gx+=x; gy+=y; gn++; }
     if(isSpark(d,q)){ wx+=x; wy+=y; wn++; }
     if(isGrey(d,q)){ cxg+=x; cyg+=y; cn++; }
   }
@@ -140,13 +148,16 @@ function measure(d,w,h){
   const bodyC = gn ? [gx/gn, gy/gn] : [w/2, h/2];
   const height = fr ? fr.height : (alphaBottom - top + 1);
   const head = fr ? fr.head : -1;
-  /* 火花があればそれで、無ければ鎖で向きを測る。どちらで測ったかも返す。 */
-  const from = wn >= 20 ? '火花' : (cn >= 40 ? '鎖' : '測れず');
+  /* 角度の自動判定は止めてある（USE_ANGLE=false）。刃と弧を色で見分けられないため、
+     目盛りを重ねた確認画像を出して目で読む。以下の判定はそのために残してある。 */
+  const from = !USE_ANGLE ? '止めてある'
+    : (wn >= 20 ? '火花' : (cn >= 40 ? '鎖' : '測れず'));
   const tx = from === '火花' ? wx/wn : (from === '鎖' ? cxg/cn : 0);
   const ty = from === '火花' ? wy/wn : (from === '鎖' ? cyg/cn : 0);
   return { top:top, alphaBottom:alphaBottom, foot:footRow(d,w,h), height:height,
            head:head, headRatio: fr ? fr.ratio : -1, sparks:wn, chain:cn, from:from,
-           ang: from === '測れず' ? NaN : Math.atan2(-(ty - bodyC[1]), (tx - bodyC[0])) * 180 / Math.PI };
+           ang: (from === '測れず' || from === '止めてある') ? NaN
+                : Math.atan2(-(ty - bodyC[1]), (tx - bodyC[0])) * 180 / Math.PI };
 }
 
 (async function(){
@@ -214,15 +225,15 @@ function measure(d,w,h){
     const cut = document.createElement('canvas'); cut.width = cw; cut.height = ch;
     cut.getContext('2d').drawImage(g.c, x0, y0, cw, ch, 0, 0, cw, ch);
 
-    /* ---------- 3. 本体の8枚と緑面積で大きさを合わせる ---------- */
+    /* ---------- 3. 本体の他の絵と面積で大きさを合わせる ---------- */
     const areas = [];
-    for(const u of REFS){ const r = grab(await load(u)); areas.push(greenCount(r)); }
+    for(const u of REFS){ const r = grab(await load(u)); areas.push(inkCount(r)); }
     areas.sort((a,b)=>a-b);
     const refGreen = areas.length % 2 ? areas[(areas.length-1)/2]
                    : Math.round((areas[areas.length/2-1] + areas[areas.length/2]) / 2);
     const cutG = grab(cut, cw, ch);
-    const myGreen = greenCount(cutG);
-    if(!myGreen) throw new Error('緑が見つからない（元絵の色が違う）');
+    const myGreen = inkCount(cutG);
+    if(!myGreen) throw new Error('絵が見つからない（全部が背景と判定された）');
     const scale = Math.sqrt(refGreen / myGreen);
     const sw = Math.max(1, Math.round(cw * scale)), sh = Math.max(1, Math.round(ch * scale));
     const small = document.createElement('canvas'); small.width = sw; small.height = sh;
@@ -262,6 +273,52 @@ function measure(d,w,h){
                 refRatio:[ratios[0], ratios[ratios.length-1]],
                 refFeet:[Math.min.apply(null, refM.map(r=>r.foot)), Math.max.apply(null, refM.map(r=>r.foot))],
                 refAng:[Math.min.apply(null, angs), Math.max.apply(null, angs)] };
+    /* 元絵のままの足元。いまの本体は素材を実寸で使うので、EDA_FOOT に入れるのはこちら。 */
+    const cutFoot = footRow(cutG.d.data, cw, ch);
+    out.res.srcFoot = cutFoot;
+
+    /* ---------- 6. 確認画像（角度の目盛り／暗地／白地） ---------- */
+    const PAD = 12, GAP = 10, LBL = 26;
+    const cv3 = document.createElement('canvas');
+    cv3.width = PAD * 2 + OUTW * 3 + GAP * 2; cv3.height = PAD * 2 + OUTH + LBL;
+    const c3 = cv3.getContext('2d');
+    c3.fillStyle = '#ffffff'; c3.fillRect(0, 0, cv3.width, cv3.height);
+    const panes = [['#0d1b16', '角度の目盛り（本番の背景）'],
+                   ['#0d1b16', '本番の暗い背景'],
+                   ['#ffffff', '白地']];
+    panes.forEach(function(pn, i){
+      const ox = PAD + i * (OUTW + GAP);
+      c3.fillStyle = pn[0]; c3.fillRect(ox, PAD, OUTW, OUTH);
+      c3.drawImage(fin, ox, PAD);
+      c3.strokeStyle = '#999'; c3.lineWidth = 1; c3.strokeRect(ox + 0.5, PAD + 0.5, OUTW - 1, OUTH - 1);
+      c3.fillStyle = '#000'; c3.font = '13px monospace'; c3.textAlign = 'center';
+      c3.fillText(pn[1], ox + OUTW / 2, PAD + OUTH + 18);
+    });
+    /* いちばん左に目盛りを重ねる。中心は立ち位置（画布の中央 x、足元の行 y）。 */
+    (function(){
+      const ox = PAD, cx0 = ox + dx + AXIS * sw, cy0 = PAD + FOOT_WANT, R = Math.min(OUTW, OUTH) * 0.46;
+      c3.save();
+      c3.strokeStyle = 'rgba(255,255,255,.30)'; c3.lineWidth = 1;
+      c3.beginPath(); c3.arc(cx0, cy0, R, 0, Math.PI * 2); c3.stroke();
+      for(let deg = -180; deg < 180; deg += 15){
+        const rad = deg * Math.PI / 180;
+        const big = (deg % 45 === 0);
+        c3.strokeStyle = big ? 'rgba(255,210,120,.85)' : 'rgba(255,255,255,.22)';
+        c3.beginPath();
+        c3.moveTo(cx0 + Math.cos(rad) * (big ? 0 : R * 0.86), cy0 + Math.sin(rad) * (big ? 0 : R * 0.86));
+        c3.lineTo(cx0 + Math.cos(rad) * R, cy0 + Math.sin(rad) * R);
+        c3.stroke();
+        if(big){
+          c3.fillStyle = '#ffd27a'; c3.font = '11px monospace';
+          c3.textAlign = 'center'; c3.textBaseline = 'middle';
+          c3.fillText((-deg) + '°', cx0 + Math.cos(rad) * (R + 12), cy0 + Math.sin(rad) * (R + 12));
+        }
+      }
+      c3.fillStyle = '#ff6060';
+      c3.beginPath(); c3.arc(cx0, cy0, 3, 0, Math.PI * 2); c3.fill();
+      c3.restore();
+    })();
+    out.check = cv3.toDataURL('image/png');
     out.url = fin.toDataURL('image/png');
   }catch(e){ out.err = String(e && e.message || e); }
   const v = document.createElement('div'); v.id = 'OUT';
@@ -287,14 +344,18 @@ const res = out.res;
 const png = Buffer.from(out.url.split(',')[1], 'base64');
 fs.writeFileSync('eda_' + KEY + '.png', png);
 fs.writeFileSync('eda_' + KEY + '.txt', out.url);
+if (out.check) fs.writeFileSync('eda_' + KEY + '_check.png',
+  Buffer.from(out.check.split(',')[1], 'base64'));
 
 console.log('元絵 ' + res.srcSize.join('x') + ' → 切り出し ' + res.cut.join('x')
   + '（x' + res.cutAt[0] + ' y' + res.cutAt[1] + ' から） → 出力 ' + res.small.join('x'));
-console.log('緑の面積 ' + res.myGreen + ' → 基準 ' + res.refGreen
+console.log('絵の面積 ' + res.myGreen + ' → 基準 ' + res.refGreen
   + '（本体の' + refKeys.length + '枚の中央値） 倍率 ' + res.scale.toFixed(4));
 console.log('置いた位置 x=' + res.at[0] + ' y=' + res.at[1] + ' ／ 画布 ' + OUTW + 'x' + OUTH);
 out.note.forEach(n => console.log('  ※ ' + n));
-console.log(res.from === '測れず'
+console.log(res.from === '止めてある'
+  ? '角度 自動判定は止めてある（刃と弧を取り違えるため）。目盛りつきの確認画像で目で読むこと'
+  : res.from === '測れず'
   ? '角度 測れず（火花 ' + res.sparks + '画素・鎖 ' + res.chain + '画素。待機は火花がないので無視してよい）'
   : '角度 ' + res.ang.toFixed(1) + '度 （真下なら -70〜-110。' + res.from + ' '
     + (res.from === '火花' ? res.sparks : res.chain) + '画素で測った'
@@ -306,5 +367,7 @@ console.log('EDA_FOOT.' + KEY + ' に入れる値: ' + res.foot
   + ' （本体の' + refKeys.length + '枚は ' + res.refFeet[0] + '〜' + res.refFeet[1] + '）');
 console.log('data URL ' + (out.url.length / 1024).toFixed(0) + 'KB → eda_' + KEY + '.txt');
 console.log('半透明の明るさ ' + res.halo.toFixed(0) + '（140以下なら白残りなし。半透明 ' + res.semiN + '画素）');
+console.log('元絵での足元 ' + res.srcFoot + '（実寸で使うなら EDA_FOOT に入れるのはこの値）');
+console.log('確認画像 → eda_' + KEY + '_check.png（左＝角度の目盛り／中＝本番の暗地／右＝白地）');
 console.log('※ 縮小は双三次（LANCZOS ではない。この環境に画像の外部部品が無いため）');
 if (res.clipped) console.log('!! 元絵が画像の縁で切れている。描き直しが要る');
