@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1368">
+<html lang="ja" data-ver="1369">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1160,7 +1160,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1368</div>
+  <div id="verTag">v1369</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9078,8 +9078,10 @@ window.ssReceive = function(){
     artRatio:   0.40,  // 立ち絵の高さ（短辺に対する割合）
     reachRatio: 0.35,  // 鞭が届く距離（短辺に対する割合）
     fanDeg:     30,    // 振った向きから左右何度までを扇とみなすか
-    swingTime:  180,   // 振りの絵を出している時間（ミリ秒）
-    coolTime:   250    // 次に振れるまで（ミリ秒）
+    leadTime:    90,   // 反時計回り隣の絵を出す時間（ミリ秒）
+    hitTime:    160,   // 狙った向きの絵を出す時間（ミリ秒）
+    followTime: 110,   // 時計回り隣の絵を出す時間（ミリ秒）
+    coolTime:   360    // 次に振れるまで（ミリ秒）。三枚の合計
   };
   /* 振りの向き。角度は画面座標（右が0度、下が正）。 */
   const EDA_DIRS = [
@@ -9088,7 +9090,7 @@ window.ssReceive = function(){
   ];
 
   let el = null, birds = [], raf = 0, level = null;
-  let edaNode = null, edaDir = 'idle', edaBackTimer = 0, edaCoolAt = 0;
+  let edaNodes = null, edaDir = 'idle', edaTimers = [], edaCoolAt = 0, edaVisible = false;
   let caught = 0, endAt = 0, lastT = 0, running = false;
   let paused = false, leftMs = 0;   // 画面が隠れている間の休止と、そのとき残っていた時間
 
@@ -9122,12 +9124,22 @@ window.ssReceive = function(){
       });
     }
     /* 枝豆は鳥より先に置く。DOM の順で鳥が後になり、鳥は枝豆の上を通れる。
-       当たり判定は持たせない（pointer-events は CSS で切ってある）。 */
-    edaNode = document.createElement('img');
-    edaNode.className = 'tori-eda';
-    edaNode.alt = '';
-    edaNode.src = EDA_WHIP.idle;
-    root.appendChild(edaNode);
+       当たり判定は持たせない（pointer-events は CSS で切ってある）。
+       九枚を最初に全部置き、コマ送りは display の切り替えだけで行う。
+       src を書き換える形だと、読み込みが間に合わずコマが飛ぶ。 */
+    edaNodes = {};
+    Object.keys(EDA_WHIP).forEach(function(k){
+      const im = document.createElement('img');
+      im.className = 'tori-eda';
+      im.alt = '';
+      im.src = EDA_WHIP[k];
+      im.style.display = 'none';
+      im.decoding = 'sync';
+      root.appendChild(im);
+      /* 置くだけでは絵の展開は初回表示のときになり、一枚目のコマが飛ぶ。先に展開させておく。 */
+      if(im.decode) im.decode().catch(function(){});
+      edaNodes[k] = im;
+    });
     el = root;
     return root;
   }
@@ -9136,43 +9148,55 @@ window.ssReceive = function(){
   /* 枝豆を画面中央に立たせる。絵の下端ではなく EDA_FOOT の行を床（立ち位置の y）に合わせる。
      足元の行は絵ごとに違うので、向きを変えるたびに置き直す。 */
   function edaPlace(){
-    if(!edaNode) return;
+    const im = edaNodes && edaNodes[edaDir];
+    if(!im) return;
     const h = short() * EDA.artRatio, k = h / EDA_SIZE[1], w = EDA_SIZE[0] * k;
-    edaNode.style.width  = w + 'px';
-    edaNode.style.height = h + 'px';
-    edaNode.style.left   = (window.innerWidth / 2 - w / 2) + 'px';
-    edaNode.style.top    = (window.innerHeight / 2 - EDA_FOOT[edaDir] * k) + 'px';
+    im.style.width  = w + 'px';
+    im.style.height = h + 'px';
+    im.style.left   = (window.innerWidth / 2 - w / 2) + 'px';
+    im.style.top    = (window.innerHeight / 2 - EDA_FOOT[edaDir] * k) + 'px';
   }
-  /* 振りの絵から idle へ戻す。戻しは単発のタイマーで持つ（描き直しの輪が止まっても振り姿で固まらない）。 */
-  function edaIdle(){
-    edaDir = 'idle';
-    if(edaNode) edaNode.src = EDA_WHIP.idle;
+  /* 出す絵を切り替える。九枚は最初から置いてあるので、見せる一枚を選ぶだけ。 */
+  function edaFrame(key){
+    if(!edaNodes || !edaNodes[key]) return;
+    if(edaVisible) Object.keys(edaNodes).forEach(function(k){ edaNodes[k].style.display = 'none'; });
+    edaDir = key;
     edaPlace();
+    if(edaVisible) edaNodes[key].style.display = 'block';
   }
   function edaShow(on){
-    if(!edaNode) return;
-    clearTimeout(edaBackTimer);
-    edaBackTimer = 0;
+    if(!edaNodes) return;
+    edaTimers.forEach(clearTimeout);
+    edaTimers = [];
     edaCoolAt = 0;
-    edaIdle();
-    edaNode.style.display = on ? 'block' : 'none';
+    edaVisible = on;
+    Object.keys(edaNodes).forEach(function(k){ edaNodes[k].style.display = 'none'; });
+    edaDir = 'idle';
+    edaPlace();
+    if(on) edaNodes.idle.style.display = 'block';
   }
-  /* 鞭を振る。中央から触点への角度を八方位に丸め、その向きの絵へ差し替える。
-     idle へ戻すのと、次に振れるようになる時刻は step が見る。返すのは振った向きの角度。 */
+  /* 鞭を振る。中央から触点への角度を八方位に丸め、その向きを狙いとする。
+     絵は三枚続き——狙いの反時計回り隣 → 狙い → 時計回り隣 → 待機。振りは常に時計回り。
+     当たり判定に使うのは狙いの向きだけで、前後の二枚は絵として出すだけ。 */
   function edaSwing(px, py){
     const deg = Math.atan2(py - window.innerHeight / 2, px - window.innerWidth / 2) * 180 / Math.PI;
-    let pick = EDA_DIRS[0], best = 999;
-    EDA_DIRS.forEach(function(d){
+    let at = 0, best = 999;
+    EDA_DIRS.forEach(function(d, i){
       const gap = Math.abs(((d.deg - deg + 540) % 360) - 180);
-      if(gap < best){ best = gap; pick = d; }
+      if(gap < best){ best = gap; at = i; }
     });
-    edaDir = pick.key;
-    edaNode.src = EDA_WHIP[pick.key];
-    edaPlace();
-    clearTimeout(edaBackTimer);
-    edaBackTimer = setTimeout(edaIdle, EDA.swingTime);
+    const n = EDA_DIRS.length;
+    const lead = EDA_DIRS[(at + n - 1) % n].key;   // 反時計回り隣
+    const hitK = EDA_DIRS[at].key;                 // 狙った向き
+    const foll = EDA_DIRS[(at + 1) % n].key;       // 時計回り隣
+    edaTimers.forEach(clearTimeout);
+    edaTimers = [];
+    edaFrame(lead);
+    edaTimers.push(setTimeout(function(){ edaFrame(hitK); }, EDA.leadTime));
+    edaTimers.push(setTimeout(function(){ edaFrame(foll); }, EDA.leadTime + EDA.hitTime));
+    edaTimers.push(setTimeout(function(){ edaFrame('idle'); }, EDA.leadTime + EDA.hitTime + EDA.followTime));
     edaCoolAt = Date.now() + EDA.coolTime;
-    return pick.deg;
+    return EDA_DIRS[at].deg;
   }
 
   function panel(html){
