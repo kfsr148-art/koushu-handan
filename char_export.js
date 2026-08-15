@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-/* 枝豆のムチ・素材1枚の差し替えを一本で行う。
+/* 主人公の素材1枚の差し替えを一本で行う。キャラが替わっても使える名前にしてある。
      透過 → 切り出し → 本体の8枚と緑面積で大きさ合わせ → 計測 → data URL
-   使い方: node eda_down.js <元絵.png> [koushu-handan.html] [向き]   向きの既定は d
+   使い方: node char_export.js <元絵.png> [koushu-handan.html] [向き]   向きの既定は d
    出力: eda_<向き>.png（透過済み）／eda_<向き>.txt（data URL）／標準出力に埋める値
 
    画像の読み書きは headless の Edge / Chrome にやらせる（この環境には画像の外部部品が無い）。
@@ -20,7 +20,7 @@ const FOOT_WANT = 279;    // 既存8枚が揃えている足元の行（EDA_FOOT
 
 const SRC = process.argv[2];
 const HTML = process.argv[3] || path.join(__dirname, 'koushu-handan.html');
-if (!SRC) { console.error('使い方: node eda_down.js <元絵.png> [koushu-handan.html] [向き]'); process.exit(2); }
+if (!SRC) { console.error('使い方: node char_export.js <元絵.png> [koushu-handan.html] [向き]'); process.exit(2); }
 if (!fs.existsSync(SRC)) { console.error('元絵が無い: ' + SRC); process.exit(2); }
 if (!fs.existsSync(HTML)) { console.error('本体が無い: ' + HTML); process.exit(2); }
 
