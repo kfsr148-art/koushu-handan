@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1386">
+<html lang="ja" data-ver="1387">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -560,6 +560,8 @@
   .tori-overlay.show { display: block; }
   .tori-bird { position: absolute; will-change: transform; pointer-events: none; }
   /* 床の影。楕円ひとつだけ。画像は持たない。剣士より下に敷く。 */
+  /* 撒いた星と、連続切りの金の粒。どちらも既にある飛ぶ星の絵を使い回す（画像は増やさない）。 */
+  .tori-star, .tori-spark { position: absolute; display: none; pointer-events: none; }
   .tori-shadow { position: absolute; display: none; pointer-events: none;
     border-radius: 50%; background: rgba(0,0,0,.38); filter: blur(2px); }
   /* 枝豆の鞭。当たり判定は持たない（鳥は上を通り抜ける）。点で描かれた絵なので拡大は補間しない。 */
@@ -1173,7 +1175,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1386</div>
+  <div id="verTag">v1387</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9152,6 +9154,11 @@ window.ssReceive = function(){
     rushColor: '#e0392b',   // 残り時間の数字の色
     rushSpeed:  1.2,    // 鳥の速さの倍率（旋回と羽数は変えない）
     rushPitch: 1.25,    // 捕獲音の周波数の倍率（音源は増やさない）
+    /* 星撒きが発動した瞬間の「小さな鈴」。受付の開閉では鳴らさない。 */
+    bellHz: [1568, 2093, 2637],
+    bellStep: 0.020,    // 重ねるときのずらし（秒）
+    bellDur:  0.12,     // 一音の長さ（秒）
+    bellVol:  0.05,     // 一音の音量
     /* ここから BGM。 */
     bpm: { easy:120, normal:132, hard:144 },   // 難易度ごとのテンポ
     rushTempo: 1.15,    // 追い込みでのテンポの倍率
@@ -9224,7 +9231,20 @@ window.ssReceive = function(){
     shadowW:   0.55,   // 地上での横幅（体の高さに対する割合）
     shadowH:   0.22,   // 横幅に対する縦の割合
     shadowMinScale: 0.5,   // 頂点での大きさの倍率
-    shadowMinAlpha: 0.5    // 頂点での濃さの倍率
+    shadowMinAlpha: 0.5,   // 頂点での濃さの倍率
+    /* ここから空中の連続切りと星撒き。段は一系統で、着地したら0へ戻る。 */
+    airComboMax:   5,      // 段の上限
+    airComboSemi:  1.0595, // 一段ぶんの周波数の倍率（半音）
+    airHangMs:     250,    // 空中で捕らえたとき、落下が止まる時間（ミリ秒）
+    sparkMs:       120,    // 金の粒を出している時間（ミリ秒）
+    sparkScale:    0.333,  // 金の粒の大きさ（飛ぶ星に対する割合）
+    sparkSpread:   0.10,   // 金の粒が散る距離（短辺に対する割合）
+    scatterWin:    300,    // 星撒きを受け付ける時間（ミリ秒）
+    scatterN:      8,      // 撒く星の数（八方向）
+    scatterDist:   0.55,   // 星の飛ぶ距離（短辺に対する割合）
+    scatterMs:     260,    // 星の飛ぶ時間（ミリ秒）。距離が一定なので時間も一定
+    scatterHitPx:  26,     // 星と鳥がこの距離まで近づいたら捕まえる
+    scatterStep:   30      // 同時に当たったときの発音のずらし（ミリ秒）
   };
   /* 立ち位置の三つのゾーン。画面の幅を三等分した、それぞれの中心。 */
   const ZONE_X = [0.25, 0.50, 0.75];
@@ -9256,6 +9276,10 @@ window.ssReceive = function(){
      airSlashUntil の間だけ空中切りの絵を出す（向きは左右のみ）。 */
   let jumping = false, jumpAt = 0, jumpFace = 1, airSlashUntil = 0;
   let shadowNode = null;
+  /* 空中の段は一系統。連続切りの粒の数も、捕獲音の高さも、ここを見る。
+     scatterUntil は星撒きを受け付けている間。hangUntil の間は落下が止まる。 */
+  let airCombo = 0, scatterUntil = 0, hangUntil = 0;
+  let starNodes = null, starFly = [], sparkNodes = null, sparkTimer = 0;
   /* 仰け反り。溜める指は一つだけ持つ（何度触れても、明けて出るのは1回）。 */
   let recoilUntil = 0, invulnUntil = 0, queuedTap = null;
   /* 縦向きの見張り。ミニゲームだけ横画面専用にする（本体は縦のまま）。
@@ -9377,6 +9401,20 @@ window.ssReceive = function(){
       if(im.decode) im.decode().catch(function(){});
       nageNodes[k] = im;
     });
+    /* 撒く星と金の粒を先に置く。絵は飛ぶ星（EDA_NAGE.tama）の使い回し。 */
+    starNodes = []; sparkNodes = [];
+    for(let i = 0; i < EDA.scatterN; i++){
+      const im = document.createElement('img');
+      im.className = 'tori-star'; im.alt = ''; im.src = EDA_NAGE.tama;
+      im.style.display = 'none'; im.decoding = 'sync';
+      root.appendChild(im); starNodes.push(im);
+    }
+    for(let i = 0; i < EDA.airComboMax; i++){
+      const im = document.createElement('img');
+      im.className = 'tori-spark'; im.alt = ''; im.src = EDA_NAGE.tama;
+      im.style.display = 'none'; im.decoding = 'sync';
+      root.appendChild(im); sparkNodes.push(im);
+    }
     el = root;
     return root;
   }
@@ -9485,6 +9523,8 @@ window.ssReceive = function(){
     moving = false; zoneIdx = 1; moveFrom = 1; moveTo = 1;   // 開始は中央のゾーン
     breathUntil = 0;
     jumping = false; airSlashUntil = 0;
+    airCombo = 0; scatterUntil = 0; hangUntil = 0;
+    starDrop();
     joyStop();
     frozen = false; introing = false;
     slashDone = false; goldDone = false; goldUntil = 0;
@@ -9707,12 +9747,28 @@ window.ssReceive = function(){
     o.start(t0); o.stop(t0 + dur + 0.02);
   }
   /* swing＝鞭を振り出す／take＝捕まえる／toss＝豆を放つ。音量は探偵編（0.22）より控えめ。 */
+  /* 捕獲音。空中の段のぶんだけ半音ずつ上げ、同時に当たったぶんはずらして鳴らす。
+     追い込みの倍率も掛かる（地上・空中とも捕獲音は同じ扱い）。 */
+  function toriSeTake(step, waitSec){
+    try{
+      if(!seAllowed()) return;
+      if(!toriAudio()) return;
+      const p = (rushOn ? TORI.rushPitch : 1) * Math.pow(EDA.airComboSemi, Math.max(0, step));
+      toriTone('triangle', 880 * p, 880 * p, waitSec, 0.06, 0.15);
+      toriTone('triangle', 1318.5 * p, 1318.5 * p, waitSec + 0.06, 0.06, 0.15);
+    }catch(e){}
+  }
   function toriSe(kind){
     try{
       if(!seAllowed()) return;   // 切られていたら、波を作る処理に入らない
       if(!toriAudio()) return;
       if(kind === 'swing'){
         toriTone('sawtooth', 900, 300, 0, 0.09, 0.15);
+      } else if(kind === 'bell'){
+        /* 星撒きが発動した瞬間の小さな鈴。三つを少しずつずらして重ねる。 */
+        TORI.bellHz.forEach(function(hz, i){
+          toriTone('triangle', hz, hz, i * TORI.bellStep, TORI.bellDur, TORI.bellVol);
+        });
       } else if(kind === 'take'){
         /* 追い込みの間だけ高くする。音源は増やさず、同じ二音の周波数を掛けるだけ。 */
         const p = rushOn ? TORI.rushPitch : 1;
@@ -9804,7 +9860,8 @@ window.ssReceive = function(){
   }
   /* 一羽捕らえる。剣・星・走り斬りのどれもここを通る。
      金の一羽だけは goldWorth 羽ぶんとして数える。 */
-  function takeBird(i){
+  /* waitSec を渡すと、その秒だけ遅らせて鳴らす（星撒きで同時に当たったとき用）。 */
+  function takeBird(i, waitSec){
     const b = birds[i];
     if(!b) return;
     const add = b.gold ? TORI.goldWorth : 1;
@@ -9812,8 +9869,92 @@ window.ssReceive = function(){
     b.node.remove();
     birds.splice(i, 1);
     caught += add;
-    toriSe('take');
+    let step = 0;
+    if(jumping){
+      /* 空中で捕らえた。段を一つ上げ、落下を止め、星撒きの受付を開く。
+         受付が開くときには音を鳴らさない（鳴るのは発動の瞬間だけ）。 */
+      airCombo = Math.min(airCombo + 1, EDA.airComboMax);
+      step = airCombo - 1;
+      hangUntil = Date.now() + EDA.airHangMs;
+      scatterUntil = Date.now() + EDA.scatterWin;
+      if(airCombo >= 2) sparkShow(airCombo);
+    }
+    toriSeTake(step, waitSec || 0);
     newBird(true, b.high);   // 常に規定数を保つ。高い鳥の枠も一羽のまま
+  }
+  /* 空中の連続切りの金の粒。段と同じ数を放射状に散らす。当たり判定は持たない。 */
+  function sparkShow(n){
+    if(!sparkNodes) return;
+    if(sparkTimer) clearTimeout(sparkTimer);
+    const s = short(), cx = edaCX(), cy = edaCY() - jumpLift();
+    const w = 18 * EDA.sparkScale, r = s * EDA.sparkSpread;
+    sparkNodes.forEach(function(im, i){
+      if(i >= n){ im.style.display = "none"; return; }
+      const a = (-90 + i * (360 / n)) * Math.PI / 180;
+      const h = w * (im.naturalHeight / (im.naturalWidth || 1));
+      im.style.width = w + "px";
+      im.style.height = h + "px";
+      im.style.left = (cx + Math.cos(a) * r - w / 2) + "px";
+      im.style.top  = (cy + Math.sin(a) * r - h / 2) + "px";
+      im.style.display = "block";
+    });
+    sparkTimer = setTimeout(function(){
+      sparkTimer = 0;
+      sparkNodes.forEach(function(im){ im.style.display = "none"; });
+    }, EDA.sparkMs);
+  }
+  /* 星撒き。八方向へ均一に、同時に、直線で飛ばす。画面は止めない。
+     一つの星は一羽捕らえたらそこで消える。飛び切った星はそのまま消す（逃走処理は呼ばない）。 */
+  function scatterGo(){
+    if(!starNodes) return;
+    scatterUntil = 0;
+    toriSe('bell');
+    const s = short(), cx = edaCX(), cy = edaCY() - jumpLift();
+    const dist = s * EDA.scatterDist, now = Date.now();
+    starFly = [];
+    starNodes.forEach(function(im, i){
+      const a = (i * (360 / EDA.scatterN)) * Math.PI / 180;
+      const tw = 18, th = tw * (im.naturalHeight / (im.naturalWidth || 1));
+      im.style.width = tw + "px";
+      im.style.height = th + "px";
+      im.style.display = "block";
+      starFly.push({ node:im, x0:cx, y0:cy,
+        x1: cx + Math.cos(a) * dist, y1: cy + Math.sin(a) * dist, t0: now });
+    });
+  }
+  /* 飛んでいる星の始末。毎フレーム呼び、鳥に届いていれば捕まえる。 */
+  function starStep(){
+    if(!starFly.length) return;
+    const now = Date.now();
+    let order = 0;
+    for(let k = starFly.length - 1; k >= 0; k--){
+      const st = starFly[k];
+      const t = Math.min(1, (now - st.t0) / EDA.scatterMs);
+      const x = st.x0 + (st.x1 - st.x0) * t;   // 山なりにせず直線
+      const y = st.y0 + (st.y1 - st.y0) * t;
+      const w = st.node.offsetWidth || 0, h = st.node.offsetHeight || 0;
+      st.node.style.left = (x - w / 2) + "px";
+      st.node.style.top  = (y - h / 2) + "px";
+      let hit = -1;
+      for(let i = 0; i < birds.length; i++){
+        if(Math.hypot(birds[i].x - x, birds[i].y - y) < EDA.scatterHitPx){ hit = i; break; }
+      }
+      if(hit >= 0){
+        takeBird(hit, order * (EDA.scatterStep / 1000));   // 当たった順に少しずつずらす
+        order++;
+        st.node.style.display = "none";
+        starFly.splice(k, 1);
+        continue;
+      }
+      if(t >= 1){ st.node.style.display = "none"; starFly.splice(k, 1); }
+    }
+  }
+  function starDrop(){
+    starFly = [];
+    if(starNodes) starNodes.forEach(function(im){ im.style.display = "none"; });
+    if(sparkNodes) sparkNodes.forEach(function(im){ im.style.display = "none"; });
+    if(sparkTimer) clearTimeout(sparkTimer);
+    sparkTimer = 0;
   }
   function speedNow(){
     /* 追い込みの間だけ速くする。旋回の速さと同時に出る羽数は変えない。 */
@@ -9871,7 +10012,10 @@ window.ssReceive = function(){
       }
       movePrevX = nowX;
     }
+    /* 空中で捕らえた直後は落下が止まる。跳び始めの時刻を押し戻して山を止める。 */
+    if(jumping && Date.now() < hangUntil) jumpAt += dt * 1000;
     if(jumping) airFrame();   // 上昇→（振れば空中切り）→降下
+    starStep();               // 撒いた星を進め、鳥に届いていれば捕まえる
     edaPlace();   // 立ち位置は毎回置き直す（画面の回転や寸法の変化にも追随する）
     if(!frozen) beanStep();   // 飛んでいる豆を進め、鳥に届いていれば捕まえる（凍結中は進めない）
     /* 凍結の間は時計を進めない。残りを毎回押し戻して、表示も止める。 */
@@ -9974,7 +10118,6 @@ window.ssReceive = function(){
     edaTimers = [];
     edaCoolAt = 0;
     airFrame();
-    edaTimers.push(setTimeout(function(){ jumpLand(); }, EDA.jumpMs));
   }
   /* 空中の一コマを選ぶ。振っている間は空中切り、それ以外は上昇か降下。 */
   function airFrame(){
@@ -9982,6 +10125,7 @@ window.ssReceive = function(){
     const now = Date.now();
     const t = (now - jumpAt) / EDA.jumpMs;
     let key;
+    if(t >= 1){ jumpLand(); return; }   // 落下停止を跨いでも、山を下り切ったところで着地
     if(now < airSlashUntil) key = (jumpFace < 0) ? 'airSlashL' : 'airSlashR';
     else if(t < 0.5)        key = (jumpFace < 0) ? 'airUpL'    : 'airUpR';
     else                    key = (jumpFace < 0) ? 'airDownL'  : 'airDownR';
@@ -9989,6 +10133,9 @@ window.ssReceive = function(){
   }
   function jumpLand(){
     jumping = false;
+    airCombo = 0;        // 段は着地で0へ戻る
+    scatterUntil = 0;
+    hangUntil = 0;
     airSlashUntil = 0;
     edaCoolAt = 0;
     edaFrame(edaIdleKey());   // 息切れは入れない
@@ -10106,6 +10253,8 @@ window.ssReceive = function(){
   }
   /* 触れた点の始末。鞭を振り、届く範囲の扇に入った一羽を捕る。外れれば近くの一羽が逃げる。 */
   function hit(px, py){
+    /* 空中で1羽捕らえた直後の受付の間に叩いたら、剣ではなく星撒き。 */
+    if(jumping && Date.now() < scatterUntil){ scatterGo(); return; }
     if(portraitHold) return;   // 縦の間は受け付けない
     if(moving) return;         // 走っている間は受け付けない
     if(frozen) return;         // 走り込みと喜ぶ動きの間は受け付けない
@@ -10124,7 +10273,6 @@ window.ssReceive = function(){
       airSlashUntil = Date.now() + EDA.airSlashMs;
       edaTimers.forEach(clearTimeout);
       edaTimers = [];
-      edaTimers.push(setTimeout(function(){ jumpLand(); }, Math.max(0, EDA.jumpMs - (Date.now() - jumpAt))));
       airFrame();
     }
     /* 捕れるのは、立ち位置から reachRatio の内で、振った向きの ±fanDeg の扇に入る鳥。
