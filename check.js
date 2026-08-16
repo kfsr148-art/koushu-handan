@@ -51,6 +51,8 @@ if (!fs.existsSync(HTML_PATH)) {
   process.exit(2);
 }
 const src = fs.readFileSync(HTML_PATH, 'utf8');
+/* 剣士の足元の高さ（画面の高さに対する割合）。⑦の toriend は、この線を基準に叩かないと剣が届かない。 */
+const FLOOR_RATIO = Number((src.match(/floorRatio:\s*([0-9.]+)/) || [])[1] || 0.5);
 
 let nlPos = null;
 function lineOf(idx) {
@@ -353,7 +355,8 @@ window.addEventListener('load', function(){
     var panel = document.getElementById('toriPanel');
     var done = panel && /捕まえた|逃げられた/.test(panel.textContent || '');
     if(done || n > 450 || !root){ setTimeout(measure, 300); return; }
-    var cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+    /* 叩く基準は剣士の足元の線。画面の中央で測ると剣が届かず、掃きが空振りになる。 */
+    var cx = window.innerWidth / 2, cy = window.innerHeight * __FLOOR__;
     var reach = Math.min(window.innerWidth, window.innerHeight) * 0.35;
     var near = null, nearD = reach * 0.9;   // 端すれすれは狙わない
     [].forEach.call(document.querySelectorAll('.tori-bird'), function(b){
@@ -367,6 +370,8 @@ window.addEventListener('load', function(){
       var a = Math.atan2(near[1] - cy, near[0] - cx);
       var x = cx + Math.cos(a) * reach * 0.5, y = cy + Math.sin(a) * reach * 0.5;
       root.dispatchEvent(new MouseEvent('mousedown', { clientX: x, clientY: y, bubbles: true }));
+      /* すぐ離す。押しっぱなしにすると 300ms でゾーン移動や跳躍が起きて、掃きが乱れる。 */
+      window.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
       if('ontouchstart' in window){
         try{
           var t = new Touch({ identifier: 1, target: root, clientX: x, clientY: y });
@@ -640,7 +645,8 @@ section('⑦', '狭い画面での溢れ', () => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'koushu-view-'));
   try {
     const probe = path.join(tmpDir, 'probe.html');
-    fs.writeFileSync(probe, src.replace(/<\/body>\s*$/m, VIEW_PROBE + '</body>'), 'utf8');
+    fs.writeFileSync(probe, src.replace(/<\/body>\s*$/m,
+      VIEW_PROBE.replace('__FLOOR__', FLOOR_RATIO) + '</body>'), 'utf8');
 
     let bad = 0, done = 0, extra = 0;
     const TONE_JP = { butler:'執事', strategist:'軍師', blunt:'ずんだ', lady:'お嬢様',
@@ -652,7 +658,8 @@ section('⑦', '狭い画面での溢れ', () => {
         /* ミニゲームだけは、遊びを通すぶんの時間が要る（9秒だと勝ち抜けきる前に打ち切られる回がある）。 */
         /* toriend は制限時間（30秒）を跨げるだけ回す。捕まえられなくても「逃げられた」で
            結果画面には必ず届く。捕獲の条件が鞭になって、叩けば必ず勝てるとは限らなくなった。 */
-        '--virtual-time-budget=' + (screen === 'toriend' ? 45000 : 9000), '--dump-dom',
+        /* toriend は走り込み330ms＋喜ぶ動き600ms＋制限時間30秒＋達成の喜び900ms を跨ぐ。 */
+        '--virtual-time-budget=' + (screen === 'toriend' ? 70000 : 9000), '--dump-dom',
         'file:///' + probe.replace(/\\/g, '/') + '#' + screen];
       const r = spawnSync(browser, args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
       const hit = /KOUSHU_VIEW_BEGIN([A-Za-z0-9+/=]+)KOUSHU_VIEW_END/.exec(String(r.stdout || ''));
