@@ -1175,7 +1175,12 @@ window.addEventListener('load', function(){ setTimeout(function(){
           root.dispatchEvent(new MouseEvent('mousedown', { bubbles:true, cancelable:true,
             clientX: cx + Math.cos(deg) * SPOTS[s].r, clientY: cy + Math.sin(deg) * SPOTS[s].r }));
           await sleep(1600);
-          out.trials.push({ dir: DIRS[d].k, spot: SPOTS[s].tag, got: shown() });
+          /* 鳥が触れて仰け反っていたら、明けるまで待ってから読む。
+             仰け反りは体の向きを変えないので、明けたあとの待機が答えになる。
+             待たずに読むと、この検査が「hit が出ている」と言って落ちる（測り方の問題）。 */
+          var got = shown();
+          for(var wait = 0; wait < 40 && got === 'hit'; wait++){ await sleep(50); got = shown(); }
+          out.trials.push({ dir: DIRS[d].k, spot: SPOTS[s].tag, got: got });
         }
       }
     }catch(e){ out.err = String(e && e.stack || e); }
