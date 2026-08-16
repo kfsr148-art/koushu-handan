@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1389">
+<html lang="ja" data-ver="1390">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1176,7 +1176,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1389</div>
+  <div id="verTag">v1390</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9184,6 +9184,9 @@ window.ssReceive = function(){
     bellStep: 0.020,    // 重ねるときのずらし（秒）
     bellDur:  0.12,     // 一音の長さ（秒）
     bellVol:  0.05,     // 一音の音量
+    /* 跳んだ瞬間と着地の音。音源は増やさず、その場で作る三角波ひとつずつ。 */
+    jumpF0: 300, jumpF1: 700, jumpDur: 0.10, jumpVol: 0.12,   // 跳ぶ（追い込みの高さ上げを掛ける）
+    landF0: 160, landF1:  60, landDur: 0.08, landVol: 0.14,   // 着地（低い打点。高さ上げは掛けない）
     /* ここから BGM。 */
     bpm: { easy:120, normal:132, hard:144 },   // 難易度ごとのテンポ
     rushTempo: 1.15,    // 追い込みでのテンポの倍率
@@ -9852,6 +9855,13 @@ window.ssReceive = function(){
       if(!toriAudio()) return;
       if(kind === 'swing'){
         toriTone('sawtooth', 900, 300, 0, 0.09, 0.15);
+      } else if(kind === 'jump'){
+        /* 跳んだ瞬間。追い込みの十秒では高くする。 */
+        const pj = rushOn ? TORI.rushPitch : 1;
+        toriTone('triangle', TORI.jumpF0 * pj, TORI.jumpF1 * pj, 0, TORI.jumpDur, TORI.jumpVol);
+      } else if(kind === 'land'){
+        /* 着地の打点。ここは追い込みでも高さを変えない（被弾の悲鳴と同じ扱い）。 */
+        toriTone('triangle', TORI.landF0, TORI.landF1, 0, TORI.landDur, TORI.landVol);
       } else if(kind === 'bell'){
         /* 星撒きが発動した瞬間の小さな鈴。三つを少しずつずらして重ねる。 */
         TORI.bellHz.forEach(function(hz, i){
@@ -10228,6 +10238,7 @@ window.ssReceive = function(){
     edaTimers.forEach(clearTimeout);
     edaTimers = [];
     edaCoolAt = 0;
+    toriSe('jump');   // 一度の跳躍につき一度だけ
     airFrame();
   }
   /* 空中の一コマを選ぶ。振っている間は空中切り、それ以外は上昇か降下。 */
@@ -10244,6 +10255,7 @@ window.ssReceive = function(){
   }
   function jumpLand(){
     jumping = false;
+    toriSe('land');
     airCombo = 0;        // 段は着地で0へ戻る
     scatterUntil = 0;
     hangUntil = 0;
