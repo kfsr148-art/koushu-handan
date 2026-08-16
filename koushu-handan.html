@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1387">
+<html lang="ja" data-ver="1388">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1175,7 +1175,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1387</div>
+  <div id="verTag">v1388</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9126,6 +9126,26 @@ window.ssReceive = function(){
     kick: [  1,  0,  0,  0,   1,  0,  0,  0,    1,  0,  0,  0,    1,  0,  1,  0,
              1,  0,  0,  0,   1,  0,  0,  0,    1,  0,  0,  0,    1,  0,  1,  0]
   };
+  /* 被弾の悲鳴。のこぎり波1本に母音の共鳴（バンドパス2本）を掛けて声の色を付ける。
+     音源ファイルは持たず、その場で作る。ここを書き換えれば声色が変わる。 */
+  const TORI_HURT = {
+    f0:      700,    // 出だしの高さ（Hz）
+    fPeak:  1320,    // 跳ね上げ先（Hz）
+    fEnd:    900,    // 終わりへ向けて下げる先（Hz）
+    peakAt: 0.18,    // 跳ね上げる位置（全体に対する割合）
+    dur:    0.30,    // 長さ（秒）
+    vibHz:     8,    // ふるえの速さ（Hz）
+    vibDepth: 0.02,  // ふるえの幅（跳ね上げ先に対する割合）
+    bp1:     950, q1: 10, g1: 1.0,   // 共鳴その一（そのまま）
+    bp2:    1600, q2: 12, g2: 0.7,   // 共鳴その二（音量0.7倍）
+    dry:    0.25,    // 素の音を混ぜる割合
+    vol:    0.11,    // 音量
+    atk:    0.018,   // 立ち上がり（秒）
+    hold:   0.45,    // 保つ位置（長さに対する割合）
+    airSec: 0.05,    // 息の成分の長さ（秒）
+    airHp:  1800,    // 息の成分に残す高さ（Hz以上）
+    airVol: 0.05     // 息の成分の音量
+  };
   const TORI = {
     /* 速さは「画面の短辺を1としたときの毎秒の移動量」。0.30なら短辺の3割を1秒で進む。 */
     levels: [
@@ -9758,6 +9778,60 @@ window.ssReceive = function(){
       toriTone('triangle', 1318.5 * p, 1318.5 * p, waitSec + 0.06, 0.06, 0.15);
     }catch(e){}
   }
+  /* 被弾の悲鳴。仰け反りが実際に出た瞬間だけ、一度だけ鳴らす。
+     追い込みの倍率は掛けない（被弾は常に同じ高さ）。 */
+  function toriHurt(){
+    try{
+      if(!seAllowed()) return;
+      const ac = toriAudio();
+      if(!ac) return;
+      const H = TORI_HURT, t0 = ac.currentTime + 0.01, dur = H.dur;
+      /* 声の芯。のこぎり波を跳ね上げてから下げる。 */
+      const o = ac.createOscillator();
+      o.type = 'sawtooth';
+      o.frequency.setValueAtTime(H.f0, t0);
+      o.frequency.exponentialRampToValueAtTime(H.fPeak, t0 + dur * H.peakAt);
+      o.frequency.exponentialRampToValueAtTime(H.fEnd, t0 + dur);
+      /* ふるえ。跳ね上げ先の幅ぶんを音程に足す。 */
+      const lfo = ac.createOscillator(), lg = ac.createGain();
+      lfo.type = 'sine';
+      lfo.frequency.setValueAtTime(H.vibHz, t0);
+      lg.gain.setValueAtTime(H.fPeak * H.vibDepth, t0);
+      lfo.connect(lg); lg.connect(o.frequency);
+      /* 音量の形。立ち上がってしばらく保ち、終わりへ向けて消す。 */
+      const g = ac.createGain();
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(H.vol, t0 + H.atk);
+      g.gain.setValueAtTime(H.vol, t0 + dur * H.hold);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      /* 母音の共鳴。二本を並列に掛け、素の音も少し混ぜる。 */
+      const b1 = ac.createBiquadFilter(), b2 = ac.createBiquadFilter();
+      b1.type = 'bandpass'; b1.frequency.value = H.bp1; b1.Q.value = H.q1;
+      b2.type = 'bandpass'; b2.frequency.value = H.bp2; b2.Q.value = H.q2;
+      const m1 = ac.createGain(), m2 = ac.createGain(), md = ac.createGain();
+      m1.gain.value = H.g1; m2.gain.value = H.g2; md.gain.value = H.dry;
+      o.connect(b1); b1.connect(m1); m1.connect(g);
+      o.connect(b2); b2.connect(m2); m2.connect(g);
+      o.connect(md); md.connect(g);
+      g.connect(ac.destination);
+      o.start(t0); o.stop(t0 + dur + 0.02);
+      lfo.start(t0); lfo.stop(t0 + dur + 0.02);
+      /* 息の成分。先頭だけ、高いところを残した白色雑音を重ねて減衰させる。 */
+      const n = Math.max(1, Math.floor(ac.sampleRate * H.airSec));
+      const buf = ac.createBuffer(1, n, ac.sampleRate);
+      const d = buf.getChannelData(0);
+      for(let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+      const bs = ac.createBufferSource();
+      bs.buffer = buf;
+      const hp = ac.createBiquadFilter();
+      hp.type = 'highpass'; hp.frequency.value = H.airHp;
+      const ng = ac.createGain();
+      ng.gain.setValueAtTime(H.airVol, t0);
+      ng.gain.exponentialRampToValueAtTime(0.0001, t0 + H.airSec);
+      bs.connect(hp); hp.connect(ng); ng.connect(ac.destination);
+      bs.start(t0);
+    }catch(e){}
+  }
   function toriSe(kind){
     try{
       if(!seAllowed()) return;   // 切られていたら、波を作る処理に入らない
@@ -10233,6 +10307,7 @@ window.ssReceive = function(){
     const now = Date.now();
     recoilUntil = now + EDA.hitShow;
     breathUntil = 0;   // 息切れの最中に触れられたら、仰け反りが優先する
+    toriHurt();        // 仰け反りが実際に出た瞬間だけ、一度だけ鳴らす
     invulnUntil = recoilUntil + EDA.hitInvuln;   // 無敵は仰け反りが明けてから数える
     queuedTap = null;
     edaTimers.forEach(clearTimeout);
