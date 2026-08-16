@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1390">
+<html lang="ja" data-ver="1391">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -472,7 +472,14 @@
   }
 
   /* ---- verdict ---- */
-  .verdict { display: none; }
+  /* 判定の演出。カードの上に敷くだけの層で、指も通さないし場所も取らない。
+     カードの中身（攻守ゾーン・見立て行・金枠）には一切触れない。 */
+  .verdict { display: none; position: relative; }
+  .cardshow { position: absolute; inset: 0; z-index: 6; pointer-events: none;
+    overflow: hidden; border-radius: inherit; }
+  .cardshow .cs-kishi, .cardshow .cs-bird { position: absolute; will-change: transform; }
+  .cardshow .cs-kishi img { display: block; width: 100%; height: 100%; }
+  .cardshow .cs-bird svg { display: block; width: 100%; height: 100%; }
   .verdict.show { display: block; animation: rise 0.4s cubic-bezier(.2,.7,.3,1); }
   /* 多牌の警告は牌に被せない。タップを裏の牌へ素通りさせ、細い一行で示す */
   .verdict.pass { pointer-events: none; }
@@ -1176,7 +1183,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1390</div>
+  <div id="verTag">v1391</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -3768,6 +3775,15 @@ document.addEventListener('DOMContentLoaded', function () {
     ph:['役満が見えています'],
     dr:['国士無双が見えています']
   };
+  /* 判定の演出。false にすれば層ごと出なくなる。長さもここで詰める。 */
+  const CARD_SHOW = {
+    on: true,        // 出すか出さないか
+    ms: 800,         // 長さ（ミリ秒）
+    kishiH: 0.62,    // 剣士の高さ（カードの高さに対する割合）
+    birdH:  0.22,    // 鳥の高さ（カードの高さに対する割合）
+    swingAt: 0.45,   // 剣を振り出す位置（長さに対する割合）
+    takeAt:  0.55    // 捕らえる位置（長さに対する割合）
+  };
   const BASE_S = { dealer:['親番です。慎重に。'], child:['子番です。落ち着いて。'] };
   const BASE_R = { variants:['横持ちでお使いください'] };
   function wordSrc(){
@@ -3781,6 +3797,79 @@ document.addEventListener('DOMContentLoaded', function () {
     if(bv) return { v:bv, r:ROTATE_WORDS[currentTone], s:SEAT_WORDS[currentTone] };
     return { v:BASE_V, r:BASE_R, s:BASE_S };   // 素：人柄も方言も無い時の基礎語彙
   }
+  /* 判定の演出。攻なら鳥が横切って剣士が捕らえ、守なら鳥が上へ抜けて剣士は見送る。
+     絵はミニゲームの素材（EDA_WHIP の待機と振り、BIRD_SVG）の流用で、新しい画像は持たない。
+     台詞も文字も出さない。カードの寸法には触れないので、読み取りは一切遅れない。 */
+  let cardShowTimers = [];
+  function cardShow(attack){
+    try{
+      if(!CARD_SHOW.on) return;
+      const v = document.getElementById('verdict');
+      if(!v) return;
+      cardShowTimers.forEach(clearTimeout);
+      cardShowTimers = [];
+      const old = v.querySelector('.cardshow');
+      if(old) old.remove();
+      const W = v.clientWidth, H = v.clientHeight;
+      if(!W || !H) return;
+      const lay = document.createElement('div');
+      lay.className = 'cardshow';
+      /* 剣士。待機で立たせ、攻のときだけ振りの一枚に差し替える。 */
+      const kw = document.createElement('div');
+      kw.className = 'cs-kishi';
+      const km = document.createElement('img');
+      km.alt = '';
+      const idle = (window.EDA_ART && window.EDA_ART.idleRight) || '';
+      const swing = (window.EDA_ART && window.EDA_ART.r) || idle;
+      km.src = idle;
+      kw.appendChild(km);
+      /* 鳥。ミニゲームと同じ一枚の絵。 */
+      const bw = document.createElement('div');
+      bw.className = 'cs-bird';
+      bw.innerHTML = '<svg viewBox="0 0 92 82">' + (window.BIRD_SVG || '') + '</svg>';
+      lay.appendChild(kw); lay.appendChild(bw);
+      v.appendChild(lay);
+      const kh = H * CARD_SHOW.kishiH, bh = H * CARD_SHOW.birdH;
+      kw.style.height = kh + 'px';
+      kw.style.width  = (kh * 0.41) + 'px';   // 待機の絵の比（130x317）
+      kw.style.left   = (W * 0.62) + 'px';
+      kw.style.top    = (H - kh) + 'px';
+      bw.style.width  = bh + 'px';
+      bw.style.height = bh + 'px';
+      const by = H * 0.30;
+      const dur = CARD_SHOW.ms;
+      const t0 = Date.now();
+      const bx0 = -bh, bx1 = W * 0.66;
+      let took = false;
+      /* 捕獲音は、判定を押した指の中でこの場で予約する（鳴るのは takeAt の瞬間）。
+         鳴る瞬間に呼ぶと指から離れた callback になり、iOS が音を止めたままにする。 */
+      if(attack){ try{ if(window.toriSeTake) window.toriSeTake(0, dur * CARD_SHOW.takeAt / 1000); }catch(e){} }
+      function frame(){
+        const t = Math.min(1, (Date.now() - t0) / dur);
+        let x, y;
+        if(attack){
+          /* 攻：捕らえる位置で止まり、そこで消える。 */
+          const tt = Math.min(t, CARD_SHOW.takeAt) / CARD_SHOW.takeAt;
+          x = bx0 + (bx1 - bx0) * tt;
+          y = by;
+          if(t >= CARD_SHOW.takeAt && !took){
+            took = true;
+            bw.style.display = 'none';
+          }
+          if(t >= CARD_SHOW.swingAt && km.src !== swing) km.src = swing;
+        } else {
+          /* 守：横へ進みながら上へ抜けて、カードの外へ。 */
+          x = bx0 + (W + bh * 2 - bx0) * t;
+          y = by - (by + bh) * Math.max(0, (t - 0.35) / 0.65);
+        }
+        bw.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+        if(t < 1) cardShowTimers.push(setTimeout(frame, 16));
+        else lay.remove();
+      }
+      frame();
+    }catch(e){}
+  }
+  window.cardShow = cardShow;
   function applyRotateTone(){
     const r = wordSrc().r;
     // 3値トグルに追随：ツンツン/デレデレの縦警告があればそれを、無ければ素(variants)へフォールバック（判定コメントと同じ流儀）。
@@ -8400,6 +8489,8 @@ document.addEventListener('DOMContentLoaded', function () {
     v.classList.remove('pass');   // 多牌の素通り設定を解除（次の配牌へボタンを押せるように）
     v.classList.add('show');
     document.body.classList.add('judged');
+    /* カードはもう出ている。演出は上に重ねるだけで、寸法にも読み取りにも触れない。 */
+    cardShow(attack);
   };
 
   render();
@@ -9282,6 +9373,8 @@ window.ssReceive = function(){
     { key:'l',  deg:180  }, { key:'ul', deg:-135 }, { key:'u',  deg:-90  }, { key:'ur', deg:-45  }
   ];
 
+  /* 判定カードの演出から使う。絵も音も既にあるものをそのまま渡すだけで、増やさない。 */
+  window.EDA_ART = { idleRight: EDA_WHIP.idleRight, r: EDA_WHIP.r };
   let el = null, birds = [], raf = 0, level = null;
   let edaNodes = null, edaDir = 'idleFront', edaTimers = [], edaCoolAt = 0, edaVisible = false;
   /* 豆投げ。edaCoolAt は鞭と共通の入力止めで、どちらかが動いている間は次を受けない。 */
@@ -9849,6 +9942,7 @@ window.ssReceive = function(){
       bs.start(t0);
     }catch(e){}
   }
+  window.toriSeTake = toriSeTake;
   function toriSe(kind){
     try{
       if(!seAllowed()) return;   // 切られていたら、波を作る処理に入らない
