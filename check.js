@@ -1169,7 +1169,10 @@ window.addEventListener('load', function(){ setTimeout(function(){
           /* 毎回始めからやり直す。edaShow(true) が体の向きを正面へ戻すので、
              その一撃だけの結果が見える。 */
           window.toriStart('hard');
-          await sleep(60);
+          /* 始めた直後は走り込みと喜ぶ動きで、指を受けない。明けるまで待ってから叩く
+             （introMs 330 ＋ joyStartMs 600）。待たずに叩くと、この検査は攻撃が
+             一度も出ないまま「正面のまま」と読んで落ちる。 */
+          await sleep(1150);
           var deg = DIRS[d].deg * Math.PI / 180;
           var root = document.getElementById('toriRoot');
           root.dispatchEvent(new MouseEvent('mousedown', { bubbles:true, cancelable:true,
