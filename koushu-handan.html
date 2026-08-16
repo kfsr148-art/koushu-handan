@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1388">
+<html lang="ja" data-ver="1389">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1163,6 +1163,7 @@
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.watchOpen();">⚓ 船長の見張り台</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.advStart();">🚢 ミシシッピー現場猫事件</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.toriOpen();">🐦 一索の鳥</button>
+    <div id="toriBest" style="font-size:11px; letter-spacing:.06em; color:rgba(243,236,224,0.66); margin:-2px 0 2px;"></div>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.catRoomOpen();">⚙️ 設定</button>
     <button type="button" class="title-btn" onclick="window.openInfoList();">📖 説明欄</button>
   </div>
@@ -1175,7 +1176,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1388</div>
+  <div id="verTag">v1389</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9151,7 +9152,9 @@ window.ssReceive = function(){
     levels: [
       { key:'easy',   label:'初級', speed:0.30, turn:2.0, birds:2, quota:3 },
       { key:'normal', label:'中級', speed:0.45, turn:1.2, birds:3, quota:5 },
-      { key:'hard',   label:'上級', speed:0.65, turn:0.7, birds:4, quota:7 }
+      { key:'hard',   label:'上級', speed:0.65, turn:0.7, birds:4, quota:7 },
+      /* 連戦。上級と同じ手触りで、時間もノルマも持たない。終わりは ✕ だけ。 */
+      { key:'endless', label:'連戦', speed:0.65, turn:0.7, birds:4, quota:0 }
     ],
     timeLimit:   30,    // 制限時間（秒）
     speedUpStep: 0.10,  // 一羽捕まえるごとに残りが速くなる割合（最後の一羽がいちばん速い）
@@ -9165,6 +9168,8 @@ window.ssReceive = function(){
     /* 高い鳥。床の線から上へ、画面の高さのこの割合ぶんの帯にだけ棲む一羽。
        地上からは剣が届かず、跳ばないと捕れない位置になる。 */
     highBand:  0.50,
+    joyEvery:    10,    // 連戦で喜ぶ動きを出す羽数の刻み
+    bestKeyEndless: 'toriEndlessBest',   // 連戦の最高記録の控え先（設定と同じ localStorage）
     goldAt:      15,    // 開始から何秒で金にするか（残り150の瞬間）
     goldDur:      8,    // 金でいる長さ（秒）
     goldWorth:    2,    // 金を捕らえたときノルマに数える羽数
@@ -9299,6 +9304,8 @@ window.ssReceive = function(){
   /* 空中の段は一系統。連続切りの粒の数も、捕獲音の高さも、ここを見る。
      scatterUntil は星撒きを受け付けている間。hangUntil の間は落下が止まる。 */
   let airCombo = 0, scatterUntil = 0, hangUntil = 0;
+  let joyMark = 0;   // 連戦で喜んだ直近の羽数（同じ刻みで二度出さない）
+  let playAt = 0;    // 走り込みと喜ぶ動きが明けて、遊びが動き出した時刻
   let starNodes = null, starFly = [], sparkNodes = null, sparkTimer = 0;
   /* 仰け反り。溜める指は一つだけ持つ（何度触れても、明けて出るのは1回）。 */
   let recoilUntil = 0, invulnUntil = 0, queuedTap = null;
@@ -9439,6 +9446,12 @@ window.ssReceive = function(){
     return root;
   }
   const short = () => Math.min(window.innerWidth, window.innerHeight);
+  /* 連戦は時計もノルマも持たない。加速も追い込みも起こさない。 */
+  const isEndless = () => !!level && level.key === 'endless';
+  function bestEndlessGet(){ try{ return Number(localStorage.getItem(TORI.bestKeyEndless) || 0) || 0; }catch(e){ return 0; } }
+  function bestEndlessPut(n){
+    try{ if(n > bestEndlessGet()) localStorage.setItem(TORI.bestKeyEndless, String(n)); }catch(e){}
+  }
   /* 剣士の中心。攻めの向き・射程・当たりは、すべてこの値を基準にする。
      走っている間は、出発と到着のゾーンの間を時間で割って進む。 */
   /* ゾーンの中心。−1 は走り込みの出発点＝画面の外。 */
@@ -9542,6 +9555,7 @@ window.ssReceive = function(){
     runTimer = 0;
     moving = false; zoneIdx = 1; moveFrom = 1; moveTo = 1;   // 開始は中央のゾーン
     breathUntil = 0;
+    joyMark = 0; playAt = 0;
     jumping = false; airSlashUntil = 0;
     airCombo = 0; scatterUntil = 0; hangUntil = 0;
     starDrop();
@@ -9867,8 +9881,11 @@ window.ssReceive = function(){
     if(el) el.classList.remove('tori-result');
     panel('<h2>一索の鳥</h2><div>' + TORI.timeLimit + '秒。触れて捕まえる。</div><div class="tori-row">' +
       TORI.levels.map(function(l){
+        const note = (l.key === 'endless')
+          ? '（時間もノルマも無し）'
+          : '（ノルマ' + l.quota + '羽）';
         return '<button type="button" class="tori-btn" onclick="window.toriStart(\'' + l.key + '\')">' +
-          l.label + '（ノルマ' + l.quota + '羽）</button>';
+          l.label + note + '</button>';
       }).join('') + '</div>');
   }
   /* high を真にすると、上半分だけを漂う「高い鳥」になる。
@@ -10032,7 +10049,9 @@ window.ssReceive = function(){
   }
   function speedNow(){
     /* 追い込みの間だけ速くする。旋回の速さと同時に出る羽数は変えない。 */
-    return short() * level.speed * (1 + TORI.speedUpStep * caught) * (rushOn ? TORI.rushSpeed : 1);
+    /* 連戦は最初から最後まで一定。他の難易度は今までどおり一羽ごとに速くなる。 */
+    const up = isEndless() ? 1 : (1 + TORI.speedUpStep * caught);
+    return short() * level.speed * up * (rushOn ? TORI.rushSpeed : 1);
   }
   function step(now){
     if(!running) return;
@@ -10057,7 +10076,7 @@ window.ssReceive = function(){
     });
     /* 鳥が剣士に寄ったら仰け反る。仰け反っている間と、明けてからの無敵時間の間は起こさない。 */
     const tnow = Date.now();
-    if(!frozen && !moving && tnow >= recoilUntil && tnow >= invulnUntil){
+    if(!frozen && tnow >= joyUntil && !moving && tnow >= recoilUntil && tnow >= invulnUntil){
       for(let i = 0; i < birds.length; i++){
         if(Math.hypot(birds[i].x - edaCX(), birds[i].y - (edaCY() - jumpLift())) >= EDA.hitRadius) continue;
         recoil();
@@ -10093,15 +10112,22 @@ window.ssReceive = function(){
     edaPlace();   // 立ち位置は毎回置き直す（画面の回転や寸法の変化にも追随する）
     if(!frozen) beanStep();   // 飛んでいる豆を進め、鳥に届いていれば捕まえる（凍結中は進めない）
     /* 凍結の間は時計を進めない。残りを毎回押し戻して、表示も止める。 */
-    if(frozen) endAt = Date.now() + leftMs;
+    if(frozen || isEndless()) endAt = Date.now() + leftMs;
     const left = Math.max(0, (endAt - Date.now()) / 1000);
     const c = document.getElementById('toriCount'), tm = document.getElementById('toriTime');
-    if(c) c.textContent = caught + ' / ' + level.quota + ' 羽';
+    /* 連戦は捕った数だけを出す。ノルマの分母も残り時間も出さない。 */
+    if(c) c.textContent = isEndless() ? (caught + ' 羽') : (caught + ' / ' + level.quota + ' 羽');
+    if(tm && isEndless()){ tm.textContent = ''; }
     /* 残り時間は 0.1秒 を 1 と数えた三桁。開始 300、終わり 000。
        中の制限時間（秒）は変えていない。書き換えは 100ms ごとで足りる（毎フレームは無駄）。 */
     /* 金の一羽。開始から goldAt 秒（＝残りが timeLimit−goldAt）で一羽だけ金にし、
        goldDur 秒で元の色へ戻す。捕らえられずに戻っても罰は無い。 */
-    if(!frozen && !goldDone && birds.length && left <= TORI.timeLimit - TORI.goldAt){
+    /* 金の一羽は「遊び始めてから goldAt 秒」で出す。連戦は時計を止めているので、
+       残り時間では測れない。経過時間で見れば、どの難易度でも同じ瞬間になる。 */
+    const usedSec = isEndless()
+      ? (playAt ? (Date.now() - playAt) / 1000 : 0)
+      : (TORI.timeLimit - left);
+    if(!frozen && !goldDone && birds.length && usedSec >= TORI.goldAt){
       goldDone = true;
       /* 金は高い鳥から選ぶ。跳ばないと剣が届かない位置に置くため。
          高い鳥が居なければ（捕られた直後など）通常の鳥から選ぶ。 */
@@ -10118,25 +10144,36 @@ window.ssReceive = function(){
     }
     /* 追い込みの十秒。残りが rushMs を切った瞬間に一度だけ合図を鳴らし、
        数字を赤くして鳥を速くする。演出は遊んでいる間だけ。 */
-    if(!frozen && !rushOn && left * 1000 <= TORI.rushMs){
+    if(!isEndless() && !frozen && !rushOn && left * 1000 <= TORI.rushMs){
       rushOn = true;
       if(tm) tm.style.color = TORI.rushColor;
       toriSe('rush');
     }
     const now2 = Date.now();
-    if(tm && (now2 - hudAt >= 100 || left <= 0)){
+    /* 連戦は残り時間を持たないので、書き戻さない（消したそばから戻ると出続ける）。 */
+    if(tm && !isEndless() && (now2 - hudAt >= 100 || left <= 0)){
       hudAt = now2;
       /* 切り上げ。開始の一瞬を 300 と出し、0 になったときだけ 000 にする。 */
       tm.textContent = TORI_TIME_LABEL + String(Math.ceil(left * 10)).padStart(3, '0');
     }
+    /* 連戦は10羽ごとに喜ぶ。時計が無いので凍結はせず、鳥は動いたまま。
+       指と接触だけを止める（joyUntil の間は hit も当たりも受けない）。 */
+    if(isEndless() && caught > 0 && caught !== joyMark && caught % TORI.joyEvery === 0 && !joyUntil){
+      joyMark = caught;
+      toriSe('rush');   // 刻みの合図。既にある合図の音を一度だけ
+      joyStart(EDA.joyStartMs, function(){
+        edaFacing = 0;
+        edaFrame(edaIdleKey());
+      });
+    }
     /* ノルマを捕り終えた瞬間から、勝ちの絵が出るまでのあいだ喜ぶ。
        この間も時計を止め、指も接触も受けない。 */
-    if(!frozen && caught >= level.quota){
+    if(!isEndless() && !frozen && caught >= level.quota){
       frozen = true;
       leftMs = Math.max(0, endAt - Date.now());
       joyStart(EDA.joyWinMs, function(){ frozen = false; finish(true); });
     }
-    if(!frozen && left <= 0) return finish(false);
+    if(!isEndless() && !frozen && left <= 0) return finish(false);
     raf = requestAnimationFrame(step);
   }
   /* 喜ぶ動き。着地の絵から始め、joyFlipMs ごとに跳びと入れ替える。
@@ -10277,6 +10314,7 @@ window.ssReceive = function(){
       introing = false;
       joyStart(EDA.joyStartMs, function(){
         frozen = false;
+        playAt = Date.now();   // ここから数える（連戦の金の一羽はこれを見る）
         endAt = Date.now() + leftMs;
         lastT = performance.now();
         edaCoolAt = 0;
@@ -10333,6 +10371,7 @@ window.ssReceive = function(){
     if(portraitHold) return;   // 縦の間は受け付けない
     if(moving) return;         // 走っている間は受け付けない
     if(frozen) return;         // 走り込みと喜ぶ動きの間は受け付けない
+    if(Date.now() < joyUntil) return;   // 喜んでいる間は受け付けない（連戦の10羽ごと）
     /* 仰け反りと息切れの間の指は捨てずに溜める。溜まるのは一つだけ。 */
     if(Date.now() < recoilUntil || Date.now() < breathUntil){ queuedTap = { x: px, y: py }; return; }
     if(Date.now() < edaCoolAt) return;   // 連打は受けない（振りも捕獲も逃走も起きない）
@@ -10466,6 +10505,14 @@ window.ssReceive = function(){
   document.addEventListener('visibilitychange', function(){
     if(document.hidden) pause();
   });
+  /* タイトルの入口の下に、連戦の最高記録を一行で出す。無ければ何も出さない。 */
+  function toriBestShow(){
+    const e = document.getElementById('toriBest');
+    if(!e) return;
+    const n = bestEndlessGet();
+    e.textContent = n > 0 ? ('連戦の最高記録 ' + n + ' 羽') : '';
+  }
+  window.toriBestShow = toriBestShow;
   window.toriOpen = function(){
     build();
     el.classList.add('show');
@@ -10502,6 +10549,8 @@ window.ssReceive = function(){
     toriOrient();   // 縦のまま始めようとしたら、横になるまで待たせる
   };
   window.toriClose = function(){
+    /* 連戦は ✕ だけが終わり。押した時点の数を最高記録として控える。 */
+    if(isEndless() && caught > 0) bestEndlessPut(caught);
     bgmStop();   // 遊びを抜けたら止める
     running = false;
     paused = false;
@@ -10509,6 +10558,7 @@ window.ssReceive = function(){
     clearBirds();
     edaShow(false);
     if(el) el.classList.remove('show');
+    toriBestShow();   // 控えたばかりの記録を入口に映す
     if(window.ssGoTitle) window.ssGoTitle();
   };
 })();
