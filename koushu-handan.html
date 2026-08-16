@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1385">
+<html lang="ja" data-ver="1386">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -559,6 +559,9 @@
     -webkit-touch-callout: none; }
   .tori-overlay.show { display: block; }
   .tori-bird { position: absolute; will-change: transform; pointer-events: none; }
+  /* 床の影。楕円ひとつだけ。画像は持たない。剣士より下に敷く。 */
+  .tori-shadow { position: absolute; display: none; pointer-events: none;
+    border-radius: 50%; background: rgba(0,0,0,.38); filter: blur(2px); }
   /* 枝豆の鞭。当たり判定は持たない（鳥は上を通り抜ける）。点で描かれた絵なので拡大は補間しない。 */
   .tori-eda { position: absolute; display: none; pointer-events: none; image-rendering: pixelated; }
   .tori-bird svg { display: block; width: 100%; height: 100%; }
@@ -1170,7 +1173,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1385</div>
+  <div id="verTag">v1386</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9137,6 +9140,9 @@ window.ssReceive = function(){
     birdSize:    0.13,  // 鳥の大きさ（短辺に対する割合）
     edgeMargin:  0.02,  // 「壁際」とみなす幅（短辺に対する割合）
     /* 金の一羽。一回の遊びで一羽だけ、途中から金になる。 */
+    /* 高い鳥。床の線から上へ、画面の高さのこの割合ぶんの帯にだけ棲む一羽。
+       地上からは剣が届かず、跳ばないと捕れない位置になる。 */
+    highBand:  0.50,
     goldAt:      15,    // 開始から何秒で金にするか（残り150の瞬間）
     goldDur:      8,    // 金でいる長さ（秒）
     goldWorth:    2,    // 金を捕らえたときノルマに数える羽数
@@ -9212,7 +9218,13 @@ window.ssReceive = function(){
     /* ここから跳躍。床の線より上を押しっぱなしにすると跳ぶ。 */
     jumpH:      1.2,   // 跳ぶ高さ（体の高さに対する倍率）
     jumpMs:     700,   // 上がって下りるまで（ミリ秒）
-    airSlashMs: 220    // 空中で振ったとき、空中切りの絵を出す時間（ミリ秒）
+    airSlashMs: 220,   // 空中で振ったとき、空中切りの絵を出す時間（ミリ秒）
+    /* 床の影。楕円ひとつを CSS で描く（画像は持たない）。
+       高く上がるほど小さく薄くする。地上では等倍・不透明のまま。 */
+    shadowW:   0.55,   // 地上での横幅（体の高さに対する割合）
+    shadowH:   0.22,   // 横幅に対する縦の割合
+    shadowMinScale: 0.5,   // 頂点での大きさの倍率
+    shadowMinAlpha: 0.5    // 頂点での濃さの倍率
   };
   /* 立ち位置の三つのゾーン。画面の幅を三等分した、それぞれの中心。 */
   const ZONE_X = [0.25, 0.50, 0.75];
@@ -9243,6 +9255,7 @@ window.ssReceive = function(){
   /* 跳躍。jumpAt からの経過で高さが決まる。空中では横へ動かない。
      airSlashUntil の間だけ空中切りの絵を出す（向きは左右のみ）。 */
   let jumping = false, jumpAt = 0, jumpFace = 1, airSlashUntil = 0;
+  let shadowNode = null;
   /* 仰け反り。溜める指は一つだけ持つ（何度触れても、明けて出るのは1回）。 */
   let recoilUntil = 0, invulnUntil = 0, queuedTap = null;
   /* 縦向きの見張り。ミニゲームだけ横画面専用にする（本体は縦のまま）。
@@ -9334,6 +9347,10 @@ window.ssReceive = function(){
        当たり判定は持たせない（pointer-events は CSS で切ってある）。
        九枚を最初に全部置き、コマ送りは display の切り替えだけで行う。
        src を書き換える形だと、読み込みが間に合わずコマが飛ぶ。 */
+    /* 床の影。剣士の絵より先に置いて、下に敷く。 */
+    shadowNode = document.createElement('div');
+    shadowNode.className = 'tori-shadow';
+    root.appendChild(shadowNode);
     edaNodes = {};
     Object.keys(EDA_WHIP).forEach(function(k){
       const im = document.createElement('img');
@@ -9370,6 +9387,8 @@ window.ssReceive = function(){
   const zoneCenter = i => (i < 0 ? EDA.introFrom : ZONE_X[i]);
   /* 剣士の足元の高さ。攻めの向き・射程・当たり・走り斬りの帯は、すべてこの線を基準にする。 */
   const edaCY = () => window.innerHeight * EDA.floorRatio;
+  /* 高い鳥が下りてこない線。床の線から上へ highBand ぶん。 */
+  const highTop = () => Math.max(0, edaCY() - window.innerHeight * TORI.highBand);
   /* いまの跳躍の高さ（px）。上がって下りるまでを山なりで結ぶ。跳んでいなければ0。 */
   function jumpLift(){
     if(!jumping) return 0;
@@ -9388,6 +9407,23 @@ window.ssReceive = function(){
 
   /* 枝豆を画面中央に立たせる。絵の下端ではなく EDA_FOOT の行を床（立ち位置の y）に合わせる。
      足元の行は絵ごとに違うので、向きを変えるたびに置き直す。 */
+  /* 床の影を置き直す。横は体軸に追随し、高く上がるほど小さく薄くなる。
+     地上でも出しっぱなし。仰け反り・息切れ・喜ぶ動きの間も消さない。 */
+  function shadowPlace(){
+    if(!shadowNode) return;
+    if(!edaVisible){ shadowNode.style.display = "none"; return; }
+    const body = short() * EDA.artRatio;
+    const peak = body * EDA.jumpH;                        // 頂点の高さ
+    const t = peak > 0 ? Math.min(1, jumpLift() / peak) : 0;
+    const k = 1 - (1 - EDA.shadowMinScale) * t;
+    const w = body * EDA.shadowW * k, h = w * EDA.shadowH;
+    shadowNode.style.width  = w + "px";
+    shadowNode.style.height = h + "px";
+    shadowNode.style.left   = (edaCX() - w / 2) + "px";
+    shadowNode.style.top    = (edaCY() - h / 2) + "px";
+    shadowNode.style.opacity = String(1 - (1 - EDA.shadowMinAlpha) * t);
+    shadowNode.style.display = "block";
+  }
   function edaPlace(){
     const im = edaNodes && edaNodes[edaDir];
     if(!im) return;
@@ -9403,6 +9439,7 @@ window.ssReceive = function(){
     const lift = ((edaDir === 'joyJump') ? short() * EDA.artRatio * EDA.joyLift : 0) + jumpLift();
     im.style.top    = (edaCY() - EDA_FOOT[edaDir] * k - lift) + 'px';
     im.style.transform = '';
+    shadowPlace();
   }
   /* 鞭と投げは同じ場所に立つので、出すときは両方を伏せてから一枚だけ見せる。 */
   function edaHideAll(){
@@ -9457,6 +9494,7 @@ window.ssReceive = function(){
     edaFacing = 0;   // 始まりは正面
     edaVisible = on;
     edaHideAll();
+    if(shadowNode) shadowNode.style.display = on ? "block" : "none";
     edaDir = edaIdleKey();
     edaPlace();
     if(on) edaNodes[edaDir].style.display = 'block';
@@ -9703,17 +9741,24 @@ window.ssReceive = function(){
           l.label + '（ノルマ' + l.quota + '羽）</button>';
       }).join('') + '</div>');
   }
-  function newBird(fromEdge){
+  /* high を真にすると、上半分だけを漂う「高い鳥」になる。
+     速さ・旋回・跳ね返りは通常と同じで、下りてこない線が違うだけ。 */
+  function newBird(fromEdge, high){
     const s = short(), size = s * TORI.birdSize;
     const W = window.innerWidth, H = window.innerHeight;
+    const top = highTop();
     let x, y;
     if(fromEdge){
       /* 補充は外周から入ってくる。いきなり真ん中に湧かせない。 */
-      const side = Math.floor(Math.random() * 4);
+      const side = Math.floor(Math.random() * (high ? 3 : 4));
       if(side === 0){ x = Math.random() * W; y = -size; }
-      else if(side === 1){ x = W + size; y = Math.random() * H; }
+      else if(side === 1){ x = W + size; y = high ? Math.random() * top : Math.random() * H; }
       else if(side === 2){ x = Math.random() * W; y = H + size; }
-      else { x = -size; y = Math.random() * H; }
+      else { x = -size; y = high ? Math.random() * top : Math.random() * H; }
+      if(high && y > top) y = Math.random() * top;
+    } else if(high){
+      x = size + Math.random() * Math.max(1, W - size * 2);
+      y = size + Math.random() * Math.max(1, top - size * 2);
     } else {
       x = size + Math.random() * Math.max(1, W - size * 2);
       y = size + Math.random() * Math.max(1, H - size * 2);
@@ -9724,7 +9769,8 @@ window.ssReceive = function(){
     node.style.height = size + 'px';
     node.innerHTML = '<svg viewBox="0 0 92 82">' + (window.BIRD_SVG || '') + '</svg>';
     el.appendChild(node);
-    const b = { node:node, x:x, y:y, size:size, dirIdx:-1, deg:0, turnLeft:0, dodgeLeft:0, flashLeft:0 };
+    const b = { node:node, x:x, y:y, size:size, dirIdx:-1, deg:0, turnLeft:0, dodgeLeft:0, flashLeft:0,
+                high: !!high };
     turn(b, true);
     birds.push(b);
     return b;
@@ -9767,7 +9813,7 @@ window.ssReceive = function(){
     birds.splice(i, 1);
     caught += add;
     toriSe('take');
-    newBird(true);   // 常に規定数を保つ
+    newBird(true, b.high);   // 常に規定数を保つ。高い鳥の枠も一羽のまま
   }
   function speedNow(){
     /* 追い込みの間だけ速くする。旋回の速さと同時に出る羽数は変えない。 */
@@ -9785,8 +9831,10 @@ window.ssReceive = function(){
       /* 端は入射角どおりに跳ね返る。跳ね返りでは色を出さない。 */
       if(b.x < 0){ b.x = 0; b.deg = 180 - b.deg; }
       else if(b.x > W){ b.x = W; b.deg = 180 - b.deg; }
+      /* 高い鳥は床の線より上の帯から出ない。跳ね返り方は通常と同じ。 */
+      const bot = b.high ? highTop() : H;
       if(b.y < 0){ b.y = 0; b.deg = -b.deg; }
-      else if(b.y > H){ b.y = H; b.deg = -b.deg; }
+      else if(b.y > bot){ b.y = bot; b.deg = -b.deg; }
       b.node.style.transform = 'translate(' + (b.x - b.size / 2) + 'px,' + (b.y - b.size / 2) + 'px)';
       if(b.flashLeft > 0){ b.flashLeft -= dt; if(b.flashLeft <= 0) birdPaint(b); }
       if(b.dodgeLeft > 0){ b.dodgeLeft -= dt; }
@@ -9837,7 +9885,11 @@ window.ssReceive = function(){
        goldDur 秒で元の色へ戻す。捕らえられずに戻っても罰は無い。 */
     if(!frozen && !goldDone && birds.length && left <= TORI.timeLimit - TORI.goldAt){
       goldDone = true;
-      const gi = birds[Math.floor(Math.random() * birds.length)];
+      /* 金は高い鳥から選ぶ。跳ばないと剣が届かない位置に置くため。
+         高い鳥が居なければ（捕られた直後など）通常の鳥から選ぶ。 */
+      const hi = birds.filter(function(b){ return b.high; });
+      const pool = hi.length ? hi : birds;
+      const gi = pool[Math.floor(Math.random() * pool.length)];
       gi.gold = true;
       goldUntil = Date.now() + TORI.goldDur * 1000;
       birdPaint(gi);
@@ -10214,7 +10266,8 @@ window.ssReceive = function(){
     caught = 0;
     panel('');
     edaShow(true);
-    for(let i = 0; i < level.birds; i++) newBird(false);
+    /* 同時に出る鳥のうち、一羽だけを高い鳥にする。 */
+    for(let i = 0; i < level.birds; i++) newBird(false, i === 0);
     endAt = Date.now() + TORI.timeLimit * 1000;
     hudAt = 0;
     const tm0 = document.getElementById('toriTime');
