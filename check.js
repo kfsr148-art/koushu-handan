@@ -1136,11 +1136,15 @@ section('⑯', '攻撃のあとの待機の向き', () => {
   while ((km = kre.exec(wblock))) KEYS.push(km[1]);
   if (KEYS.length < 11) { ng('鞭の絵が足りない（' + KEYS.length + '枚）'); return; }
 
+  /* 剣士の足元の高さ。射程も角度もここから測るので、叩く高さもこの線に合わせる。 */
+  const floorRatio = Number((src.match(/floorRatio:\s*([0-9.]+)/) || [])[1] || 0.5);
+  note('足元の高さ : 画面の高さの ' + floorRatio + '（ここを基準に叩く）');
   const IDLE_PROBE = `
 <script>
 window.addEventListener('load', function(){ setTimeout(function(){
   var KEYS = ${JSON.stringify(KEYS)};
   var NAGE = ['prepare','grasp','flick','flight','action','tama'];
+  var FLOOR = ${floorRatio};
   var DIRS = [{k:'r',deg:0},{k:'dr',deg:45},{k:'d',deg:90},{k:'dl',deg:135},
               {k:'l',deg:180},{k:'ul',deg:-135},{k:'u',deg:-90},{k:'ur',deg:-45}];
   var out = { trials: [], err: null };
@@ -1161,7 +1165,7 @@ window.addEventListener('load', function(){ setTimeout(function(){
       window.cancelAnimationFrame = function(id){ clearTimeout(id); };
       window.closeTitleScreen(); window.toriOpen();
       await sleep(60);
-      var cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+      var cx = window.innerWidth / 2, cy = window.innerHeight * FLOOR;
       var reach = Math.min(window.innerWidth, window.innerHeight) * 0.35;
       var SPOTS = [{ tag:'鞭', r: Math.round(reach) - 20 }, { tag:'豆', r: Math.round(reach) + 60 }];
       for(var s = 0; s < SPOTS.length; s++){
