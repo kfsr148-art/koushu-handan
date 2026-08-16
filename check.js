@@ -1174,6 +1174,9 @@ window.addEventListener('load', function(){ setTimeout(function(){
           var root = document.getElementById('toriRoot');
           root.dispatchEvent(new MouseEvent('mousedown', { bubbles:true, cancelable:true,
             clientX: cx + Math.cos(deg) * SPOTS[s].r, clientY: cy + Math.sin(deg) * SPOTS[s].r }));
+          /* 指はすぐ離す。押しっぱなしにすると holdMove(300ms) でゾーン移動が起きて、
+             待機の向きではなく走りの絵を読んでしまう。ここで見たいのは一度叩いた時の待機。 */
+          window.dispatchEvent(new MouseEvent('mouseup', { bubbles:true }));
           await sleep(1600);
           /* 鳥が触れて仰け反っていたら、明けるまで待ってから読む。
              仰け反りは体の向きを変えないので、明けたあとの待機が答えになる。
@@ -1197,7 +1200,8 @@ window.addEventListener('load', function(){ setTimeout(function(){
     const probe = path.join(tmpDir, 'probe.html');
     fs.writeFileSync(probe, src.replace(/<\/body>\s*$/m, IDLE_PROBE + '</body>'), 'utf8');
     const r = spawnSync(browser, ['--headless=new', '--disable-gpu', '--hide-scrollbars',
-      '--force-device-scale-factor=1', '--window-size=390,844',
+      /* 一索の鳥は横画面専用。縦で開くと催促に委ねて遊びが止まるので、必ず横で回す。 */
+      '--force-device-scale-factor=1', '--window-size=844,390',
       '--user-data-dir=' + path.join(tmpDir, 'prof'),
       '--virtual-time-budget=120000', '--dump-dom',
       'file:///' + probe.replace(/\\/g, '/')],
