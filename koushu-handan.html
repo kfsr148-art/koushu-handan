@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1392">
+<html lang="ja" data-ver="1393">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1183,7 +1183,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1392</div>
+  <div id="verTag">v1393</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9273,6 +9273,13 @@ window.ssReceive = function(){
     /* 高い鳥。床の線から上へ、画面の高さのこの割合ぶんの帯にだけ棲む一羽。
        地上からは剣が届かず、跳ばないと捕れない位置になる。 */
     highBand:  0.50,
+    /* 鳥の群れ。一定の間隔で一組が横切る。既存の同時羽数とは別枠で、その上に乗る。 */
+    mobEvery: 12000,    // 出る間隔（ミリ秒）。確率の抽選ではなく、必ず一組
+    mobN:         3,    // 一組の羽数
+    mobGapPx:    40,    // 羽の縁と縁のあいだ（px）。中心の間隔は鳥の大きさ＋この値
+    mobLo:     0.15,    // 帯の下端（床から上へ、画面の高さに対する割合）
+    mobHi:     0.28,    // 帯の上端。剣の射程は短辺の 0.35 なので、その内側に収めてある
+    mobCrossMs: 3500,   // 画面の幅を横切る時間（ミリ秒）。加速も追い込みの倍率も掛けない
     joyEvery:    10,    // 連戦で喜ぶ動きを出す羽数の刻み
     bestKeyEndless: 'toriEndlessBest',   // 連戦の最高記録の控え先（設定と同じ localStorage）
     goldAt:      15,    // 開始から何秒で金にするか（残り150の瞬間）
@@ -9407,6 +9414,8 @@ window.ssReceive = function(){
   let slashDone = false, movePrevX = 0;
   /* 金の一羽＝一回の遊びで一度だけ。追い込み＝残り rushMs を切ったら立つ。 */
   let goldDone = false, goldUntil = 0, rushOn = false;
+  /* 鳥の群れ。次の一組までの残り（ミリ秒）。凍結・休止・縦持ちの間は減らさない。 */
+  let mobLeft = 0;
   /* 跳躍。jumpAt からの経過で高さが決まる。空中では横へ動かない。
      airSlashUntil の間だけ空中切りの絵を出す（向きは左右のみ）。 */
   let jumping = false, jumpAt = 0, jumpFace = 1, airSlashUntil = 0;
@@ -9672,6 +9681,7 @@ window.ssReceive = function(){
     joyStop();
     frozen = false; introing = false;
     slashDone = false; goldDone = false; goldUntil = 0;
+    mobLeft = TORI.mobEvery;             // 群れは、遊び始めから mobEvery ミリ秒後の一組が最初
     rushOn = false;                      // 追い込みの演出は持ち越さない
     const tmr = document.getElementById('toriTime');
     if(tmr) tmr.style.color = '';
@@ -10040,6 +10050,32 @@ window.ssReceive = function(){
     birds.push(b);
     return b;
   }
+  /* 鳥の群れ。左右どちらかの端の外から出て、横一列のまま反対の端へ抜ける一組。
+     既存の同時羽数とは別枠で、その上に乗る（通常の鳥は据え置き）。
+     入れ物は通常の鳥と同じ birds で、mob の印だけが違う——豆も星も星撒きも接触も、
+     ノルマの数え方も空中の段も、印を付けるだけでそのまま効く。 */
+  function mobSpawn(){
+    const W = window.innerWidth, H = window.innerHeight;
+    const dir = Math.random() < 0.5 ? 1 : -1;   // 1=右へ進む（左の外から出る）
+    /* 高さは床から上へ mobLo〜mobHi の帯の中で一段。一組は同じ高さに並ぶ。 */
+    const up = H * (TORI.mobLo + Math.random() * (TORI.mobHi - TORI.mobLo));
+    const y = edaCY() - up;
+    for(let i = 0; i < TORI.mobN; i++){
+      const b = newBird(false, false);   // 位置と向きはこの後で置き直す
+      const gap = b.size + TORI.mobGapPx;   // 中心の間隔＝絵の大きさ＋縁と縁のあいだ
+      b.mob = true;
+      b.dir = dir;
+      b.y = y;
+      /* 先頭が端にいちばん近い。列ごと画面の外から入る。 */
+      b.x = (dir > 0)
+        ? -b.size / 2 - (TORI.mobN - 1 - i) * gap
+        : W + b.size / 2 + (TORI.mobN - 1 - i) * gap;
+      /* 群れは方角を持たない。転換の色も出さない。 */
+      b.dirIdx = -1; b.deg = 0; b.turnLeft = 0; b.dodgeLeft = 0; b.flashLeft = 0;
+      birdPaint(b);
+      b.node.style.transform = 'translate(' + (b.x - b.size / 2) + 'px,' + (b.y - b.size / 2) + 'px)';
+    }
+  }
   /* 方角を変える。直前と同じ方言は引き直す。壁際で外を向く引きも引き直す。 */
   function turn(b, force){
     const W = window.innerWidth, H = window.innerHeight, m = short() * TORI.edgeMargin;
@@ -10089,7 +10125,8 @@ window.ssReceive = function(){
       if(airCombo >= 2) sparkShow(airCombo);
     }
     toriSeTake(step, waitSec || 0);
-    newBird(true, b.high);   // 常に規定数を保つ。高い鳥の枠も一羽のまま
+    /* 群れの羽は補充しない（別枠の一組は、捕っても捕り逃しても増えない）。 */
+    if(!b.mob) newBird(true, b.high);   // 常に規定数を保つ。高い鳥の枠も一羽のまま
   }
   /* 空中の連続切りの金の粒。段と同じ数を放射状に散らす。当たり判定は持たない。 */
   function sparkShow(n){
@@ -10176,7 +10213,26 @@ window.ssReceive = function(){
     const dt = Math.min(0.05, (now - lastT) / 1000);
     lastT = now;
     const W = window.innerWidth, H = window.innerHeight;
+    /* 群れは一定の間隔で必ず一組。凍結・休止・縦持ちの間は step が回らないので溜まらない。 */
+    if(!frozen && running){
+      mobLeft -= dt * 1000;
+      if(mobLeft <= 0){ mobSpawn(); mobLeft = TORI.mobEvery; }
+    }
+    /* 群れの羽は、一列のまま真横へ一定の速さで進む。旋回も跳ね返りもせず、
+       反対の端へ抜けたらその羽を消す（罰も補充もない）。 */
+    if(!frozen) for(let i = birds.length - 1; i >= 0; i--){
+      const b = birds[i];
+      if(!b.mob) continue;
+      b.x += b.dir * (W / (TORI.mobCrossMs / 1000)) * dt;
+      if(b.dir > 0 ? (b.x > W + b.size) : (b.x < -b.size)){
+        b.node.remove();
+        birds.splice(i, 1);
+        continue;
+      }
+      b.node.style.transform = 'translate(' + (b.x - b.size / 2) + 'px,' + (b.y - b.size / 2) + 'px)';
+    }
     if(!frozen) birds.forEach(function(b){
+      if(b.mob) return;   // 群れは上で進めた
       const sp = speedNow() * (b.dodgeLeft > 0 ? TORI.dodgeBoost : 1);
       b.x += Math.cos(rad(b.deg)) * sp * dt;
       b.y += Math.sin(rad(b.deg)) * sp * dt;
@@ -10207,13 +10263,24 @@ window.ssReceive = function(){
        走り込み（introing）と凍結中は起こさない。 */
     if(moving && !introing && !frozen){
       const nowX = edaCX();
+      const half = short() * EDA.slashBand / 2;
+      const lo = Math.min(movePrevX, nowX), hi = Math.max(movePrevX, nowX);
+      /* 群れの羽は、帯に入っているぶんを全部。「一回の移動で1羽まで」は掛けない。 */
+      let mobTook = 0;
+      for(let i = birds.length - 1; i >= 0; i--){
+        const b = birds[i];
+        if(!b.mob) continue;
+        if(Math.abs(b.y - edaCY()) > half) continue;
+        if(b.x < lo || b.x > hi) continue;
+        takeBird(i, mobTook * EDA.scatterStep / 1000);
+        mobTook++;
+      }
       if(!slashDone){
-        const half = short() * EDA.slashBand / 2;
-        const lo = Math.min(movePrevX, nowX), hi = Math.max(movePrevX, nowX);
         const fwd = (moveTo > moveFrom);
         let take = -1, best = 0;
         for(let i = 0; i < birds.length; i++){
           const b = birds[i];
+          if(b.mob) continue;
           if(Math.abs(b.y - edaCY()) > half) continue;
           if(b.x < lo || b.x > hi) continue;
           const d = fwd ? b.x : -b.x;   // 進む向きに対して手前
@@ -10246,15 +10313,20 @@ window.ssReceive = function(){
       ? (playAt ? (Date.now() - playAt) / 1000 : 0)
       : (TORI.timeLimit - left);
     if(!frozen && !goldDone && birds.length && usedSec >= TORI.goldAt){
-      goldDone = true;
       /* 金は高い鳥から選ぶ。跳ばないと剣が届かない位置に置くため。
-         高い鳥が居なければ（捕られた直後など）通常の鳥から選ぶ。 */
+         高い鳥が居なければ（捕られた直後など）通常の鳥から選ぶ。
+         群れの羽は、どちらの母集団にも入れない（横切って抜けてしまうため）。 */
       const hi = birds.filter(function(b){ return b.high; });
-      const pool = hi.length ? hi : birds;
-      const gi = pool[Math.floor(Math.random() * pool.length)];
-      gi.gold = true;
-      goldUntil = Date.now() + TORI.goldDur * 1000;
-      birdPaint(gi);
+      const norm = birds.filter(function(b){ return !b.mob; });
+      const pool = hi.length ? hi : norm;
+      /* 選べる鳥が一羽も居なければ、次のフレームへ回す（金の枠は使わないまま残す）。 */
+      if(pool.length){
+        goldDone = true;
+        const gi = pool[Math.floor(Math.random() * pool.length)];
+        gi.gold = true;
+        goldUntil = Date.now() + TORI.goldDur * 1000;
+        birdPaint(gi);
+      }
     }
     if(goldUntil && Date.now() >= goldUntil){
       goldUntil = 0;
@@ -10513,22 +10585,39 @@ window.ssReceive = function(){
        当てはまるのが何羽いても、捕るのは枝豆にいちばん近い一羽だけ。 */
     const cx = edaCX(), cy = edaCY() - jumpLift();
     const reach = short() * EDA.reachRatio;
+    /* 扇に入っているかの見方は、群れも通常の鳥も同じ。入っていなければ -1 を返す。 */
+    const inFan = function(b){
+      const d = Math.hypot(b.x - cx, b.y - cy);
+      if(d > reach) return -1;
+      const a = Math.atan2(b.y - cy, b.x - cx) * 180 / Math.PI;
+      if(Math.abs(((a - swingDeg + 540) % 360) - 180) > EDA.fanDeg) return -1;
+      return d;
+    };
+    /* 群れの羽だけは、扇に入っているぶんを全部捕る（一羽までの制限を掛けない）。
+       同時に捕らえた音は scatterStep ずつずらす（星撒きと同じ扱い）。 */
+    let mobTook = 0;
+    for(let i = birds.length - 1; i >= 0; i--){
+      if(!birds[i].mob || inFan(birds[i]) < 0) continue;
+      takeBird(i, mobTook * EDA.scatterStep / 1000);
+      mobTook++;
+    }
+    if(mobTook) return;
     let take = -1, takeD = Infinity;
     for(let i = 0; i < birds.length; i++){
-      const b = birds[i], d = Math.hypot(b.x - cx, b.y - cy);
-      if(d > reach || d >= takeD) continue;
-      const a = Math.atan2(b.y - cy, b.x - cx) * 180 / Math.PI;
-      if(Math.abs(((a - swingDeg + 540) % 360) - 180) > EDA.fanDeg) continue;
+      const d = inFan(birds[i]);
+      if(d < 0 || d >= takeD) continue;
       takeD = d; take = i;
     }
     if(take >= 0){
       takeBird(take);
       return;
     }
-    /* 空振り：半径の内でいちばん近い一羽が、触点の反対に最も近い方角へ逃げる */
+    /* 空振り：半径の内でいちばん近い一羽が、触点の反対に最も近い方角へ逃げる。
+       群れの羽は選ばない（一列を崩さないため）。 */
     const r = short() * TORI.dodgeRadius;
     let best = null, bestD = r;
     birds.forEach(function(b){
+      if(b.mob) return;
       const d = Math.hypot(b.x - px, b.y - py);
       if(d < bestD){ bestD = d; best = b; }
     });
