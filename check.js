@@ -1364,7 +1364,9 @@ window.addEventListener('load', function(){ setTimeout(function(){
     if (got.err) { ng('測定中に例外： ' + got.err.slice(0, 200)); return; }
     if (!got.ground) { ng('床の影が読めない'); return; }
 
-    const AIR = ['airUpR', 'airUpL', 'airSlashR', 'airSlashL', 'airDownR', 'airDownL'];
+    /* 隣へ渡るときの左右六枚と、その場跳びの正面三枚。 */
+    const AIR = ['airUpR', 'airUpL', 'airSlashR', 'airSlashL', 'airDownR', 'airDownL',
+                 'airUpFront', 'airSlashFront', 'airDownFront'];
     /* 影が縮んでいる間＝空中。等倍のときは地上（跳び際と着地際は等倍に見える）。 */
     const air = got.rows.filter(r => r.sw !== null && r.sw < got.ground * 0.995);
     if (air.length < 8) { ng('跳んでいない（空中と読めた標本 ' + air.length + '個）'); return; }
