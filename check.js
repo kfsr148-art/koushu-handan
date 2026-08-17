@@ -1516,6 +1516,63 @@ window.addEventListener('load', function(){ setTimeout(function(){
   }
 });
 
+/* ============================================================
+   ⑲ 素材の寸法の写し
+   剣士まわりの全コマの寸法を、期待値の表と突き合わせる。一つでも違えば FAIL。
+   なぜ寸法かというと、「顔の高さ50px」は機械では測れないから——金髪は影や頭巾で
+   分断され、姿勢ごとに違う破片を拾う。同じ姿勢・同じ元絵・同じ倍率のはずの
+   airUpFront と airSlashFront で 25px と 16px（56%の食い違い）になった。
+   大きさを揃える仕掛けは「元絵はどれも 704x1524 で同じ大きさに描かれているので、
+   一つの倍率を全部に掛ける」であって、顔を測ることではない。その結果である寸法を
+   写しで見張れば、絵を差し替えたときに倍率を間違えれば必ず止まる。
+   ⑩⑭⑮ と同じ字面の照合で、実測には頼らない。
+   ============================================================ */
+section('⑲', '素材の寸法の写し', () => {
+  /* 期待値。素材を差し替えて寸法が変わったら、ここも直す（直さない限り FAIL する）。
+     跳躍の九枚は 704x1524 の元絵に共通倍率 0.26112×1.16 = 0.30290 を掛けた値。 */
+  const WANT = {
+    airUpR:[196,305], airUpL:[187,289], airSlashR:[207,233], airSlashL:[211,300],
+    airDownR:[131,265], airDownL:[113,281], joyJump:[248,439], joyLand:[270,330],
+    breathR:[181,238], breathL:[171,249], runR:[185,246], runL:[190,229],
+    hit:[185,228], idleFront:[115,317], idleRight:[135,317], idleLeft:[129,316],
+    airUpFront:[144,333], airSlashFront:[192,333], airDownFront:[170,300], u:[186,387],
+    ur:[328,380], r:[294,262], dr:[259,281], d:[244,268],
+    dl:[279,256], l:[423,388], ul:[235,281], prepare:[179,253],
+    grasp:[144,286], flick:[248,261], flight:[230,266], action:[128,318],
+    tama:[32,32],
+  };
+  /* PNG の頭（IHDR）から寸法だけ読む。展開は要らない。 */
+  function sizeOf(b64) {
+    const b = Buffer.from(b64, 'base64');
+    if (b.readUInt32BE(0) !== 0x89504e47) return null;
+    return [b.readUInt32BE(16), b.readUInt32BE(20)];
+  }
+  function grab(name) {
+    const i = src.indexOf('const ' + name + ' = {');
+    if (i < 0) return {};
+    const blk = src.slice(i, src.indexOf('};', i) + 2);
+    const out = {};
+    const re = /(\w+)\s*:\s*'data:image\/png;base64,([A-Za-z0-9+/=]+)'/g;
+    let m; while ((m = re.exec(blk))) out[m[1]] = m[2];
+    return out;
+  }
+  const got = Object.assign({}, grab('EDA_WHIP'), grab('EDA_NAGE'));
+  const names = Object.keys(got);
+  note('本体にある剣士まわりの素材 : ' + names.length + '枚（期待値の表は ' + Object.keys(WANT).length + '枚）');
+  const bad = [];
+  names.forEach(k => {
+    const w = WANT[k];
+    const s2 = sizeOf(got[k]);
+    if (!s2) { bad.push(k + ' : PNG として読めない'); return; }
+    if (!w) { bad.push(k + ' : 期待値の表に無い（' + s2.join('x') + '）'); return; }
+    if (w[0] !== s2[0] || w[1] !== s2[1])
+      bad.push(k + ' : ' + s2.join('x') + '（表は ' + w.join('x') + '）');
+  });
+  Object.keys(WANT).forEach(k => { if (!got[k]) bad.push(k + ' : 本体に無い（表にはある）'); });
+  if (bad.length === 0) ok('全 ' + names.length + '枚、寸法が表と一致');
+  else { ng('寸法が表と違う素材 ' + bad.length + '件'); bad.slice(0, 10).forEach(b => note('  ' + b)); }
+});
+
 /* ---- まとめ ---- */
 console.log('');
 console.log('='.repeat(52));
