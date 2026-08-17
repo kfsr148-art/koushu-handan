@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1403">
+<html lang="ja" data-ver="1404">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1127,7 +1127,12 @@
     body.judged .judged-note { margin-top: 3px !important; }
     body.judged .next-hand-row { margin-top: 4px; }
   }
-  #verTag { position: fixed; top: 2px; left: 5px; font-size: 9px; letter-spacing:0.05em; color: rgba(243,236,224,0.32); z-index: 99; pointer-events: none; font-family: var(--sans); }
+  /* 版番号は常に見えるようにする。z-index 99 のままだと、設定・見張り台・探偵編・ミニゲームの
+     どの覆い（300〜100002）の裏にも隠れて、いま触っている版が画面から分からなかった。
+     画面内エラー窓（100050）だけは上に残す。 */
+  #verTag { position: fixed; top: 2px; left: 5px; font-size: 9px; letter-spacing:0.05em; color: rgba(243,236,224,0.32); z-index: 100040; pointer-events: none; font-family: var(--sans); }
+  /* ミニゲームの間だけ伏せる。HUD が top:6px left:10px で、版番号と重なるため。 */
+  body.playing-tori #verTag { display: none; }
   .voice-credit { position: fixed; top: 2px; left: 44px; font-size: 9px; letter-spacing: 0.04em; color: rgba(243,236,224,0.40); z-index: 99; pointer-events: none; font-family: var(--sans); display: none; }
   #tauntBtn{width:88px;box-sizing:border-box;flex:0 0 auto;text-align:center;}
   @media (orientation: landscape){
@@ -1224,7 +1229,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1403</div>
+  <div id="verTag">v1404</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -10818,6 +10823,8 @@ window.ssReceive = function(){
   window.toriOpen = function(){
     build();
     el.classList.add('show');
+    /* 遊んでいる間は版番号を伏せる（HUD と同じ隅に出るため）。 */
+    document.body.classList.add('playing-tori');
     clearBirds();
     edaShow(false);
     running = false;
@@ -10851,6 +10858,7 @@ window.ssReceive = function(){
     toriOrient();   // 縦のまま始めようとしたら、横になるまで待たせる
   };
   window.toriClose = function(){
+    document.body.classList.remove('playing-tori');   // 版番号を戻す
     /* 連戦は ✕ だけが終わり。記録は残さない。 */
     bgmStop();   // 遊びを抜けたら止める
     running = false;
