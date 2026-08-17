@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1404">
+<html lang="ja" data-ver="1405">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1229,7 +1229,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1404</div>
+  <div id="verTag">v1405</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9471,6 +9471,8 @@ window.ssReceive = function(){
   /* 凍結。走り込みと喜ぶ動きの間は、時計も鳥も止め、指も接触も受けない。
      introing は走り込みかどうか（到着したあと息切れではなく喜ぶ動きへ繋ぐ）。 */
   let frozen = false, introing = false, joyUntil = 0, joyTimer = 0, joyShow = false;
+  /* 喜びの終わりに呼ぶもの（joyEnd が一箇所で呼ぶ）と、その長さ。長さは念のための抜け道に使う。 */
+  let joyAfter = null, joyMs = 0;
   /* 走り斬り＝一回の移動で1羽まで。movePrevX は前のフレームでの剣士の x。 */
   let slashDone = false, movePrevX = 0;
   /* 金の一羽＝一回の遊びで一度だけ。追い込み＝残り rushMs を切ったら立つ。 */
@@ -10295,6 +10297,21 @@ window.ssReceive = function(){
     const dt = Math.min(0.05, (now - lastT) / 1000);
     lastT = now;
     const W = window.innerWidth, H = window.innerHeight;
+    /* 喜びの終わりは、始めた者が誰であれここ一箇所で見る。四つの経路
+       （走り込みの締め・ノルマ達成・連戦の10羽ごと・その他）が同じ絵を共有していても、
+       終わらせるのはこの一行だけなので取りこぼしが起きない。 */
+    if(joyUntil){
+      const jn = Date.now();
+      if(jn >= joyUntil + joyMs){
+        /* 念のための抜け道。規定の2倍を過ぎても終わっていない＝どこかで詰まっている。
+           続きの処理は諦めて、待機へ戻して操作を返す（出っぱなしにはしない）。 */
+        joyStop();
+        frozen = false;
+        edaFrame(edaIdleKey());
+      } else if(jn >= joyUntil){
+        joyEnd();
+      }
+    }
     /* 群れは一定の間隔で必ず一組。凍結・休止・縦持ちの間は step が回らないので溜まらない。 */
     if(!frozen && running){
       mobLeft -= dt * 1000;
@@ -10454,7 +10471,22 @@ window.ssReceive = function(){
     edaFrame(joyShow ? 'joyJump' : 'joyLand');
     joyTimer = setTimeout(joyFlip, EDA.joyFlipMs);
   }
-  function joyStop(){ if(joyTimer) clearTimeout(joyTimer); joyTimer = 0; joyUntil = 0; }
+  function joyStop(){
+    if(joyTimer) clearTimeout(joyTimer);
+    joyTimer = 0; joyUntil = 0; joyAfter = null; joyMs = 0;
+  }
+  /* 喜びの終わりは、ここ一箇所だけ。始めた者が誰であれ必ずここを通る。
+     終わらせる合図をタイマーで持たない——以前は edaTimers へ積んでいたが、
+     edaSwing・zoneGo・jumpGo・recoil・空中の hit の五経路が edaTimers を
+     clearTimeout して空にするので、喜びの最中にそれが起きると終了処理ごと消え、
+     喜ぶ絵のまま止まって操作を受けなくなった（連戦の10羽ごとは frozen を立てないため、
+     長押しが素通りして zoneGo が走るのが実際の道筋）。
+     いまは step() が毎フレーム期限を見て呼ぶので、誰にも掃除されない。 */
+  function joyEnd(){
+    const f = joyAfter;
+    joyStop();
+    if(f){ try{ f(); }catch(e){} }
+  }
   function joyStart(ms, after){
     joyStop();
     /* 飛んでいる豆と、その着弾の後始末を畳む。放っておくと
@@ -10463,13 +10495,11 @@ window.ssReceive = function(){
     nageTimers = [];
     beanDrop();
     joyUntil = Date.now() + ms;
+    joyMs = ms;
+    joyAfter = after || null;
     joyShow = false;            // 着地から始める
     edaFrame('joyLand');
     joyTimer = setTimeout(joyFlip, EDA.joyFlipMs);
-    edaTimers.push(setTimeout(function(){
-      joyStop();
-      if(after) after();
-    }, ms));
   }
   /* 走り込み。画面の外から中央のゾーンへ走って入る。
      この間は時計を止め、鳥も動かさず、指も受けない（着いたら喜ぶ動きへ繋ぐ）。 */
@@ -10551,6 +10581,9 @@ window.ssReceive = function(){
   function holdStart(px, py){
     holdClear();
     if(!running || moving || portraitHold || frozen) return;
+    /* 喜んでいる間は長押しも受けない。hit() と同じ扱いにする——連戦の10羽ごとは
+       frozen を立てないので、ここを開けておくと喜びの最中に走り出せてしまう。 */
+    if(joyUntil) return;
     if(jumping) return;   // 空中では横へ動かない（跳び直しもしない）
     holdPt = { x: px, y: py };
     holdTimer = setTimeout(function(){
