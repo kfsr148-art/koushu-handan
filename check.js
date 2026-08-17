@@ -401,6 +401,9 @@ window.addEventListener('load', function(){
     var over = [];
     document.querySelectorAll('body *').forEach(function(el){
       if(!vis(el)) return;
+      /* 画面内エラー窓は溢れとして数えない。出ているのは例外が起きたという合図であって、
+         画面の作りの溢れではない（ふだんは display:none なので普通は掛からない）。 */
+      if(el.id === 'errBar') return;
       var r = el.getBoundingClientRect();
       if(r.width < 8 || r.height < 8) return;
       if(r.right > W + 1 || (!judged && r.bottom > H + 1) || r.left < -1) over.push({ el: el, r: r });
