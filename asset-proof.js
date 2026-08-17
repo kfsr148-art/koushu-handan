@@ -61,7 +61,8 @@ const LOSE = pickOne('TORI_LOSE_IMG');
 const GROUPS = [
   { title: '待機（3）', keys: ['idleFront', 'idleRight', 'idleLeft'], from: 'whip' },
   { title: '振り（8）', keys: ['u', 'ur', 'r', 'dr', 'd', 'dl', 'l', 'ul'], from: 'whip' },
-  { title: '跳躍（6）', keys: ['airUpR', 'airUpL', 'airSlashR', 'airSlashL', 'airDownR', 'airDownL'], from: 'whip' },
+  { title: '跳躍・隣へ渡る（6）', keys: ['airUpR', 'airUpL', 'airSlashR', 'airSlashL', 'airDownR', 'airDownL'], from: 'whip' },
+  { title: '跳躍・その場（3）', keys: ['airUpFront', 'airSlashFront', 'airDownFront'], from: 'whip' },
   { title: '息切れ（2）・走り（2）・喜び（2）・仰け反り（1）',
     keys: ['breathR', 'breathL', 'runR', 'runL', 'joyJump', 'joyLand', 'hit'], from: 'whip' },
   { title: '投げ（5）・飛ぶ星（1）', keys: ['prepare', 'grasp', 'flick', 'flight', 'action', 'tama'], from: 'nage' },
