@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1402">
+<html lang="ja" data-ver="1403">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1151,6 +1151,15 @@
     font-size: clamp(12px, 3vh, 15px); padding: 1.2vh 14px; cursor: pointer; text-align: left;
   }
   .title-btn:active { background: rgba(212,180,110,0.22); }
+  /* 画面内エラー窓。console の見えない実機（iPhone の画面写しだけで回している）で、
+     例外をそのまま写真に写すための赤帯。どの覆いよりも上に出す
+     （最上位はミニゲームの .tori-overlay ＝ 100002）。押すと閉じる。
+     ふだんは display:none で、check.js の ⑦ は見えない要素を数えないので掛からない。
+     ★ここは @media の外に置くこと。中に入れると縦向きのときしか効かない。 */
+  #errBar { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 100050;
+    background: rgba(190,40,32,0.96); color: #fff; font-size: 12px; line-height: 1.5;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
+    font-family: monospace; word-break: break-all; max-height: 40vh; overflow: auto; }
   #portraitWarn { display: none; }
   @media (orientation: portrait) {
     #portraitWarn { display: flex; position: fixed; inset: 0; z-index: 9999;
@@ -1164,6 +1173,39 @@
 </style>
 </head>
 <body>
+<!-- 画面内エラー窓。実機（iPhone）の画面写しだけで開発しているので、console の代わりに
+     例外を画面へ出す。写真に写ればそれがそのまま報告になる。本体・探偵編・ミニゲームの
+     どれで起きても出る。押すと閉じる。中身は「メッセージ・ファイルと行・版番号」。 -->
+<div id="errBar"></div>
+<script>
+(function(){
+  var bar = document.getElementById('errBar'), n = 0;
+  function show(msg, where){
+    try{
+      if(!bar) return;
+      n++;
+      var ver = document.documentElement.getAttribute('data-ver') || '?';
+      bar.textContent = 'エラー：' + msg + '　［' + where + '］　v' + ver
+        + (n > 1 ? '　（ほかに' + (n - 1) + '件）' : '') + '　— 押すと閉じる';
+      bar.style.display = 'block';
+    }catch(e){}
+  }
+  /* 拾うのはコードの例外だけ。画像や音の読み込み失敗（message も error も無い Event）は
+     拾わない——起動時に候補を順に当てて外れを捨てる作りが幾つもあり、赤帯が鳴りっぱなしになる。 */
+  window.addEventListener('error', function(ev){
+    if(!ev || (!ev.message && !ev.error)) return;
+    var f = String(ev.filename || '').replace(/^.*\//, '').replace(/\?.*$/, '');
+    show(String((ev.error && ev.error.message) || ev.message),
+         (f ? f + ' ' : '') + '行' + (ev.lineno || '?'));
+  });
+  /* 捕まえ損ねた約束だけ。.catch() で拾ってある失敗（templates.json の取得など）はここへ来ない。 */
+  window.addEventListener('unhandledrejection', function(ev){
+    var r = ev && ev.reason;
+    show(String((r && r.message) || r || '理由なし'), '拾われなかった約束');
+  });
+  if(bar) bar.addEventListener('click', function(){ bar.style.display = 'none'; n = 0; });
+})();
+</script>
   <div id="titleScreen">
     <h1>🀄️タイトル画面</h1>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.ssMarkTool();">🀄️配牌攻守判定</button>
@@ -1182,7 +1224,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1402</div>
+  <div id="verTag">v1403</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
