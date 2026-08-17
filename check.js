@@ -1532,7 +1532,7 @@ section('⑲', '素材の寸法の写し', () => {
      跳躍の九枚は 704x1524 の元絵に共通倍率 0.26112×1.16 = 0.30290 を掛けた値。 */
   const WANT = {
     airUpR:[196,305], airUpL:[187,289], airSlashR:[207,233], airSlashL:[211,300],
-    airDownR:[131,265], airDownL:[113,281], joyJump:[248,439], joyLand:[270,330],
+    airDownR:[150,305], airDownL:[130,323], joyJump:[248,439], joyLand:[270,330],
     breathR:[181,238], breathL:[171,249], runR:[185,246], runL:[190,229],
     hit:[185,228], idleFront:[115,317], idleRight:[135,317], idleLeft:[129,316],
     airUpFront:[144,333], airSlashFront:[192,333], airDownFront:[170,300], u:[186,387],
