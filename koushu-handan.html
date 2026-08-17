@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1394">
+<html lang="ja" data-ver="1395">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1170,7 +1170,6 @@
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.watchOpen();">⚓ 船長の見張り台</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.advStart();">🚢 ミシシッピー現場猫事件</button>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.toriOpen();">🐦 一索の鳥</button>
-    <div id="toriBest" style="font-size:11px; letter-spacing:.06em; color:rgba(243,236,224,0.66); margin:-2px 0 2px;"></div>
     <button type="button" class="title-btn" onclick="window.closeTitleScreen(); window.catRoomOpen();">⚙️ 設定</button>
     <button type="button" class="title-btn" onclick="window.openInfoList();">📖 説明欄</button>
   </div>
@@ -1183,7 +1182,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1394</div>
+  <div id="verTag">v1395</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -4575,12 +4574,15 @@ document.addEventListener('DOMContentLoaded', function () {
       '立ち位置は画面を三等分した三つで、そのどれかに居る。<br><br>' +
       '<b>動く</b><br>押した所を0.3秒そのまま押し続けると、指のある側の立ち位置へ走る。隣まで0.22秒、端から端は二つぶん。' +
       '着いたところで0.25秒だけ息切れし、その間に触れた指は一つだけ溜まって、明けた瞬間に出る。' +
-      '床の線より<b>上</b>を同じように押し続けると跳ぶ。高さは背丈の1.2倍、上がって下りるまで0.7秒。空中では横へ動けない。<br><br>' +
+      '剣士の<b>頭より上</b>を同じように押し続けると跳ぶ。高さは背丈の1.2倍、上がって下りるまで0.7秒。' +
+      '跳ぶ先も指のいる立ち位置で、弧を描いて隣へ渡る。同じ立ち位置を押していればその場で真上へ。' +
+      '渡れるのは隣ひとつまでで、行き先は跳んだ瞬間に決まる——空中では変えられない。<br><br>' +
       '<b>捕る</b><br>触れた瞬間、その向きへ剣を振る。届くのは短辺の35%までで、振った向きの左右30度の扇に入った一羽を捕らえる。' +
       '射程の外を狙うと、剣ではなく豆を投げる。山なりに飛んで、鳥に届けば捕まえる。' +
       '走っている最中は、体が通った帯に居た鳥を巻き込む（走り斬り。一回の移動で1羽まで）。' +
       '空中で捕らえると段が上がって捕獲音が半音ずつ上がり、落ちるのが少し止まる。' +
-      'その直後0.3秒のうちにもう一度叩くと、八方向へ星を撒く。段は着地で0へ戻る。<br><br>' +
+      '空中で剣を振っている最中にもう一度叩くと、八方向へ星を撒く——捕らえたかどうかは問わず、空振りの振りでもよい。' +
+      '出せるのは一度の跳躍につき一回。段は着地で0へ戻る。<br><br>' +
       '<b>鳥</b><br>鳥は一定の間隔で向きを変え、壁では跳ね返る。空振りすると近くの一羽が驚いて逃げる——当てずっぽうに連打するほど遠のく。' +
       '12秒に一度、三羽が横一列で飛んでくる。この三羽は逃げも向き変えもせず、そのまま反対の端へ抜けていく。' +
       '列が自分の真上を通る瞬間に振れば、一振りで二羽まとめて捕れる。捕り逃しても罰はない。' +
@@ -4592,8 +4594,7 @@ document.addEventListener('DOMContentLoaded', function () {
       '<b>勝ち負け</b><br>初級は同時2羽でノルマ3羽、中級は同時3羽で5羽、上級は同時4羽で7羽。' +
       '30秒でノルマぶん捕まえれば勝ち、届かなければ鳥の勝ち。一羽捕まえるごとに残りが1割ずつ速くなり、最後の一羽がいちばん速い。' +
       '連戦は同時4羽・上級と同じ速さで、時間もノルマも持たず、この加速も掛からない。終わりは✕を押したときだけで、10羽ごとに剣士が喜ぶ。<br><br>' +
-      '<b>その他</b><br>画面を離れると休止になり、触れると続きから始まる。勝った回はクリアタイムが難易度ごとに残り、自己ベストとして結果に出る。' +
-      '連戦の最高記録は、タイトルの入口の下に一行で出る。' },
+      '<b>その他</b><br>画面を離れると休止になり、触れると続きから始まる。勝った回はクリアタイムが難易度ごとに残り、自己ベストとして結果に出る。' },
   };
   window.openInfoDetail = function(key){
     if(key === 'engine'){
@@ -9283,7 +9284,6 @@ window.ssReceive = function(){
     mobHi:     0.28,    // 帯の上端。剣の射程は短辺の 0.35 なので、その内側に収めてある
     mobCrossMs: 3500,   // 画面の幅を横切る時間（ミリ秒）。加速も追い込みの倍率も掛けない
     joyEvery:    10,    // 連戦で喜ぶ動きを出す羽数の刻み
-    bestKeyEndless: 'toriEndlessBest',   // 連戦の最高記録の控え先（設定と同じ localStorage）
     goldAt:      15,    // 開始から何秒で金にするか（残り150の瞬間）
     goldDur:      8,    // 金でいる長さ（秒）
     goldWorth:    2,    // 金を捕らえたときノルマに数える羽数
@@ -9367,6 +9367,9 @@ window.ssReceive = function(){
     /* ここから跳躍。床の線より上を押しっぱなしにすると跳ぶ。 */
     jumpH:      1.2,   // 跳ぶ高さ（体の高さに対する倍率）
     jumpMs:     700,   // 上がって下りるまで（ミリ秒）
+    /* 跳躍と横移動の境目に使う絵。この絵の上端に、画面いっぱいの水平な一本を引く。
+       振りの絵は剣が上へ伸びて上端が変わるので、待機の絵で固定する。 */
+    jumpLineFrame: 'idleFront',
     airSlashMs: 220,   // 空中で振ったとき、空中切りの絵を出す時間（ミリ秒）
     /* 床の影。楕円ひとつを CSS で描く（画像は持たない）。
        高く上がるほど小さく薄くする。地上では等倍・不透明のまま。 */
@@ -9377,11 +9380,11 @@ window.ssReceive = function(){
     /* ここから空中の連続切りと星撒き。段は一系統で、着地したら0へ戻る。 */
     airComboMax:   5,      // 段の上限
     airComboSemi:  1.0595, // 一段ぶんの周波数の倍率（半音）
-    airHangMs:     250,    // 空中で捕らえたとき、落下が止まる時間（ミリ秒）
+    airHangMs:     250,    // 星撒きを出したとき、落下が止まる時間（ミリ秒）
+    airCatchHangMs: 80,    // 空中で捕らえたとき、落下が止まる時間（ミリ秒）
     sparkMs:       120,    // 金の粒を出している時間（ミリ秒）
     sparkScale:    0.333,  // 金の粒の大きさ（飛ぶ星に対する割合）
     sparkSpread:   0.10,   // 金の粒が散る距離（短辺に対する割合）
-    scatterWin:    300,    // 星撒きを受け付ける時間（ミリ秒）
     scatterN:      8,      // 撒く星の数（八方向）
     scatterDist:   0.55,   // 星の飛ぶ距離（短辺に対する割合）
     scatterMs:     260,    // 星の飛ぶ時間（ミリ秒）。距離が一定なので時間も一定
@@ -9421,10 +9424,13 @@ window.ssReceive = function(){
   /* 跳躍。jumpAt からの経過で高さが決まる。空中では横へ動かない。
      airSlashUntil の間だけ空中切りの絵を出す（向きは左右のみ）。 */
   let jumping = false, jumpAt = 0, jumpFace = 1, airSlashUntil = 0;
+  /* 跳躍はゾーンからゾーンへ渡る。行き先は跳んだ瞬間に決まり、空中では変えられない。 */
+  let jumpFrom = 1, jumpTo = 1;
   let shadowNode = null;
   /* 空中の段は一系統。連続切りの粒の数も、捕獲音の高さも、ここを見る。
-     scatterUntil は星撒きを受け付けている間。hangUntil の間は落下が止まる。 */
-  let airCombo = 0, scatterUntil = 0, hangUntil = 0;
+     swingUntil は鞭の振りが続いている間（星撒きの受け口）。hangUntil の間は落下が止まる。
+     scatterDone は、一度の跳躍で星撒きを使ったかどうか。 */
+  let airCombo = 0, hangUntil = 0, swingUntil = 0, scatterDone = false;
   let joyMark = 0;   // 連戦で喜んだ直近の羽数（同じ刻みで二度出さない）
   let playAt = 0;    // 走り込みと喜ぶ動きが明けて、遊びが動き出した時刻
   let starNodes = null, starFly = [], sparkNodes = null, sparkTimer = 0;
@@ -9569,10 +9575,6 @@ window.ssReceive = function(){
   const short = () => Math.min(window.innerWidth, window.innerHeight);
   /* 連戦は時計もノルマも持たない。加速も追い込みも起こさない。 */
   const isEndless = () => !!level && level.key === 'endless';
-  function bestEndlessGet(){ try{ return Number(localStorage.getItem(TORI.bestKeyEndless) || 0) || 0; }catch(e){ return 0; } }
-  function bestEndlessPut(n){
-    try{ if(n > bestEndlessGet()) localStorage.setItem(TORI.bestKeyEndless, String(n)); }catch(e){}
-  }
   /* 剣士の中心。攻めの向き・射程・当たりは、すべてこの値を基準にする。
      走っている間は、出発と到着のゾーンの間を時間で割って進む。 */
   /* ゾーンの中心。−1 は走り込みの出発点＝画面の外。 */
@@ -9581,6 +9583,12 @@ window.ssReceive = function(){
   const edaCY = () => window.innerHeight * EDA.floorRatio;
   /* 高い鳥が下りてこない線。床の線から上へ highBand ぶん。 */
   const highTop = () => Math.max(0, edaCY() - window.innerHeight * TORI.highBand);
+  /* 跳躍と横移動の境目。地上に立っている待機絵の上端に、画面いっぱいの水平な一本を引く。
+     剣士が左右どのゾーンに居るかは見ない（高さだけで分ける）。 */
+  function jumpLineY(){
+    const k = (short() * EDA.artRatio) / EDA_SIZE[1];
+    return edaCY() - EDA_FOOT[EDA.jumpLineFrame] * k;
+  }
   /* いまの跳躍の高さ（px）。上がって下りるまでを山なりで結ぶ。跳んでいなければ0。 */
   function jumpLift(){
     if(!jumping) return 0;
@@ -9589,6 +9597,13 @@ window.ssReceive = function(){
   }
   function edaCX(){
     const W = window.innerWidth;
+    /* 跳んでいる間は、出発と着地のゾーンの間を滞空時間で割って等速で渡る。
+       落下停止のあいだは jumpAt が押し戻されるので、水平も一緒に止まる
+       （滞空だけが伸びて、着地先はずれない）。 */
+    if(jumping){
+      const tj = Math.max(0, Math.min(1, (Date.now() - jumpAt) / EDA.jumpMs));
+      return W * (zoneCenter(jumpFrom) + (zoneCenter(jumpTo) - zoneCenter(jumpFrom)) * tj);
+    }
     if(!moving) return W * zoneCenter(zoneIdx);
     const t = Math.max(0, Math.min(1, (Date.now() - moveAt) / moveMs));
     return W * (zoneCenter(moveFrom) + (zoneCenter(moveTo) - zoneCenter(moveFrom)) * t);
@@ -9675,10 +9690,11 @@ window.ssReceive = function(){
     if(runTimer) clearTimeout(runTimer);
     runTimer = 0;
     moving = false; zoneIdx = 1; moveFrom = 1; moveTo = 1;   // 開始は中央のゾーン
+    jumpFrom = 1; jumpTo = 1;
     breathUntil = 0;
     joyMark = 0; playAt = 0;
     jumping = false; airSlashUntil = 0;
-    airCombo = 0; scatterUntil = 0; hangUntil = 0;
+    airCombo = 0; hangUntil = 0; swingUntil = 0; scatterDone = false;
     starDrop();
     joyStop();
     frozen = false; introing = false;
@@ -9795,6 +9811,8 @@ window.ssReceive = function(){
     edaTimers.push(setTimeout(function(){ edaFrame(foll); }, EDA.leadTime + EDA.hitTime));
     edaTimers.push(setTimeout(function(){ edaFrame(edaIdleKey()); }, EDA.leadTime + EDA.hitTime + EDA.followTime));
     edaCoolAt = Date.now() + EDA.coolTime;
+    /* 三枚続きが出ているあいだ＝星撒きの受け口。豆投げでは立てない。 */
+    swingUntil = edaCoolAt;
     return EDA_DIRS[at].deg;
   }
 
@@ -10122,8 +10140,7 @@ window.ssReceive = function(){
          受付が開くときには音を鳴らさない（鳴るのは発動の瞬間だけ）。 */
       airCombo = Math.min(airCombo + 1, EDA.airComboMax);
       step = airCombo - 1;
-      hangUntil = Date.now() + EDA.airHangMs;
-      scatterUntil = Date.now() + EDA.scatterWin;
+      hangUntil = Date.now() + EDA.airCatchHangMs;
       if(airCombo >= 2) sparkShow(airCombo);
     }
     toriSeTake(step, waitSec || 0);
@@ -10155,7 +10172,8 @@ window.ssReceive = function(){
      一つの星は一羽捕らえたらそこで消える。飛び切った星はそのまま消す（逃走処理は呼ばない）。 */
   function scatterGo(){
     if(!starNodes) return;
-    scatterUntil = 0;
+    scatterDone = true;                          // 一度の跳躍につき一回だけ
+    hangUntil = Date.now() + EDA.airHangMs;      // 出しているあいだは落下も水平も止まる
     toriSe('bell');
     const s = short(), cx = edaCX(), cy = edaCY() - jumpLift();
     const dist = s * EDA.scatterDist, now = Date.now();
@@ -10409,13 +10427,27 @@ window.ssReceive = function(){
     edaTimers.push(setTimeout(function(){ zoneArrive(1); }, moveMs));
   }
   /* 跳ぶ。上がっている間は上昇、振れば空中切り、下りている間は降下。
-     空中では横へ動かない。接触は起こる（触られたら仰け反り、そのまま落ちる）。
+     ゾーンからゾーンへ弧を描いて渡り、行き先は跳んだ瞬間に決まる（空中では変えられない）。
+     接触は起こる（触られたら仰け反り、そのまま落ちる）。
      着地したら息切れは入れず、そのまま待機へ戻る。 */
-  function jumpGo(){
+  function jumpGo(to){
     if(jumping || moving) return;
+    /* 行き先は隣ひとつまで。同じゾーンなら、その場で真上へ跳ぶ（真上の高い鳥を狙うため）。 */
+    const want = (typeof to === 'number') ? to : zoneIdx;
+    jumpFrom = zoneIdx;
+    jumpTo = Math.max(zoneIdx - 1, Math.min(zoneIdx + 1, want));
     jumping = true;
     jumpAt = Date.now();
-    jumpFace = (edaFacing < 0) ? -1 : 1;
+    /* 向きは「どのゾーンから飛んだか」で決める。外側のゾーンからは、隣へ渡るときも
+       その場で跳ぶときも画面の内側を向く。規則が当たらない「真ん中でその場跳び」だけ、
+       直前の向きのままにする。 */
+    jumpFace = (jumpFrom === 0) ? 1
+             : (jumpFrom === ZONE_X.length - 1) ? -1
+             : (jumpTo > jumpFrom) ? 1
+             : (jumpTo < jumpFrom) ? -1
+             : ((edaFacing < 0) ? -1 : 1);
+    scatterDone = false;   // 星撒きは一度の跳躍につき一回
+    swingUntil = 0;
     airSlashUntil = 0;
     edaTimers.forEach(clearTimeout);
     edaTimers = [];
@@ -10437,10 +10469,13 @@ window.ssReceive = function(){
   }
   function jumpLand(){
     jumping = false;
+    zoneIdx = jumpTo;          // 着地先のゾーンに立つ
+    jumpFrom = jumpTo;
+    edaFacing = jumpFace;      // 着地後の待機は、跳躍で使った向きに合わせる
     toriSe('land');
     airCombo = 0;        // 段は着地で0へ戻る
-    scatterUntil = 0;
     hangUntil = 0;
+    swingUntil = 0;
     airSlashUntil = 0;
     edaCoolAt = 0;
     edaFrame(edaIdleKey());   // 息切れは入れない
@@ -10457,8 +10492,9 @@ window.ssReceive = function(){
     holdTimer = setTimeout(function(){
       holdTimer = 0;
       if(!running || moving || !holdPt) return;
-      /* 押した所が床の線より上なら跳ぶ、下ならこれまでどおり横へ走る。 */
-      if(holdPt.y < edaCY()) jumpGo();
+      /* 押した所が剣士の頭より上なら跳ぶ、下ならこれまでどおり横へ走る。
+         どちらも行き先は指のいるゾーン。 */
+      if(holdPt.y < jumpLineY()) jumpGo(zoneOf(holdPt.x));
       else zoneGo(zoneOf(holdPt.x));
     }, EDA.holdMove);
   }
@@ -10560,8 +10596,10 @@ window.ssReceive = function(){
   }
   /* 触れた点の始末。鞭を振り、届く範囲の扇に入った一羽を捕る。外れれば近くの一羽が逃げる。 */
   function hit(px, py){
-    /* 空中で1羽捕らえた直後の受付の間に叩いたら、剣ではなく星撒き。 */
-    if(jumping && Date.now() < scatterUntil){ scatterGo(); return; }
+    /* 空中で剣を振っている最中に叩いたら、剣ではなく星撒き。捕らえたかどうかは問わない。
+       受け口は振りの入力止め（coolTime）の間で、一度の跳躍につき一回だけ。
+       豆投げの入力止めでは開かない（開くのは鞭の振りだけ）。 */
+    if(jumping && !scatterDone && Date.now() < swingUntil){ scatterGo(); return; }
     if(portraitHold) return;   // 縦の間は受け付けない
     if(moving) return;         // 走っている間は受け付けない
     if(frozen) return;         // 走り込みと喜ぶ動きの間は受け付けない
@@ -10574,10 +10612,10 @@ window.ssReceive = function(){
       return nageThrow(px, py);
     }
     const swingDeg = edaSwing(px, py);
-    /* 空中で振ったら、空中切りの絵に替える。向きは左右のみ。
+    /* 空中で振ったら、空中切りの絵に替える。向きは跳んだ瞬間に決まった jumpFace のまま
+       （三枚とも「どのゾーンから飛んだか」で決める）。
        判定（射程と扇）はいつもどおり edaSwing の戻り値で行う。 */
     if(jumping){
-      jumpFace = (px < edaCX()) ? -1 : 1;
       airSlashUntil = Date.now() + EDA.airSlashMs;
       edaTimers.forEach(clearTimeout);
       edaTimers = [];
@@ -10716,14 +10754,6 @@ window.ssReceive = function(){
   document.addEventListener('visibilitychange', function(){
     if(document.hidden) pause();
   });
-  /* タイトルの入口の下に、連戦の最高記録を一行で出す。無ければ何も出さない。 */
-  function toriBestShow(){
-    const e = document.getElementById('toriBest');
-    if(!e) return;
-    const n = bestEndlessGet();
-    e.textContent = n > 0 ? ('連戦の最高記録 ' + n + ' 羽') : '';
-  }
-  window.toriBestShow = toriBestShow;
   window.toriOpen = function(){
     build();
     el.classList.add('show');
@@ -10760,8 +10790,7 @@ window.ssReceive = function(){
     toriOrient();   // 縦のまま始めようとしたら、横になるまで待たせる
   };
   window.toriClose = function(){
-    /* 連戦は ✕ だけが終わり。押した時点の数を最高記録として控える。 */
-    if(isEndless() && caught > 0) bestEndlessPut(caught);
+    /* 連戦は ✕ だけが終わり。記録は残さない。 */
     bgmStop();   // 遊びを抜けたら止める
     running = false;
     paused = false;
@@ -10769,7 +10798,6 @@ window.ssReceive = function(){
     clearBirds();
     edaShow(false);
     if(el) el.classList.remove('show');
-    toriBestShow();   // 控えたばかりの記録を入口に映す
     if(window.ssGoTitle) window.ssGoTitle();
   };
 })();
