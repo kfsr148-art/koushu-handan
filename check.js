@@ -1255,12 +1255,143 @@ window.addEventListener('load', function(){ setTimeout(function(){
   }
 });
 
+/* ============================================================
+   ⑰ 跳躍中に地上の絵が混ざらないか
+   仕様：離陸から着地までの全コマが、空中の三枚（上昇・空中切り・降下）のいずれかであること。
+   隣のゾーンへ跳ぶときは、押す点が必ず剣の射程の外に落ちるので豆投げが先に発火する。
+   v1400 までは、その投げの絵（構え・掴む・弾く・飛行・戻し）が空中の絵を上書きしていた。
+   空中かどうかは「出ている絵」ではなく床の影の大きさで見る——影は高さに応じて縮むので、
+   どのコマが出ていようと関係なく空中が分かる。出ている絵で空中を判定すると、
+   まさに見つけたい不良で判定そのものが狂う。
+   ============================================================ */
+let jumpSkipped = false;
+section('⑰', '跳躍中に地上の絵が混ざらないか', () => {
+  const browser = [
+    process.env['ProgramFiles(x86)'] && process.env['ProgramFiles(x86)'] + '\\Microsoft\\Edge\\Application\\msedge.exe',
+    process.env['ProgramFiles'] && process.env['ProgramFiles'] + '\\Microsoft\\Edge\\Application\\msedge.exe',
+    process.env['ProgramFiles(x86)'] && process.env['ProgramFiles(x86)'] + '\\Google\\Chrome\\Application\\chrome.exe',
+    process.env['ProgramFiles'] && process.env['ProgramFiles'] + '\\Google\\Chrome\\Application\\chrome.exe',
+    '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'
+  ].filter(p => p && fs.existsSync(p))[0];
+  if (!browser) {
+    note('ブラウザが見つからないため測定を飛ばす（Edge か Chrome があれば実測する）');
+    jumpSkipped = true;
+    ok('測定なし');
+    return;
+  }
+  note('測定に使うブラウザ : ' + path.basename(browser));
+
+  const wi2 = src.indexOf('const EDA_WHIP = {');
+  if (wi2 < 0) { ng('EDA_WHIP が見つからない'); return; }
+  const wb2 = src.slice(wi2, src.indexOf('};', wi2) + 2);
+  const KEYS2 = [];
+  { const re = /(\w+):'data:image\/png;base64,/g; let m; while ((m = re.exec(wb2))) KEYS2.push(m[1]); }
+  const floorRatio2 = Number((src.match(/floorRatio:\s*([0-9.]+)/) || [])[1] || 0.8);
+  const holdMove2 = Number((src.match(/holdMove:\s*(\d+)/) || [])[1] || 300);
+  const jumpMs2 = Number((src.match(/jumpMs:\s*(\d+)/) || [])[1] || 700);
+  note('長押しで跳ぶまで ' + holdMove2 + 'ms ／ 滞空 ' + jumpMs2 + 'ms');
+
+  const JUMP_PROBE = `
+<script>
+window.addEventListener('load', function(){ setTimeout(function(){
+  var KEYS = ${JSON.stringify(KEYS2)};
+  var NAGE = ['prepare','grasp','flick','flight','action','tama'];
+  var FLOOR = ${floorRatio2};
+  var out = { rows: [], ground: null, err: null };
+  function sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+  /* 見るのは剣士の体のコマだけ。飛んでいる豆（投:tama）は数に入れない——
+     豆は跳躍中も飛んでいて当然で、止めるのは絵の上書きだけだから。
+     豆が鳥に当たるかどうかで見える見えないが変わるので、入れると検査が揺れる。 */
+  function shown(){
+    var all = document.querySelectorAll('#toriRoot .tori-eda');
+    var names = KEYS.concat(NAGE.map(function(n){ return '投:' + n; }));
+    var vis = [];
+    for(var i = 0; i < names.length && i < all.length; i++)
+      if(all[i].style.display === 'block' && names[i] !== '投:tama') vis.push(names[i]);
+    return vis.length === 1 ? vis[0] : ('(' + vis.join('|') + ')');
+  }
+  /* 床の影の横幅。地上では等倍、高く上がるほど小さくなる。 */
+  function shadowW(){
+    var s = document.querySelector('.tori-shadow');
+    if(!s || s.style.display === 'none') return null;
+    return s.getBoundingClientRect().width;
+  }
+  function down(x, y){ document.getElementById('toriRoot').dispatchEvent(
+    new MouseEvent('mousedown', { bubbles:true, cancelable:true, clientX:x, clientY:y })); }
+  function up(){ window.dispatchEvent(new MouseEvent('mouseup', { bubbles:true })); }
+  (async function(){
+    try{
+      window.requestAnimationFrame = function(fn){ return setTimeout(function(){ fn(Date.now()); }, 16); };
+      window.cancelAnimationFrame = function(id){ clearTimeout(id); };
+      window.closeTitleScreen(); window.toriOpen(); window.toriStart('hard');
+      await sleep(1200);                       /* 走り込み＋喜びが明けるまで */
+      var W = window.innerWidth, H = window.innerHeight;
+      var floor = H * FLOOR;
+      out.ground = shadowW();                  /* 地上での影の幅を控える */
+      /* 真ん中から右のゾーンへ跳ぶ。押す点は頭より十分上（＝跳躍になる）。 */
+      down(W * 0.75, floor * 0.35);
+      var t0 = Date.now(), lim = ${holdMove2} + ${jumpMs2} + 600;
+      while(Date.now() - t0 < lim){
+        out.rows.push({ t: Date.now() - t0, f: shown(), sw: shadowW() });
+        await sleep(16);
+      }
+      up();
+    }catch(e){ out.err = String(e && e.stack || e); }
+    var n = document.createElement('div');
+    n.textContent = 'KOUSHU_JUMP_BEGIN' + btoa(unescape(encodeURIComponent(JSON.stringify(out)))) + 'KOUSHU_JUMP_END';
+    document.body.appendChild(n);
+  })();
+}, 100); });
+</script>
+`;
+
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'koushu-jump-'));
+  try {
+    const probe = path.join(tmpDir, 'probe.html');
+    fs.writeFileSync(probe, src.replace(/<\/body>\s*$/m, JUMP_PROBE + '</body>'), 'utf8');
+    const r = spawnSync(browser, ['--headless=new', '--disable-gpu', '--hide-scrollbars',
+      '--force-device-scale-factor=1', '--window-size=844,390',
+      '--user-data-dir=' + path.join(tmpDir, 'prof'),
+      '--virtual-time-budget=60000', '--dump-dom',
+      'file:///' + probe.replace(/\\/g, '/')],
+      { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
+    const hit = /KOUSHU_JUMP_BEGIN([A-Za-z0-9+/=]+)KOUSHU_JUMP_END/.exec(String(r.stdout || ''));
+    if (!hit) { ng('測定結果を取り出せない'); return; }
+    const got = JSON.parse(Buffer.from(hit[1], 'base64').toString('utf8'));
+    if (got.err) { ng('測定中に例外： ' + got.err.slice(0, 200)); return; }
+    if (!got.ground) { ng('床の影が読めない'); return; }
+
+    const AIR = ['airUpR', 'airUpL', 'airSlashR', 'airSlashL', 'airDownR', 'airDownL'];
+    /* 影が縮んでいる間＝空中。等倍のときは地上（跳び際と着地際は等倍に見える）。 */
+    const air = got.rows.filter(r => r.sw !== null && r.sw < got.ground * 0.995);
+    if (air.length < 8) { ng('跳んでいない（空中と読めた標本 ' + air.length + '個）'); return; }
+    const t0 = air[0].t, t1 = air[air.length - 1].t;
+    const bad = air.filter(r => AIR.indexOf(r.f) < 0);
+    note('離陸 ' + t0 + 'ms → 着地 ' + t1 + 'ms（空中と読めた標本 ' + air.length + '個・約16ms刻み）');
+    note('空中の判定は床の影の縮みで行う（出ている絵では判定しない）');
+    if (bad.length === 0) {
+      ok('離陸から着地まで、全コマが空中の三枚のいずれかだった');
+    } else {
+      const kinds = {};
+      bad.forEach(r => { kinds[r.f] = (kinds[r.f] || 0) + 1; });
+      ng('跳躍中に地上の絵が混ざっている ' + bad.length + '標本');
+      Object.keys(kinds).forEach(k => {
+        const first = bad.filter(r => r.f === k)[0];
+        note('  ' + k + ' が ' + kinds[k] + '標本（最初は離陸から ' + (first.t - t0) + 'ms）');
+      });
+    }
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
 /* ---- まとめ ---- */
 console.log('');
 console.log('='.repeat(52));
 sections.forEach(s => {
   /* 測れなかった項目を PASS と並べない。通ったのか、見ていないのかを取り違えないため。 */
-  const skipped = (viewSkipped && /狭い画面/.test(s.title)) || (idleSkipped && /待機の向き/.test(s.title));
+  const skipped = (viewSkipped && /狭い画面/.test(s.title)) || (idleSkipped && /待機の向き/.test(s.title))
+                  || (jumpSkipped && /跳躍中/.test(s.title));
   const mark = !s.ok ? 'FAIL  ' : (skipped ? 'SKIP  ' : 'PASS  ');
   console.log(mark + s.title);
 });

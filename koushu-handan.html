@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1400">
+<html lang="ja" data-ver="1401">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1182,7 +1182,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1400</div>
+  <div id="verTag">v1401</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9670,6 +9670,10 @@ window.ssReceive = function(){
   /* 投げの一コマを出す。足元＝絵の下端を床に、体軸を立ち位置に合わせる。
      左を狙ったときは scaleX(-1) で反転し、体軸は 1−値 で数える。 */
   function nageFrame(key){
+    /* 跳んでいる間は、投げの絵を一枚も出さない。空中の三枚（上昇・空中切り・降下）が優先。
+       止めるのは絵だけで、豆は止めない——発射も飛行も当たりもタイマーの側でそのまま動く
+       （豆の絵 tama はこの関数を通らず、edaHideAll() の対象からも外してある）。 */
+    if(jumping) return;
     if(!nageNodes || !nageNodes[key]) return;
     if(edaVisible) edaHideAll();
     const im = nageNodes[key];
@@ -9760,8 +9764,9 @@ window.ssReceive = function(){
   /* 着弾（当たっても外れても）。戻しの一コマを出してから待機へ。 */
   function beanEnd(){
     beanDrop();
-    nageFrame('action');
-    nageTimers.push(setTimeout(function(){ edaFrame(edaIdleKey()); }, EDA.nageBack));
+    nageFrame('action');   /* 空中なら nageFrame の側で弾かれる */
+    /* 戻しの一コマも、跳んでいる間は出さない（空中の絵を上書きしないため）。 */
+    nageTimers.push(setTimeout(function(){ if(!jumping) edaFrame(edaIdleKey()); }, EDA.nageBack));
   }
   /* 飛んでいる間の始末。毎フレーム呼び、鳥に届いたらその一羽を捕まえる。 */
   function beanStep(){
@@ -10593,11 +10598,13 @@ window.ssReceive = function(){
     nageTimers = [];
     beanDrop();
     edaCoolAt = 0;   // 溜めた一つを、明けた瞬間に必ず出せるようにする
-    edaFrame('hit');
-    /* 空中で触られたら、絵は仰け反りに替わるが落下は続く。
-       明けたら空中のコマへ戻し、着地の始末は跳躍の側が持つ。 */
+    /* 空中では仰け反りの絵を出さない。空中の三枚が優先で、地上のコマは一枚も混ぜない。
+       もともと airFrame() が毎フレーム空中のコマを描き直すので、空中で描いても
+       16ms ほどで上書きされて見えていなかった（その一瞬だけが画面に混ざっていた）。
+       無敵・溜めた指・落下の続きは、絵とは別にそのまま働く。 */
+    if(!jumping) edaFrame('hit');
     edaTimers.push(setTimeout(function(){
-      edaFrame(edaIdleKey());
+      if(!jumping) edaFrame(edaIdleKey());
       const q = queuedTap;
       queuedTap = null;
       if(q && running) hit(q.x, q.y);
