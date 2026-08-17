@@ -175,45 +175,62 @@ function measure(d,w,h){
       const q = p*4;
       mn[p] = Math.min(d[q],d[q+1],d[q+2]);
     }
-    /* 濃さをそのまま不透明度にする（白＝完全透過）。ただし太い塊は不透明のまま残す。
-       鎖は太くて連なった構造、煙の霞は細い。半径4の円で「開いて」太いものだけ拾えば、
-       霞を横切って切り刻まないので縞にならない。 */
-    const dark = new Uint8Array(w*h);
-    for(let p=0;p<w*h;p++) dark[p] = mn[p] < 205 ? 1 : 0;
-    const R = 4, off = [];
-    for(let dy=-R;dy<=R;dy++) for(let dx=-R;dx<=R;dx++) if(dy*dy+dx*dx <= R*R) off.push([dx,dy]);
-    const ero = new Uint8Array(w*h);
-    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
-      let all = 1;
-      for(const [dx,dy] of off){ const nx=x+dx, ny=y+dy;
-        if(nx<0||ny<0||nx>=w||ny>=h || !dark[ny*w+nx]){ all=0; break; } }
-      if(all) ero[y*w+x] = 1;
+    /* 白抜きに明るさを使わない。
+       明るさをそのまま不透明度にすると、白に近い画素ほど先に消える——銀の刀身・白い耳・
+       白いタイツが真っ先に落ちる。実際 v1399 以前の idleRight はこれで欠けた
+       （刀身が細くて「太い塊」の判定から外れ、明るさ＝不透明度の枝に落ちていた）。
+
+       代わりに、画像の縁から繋がっている白だけを背景とみなして塗る。
+       人物の内側は、どれだけ白くても不透明のまま残る。 */
+    const BG_T = 236;                  /* これ以上白ければ、背景になりうる */
+    const bg = new Uint8Array(w*h), st2 = [];
+    const seed = p => { if(!bg[p] && mn[p] >= BG_T){ bg[p] = 1; st2.push(p); } };
+    /* 縁の一周だけは色を問わず背景の種にする。元絵には 219〜235 の薄い枠が
+       一画素だけ回っていることがあり、これを残すと切り出しが元絵いっぱいに広がる。
+       広げるときは白（BG_T 以上）だけを辿るので、内側へは食い込まない。 */
+    const edge = p => { if(!bg[p]){ bg[p] = 1; st2.push(p); } };
+    for(let x=0;x<w;x++){ edge(x); edge((h-1)*w + x); }
+    for(let y=0;y<h;y++){ edge(y*w); edge(y*w + w-1); }
+    while(st2.length){
+      const p = st2.pop(), x = p % w, y = (p - x) / w;
+      if(x > 0)   seed(p-1);
+      if(x < w-1) seed(p+1);
+      if(y > 0)   seed(p-w);
+      if(y < h-1) seed(p+w);
     }
-    const solid = new Uint8Array(w*h);
-    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
-      if(!ero[y*w+x]) continue;
-      for(const [dx,dy] of off){ const nx=x+dx, ny=y+dy;
-        if(nx>=0&&ny>=0&&nx<w&&ny<h) solid[ny*w+nx] = 1; }
+    /* 縁から数えて FEATHER 画素ぶんだけ、白の混ざりぶんを半透明にして馴染ませる。
+       それより内側は一律に不透明。 */
+    const FEATHER = 2;
+    const dist = new Int16Array(w*h).fill(-1);
+    const q2 = [];
+    for(let p=0;p<w*h;p++){
+      if(bg[p]) continue;
+      const x = p % w, y = (p - x) / w;
+      if((x > 0 && bg[p-1]) || (x < w-1 && bg[p+1]) ||
+         (y > 0 && bg[p-w]) || (y < h-1 && bg[p+w])){ dist[p] = 1; q2.push(p); }
     }
-    /* 太い塊の内側の穴を埋め、さらに2px広げて「絵の本体」とする。
-       輪郭の白いキーラインや鎖の光沢は本体の縁にあるので、広げないと透けて消える。 */
-    const notSolid = new Uint8Array(w*h), st2 = [];
-    for(let x=0;x<w;x++){ for(const y of [0,h-1]){ const p=y*w+x; if(!solid[p]&&!notSolid[p]){notSolid[p]=1;st2.push(p);} } }
-    for(let y=0;y<h;y++){ for(const x of [0,w-1]){ const p=y*w+x; if(!solid[p]&&!notSolid[p]){notSolid[p]=1;st2.push(p);} } }
-    while(st2.length){ const p=st2.pop(); const x=p%w, y=(p-x)/w;
-      const nb=[]; if(x>0)nb.push(p-1); if(x<w-1)nb.push(p+1); if(y>0)nb.push(p-w); if(y<h-1)nb.push(p+w);
-      for(const q of nb) if(!solid[q]&&!notSolid[q]){ notSolid[q]=1; st2.push(q); } }
-    const filled = new Uint8Array(w*h);
-    for(let p=0;p<w*h;p++) filled[p] = (solid[p] || !notSolid[p]) ? 1 : 0;   /* 囲まれた穴も本体 */
-    const G = 2, goff = [];
-    for(let dy=-G;dy<=G;dy++) for(let dx=-G;dx<=G;dx++) if(dy*dy+dx*dx <= G*G) goff.push([dx,dy]);
-    const body = new Uint8Array(w*h);
-    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
-      if(!filled[y*w+x]) continue;
-      for(const [dx,dy] of goff){ const nx=x+dx, ny=y+dy;
-        if(nx>=0&&ny>=0&&nx<w&&ny<h) body[ny*w+nx] = 1; }
+    for(let head=0; head<q2.length; head++){
+      const p = q2[head], dd = dist[p];
+      if(dd >= FEATHER) continue;
+      const x = p % w, y = (p - x) / w;
+      const nb = [];
+      if(x > 0) nb.push(p-1);
+      if(x < w-1) nb.push(p+1);
+      if(y > 0) nb.push(p-w);
+      if(y < h-1) nb.push(p+w);
+      for(const r of nb) if(!bg[r] && dist[r] < 0){ dist[r] = dd + 1; q2.push(r); }
     }
-    for(let p=0;p<w*h;p++) d[p*4+3] = body[p] ? 255 : (255 - mn[p]);
+    for(let p=0;p<w*h;p++){
+      if(bg[p]){ d[p*4+3] = 0; continue; }
+      if(dist[p] < 0){ d[p*4+3] = 255; continue; }   /* 内側は不透明のまま */
+      const soft = 255 - mn[p];                      /* 白いほど薄く（縁の帯だけ） */
+      const k = (dist[p] - 1) / FEATHER;             /* 外ほど0、内ほど1 */
+      d[p*4+3] = Math.max(0, Math.min(255, Math.round(soft + (255 - soft) * k)));
+    }
+    /* 背景が縁から繋がっていない元絵（枠で囲われている等）を黙って通さない。 */
+    { let bn = 0; for(let p=0;p<w*h;p++) if(bg[p]) bn++;
+      out.note.push('白抜き : 縁から繋がった背景は ' + (100*bn/(w*h)).toFixed(1) + '%');
+      if(bn < w*h*0.15) out.note.push('★背景が少ない。白背景の元絵か、閾値 ' + BG_T + ' を見直すこと'); }
     unmatteWhite(d);   /* 半透明に残った白の混ざりを取る（暗い背景で白く光らせない） */
     g.x.putImageData(g.d, 0, 0);
 
