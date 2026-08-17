@@ -1108,11 +1108,16 @@ section('⑮', '猫牌の判定条件の写し', () => {
 
 /* ============================================================
    ⑯ 攻撃のあとの待機の向き
-   仕様：開始は正面／真上・真下のあとは正面／ur・r・dr のあとは右／dl・l・ul のあとは左。
+   仕様（v1399〜）：向きは叩いた点の左右だけで決まる。剣士より右なら右、左なら左。
+   左右の成分が無い（真上・真下ちょうど）ときだけ直前の向きのまま——開始は正面なので正面。
+   振り終わっても向きは保ち、次に向きを決める出来事（別の向きへの攻撃、跳躍）まで戻さない。
    字面では見ない。実際に画面を叩いて、出ている絵で確かめる。
    叩く場所は二通り持つ——鞭が届く内側と、豆投げに落ちる外側。
    v1377 まで外側だけが壊れていた（豆投げが体の向きを左右にしか振らず、真上・真下で
    正面へ戻れなかった）のに、内側しか叩いていない検査では「期待どおり」で通ってしまう。
+   八方位ちょうどだけを叩く検査では v1398 以前の実装（八方位へ丸めてから左右を決める）も
+   同じ答えを返すので、それでは新しい仕様を守れない。真上・真下から5度だけ傾けた点を
+   足してあるのはそのため——ここが旧実装では正面に落ち、新しい仕様では左右を向く。
    ============================================================ */
 let idleSkipped = false;   // ブラウザが無くて測れなかったか（まとめで PASS と紛れないように持つ）
 section('⑯', '攻撃のあとの待機の向き', () => {
@@ -1153,7 +1158,10 @@ window.addEventListener('load', function(){ setTimeout(function(){
   var NAGE = ['prepare','grasp','flick','flight','action','tama'];
   var FLOOR = ${floorRatio};
   var DIRS = [{k:'r',deg:0},{k:'dr',deg:45},{k:'d',deg:90},{k:'dl',deg:135},
-              {k:'l',deg:180},{k:'ul',deg:-135},{k:'u',deg:-90},{k:'ur',deg:-45}];
+              {k:'l',deg:180},{k:'ul',deg:-135},{k:'u',deg:-90},{k:'ur',deg:-45},
+              /* 真上・真下から5度だけ傾けた点。八方位へ丸めると u・d に落ちるので、
+                 旧実装では正面になった。新しい仕様では左右を向く。 */
+              {k:'u右',deg:-85},{k:'u左',deg:-95},{k:'d右',deg:85},{k:'d左',deg:95}];
   var out = { trials: [], err: null };
   function sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
   function shown(){
@@ -1225,18 +1233,22 @@ window.addEventListener('load', function(){ setTimeout(function(){
     const got = JSON.parse(Buffer.from(hit[1], 'base64').toString('utf8'));
     if (got.err) { ng('測定中に例外： ' + got.err.slice(0, 200)); return; }
 
+    /* 真上・真下ちょうどは「直前の向きのまま」。試行ごとに始めからやり直すので、
+       直前＝開始の正面になる。 */
     const WANT = { u:'idleFront', d:'idleFront', r:'idleRight', ur:'idleRight', dr:'idleRight',
-                   l:'idleLeft', ul:'idleLeft', dl:'idleLeft' };
+                   l:'idleLeft', ul:'idleLeft', dl:'idleLeft',
+                   'u右':'idleRight', 'd右':'idleRight', 'u左':'idleLeft', 'd左':'idleLeft' };
     const bad = [];
     got.trials.forEach(t => {
       if (t.got !== WANT[t.dir]) {
         bad.push(t.spot + 'で ' + t.dir + ' → ' + t.got + '（' + WANT[t.dir] + ' のはず）');
       }
     });
-    note('叩いた組み合わせ : ' + got.trials.length + '（八方位 × 鞭の届く内側／豆投げに落ちる外側）');
+    note('叩いた組み合わせ : ' + got.trials.length + '（八方位＋真上真下を5度傾けた4点 × 鞭の届く内側／豆投げに落ちる外側）');
     note('豆投げの側も必ず叩く。内側だけ見ていると、真上・真下が正面へ戻らない不良を素通しする');
-    if (got.trials.length !== 16) { ng('叩き切れていない（' + got.trials.length + ' / 16）'); return; }
-    if (bad.length === 0) ok('八方位とも、鞭でも豆投げでも仕様どおりの待機に戻る');
+    note('傾けた4点も必ず叩く。八方位ちょうどだけでは、丸めてから左右を決める旧実装と区別がつかない');
+    if (got.trials.length !== 24) { ng('叩き切れていない（' + got.trials.length + ' / 24）'); return; }
+    if (bad.length === 0) ok('十二方向とも、鞭でも豆投げでも仕様どおりの向きを保つ');
     else { ng('待機の向きが仕様と違う ' + bad.length + '件'); bad.forEach(b => note('  ' + b)); }
   } finally {
     fs.rmSync(tmpDir, { recursive: true, force: true });

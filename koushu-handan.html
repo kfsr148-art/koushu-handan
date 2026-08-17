@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1398">
+<html lang="ja" data-ver="1399">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1182,7 +1182,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1398</div>
+  <div id="verTag">v1399</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9427,7 +9427,7 @@ window.ssReceive = function(){
   let mobLeft = 0;
   /* 跳躍。jumpAt からの経過で高さが決まる。空中では横へ動かない。
      airSlashUntil の間だけ空中切りの絵を出す（向きは左右のみ）。 */
-  let jumping = false, jumpAt = 0, jumpFace = 1, airSlashUntil = 0;
+  let jumping = false, jumpAt = 0, airSlashUntil = 0;
   /* 跳躍はゾーンからゾーンへ渡る。行き先は跳んだ瞬間に決まり、空中では変えられない。 */
   let jumpFrom = 1, jumpTo = 1;
   let shadowNode = null;
@@ -9724,8 +9724,9 @@ window.ssReceive = function(){
   function nageThrow(px, py){
     nageFlip = (px < edaCX());
     /* 絵の反転は左右の二通りしかないので nageFlip のままでよいが、
-       体の向きは鞭と同じ規則で決める（真上・真下のあとは正面）。 */
-    edaFacing = edaFacingAt(px, py);
+       体の向きは鞭と同じ規則で決める（叩いた点の左右そのまま）。
+       空中では向きを変えない——跳躍の向きは跳んだ瞬間に決まっている。 */
+    if(!jumping) edaFacing = edaFacingAt(px, py);
     nageTimers.forEach(clearTimeout);
     nageTimers = [];
     beanDrop();
@@ -9780,17 +9781,14 @@ window.ssReceive = function(){
   /* 触点の向きから体の向きを決める。鞭でも豆投げでも、ここ一箇所で決める。
      真上と真下のあとは正面、右寄り（r・ur・dr）は右、左寄り（l・ul・dl）は左。
      投げの側で「左か右か」だけで決めると、真上を狙ったときに正面へ戻れない。 */
+  /* 叩いた点の左右だけで体の向きを決める。八方位への丸めは通さない——
+     丸めを通すと、真上からわずかに右の点が u へ寄って正面になり、狙った側を向かない。
+     左右の成分が無い（剣士の真上・真下ちょうど）ときは、直前の向きをそのまま返す。 */
   function edaFacingAt(px, py){
-    const deg = Math.atan2(py - (edaCY() - jumpLift()), px - edaCX()) * 180 / Math.PI;
-    let at = 0, best = 999;
-    EDA_DIRS.forEach(function(d, i){
-      const gap = Math.abs(((d.deg - deg + 540) % 360) - 180);
-      if(gap < best){ best = gap; at = i; }
-    });
-    const k = EDA_DIRS[at].key;
-    if(k === 'r' || k === 'ur' || k === 'dr') return 1;
-    if(k === 'l' || k === 'ul' || k === 'dl') return -1;
-    return 0;
+    const cx = edaCX();
+    if(px > cx) return 1;
+    if(px < cx) return -1;
+    return edaFacing;
   }
   /* 鞭を振る。中央から触点への角度を八方位に丸め、その向きを狙いとする。
      絵は三枚続き——狙いの反時計回り隣 → 狙い → 時計回り隣 → 待機。振りは常に時計回り。
@@ -9807,7 +9805,10 @@ window.ssReceive = function(){
     const lead = EDA_DIRS[(at + n - 1) % n].key;   // 反時計回り隣
     const hitK = EDA_DIRS[at].key;                 // 狙った向き
     const foll = EDA_DIRS[(at + 1) % n].key;       // 時計回り隣
-    edaFacing = edaFacingAt(px, py);   // 真上と真下のあとは正面へ戻る
+    /* 向きは叩いた点の左右そのまま。振り終わってもこの向きを保ち、次に向きを決める
+       出来事（別の向きへの攻撃、または跳躍）が起きるまで戻さない。
+       空中では変えない——跳躍の向きは跳んだ瞬間に決まっている。 */
+    if(!jumping) edaFacing = edaFacingAt(px, py);
     edaTimers.forEach(clearTimeout);
     edaTimers = [];
     edaFrame(lead);
@@ -10376,8 +10377,7 @@ window.ssReceive = function(){
       joyMark = caught;
       toriSe('rush');   // 刻みの合図。既にある合図の音を一度だけ
       joyStart(EDA.joyStartMs, function(){
-        edaFacing = 0;
-        edaFrame(edaIdleKey());
+        edaFrame(edaIdleKey());   // 向きは触らない（喜びは向きを決める出来事ではない）
       });
     }
     /* ノルマを捕り終えた瞬間から、勝ちの絵が出るまでのあいだ喜ぶ。
@@ -10444,12 +10444,14 @@ window.ssReceive = function(){
     jumpAt = Date.now();
     /* 向きは「どのゾーンから飛んだか」で決める。外側のゾーンからは、隣へ渡るときも
        その場で跳ぶときも画面の内側を向く。規則が当たらない「真ん中でその場跳び」だけ、
-       直前の向きのままにする。 */
-    jumpFace = (jumpFrom === 0) ? 1
-             : (jumpFrom === ZONE_X.length - 1) ? -1
-             : (jumpTo > jumpFrom) ? 1
-             : (jumpTo < jumpFrom) ? -1
-             : ((edaFacing < 0) ? -1 : 1);
+       直前の向きのままにする。
+       跳躍は向きを決める出来事なので、値は edaFacing にそのまま書く（空中の三枚も
+       着地後の待機も、この一つを見る）。 */
+    edaFacing = (jumpFrom === 0) ? 1
+              : (jumpFrom === ZONE_X.length - 1) ? -1
+              : (jumpTo > jumpFrom) ? 1
+              : (jumpTo < jumpFrom) ? -1
+              : ((edaFacing < 0) ? -1 : 1);
     scatterDone = false;   // 星撒きは一度の跳躍につき一回
     swingUntil = 0;
     airSlashUntil = 0;
@@ -10466,16 +10468,17 @@ window.ssReceive = function(){
     const t = (now - jumpAt) / EDA.jumpMs;
     let key;
     if(t >= 1){ jumpLand(); return; }   // 落下停止を跨いでも、山を下り切ったところで着地
-    if(now < airSlashUntil) key = (jumpFace < 0) ? 'airSlashL' : 'airSlashR';
-    else if(t < 0.5)        key = (jumpFace < 0) ? 'airUpL'    : 'airUpR';
-    else                    key = (jumpFace < 0) ? 'airDownL'  : 'airDownR';
+    if(now < airSlashUntil) key = (edaFacing < 0) ? 'airSlashL' : 'airSlashR';
+    else if(t < 0.5)        key = (edaFacing < 0) ? 'airUpL'    : 'airUpR';
+    else                    key = (edaFacing < 0) ? 'airDownL'  : 'airDownR';
     if(edaDir !== key) edaFrame(key);
   }
   function jumpLand(){
     jumping = false;
     zoneIdx = jumpTo;          // 着地先のゾーンに立つ
     jumpFrom = jumpTo;
-    edaFacing = jumpFace;      // 着地後の待機は、跳躍で使った向きに合わせる
+    /* 着地後の待機は、跳躍で使った向きのまま。edaFacing は跳んだ瞬間に決めてあるので
+       ここでは何も書かない（次に地上で攻めれば、その攻撃の向きへ移る）。 */
     toriSe('land');
     airCombo = 0;        // 段は着地で0へ戻る
     hangUntil = 0;
@@ -10534,14 +10537,14 @@ window.ssReceive = function(){
     edaFrame(runShow ? (dir > 0 ? 'runR' : 'runL') : (dir > 0 ? 'idleRight' : 'idleLeft'));
     runTimer = setTimeout(function(){ runFlip(dir, false); }, EDA.runFlipMs);
   }
-  /* 到着。進んでいた向きではなく正面の待機で止まる。
-     次に攻めれば、いつもどおり攻めた向きの待機へ切り替わる。 */
+  /* 到着。息切れの絵だけは進んでいた向きで出し、明けたら走る前の向きの待機へ戻る。
+     横移動は向きを決める出来事ではないので、edaFacing には触らない。 */
   function zoneArrive(dir){
     moving = false;
     zoneIdx = moveTo;
     if(runTimer) clearTimeout(runTimer);
     runTimer = 0;
-    edaFacing = 0;   // 息切れが明けたあとの待機は正面
+    /* 横移動は向きを決める出来事ではない。走る前の向きをそのまま持ち越す。 */
     if(introing){
       /* 走り込みの到着。息切れではなく喜ぶ動きを joyStartMs だけ出し、
          明けたところで正面の待機に立たせ、そこから時計が動き出す。 */
@@ -10616,7 +10619,7 @@ window.ssReceive = function(){
       return nageThrow(px, py);
     }
     const swingDeg = edaSwing(px, py);
-    /* 空中で振ったら、空中切りの絵に替える。向きは跳んだ瞬間に決まった jumpFace のまま
+    /* 空中で振ったら、空中切りの絵に替える。向きは跳んだ瞬間に決まった edaFacing のまま
        （三枚とも「どのゾーンから飛んだか」で決める）。
        判定（射程と扇）はいつもどおり edaSwing の戻り値で行う。 */
     if(jumping){
