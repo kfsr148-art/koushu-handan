@@ -1388,13 +1388,140 @@ window.addEventListener('load', function(){ setTimeout(function(){
   }
 });
 
+/* ============================================================
+   ⑱ 喜ぶ動きが必ず終わるか
+   仕様：喜びを始めた者が誰であれ、規定時間で必ず待機へ戻り、操作を受け直す。
+   v1404 までは、終わらせる合図を edaTimers へ積んでいた。edaTimers を clearTimeout して
+   空にする経路が五つ（edaSwing・zoneGo・jumpGo・recoil・空中の hit）あり、喜びの最中に
+   それが起きると終了処理ごと消えて、喜ぶ絵のまま止まり操作を受けなくなった。
+   連戦の10羽ごとは frozen を立てないので、長押しが素通りして zoneGo が走るのが実際の道筋。
+   ここでは連戦で喜びを起こし、その最中に長押しを当てて、規定の2倍を過ぎても
+   喜びの絵が現れないことを見る。走り絵が一瞬上書きしても、タイマーが生きていれば戻ってくる。
+   ============================================================ */
+let joySkipped = false;
+section('⑱', '喜ぶ動きが必ず終わるか', () => {
+  const browser = [
+    process.env['ProgramFiles(x86)'] && process.env['ProgramFiles(x86)'] + '\\Microsoft\\Edge\\Application\\msedge.exe',
+    process.env['ProgramFiles'] && process.env['ProgramFiles'] + '\\Microsoft\\Edge\\Application\\msedge.exe',
+    process.env['ProgramFiles(x86)'] && process.env['ProgramFiles(x86)'] + '\\Google\\Chrome\\Application\\chrome.exe',
+    process.env['ProgramFiles'] && process.env['ProgramFiles'] + '\\Google\\Chrome\\Application\\chrome.exe',
+    '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'
+  ].filter(p => p && fs.existsSync(p))[0];
+  if (!browser) {
+    note('ブラウザが見つからないため測定を飛ばす（Edge か Chrome があれば実測する）');
+    joySkipped = true; ok('測定なし'); return;
+  }
+  note('測定に使うブラウザ : ' + path.basename(browser));
+  const wi3 = src.indexOf('const EDA_WHIP = {');
+  if (wi3 < 0) { ng('EDA_WHIP が見つからない'); return; }
+  const wb3 = src.slice(wi3, src.indexOf('};', wi3) + 2);
+  const K3 = [];
+  { const re = /(\w+):'data:image\/png;base64,/g; let m; while ((m = re.exec(wb3))) K3.push(m[1]); }
+  const fl3 = Number((src.match(/floorRatio:\s*([0-9.]+)/) || [])[1] || 0.8);
+  const hm3 = Number((src.match(/holdMove:\s*(\d+)/) || [])[1] || 300);
+  const js3 = Number((src.match(/joyStartMs:\s*(\d+)/) || [])[1] || 600);
+  const je3 = Number((src.match(/joyEvery:\s*(\d+)/) || [])[1] || 10);
+  note('連戦の刻み ' + je3 + '羽ごと ／ 喜びの長さ ' + js3 + 'ms ／ 長押しで動くまで ' + hm3 + 'ms');
+
+  const JOY_PROBE = `
+<script>
+window.addEventListener('load', function(){ setTimeout(function(){
+  var KEYS = ${JSON.stringify(K3)};
+  var NAGE = ['prepare','grasp','flick','flight','action','tama'];
+  var out = { joys: [], err: null };
+  function sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+  function shown(){
+    var all = document.querySelectorAll('#toriRoot .tori-eda');
+    var names = KEYS.concat(NAGE.map(function(n){ return '投:' + n; }));
+    var vis = [];
+    for(var i = 0; i < names.length && i < all.length; i++)
+      if(all[i].style.display === 'block' && names[i] !== '投:tama') vis.push(names[i]);
+    return vis.length === 1 ? vis[0] : ('(' + vis.join('|') + ')');
+  }
+  function isJoy(f){ return f === 'joyJump' || f === 'joyLand'; }
+  function down(x, y){ document.getElementById('toriRoot').dispatchEvent(
+    new MouseEvent('mousedown', { bubbles:true, cancelable:true, clientX:x, clientY:y })); }
+  function up(){ window.dispatchEvent(new MouseEvent('mouseup', { bubbles:true })); }
+  (async function(){
+    try{
+      window.requestAnimationFrame = function(fn){ return setTimeout(function(){ fn(Date.now()); }, 16); };
+      window.cancelAnimationFrame = function(id){ clearTimeout(id); };
+      window.closeTitleScreen(); window.toriOpen(); window.toriStart('endless');
+      await sleep(1400);
+      var W = window.innerWidth, H = window.innerHeight, floor = H * ${fl3};
+      /* 喜びを ${'3'} 回起こす（＝${je3}羽ごとなので ${je3 * 3}羽ぶん）。毎回、最中に長押しを当てる。 */
+      for(var round = 0; round < 3; round++){
+        var t0 = Date.now(), reached = false;
+        while(Date.now() - t0 < 45000 && !reached){
+          var ns = document.querySelectorAll('#toriRoot .tori-bird');
+          for(var i = 0; i < ns.length && !reached; i++){
+            var r = ns[i].getBoundingClientRect();
+            down(r.left + r.width/2, r.top + r.height/2); up();
+            await sleep(28);
+            if(isJoy(shown())) reached = true;
+          }
+          await sleep(20);
+        }
+        if(!reached){ out.joys.push({ round: round, reached: false }); break; }
+        /* 喜びの最中に長押しを当てる（旧実装ではここで終了処理が消える） */
+        down(W * 0.12, floor - 30);
+        await sleep(${hm3} + 80);
+        up();
+        var t1 = Date.now(), late = 0, seen = [];
+        while(Date.now() - t1 < ${js3} * 6){
+          var f = shown();
+          if(Date.now() - t1 > ${js3} * 2 && isJoy(f)) late++;
+          seen.push(f);
+          await sleep(40);
+        }
+        out.joys.push({ round: round, reached: true, late: late, last: seen[seen.length-1] });
+      }
+    }catch(e){ out.err = String(e && e.message || e); }
+    var n = document.createElement('div');
+    n.textContent = 'KOUSHU_JOY_BEGIN' + btoa(unescape(encodeURIComponent(JSON.stringify(out)))) + 'KOUSHU_JOY_END';
+    document.body.appendChild(n);
+  })();
+}, 100); });
+</script>
+`;
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'koushu-joy-'));
+  try {
+    const probe = path.join(tmpDir, 'probe.html');
+    fs.writeFileSync(probe, src.replace(/<\/body>\s*$/m, JOY_PROBE + '</body>'), 'utf8');
+    const r = spawnSync(browser, ['--headless=new', '--disable-gpu', '--hide-scrollbars',
+      '--force-device-scale-factor=1', '--window-size=844,390',
+      '--user-data-dir=' + path.join(tmpDir, 'prof'),
+      '--virtual-time-budget=240000', '--dump-dom',
+      'file:///' + probe.replace(/\\/g, '/')],
+      { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
+    const hit = /KOUSHU_JOY_BEGIN([A-Za-z0-9+/=]+)KOUSHU_JOY_END/.exec(String(r.stdout || ''));
+    if (!hit) { ng('測定結果を取り出せない'); return; }
+    const got = JSON.parse(Buffer.from(hit[1], 'base64').toString('utf8'));
+    if (got.err) { ng('測定中に例外： ' + got.err.slice(0, 200)); return; }
+    const done = got.joys.filter(j => j.reached);
+    if (!done.length) { ng('喜びを一度も起こせなかった（測り方の問題かもしれない）'); return; }
+    note('喜びを起こした回数 : ' + done.length + '（' + (je3 * done.length) + '羽ぶん）。毎回、最中に長押しを当てている');
+    const bad = done.filter(j => j.late > 0);
+    if (bad.length === 0) {
+      ok('どの回も、規定の2倍を過ぎるまでに待機へ戻った');
+    } else {
+      ng('喜びから戻らない回がある ' + bad.length + '／' + done.length);
+      bad.forEach(j => note('  ' + (j.round + 1) + '回目：規定の2倍を過ぎても喜びの絵が ' +
+        j.late + ' 標本（最後に出ていた絵 ' + j.last + '）'));
+    }
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
 /* ---- まとめ ---- */
 console.log('');
 console.log('='.repeat(52));
 sections.forEach(s => {
   /* 測れなかった項目を PASS と並べない。通ったのか、見ていないのかを取り違えないため。 */
   const skipped = (viewSkipped && /狭い画面/.test(s.title)) || (idleSkipped && /待機の向き/.test(s.title))
-                  || (jumpSkipped && /跳躍中/.test(s.title));
+                  || (jumpSkipped && /跳躍中/.test(s.title))
+                  || (joySkipped && /喜ぶ動き/.test(s.title));
   const mark = !s.ok ? 'FAIL  ' : (skipped ? 'SKIP  ' : 'PASS  ');
   console.log(mark + s.title);
 });
