@@ -1573,6 +1573,67 @@ section('⑲', '素材の寸法の写し', () => {
   else { ng('寸法が表と違う素材 ' + bad.length + '件'); bad.slice(0, 10).forEach(b => note('  ' + b)); }
 });
 
+section('⑳', '枝豆の目盛りの一本化', () => {
+  /* 枝豆の目盛りは二つある（投票欄＝2組以上／スイッチ＝4組以上）。
+     どちらも関数一本だけが閾値の字面を持ち、呼ぶ側は数字を書かない。
+     ⑮と同じ字面の照合で、写しが増えていないかを見る。 */
+  const lines = src.split(/\r?\n/);
+  const vote = [], sw = [];
+  lines.forEach((ln, i) => {
+    if (/function\s+edaVoteLean\s*\(/.test(ln)) vote.push(i + 1);
+    if (/function\s+edaSwitchLean\s*\(/.test(ln)) sw.push(i + 1);
+  });
+  if (vote.length !== 1) { ng('edaVoteLean の定義が ' + vote.length + '箇所（1つであること）'); return; }
+  if (sw.length !== 1) { ng('edaSwitchLean の定義が ' + sw.length + '箇所（1つであること）'); return; }
+  ok('目盛りの関数は edaVoteLean / edaSwitchLean が一つずつ');
+
+  /* 関数の中身が、決めた目盛りのままか（字面で照合） */
+  const body = lines.slice(vote[0] - 1, sw[0] + 4).join(' ').replace(/\s+/g, ' ');
+  const want = [
+    [/edaVoteLean\(n\)\{ return \(n >= 2\)/, '投票欄＝2組以上で攻め'],
+    [/if\(n >= 4\) return/, 'スイッチ＝4組以上で攻め'],
+    [/catN >= 3 && catN <= 4 && n <= 1/, 'スイッチの守り＝猫牌3〜4かつ1組以下']
+  ];
+  const miss = want.filter(w => !w[0].test(body)).map(w => w[1]);
+  if (miss.length === 0) ok('二本とも目盛りの字面が変わっていない');
+  else ng('目盛りが変わっている：' + miss.join('／'));
+
+  /* 関数の外に閾値の字面が漏れていないか。
+     pairKinds は analyze の七対子判定・一姫・toneFacts が共有している名前なので目印に使えない。
+     枝豆だけが使う名前（eda / _eda / r.eda / pairTripletN）と数字が並んだ行を写しの疑いとする。 */
+  const leak = [];
+  lines.forEach((ln, i) => {
+    const n = i + 1;
+    if (n >= vote[0] && n <= sw[0] + 4) return;   /* 関数そのものは除く */
+    if (/^\s*\/\//.test(ln)) return;              /* 注釈は数えない */
+    if (/\b_?eda\w*\s*[<>]=\s*[0-9]|pairTripletN\s*[<>]=\s*[0-9]/.test(ln)) {
+      leak.push(n + '：' + ln.trim().slice(0, 70));
+    }
+  });
+  if (leak.length === 0) ok('閾値の字面は関数の外に無い');
+  else { ng('関数の外に閾値の字面が ' + leak.length + '件'); leak.slice(0, 6).forEach(x => note('  ' + x)); }
+});
+
+section('㉑', '猫牌の裁定数の一本化', () => {
+  /* 猫牌の帯ごとの無作為の値は BASE_CURVE.cat 一本だけが持つ。
+     表と折れ線が別の定数を読んでいると、同じ画面で違う数字が並ぶ。 */
+  if (/CAT_PCT|CAT_ATK/.test(src)) {
+    const lines = src.split(/\r?\n/);
+    const hit = [];
+    lines.forEach((ln, i) => { if (/CAT_PCT|CAT_ATK/.test(ln)) hit.push(i + 1); });
+    ng('CAT_PCT / CAT_ATK が復活している（' + hit.join(',') + '行）');
+  } else ok('CAT_PCT / CAT_ATK は無い');
+
+  const pct = (src.match(/BASE_CURVE\.cat\.pct\[/g) || []).length;
+  const atk = (src.match(/BASE_CURVE\.cat\.atk\[/g) || []).length;
+  if (pct >= 1 && atk >= 1) ok('表は BASE_CURVE.cat を読んでいる（pct ' + pct + '箇所・atk ' + atk + '箇所）');
+  else ng('表が BASE_CURVE.cat を読んでいない（pct ' + pct + '・atk ' + atk + '）');
+
+  const decl = (src.match(/const BASE_CURVE = \{/g) || []).length;
+  if (decl === 1) ok('BASE_CURVE の定義は一箇所');
+  else ng('BASE_CURVE の定義が ' + decl + '箇所');
+});
+
 /* ---- まとめ ---- */
 console.log('');
 console.log('='.repeat(52));
