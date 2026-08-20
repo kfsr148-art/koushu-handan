@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1413">
+<html lang="ja" data-ver="1414">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1229,7 +1229,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1413</div>
+  <div id="verTag">v1414</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1567,10 +1567,10 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  // 三つの物差し（現場猫＝猫牌・枝豆・AI）は初期値ON。
+  // 四つの物差し（現場猫＝猫牌・枝豆・AI・兎＝ブロック）は初期値ON。
   // 未設定のときだけ書き込むので、一度でも切った端末の '0' は残る（保存が常に優先）。
   try{
-    ['catSwitch', 'edamameSwitch', 'shinshiSwitch', 'bgmSwitch', 'seSwitch'].forEach(function(k){
+    ['catSwitch', 'edamameSwitch', 'shinshiSwitch', 'usagiSwitch', 'bgmSwitch', 'seSwitch'].forEach(function(k){
       if(localStorage.getItem(k) === null) localStorage.setItem(k, '1');
     });
   }catch(e){}
@@ -3921,6 +3921,16 @@ document.addEventListener('DOMContentLoaded', function () {
   //   執事＝打点1以上／軍師＝距離ごとの受け入れ／ずんだ＝良形4組以上
   //   お嬢様＝距離ごとの守りの弾／マダム＝浮き牌／一姫＝見える役／先生＝向聴
   //   現場猫・枝豆・AIスイッチは既存の目盛りをそのまま使う
+  /* 兎の判定式。ブロックが余っていれば攻め、残り枠の埋まり方が悪ければ守り。
+     閾値の字面はここだけが持つ（枝豆の目盛りと同じ流儀）。 */
+  function usagiLean(a){
+    try{ if(localStorage.getItem('usagiSwitch') === '0') return ''; }catch(e){}
+    if(!a || typeof a.totalBlocks !== 'number') return '';
+    if(a.totalBlocks >= 6) return 'a';
+    if(a.fillWeak >= 2) return 'd';
+    if(a.fillGood >= 3 && a.goodShapes <= 3) return 'd';
+    return '';
+  }
   function tenLeans(a, catN){
     if(!a) return [];
     const sh = a.baseShanten, acc = a.acceptTiles || 0;
@@ -3964,7 +3974,15 @@ document.addEventListener('DOMContentLoaded', function () {
         say: pairKinds + '種。'
           + (edaVoteLean(pairKinds) === 'attack' ? '揃い' : '薄い——守り') },
       { key:'ai',         mark:'🎩', lean: (om >= 3) ? 'd' : ((om === 0 && yaochu <= 2) ? 'a' : ''),
-        say: '一枚きりの字牌' + om + '枚。わたしの見立ては' + (om >= 3 ? '守り' : '攻め') + 'です' }
+        say: '一枚きりの字牌' + om + '枚。わたしの見立ては' + (om >= 3 ? '守り' : '攻め') + 'です' },
+      /* 兎＝残り枠の埋まり方。ブロックが五つを超えて余っていれば攻め、
+         残り枠が愚形で詰まるか、好形で埋まる見込みがあっても形が足りていなければ守り。
+         実測50000回：攻め1.34%・的中83.1%／守り26.50%・的中71.8%／黙る72.16%。
+         スイッチを切っている端末では票を出さない（設定の usagiSwitch）。 */
+      { key:'usagi',      mark:'兎', lean: usagiLean(a),
+        say: (usagiLean(a) === 'a')
+          ? 'ブロックが余っている。攻めだ。'
+          : ((a.fillWeak >= 2) ? '残り枠が愚形で詰まる。守りだ。' : '形が足りない。守りだ。') }
     ];
   }
   /* ---- 虎（判定エンジンの声）の台詞 ----
@@ -8006,6 +8024,17 @@ document.addEventListener('DOMContentLoaded', function () {
       shinshiBtn.textContent = shinshiSwitchLabel();
       if(!now) playVoice('yoshi', 'ヨシ', 1.05);
     };
+    const usagiBtn = document.createElement('button');
+    usagiBtn.type = 'button';
+    function usagiSwitchLabel(){ return (localStorage.getItem('usagiSwitch') === '1') ? '兎スイッチ：ON' : '兎スイッチ：OFF'; }
+    usagiBtn.textContent = usagiSwitchLabel();
+    usagiBtn.style.cssText = 'padding:6px 12px; border-radius:8px; border:1px solid #8a7f5c; background:#2c3644; color:#e8e2d0; font-size:11px; white-space:nowrap;';
+    usagiBtn.onclick = function(){
+      const now = localStorage.getItem('usagiSwitch') === '1';
+      localStorage.setItem('usagiSwitch', now ? '0' : '1');
+      usagiBtn.textContent = usagiSwitchLabel();
+      if(!now) playVoice('yoshi', 'ヨシ', 1.05);
+    };
     /* 音の切り替え。BGM と効果音は別々に入切する。初期値は両方 ON。
        押したときに声は鳴らさない（音を切る操作で音が出るのは筋が通らないため）。 */
     const bgmBtn = document.createElement('button');
@@ -8059,13 +8088,13 @@ document.addEventListener('DOMContentLoaded', function () {
         });
       }catch(e){}
     };
-    buttonRow.appendChild(switchBtn); buttonRow.appendChild(edamameBtn); buttonRow.appendChild(shinshiBtn);
+    buttonRow.appendChild(switchBtn); buttonRow.appendChild(edamameBtn); buttonRow.appendChild(shinshiBtn); buttonRow.appendChild(usagiBtn);
     buttonRow.appendChild(bgmBtn); buttonRow.appendChild(seBtn); buttonRow.appendChild(ledgerBtn); buttonRow.appendChild(misdiagBtn); buttonRow.appendChild(jibakuBtn); buttonRow.appendChild(close);
     // ── ボタンの整列：2列のグリッド。長いラベルの4つは横いっぱい、短い4つは2列に揃える ──
     // 列は minmax(0,1fr)。ただの 1fr だと、格子の項目が中身の min-content まで列を押し広げるので、
     // 狭い画面（568x320）で二列ぶんが器を超え、右端のボタンが枠の外へはみ出していた。
     buttonRow.style.cssText = 'display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px; width:100%; max-width:340px; box-sizing:border-box;';
-    [switchBtn, edamameBtn, shinshiBtn, ledgerBtn, misdiagBtn, jibakuBtn, close].forEach(function(b){
+    [switchBtn, edamameBtn, shinshiBtn, usagiBtn, ledgerBtn, misdiagBtn, jibakuBtn, close].forEach(function(b){
       // 字は折り返させる。nowrap のままだと、いちばん長い札（▶ ずんだもんと現場猫）の min-content が
       // 列より広くなり、狭い画面で枠からはみ出す。折り返せば列の幅に収まり、字も削らずに済む。
       b.style.cssText = 'padding:7px 8px; border-radius:8px; border:1px solid #8a7f5c; background:#2c3644; color:#e8e2d0; font-size:11px; line-height:1.25; text-align:center; width:100%; box-sizing:border-box;';
@@ -8429,7 +8458,8 @@ document.addEventListener('DOMContentLoaded', function () {
           L.forEach(function(x){ if(x.say) window._vzSay[x.key] = x.say; });
           const chip = function(x){
             const img = (typeof ADV_FACE_IMG !== 'undefined' && ADV_FACE_IMG[x.key]) ? ADV_FACE_IMG[x.key]
-              : (x.key === 'cat' && typeof CAT_TILE_GENBA !== 'undefined' ? CAT_TILE_GENBA : null);
+              : (x.key === 'cat' && typeof CAT_TILE_GENBA !== 'undefined' ? CAT_TILE_GENBA
+              : (x.key === 'usagi' ? (window.KISHI_IDLE_FRONT || null) : null));
             // 押すとその判定者の言い分が助言欄に出る。人柄のある七人は人柄ボタンの選択も連れて動く。
             const tap = ' onclick="window.vzTap(\'' + x.key + '\', event)"';
             const lit = (x.key === currentTone) ? ' on' : '';   // 初手はいま選ばれている人柄が喋っている
@@ -9240,6 +9270,9 @@ window.ssReceive = function(){
   /* 鞭の九枚の体軸（緑の重心 x の割合）。横は画像の中央ではなく、この軸を立ち位置に合わせる。
      絵ごとに切り出しが違うので、中央で置くと振るたびに体が左右へ跳ねる。
      待機を左へ向かせるときは 1−値 に置き換える（豆投げと同じ数え方）。 */
+  /* 投票欄の兎は、この待機絵（正面）を縮めて使う。素材はミニゲームの中にしか無いので、
+     一枚だけ名前を付けて外へ渡す（判定側は window.KISHI_IDLE_FRONT を読む）。 */
+  window.KISHI_IDLE_FRONT = EDA_WHIP.idleFront;
   const EDA_WHIP_AXIS = {airUpR:0.473, airUpL:0.480, airSlashR:0.460, airSlashL:0.507,
     airDownR:0.640, airDownL:0.629,
     /* 真上へ跳ぶときの正面三枚。体軸は下から四分の一の帯の重心で測った。 */
