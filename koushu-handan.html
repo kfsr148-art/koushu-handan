@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1418">
+<html lang="ja" data-ver="1419">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -584,6 +584,11 @@
   .tori-hud #toriTime { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; letter-spacing: .08em; }
   .tori-hud .tori-close { margin-left: auto; pointer-events: auto; }
+  /* ライフの粒。飛ぶ星の絵を縮めて三つ並べる（新しい絵は持たない）。
+     失ったぶんは消さずに暗く残す——残り数と上限が同時に読める。 */
+  .tori-life { display: inline-flex; align-items: center; gap: 4px; }
+  .tori-life img { width: 12px; height: 12px; display: block; image-rendering: pixelated; }
+  .tori-life img.off { filter: brightness(0.35) saturate(0.4); }
   .tori-panel { position: absolute; inset: 0; z-index: 4; display: flex; flex-direction: column;
     align-items: center; justify-content: center; gap: 14px; background: rgba(6,16,12,.86);
     color: var(--bone); text-align: center; padding: 16px; }
@@ -1261,7 +1266,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1418</div>
+  <div id="verTag">v1419</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -4648,13 +4653,14 @@ document.addEventListener('DOMContentLoaded', function () {
       '12秒に一度、三羽が横一列で飛んでくる。この三羽は逃げも向き変えもせず、そのまま反対の端へ抜けていく。' +
       '列が自分の真上を通る瞬間に振れば、一振りで二羽まとめて捕れる。捕り逃しても罰はない。' +
       '同時に飛ぶ鳥のうち一羽は高い所だけを飛ぶ「高い鳥」で、地上からは剣が届かない。跳ぶか、豆か、星撒きで捕る。' +
-      '遊び始めて15秒たつと一羽が金になり、8秒だけ光る。金は高い鳥から選ばれ、捕らえるとノルマ2羽ぶんに数える。' +
+      '遊び始めて15秒たつと一羽が金になり、8秒だけ光る。金は高い鳥から選ばれ、捕らえるとノルマ2羽ぶんに数え、ライフが1つ戻る。満ちているときは戻らない。' +
       '残り10秒を切ると追い込みに入り、数字が赤くなって鳥が1.2倍速くなる。<br><br>' +
-      '<b>当たったとき</b><br>鳥に触れられると、剣士は0.2秒のけぞって悲鳴を上げ、その間は動けない。明けてから0.6秒は続けて当たらない。' +
-      '<b>体力は無い。当たっても負けにはならない。</b>失うのは時間だけ。<br><br>' +
+      '<b>当たったとき</b><br>鳥に触れられると、剣士は0.2秒のけぞって悲鳴を上げ、その間は動けない。触れられた瞬間から1.0秒は続けて当たらない。' +
+      '走っている間と空中では、のけぞる絵は出さない——走りと跳躍の姿勢をそのまま保つ。悲鳴と1.0秒は、どこで当たっても同じに掛かる。' +
+      '<b>ライフは3。当たるたびに1つ減り、0になったら負け。</b>初級から連戦まで、どのモードも3から始まる。<br><br>' +
       '<b>勝ち負け</b><br>初級は同時2羽でノルマ3羽、中級は同時3羽で5羽、上級は同時4羽で7羽。' +
-      '30秒でノルマぶん捕まえれば勝ち、届かなければ鳥の勝ち。一羽捕まえるごとに残りが1割ずつ速くなり、最後の一羽がいちばん速い。' +
-      '連戦は同時4羽・上級と同じ速さで、時間もノルマも持たず、この加速も掛からない。終わりは✕を押したときだけで、10羽ごとに剣士が喜ぶ。<br><br>' +
+      '30秒でノルマぶん捕まえれば勝ち。時間切れか、ライフが0になれば鳥の勝ち。一羽捕まえるごとに残りが1割ずつ速くなり、最後の一羽がいちばん速い。' +
+      '連戦は同時4羽・上級と同じ速さで、時間もノルマも持たず、この加速も掛からない。終わりは✕を押すか、ライフが0になったときで、10羽ごとに剣士が喜ぶ。<br><br>' +
       '<b>その他</b><br>画面を離れると休止になり、触れると続きから始まる。勝った回はクリアタイムが難易度ごとに残り、自己ベストとして結果に出る。' },
   };
   window.openInfoDetail = function(key){
@@ -9436,10 +9442,11 @@ window.ssReceive = function(){
     beanPerPx:  0.9,   // 飛ぶ時間＝距離×これ（ミリ秒）
     beanMin:    220,   // 飛ぶ時間の下限（ミリ秒）
     beanHitPx:   26,   // 豆と鳥がこの距離まで近づいたら捕まえる
-    /* ここから仰け反り。被弾の見た目だけで、体力も負け条件も持たない。 */
+    /* ここから仰け反り。被弾の絵と悲鳴、無敵、そしてライフの減り。 */
     hitRadius:   26,   // 剣士の中心からこの距離まで鳥が寄ったら接触（暫定・飛ぶ星と同じ値）
     hitShow:    200,   // 仰け反りの絵を出している時間（ミリ秒）
-    hitInvuln:  600,   // 仰け反りが明けてから次の接触を受けるまで（ミリ秒・暫定）
+    hitInvuln: 1000,   // 触れられた瞬間から、次の接触を受けるまで（ミリ秒）
+    life:         3,   // 持ち玉。全モード共通。0 で負け
     /* ここからゾーン移動。触れた瞬間は攻撃、そのまま押し続けると走る。 */
     holdMove:   300,   // 押しっぱなしで移動が起きるまで（ミリ秒・暫定）。
                        // 普通に一度叩く接地はおよそ100msなので、それと紛れない値にしてある
@@ -9530,6 +9537,8 @@ window.ssReceive = function(){
   let starNodes = null, starFly = [], sparkNodes = null, sparkTimer = 0;
   /* 仰け反り。溜める指は一つだけ持つ（何度触れても、明けて出るのは1回）。 */
   let recoilUntil = 0, invulnUntil = 0, queuedTap = null;
+  /* ライフ。lifeDrawn は最後に描いた数（変わったときだけ描き直す）。 */
+  let life = EDA.life, lifeDrawn = -1;
   /* 縦向きの見張り。ミニゲームだけ横画面専用にする（本体は縦のまま）。
      heldRunning は、止めた時に遊びが動いていたかどうか。横に戻したときの再開の可否に使う。 */
   let portraitHold = false, heldRunning = false;
@@ -9587,6 +9596,7 @@ window.ssReceive = function(){
     root.id = 'toriRoot';
     root.innerHTML =
       '<div class="tori-hud"><span id="toriCount"></span><span id="toriTime"></span>' +
+      '<span id="toriLife" class="tori-life"></span>' +
       '<button type="button" class="tori-btn tori-close" onclick="window.toriClose()">✕</button></div>' +
       '<div class="tori-panel" id="toriPanel"></div>';
     document.body.appendChild(root);
@@ -9784,6 +9794,7 @@ window.ssReceive = function(){
     beanDrop();
     edaCoolAt = 0;
     recoilUntil = 0; invulnUntil = 0; queuedTap = null;   // 仰け反りも持ち越さない
+    life = EDA.life; lifeDrawn = -1;                       // ライフは毎回満タンから
     holdClear();
     if(runTimer) clearTimeout(runTimer);
     runTimer = 0;
@@ -10230,7 +10241,10 @@ window.ssReceive = function(){
     const b = birds[i];
     if(!b) return;
     const add = b.gold ? TORI.goldWorth : 1;
-    if(b.gold) goldUntil = 0;
+    if(b.gold){
+      goldUntil = 0;
+      life = Math.min(EDA.life, life + 1);   // 上限は EDA.life。超えたぶんは消える
+    }
     b.node.remove();
     birds.splice(i, 1);
     caught += add;
@@ -10383,15 +10397,6 @@ window.ssReceive = function(){
       if(b.dodgeLeft > 0){ b.dodgeLeft -= dt; }
       else { b.turnLeft -= dt; if(b.turnLeft <= 0) turn(b, false); }
     });
-    /* 鳥が剣士に寄ったら仰け反る。仰け反っている間と、明けてからの無敵時間の間は起こさない。 */
-    const tnow = Date.now();
-    if(!frozen && tnow >= joyUntil && !moving && tnow >= recoilUntil && tnow >= invulnUntil){
-      for(let i = 0; i < birds.length; i++){
-        if(Math.hypot(birds[i].x - edaCX(), birds[i].y - (edaCY() - jumpLift())) >= EDA.hitRadius) continue;
-        recoil();
-        break;
-      }
-    }
     /* 走り斬り。移動の間、体が通った帯に入った一羽を捕らえる。
        見るのは「前のフレームの x から今の x まで」なので、まだ通っていない先の鳥は捕れない。
        一回の移動で1羽まで。複数該当なら進む向きに対して手前の一羽。
@@ -10425,6 +10430,18 @@ window.ssReceive = function(){
       }
       movePrevX = nowX;
     }
+    /* 鳥が剣士に寄ったら接触。仰け反っている間と、明けてからの無敵時間の間は起こさない。
+       走っている間も当たる（走り続けるだけで安全、という抜け道を作らない）。
+       この判定より先に走り斬りを済ませてあるので、捕らえた一羽はもう birds に居ない。 */
+    const tnow = Date.now();
+    if(!frozen && tnow >= joyUntil && tnow >= recoilUntil && tnow >= invulnUntil){
+      for(let i = 0; i < birds.length; i++){
+        if(Math.hypot(birds[i].x - edaCX(), birds[i].y - (edaCY() - jumpLift())) >= EDA.hitRadius) continue;
+        recoil();
+        break;
+      }
+    }
+
     /* 空中で捕らえた直後は落下が止まる。跳び始めの時刻を押し戻して山を止める。 */
     if(jumping && Date.now() < hangUntil) jumpAt += dt * 1000;
     if(jumping) airFrame();   // 上昇→（振れば空中切り）→降下
@@ -10438,6 +10455,7 @@ window.ssReceive = function(){
     /* 連戦は捕った数だけを出す。ノルマの分母も残り時間も出さない。 */
     if(c) c.textContent = isEndless() ? (caught + ' 羽') : (caught + ' / ' + level.quota + ' 羽');
     if(tm && isEndless()){ tm.textContent = ''; }
+    if(lifeDrawn !== life){ lifeDrawn = life; lifePaint(); }
     /* 残り時間は 0.1秒 を 1 と数えた三桁。開始 300、終わり 000。
        中の制限時間（秒）は変えていない。書き換えは 100ms ごとで足りる（毎フレームは無駄）。 */
     /* 金の一羽。開始から goldAt 秒（＝残りが timeLimit−goldAt）で一羽だけ金にし、
@@ -10497,6 +10515,9 @@ window.ssReceive = function(){
       leftMs = Math.max(0, endAt - Date.now());
       joyStart(EDA.joyWinMs, function(){ frozen = false; finish(true); });
     }
+    /* ライフが尽きたら、どのモードでも負けで終わる（連戦もここで終わる）。
+       ノルマ達成の判定より後に置く——同じ周期なら勝ちを先に見る。 */
+    if(!frozen && life <= 0) return finish(false);
     if(!isEndless() && !frozen && left <= 0) return finish(false);
     raf = requestAnimationFrame(step);
   }
@@ -10650,7 +10671,8 @@ window.ssReceive = function(){
     nageTimers.forEach(clearTimeout);
     nageTimers = [];
     beanDrop();
-    recoilUntil = 0; invulnUntil = 0; queuedTap = null;
+    /* 無敵は走っても持ち越す。被弾直後に逃げた側が損をしないようにする。 */
+    recoilUntil = 0; queuedTap = null;
     edaCoolAt = moveAt + moveMs;
     runFlip(dir, true);
     edaTimers.push(setTimeout(function(){ zoneArrive(dir); }, moveMs));
@@ -10702,7 +10724,18 @@ window.ssReceive = function(){
       if(q && running) hit(q.x, q.y);
     }, EDA.breathMs));
   }
-  /* 鳥に触れられたときの仰け反り。見た目だけで、体力も負け条件も無い。
+  /* ライフの粒を描き直す。飛ぶ星の絵（EDA_NAGE.tama）を EDA.life 個ならべ、
+     失ったぶんは消さずに暗く残す。新しい絵は持たない。 */
+  function lifePaint(){
+    const el = document.getElementById('toriLife');
+    if(!el) return;
+    let html = '';
+    for(let i = 0; i < EDA.life; i++){
+      html += '<img src="' + EDA_NAGE.tama + '" alt=""' + (i < life ? '' : ' class="off"') + '>';
+    }
+    el.innerHTML = html;
+  }
+  /* 鳥に触れられたときの仰け反り。絵と悲鳴を出し、ライフを一つ減らす。
      絵を hitShow のあいだ出してから待機へ戻す。待機の向きは既存の振り分けのまま。
      この間に触れた指は捨てずに一つだけ溜め、明けた瞬間にその一つを出す。
      効果音は鳴らさない。 */
@@ -10711,7 +10744,8 @@ window.ssReceive = function(){
     recoilUntil = now + EDA.hitShow;
     breathUntil = 0;   // 息切れの最中に触れられたら、仰け反りが優先する
     toriHurt();        // 仰け反りが実際に出た瞬間だけ、一度だけ鳴らす
-    invulnUntil = recoilUntil + EDA.hitInvuln;   // 無敵は仰け反りが明けてから数える
+    invulnUntil = now + EDA.hitInvuln;   // 無敵は触れられた瞬間から数える
+    life = Math.max(0, life - 1);        // ライフを一つ減らす（負けの締めは step が見る）
     queuedTap = null;
     edaTimers.forEach(clearTimeout);
     edaTimers = [];
@@ -10723,7 +10757,9 @@ window.ssReceive = function(){
        もともと airFrame() が毎フレーム空中のコマを描き直すので、空中で描いても
        16ms ほどで上書きされて見えていなかった（その一瞬だけが画面に混ざっていた）。
        無敵・溜めた指・落下の続きは、絵とは別にそのまま働く。 */
-    if(!jumping) edaFrame('hit');
+    /* 走っている間と空中では、仰け反りの絵を出さない。走りと跳躍の姿勢をそのまま保つ。
+       悲鳴と無敵とライフの減りは、どこで当たっても同じに掛かる。 */
+    if(!jumping && !moving) edaFrame('hit');
     edaTimers.push(setTimeout(function(){
       if(!jumping) edaFrame(edaIdleKey());
       const q = queuedTap;
@@ -10859,7 +10895,7 @@ window.ssReceive = function(){
     el.classList.add('tori-result');   // 縦にしても畳まない（絵を優先する）
     panel('<h2>' + (win ? '捕まえた' : '逃げられた') + '</h2>' +
       '<img class="tori-art" id="toriArt" alt="" src="' + (win ? TORI_WIN_IMG : TORI_LOSE_IMG) + '">' +
-      '<div>' + caught + ' / ' + level.quota + ' 羽</div>' +
+      '<div>' + (isEndless() ? (caught + ' 羽') : (caught + ' / ' + level.quota + ' 羽')) + '</div>' +
       (bestLine ? '<div class="tori-best">' + bestLine + '</div>' : '') +
       '<div class="tori-row">' +
         '<button type="button" class="tori-btn" onclick="window.toriMenu()">もう一度</button>' +
