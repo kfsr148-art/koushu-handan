@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1415">
+<html lang="ja" data-ver="1416">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1132,8 +1132,15 @@
      守り箱の flex-end（末尾から詰める向き）と、並び順は変えない。
      844px 未満で折り返さないのは、二段ぶんの縦（568x320 で +22.8px）が余白から
      捻出できないため。実測では狭い視野の余白から取れるのは合計 +9.5px しかなく、
-     折り返した時点で末尾の二択が画面外へ出る（check.js ⑦ の合格条件を割る）。 */
-  @media (orientation: landscape) and (min-width: 844px) {
+     折り返した時点で末尾の二択が画面外へ出る（check.js ⑦ の合格条件を割る）。
+     高さの条件が二本立てなのは、実測で外れる帯が二つあるため。349px 以下は素直に
+     縦が足りない。381〜383px は既存の段差で、max-height:380px の切り詰め（解説行を
+     畳む・根拠欄の余白・助言欄を「…」で切る）が 381px で外れ、カード高が
+     370.6→406（+35.4px）へ跳ねる。視野は 1px しか増えないので二択が押し出される。
+     一段のままなら 356px で収まるため、二段にした v1415 で初めて表に出た段差。
+     読みにくさより実測への忠実さを取っている（v1416・案B）。 */
+  @media (orientation: landscape) and (min-width: 844px) and (min-height: 350px) and (max-height: 380px),
+         (orientation: landscape) and (min-width: 844px) and (min-height: 384px) {
     body.judged .verdict-zones .vz { flex-wrap: wrap; overflow: visible; }
     body.judged .verdict-zones .vz-atk,
     body.judged .verdict-zones .vz-def { width: auto; flex: 1 1 0; min-width: 0; }
@@ -1254,7 +1261,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1415</div>
+  <div id="verTag">v1416</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
