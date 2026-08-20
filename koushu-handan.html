@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1412">
+<html lang="ja" data-ver="1413">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1229,7 +1229,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1412</div>
+  <div id="verTag">v1413</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1326,7 +1326,7 @@
       ・<b>ずんだもん</b>＝待ちのかぶり。同じ牌や同じ筋を取り合っているまとまりが光る。<br>
       ・<b>お嬢様</b>＝盾の寿命。盾のうち、切る当てに入っている<ruby>字牌<rt>ジハイ</rt></ruby>と1・9牌が光る。<br>
       ・<b>マダム</b>＝浮き牌。どのまとまりにも入らず守りにも使えない牌が光る。攻めている間に、最初に整理する候補。<br>
-      ・<b>一姫</b>＝待ちの端がかり。端にかかるターツと<ruby>字牌<rt>ジハイ</rt></ruby>の対子が光る。<br>
+      ・<b>一姫</b>＝強形。五連形・四連形・中ぶくれが光る。無ければ端にかかるターツと<ruby>字牌<rt>ジハイ</rt></ruby>の対子。<br>
       ・<b>先生</b>＝<ruby>雀頭<rt>ジャントウ</rt></ruby>。雀頭になれる牌が光る。<br>
       投票欄のスイッチ三者を押すと、その物差しが数えている牌が光る（金枠は使わず、<b>見張り台と同じ色</b>）。<br>
       ・<b>現場猫</b>＝猫牌。青く光る。　・<b>枝豆</b>＝二枚以上ある種類の牌。緑に光る。　・<b>紳士</b>＝一枚きりの<ruby>字牌<rt>ジハイ</rt></ruby>。赤く光る。<br>
@@ -4101,6 +4101,31 @@ document.addEventListener('DOMContentLoaded', function () {
   /* ---- 人柄七人の見立ての材料 ----
      判定のたび一度だけ組み、金枠の印と助言欄の台詞が同じものを見る。
      人柄チップを押すたびに数え直さないよう、判定時に window._lastFacts へ控える。 */
+  /* 一姫＝強形。十三枚の中だけで完結して名前の付く形を拾う。
+     五連形 三四五六七／四連形 三四五六／中ぶくれ 三四四五。
+     強い順に、番号の小さい側から牌を使い切って取る（同じ牌を二つの形で使い回さない）ので、
+     五連形が一本立てば、その牌で四連形を重ねて数えることはない。 */
+  const TONE_STRONG = [
+    { name:'五連形',   span:5, need:function(a,i){ return a[i] && a[i+1] && a[i+2] && a[i+3] && a[i+4]; },
+      take:function(a,i){ a[i]--; a[i+1]--; a[i+2]--; a[i+3]--; a[i+4]--; return [i,i+1,i+2,i+3,i+4]; } },
+    { name:'四連形',   span:4, need:function(a,i){ return a[i] && a[i+1] && a[i+2] && a[i+3]; },
+      take:function(a,i){ a[i]--; a[i+1]--; a[i+2]--; a[i+3]--; return [i,i+1,i+2,i+3]; } },
+    { name:'中ぶくれ', span:3, need:function(a,i){ return a[i] >= 1 && a[i+1] >= 2 && a[i+2] >= 1; },
+      take:function(a,i){ a[i]--; a[i+1] -= 2; a[i+2]--; return [i,i+1,i+1,i+2]; } }
+  ];
+  function toneStrongShapes(tiles){
+    const out = [];
+    ['man','pin','sou'].forEach(function(su){
+      const a = [0,0,0,0,0,0,0,0,0,0];
+      tiles.forEach(function(t){ if(t.suit === su) a[t.num]++; });
+      TONE_STRONG.forEach(function(sh){
+        for(let i = 1; i + sh.span - 1 <= 9; i++){
+          while(sh.need(a, i)) out.push({ kind: sh.name, suit: su, n: sh.take(a, i) });
+        }
+      });
+    });
+    return out;
+  }
   function toneFacts(a, tiles){
     const F = { multi:null, multiIdx:new Set(), naki:null, nakiIdx:new Set(),
                 dup:null, dupIdx:new Set(), lady:{ kind:'late' }, ladyIdx:new Set(),
@@ -4244,12 +4269,23 @@ document.addEventListener('DOMContentLoaded', function () {
       return (b.t === '両面' || b.t === '嵌張') && b.n.some(function(x){ return x <= 2 || x >= 8; });
     });
     const honPairs = Object.keys(honCnt).filter(function(c){ return honCnt[c] >= 2; });
-    if(edgeBlocks.length) F.ichi = { kind:'edge', n: edgeBlocks.length };
+    /* 強形が立っていれば、そちらを先に名指す（十三枚の中だけで完結して名前の付く形）。
+       無ければ従来どおり端がかり、それも無ければ字牌の対子。印はいずれも edgeIdx に出す。 */
+    const strong = toneStrongShapes(tiles);
+    if(strong.length){
+      const top = strong[0];
+      F.ichi = { kind:'strong', name: top.kind, n: strong.length,
+                 top: toneTileName({ suit: top.suit, num: top.n[0] }) };
+      strong.forEach(function(b){ markInto(b, F.edgeIdx); });
+    }
+    else if(edgeBlocks.length) F.ichi = { kind:'edge', n: edgeBlocks.length };
     else if(honPairs.length) F.ichi = { kind:'honor', name: toneCodeName(honPairs[0]) };
-    edgeBlocks.forEach(function(b){ markInto(b, F.edgeIdx); });
-    honPairs.forEach(function(c){
-      tiles.forEach(function(t, i){ if(t.suit === 'honor' && t.code === c) F.edgeIdx.add(i); });
-    });
+    if(!strong.length){
+      edgeBlocks.forEach(function(b){ markInto(b, F.edgeIdx); });
+      honPairs.forEach(function(c){
+        tiles.forEach(function(t, i){ if(t.suit === 'honor' && t.code === c) F.edgeIdx.add(i); });
+      });
+    }
     /* 先生＝雀頭の候補。役牌・そのほかの字牌・端に近い数牌の順に筆頭を選ぶ。 */
     const heads = Object.keys(cnt).filter(function(c){ return cnt[c] >= 2; });
     heads.forEach(function(c){
@@ -4332,14 +4368,21 @@ document.addEventListener('DOMContentLoaded', function () {
         + 'どのまとまりにも入らず、身を守る役にも立ちませんの。';
     }
     if(t === 'ichihime'){
-      // 端にかかるターツが一本か、二本以上か。実測で 58.7% と 41.3% に割れる。
+      /* 強形が筆頭。無ければ端がかり、字牌の対子、どれも無い、の順。
+         言うのは十三枚の中の事実だけで、相手の打ち回しには触れない。 */
+      if(F.ichi.kind === 'strong'){
+        if(F.ichi.n >= 2) return '強い形が ' + F.ichi.n + ' 本にゃ。筆頭は' + F.ichi.top + 'からの' + F.ichi.name + 'にゃ、骨は太いにゃ。';
+        if(F.ichi.name === '五連形') return F.ichi.top + 'からの五連形にゃ。面子ひとつと両面がまとめて取れるにゃ、太い骨にゃ。';
+        if(F.ichi.name === '四連形') return F.ichi.top + 'からの四連形にゃ。両面が二つ並んでるにゃ、どっちに伸びても受かるにゃ。';
+        return F.ichi.top + 'からの中ぶくれにゃ。真ん中が重なって、両面が二つ取れる形にゃ。';
+      }
       if(F.ichi.kind === 'edge'){
         return (F.ichi.n >= 2)
-          ? ('端の道が ' + F.ichi.n + ' 本もあるにゃ。どこかで獲物とすれ違うにゃ。')
-          : '待ちが端の道に一本かかりそうにゃ。端の道は、獲物がよく通るにゃ。';
+          ? ('端の道にターツが ' + F.ichi.n + ' 本かかってるにゃ。待ちが両方とも端寄りにゃ。')
+          : '端の道にターツが一本かかってるにゃ。待ちの片側が端寄りにゃ。';
       }
-      if(F.ichi.kind === 'honor') return F.ichi.name + 'の対子は、いい罠にゃ。飛び込んでくるにゃ。';
-      return 'この手の道は、ど真ん中にゃ。みんな警戒する道にゃ。';
+      if(F.ichi.kind === 'honor') return F.ichi.name + 'の対子にゃ。字牌の重なりは、待ちの当てになるにゃ。';
+      return '端にも字牌にも寄ってないにゃ。この手の待ちは、ど真ん中にゃ。';
     }
     if(t === 'sensei'){
       if(F.sensei.n === 0) return '雀頭の当てがありません。字牌の重なりを、ひとつ残しなさい。';
