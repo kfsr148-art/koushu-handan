@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1411">
+<html lang="ja" data-ver="1412">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1229,7 +1229,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1411</div>
+  <div id="verTag">v1412</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1331,7 +1331,7 @@
       投票欄のスイッチ三者を押すと、その物差しが数えている牌が光る（金枠は使わず、<b>見張り台と同じ色</b>）。<br>
       ・<b>現場猫</b>＝猫牌。青く光る。　・<b>枝豆</b>＝二枚以上ある種類の牌。緑に光る。　・<b>紳士</b>＝一枚きりの<ruby>字牌<rt>ジハイ</rt></ruby>。赤く光る。<br>
       光るのは一度にひとりだけ。同じ印をもう一度押すか、人柄を押せば元へ戻る。<br>
-      七人の言うことが食い違う手ほど、際どい手ということになる。<br><br>
+      物差しが割れた手ほど際どい——とは限らない。無作為50000回で測ると、三者が割れた手の紙一重は22.5%、3対0で揃った手は24.7%で、揃った手のほうがむしろ際どい（全体は21.1%）。割れは材料の違いであって、手の際どさの合図ではない。<br><br>
       <b>攻守を見抜く手順</b><br>
       判定エンジンが見ているものは決まっている。同じ順に数えれば当たる。<br>
       ① <b>孤立牌（コリツハイ）を数える</b>——0枚なら「攻」、4枚以上なら「守」へ倒す。<br>
@@ -3960,9 +3960,9 @@ document.addEventListener('DOMContentLoaded', function () {
         say: (catN === 0)
           ? '猫牌0枚、指差し確認——攻めヨシ！'
           : ('猫牌' + catN + '枚、指差し確認——逃げヨシ！') },
-      { key:'eda',        mark:'🫛', lean: (pairKinds >= 2) ? 'a' : 'd',
+      { key:'eda',        mark:'🫛', lean: (edaVoteLean(pairKinds) === 'attack') ? 'a' : 'd',
         say: pairKinds + '種。'
-          + (pairKinds >= 2 ? '揃い' : '薄い——守り') },
+          + (edaVoteLean(pairKinds) === 'attack' ? '揃い' : '薄い——守り') },
       { key:'ai',         mark:'🎩', lean: (om >= 3) ? 'd' : ((om === 0 && yaochu <= 2) ? 'a' : ''),
         say: '一枚きりの字牌' + om + '枚。わたしの見立ては' + (om >= 3 ? '守り' : '攻め') + 'です' }
     ];
@@ -4734,6 +4734,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const om = watchLoneHonor(tiles);
     if(om >= 3) return 'defend';
     if(om === 0 && watchYaochu(tiles) <= 2) return 'attack';
+    return '';
+  }
+  /* 枝豆の目盛りは二つある。投票欄は「2組以上で攻め」、枝豆スイッチは「4組以上で攻め」。
+     別物なので二本に分け、閾値の字面はここだけが持つ。 */
+  function edaVoteLean(n){ return (n >= 2) ? 'attack' : 'defend'; }
+  function edaSwitchLean(n, catN){
+    if(n >= 4) return 'attack';
+    if(catN >= 3 && catN <= 4 && n <= 1) return 'defend';
     return '';
   }
   function watchGenBand(target){
@@ -6785,7 +6793,7 @@ document.addEventListener('DOMContentLoaded', function () {
         cat: (cn === 0) ? 'attack' : (cn >= 4) ? 'defend' : '',
         // 枝豆は判定画面の枝豆スイッチと同じ目盛り：4組以上で攻め、
         // 猫牌3〜4枚の灰色帯に限り1組以下で守り、それ以外は沈黙。
-        eda: (eda >= 4) ? 'attack' : ((cn >= 3 && cn <= 4 && eda <= 1) ? 'defend' : ''),
+        eda: edaSwitchLean(eda, cn),
         om:  (omN >= 3) ? 'defend' : ((omN === 0 && yaochuPre <= 2) ? 'attack' : '')
       };
       const splitKinds = Object.keys(MD_PAIRS).filter(function(k){
@@ -6872,7 +6880,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   // ── 三人の物差し。回ごとに二人が割れ、残る一人が手の中身を挙げて決着させる ──
   //   現場猫＝猫牌（0枚=攻め／4枚以上=守り）
-  //   ずんだもん＝枝豆（2組以上=攻め／1組以下=守り）
+  //   ずんだもん＝枝豆（4組以上=攻め／猫牌3〜4枚かつ1組以下=守り／他は沈黙）
   //   AIスイッチ＝一枚きりの字牌（0枚かつ么九2枚以下=攻め／3枚以上=守り）
   const MD_WHO = { cat:'現場猫', eda:'ずんだもん', om:'AIスイッチ' };
   const MD_PAIRS = { 'cat-eda':['cat','eda'], 'cat-om':['cat','om'], 'eda-om':['eda','om'] };
@@ -7653,7 +7661,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let firm = 0;
     keys.forEach(function(k){
       mine[k].forEach(function(g, i){
-        if(g.n < 10) return;
+        if(g.n < 50) return;
         firm++;
         const base = BASE_CURVE[k].atk[i];
         if(base === null || base === undefined) return;
@@ -7665,10 +7673,10 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
     const mineWord = (firm === 0)
-      ? 'じぶんの記録は、10件以上たまった帯がまだ無い。線が出ていても件数が少なすぎて読めない。'
+      ? 'じぶんの記録は、50件以上たまった帯がまだ無い。線が出ていても件数が少なすぎて読めない。'
       : (notes.length === 0
-          ? 'じぶんの記録は、10件以上たまった帯では無作為と目立った差がない。'
-          : ('じぶんの記録では、' + notes.join('。') + '。ただし数十件では偶然でも起きる差。'));
+          ? 'じぶんの記録は、50件以上たまった帯では無作為と目立った差がない。'
+          : ('じぶんの記録では、' + notes.join('。') + '。ただし無作為の記録でも、50〜150件なら約76%、500件でも59.2%はこの差が出る。件数が増えるまでは偶然と見ておくこと。'));
     say.textContent = fixed + '\n' + mineWord;
     const foot = document.createElement('div');
     foot.style.cssText = 'font-size:9px; color:rgba(232,226,208,0.45); line-height:1.6; margin-top:2px;';
@@ -7688,9 +7696,7 @@ document.addEventListener('DOMContentLoaded', function () {
       box.textContent = '記録がありません。\n「判定する」を押すたびに、自動でここに一件たまります。';
       return;
     }
-    // 無作為50000回の実測（雀魂標準の赤入り・子）。judge で自動記録した手と並べる。
-    const CAT_PCT = [8.51, 24.17, 30.30, 21.88, 10.50, 3.64, 1.01];
-    const CAT_ATK = [58.1, 51.4, 43.5, 38.1, 36.6, 37.8, 36.5];
+    // 無作為の裁定数は BASE_CURVE.cat 一本を読む（折れ線と同じ数字を使うため）。
     const LAB = ['0枚', '1枚', '2枚', '3枚', '4枚', '5枚', '6枚以上'];
     const band = function(c){ return c >= 6 ? 6 : c; };
     const mine = new Array(7).fill(0);
@@ -7704,9 +7710,9 @@ document.addEventListener('DOMContentLoaded', function () {
       if(r.atk === true){ mineAtk[b]++; atkN++; }
       if(typeof r.eda === 'number' && typeof r.om === 'number'){
         // 目盛りは判定画面・誤診記録と同じものを使う
-        const c3 = (c >= 3 && c <= 4);
         const lc = (c === 0) ? 1 : (c >= 4 ? -1 : 0);
-        const le = (r.eda >= 4) ? 1 : ((c3 && r.eda <= 1) ? -1 : 0);
+        const el = edaSwitchLean(r.eda, c);
+        const le = (el === 'attack') ? 1 : ((el === 'defend') ? -1 : 0);
         const lo = (r.om >= 3) ? -1 : ((r.om === 0 && (r.yaochu || 0) <= 2) ? 1 : 0);
         const ls = [lc, le, lo].filter(function(x){ return x !== 0; });
         if(ls.length >= 2 && ls.indexOf(1) >= 0 && ls.indexOf(-1) >= 0) split++;
@@ -7722,9 +7728,9 @@ document.addEventListener('DOMContentLoaded', function () {
       const ar = mine[i] ? (mineAtk[i] / mine[i] * 100) : null;
       lines.push(LAB[i].padEnd(4, '　')
         + (p === null ? '     —' : (p.toFixed(1) + '%').padStart(6, ' '))
-        + (CAT_PCT[i].toFixed(1) + '%').padStart(7, ' ')
+        + (BASE_CURVE.cat.pct[i].toFixed(1) + '%').padStart(7, ' ')
         + (ar === null ? '      —' : (ar.toFixed(0) + '%').padStart(7, ' '))
-        + (CAT_ATK[i].toFixed(0) + '%').padStart(6, ' '));
+        + (BASE_CURVE.cat.atk[i].toFixed(0) + '%').padStart(6, ' '));
     }
     lines.push('');
     lines.push('※ 無作為は赤入りの山から50000回配った実測');
@@ -8074,8 +8080,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const _leans = {
         cat: (effectiveCatN === 0) ? 'attack' : (effectiveCatN >= 4 ? 'defend' : ''),
         // 枝豆スイッチと同じ目盛り（4組以上で攻め／灰色帯かつ1組以下で守り／他は沈黙）
-        eda: (_eda >= 4) ? 'attack'
-             : ((effectiveCatN >= 3 && effectiveCatN <= 4 && _eda <= 1) ? 'defend' : ''),
+        eda: edaSwitchLean(_eda, effectiveCatN),
         om:  (_om >= 3) ? 'defend' : ((_om === 0 && _yaochu <= 2) ? 'attack' : '')
       };
       const _rows = haipaiLogLoad();
@@ -8143,13 +8148,14 @@ document.addEventListener('DOMContentLoaded', function () {
       realTilesE.forEach(t => { cntE[t.code] = (cntE[t.code]||0)+1; });
       const pairTripletN = Object.values(cntE).filter(c => c>=2).length;
       // 枝豆は自分の計器（組の数）だけを言う。一致は「揃い」で、「ヨシ」は使わない（現場猫の言葉）。
-      if(pairTripletN >= 4){
+      const edaLean = edaSwitchLean(pairTripletN, effectiveCatN);
+      if(edaLean === 'attack'){
         if(a.verdict === 'attack'){
           window._edamameNote = pairTripletN + '組。揃い';
         } else {
           window._vzMiss.eda = pairTripletN + '組。だが本判定は守——珍しい食い違い';
         }
-      } else if(effectiveCatN >= 3 && effectiveCatN <= 4 && pairTripletN <= 1){
+      } else if(edaLean === 'defend'){
         // 灰色帯（猫牌3〜4枚）に限り、下側も開く。
         // 無作為50000回で測り直すと、帯の枝豆0組は攻め24.5%、1組は35.2%。
         // この一言が当たるのは67.6%（8648回中5850回）で、三回に一回は外す。
