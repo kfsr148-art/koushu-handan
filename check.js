@@ -633,6 +633,17 @@ section('⑦', '狭い画面での溢れ', () => {
      その意図的なはみ出しが3px計上されるため。これを咎めると当たり判定を痩せさせる方向に効いてしまう。 */
   const SLACK = 4;
 
+  /* 起動のたびに掛かる支度を削る旗。既定のままだと初回に外部通信と初期化が入り、
+     title の一回だけで77秒かかっていた（旗を足して20秒）。9画面ひと視野で182秒→108秒。 */
+  const VIEW_FLAGS = ['--no-first-run', '--no-default-browser-check', '--disable-background-networking',
+    '--disable-component-update', '--disable-default-apps', '--disable-sync', '--disable-extensions',
+    '--disable-client-side-phishing-detection', '--metrics-recording-only', '--mute-audio',
+    '--disable-search-engine-choice-screen', '--no-service-autorun', '--password-store=basic'];
+  /* 一回あたりの上限。返らないブラウザで検査ごと止まらないための蓋。
+     速い版の実測（最長 title 20秒）に対して十分な余裕を取る。
+     ＊並べて走らせる案は、この機械では逆効果。CPU が2個しかなく、同時4で 216秒→492秒に伸びた。 */
+  const VIEW_TIMEOUT = 120000;
+
   const browser = [
     process.env['ProgramFiles(x86)'] && process.env['ProgramFiles(x86)'] + '\\Microsoft\\Edge\\Application\\msedge.exe',
     process.env['ProgramFiles'] && process.env['ProgramFiles'] + '\\Microsoft\\Edge\\Application\\msedge.exe',
@@ -661,14 +672,20 @@ section('⑦', '狭い画面での溢れ', () => {
     const run = (vw, vh, screen) => {
       const args = ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1',
         '--window-size=' + (vw + 24) + ',' + (vh + 92),
-        '--user-data-dir=' + path.join(tmpDir, 'prof'),
+        '--user-data-dir=' + path.join(tmpDir, 'prof')].concat(VIEW_FLAGS).concat([
         /* ミニゲームだけは、遊びを通すぶんの時間が要る（9秒だと勝ち抜けきる前に打ち切られる回がある）。 */
         /* toriend は制限時間（30秒）を跨げるだけ回す。捕まえられなくても「逃げられた」で
            結果画面には必ず届く。捕獲の条件が鞭になって、叩けば必ず勝てるとは限らなくなった。 */
         /* toriend は走り込み330ms＋喜ぶ動き600ms＋制限時間30秒＋達成の喜び900ms を跨ぐ。 */
         '--virtual-time-budget=' + (screen === 'toriend' ? 70000 : 9000), '--dump-dom',
-        'file:///' + probe.replace(/\\/g, '/') + '#' + screen];
-      const r = spawnSync(browser, args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
+        'file:///' + probe.replace(/\\/g, '/') + '#' + screen]);
+      const r = spawnSync(browser, args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true,
+                                           timeout: VIEW_TIMEOUT });
+      /* 返らないまま待ち続けると検査ごと止まる。切ったことを黙って PASS にはせず、落として次へ。 */
+      if (r.error && (r.error.code === 'ETIMEDOUT' || r.signal)) {
+        ng(screen + ' ' + vw + 'x' + vh + '：ブラウザが' + (VIEW_TIMEOUT / 1000) + '秒で返らないため打ち切った');
+        bad++; return;
+      }
       const hit = /KOUSHU_VIEW_BEGIN([A-Za-z0-9+/=]+)KOUSHU_VIEW_END/.exec(String(r.stdout || ''));
       if (!hit) { ng(screen + ' ' + vw + 'x' + vh + '：測定結果を取り出せない'); bad++; return; }
       let d;
