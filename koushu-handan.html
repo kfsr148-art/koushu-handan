@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1419">
+<html lang="ja" data-ver="1420">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1144,6 +1144,7 @@
      370.6→406（+35.4px）へ跳ねる。視野は 1px しか増えないので二択が押し出される。
      一段のままなら 356px で収まるため、二段にした v1415 で初めて表に出た段差。
      読みにくさより実測への忠実さを取っている（v1416・案B）。 */
+  /* ＊この 350/380/384 は、上の切り詰め @media (orientation: landscape) and (max-height: 380px)（1106行）と連動。片方を変えるときは必ず両方を見る。 */
   @media (orientation: landscape) and (min-width: 844px) and (min-height: 350px) and (max-height: 380px),
          (orientation: landscape) and (min-width: 844px) and (min-height: 384px) {
     body.judged .verdict-zones .vz { flex-wrap: wrap; overflow: visible; }
@@ -1266,7 +1267,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1419</div>
+  <div id="verTag">v1420</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
