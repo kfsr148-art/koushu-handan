@@ -21,7 +21,8 @@ param(
   [string[]]$Lines = @(),
   [switch]$DryRun,
   [switch]$NoTag,
-  [switch]$NoPush
+  [switch]$NoPush,
+  [string]$Pending = '' # こちらの判断が要る点。空なら「判断待ちなし」と書く
 )
 
 $ErrorActionPreference = 'Continue'   # git の終了コードは自分で見る
@@ -36,6 +37,7 @@ $Report    = Join-Path $Repo 'report-latest.md'
 $TopicPath = 'C:\Users\user\.claude\rc-ntfy-topic.txt'
 $ToolUrl   = 'https://kfsr148-art.github.io/koushu-handan/'
 $Closing   = '触ってみて'
+$NoPending = '判断待ちなし'
 $NtfyTitle = 'クロード連絡どき'
 $MaxLines  = 3
 
@@ -75,11 +77,16 @@ function Get-Changes([string]$from, [string]$to) {
 }
 
 # ---- 連絡文を組む ----
-function Build-Draft([string[]]$ch) {
+# 宛先はチャット側のクロード。ユーザが受け取って渡す。
+# 版の番号と「判断待ち」の一行を入れるのはそのため（遊ぶ人向けの行はそのまま残す）。
+function Build-Draft([string[]]$ch, [string]$ver, [string]$pend) {
   $b = New-Object System.Text.StringBuilder
   [void]$b.AppendLine($ToolUrl)
+  if ($ver) { [void]$b.AppendLine('v' + $ver) }
   [void]$b.AppendLine('')
   foreach ($c in $ch) { [void]$b.AppendLine('・' + $c) }
+  [void]$b.AppendLine('')
+  [void]$b.AppendLine($(if ($pend) { $pend } else { $NoPending }))
   [void]$b.AppendLine('')
   [void]$b.Append($Closing)
   return $b.ToString()
@@ -198,7 +205,10 @@ if ($ch.Count -eq 0) {
 }
 
 # 6) 連絡文
-$draft = Build-Draft $ch
+# 版は、進める先の commit に入っている ver.txt を読む（本体の名乗りと同じ値）。
+$ver = ''
+try { $ver = ((& git -C $Repo show ($target + ':ver.txt') | Select-Object -First 1) -replace '[^0-9]', '') } catch { }
+$draft = Build-Draft $ch $ver $Pending
 Write-Output ''
 Write-Output '=== 連絡文（そのまま写して送れます） ==='
 Write-Output '-----------------------------------------'
