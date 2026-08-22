@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>返事パネル</title>
+<!-- 宣言しておかないと /favicon.ico を勝手に取りに行って起動のたび404になる -->
+<link rel="icon" href="data:,">
+<meta name="theme-color" content="#14241c">
+<style>
+  /* 外部の読み込みは一切しない。字体も端末のものだけを使う。 */
+  :root{
+    --bg:#14241c; --card:#1d3328; --line:#2f4b3c; --fg:#f3ece0;
+    --dim:rgba(243,236,224,0.65);
+    --ask:#e8c14a; --done:#4caf7d; --wait:#4a9fe8; --act:#e05a4a;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; background:var(--bg); color:var(--fg);
+    font-family:-apple-system,"Hiragino Sans","Yu Gothic",sans-serif;
+    font-size:18px; line-height:1.6;}
+  body{padding:0 0 40px; max-width:520px; margin:0 auto;}
+
+  header{position:sticky; top:0; z-index:10; background:var(--bg);
+    border-bottom:1px solid var(--line);
+    padding:calc(10px + env(safe-area-inset-top)) 14px 14px;}
+  h1{font-size:19px; margin:0 0 10px; letter-spacing:.05em;}
+
+  /* 指で押す的は44px以上。ヨシは親指で外さない大きさにする。 */
+  .yoshi{display:block; width:100%; min-height:76px; font-size:30px; font-weight:700;
+    letter-spacing:.35em; text-indent:.35em; color:#14241c; background:var(--done);
+    border:0; border-radius:12px; margin:0 0 10px;}
+  .yoshi:active{filter:brightness(.85);}
+  .row{display:flex; gap:8px;}
+  .row input{flex:1 1 auto; min-width:0; min-height:52px; font-size:18px; padding:8px 12px;
+    color:var(--fg); background:var(--card); border:1px solid var(--line); border-radius:10px;}
+  .row button{flex:0 0 auto; min-width:92px; min-height:52px; font-size:18px; font-weight:700;
+    color:var(--fg); background:var(--card); border:1px solid var(--line); border-radius:10px;}
+  .row button:active{filter:brightness(1.4);}
+  #say{margin-top:8px; font-size:15px; min-height:1.6em; color:var(--dim); word-break:break-all;}
+  #say.ok{color:var(--done);}
+  #say.ng{color:var(--act);}
+
+  .bar{display:flex; justify-content:space-between; align-items:center; gap:10px;
+    padding:10px 14px; font-size:14px; color:var(--dim);}
+  .bar button{flex:0 0 auto; font-size:14px; color:var(--dim); background:none;
+    border:1px solid var(--line); border-radius:8px; min-height:44px; padding:0 12px;}
+
+  ul{list-style:none; margin:0; padding:0 14px;}
+  li{background:var(--card); border-left:6px solid var(--line); border-radius:10px;
+    margin:0 0 12px; padding:12px 14px;}
+  li.ask{border-left-color:var(--ask);}
+  li.done{border-left-color:var(--done);}
+  li.wait{border-left-color:var(--wait);}
+  li.act{border-left-color:var(--act);}
+  .t{font-size:17px; font-weight:700; margin:0 0 4px;}
+  li.ask .t{color:var(--ask);}
+  li.done .t{color:var(--done);}
+  li.wait .t{color:var(--wait);}
+  li.act .t{color:var(--act);}
+  .when{font-size:13px; color:var(--dim); font-weight:400; margin-left:.6em;}
+  .m{white-space:pre-wrap; word-break:break-word; font-size:17px; margin:0;}
+
+  #setup{padding:calc(16px + env(safe-area-inset-top)) 14px 16px;}
+  #setup p{font-size:15px; color:var(--dim);}
+  #setup label{font-size:15px; color:var(--dim);}
+  #setup input{width:100%; min-height:52px; font-size:16px; padding:8px 12px; margin:6px 0 14px;
+    color:var(--fg); background:var(--card); border:1px solid var(--line); border-radius:10px;}
+  #setup button{width:100%; min-height:56px; font-size:19px; font-weight:700;
+    color:#14241c; background:var(--done); border:0; border-radius:12px;}
+  .hide{display:none;}
+</style>
+</head>
+<body>
+
+<div id="setup" class="hide">
+  <h1>話題名を入れてください</h1>
+  <p>この端末にだけ残ります。次からは要りません。</p>
+  <label for="inSend">送る側（知らせが届く話題）</label>
+  <input id="inSend" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="kh-…">
+  <label for="inReply">返す側（返事を投げる話題）</label>
+  <input id="inReply" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="khr-…">
+  <button id="save" type="button">保存する</button>
+</div>
+
+<div id="main" class="hide">
+  <header>
+    <h1>返事パネル</h1>
+    <button class="yoshi" id="btnYoshi" type="button">ヨシ</button>
+    <div class="row">
+      <input id="free" type="text" placeholder="直しの指示を書く" autocapitalize="off">
+      <button id="btnSend" type="button">送る</button>
+    </div>
+    <div id="say"></div>
+  </header>
+  <div class="bar">
+    <span id="stat">読み込み中…</span>
+    <button id="btnReset" type="button">話題名を入れ直す</button>
+  </div>
+  <ul id="list"></ul>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var KEY = 'kh-panel-topics';
+  var send = '', reply = '', timer = null;
+
+  function $(id) { return document.getElementById(id); }
+
+  function esc(s) {
+    return String(s === null || s === undefined ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function load() {
+    try {
+      var v = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (v && v.send && v.reply) { send = v.send; reply = v.reply; return true; }
+    } catch (e) {}
+    return false;
+  }
+
+  function store(s, r) {
+    try { localStorage.setItem(KEY, JSON.stringify({ send: s, reply: r })); } catch (e) {}
+  }
+
+  function showSetup() {
+    $('setup').className = '';
+    $('main').className = 'hide';
+    $('inSend').value = send;
+    $('inReply').value = reply;
+    if (timer) { clearInterval(timer); timer = null; }
+  }
+
+  function showMain() {
+    $('setup').className = 'hide';
+    $('main').className = '';
+    pull();
+    if (timer) { clearInterval(timer); }
+    timer = setInterval(pull, 15000);
+  }
+
+  /* 題の種類で色を分ける。四つの題は本文の形も違うので、見た目で先に分かる。 */
+  function kind(t) {
+    t = String(t || '');
+    if (t.indexOf('返事してください') === 0) { return 'ask'; }
+    if (t.indexOf('終わりました') === 0) { return 'done'; }
+    if (t.indexOf('待てば戻ります') >= 0) { return 'wait'; }
+    if (t.indexOf('手が要ります') >= 0) { return 'act'; }
+    if (t.indexOf('異常です') === 0) { return 'act'; }
+    return '';
+  }
+
+  function hhmm(sec) {
+    try {
+      var d = new Date(sec * 1000);
+      var p = function (n) { return (n < 10 ? '0' : '') + n; };
+      return p(d.getHours()) + ':' + p(d.getMinutes());
+    } catch (e) { return ''; }
+  }
+
+  /* ntfy の poll は一行に一件の JSON（JSON の配列ではない）。行ごとに解く。 */
+  function pull() {
+    var url = 'https://ntfy.sh/' + encodeURIComponent(send) + '/json?poll=1&since=12h';
+    fetch(url, { cache: 'no-store' })
+      .then(function (r) {
+        if (!r.ok) { throw new Error('HTTP ' + r.status); }
+        return r.text();
+      })
+      .then(function (txt) {
+        var rows = [];
+        txt.split('\n').forEach(function (ln) {
+          ln = ln.trim();
+          if (!ln) { return; }
+          var d;
+          try { d = JSON.parse(ln); } catch (e) { return; }
+          if (d.event !== 'message') { return; }
+          rows.push(d);
+        });
+        rows.sort(function (a, b) { return (b.time || 0) - (a.time || 0); });
+        var html = '';
+        rows.forEach(function (d) {
+          html += '<li class="' + kind(d.title) + '">'
+                + '<p class="t">' + esc(d.title || '(題なし)')
+                + '<span class="when">' + hhmm(d.time) + '</span></p>'
+                + '<p class="m">' + esc(d.message) + '</p></li>';
+        });
+        $('list').innerHTML = html
+          || '<li><p class="m">12時間以内の知らせはありません。</p></li>';
+        $('stat').textContent = rows.length + ' 件 ／ '
+          + hhmm(Math.floor(Date.now() / 1000)) + ' 更新';
+      })
+      .catch(function (e) {
+        $('stat').textContent = '読めません（' + e.message + '）';
+      });
+  }
+
+  function post(msg) {
+    var say = $('say');
+    say.className = '';
+    say.textContent = '送っています…';
+    fetch('https://ntfy.sh', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topic: reply, message: msg })
+    })
+      .then(function (r) {
+        if (!r.ok) { throw new Error('HTTP ' + r.status); }
+        return r.json();
+      })
+      .then(function (j) {
+        say.className = 'ok';
+        say.textContent = '送りました：' + msg + '　（受理 ' + (j.id || '') + '）';
+        $('free').value = '';
+      })
+      .catch(function (e) {
+        say.className = 'ng';
+        say.textContent = '送れませんでした：' + e.message;
+      });
+  }
+
+  $('save').addEventListener('click', function () {
+    var s = $('inSend').value.trim();
+    var r = $('inReply').value.trim();
+    if (!s || !r) { alert('二つとも入れてください'); return; }
+    send = s;
+    reply = r;
+    store(s, r);
+    showMain();
+  });
+
+  $('btnReset').addEventListener('click', showSetup);
+
+  $('btnYoshi').addEventListener('click', function () { post('ヨシ'); });
+
+  $('btnSend').addEventListener('click', function () {
+    var v = $('free').value.trim();
+    if (!v) {
+      $('say').className = 'ng';
+      $('say').textContent = '書いてから押してください';
+      return;
+    }
+    post(v);
+  });
+
+  $('free').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); $('btnSend').click(); }
+  });
+
+  if (load()) { showMain(); } else { showSetup(); }
+})();
+</script>
+</body>
+</html>
