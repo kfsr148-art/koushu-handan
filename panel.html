@@ -29,6 +29,22 @@
     padding:calc(10px + env(safe-area-inset-top)) 14px 14px;}
   h1{font-size:19px; margin:0 0 10px; letter-spacing:.05em;}
 
+  /* いまの状態の一行。ヨシの釦より上に置く。
+     リモートデスクトップを開かずに、動いているか止まっているかを見るため。 */
+  .state{display:flex; align-items:center; gap:8px; min-height:44px;
+    border:1px solid var(--line); border-left-width:6px; border-radius:10px;
+    padding:6px 10px; margin:0 0 10px; background:var(--card);}
+  .state .w{font-size:18px; font-weight:700; flex:0 0 auto;}
+  .state .s{font-size:15px; color:var(--fg); flex:1 1 auto; min-width:0;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .state .a{font-size:13px; color:var(--dim); flex:0 0 auto;}
+  .state button{flex:0 0 auto; min-height:36px; padding:0 10px; font-size:13px;
+    color:var(--dim); background:none; border:1px solid var(--line); border-radius:8px;}
+  .state.run  {border-left-color:var(--wait);} .state.run  .w{color:var(--wait);}
+  .state.ask  {border-left-color:var(--ask);}  .state.ask  .w{color:var(--ask);}
+  .state.idle {border-left-color:var(--line);} .state.idle .w{color:var(--dim);}
+  .state.lost {border-left-color:var(--act);}  .state.lost .w{color:var(--act);}
+
   /* 指で押す的は44px以上。ヨシは親指で外さない大きさにする。 */
   .yoshi{display:block; width:100%; min-height:76px; font-size:30px; font-weight:700;
     letter-spacing:.35em; text-indent:.35em; color:#14241c; background:var(--done);
@@ -83,12 +99,20 @@
   <input id="inSend" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="kh-…">
   <label for="inReply">返す側（返事を投げる話題）</label>
   <input id="inReply" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="khr-…">
+  <label for="inStat">状態（いまの様子が流れる話題。後から足しても構いません）</label>
+  <input id="inStat" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="khs-…">
   <button id="save" type="button">保存する</button>
 </div>
 
 <div id="main" class="hide">
   <header>
     <h1>返事パネル</h1>
+    <div class="state idle" id="state">
+      <span class="w" id="stWord">…</span>
+      <span class="s" id="stSubj">読み込み中</span>
+      <span class="a" id="stAgo"></span>
+      <button id="stSet" type="button" class="hide">設定</button>
+    </div>
     <button class="yoshi" id="btnYoshi" type="button">ヨシ</button>
     <div class="row">
       <input id="free" type="text" placeholder="直しの指示を書く" autocapitalize="off">
@@ -107,7 +131,8 @@
 (function () {
   'use strict';
   var KEY = 'kh-panel-topics';
-  var send = '', reply = '', timer = null;
+  var send = '', reply = '', stat = '', timer = null;
+  var STALE_SEC = 180;   // 最後の更新からこれを超えたら「連絡なし」
 
   function $(id) { return document.getElementById(id); }
 
@@ -116,16 +141,20 @@
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
+  /* 状態の話題は後から足せる。送る側と返す側の二つが揃っていれば、それだけで動く。 */
   function load() {
     try {
       var v = JSON.parse(localStorage.getItem(KEY) || 'null');
-      if (v && v.send && v.reply) { send = v.send; reply = v.reply; return true; }
+      if (v && v.send && v.reply) {
+        send = v.send; reply = v.reply; stat = v.stat || '';
+        return true;
+      }
     } catch (e) {}
     return false;
   }
 
-  function store(s, r) {
-    try { localStorage.setItem(KEY, JSON.stringify({ send: s, reply: r })); } catch (e) {}
+  function store(s, r, t) {
+    try { localStorage.setItem(KEY, JSON.stringify({ send: s, reply: r, stat: t })); } catch (e) {}
   }
 
   function showSetup() {
@@ -133,16 +162,20 @@
     $('main').className = 'hide';
     $('inSend').value = send;
     $('inReply').value = reply;
+    $('inStat').value = stat;
     if (timer) { clearInterval(timer); timer = null; }
   }
 
   function showMain() {
     $('setup').className = 'hide';
     $('main').className = '';
-    pull();
+    tick();
     if (timer) { clearInterval(timer); }
-    timer = setInterval(pull, 15000);
+    timer = setInterval(tick, 15000);
   }
+
+  /* 15秒ごとに、知らせの一覧と状態の両方を取りに行く。 */
+  function tick() { pull(); pullState(); }
 
   /* 題の種類で色を分ける。四つの題は本文の形も違うので、見た目で先に分かる。 */
   function kind(t) {
@@ -199,6 +232,66 @@
       });
   }
 
+  /* いまの状態を一行で出す。
+     作業中＝青／ヨシ待ち＝黄／手待ち＝灰。最後の更新から3分を超えたら赤で「連絡なし」。 */
+  function paintState(cls, word, subj, ago) {
+    $('state').className = 'state ' + cls;
+    $('stWord').textContent = word;
+    $('stSubj').textContent = subj;
+    $('stAgo').textContent = ago;
+  }
+
+  function agoText(sec) {
+    if (sec < 60) { return Math.max(0, Math.floor(sec)) + '秒前'; }
+    if (sec < 3600) { return Math.floor(sec / 60) + '分前'; }
+    return Math.floor(sec / 3600) + '時間前';
+  }
+
+  function pullState() {
+    if (!stat) {
+      paintState('idle', '—', '状態の話題が未設定です', '');
+      $('stSet').className = '';
+      return;
+    }
+    $('stSet').className = 'hide';
+    var url = 'https://ntfy.sh/' + encodeURIComponent(stat) + '/json?poll=1&since=12h';
+    fetch(url, { cache: 'no-store' })
+      .then(function (r) {
+        if (!r.ok) { throw new Error('HTTP ' + r.status); }
+        return r.text();
+      })
+      .then(function (txt) {
+        var last = null;
+        txt.split('\n').forEach(function (ln) {
+          ln = ln.trim();
+          if (!ln) { return; }
+          var d;
+          try { d = JSON.parse(ln); } catch (e) { return; }
+          if (d.event !== 'message') { return; }
+          if (!last || (d.time || 0) > (last.time || 0)) { last = d; }
+        });
+        if (!last) {
+          paintState('lost', '連絡なし', '12時間、状態が流れていません', '');
+          return;
+        }
+        var sec = Math.floor(Date.now() / 1000) - (last.time || 0);
+        var w = String(last.title || '');
+        var subj = String(last.message || '');
+        if (sec > STALE_SEC) {
+          paintState('lost', '連絡なし', subj + '（最後は ' + w + '）', agoText(sec));
+          return;
+        }
+        var cls = 'idle';
+        if (w.indexOf('作業中') === 0) { cls = 'run'; }
+        else if (w.indexOf('ヨシ待ち') === 0) { cls = 'ask'; }
+        else if (w.indexOf('手待ち') === 0) { cls = 'idle'; }
+        paintState(cls, w, subj, agoText(sec));
+      })
+      .catch(function (e) {
+        paintState('lost', '連絡なし', '状態を読めません（' + e.message + '）', '');
+      });
+  }
+
   function post(msg) {
     var say = $('say');
     say.className = '';
@@ -226,14 +319,17 @@
   $('save').addEventListener('click', function () {
     var s = $('inSend').value.trim();
     var r = $('inReply').value.trim();
-    if (!s || !r) { alert('二つとも入れてください'); return; }
+    var t = $('inStat').value.trim();
+    if (!s || !r) { alert('送る側と返す側は入れてください'); return; }
     send = s;
     reply = r;
-    store(s, r);
+    stat = t;
+    store(s, r, t);
     showMain();
   });
 
   $('btnReset').addEventListener('click', showSetup);
+  $('stSet').addEventListener('click', showSetup);
 
   $('btnYoshi').addEventListener('click', function () { post('ヨシ'); });
 
