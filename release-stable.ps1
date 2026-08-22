@@ -25,6 +25,12 @@ param(
 )
 
 $ErrorActionPreference = 'Continue'   # git の終了コードは自分で見る
+
+# git の出力は UTF-8。コンソールの文字コードが違うと復号を誤り、
+# 日本語の直後の改行が食われて題どうしが繋がる（数え落とし）。
+# 実測：Bash から起動すると OutputEncoding が shift_jis になり、60件が16件に見えた。
+# 起動元によって変わるので、ここで固定する。
+try { [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false) } catch { }
 $Repo      = 'C:\Users\user\Desktop\mahjong\koushu-handan'
 $Report    = Join-Path $Repo 'report-latest.md'
 $TopicPath = 'C:\Users\user\.claude\rc-ntfy-topic.txt'
@@ -161,6 +167,12 @@ Write-Output '=== 変わり目 ==='
 $ch = @()
 if ($Lines.Count -gt 0) {
   $ch = $Lines
+  # -File で起動されたとき、'a','b','c' は一個の文字列 "a,b,c" として届く（Bash から呼ぶと必ずこうなる）。
+  # 一個きりで読点混じりなら、潰れた配列とみなして開き直す。
+  if ($ch.Count -eq 1 -and $ch[0] -match ',') {
+    $ch = @($ch[0].Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+    Write-Output ("  （一個の文字列で届いたので " + $ch.Count + " 行へ開き直した）")
+  }
   Write-Output '  （-Lines で手渡された文言を使う）'
 } else {
   Write-Output ('  区間 : ' + $prev.Substring(0, 7) + '..' + $target.Substring(0, 7))
