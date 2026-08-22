@@ -95,6 +95,13 @@ function Send-Draft([string]$draft) {
       --data-binary ('@' + $tmp) ('https://ntfy.sh/' + $topic) 2>&1
     $code = $LASTEXITCODE
     Write-Host ('  送信 exit=' + $code + ' 返り=' + (($out | Out-String).Trim() -replace '\s+', ' '))
+    # 送れたものは、報告書の末尾の「送った知らせ」へそのまま書き写す。
+    if ($code -eq 0) {
+      try {
+        $t64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($NtfyTitle))
+        & powershell.exe -NoProfile -ExecutionPolicy Bypass -File 'C:\Users\user\.claude\notify-record.ps1' -TitleB64 $t64 -BodyFile $tmp | Out-Null
+      } catch { }
+    }
     return ($code -eq 0)
   } finally { try { [System.IO.File]::Delete($tmp) } catch { } }
 }
