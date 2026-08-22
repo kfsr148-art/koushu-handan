@@ -1,4 +1,4 @@
-﻿# stable を進めて、グロードへの連絡文の下書きを作る。
+﻿# stable を進めて、クロードへの連絡文の下書きを作る。
 #
 #   使い方
 #     .\release-stable.ps1 -Commit <sha|HEAD>          … 進めて、投げて、報告書へ残す
@@ -36,7 +36,7 @@ $Report    = Join-Path $Repo 'report-latest.md'
 $TopicPath = 'C:\Users\user\.claude\rc-ntfy-topic.txt'
 $ToolUrl   = 'https://kfsr148-art.github.io/koushu-handan/'
 $Closing   = '触ってみて'
-$NtfyTitle = 'グロード連絡どき'
+$NtfyTitle = 'クロード連絡どき'
 $MaxLines  = 3
 
 # 言い換え表。上から順に一度ずつ当てる。増やすときはここへ足す。
@@ -118,7 +118,7 @@ function Append-Report([string]$draft) {
   $block += ''
   $block += '---'
   $block += ''
-  $block += ('## グロード連絡どき（' + $stamp + ' の下書き）')
+  $block += ('## クロード連絡どき（' + $stamp + ' の下書き）')
   $block += ''
   $block += 'そのまま写して送れます。'
   $block += ''
@@ -219,7 +219,7 @@ Write-Output '  report-latest.md の末尾へ残した'
 if ($NoPush) { Write-Output '  [NoPush] commit と push はしない（呼び手が行う）' }
 else {
   & git -C $Repo add report-latest.md | Out-Null
-  & git -C $Repo commit --no-verify -q -m 'report-latest.md：グロード連絡どきの下書きを追記' | Out-Null
+  & git -C $Repo commit --no-verify -q -m 'report-latest.md：クロード連絡どきの下書きを追記' | Out-Null
   & git -C $Repo push --no-verify -q origin main | Out-Null
   if ($LASTEXITCODE -eq 0) { Write-Output '  報告書を push した' } else { Write-Output '  NG 報告書の push に失敗' }
 }
