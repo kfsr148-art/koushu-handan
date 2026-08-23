@@ -103,7 +103,7 @@ function Send-Draft([string]$draft) {
   try {
     [System.IO.File]::WriteAllText($tmp, $draft, (New-Object System.Text.UTF8Encoding($false)))
     $out = & curl.exe -s -S --max-time 20 `
-      -H ('Title: ' + $enc) -H 'Priority: default' -H 'Tags: mailbox' `
+      -H ('Title: ' + $enc) -H 'Priority: 2' -H 'Tags: mailbox' `
       -H 'Content-Type: text/plain; charset=utf-8' `
       --data-binary ('@' + $tmp) ('https://ntfy.sh/' + $topic) 2>&1
     $code = $LASTEXITCODE
