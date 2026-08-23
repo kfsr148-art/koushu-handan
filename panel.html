@@ -165,7 +165,7 @@
   <button class="cpall" id="btnCopyAll" type="button">全部写す</button>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v21（8月23日）</p>
+  <p class="ver" id="verTag">panel v22（8月23日）</p>
 </div>
 
 <script>
@@ -262,6 +262,7 @@
     t = String(t || '');
     if (t.indexOf('🙋') >= 0) { return 'ask'; }
     if (t.indexOf('📥') >= 0 || t.indexOf('👍') >= 0) { return ''; }
+    if (t.indexOf('🔎') >= 0) { return 'wait'; }   /* 調べた。青。手は入れていない */
     if (t.indexOf('✅') >= 0) { return 'done'; }
     if (t.indexOf('👀') >= 0) { return 'wait'; }
     if (t.indexOf('🪟') >= 0) { return 'act'; }
@@ -389,9 +390,12 @@
   function stateWord(title) {
     var t = String(title || '');
     if (t.indexOf('ヨシしてください') >= 0 || t.indexOf('返事してください') >= 0) { return 'ヨシ待ち'; }
+    /* 調べた＝手を入れていないが、訊かれたことの答えが出た状態（v22 で足した五つ目）。
+       「終わりました」より先に見ること。どちらも「〜ました」で終わるため。 */
+    if (t.indexOf('調べました') >= 0 || t.indexOf('調べた') >= 0) { return '調べた'; }
     if (t.indexOf('終わりました') >= 0) { return '終わり'; }
     if (t.indexOf('異常') >= 0) { return '異常'; }
-    /* ＊「未確認」は返さない。状態は四つだけと決めてある。
+    /* ＊「未確認」は返さない。状態は五つだけと決めてある。
          題から読み取れないもの（試しの一本など）は、確かめの最中とみなして「作業中」。 */
     return '作業中';
   }
@@ -510,13 +514,22 @@
     if (!meas) { meas = plain(f.meas); }
     var open  = pick(body, ['未決', '待ち']);
 
+    /* 「調べた」の回だけ、⑥実測を一項目一行の箇条書きにする。
+       ＊調べた結果はファイル名・行番号・パスの並びで、一行に詰めると読めない。
+         表にもしない（画面から切れて写しが撮り直しになる）。省略記号でも切らない。
+       ＊控えの側は一行に収める決まりなので、「 ／ 」で区切って書き、ここで行に開く。 */
+    var st = stateWord(d.title);
+    if (st === '調べた' && meas) {
+      meas = '\n' + meas.split(/\s*／\s*/).filter(Boolean).map(function (x) { return '- ' + x; }).join('\n');
+    }
+
     return [
       /* 一行目は「いつの何の件か」。一件でも一括でも同じ形にする。
          件名は本文の一行目。**題は使わない**——題の中身（終わりました／異常です など）は
          次の行の「状態」と同じことを言うので、写しに二度書くことになる
          （2026-08-23 実測：件名の無い件で「終わりました（返事不要）」が一行目に出た）。 */
       '[' + hhmm(d.time) + '] ' + (plain(lines[0] || '') || '（件名なし）'),
-      '状態: ' + stateWord(d.title),
+      '状態: ' + st,
       'したこと: ' + (did || '未確認'),
       '版: ' + ver,
       'ファイル: ' + (files || '未確認'),

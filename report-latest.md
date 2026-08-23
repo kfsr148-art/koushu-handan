@@ -1080,7 +1080,25 @@ https://kfsr148-art.github.io/koushu-handan/
 
 直近に ntfy へ送ったものを、新しい順に五件まで。**要約せず、送った本文をそのまま写しています。**
 
-### 1. ✅ 終わりました（返事不要）
+### 1. 🔎 調べました
+
+```
+兎の絵の出どころと、枝豆のムチとの共有
+EDA_WHIP.idleFront は枝豆のムチ側でも使われている。兎の席だけ別の定数へ分ける必要がある。
+ファイル: koushu-handan.html:8501（兎が参照）／koushu-handan.html:9314（KISHI_IDLE_FRONT へ受け渡し）／koushu-handan.html:9293（idleFront の実体・data URI）
+実測: koushu-handan.html:9472 jumpLineFrame: 'idleFront'（跳躍の線を引くコマ） ／ koushu-handan.html:9503 edaDir の初期値が 'idleFront' ／ koushu-handan.html:9550 edaIdleKey() が正面のとき 'idleFront' を返す ／ 焼き上がりの控え kishi_idle_front.png 115x317 59043バイト ／ 元絵 kishi_idle_front_src.png 704x1524 ／ 新しい素材 usagi_v2.png 1024x1024 1342171バイト 外接 y53-960 x309-713 ／ 結論 EDA_WHIP.idleFront は触らず兎専用の定数を新設する
+```
+
+### 2. ✅ 終わりました（返事不要）
+
+```
+写せなかったときの釦
+何をしたかの控えがありません（止まる側の書き忘れです）。
+ファイル: panel.html v21（copyOne の失敗側を done から failed へ分け、写せません＋手で写す箱＋印を付けない形に／.cp.ng の赤を追加）
+実測: 四通りを駆動。成功=写した/cp ok/印付いた/箱出ない、拒まれた=写せません/cp ng/印付かない/箱出た、その場で例外=同じ、clipboard が無い=同じ
+```
+
+### 3. ✅ 終わりました（返事不要）
 
 ```
 写した後の釦の再コピー
@@ -1089,7 +1107,7 @@ https://kfsr148-art.github.io/koushu-handan/
 実測: 本体から copyOne を切り出して二度押しを駆動。一回目 釦=写した class=cp ok 写した回数1、二回目 釦=また写した 写した回数2、二回とも同じ文面。七件とも七行・余計な行0・絵文字なし・題の混入なし
 ```
 
-### 2. ✅ 終わりました（返事不要）
+### 4. ✅ 終わりました（返事不要）
 
 ```
 写した後の釦の再コピー
@@ -1098,31 +1116,18 @@ https://kfsr148-art.github.io/koushu-handan/
 実測: 本体から copyOne を切り出して二度押しを駆動。一回目 釦=写した class=cp ok 写した回数1、二回目 釦=また写した 写した回数2、二回とも同じ文面。七件とも七行・余計な行0・絵文字なし・題の混入なし
 ```
 
-### 3. ✅ 終わりました（返事不要）
+### 5. ✅ 終わりました（返事不要）
 
 ```
 パネルの上部三表示と全部写す
 写しを七項目へ改定し、全部写すと上部の三表示を入れた。stable を v1421 へ進めた
 ファイル: panel.html v18（sixLines の一行目に [時刻] 件名、copyAllText と copyAll と nowLine を新設、paintFacts と .facts と .cpall を追加）／~/.claude/inbox-watch.ps1（state.json に statAt を追加、state-since.txt で状態の変わり目を控える）
 実測: 21:04 の実値で 版 本体v1421 公開v1421 ずれなし／最終確認21:04 古さ33秒／状態 作業中。一件ずつの写しは七項目で先頭が [20:18] 件名。全部写すは未写し5件を古い順に連結し末尾に 現況：作業中 本体v1421 公開v1421 最終確認21:04。stable を afe9141（v1421）へ進め、検査は両方PASS
-```
-
-### 4. ✅ 終わりました（返事不要）
-
-```
-パネルの上部三表示と全部写す
-写しを七項目へ改定し、全部写すと上部の三表示を入れた。stable を v1421 へ進めた
-ファイル: panel.html v18（sixLines の一行目に [時刻] 件名、copyAllText と copyAll と nowLine を新設、paintFacts と .facts と .cpall を追加）／~/.claude/inbox-watch.ps1（state.json に statAt を追加、state-since.txt で状態の変わり目を控える）
-実測: 21:04 の実値で 版 本体v1421 公開v1421 ずれなし／最終確認21:04 古さ33秒／状態 作業中。一件ずつの写しは七項目で先頭が [20:18] 件名。全部写すは未写し5件を古い順に連結し末尾に 現況：作業中 本体v1421 公開v1421 最終確認21:04。stable を afe9141（v1421）へ進め、検査は両方PASS
-```
-
-### 5. Claude Code watch (test)
-
-```
-ntfy 全廃の後の確かめ。押し送りはせず、控えとパネルの一覧にだけ出るはず。
 ```
 
 <!-- 送った知らせ ここまで -->
+
+
 
 
 
