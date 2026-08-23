@@ -165,7 +165,7 @@
   <button class="cpall" id="btnCopyAll" type="button">全部写す</button>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v22（8月23日）</p>
+  <p class="ver" id="verTag">panel v23（8月24日）</p>
 </div>
 
 <script>
@@ -486,7 +486,14 @@
   /* 六行を組む。 */
   function sixLines(d) {
     var body = String(d.message || '');
-    var lines = body.split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
+    /* ⑧そのままから下は、③したことにも⑥実測にも回さない。
+       ＊⑧は見出しの無い行が並ぶので、切らずに渡すと⑧の中身が③へ流れ込む
+         （2026-08-24 実測：「■ 一段目 - 字下げを残す行」が したこと に出た）。
+       ＊見出しの拾い（pick）も head だけを見る。⑧の中に「実測:」のような行が
+         あっても、それは貼った本文の一部で、この件の見出しではない。 */
+    var rawIdx = body.search(/^そのまま[:：]/m);
+    var head = (rawIdx >= 0) ? body.slice(0, rawIdx) : body;
+    var lines = head.split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
 
     /* 見出しの付いた行は「したこと」から外す。件名（一行目）も外す。 */
     var LABEL = /^(版|ファイル|実測|未決|待ち|完了|件名|状態|したこと|食い違い|答え|そのまま|種類)[:：]/;
@@ -497,12 +504,12 @@
        ＊振り分けを掛けると、数値を含む一文まで実測へ回り、「したこと」が空になる
          （2026-08-23 実測：「一覧も控えの実体も最新5件に揃えた」が5件で実測扱いになり未確認に落ちた）。
        見出しが無い古い知らせだけ、本文から実測を拾い分ける。 */
-    var hasMeasLabel = pick(body, ['実測', '確かめ方', '結果']);
+    var hasMeasLabel = pick(head, ['実測', '確かめ方', '結果']);
     var f = hasMeasLabel ? { did: rest, meas: '' } : splitFacts(rest);
     var did = twoSentences(plain(f.did));
     if (!did) { did = twoSentences(plain(rest)); }   /* 全部が実測に見えたときの落ち */
 
-    var ver = pick(body, ['版', 'バージョン']);
+    var ver = pick(head, ['版', 'バージョン']);
     if (!ver) {
       /* 版は公開ページの ver.txt から取る。main の分が本体、stable の枝の分が stable。
          取れなかった側だけ「未確認」と書く。 */
@@ -511,23 +518,22 @@
       ver = a + ' ／ ' + b;
     }
     /* 見出しがあればそれを使う。無ければ本文から拾ったものを使う。 */
-    var files = pick(body, ['ファイル', '触ったファイル']);
+    var files = pick(head, ['ファイル', '触ったファイル']);
     if (!files) { files = findFiles(rest); }
-    var meas  = pick(body, ['実測', '確かめ方', '結果']);
+    var meas  = pick(head, ['実測', '確かめ方', '結果']);
     if (!meas) { meas = plain(f.meas); }
     /* ⑦は三つに書き分ける。空なら「なし」。
        食い違い＝受けた指示のうち、そのままでは成立しない点と、どう読み替えたか
        答え＝指示の中で訊かれたことへの答え（③したことには書かない）
        未決＝判断待ちの項目 */
-    var gap   = pick(body, ['食い違い']);
-    var ans   = pick(body, ['答え']);
-    var open  = pick(body, ['未決', '待ち']);
+    var gap   = pick(head, ['食い違い']);
+    var ans   = pick(head, ['答え']);
+    var open  = pick(head, ['未決', '待ち']);
 
     /* ⑧そのまま＝要約せずに貼る欄。字数の上限なし。
        ＊ここだけは plain も twoSentences も通さない。改行も原文のまま残す。
          迷ったら削らずここへ貼る、という決めなので、削る処理を一切かけない。 */
     var raw = '';
-    var rawIdx = body.search(/^そのまま[:：]/m);
     if (rawIdx >= 0) { raw = body.slice(rawIdx).replace(/^そのまま[:：]\s*/, '').trim(); }
 
     /* 「調べた」の回だけ、⑥実測を一項目一行の箇条書きにする。
