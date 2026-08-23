@@ -1,6 +1,11 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
+        "time":  1787487361,
+        "message":  "パネルの上部三表示と全部写す\n写しを七項目へ改定し、全部写すと上部の三表示を入れた。stable を v1421 へ進めた\nファイル: panel.html v18（sixLines の一行目に [時刻] 件名、copyAllText と copyAll と nowLine を新設、paintFacts と .facts と .cpall を追加）／~/.claude/inbox-watch.ps1（state.json に statAt を追加、state-since.txt で状態の変わり目を控える）\n実測: 21:04 の実値で 版 本体v1421 公開v1421 ずれなし／最終確認21:04 古さ33秒／状態 作業中。一件ずつの写しは七項目で先頭が [20:18] 件名。全部写すは未写し5件を古い順に連結し末尾に 現況：作業中 本体v1421 公開v1421 最終確認21:04。stable を afe9141（v1421）へ進め、検査は両方PASS"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
         "time":  1787487321,
         "message":  "パネルの上部三表示と全部写す\n写しを七項目へ改定し、全部写すと上部の三表示を入れた。stable を v1421 へ進めた\nファイル: panel.html v18（sixLines の一行目に [時刻] 件名、copyAllText と copyAll と nowLine を新設、paintFacts と .facts と .cpall を追加）／~/.claude/inbox-watch.ps1（state.json に statAt を追加、state-since.txt で状態の変わり目を控える）\n実測: 21:04 の実値で 版 本体v1421 公開v1421 ずれなし／最終確認21:04 古さ33秒／状態 作業中。一件ずつの写しは七項目で先頭が [20:18] 件名。全部写すは未写し5件を古い順に連結し末尾に 現況：作業中 本体v1421 公開v1421 最終確認21:04。stable を afe9141（v1421）へ進め、検査は両方PASS"
     },
