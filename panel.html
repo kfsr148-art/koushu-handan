@@ -157,7 +157,7 @@
   </div>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v14（8月23日）</p>
+  <p class="ver" id="verTag">panel v15（8月23日）</p>
 </div>
 
 <script>
@@ -453,10 +453,14 @@
     var rest = lines.slice(1).filter(function (x) { return !LABEL.test(x); }).join('\n');
     if (!rest) { rest = lines[0] || ''; }
 
-    /* 見出しが無い知らせは、本文から実測を拾い分ける。
-       残りが「したこと」で、そこを二文以内に切る。 */
-    var f = splitFacts(rest);
+    /* 見出しの「実測:」が本文にあるなら、振り分けはしない。残り全部が「したこと」。
+       ＊振り分けを掛けると、数値を含む一文まで実測へ回り、「したこと」が空になる
+         （2026-08-23 実測：「一覧も控えの実体も最新5件に揃えた」が5件で実測扱いになり未確認に落ちた）。
+       見出しが無い古い知らせだけ、本文から実測を拾い分ける。 */
+    var hasMeasLabel = pick(body, ['実測', '確かめ方', '結果']);
+    var f = hasMeasLabel ? { did: rest, meas: '' } : splitFacts(rest);
     var did = twoSentences(plain(f.did));
+    if (!did) { did = twoSentences(plain(rest)); }   /* 全部が実測に見えたときの落ち */
 
     var ver = pick(body, ['版', 'バージョン']);
     if (!ver) {
