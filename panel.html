@@ -157,7 +157,7 @@
   </div>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v12（8月23日）</p>
+  <p class="ver" id="verTag">panel v13（8月23日）</p>
 </div>
 
 <script>
@@ -400,6 +400,45 @@
     return '';
   }
 
+  /* 本文からファイル名を拾う。「名前.拡張子」と、すぐ後ろに続く行の位置まで。
+     ＊見出しの「ファイル:」が本文にあればそちらが優先。ここは無いときの拾い方。 */
+  function findFiles(body) {
+    /* ＊長い拡張子を先に並べること。js を json より前に置くと、
+         state.json が state.js で切れる（2026-08-23 実測）。 */
+    var re = /[A-Za-z0-9_.\-]+\.(?:jsonl|json|html|ps1|tsv|txt|png|md|js)(?::[\d,\-]+行?)?/g;
+    var seen = {}, out = [];
+    var m;
+    while ((m = re.exec(String(body || ''))) !== null) {
+      var t = m[0];
+      if (!seen[t]) { seen[t] = 1; out.push(t); }
+    }
+    return out.join(' / ');
+  }
+
+  /* 実測らしい言い回し。時刻・数値・PASS/FAIL・「実測」「とも正」など。 */
+  var MEAS = /(PASS|FAIL|実測|確かめ|とも正|通りとも|\d{1,2}:\d{2}|HTTP=?\d|\d+\s*(?:件|本|回|px|バイト|通り))/;
+
+  /* 本文を「したこと」と「実測」に振り分ける。
+     ＊括弧の中に実測が入ることが多い（「（932で起こしても UTF-8 で出ることを実測）」）。
+       先に括弧を取り出して判じ、実測なら本文から抜く。残りを句点で切って同じ判じにかける。 */
+  function splitFacts(body) {
+    var text = String(body || '');
+    var meas = [];
+    text = text.replace(/[（(]([^（）()]{4,})[）)]/g, function (whole, inner) {
+      if (MEAS.test(inner)) { meas.push(inner.trim()); return ''; }
+      return whole;
+    });
+    var did = [];
+    text.split('\n').forEach(function (ln) {
+      ln.split('。').forEach(function (s) {
+        s = s.trim();
+        if (!s) { return; }
+        if (MEAS.test(s)) { meas.push(s); } else { did.push(s); }
+      });
+    });
+    return { did: did.join('。') + (did.length ? '。' : ''), meas: meas.join(' ／ ') };
+  }
+
   /* 六行を組む。 */
   function sixLines(d) {
     var body = String(d.message || '');
@@ -407,9 +446,13 @@
 
     /* 見出しの付いた行は「したこと」から外す。件名（一行目）も外す。 */
     var LABEL = /^(版|ファイル|実測|未決|待ち|完了|件名|状態|したこと)[:：]/;
-    var did = lines.slice(1).filter(function (x) { return !LABEL.test(x); }).join(' ');
-    if (!did) { did = lines[0] || ''; }
-    did = twoSentences(plain(did));
+    var rest = lines.slice(1).filter(function (x) { return !LABEL.test(x); }).join('\n');
+    if (!rest) { rest = lines[0] || ''; }
+
+    /* 見出しが無い知らせは、本文から実測を拾い分ける。
+       残りが「したこと」で、そこを二文以内に切る。 */
+    var f = splitFacts(rest);
+    var did = twoSentences(plain(f.did));
 
     var ver = pick(body, ['版', 'バージョン']);
     if (!ver) {
@@ -419,8 +462,11 @@
       var b = stbVer ? ('stable v' + stbVer) : 'stable 未確認';
       ver = a + ' ／ ' + b;
     }
+    /* 見出しがあればそれを使う。無ければ本文から拾ったものを使う。 */
     var files = pick(body, ['ファイル', '触ったファイル']);
+    if (!files) { files = findFiles(rest); }
     var meas  = pick(body, ['実測', '確かめ方', '結果']);
+    if (!meas) { meas = plain(f.meas); }
     var open  = pick(body, ['未決', '待ち']);
 
     return [
