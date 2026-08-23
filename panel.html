@@ -115,6 +115,8 @@
     color:var(--dim); background:none; border:1px solid var(--line); border-radius:8px;}
   .cp:active{filter:brightness(1.5);}
   .cp.ok{color:var(--done); border-color:var(--done);}
+  /* 写せなかったとき。成功の緑と紛れないよう赤にする。 */
+  .cp.ng{color:var(--act); border-color:var(--act);}
   .copybox{position:fixed; left:14px; right:14px; bottom:14px; height:40vh; z-index:20;
     font-size:15px; color:var(--fg); background:var(--card); border:1px solid var(--line);
     border-radius:10px; padding:10px;}
@@ -163,7 +165,7 @@
   <button class="cpall" id="btnCopyAll" type="button">全部写す</button>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v20（8月23日）</p>
+  <p class="ver" id="verTag">panel v21（8月23日）</p>
 </div>
 
 <script>
@@ -586,13 +588,26 @@
       }
       if (again) { setTimeout(function () { btn.textContent = '写した'; }, 1500); }
     };
-    /* ＊写せなかったときも done を通す。通さないと釦が「写す」のままで、
-       写せたのか落ちたのかが手元で区別できない。落ちた側は手で写す箱を出す。 */
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(done, function () { fallback(text); done(); });
-    } else {
+    /* 写せなかったとき。**成功に見せない**——done は通さない。
+       ＊v20 で「落ちたのか分からない」を直そうとして done を通したが、それだと
+         写せていないのに「写した」と出て、失敗が成功に見える（2026-08-23 のご指摘）。
+       ＊印も付けない。付けると一覧から畳まれ、写せていない件が片付いたように見える。
+       ＊手で写す逃げ道（選択済みの箱）は出す。字は3秒で元へ戻す。 */
+    var failed = function () {
       fallback(text);
-      done();
+      btn.textContent = '写せません';
+      btn.className = 'cp ng';
+      setTimeout(function () {
+        btn.textContent = again ? '写した' : '写す';
+        btn.className = again ? 'cp ok' : 'cp';
+      }, 3000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      /* ＊writeText はその場で例外を投げることもある。then だけでは拾えない。 */
+      try { navigator.clipboard.writeText(text).then(done, failed); }
+      catch (e) { failed(); }
+    } else {
+      failed();
     }
   }
 
