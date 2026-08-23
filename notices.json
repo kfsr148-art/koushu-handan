@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🔎 調べました",
+        "time":  1787494326,
+        "message":  "兎の絵の出どころと、枝豆のムチとの共有\nEDA_WHIP.idleFront は枝豆のムチ側でも使われている。兎の席だけ別の定数へ分ける必要がある。\nファイル: koushu-handan.html:8501（兎が参照）／koushu-handan.html:9314（KISHI_IDLE_FRONT へ受け渡し）／koushu-handan.html:9293（idleFront の実体・data URI）\n実測: koushu-handan.html:9472 jumpLineFrame: \u0027idleFront\u0027（跳躍の線を引くコマ） ／ koushu-handan.html:9503 edaDir の初期値が \u0027idleFront\u0027 ／ koushu-handan.html:9550 edaIdleKey() が正面のとき \u0027idleFront\u0027 を返す ／ 焼き上がりの控え kishi_idle_front.png 115x317 59043バイト ／ 元絵 kishi_idle_front_src.png 704x1524 ／ 新しい素材 usagi_v2.png 1024x1024 1342171バイト 外接 y53-960 x309-713 ／ 結論 EDA_WHIP.idleFront は触らず兎専用の定数を新設する"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1787493724,
         "message":  "写せなかったときの釦\n何をしたかの控えがありません（止まる側の書き忘れです）。\nファイル: panel.html v21（copyOne の失敗側を done から failed へ分け、写せません＋手で写す箱＋印を付けない形に／.cp.ng の赤を追加）\n実測: 四通りを駆動。成功=写した/cp ok/印付いた/箱出ない、拒まれた=写せません/cp ng/印付かない/箱出た、その場で例外=同じ、clipboard が無い=同じ"
