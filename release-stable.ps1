@@ -102,20 +102,27 @@ function Send-Draft([string]$draft) {
   $tmp = [System.IO.Path]::GetTempFileName()
   try {
     [System.IO.File]::WriteAllText($tmp, $draft, (New-Object System.Text.UTF8Encoding($false)))
-    $out = & curl.exe -s -S --max-time 20 `
+    # ＊curl の終了コードだけを見てはいけない。HTTP が 429（1日の上限）でも curl は 0 を返す。
+    #   連絡文が弾かれたのに「送れた」ことになり、二度送らない仕組みが空振りを本送りと数える。
+    #   2026-08-23 に実測（本文は届かず、記録だけ成功のまま残った）。
+    $out = & curl.exe -s -S --max-time 20 -w '|HTTPCODE:%{http_code}' `
       -H ('Title: ' + $enc) -H 'Priority: 2' -H 'Tags: mailbox' `
       -H 'Content-Type: text/plain; charset=utf-8' `
       --data-binary ('@' + $tmp) ('https://ntfy.sh/' + $topic) 2>&1
     $code = $LASTEXITCODE
-    Write-Host ('  送信 exit=' + $code + ' 返り=' + (($out | Out-String).Trim() -replace '\s+', ' '))
-    # 送れたものは、報告書の末尾の「送った知らせ」へそのまま書き写す。
-    if ($code -eq 0) {
+    $one = (($out | Out-String).Trim() -replace '\s+', ' ')
+    $http = 0
+    if ($one -match 'HTTPCODE:(\d+)') { $http = [int]$matches[1] }
+    $ok = ($code -eq 0 -and $http -ge 200 -and $http -lt 300)
+    Write-Host ('  送信 ' + $(if ($ok) { 'OK' } else { 'NG' }) + ' exit=' + $code + ' HTTP=' + $http + ' 返り=' + $one)
+    # 送れたものだけを、報告書の末尾の「送った知らせ」へ書き写す。弾かれた分は書かない。
+    if ($ok) {
       try {
         $t64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($NtfyTitle))
         & powershell.exe -NoProfile -ExecutionPolicy Bypass -File 'C:\Users\user\.claude\notify-record.ps1' -TitleB64 $t64 -BodyFile $tmp | Out-Null
       } catch { }
     }
-    return ($code -eq 0)
+    return $ok
   } finally { try { [System.IO.File]::Delete($tmp) } catch { } }
 }
 # ---- 報告書の末尾へ残す ----
