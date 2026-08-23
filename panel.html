@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>返事パネル</title>
+<!-- 宣言しておかないと /favicon.ico を勝手に取りに行って起動のたび404になる -->
+<link rel="icon" href="data:,">
+<!-- ホーム画面に置かれたときの絵。現場猫（本体の CAT_TILE_GENBA から焼いた 180x180）。
+     透過のままだと iOS が黒地に置くので、パネルと同じ地の色で焼いてある。 -->
+<link rel="apple-touch-icon" href="panel-icon.png">
+<meta name="apple-mobile-web-app-title" content="返事パネル">
+<meta name="theme-color" content="#14241c">
+<style>
+  /* 外部の読み込みは一切しない。字体も端末のものだけを使う。 */
+  :root{
+    --bg:#14241c; --card:#1d3328; --line:#2f4b3c; --fg:#f3ece0;
+    --dim:rgba(243,236,224,0.65);
+    --ask:#e8c14a; --done:#4caf7d; --wait:#4a9fe8; --act:#e05a4a;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; background:var(--bg); color:var(--fg);
+    font-family:-apple-system,"Hiragino Sans","Yu Gothic",sans-serif;
+    font-size:18px; line-height:1.6;}
+  body{padding:0 0 40px; max-width:520px; margin:0 auto;}
+
+  header{position:sticky; top:0; z-index:10; background:var(--bg);
+    border-bottom:1px solid var(--line);
+    padding:calc(10px + env(safe-area-inset-top)) 14px 14px;}
+  h1{font-size:19px; margin:0 0 10px; letter-spacing:.05em;}
+
+  /* いまの状態の一行。ヨシの釦より上に置く。
+     リモートデスクトップを開かずに、動いているか止まっているかを見るため。 */
+  .state{display:flex; align-items:center; gap:8px; min-height:44px;
+    border:1px solid var(--line); border-left-width:6px; border-radius:10px;
+    padding:6px 10px; margin:0 0 10px; background:var(--card);}
+  .state .w{font-size:18px; font-weight:700; flex:0 0 auto;}
+  .state .c{flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:2px;}
+  /* 件名も見込みも切らない。入りきらなければ「…」で削らず、枠のほうを縦に伸ばす。
+     一行箱（nowrap＋ellipsis）だと iPhone の幅では末尾から呑まれ、
+     消えるのが見込みの側になる（実測：390px で 317px 要るのに、箱は 232px しかない）。 */
+  .state .s{font-size:15px; color:var(--fg); min-width:0;
+    white-space:normal; overflow-wrap:anywhere;}
+  .state .k{font-size:13px; color:var(--dim); min-width:0;
+    white-space:normal; overflow-wrap:anywhere;}
+  .state .a{font-size:13px; color:var(--dim); flex:0 0 auto;}
+  .state button{flex:0 0 auto; min-height:36px; padding:0 10px; font-size:13px;
+    color:var(--dim); background:none; border:1px solid var(--line); border-radius:8px;}
+  .state.run  {border-left-color:var(--wait);} .state.run  .w{color:var(--wait);}
+  .state.ask  {border-left-color:var(--ask);}  .state.ask  .w{color:var(--ask);}
+  .state.idle {border-left-color:var(--line);} .state.idle .w{color:var(--dim);}
+  .state.lost {border-left-color:var(--act);}  .state.lost .w{color:var(--act);}
+
+  /* 指で押す的は44px以上。ヨシは親指で外さない大きさにする。 */
+  .yoshi{display:block; width:100%; min-height:76px; font-size:30px; font-weight:700;
+    letter-spacing:.35em; text-indent:.35em; color:#14241c; background:var(--done);
+    border:0; border-radius:12px; margin:0 0 10px;}
+  .yoshi:active{filter:brightness(.85);}
+  .row{display:flex; gap:8px;}
+  .row input{flex:1 1 auto; min-width:0; min-height:52px; font-size:18px; padding:8px 12px;
+    color:var(--fg); background:var(--card); border:1px solid var(--line); border-radius:10px;}
+  .row button{flex:0 0 auto; min-width:92px; min-height:52px; font-size:18px; font-weight:700;
+    color:var(--fg); background:var(--card); border:1px solid var(--line); border-radius:10px;}
+  .row button:active{filter:brightness(1.4);}
+  #say{margin-top:8px; font-size:15px; min-height:1.6em; color:var(--dim); word-break:break-all;}
+  #say.ok{color:var(--done);}
+  #say.ng{color:var(--act);}
+
+  .bar{display:flex; justify-content:space-between; align-items:center; gap:10px;
+    padding:10px 14px; font-size:14px; color:var(--dim);}
+  .bar button{flex:0 0 auto; font-size:14px; color:var(--dim); background:none;
+    border:1px solid var(--line); border-radius:8px; min-height:44px; padding:0 12px;}
+  .bar .sw{flex:0 0 auto; display:flex; align-items:center; gap:6px; min-height:44px;}
+  .bar .sw input{width:22px; height:22px;}
+  #todo{color:var(--ask); font-weight:700;}   /* 未処理が1件以上なら黄で目立たせる */
+  #todo.none{color:var(--dim); font-weight:400;}
+
+  /* 版の印。画面のいちばん下に小さく。 */
+  .ver{margin:18px 14px calc(8px + env(safe-area-inset-bottom));
+    font-size:13px; color:var(--dim); text-align:center;}
+  /* 一覧が0件のときの理由。白紙にしない。 */
+  li.why{border-left-color:var(--ask);}
+  li.why .m{color:var(--fg);}
+
+  /* 受け取り確認は畳んでおく。題の行だけ出し、押すと本文が開く。 */
+  li.ack .m{display:none;}
+  li.ack.open .m{display:block;}
+  li.ack{cursor:pointer;}
+
+  ul{list-style:none; margin:0; padding:0 14px;}
+  li{background:var(--card); border-left:6px solid var(--line); border-radius:10px;
+    margin:0 0 12px; padding:12px 14px;}
+  li.ask{border-left-color:var(--ask);}
+  li.done{border-left-color:var(--done);}
+  li.wait{border-left-color:var(--wait);}
+  li.act{border-left-color:var(--act);}
+  /* 題の行は左に題と時刻、右に写す釦。釦は44px以上にする。 */
+  .t{font-size:17px; font-weight:700; margin:0 0 4px;
+    display:flex; align-items:flex-start; gap:8px;}
+  .t .tx{flex:1 1 auto; min-width:0;}
+  .cp{flex:0 0 auto; min-width:64px; min-height:44px; font-size:14px; font-weight:400;
+    color:var(--dim); background:none; border:1px solid var(--line); border-radius:8px;}
+  .cp:active{filter:brightness(1.5);}
+  .cp.ok{color:var(--done); border-color:var(--done);}
+  .copybox{position:fixed; left:14px; right:14px; bottom:14px; height:40vh; z-index:20;
+    font-size:15px; color:var(--fg); background:var(--card); border:1px solid var(--line);
+    border-radius:10px; padding:10px;}
+  li.ask .t{color:var(--ask);}
+  li.done .t{color:var(--done);}
+  li.wait .t{color:var(--wait);}
+  li.act .t{color:var(--act);}
+  .when{font-size:13px; color:var(--dim); font-weight:400; margin-left:.6em;}
+  .m{white-space:pre-wrap; word-break:break-word; font-size:17px; margin:0;}
+
+  #setup{padding:calc(16px + env(safe-area-inset-top)) 14px 16px;}
+  #setup p{font-size:15px; color:var(--dim);}
+  #setup label{font-size:15px; color:var(--dim);}
+  #setup input{width:100%; min-height:52px; font-size:16px; padding:8px 12px; margin:6px 0 14px;
+    color:var(--fg); background:var(--card); border:1px solid var(--line); border-radius:10px;}
+  #setup button{width:100%; min-height:56px; font-size:19px; font-weight:700;
+    color:#14241c; background:var(--done); border:0; border-radius:12px;}
+  .hide{display:none;}
+</style>
+</head>
+<body>
+
+<div id="setup" class="hide">
+  <h1>話題名を入れてください</h1>
+  <p>この端末にだけ残ります。次からは要りません。</p>
+  <p>＊話題名が未設定のあいだは、知らせの一覧は出せません。</p>
+  <label for="inSend">送る側（知らせが届く話題）</label>
+  <input id="inSend" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="kh-…">
+  <label for="inReply">返す側（返事を投げる話題）</label>
+  <input id="inReply" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="khr-…">
+  <!-- 状態の話題の欄は v8 で外した。いまの様子は state.json から読む（話題は要らない）。 -->
+  <button id="save" type="button">保存する</button>
+</div>
+
+<div id="main" class="hide">
+  <header>
+    <h1>返事パネル</h1>
+    <div class="state idle" id="state">
+      <span class="w" id="stWord">…</span>
+      <span class="c">
+        <span class="s" id="stSubj">読み込み中</span>
+        <span class="k hide" id="stMik"></span>
+      </span>
+      <span class="a" id="stAgo"></span>
+    </div>
+    <button class="yoshi" id="btnYoshi" type="button">ヨシ</button>
+    <div class="row">
+      <input id="free" type="text" placeholder="直しの指示を書く" autocapitalize="off">
+      <button id="btnSend" type="button">送る</button>
+    </div>
+    <div id="say"></div>
+  </header>
+  <div class="bar">
+    <span id="stat">読み込み中…</span>
+    <label class="sw"><input type="checkbox" id="seeAck"> 確認も見る</label>
+    <button id="btnReset" type="button">話題名を入れ直す</button>
+  </div>
+  <ul id="list"></ul>
+  <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
+  <p class="ver" id="verTag">panel v9（8月23日）</p>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var KEY = 'kh-panel-topics';
+  var send = '', reply = '', timer = null;
+  var shown = [];        // いま一覧に出している知らせ。写す釦から引く。
+  /* 本体の版。写しの「版:」の行に入れる。公開ページの ver.txt から取る。
+     stable の版はどのファイルにも出ていないので、写しでは「未確認」と書く。 */
+  var honVer = '', stbVer = '';
+  var VER_URL = 'https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/ver.txt';
+  var STB_URL = 'https://raw.githubusercontent.com/kfsr148-art/koushu-handan/stable/ver.txt';
+  /* 最後の更新からこれを超えたら「連絡なし」。
+     見張りは「変化があったときだけ」流す作りで、変化が無い間は15分（900秒）おきに
+     心拍を一本だけ出す。したがってここは 900 より長くないと、生きているのに
+     「連絡なし」と出る。二つは対で決まる値。片方だけ変えないこと。 */
+  var STALE_SEC = 1200;
+
+  function $(id) { return document.getElementById(id); }
+
+  function esc(s) {
+    return String(s === null || s === undefined ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  /* 要るのは送る側と返す側の二つだけ。状態の話題は v8 で要らなくなった。
+     保存済みの三つ目の値は読まないが、消しもしない（古い写しへ戻したくなったときのため）。 */
+  function load() {
+    try {
+      var v = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (v && v.send && v.reply) {
+        send = v.send; reply = v.reply;
+        return true;
+      }
+    } catch (e) {}
+    return false;
+  }
+
+  function store(s, r) {
+    try { localStorage.setItem(KEY, JSON.stringify({ send: s, reply: r })); } catch (e) {}
+  }
+
+  function showSetup() {
+    $('setup').className = '';
+    $('main').className = 'hide';
+    $('inSend').value = send;
+    $('inReply').value = reply;
+    if (timer) { clearInterval(timer); timer = null; }
+  }
+
+  function showMain() {
+    $('setup').className = 'hide';
+    $('main').className = '';
+    pullVer();
+    tick();
+    if (timer) { clearInterval(timer); }
+    timer = setInterval(tick, 15000);
+  }
+
+  /* 本体の版を一度だけ取りに行く。取れなければ写しには「未確認」と出る。
+     画面には出さない。写しの中だけで使う。 */
+  function pullVer() {
+    fetch(VER_URL + '?_t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.text() : ''; })
+      .then(function (t) { honVer = String(t || '').trim().replace(/[^0-9]/g, ''); })
+      .catch(function () { honVer = ''; });
+    /* stable の枝の ver.txt が、検収の済んだ版。タグを動かすとこちらも動く。 */
+    fetch(STB_URL + '?_t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.text() : ''; })
+      .then(function (t) { stbVer = String(t || '').trim().replace(/[^0-9]/g, ''); })
+      .catch(function () { stbVer = ''; });
+  }
+
+  /* 15秒ごとに、知らせの一覧と状態の両方を取りに行く。 */
+  function tick() { pull(); pullState(); }
+
+  /* 題の種類で色を分ける。絵文字で頭が揃っているので、そこを見る。
+       🙋 ヨシしてください   … 黄（返事が要る）
+       📥 返事を受けました    … 灰（受け取りの控え。何もしなくてよい）
+       👍 ヨシを受けました    … 灰（同上）
+       ✅ 終わりました        … 緑
+       👀 異常です（待てば戻ります）… 青
+       🪟 異常です（手が要ります）  … 赤 */
+  function kind(t) {
+    t = String(t || '');
+    if (t.indexOf('🙋') >= 0) { return 'ask'; }
+    if (t.indexOf('📥') >= 0 || t.indexOf('👍') >= 0) { return ''; }
+    if (t.indexOf('✅') >= 0) { return 'done'; }
+    if (t.indexOf('👀') >= 0) { return 'wait'; }
+    if (t.indexOf('🪟') >= 0) { return 'act'; }
+    /* 絵文字の無い古い知らせも読めるようにしておく */
+    if (t.indexOf('ヨシしてください') >= 0 || t.indexOf('返事してください') === 0) { return 'ask'; }
+    if (t.indexOf('受けました') >= 0) { return ''; }
+    if (t.indexOf('終わりました') === 0) { return 'done'; }
+    if (t.indexOf('待てば戻ります') >= 0) { return 'wait'; }
+    if (t.indexOf('手が要ります') >= 0) { return 'act'; }
+    if (t.indexOf('異常です') === 0) { return 'act'; }
+    return '';
+  }
+
+  function hhmm(sec) {
+    try {
+      var d = new Date(sec * 1000);
+      var p = function (n) { return (n < 10 ? '0' : '') + n; };
+      return p(d.getHours()) + ':' + p(d.getMinutes());
+    } catch (e) { return ''; }
+  }
+
+  /* ntfy の poll は一行に一件の JSON（JSON の配列ではない）。行ごとに解く。 */
+  /* 一覧が0件のときは、白紙にせず理由を出す。 */
+  function sayWhy(msg) {
+    $('list').innerHTML = '<li class="why"><p class="m">' + esc(msg) + '</p></li>';
+  }
+
+  function pull() {
+    if (!send) {
+      sayWhy('話題名が未設定です。「話題名を入れ直す」から入れてください。');
+      paintBar();
+      return;
+    }
+    var url = 'https://ntfy.sh/' + encodeURIComponent(send) + '/json?poll=1&since=12h';
+    fetch(url, { cache: 'no-store' })
+      .then(function (r) {
+        if (!r.ok) { throw new Error('HTTP ' + r.status); }
+        return r.text();
+      })
+      .then(function (txt) {
+        var rows = [];
+        txt.split('\n').forEach(function (ln) {
+          ln = ln.trim();
+          if (!ln) { return; }
+          var d;
+          try { d = JSON.parse(ln); } catch (e) { return; }
+          if (d.event !== 'message') { return; }
+          rows.push(d);
+        });
+        rows.sort(function (a, b) { return (b.time || 0) - (a.time || 0); });
+        shown = rows;
+        var seeAck = $('seeAck').checked;
+        var html = '';
+        rows.forEach(function (d, i) {
+          var k = kind(d.title);
+          /* 受け取り確認（📥／👍）は畳む。「確認も見る」を入れていれば開いたまま。 */
+          var ack = isAck(d.title);
+          var cls = k + (ack ? ' ack' : '') + (ack && seeAck ? ' open' : '');
+          html += '<li class="' + cls.trim() + '" data-i="' + i + '">'
+                + '<p class="t"><span class="tx">' + esc(d.title || '(題なし)')
+                + '<span class="when">' + hhmm(d.time) + '</span></span>'
+                + '<button type="button" class="cp" data-i="' + i + '">写す</button></p>'
+                + '<p class="m">' + esc(d.message) + '</p></li>';
+        });
+        if (html) { $('list').innerHTML = html; }
+        else { sayWhy('12時間以内の知らせがありません。送られてくればここに並びます。'); }
+        paintBar();
+      })
+      .catch(function (e) {
+        /* 取得に失敗したことと、その理由を必ず画面に出す。白紙にしない。 */
+        sayWhy('取得に失敗しました（' + e.message + '）。'
+             + '話題名が違うか、通信が届いていません。'
+             + '「話題名を入れ直す」から確かめてください。');
+        paintBar();
+      });
+  }
+
+  /* 受け取り確認かどうか。ここだけ一覧で畳む。 */
+  function isAck(t) {
+    t = String(t || '');
+    return (t.indexOf('📥') >= 0 || t.indexOf('👍') >= 0 || t.indexOf('受けました') >= 0);
+  }
+
+  /* 一覧の上の行。12時間の件数はやめて、受信箱の未処理を出す。 */
+  var todoN = -1;
+  function paintBar() {
+    var s = '<span id="todo"' + (todoN > 0 ? '' : ' class="none"') + '>'
+          + (todoN < 0 ? '未処理 —' : (todoN === 0 ? '未処理なし' : '未処理 ' + todoN + '件'))
+          + '</span> ／ ' + hhmm(Math.floor(Date.now() / 1000)) + ' 更新';
+    $('stat').innerHTML = s;
+  }
+
+  /* 写しの中身は、相談役のクロードへ貼るためのもの（v9）。
+     相談役はこの機械の中が一切見えないので、貼られた文だけで状況を判断する。
+     したがって六行を決まった順で書き、確かめていないことは「未確認」と明記する。
+
+       状態:      作業中／ヨシ待ち／終わり／異常 のどれか
+       したこと:  二文以内
+       版:        本体とstableの両方
+       ファイル:  触ったファイル名と、変えた行の位置
+       実測:      時刻・数値・PASS/FAIL をそのまま
+       未決:      無ければ「未決なし」
+
+     絵文字と飾りの記号、行頭の時刻の見出し、「返事不要」などの案内文は入れない。
+     ただし実測の中の時刻は残す（数値だからで、見出しではない）。 */
+
+  /* 題から状態の一語を取り出す。絵文字は落とす。 */
+  function stateWord(title) {
+    var t = String(title || '');
+    if (t.indexOf('ヨシしてください') >= 0 || t.indexOf('返事してください') >= 0) { return 'ヨシ待ち'; }
+    if (t.indexOf('終わりました') >= 0) { return '終わり'; }
+    if (t.indexOf('異常') >= 0) { return '異常'; }
+    if (t.indexOf('作業中') >= 0) { return '作業中'; }
+    return '未確認';
+  }
+
+  /* 絵文字と飾りの記号だけを落とす。
+     ＊矢印（U+2190〜U+21FF）は落とさない。「パネル→受信箱→この窓」のように
+       向きを表す意味があり、消すと文が壊れる（v9 の実測で実際に壊れた）。
+     ＊鉤括弧も落とさない。引用の範囲が分からなくなる。 */
+  function plain(s) {
+    return String(s || '')
+      .replace(/[\u{1F000}-\u{1FAFF}]/gu, '')       /* 絵文字の本体 */
+      .replace(/[\u{2600}-\u{27BF}]/gu, '')         /* ✅ ★ などの記号と絵記号 */
+      .replace(/[\u{2B00}-\u{2BFF}]/gu, '')         /* 飾りの図形 */
+      .replace(/[\u{FE00}-\u{FE0F}\u{200D}]/gu, '') /* 異体字選択子とゼロ幅接合子 */
+      .replace(/[■□◆◇▲△▼▽◎]/g, '')                /* 飾りの図形（続き） */
+      .replace(/^[・\-*\s]+/, '')
+      .replace(/[ \t]+/g, ' ')
+      .trim();
+  }
+
+  /* 二文までに切る。句点で数える。 */
+  function twoSentences(s) {
+    var t = String(s || '').trim();
+    if (!t) { return ''; }
+    var parts = t.split('。').filter(function (x) { return x.trim(); });
+    if (parts.length <= 2) { return t; }
+    return parts.slice(0, 2).join('。') + '。';
+  }
+
+  /* 本文に「版:」「ファイル:」のような見出しの行があれば拾う。無ければ空。 */
+  function pick(body, names) {
+    var lines = String(body || '').split('\n');
+    for (var i = 0; i < lines.length; i++) {
+      var ln = lines[i].trim();
+      for (var j = 0; j < names.length; j++) {
+        var re = new RegExp('^' + names[j] + '[:：]\\s*(.+)$');
+        var m = ln.match(re);
+        if (m) { return plain(m[1]); }
+      }
+    }
+    return '';
+  }
+
+  /* 六行を組む。 */
+  function sixLines(d) {
+    var body = String(d.message || '');
+    var lines = body.split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
+
+    /* 見出しの付いた行は「したこと」から外す。件名（一行目）も外す。 */
+    var LABEL = /^(版|ファイル|実測|未決|待ち|完了|件名|状態|したこと)[:：]/;
+    var did = lines.slice(1).filter(function (x) { return !LABEL.test(x); }).join(' ');
+    if (!did) { did = lines[0] || ''; }
+    did = twoSentences(plain(did));
+
+    var ver = pick(body, ['版', 'バージョン']);
+    if (!ver) {
+      /* 版は公開ページの ver.txt から取る。main の分が本体、stable の枝の分が stable。
+         取れなかった側だけ「未確認」と書く。 */
+      var a = honVer ? ('本体v' + honVer) : '本体 未確認';
+      var b = stbVer ? ('stable v' + stbVer) : 'stable 未確認';
+      ver = a + ' ／ ' + b;
+    }
+    var files = pick(body, ['ファイル', '触ったファイル']);
+    var meas  = pick(body, ['実測', '確かめ方', '結果']);
+    var open  = pick(body, ['未決', '待ち']);
+
+    return [
+      '状態: ' + stateWord(d.title),
+      'したこと: ' + (did || '未確認'),
+      '版: ' + ver,
+      'ファイル: ' + (files || '未確認'),
+      '実測: ' + (meas || '未確認'),
+      '未決: ' + (open || '未決なし')
+    ].join('\n');
+  }
+
+  function copyOne(i, btn) {
+    var d = shown[i];
+    if (!d) { return; }
+    var text = sixLines(d);
+    var done = function () {
+      var old = btn.textContent;
+      btn.textContent = '写した';
+      btn.className = 'cp ok';
+      setTimeout(function () { btn.textContent = old; btn.className = 'cp'; }, 2000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { fallback(text); });
+    } else {
+      fallback(text);
+    }
+  }
+
+  function fallback(text) {
+    var ta = document.createElement('textarea');
+    ta.className = 'copybox';
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.setSelectionRange(0, ta.value.length);
+    var close = function () {
+      if (ta.parentNode) { ta.parentNode.removeChild(ta); }
+      document.removeEventListener('touchstart', close, true);
+      document.removeEventListener('mousedown', close, true);
+    };
+    setTimeout(function () {
+      document.addEventListener('touchstart', close, true);
+      document.addEventListener('mousedown', close, true);
+    }, 0);
+  }
+
+  /* いまの状態を一行で出す。
+     作業中＝青／ヨシ待ち＝黄／手待ち＝灰。最後の更新から3分を超えたら赤で「連絡なし」。 */
+  function paintState(cls, word, subj, ago, mik) {
+    $('state').className = 'state ' + cls;
+    $('stWord').textContent = word;
+    $('stSubj').textContent = subj;
+    /* 見込みは二段目。無いときは畳んで、今までどおりの一行に戻す。 */
+    $('stMik').textContent = mik || '';
+    $('stMik').className = mik ? 'k' : 'k hide';
+    $('stAgo').textContent = ago;
+  }
+
+  function agoText(sec) {
+    if (sec < 60) { return Math.max(0, Math.floor(sec)) + '秒前'; }
+    if (sec < 3600) { return Math.floor(sec / 60) + '分前'; }
+    return Math.floor(sec / 3600) + '時間前';
+  }
+
+  /* いまの様子は state.json から読む（v8）。以前は ntfy の話題へ5分おきに流していたが、
+     それだけで1日394件になり、ntfy の1日の上限に当たった（2026-08-23）。
+     押し送りは「人を呼ぶもの」三種だけに絞り、状態はこちらから読みに行く形にした。
+     置き場はリポジトリ直下。iPhone から VAIO のファイルには手が届かないので、
+     見張りが commit と push で公開ページへ出す。status.md と同じ道。 */
+  var STATE_URL = 'https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/state.json';
+
+  function pullState() {
+    /* 取り置きを避ける。GitHub の配信網は少し遅れるが、状態は「呼ぶもの」ではないので構わない。 */
+    fetch(STATE_URL + '?_t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) {
+        if (!r.ok) { throw new Error('HTTP ' + r.status); }
+        return r.json();
+      })
+      .then(function (d) {
+        var sec = Math.floor(Date.now() / 1000) - (d.at || 0);
+        var w = String(d.stat || '');
+        var subj = String(d.subj || '');
+
+        todoN = (typeof d.todo === 'number') ? d.todo : -1;
+        paintBar();
+
+        /* 見込みの段は「作業中」のときだけ。経過はここで数えるので、
+           次の書き出しを待たずに 15 秒ごとの取得で伸びていく。 */
+        var mik = '';
+        if (w === '作業中') {
+          var min = d.startedAt ? Math.max(0, Math.floor((Date.now() / 1000 - d.startedAt) / 60)) : 0;
+          mik = '見込み' + (d.mikomi ? d.mikomi : '不明') + '・開始から' + min + '分';
+        }
+
+        if (sec > STALE_SEC) {
+          paintState('lost', '連絡なし', subj + '（最後は ' + w + '）', agoText(sec), mik);
+          return;
+        }
+        var cls = 'idle';
+        if (w.indexOf('作業中') === 0) { cls = 'run'; }
+        else if (w.indexOf('ヨシ待ち') === 0) { cls = 'ask'; }
+        else if (w.indexOf('手待ち') === 0) { cls = 'idle'; }
+        paintState(cls, w, subj, agoText(sec), mik);
+      })
+      .catch(function (e) {
+        paintState('lost', '連絡なし', '状態を読めません（' + e.message + '）', '');
+      });
+  }
+
+  /* tag は「どこから出したか」の印。緑の釦なら 'yoshi'、入力欄なら 'shiji'。
+     受け手（inbox-watch.ps1）はこの印だけでヨシか指示かを決める。印が無いと、
+     受け手は「いま待っているか」で決めるしかなく、入力欄に書いた文まで
+     ヨシとして受け取られる（2026-08-23：「テスト」と送って「ヨシとして受け取りました」になった）。 */
+  function post(msg, tag) {
+    var say = $('say');
+    say.className = '';
+    say.textContent = '送っています…';
+    fetch('https://ntfy.sh', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topic: reply, message: msg, tags: [tag] })
+    })
+      .then(function (r) {
+        if (!r.ok) { throw new Error('HTTP ' + r.status); }
+        return r.json();
+      })
+      .then(function (j) {
+        say.className = 'ok';
+        say.textContent = '送りました：' + msg + '　（受理 ' + (j.id || '') + '）';
+        $('free').value = '';
+      })
+      .catch(function (e) {
+        say.className = 'ng';
+        say.textContent = '送れませんでした：' + e.message;
+      });
+  }
+
+  $('save').addEventListener('click', function () {
+    var s = $('inSend').value.trim();
+    var r = $('inReply').value.trim();
+    if (!s || !r) { alert('送る側と返す側は入れてください'); return; }
+    send = s;
+    reply = r;
+    store(s, r);
+    showMain();
+  });
+
+  $('btnReset').addEventListener('click', showSetup);
+
+  /* 写す釦と、畳んだ確認の開閉。一覧ごと張り替わるので親で受ける。 */
+  $('list').addEventListener('click', function (e) {
+    var b = e.target;
+    if (b && b.className && b.className.indexOf('cp') === 0) {
+      copyOne(parseInt(b.getAttribute('data-i'), 10), b);
+      return;
+    }
+    var li = b;
+    while (li && li.tagName !== 'LI') { li = li.parentNode; }
+    if (li && li.className.indexOf('ack') >= 0) {
+      li.className = (li.className.indexOf('open') >= 0)
+        ? li.className.replace(/\s*open/, '')
+        : li.className + ' open';
+    }
+  });
+
+  /* 「確認も見る」は覚える。 */
+  var ACK_KEY = 'kh-panel-seeack';
+  try { $('seeAck').checked = (localStorage.getItem(ACK_KEY) === '1'); } catch (e) {}
+  $('seeAck').addEventListener('change', function () {
+    try { localStorage.setItem(ACK_KEY, $('seeAck').checked ? '1' : '0'); } catch (e) {}
+    pull();
+  });
+
+  /* ヨシを出せるのは、この緑の釦だけ。 */
+  $('btnYoshi').addEventListener('click', function () { post('ヨシ', 'yoshi'); });
+
+  /* 入力欄から出た文は、待っている最中でも「直しの指示」。ヨシにはしない。 */
+  $('btnSend').addEventListener('click', function () {
+    var v = $('free').value.trim();
+    if (!v) {
+      $('say').className = 'ng';
+      $('say').textContent = '書いてから押してください';
+      return;
+    }
+    post(v, 'shiji');
+  });
+
+  $('free').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); $('btnSend').click(); }
+  });
+
+  if (load()) { showMain(); } else { showSetup(); }
+})();
+</script>
+</body>
+</html>
