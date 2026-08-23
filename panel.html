@@ -69,6 +69,13 @@
   #todo{color:var(--ask); font-weight:700;}   /* 未処理が1件以上なら黄で目立たせる */
   #todo.none{color:var(--dim); font-weight:400;}
 
+  /* 版の印。画面のいちばん下に小さく。 */
+  .ver{margin:18px 14px calc(8px + env(safe-area-inset-bottom));
+    font-size:13px; color:var(--dim); text-align:center;}
+  /* 一覧が0件のときの理由。白紙にしない。 */
+  li.why{border-left-color:var(--ask);}
+  li.why .m{color:var(--fg);}
+
   /* 受け取り確認は畳んでおく。題の行だけ出し、押すと本文が開く。 */
   li.ack .m{display:none;}
   li.ack.open .m{display:block;}
@@ -114,6 +121,7 @@
 <div id="setup" class="hide">
   <h1>話題名を入れてください</h1>
   <p>この端末にだけ残ります。次からは要りません。</p>
+  <p>＊話題名が未設定のあいだは、知らせの一覧は出せません。</p>
   <label for="inSend">送る側（知らせが届く話題）</label>
   <input id="inSend" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="kh-…">
   <label for="inReply">返す側（返事を投げる話題）</label>
@@ -145,6 +153,8 @@
     <button id="btnReset" type="button">話題名を入れ直す</button>
   </div>
   <ul id="list"></ul>
+  <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
+  <p class="ver" id="verTag">panel v3（8月23日）</p>
 </div>
 
 <script>
@@ -231,7 +241,17 @@
   }
 
   /* ntfy の poll は一行に一件の JSON（JSON の配列ではない）。行ごとに解く。 */
+  /* 一覧が0件のときは、白紙にせず理由を出す。 */
+  function sayWhy(msg) {
+    $('list').innerHTML = '<li class="why"><p class="m">' + esc(msg) + '</p></li>';
+  }
+
   function pull() {
+    if (!send) {
+      sayWhy('話題名が未設定です。「話題名を入れ直す」から入れてください。');
+      paintBar();
+      return;
+    }
     var url = 'https://ntfy.sh/' + encodeURIComponent(send) + '/json?poll=1&since=12h';
     fetch(url, { cache: 'no-store' })
       .then(function (r) {
@@ -263,12 +283,16 @@
                 + '<button type="button" class="cp" data-i="' + i + '">写す</button></p>'
                 + '<p class="m">' + esc(d.message) + '</p></li>';
         });
-        $('list').innerHTML = html
-          || '<li><p class="m">12時間以内の知らせはありません。</p></li>';
+        if (html) { $('list').innerHTML = html; }
+        else { sayWhy('12時間以内の知らせがありません。送られてくればここに並びます。'); }
         paintBar();
       })
       .catch(function (e) {
-        $('stat').textContent = '読めません（' + e.message + '）';
+        /* 取得に失敗したことと、その理由を必ず画面に出す。白紙にしない。 */
+        sayWhy('取得に失敗しました（' + e.message + '）。'
+             + '話題名が違うか、通信が届いていません。'
+             + '「話題名を入れ直す」から確かめてください。');
+        paintBar();
       });
   }
 
