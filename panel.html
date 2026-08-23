@@ -72,8 +72,7 @@
     border:1px solid var(--line); border-radius:8px; min-height:44px; padding:0 12px;}
   .bar .sw{flex:0 0 auto; display:flex; align-items:center; gap:6px; min-height:44px;}
   .bar .sw input{width:22px; height:22px;}
-  #todo{color:var(--ask); font-weight:700;}   /* 未処理が1件以上なら黄で目立たせる */
-  #todo.none{color:var(--dim); font-weight:400;}
+  /* 「未処理◯件」の飾りは v16 で撤去。数える先（受信箱）に書く者がもう居ない。 */
 
   /* 版の印。画面のいちばん下に小さく。 */
   .ver{margin:18px 14px calc(8px + env(safe-area-inset-bottom));
@@ -82,10 +81,12 @@
   li.why{border-left-color:var(--ask);}
   li.why .m{color:var(--fg);}
 
-  /* 受け取り確認は畳んでおく。題の行だけ出し、押すと本文が開く。 */
+  /* 受け取り確認と、写し終えた件は畳んでおく。題の行だけ出し、押すと本文が開く。 */
   li.ack .m{display:none;}
   li.ack.open .m{display:block;}
   li.ack{cursor:pointer;}
+  /* 写し終えた件は薄くする。消しはしない——もう一度押せば、また写せる。 */
+  li.copied{opacity:.45;}
 
   ul{list-style:none; margin:0; padding:0 14px;}
   li{background:var(--card); border-left:6px solid var(--line); border-radius:10px;
@@ -112,29 +113,14 @@
   .when{font-size:13px; color:var(--dim); font-weight:400; margin-left:.6em;}
   .m{white-space:pre-wrap; word-break:break-word; font-size:17px; margin:0;}
 
-  #setup{padding:calc(16px + env(safe-area-inset-top)) 14px 16px;}
-  #setup p{font-size:15px; color:var(--dim);}
-  #setup label{font-size:15px; color:var(--dim);}
-  #setup input{width:100%; min-height:52px; font-size:16px; padding:8px 12px; margin:6px 0 14px;
-    color:var(--fg); background:var(--card); border:1px solid var(--line); border-radius:10px;}
-  #setup button{width:100%; min-height:56px; font-size:19px; font-weight:700;
-    color:#14241c; background:var(--done); border:0; border-radius:12px;}
   .hide{display:none;}
 </style>
 </head>
 <body>
 
-<div id="setup" class="hide">
-  <h1>話題名を入れてください</h1>
-  <p>この端末にだけ残ります。次からは要りません。</p>
-  <p>＊一覧と状態は話題名が無くても出ます。話題名が要るのは、返事を送るときだけです。</p>
-  <label for="inSend">送る側（異常の押し通知が届く話題。iPhone の ntfy で購読する名前）</label>
-  <input id="inSend" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="kh-…">
-  <label for="inReply">返す側（返事を投げる話題）</label>
-  <input id="inReply" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="khr-…">
-  <!-- 状態の話題の欄は v8 で外した。いまの様子は state.json から読む（話題は要らない）。 -->
-  <button id="save" type="button">保存する</button>
-</div>
+<!-- 話題名の設定画面は v17 で撤去した。一覧も状態も版も、話題名を使わずに読む。
+     残しておくと罠になる——起動の判定が話題名の保存を必須にしていたので、
+     新しい端末では設定画面から先へ進めなくなっていた。 -->
 
 <div id="main" class="hide">
   <header>
@@ -153,17 +139,16 @@
   </header>
   <div class="bar">
     <span id="stat">読み込み中…</span>
-    <button id="btnReset" type="button">話題名を入れ直す</button>
+    <!-- 「話題名を入れ直す」は v17 で撤去した。話題名を使う先がもう無い。 -->
   </div>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v15（8月23日）</p>
+  <p class="ver" id="verTag">panel v17（8月23日）</p>
 </div>
 
 <script>
 (function () {
   'use strict';
-  var KEY = 'kh-panel-topics';
   var send = '', reply = '', timer = null;
   var shown = [];        // いま一覧に出している知らせ。写す釦から引く。
   /* 本体の版。写しの「版:」の行に入れる。公開ページの ver.txt から取る。
@@ -177,7 +162,22 @@
      ＊stable の版だけは raw のまま。公開ページは main しか出さないので、
        stable の枝のファイルは公開ページからは取れない。版はめったに動かないので5分の遅れで足りる。 */
   var STB_URL = 'https://raw.githubusercontent.com/kfsr148-art/koushu-handan/stable/ver.txt';
-  var SHOW_MAX = 5;   /* 一覧に出す件数。控えの側（notify-record.ps1 の $KEEP）と揃える。 */
+  /* 一覧に出す上限。控えの側（notify-record.ps1 の $KEEP）と揃える。
+     ＊5件に絞っていたが、写す前に実体ごと消える恐れがあるので20へ戻した（2026-08-23）。
+       表示を絞るのは件数ではなく「写したかどうか」で行う。 */
+  var SHOW_MAX = 20;
+  /* 写した件の印。端末の中だけに残る。開き直しても消えない。
+     ＊印の付いた件は一覧で畳む。消してしまうと、もう一度写せなくなるため。 */
+  var COPIED_KEY = 'kh-panel-copied';
+  var copied = {};
+  function loadCopied() {
+    try { copied = JSON.parse(localStorage.getItem(COPIED_KEY) || '{}') || {}; } catch (e) { copied = {}; }
+  }
+  function saveCopied() {
+    try { localStorage.setItem(COPIED_KEY, JSON.stringify(copied)); } catch (e) {}
+  }
+  /* 一件の見分け。題と時刻で決める。控えが入れ替わっても同じ件は同じ鍵になる。 */
+  function keyOf(d) { return String(d.time || 0) + '|' + String(d.title || ''); }
   /* 知らせの一覧。ntfy へ出るのは異常だけになったので、読み物はここから取る。 */
   var NOTICES_URL = 'https://kfsr148-art.github.io/koushu-handan/notices.json';
   /* 最後の更新からこれを超えたら「連絡なし」。
@@ -193,33 +193,15 @@
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  /* 要るのは送る側と返す側の二つだけ。状態の話題は v8 で要らなくなった。
-     保存済みの三つ目の値は読まないが、消しもしない（古い写しへ戻したくなったときのため）。 */
-  function load() {
-    try {
-      var v = JSON.parse(localStorage.getItem(KEY) || 'null');
-      if (v && v.send && v.reply) {
-        send = v.send; reply = v.reply;
-        return true;
-      }
-    } catch (e) {}
-    return false;
-  }
-
-  function store(s, r) {
-    try { localStorage.setItem(KEY, JSON.stringify({ send: s, reply: r })); } catch (e) {}
-  }
-
-  function showSetup() {
-    $('setup').className = '';
-    $('main').className = 'hide';
-    $('inSend').value = send;
-    $('inReply').value = reply;
-    if (timer) { clearInterval(timer); timer = null; }
-  }
+  /* ＊話題名の設定は v17 で丸ごと撤去した。
+       一覧は notices.json、状態は state.json、版は ver.txt から読む。どれも話題名を使わない。
+       送る側の道具は v11 で、ntfy そのものは v15 で無くなった。話題名の出番はもう無い。
+       ＊残しておくと罠になる。load() が話題名の保存を必須にしていたので、
+         新しい端末では設定画面から先へ進めなくなる。
+       ＊保存済みの値（localStorage の kh-panel-topics）は消さない。害が無く、
+         古い写しへ戻したくなったときに要る。 */
 
   function showMain() {
-    $('setup').className = 'hide';
     $('main').className = '';
     pullVer();
     tick();
@@ -296,22 +278,31 @@
       .then(function (arr) {
         var rows = Array.isArray(arr) ? arr.slice() : [];
         rows.sort(function (a, b) { return (b.time || 0) - (a.time || 0); });
-        /* 出すのは新しい順に5件だけ（v14）。過去を遡る用途は無い。
-           控えの側も5件で切ってあるが、古い写しを掴んだときのためにここでも切る。 */
+        /* ＊件数では絞らない。絞るのは「写したかどうか」。
+             写していない件は古くても残す——写す前に消えるのがいちばん困るため。
+             それでも上限は要るので SHOW_MAX（＝控えの上限と同じ20）で頭を切る。 */
         rows = rows.slice(0, SHOW_MAX);
         shown = rows;
-        /* 受け取り確認は畳んだまま出す。題の行を押せば開く。 */
-        var seeAck = false;
+
+        /* 控えに無くなった件の印は捨てる。端末の中に溜め続けない。 */
+        var live = {}, changed = false;
+        rows.forEach(function (d) { live[keyOf(d)] = 1; });
+        Object.keys(copied).forEach(function (k) { if (!live[k]) { delete copied[k]; changed = true; } });
+        if (changed) { saveCopied(); }
+
         var html = '';
         rows.forEach(function (d, i) {
           var k = kind(d.title);
-          /* 受け取り確認（📥／👍）は畳む。「確認も見る」を入れていれば開いたまま。 */
+          /* 受け取り確認（📥／👍）は畳む。題の行を押せば開く。 */
           var ack = isAck(d.title);
-          var cls = k + (ack ? ' ack' : '') + (ack && seeAck ? ' open' : '');
+          /* 写した件も同じように畳む。題の行だけ残り、押せばまた開く。 */
+          var cp = !!copied[keyOf(d)];
+          var cls = k + (ack || cp ? ' ack' : '') + (cp ? ' copied' : '');
           html += '<li class="' + cls.trim() + '" data-i="' + i + '">'
                 + '<p class="t"><span class="tx">' + esc(d.title || '(題なし)')
                 + '<span class="when">' + hhmm(d.time) + '</span></span>'
-                + '<button type="button" class="cp" data-i="' + i + '">写す</button></p>'
+                + '<button type="button" class="cp' + (cp ? ' ok' : '') + '" data-i="' + i + '">'
+                + (cp ? '写した' : '写す') + '</button></p>'
                 + '<p class="m">' + esc(d.message) + '</p></li>';
         });
         if (html) { $('list').innerHTML = html; }
@@ -332,13 +323,13 @@
     return (t.indexOf('📥') >= 0 || t.indexOf('👍') >= 0 || t.indexOf('受けました') >= 0);
   }
 
-  /* 一覧の上の行。12時間の件数はやめて、受信箱の未処理を出す。 */
-  var todoN = -1;
+  /* 一覧の上の行。出すのは最後に取りに行った時刻だけ。
+     ＊「未処理◯件」は撤去した（v16）。数えていたのは受信箱（inbox.txt）の未処理で、
+       その受信箱に書く者はパネルからの送信だけだった。v11 でその送信を撤去したので、
+       いまは構造上いつも0にしかならない（最後に増えたのは 17:28:33）。
+       数える先の無い表示は誤解を生むので、行ごと落とした。 */
   function paintBar() {
-    var s = '<span id="todo"' + (todoN > 0 ? '' : ' class="none"') + '>'
-          + (todoN < 0 ? '未処理 —' : (todoN === 0 ? '未処理なし' : '未処理 ' + todoN + '件'))
-          + '</span> ／ ' + hhmm(Math.floor(Date.now() / 1000)) + ' 更新';
-    $('stat').innerHTML = s;
+    $('stat').textContent = hhmm(Math.floor(Date.now() / 1000)) + ' 更新';
   }
 
   /* 写しの中身は、相談役のクロードへ貼るためのもの（v9）。
@@ -361,8 +352,9 @@
     if (t.indexOf('ヨシしてください') >= 0 || t.indexOf('返事してください') >= 0) { return 'ヨシ待ち'; }
     if (t.indexOf('終わりました') >= 0) { return '終わり'; }
     if (t.indexOf('異常') >= 0) { return '異常'; }
-    if (t.indexOf('作業中') >= 0) { return '作業中'; }
-    return '未確認';
+    /* ＊「未確認」は返さない。状態は四つだけと決めてある。
+         題から読み取れないもの（試しの一本など）は、確かめの最中とみなして「作業中」。 */
+    return '作業中';
   }
 
   /* 絵文字と飾りの記号だけを落とす。
@@ -492,10 +484,16 @@
     if (!d) { return; }
     var text = sixLines(d);
     var done = function () {
-      var old = btn.textContent;
+      /* 写した印を端末の中に残す。開き直しても消えない。
+         もう一度押せば、また写せる（押せなくはしない）。 */
+      copied[keyOf(d)] = 1;
+      saveCopied();
       btn.textContent = '写した';
       btn.className = 'cp ok';
-      setTimeout(function () { btn.textContent = old; btn.className = 'cp'; }, 2000);
+      var li = btn.parentNode && btn.parentNode.parentNode;
+      if (li && li.tagName === 'LI' && li.className.indexOf('copied') < 0) {
+        li.className = (li.className + ' ack copied').replace(/\s+/g, ' ').trim();
+      }
     };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(done, function () { fallback(text); });
@@ -559,7 +557,6 @@
         var w = String(d.stat || '');
         var subj = String(d.subj || '');
 
-        todoN = (typeof d.todo === 'number') ? d.todo : -1;
         paintBar();
 
         /* 見込みの段は「作業中」のときだけ。経過はここで数えるので、
@@ -589,19 +586,7 @@
        戻したくなったら git の履歴（panel v10）から引く。印（tags の yoshi / shiji）で
        ヨシか指示かを分ける作りだったことも、そこに残っている。 */
 
-  $('save').addEventListener('click', function () {
-    var s = $('inSend').value.trim();
-    var r = $('inReply').value.trim();
-    if (!s || !r) { alert('送る側と返す側は入れてください'); return; }
-    send = s;
-    reply = r;
-    store(s, r);
-    showMain();
-  });
-
-  $('btnReset').addEventListener('click', showSetup);
-
-  /* 写す釦と、畳んだ確認の開閉。一覧ごと張り替わるので親で受ける。 */
+  /* 写す釦と、畳んだ件の開閉。一覧ごと張り替わるので親で受ける。 */
   $('list').addEventListener('click', function (e) {
     var b = e.target;
     if (b && b.className && b.className.indexOf('cp') === 0) {
@@ -621,7 +606,8 @@
        受け取り確認（📥／👍）の知らせ自体が出なくなったので、切り替える相手がいない。
        畳んだ件を開く道は残してある（題の行を押す）。 */
 
-  if (load()) { showMain(); } else { showSetup(); }
+  loadCopied();
+  showMain();
 })();
 </script>
 </body>
