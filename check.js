@@ -1444,7 +1444,14 @@ section('⑱', '喜ぶ動きが必ず終わるか', () => {
   const hm3 = Number((src.match(/holdMove:\s*(\d+)/) || [])[1] || 300);
   const js3 = Number((src.match(/joyStartMs:\s*(\d+)/) || [])[1] || 600);
   const je3 = Number((src.match(/joyEvery:\s*(\d+)/) || [])[1] || 10);
+  const rr3 = Number((src.match(/reachRatio:\s*([0-9.]+)/) || [])[1] || 0.35);
+  const ct3 = Number((src.match(/coolTime:\s*(\d+)/) || [])[1] || 360);
+  /* 乱数の種。写しの中の Math.random をこの種の数列に差し替えるので、
+     同じ本体・同じ種なら鳥の湧きも動きも毎回同じになる。値は動かさないこと
+     （動かすと別の遊びになり、揺れていないことの確かめが最初からやり直しになる）。 */
+  const SEED = 20260824;
   note('連戦の刻み ' + je3 + '羽ごと ／ 喜びの長さ ' + js3 + 'ms ／ 長押しで動くまで ' + hm3 + 'ms');
+  note('乱数の種 ' + SEED + ' ／ 射程 短辺×' + rr3 + ' ／ 振りの入力止め ' + ct3 + 'ms（叩く間隔はこれに合わせる）');
 
   const JOY_PROBE = `
 <script>
@@ -1467,25 +1474,64 @@ window.addEventListener('load', function(){ setTimeout(function(){
   function up(){ window.dispatchEvent(new MouseEvent('mouseup', { bubbles:true })); }
   (async function(){
     try{
+      /* 乱数を種つきの数列に差し替える。鳥の湧きと動きが毎回同じになり、
+         同じ入力なら同じ結果が出る。差し替えるのは写しの中だけで、本体は触らない。 */
+      var _s = ${SEED};
+      Math.random = function(){ _s = (_s * 1103515245 + 12345) % 2147483648; return _s / 2147483648; };
       window.requestAnimationFrame = function(fn){ return setTimeout(function(){ fn(Date.now()); }, 16); };
       window.cancelAnimationFrame = function(id){ clearTimeout(id); };
       window.closeTitleScreen(); window.toriOpen(); window.toriStart('endless');
       await sleep(1400);
       var W = window.innerWidth, H = window.innerHeight, floor = H * ${fl3};
-      /* 喜びを ${'3'} 回起こす（＝${je3}羽ごとなので ${je3 * 3}羽ぶん）。毎回、最中に長押しを当てる。 */
+      var reach = Math.min(W, H) * ${rr3};
+      /* 剣士の立ち位置は床の影の中心。跳ばないので持ち上げは0のまま。 */
+      function edaPos(){
+        var s = document.querySelector('#toriRoot .tori-shadow');
+        if(!s) return null;
+        var r = s.getBoundingClientRect();
+        if(!r.width) return null;
+        return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+      }
+      function nearest(q){
+        var ns = document.querySelectorAll('#toriRoot .tori-bird'), best = null;
+        for(var i = 0; i < ns.length; i++){
+          var r = ns[i].getBoundingClientRect();
+          if(!r.width) continue;
+          var bx = r.left + r.width / 2, by = r.top + r.height / 2;
+          var d = Math.hypot(bx - q.x, by - q.y);
+          if(!best || d < best.d) best = { x: bx, y: by, d: d };
+        }
+        return best;
+      }
+      /* 連戦が終わって札が出ているか。ライフが尽きれば連戦も終わる。 */
+      function ended(){
+        var q = document.getElementById('toriPanel');
+        return !!(q && q.style.display === 'flex');
+      }
+      /* 一打。鳥そのものではなく、剣士から鳥へ向かう線の、射程の内側を叩く。
+         向きがそのまま扇に入り、射程の外れで豆投げに落ちることもない。 */
+      function tap(){
+        var q = edaPos(); if(!q) return false;
+        var b = nearest(q); if(!b) return false;
+        var k = Math.min(1, (reach * 0.9) / b.d);
+        down(q.x + (b.x - q.x) * k, q.y + (b.y - q.y) * k); up();
+        return true;
+      }
+      var restarts = 0;
+      /* 喜びを3回起こす（＝${je3}羽ごとなので ${je3 * 3}羽ぶん）。毎回、最中に長押しを当てる。
+         窓は秒ではなく打数で切る。一打ごとに振りの入力止め（${ct3}ms）が明けるまで待つので、
+         捨てられる打を出さない。 */
       for(var round = 0; round < 3; round++){
-        var t0 = Date.now(), reached = false;
-        while(Date.now() - t0 < 45000 && !reached){
-          var ns = document.querySelectorAll('#toriRoot .tori-bird');
-          for(var i = 0; i < ns.length && !reached; i++){
-            var r = ns[i].getBoundingClientRect();
-            down(r.left + r.width/2, r.top + r.height/2); up();
-            await sleep(28);
+        var reached = false, taps = 0;
+        while(taps < 150 && !reached){
+          if(ended()){ restarts++; window.toriStart('endless'); await sleep(1400); continue; }
+          tap(); taps++;
+          for(var w = 0; w < 10 && !reached; w++){
+            await sleep(${Math.round(ct3 / 10) + 4});
             if(isJoy(shown())) reached = true;
           }
-          await sleep(20);
         }
-        if(!reached){ out.joys.push({ round: round, reached: false }); break; }
+        if(!reached){ out.joys.push({ round: round, reached: false, taps: taps }); break; }
         /* 喜びの最中に長押しを当てる（旧実装ではここで終了処理が消える） */
         down(W * 0.12, floor - 30);
         await sleep(${hm3} + 80);
@@ -1497,8 +1543,9 @@ window.addEventListener('load', function(){ setTimeout(function(){
           seen.push(f);
           await sleep(40);
         }
-        out.joys.push({ round: round, reached: true, late: late, last: seen[seen.length-1] });
+        out.joys.push({ round: round, reached: true, late: late, last: seen[seen.length-1], taps: taps });
       }
+      out.restarts = restarts;
     }catch(e){ out.err = String(e && e.message || e); }
     var n = document.createElement('div');
     n.textContent = 'KOUSHU_JOY_BEGIN' + btoa(unescape(encodeURIComponent(JSON.stringify(out)))) + 'KOUSHU_JOY_END';
@@ -1514,7 +1561,7 @@ window.addEventListener('load', function(){ setTimeout(function(){
     const r = spawnSync(browser, ['--headless=new', '--disable-gpu', '--hide-scrollbars',
       '--force-device-scale-factor=1', '--window-size=844,390',
       '--user-data-dir=' + path.join(tmpDir, 'prof'),
-      '--virtual-time-budget=240000', '--dump-dom',
+      '--virtual-time-budget=360000', '--dump-dom',
       'file:///' + probe.replace(/\\/g, '/')],
       { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
     const hit = /KOUSHU_JOY_BEGIN([A-Za-z0-9+/=]+)KOUSHU_JOY_END/.exec(String(r.stdout || ''));
@@ -1524,6 +1571,7 @@ window.addEventListener('load', function(){ setTimeout(function(){
     const done = got.joys.filter(j => j.reached);
     if (!done.length) { ng('喜びを一度も起こせなかった（測り方の問題かもしれない）'); return; }
     note('喜びを起こした回数 : ' + done.length + '（' + (je3 * done.length) + '羽ぶん）。毎回、最中に長押しを当てている');
+    note('叩いた数 : ' + done.map(j => j.taps).join(' / ') + '（回ごと）／ 連戦の開き直し ' + (got.restarts || 0) + '回');
     const bad = done.filter(j => j.late > 0);
     if (bad.length === 0) {
       ok('どの回も、規定の2倍を過ぎるまでに待機へ戻った');
