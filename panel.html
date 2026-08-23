@@ -147,21 +147,17 @@
       </span>
       <span class="a" id="stAgo"></span>
     </div>
-    <button class="yoshi" id="btnYoshi" type="button">ヨシ</button>
-    <div class="row">
-      <input id="free" type="text" placeholder="直しの指示を書く" autocapitalize="off">
-      <button id="btnSend" type="button">送る</button>
-    </div>
-    <div id="say"></div>
+    <!-- 送る側の道具（ヨシの釦・入力欄・送る釦・言づて欄）は v11 で撤去した。
+         Claude アプリの Code タブから直に指せるようになったので、パネルから送る必要がない。
+         このパネルは「見る」ためだけの道具になった。 -->
   </header>
   <div class="bar">
     <span id="stat">読み込み中…</span>
-    <label class="sw"><input type="checkbox" id="seeAck"> 確認も見る</label>
     <button id="btnReset" type="button">話題名を入れ直す</button>
   </div>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v10（8月23日）</p>
+  <p class="ver" id="verTag">panel v11（8月23日）</p>
 </div>
 
 <script>
@@ -294,7 +290,8 @@
         var rows = Array.isArray(arr) ? arr.slice() : [];
         rows.sort(function (a, b) { return (b.time || 0) - (a.time || 0); });
         shown = rows;
-        var seeAck = $('seeAck').checked;
+        /* 受け取り確認は畳んだまま出す。題の行を押せば開く。 */
+        var seeAck = false;
         var html = '';
         rows.forEach(function (d, i) {
           var k = kind(d.title);
@@ -528,33 +525,9 @@
       });
   }
 
-  /* tag は「どこから出したか」の印。緑の釦なら 'yoshi'、入力欄なら 'shiji'。
-     受け手（inbox-watch.ps1）はこの印だけでヨシか指示かを決める。印が無いと、
-     受け手は「いま待っているか」で決めるしかなく、入力欄に書いた文まで
-     ヨシとして受け取られる（2026-08-23：「テスト」と送って「ヨシとして受け取りました」になった）。 */
-  function post(msg, tag) {
-    var say = $('say');
-    say.className = '';
-    say.textContent = '送っています…';
-    fetch('https://ntfy.sh', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ topic: reply, message: msg, tags: [tag] })
-    })
-      .then(function (r) {
-        if (!r.ok) { throw new Error('HTTP ' + r.status); }
-        return r.json();
-      })
-      .then(function (j) {
-        say.className = 'ok';
-        say.textContent = '送りました：' + msg + '　（受理 ' + (j.id || '') + '）';
-        $('free').value = '';
-      })
-      .catch(function (e) {
-        say.className = 'ng';
-        say.textContent = '送れませんでした：' + e.message;
-      });
-  }
+  /* ＊送る側の処理（post）は v11 で撤去した。Claude アプリの Code タブから直に指せる。
+       戻したくなったら git の履歴（panel v10）から引く。印（tags の yoshi / shiji）で
+       ヨシか指示かを分ける作りだったことも、そこに残っている。 */
 
   $('save').addEventListener('click', function () {
     var s = $('inSend').value.trim();
@@ -584,31 +557,9 @@
     }
   });
 
-  /* 「確認も見る」は覚える。 */
-  var ACK_KEY = 'kh-panel-seeack';
-  try { $('seeAck').checked = (localStorage.getItem(ACK_KEY) === '1'); } catch (e) {}
-  $('seeAck').addEventListener('change', function () {
-    try { localStorage.setItem(ACK_KEY, $('seeAck').checked ? '1' : '0'); } catch (e) {}
-    pull();
-  });
-
-  /* ヨシを出せるのは、この緑の釦だけ。 */
-  $('btnYoshi').addEventListener('click', function () { post('ヨシ', 'yoshi'); });
-
-  /* 入力欄から出た文は、待っている最中でも「直しの指示」。ヨシにはしない。 */
-  $('btnSend').addEventListener('click', function () {
-    var v = $('free').value.trim();
-    if (!v) {
-      $('say').className = 'ng';
-      $('say').textContent = '書いてから押してください';
-      return;
-    }
-    post(v, 'shiji');
-  });
-
-  $('free').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { e.preventDefault(); $('btnSend').click(); }
-  });
+  /* ＊「確認も見る」の切り替えと、ヨシ・入力欄・送るの受けは v11 で撤去した。
+       受け取り確認（📥／👍）の知らせ自体が出なくなったので、切り替える相手がいない。
+       畳んだ件を開く道は残してある（題の行を押す）。 */
 
   if (load()) { showMain(); } else { showSetup(); }
 })();
