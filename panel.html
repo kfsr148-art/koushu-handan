@@ -163,7 +163,7 @@
   <button class="cpall" id="btnCopyAll" type="button">全部写す</button>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v19（8月23日）</p>
+  <p class="ver" id="verTag">panel v20（8月23日）</p>
 </div>
 
 <script>
@@ -570,22 +570,29 @@
     var d = shown[i];
     if (!d) { return; }
     var text = sixLines(d);
+    /* すでに写した件をもう一度押したか。押せることは変えないが、
+       字が「写した」のままだと押した手応えが無く、効いていないように見える
+       （2026-08-23 のご指摘）。二度目は字を変えて、1.5秒で戻す。 */
+    var again = !!copied[keyOf(d)];
     var done = function () {
-      /* 写した印を端末の中に残す。開き直しても消えない。
-         もう一度押せば、また写せる（押せなくはしない）。 */
+      /* 写した印を端末の中に残す。開き直しても消えない。 */
       copied[keyOf(d)] = 1;
       saveCopied();
-      btn.textContent = '写した';
+      btn.textContent = again ? 'また写した' : '写した';
       btn.className = 'cp ok';
       var li = btn.parentNode && btn.parentNode.parentNode;
       if (li && li.tagName === 'LI' && li.className.indexOf('copied') < 0) {
         li.className = (li.className + ' ack copied').replace(/\s+/g, ' ').trim();
       }
+      if (again) { setTimeout(function () { btn.textContent = '写した'; }, 1500); }
     };
+    /* ＊写せなかったときも done を通す。通さないと釦が「写す」のままで、
+       写せたのか落ちたのかが手元で区別できない。落ちた側は手で写す箱を出す。 */
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(done, function () { fallback(text); });
+      navigator.clipboard.writeText(text).then(done, function () { fallback(text); done(); });
     } else {
       fallback(text);
+      done();
     }
   }
 
