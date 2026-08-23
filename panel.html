@@ -127,8 +127,8 @@
 <div id="setup" class="hide">
   <h1>話題名を入れてください</h1>
   <p>この端末にだけ残ります。次からは要りません。</p>
-  <p>＊話題名が未設定のあいだは、知らせの一覧は出せません。</p>
-  <label for="inSend">送る側（知らせが届く話題）</label>
+  <p>＊一覧と状態は話題名が無くても出ます。話題名が要るのは、返事を送るときだけです。</p>
+  <label for="inSend">送る側（異常の押し通知が届く話題。iPhone の ntfy で購読する名前）</label>
   <input id="inSend" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="kh-…">
   <label for="inReply">返す側（返事を投げる話題）</label>
   <input id="inReply" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="khr-…">
@@ -161,7 +161,7 @@
   </div>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v9（8月23日）</p>
+  <p class="ver" id="verTag">panel v10（8月23日）</p>
 </div>
 
 <script>
@@ -175,6 +175,8 @@
   var honVer = '', stbVer = '';
   var VER_URL = 'https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/ver.txt';
   var STB_URL = 'https://raw.githubusercontent.com/kfsr148-art/koushu-handan/stable/ver.txt';
+  /* 知らせの一覧。ntfy へ出るのは異常だけになったので、読み物はここから取る。 */
+  var NOTICES_URL = 'https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/notices.json';
   /* 最後の更新からこれを超えたら「連絡なし」。
      見張りは「変化があったときだけ」流す作りで、変化が無い間は15分（900秒）おきに
      心拍を一本だけ出す。したがってここは 900 より長くないと、生きているのに
@@ -278,27 +280,18 @@
   }
 
   function pull() {
-    if (!send) {
-      sayWhy('話題名が未設定です。「話題名を入れ直す」から入れてください。');
-      paintBar();
-      return;
-    }
-    var url = 'https://ntfy.sh/' + encodeURIComponent(send) + '/json?poll=1&since=12h';
-    fetch(url, { cache: 'no-store' })
+    /* ＊「送る側」の話題名は、もう一覧には要らない（v10）。
+       押し通知を iPhone で受けるために ntfy の側で購読する名前として残してあるだけ。 */
+    /* 一覧は notices.json から読む（v10）。ntfy へ出るのは異常のときだけになったので、
+       話題を読んでも異常しか並ばない。読み物はリポジトリ経由に一本化した。
+       中身は status.md と同じ二十件で、書いているのは notify-record.ps1。 */
+    fetch(NOTICES_URL + '?_t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) {
         if (!r.ok) { throw new Error('HTTP ' + r.status); }
-        return r.text();
+        return r.json();
       })
-      .then(function (txt) {
-        var rows = [];
-        txt.split('\n').forEach(function (ln) {
-          ln = ln.trim();
-          if (!ln) { return; }
-          var d;
-          try { d = JSON.parse(ln); } catch (e) { return; }
-          if (d.event !== 'message') { return; }
-          rows.push(d);
-        });
+      .then(function (arr) {
+        var rows = Array.isArray(arr) ? arr.slice() : [];
         rows.sort(function (a, b) { return (b.time || 0) - (a.time || 0); });
         shown = rows;
         var seeAck = $('seeAck').checked;
@@ -315,14 +308,13 @@
                 + '<p class="m">' + esc(d.message) + '</p></li>';
         });
         if (html) { $('list').innerHTML = html; }
-        else { sayWhy('12時間以内の知らせがありません。送られてくればここに並びます。'); }
+        else { sayWhy('まだ知らせがありません。出ればここに並びます。'); }
         paintBar();
       })
       .catch(function (e) {
         /* 取得に失敗したことと、その理由を必ず画面に出す。白紙にしない。 */
-        sayWhy('取得に失敗しました（' + e.message + '）。'
-             + '話題名が違うか、通信が届いていません。'
-             + '「話題名を入れ直す」から確かめてください。');
+        sayWhy('一覧を読めません（' + e.message + '）。'
+             + 'notices.json が公開ページに無いか、通信が届いていません。');
         paintBar();
       });
   }
