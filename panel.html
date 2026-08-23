@@ -163,7 +163,7 @@
   </div>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v6（8月23日）</p>
+  <p class="ver" id="verTag">panel v7（8月23日）</p>
 </div>
 
 <script>
@@ -172,7 +172,11 @@
   var KEY = 'kh-panel-topics';
   var send = '', reply = '', stat = '', timer = null;
   var shown = [];        // いま一覧に出している知らせ。写す釦から引く。
-  var STALE_SEC = 180;   // 最後の更新からこれを超えたら「連絡なし」
+  /* 最後の更新からこれを超えたら「連絡なし」。
+     見張りは「変化があったときだけ」流す作りで、変化が無い間は15分（900秒）おきに
+     心拍を一本だけ出す。したがってここは 900 より長くないと、生きているのに
+     「連絡なし」と出る。二つは対で決まる値。片方だけ変えないこと。 */
+  var STALE_SEC = 1200;
 
   function $(id) { return document.getElementById(id); }
 
@@ -417,6 +421,13 @@
         var mik = '';
         var mk = subj.match(/（見込み[^（）]*）[ ]*$/);
         if (mk) { mik = mk[0].replace(/^（/, '').replace(/）[ ]*$/, ''); subj = subj.slice(0, mk.index); }
+        /* 「開始 1787465599」は作業を始めた時刻（秒）。経過はここで数える。
+           見張り側で分に直すと本文が毎分変わり、「変化があったときだけ流す」が効かなくなるため。
+           数えるのはこちらなので、次の便を待たずに 15 秒ごとの取得で伸びていく。 */
+        mik = mik.replace(/開始 (\d{9,})/, function (m0, ep) {
+          var min = Math.max(0, Math.floor((Date.now() / 1000 - parseInt(ep, 10)) / 60));
+          return '開始から' + min + '分';
+        });
         if (sec > STALE_SEC) {
           paintState('lost', '連絡なし', subj + '（最後は ' + w + '）', agoText(sec), mik);
           return;
