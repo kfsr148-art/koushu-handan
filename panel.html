@@ -36,12 +36,13 @@
     padding:6px 10px; margin:0 0 10px; background:var(--card);}
   .state .w{font-size:18px; font-weight:700; flex:0 0 auto;}
   .state .c{flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:2px;}
+  /* 件名も見込みも切らない。入りきらなければ「…」で削らず、枠のほうを縦に伸ばす。
+     一行箱（nowrap＋ellipsis）だと iPhone の幅では末尾から呑まれ、
+     消えるのが見込みの側になる（実測：390px で 317px 要るのに、箱は 232px しかない）。 */
   .state .s{font-size:15px; color:var(--fg); min-width:0;
-    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-  /* 見込みの段。件名と並べて一行にすると iPhone の幅では末尾が「…」に呑まれ、
-     見込みだけが読めなくなる（実測：390px で 317px 要るのに、箱は 232px）。 */
+    white-space:normal; overflow-wrap:anywhere;}
   .state .k{font-size:13px; color:var(--dim); min-width:0;
-    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+    white-space:normal; overflow-wrap:anywhere;}
   .state .a{font-size:13px; color:var(--dim); flex:0 0 auto;}
   .state button{flex:0 0 auto; min-height:36px; padding:0 10px; font-size:13px;
     color:var(--dim); background:none; border:1px solid var(--line); border-radius:8px;}
@@ -162,7 +163,7 @@
   </div>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v4（8月23日）</p>
+  <p class="ver" id="verTag">panel v5（8月23日）</p>
 </div>
 
 <script>
