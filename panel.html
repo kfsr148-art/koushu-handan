@@ -323,7 +323,10 @@
           var ack = isAck(d.title);
           /* 写した件も同じように畳む。題の行だけ残り、押せばまた開く。 */
           var cp = !!copied[keyOf(d)];
-          var cls = k + (ack || cp ? ' ack' : '') + (cp ? ' copied' : '');
+          /* ⑧そのままを持つ件は畳んでおく。長いので開いたままだと一覧が読めない。
+             題の行を押せば開く（畳んだ件と同じ受け）。 */
+          var hasRaw = /^そのまま[:：]/m.test(String(d.message || ''));
+          var cls = k + (ack || cp || hasRaw ? ' ack' : '') + (cp ? ' copied' : '');
           html += '<li class="' + cls.trim() + '" data-i="' + i + '">'
                 + '<p class="t"><span class="tx">' + esc(d.title || '(題なし)')
                 + '<span class="when">' + hhmm(d.time) + '</span></span>'
@@ -486,7 +489,7 @@
     var lines = body.split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
 
     /* 見出しの付いた行は「したこと」から外す。件名（一行目）も外す。 */
-    var LABEL = /^(版|ファイル|実測|未決|待ち|完了|件名|状態|したこと)[:：]/;
+    var LABEL = /^(版|ファイル|実測|未決|待ち|完了|件名|状態|したこと|食い違い|答え|そのまま|種類)[:：]/;
     var rest = lines.slice(1).filter(function (x) { return !LABEL.test(x); }).join('\n');
     if (!rest) { rest = lines[0] || ''; }
 
@@ -512,7 +515,20 @@
     if (!files) { files = findFiles(rest); }
     var meas  = pick(body, ['実測', '確かめ方', '結果']);
     if (!meas) { meas = plain(f.meas); }
+    /* ⑦は三つに書き分ける。空なら「なし」。
+       食い違い＝受けた指示のうち、そのままでは成立しない点と、どう読み替えたか
+       答え＝指示の中で訊かれたことへの答え（③したことには書かない）
+       未決＝判断待ちの項目 */
+    var gap   = pick(body, ['食い違い']);
+    var ans   = pick(body, ['答え']);
     var open  = pick(body, ['未決', '待ち']);
+
+    /* ⑧そのまま＝要約せずに貼る欄。字数の上限なし。
+       ＊ここだけは plain も twoSentences も通さない。改行も原文のまま残す。
+         迷ったら削らずここへ貼る、という決めなので、削る処理を一切かけない。 */
+    var raw = '';
+    var rawIdx = body.search(/^そのまま[:：]/m);
+    if (rawIdx >= 0) { raw = body.slice(rawIdx).replace(/^そのまま[:：]\s*/, '').trim(); }
 
     /* 「調べた」の回だけ、⑥実測を一項目一行の箇条書きにする。
        ＊調べた結果はファイル名・行番号・パスの並びで、一行に詰めると読めない。
@@ -534,7 +550,13 @@
       '版: ' + ver,
       'ファイル: ' + (files || '未確認'),
       '実測: ' + (meas || '未確認'),
-      '未決: ' + (open || '未決なし')
+      '食い違い: ' + (gap || 'なし'),
+      '答え: ' + (ans || 'なし'),
+      '未決: ' + (open || 'なし'),
+      /* ⑧は最後。要約せず原文のまま。四つの該当（成立しなかった箇所と理由／訊かれたことへの答え／
+         調べて出たファイル名・行番号・パスの一覧／判断の根拠にしたコマンドの出力）が
+         あれば必ず全文が入る。無いときだけ「なし」。 */
+      'そのまま: ' + (raw || 'なし')
     ].join('\n');
   }
 
