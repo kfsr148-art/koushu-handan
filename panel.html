@@ -157,7 +157,7 @@
   </div>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v11（8月23日）</p>
+  <p class="ver" id="verTag">panel v12（8月23日）</p>
 </div>
 
 <script>
@@ -169,10 +169,16 @@
   /* 本体の版。写しの「版:」の行に入れる。公開ページの ver.txt から取る。
      stable の版はどのファイルにも出ていないので、写しでは「未確認」と書く。 */
   var honVer = '', stbVer = '';
-  var VER_URL = 'https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/ver.txt';
+  var VER_URL = 'https://kfsr148-art.github.io/koushu-handan/ver.txt';
+  /* ＊読み先は公開ページ（github.io）にする。raw.githubusercontent は
+       Cache-Control: max-age=300 で、しかも ?_t= では破れない（2026-08-23 実測。
+       押し出し済みの中身が5分間そのまま古く返った）。公開ページ側は ?_t= ごとに
+       新しい鍵になり、実測で Age: 0 の最新が返る。
+     ＊stable の版だけは raw のまま。公開ページは main しか出さないので、
+       stable の枝のファイルは公開ページからは取れない。版はめったに動かないので5分の遅れで足りる。 */
   var STB_URL = 'https://raw.githubusercontent.com/kfsr148-art/koushu-handan/stable/ver.txt';
   /* 知らせの一覧。ntfy へ出るのは異常だけになったので、読み物はここから取る。 */
-  var NOTICES_URL = 'https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/notices.json';
+  var NOTICES_URL = 'https://kfsr148-art.github.io/koushu-handan/notices.json';
   /* 最後の更新からこれを超えたら「連絡なし」。
      見張りは「変化があったときだけ」流す作りで、変化が無い間は15分（900秒）おきに
      心拍を一本だけ出す。したがってここは 900 より長くないと、生きているのに
@@ -485,7 +491,7 @@
      押し送りは「人を呼ぶもの」三種だけに絞り、状態はこちらから読みに行く形にした。
      置き場はリポジトリ直下。iPhone から VAIO のファイルには手が届かないので、
      見張りが commit と push で公開ページへ出す。status.md と同じ道。 */
-  var STATE_URL = 'https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/state.json';
+  var STATE_URL = 'https://kfsr148-art.github.io/koushu-handan/state.json';
 
   function pullState() {
     /* 取り置きを避ける。GitHub の配信網は少し遅れるが、状態は「呼ぶもの」ではないので構わない。 */
