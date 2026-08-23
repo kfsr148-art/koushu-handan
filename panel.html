@@ -163,7 +163,7 @@
   </div>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v5（8月23日）</p>
+  <p class="ver" id="verTag">panel v6（8月23日）</p>
 </div>
 
 <script>
@@ -432,14 +432,18 @@
       });
   }
 
-  function post(msg) {
+  /* tag は「どこから出したか」の印。緑の釦なら 'yoshi'、入力欄なら 'shiji'。
+     受け手（inbox-watch.ps1）はこの印だけでヨシか指示かを決める。印が無いと、
+     受け手は「いま待っているか」で決めるしかなく、入力欄に書いた文まで
+     ヨシとして受け取られる（2026-08-23：「テスト」と送って「ヨシとして受け取りました」になった）。 */
+  function post(msg, tag) {
     var say = $('say');
     say.className = '';
     say.textContent = '送っています…';
     fetch('https://ntfy.sh', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ topic: reply, message: msg })
+      body: JSON.stringify({ topic: reply, message: msg, tags: [tag] })
     })
       .then(function (r) {
         if (!r.ok) { throw new Error('HTTP ' + r.status); }
@@ -495,8 +499,10 @@
     pull();
   });
 
-  $('btnYoshi').addEventListener('click', function () { post('ヨシ'); });
+  /* ヨシを出せるのは、この緑の釦だけ。 */
+  $('btnYoshi').addEventListener('click', function () { post('ヨシ', 'yoshi'); });
 
+  /* 入力欄から出た文は、待っている最中でも「直しの指示」。ヨシにはしない。 */
   $('btnSend').addEventListener('click', function () {
     var v = $('free').value.trim();
     if (!v) {
@@ -504,7 +510,7 @@
       $('say').textContent = '書いてから押してください';
       return;
     }
-    post(v);
+    post(v, 'shiji');
   });
 
   $('free').addEventListener('keydown', function (e) {
