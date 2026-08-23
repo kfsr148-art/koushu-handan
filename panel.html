@@ -157,7 +157,7 @@
   </div>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v13（8月23日）</p>
+  <p class="ver" id="verTag">panel v14（8月23日）</p>
 </div>
 
 <script>
@@ -177,6 +177,7 @@
      ＊stable の版だけは raw のまま。公開ページは main しか出さないので、
        stable の枝のファイルは公開ページからは取れない。版はめったに動かないので5分の遅れで足りる。 */
   var STB_URL = 'https://raw.githubusercontent.com/kfsr148-art/koushu-handan/stable/ver.txt';
+  var SHOW_MAX = 5;   /* 一覧に出す件数。控えの側（notify-record.ps1 の $KEEP）と揃える。 */
   /* 知らせの一覧。ntfy へ出るのは異常だけになったので、読み物はここから取る。 */
   var NOTICES_URL = 'https://kfsr148-art.github.io/koushu-handan/notices.json';
   /* 最後の更新からこれを超えたら「連絡なし」。
@@ -295,6 +296,9 @@
       .then(function (arr) {
         var rows = Array.isArray(arr) ? arr.slice() : [];
         rows.sort(function (a, b) { return (b.time || 0) - (a.time || 0); });
+        /* 出すのは新しい順に5件だけ（v14）。過去を遡る用途は無い。
+           控えの側も5件で切ってあるが、古い写しを掴んだときのためにここでも切る。 */
+        rows = rows.slice(0, SHOW_MAX);
         shown = rows;
         /* 受け取り確認は畳んだまま出す。題の行を押せば開く。 */
         var seeAck = false;
