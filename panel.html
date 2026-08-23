@@ -132,8 +132,7 @@
   <input id="inSend" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="kh-…">
   <label for="inReply">返す側（返事を投げる話題）</label>
   <input id="inReply" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="khr-…">
-  <label for="inStat">状態（いまの様子が流れる話題。後から足しても構いません）</label>
-  <input id="inStat" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="khs-…">
+  <!-- 状態の話題の欄は v8 で外した。いまの様子は state.json から読む（話題は要らない）。 -->
   <button id="save" type="button">保存する</button>
 </div>
 
@@ -147,7 +146,6 @@
         <span class="k hide" id="stMik"></span>
       </span>
       <span class="a" id="stAgo"></span>
-      <button id="stSet" type="button" class="hide">設定</button>
     </div>
     <button class="yoshi" id="btnYoshi" type="button">ヨシ</button>
     <div class="row">
@@ -163,14 +161,14 @@
   </div>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v7（8月23日）</p>
+  <p class="ver" id="verTag">panel v8（8月23日）</p>
 </div>
 
 <script>
 (function () {
   'use strict';
   var KEY = 'kh-panel-topics';
-  var send = '', reply = '', stat = '', timer = null;
+  var send = '', reply = '', timer = null;
   var shown = [];        // いま一覧に出している知らせ。写す釦から引く。
   /* 最後の更新からこれを超えたら「連絡なし」。
      見張りは「変化があったときだけ」流す作りで、変化が無い間は15分（900秒）おきに
@@ -185,20 +183,21 @@
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  /* 状態の話題は後から足せる。送る側と返す側の二つが揃っていれば、それだけで動く。 */
+  /* 要るのは送る側と返す側の二つだけ。状態の話題は v8 で要らなくなった。
+     保存済みの三つ目の値は読まないが、消しもしない（古い写しへ戻したくなったときのため）。 */
   function load() {
     try {
       var v = JSON.parse(localStorage.getItem(KEY) || 'null');
       if (v && v.send && v.reply) {
-        send = v.send; reply = v.reply; stat = v.stat || '';
+        send = v.send; reply = v.reply;
         return true;
       }
     } catch (e) {}
     return false;
   }
 
-  function store(s, r, t) {
-    try { localStorage.setItem(KEY, JSON.stringify({ send: s, reply: r, stat: t })); } catch (e) {}
+  function store(s, r) {
+    try { localStorage.setItem(KEY, JSON.stringify({ send: s, reply: r })); } catch (e) {}
   }
 
   function showSetup() {
@@ -206,7 +205,6 @@
     $('main').className = 'hide';
     $('inSend').value = send;
     $('inReply').value = reply;
-    $('inStat').value = stat;
     if (timer) { clearInterval(timer); timer = null; }
   }
 
@@ -382,52 +380,36 @@
     return Math.floor(sec / 3600) + '時間前';
   }
 
+  /* いまの様子は state.json から読む（v8）。以前は ntfy の話題へ5分おきに流していたが、
+     それだけで1日394件になり、ntfy の1日の上限に当たった（2026-08-23）。
+     押し送りは「人を呼ぶもの」三種だけに絞り、状態はこちらから読みに行く形にした。
+     置き場はリポジトリ直下。iPhone から VAIO のファイルには手が届かないので、
+     見張りが commit と push で公開ページへ出す。status.md と同じ道。 */
+  var STATE_URL = 'https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/state.json';
+
   function pullState() {
-    if (!stat) {
-      paintState('idle', '—', '状態の話題が未設定です', '');
-      $('stSet').className = '';
-      return;
-    }
-    $('stSet').className = 'hide';
-    var url = 'https://ntfy.sh/' + encodeURIComponent(stat) + '/json?poll=1&since=12h';
-    fetch(url, { cache: 'no-store' })
+    /* 取り置きを避ける。GitHub の配信網は少し遅れるが、状態は「呼ぶもの」ではないので構わない。 */
+    fetch(STATE_URL + '?_t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) {
         if (!r.ok) { throw new Error('HTTP ' + r.status); }
-        return r.text();
+        return r.json();
       })
-      .then(function (txt) {
-        var last = null;
-        txt.split('\n').forEach(function (ln) {
-          ln = ln.trim();
-          if (!ln) { return; }
-          var d;
-          try { d = JSON.parse(ln); } catch (e) { return; }
-          if (d.event !== 'message') { return; }
-          if (!last || (d.time || 0) > (last.time || 0)) { last = d; }
-        });
-        if (!last) {
-          paintState('lost', '連絡なし', '12時間、状態が流れていません', '');
-          return;
-        }
-        var sec = Math.floor(Date.now() / 1000) - (last.time || 0);
-        var w = String(last.title || '');
-        var subj = String(last.message || '');
-        /* 本文の末尾に「（未処理N）」が付いてくる。読み取って一覧の上に出す。 */
-        var mt = subj.match(/（未処理(\d+)）\s*$/);
-        if (mt) { todoN = parseInt(mt[1], 10); subj = subj.replace(/（未処理\d+）\s*$/, ''); paintBar(); }
-        /* 「作業中」のときだけ末尾に「（見込み15分・開始から6分）」が付いてくる。
-           件名と同じ行に置くと、iPhone の幅では末尾が「…」に呑まれて見込みだけ読めなくなる。
-           実測（390px）：件名＋見込みで 317px 要るのに、箱は 232px しかない。切り出して二段目へ回す。 */
+      .then(function (d) {
+        var sec = Math.floor(Date.now() / 1000) - (d.at || 0);
+        var w = String(d.stat || '');
+        var subj = String(d.subj || '');
+
+        todoN = (typeof d.todo === 'number') ? d.todo : -1;
+        paintBar();
+
+        /* 見込みの段は「作業中」のときだけ。経過はここで数えるので、
+           次の書き出しを待たずに 15 秒ごとの取得で伸びていく。 */
         var mik = '';
-        var mk = subj.match(/（見込み[^（）]*）[ ]*$/);
-        if (mk) { mik = mk[0].replace(/^（/, '').replace(/）[ ]*$/, ''); subj = subj.slice(0, mk.index); }
-        /* 「開始 1787465599」は作業を始めた時刻（秒）。経過はここで数える。
-           見張り側で分に直すと本文が毎分変わり、「変化があったときだけ流す」が効かなくなるため。
-           数えるのはこちらなので、次の便を待たずに 15 秒ごとの取得で伸びていく。 */
-        mik = mik.replace(/開始 (\d{9,})/, function (m0, ep) {
-          var min = Math.max(0, Math.floor((Date.now() / 1000 - parseInt(ep, 10)) / 60));
-          return '開始から' + min + '分';
-        });
+        if (w === '作業中') {
+          var min = d.startedAt ? Math.max(0, Math.floor((Date.now() / 1000 - d.startedAt) / 60)) : 0;
+          mik = '見込み' + (d.mikomi ? d.mikomi : '不明') + '・開始から' + min + '分';
+        }
+
         if (sec > STALE_SEC) {
           paintState('lost', '連絡なし', subj + '（最後は ' + w + '）', agoText(sec), mik);
           return;
@@ -474,17 +456,14 @@
   $('save').addEventListener('click', function () {
     var s = $('inSend').value.trim();
     var r = $('inReply').value.trim();
-    var t = $('inStat').value.trim();
     if (!s || !r) { alert('送る側と返す側は入れてください'); return; }
     send = s;
     reply = r;
-    stat = t;
-    store(s, r, t);
+    store(s, r);
     showMain();
   });
 
   $('btnReset').addEventListener('click', showSetup);
-  $('stSet').addEventListener('click', showSetup);
 
   /* 写す釦と、畳んだ確認の開閉。一覧ごと張り替わるので親で受ける。 */
   $('list').addEventListener('click', function (e) {

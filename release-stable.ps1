@@ -223,10 +223,13 @@ Write-Output $draft
 Write-Output '-----------------------------------------'
 if ($DryRun) { Write-Output ''; Write-Output '[DryRun] 送らず、報告書にも書かない。'; exit 0 }
 
-# 7) 投げる
+# 7) 押し送りはしない
+# ＊押し送るのは「人を呼ぶもの」三種だけ、という決まりにした（2026-08-23）。
+#   連絡どきはその三種の外。stable を進めるのはこちらが起きている時なので、
+#   iPhone を鳴らす必要がない。下書きは報告書の末尾に残るので、そこから写して送る。
+#   Send-Draft は残してあるが、どこからも呼ばない。戻すときはこの一節ごと戻すこと。
 Write-Output ''
-Write-Output '=== ntfy へ投げる ==='
-[void](Send-Draft $draft)
+Write-Output '=== 押し送りはしない（下書きは報告書の末尾に残す）==='
 
 # 8) 報告書へ残す
 Append-Report $draft
