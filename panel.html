@@ -64,6 +64,15 @@
     padding:10px 14px; font-size:14px; color:var(--dim);}
   .bar button{flex:0 0 auto; font-size:14px; color:var(--dim); background:none;
     border:1px solid var(--line); border-radius:8px; min-height:44px; padding:0 12px;}
+  .bar .sw{flex:0 0 auto; display:flex; align-items:center; gap:6px; min-height:44px;}
+  .bar .sw input{width:22px; height:22px;}
+  #todo{color:var(--ask); font-weight:700;}   /* 未処理が1件以上なら黄で目立たせる */
+  #todo.none{color:var(--dim); font-weight:400;}
+
+  /* 受け取り確認は畳んでおく。題の行だけ出し、押すと本文が開く。 */
+  li.ack .m{display:none;}
+  li.ack.open .m{display:block;}
+  li.ack{cursor:pointer;}
 
   ul{list-style:none; margin:0; padding:0 14px;}
   li{background:var(--card); border-left:6px solid var(--line); border-radius:10px;
@@ -72,7 +81,17 @@
   li.done{border-left-color:var(--done);}
   li.wait{border-left-color:var(--wait);}
   li.act{border-left-color:var(--act);}
-  .t{font-size:17px; font-weight:700; margin:0 0 4px;}
+  /* 題の行は左に題と時刻、右に写す釦。釦は44px以上にする。 */
+  .t{font-size:17px; font-weight:700; margin:0 0 4px;
+    display:flex; align-items:flex-start; gap:8px;}
+  .t .tx{flex:1 1 auto; min-width:0;}
+  .cp{flex:0 0 auto; min-width:64px; min-height:44px; font-size:14px; font-weight:400;
+    color:var(--dim); background:none; border:1px solid var(--line); border-radius:8px;}
+  .cp:active{filter:brightness(1.5);}
+  .cp.ok{color:var(--done); border-color:var(--done);}
+  .copybox{position:fixed; left:14px; right:14px; bottom:14px; height:40vh; z-index:20;
+    font-size:15px; color:var(--fg); background:var(--card); border:1px solid var(--line);
+    border-radius:10px; padding:10px;}
   li.ask .t{color:var(--ask);}
   li.done .t{color:var(--done);}
   li.wait .t{color:var(--wait);}
@@ -122,6 +141,7 @@
   </header>
   <div class="bar">
     <span id="stat">読み込み中…</span>
+    <label class="sw"><input type="checkbox" id="seeAck"> 確認も見る</label>
     <button id="btnReset" type="button">話題名を入れ直す</button>
   </div>
   <ul id="list"></ul>
@@ -132,6 +152,7 @@
   'use strict';
   var KEY = 'kh-panel-topics';
   var send = '', reply = '', stat = '', timer = null;
+  var shown = [];        // いま一覧に出している知らせ。写す釦から引く。
   var STALE_SEC = 180;   // 最後の更新からこれを超えたら「連絡なし」
 
   function $(id) { return document.getElementById(id); }
@@ -177,10 +198,23 @@
   /* 15秒ごとに、知らせの一覧と状態の両方を取りに行く。 */
   function tick() { pull(); pullState(); }
 
-  /* 題の種類で色を分ける。四つの題は本文の形も違うので、見た目で先に分かる。 */
+  /* 題の種類で色を分ける。絵文字で頭が揃っているので、そこを見る。
+       🙋 ヨシしてください   … 黄（返事が要る）
+       📥 返事を受けました    … 灰（受け取りの控え。何もしなくてよい）
+       👍 ヨシを受けました    … 灰（同上）
+       ✅ 終わりました        … 緑
+       👀 異常です（待てば戻ります）… 青
+       🪟 異常です（手が要ります）  … 赤 */
   function kind(t) {
     t = String(t || '');
-    if (t.indexOf('返事してください') === 0) { return 'ask'; }
+    if (t.indexOf('🙋') >= 0) { return 'ask'; }
+    if (t.indexOf('📥') >= 0 || t.indexOf('👍') >= 0) { return ''; }
+    if (t.indexOf('✅') >= 0) { return 'done'; }
+    if (t.indexOf('👀') >= 0) { return 'wait'; }
+    if (t.indexOf('🪟') >= 0) { return 'act'; }
+    /* 絵文字の無い古い知らせも読めるようにしておく */
+    if (t.indexOf('ヨシしてください') >= 0 || t.indexOf('返事してください') === 0) { return 'ask'; }
+    if (t.indexOf('受けました') >= 0) { return ''; }
     if (t.indexOf('終わりました') === 0) { return 'done'; }
     if (t.indexOf('待てば戻ります') >= 0) { return 'wait'; }
     if (t.indexOf('手が要ります') >= 0) { return 'act'; }
@@ -215,21 +249,82 @@
           rows.push(d);
         });
         rows.sort(function (a, b) { return (b.time || 0) - (a.time || 0); });
+        shown = rows;
+        var seeAck = $('seeAck').checked;
         var html = '';
-        rows.forEach(function (d) {
-          html += '<li class="' + kind(d.title) + '">'
-                + '<p class="t">' + esc(d.title || '(題なし)')
-                + '<span class="when">' + hhmm(d.time) + '</span></p>'
+        rows.forEach(function (d, i) {
+          var k = kind(d.title);
+          /* 受け取り確認（📥／👍）は畳む。「確認も見る」を入れていれば開いたまま。 */
+          var ack = isAck(d.title);
+          var cls = k + (ack ? ' ack' : '') + (ack && seeAck ? ' open' : '');
+          html += '<li class="' + cls.trim() + '" data-i="' + i + '">'
+                + '<p class="t"><span class="tx">' + esc(d.title || '(題なし)')
+                + '<span class="when">' + hhmm(d.time) + '</span></span>'
+                + '<button type="button" class="cp" data-i="' + i + '">写す</button></p>'
                 + '<p class="m">' + esc(d.message) + '</p></li>';
         });
         $('list').innerHTML = html
           || '<li><p class="m">12時間以内の知らせはありません。</p></li>';
-        $('stat').textContent = rows.length + ' 件 ／ '
-          + hhmm(Math.floor(Date.now() / 1000)) + ' 更新';
+        paintBar();
       })
       .catch(function (e) {
         $('stat').textContent = '読めません（' + e.message + '）';
       });
+  }
+
+  /* 受け取り確認かどうか。ここだけ一覧で畳む。 */
+  function isAck(t) {
+    t = String(t || '');
+    return (t.indexOf('📥') >= 0 || t.indexOf('👍') >= 0 || t.indexOf('受けました') >= 0);
+  }
+
+  /* 一覧の上の行。12時間の件数はやめて、受信箱の未処理を出す。 */
+  var todoN = -1;
+  function paintBar() {
+    var s = '<span id="todo"' + (todoN > 0 ? '' : ' class="none"') + '>'
+          + (todoN < 0 ? '未処理 —' : (todoN === 0 ? '未処理なし' : '未処理 ' + todoN + '件'))
+          + '</span> ／ ' + hhmm(Math.floor(Date.now() / 1000)) + ' 更新';
+    $('stat').innerHTML = s;
+  }
+
+  /* 知らせを一件そのまま写す。形は
+       [題 時刻]
+       本文
+     https なので navigator.clipboard が使えるはずだが、
+     使えない端末では選択済みの textarea を出して手で写してもらう。 */
+  function copyOne(i, btn) {
+    var d = shown[i];
+    if (!d) { return; }
+    var text = '[' + (d.title || '(題なし)') + ' ' + hhmm(d.time) + ']\n' + (d.message || '');
+    var done = function () {
+      var old = btn.textContent;
+      btn.textContent = '写した';
+      btn.className = 'cp ok';
+      setTimeout(function () { btn.textContent = old; btn.className = 'cp'; }, 2000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { fallback(text); });
+    } else {
+      fallback(text);
+    }
+  }
+
+  function fallback(text) {
+    var ta = document.createElement('textarea');
+    ta.className = 'copybox';
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.setSelectionRange(0, ta.value.length);
+    var close = function () {
+      if (ta.parentNode) { ta.parentNode.removeChild(ta); }
+      document.removeEventListener('touchstart', close, true);
+      document.removeEventListener('mousedown', close, true);
+    };
+    setTimeout(function () {
+      document.addEventListener('touchstart', close, true);
+      document.addEventListener('mousedown', close, true);
+    }, 0);
   }
 
   /* いまの状態を一行で出す。
@@ -277,6 +372,9 @@
         var sec = Math.floor(Date.now() / 1000) - (last.time || 0);
         var w = String(last.title || '');
         var subj = String(last.message || '');
+        /* 本文の末尾に「（未処理N）」が付いてくる。読み取って一覧の上に出す。 */
+        var mt = subj.match(/（未処理(\d+)）\s*$/);
+        if (mt) { todoN = parseInt(mt[1], 10); subj = subj.replace(/（未処理\d+）\s*$/, ''); paintBar(); }
         if (sec > STALE_SEC) {
           paintState('lost', '連絡なし', subj + '（最後は ' + w + '）', agoText(sec));
           return;
@@ -330,6 +428,30 @@
 
   $('btnReset').addEventListener('click', showSetup);
   $('stSet').addEventListener('click', showSetup);
+
+  /* 写す釦と、畳んだ確認の開閉。一覧ごと張り替わるので親で受ける。 */
+  $('list').addEventListener('click', function (e) {
+    var b = e.target;
+    if (b && b.className && b.className.indexOf('cp') === 0) {
+      copyOne(parseInt(b.getAttribute('data-i'), 10), b);
+      return;
+    }
+    var li = b;
+    while (li && li.tagName !== 'LI') { li = li.parentNode; }
+    if (li && li.className.indexOf('ack') >= 0) {
+      li.className = (li.className.indexOf('open') >= 0)
+        ? li.className.replace(/\s*open/, '')
+        : li.className + ' open';
+    }
+  });
+
+  /* 「確認も見る」は覚える。 */
+  var ACK_KEY = 'kh-panel-seeack';
+  try { $('seeAck').checked = (localStorage.getItem(ACK_KEY) === '1'); } catch (e) {}
+  $('seeAck').addEventListener('change', function () {
+    try { localStorage.setItem(ACK_KEY, $('seeAck').checked ? '1' : '0'); } catch (e) {}
+    pull();
+  });
 
   $('btnYoshi').addEventListener('click', function () { post('ヨシ'); });
 
