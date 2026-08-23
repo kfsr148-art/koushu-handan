@@ -74,6 +74,18 @@
   .bar .sw input{width:22px; height:22px;}
   /* 「未処理◯件」の飾りは v16 で撤去。数える先（受信箱）に書く者がもう居ない。 */
 
+  /* 常時出す事実の行。版の並びと生存の時刻。 */
+  .facts{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:13px; color:var(--dim);
+    margin:0 0 4px;}
+  .facts .warn{color:var(--ask); font-weight:700;}   /* 版がずれている／生存が古い */
+
+  /* 全部写す。一覧のいちばん上。的は44px以上。 */
+  .cpall{display:block; width:calc(100% - 28px); margin:4px 14px 12px; min-height:48px;
+    font-size:16px; font-weight:700; color:var(--fg); background:var(--card);
+    border:1px solid var(--line); border-radius:10px;}
+  .cpall:active{filter:brightness(1.4);}
+  .cpall.ok{color:var(--done); border-color:var(--done);}
+
   /* 版の印。画面のいちばん下に小さく。 */
   .ver{margin:18px 14px calc(8px + env(safe-area-inset-bottom));
     font-size:13px; color:var(--dim); text-align:center;}
@@ -133,6 +145,13 @@
       </span>
       <span class="a" id="stAgo"></span>
     </div>
+    <!-- 常時出す三つ。どれも既にリポジトリへ書いてある値の見せ方だけで、経路は増やしていない。
+         版の並び＝ver.txt（本体）と stable の枝の ver.txt（公開）。
+         最終確認＝state.json の at。生存の時刻そのもの。 -->
+    <div class="facts">
+      <span id="fVer">版 —</span>
+      <span id="fSeen">最終確認 —</span>
+    </div>
     <!-- 送る側の道具（ヨシの釦・入力欄・送る釦・言づて欄）は v11 で撤去した。
          Claude アプリの Code タブから直に指せるようになったので、パネルから送る必要がない。
          このパネルは「見る」ためだけの道具になった。 -->
@@ -141,9 +160,10 @@
     <span id="stat">読み込み中…</span>
     <!-- 「話題名を入れ直す」は v17 で撤去した。話題名を使う先がもう無い。 -->
   </div>
+  <button class="cpall" id="btnCopyAll" type="button">全部写す</button>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v17（8月23日）</p>
+  <p class="ver" id="verTag">panel v18（8月23日）</p>
 </div>
 
 <script>
@@ -170,6 +190,9 @@
      ＊印の付いた件は一覧で畳む。消してしまうと、もう一度写せなくなるため。 */
   var COPIED_KEY = 'kh-panel-copied';
   var copied = {};
+  /* 上部の常時表示と「全部写す」の末尾で使う、いまの様子。state.json から拾ったものを控える。
+     ＊新しい経路は増やさない。すでに読んでいる state.json / ver.txt の値の見せ方だけ。 */
+  var lastState = { word: '', since: '', at: 0 };
   function loadCopied() {
     try { copied = JSON.parse(localStorage.getItem(COPIED_KEY) || '{}') || {}; } catch (e) { copied = {}; }
   }
@@ -328,6 +351,20 @@
        その受信箱に書く者はパネルからの送信だけだった。v11 でその送信を撤去したので、
        いまは構造上いつも0にしかならない（最後に増えたのは 17:28:33）。
        数える先の無い表示は誤解を生むので、行ごと落とした。 */
+  /* 版の並びと生存の時刻。どちらもずれ／古さが分かるように色を変える。 */
+  var SEEN_WARN_SEC = 300;   /* 生存がこれより古ければ、止まっている恐れ */
+  function paintFacts(atSec) {
+    var v = $('fVer'), s = $('fSeen');
+    if (!v || !s) { return; }
+    var hv = honVer || '未確認', sv = stbVer || '未確認';
+    v.textContent = '本体 v' + hv + ' ／ 公開 v' + sv;
+    /* 二つがずれている＝実機へ出ている版が本体より遅れている。 */
+    v.className = (honVer && stbVer && honVer !== stbVer) ? 'warn' : '';
+    var age = atSec ? Math.floor(Date.now() / 1000 - atSec) : -1;
+    s.textContent = '最終確認 ' + (atSec ? hhmm(atSec) : '—');
+    s.className = (age < 0 || age > SEEN_WARN_SEC) ? 'warn' : '';
+  }
+
   function paintBar() {
     $('stat').textContent = hhmm(Math.floor(Date.now() / 1000)) + ' 更新';
   }
@@ -470,6 +507,9 @@
     var open  = pick(body, ['未決', '待ち']);
 
     return [
+      /* 一行目は「いつの何の件か」。一件でも一括でも同じ形にする（v18 の改定）。
+         件名は本文の一行目。無ければ題を使う。 */
+      '[' + hhmm(d.time) + '] ' + plain(lines[0] || d.title || '(件名なし)'),
       '状態: ' + stateWord(d.title),
       'したこと: ' + (did || '未確認'),
       '版: ' + ver,
@@ -477,6 +517,49 @@
       '実測: ' + (meas || '未確認'),
       '未決: ' + (open || '未決なし')
     ].join('\n');
+  }
+
+  /* いまの現況を一行に。上部に出しているのと同じ値をそのまま使う。
+     ＊「全部写す」の末尾だけに付ける。一件ずつの写しには付けない。 */
+  function nowLine() {
+    var a = [];
+    a.push('現況：' + (lastState.word || '—') + (lastState.since ? '・' + lastState.since : ''));
+    a.push('本体v' + (honVer || '未確認'));
+    a.push('公開v' + (stbVer || '未確認'));
+    a.push('最終確認' + (lastState.at ? hhmm(lastState.at) : '—'));
+    return a.join(' ／ ');
+  }
+
+  /* 写していない件を、古い順にまとめて一本の文にする。 */
+  function copyAllText() {
+    var todo = shown.filter(function (d) { return !copied[keyOf(d)]; });
+    todo.sort(function (a, b) { return (a.time || 0) - (b.time || 0); });   /* 古い順。上から読めば時系列 */
+    if (!todo.length) { return null; }
+    var parts = todo.map(function (d) { return sixLines(d); });
+    parts.push(nowLine());
+    return { text: parts.join('\n\n'), items: todo };
+  }
+
+  function copyAll(btn) {
+    var r = copyAllText();
+    if (!r) {
+      btn.textContent = '未写しなし';
+      setTimeout(function () { btn.textContent = '全部写す'; }, 2000);
+      return;
+    }
+    var done = function () {
+      r.items.forEach(function (d) { copied[keyOf(d)] = 1; });
+      saveCopied();
+      btn.textContent = r.items.length + '件 写した';
+      btn.className = 'cpall ok';
+      pull();   /* 写した件は畳んで薄くなる */
+      setTimeout(function () { btn.textContent = '全部写す'; btn.className = 'cpall'; }, 2000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(r.text).then(done, function () { fallback(r.text); done(); });
+    } else {
+      fallback(r.text); done();
+    }
   }
 
   function copyOne(i, btn) {
@@ -575,7 +658,17 @@
         if (w.indexOf('作業中') === 0) { cls = 'run'; }
         else if (w.indexOf('ヨシ待ち') === 0) { cls = 'ask'; }
         else if (w.indexOf('手待ち') === 0) { cls = 'idle'; }
-        paintState(cls, w, subj, agoText(sec), mik);
+        /* ヨシ待ち・手待ちは、その状態に入ってからの経過を題の横に出す。
+           作業中は見込みの段に「開始から◯分」が出るので、こちらには足さない。 */
+        var word = w;
+        var since = '';
+        if ((w === 'ヨシ待ち' || w === '手待ち') && d.statAt) {
+          since = Math.max(0, Math.floor((Date.now() / 1000 - d.statAt) / 60)) + '分';
+          word = w + '・' + since;
+        }
+        lastState = { word: word, since: '', at: d.at || 0 };
+        paintFacts(d.at || 0);
+        paintState(cls, word, subj, agoText(sec), mik);
       })
       .catch(function (e) {
         paintState('lost', '連絡なし', '状態を読めません（' + e.message + '）', '');
@@ -585,6 +678,8 @@
   /* ＊送る側の処理（post）は v11 で撤去した。Claude アプリの Code タブから直に指せる。
        戻したくなったら git の履歴（panel v10）から引く。印（tags の yoshi / shiji）で
        ヨシか指示かを分ける作りだったことも、そこに残っている。 */
+
+  $('btnCopyAll').addEventListener('click', function () { copyAll(this); });
 
   /* 写す釦と、畳んだ件の開閉。一覧ごと張り替わるので親で受ける。 */
   $('list').addEventListener('click', function (e) {
