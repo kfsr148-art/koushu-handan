@@ -35,7 +35,12 @@
     border:1px solid var(--line); border-left-width:6px; border-radius:10px;
     padding:6px 10px; margin:0 0 10px; background:var(--card);}
   .state .w{font-size:18px; font-weight:700; flex:0 0 auto;}
-  .state .s{font-size:15px; color:var(--fg); flex:1 1 auto; min-width:0;
+  .state .c{flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:2px;}
+  .state .s{font-size:15px; color:var(--fg); min-width:0;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  /* 見込みの段。件名と並べて一行にすると iPhone の幅では末尾が「…」に呑まれ、
+     見込みだけが読めなくなる（実測：390px で 317px 要るのに、箱は 232px）。 */
+  .state .k{font-size:13px; color:var(--dim); min-width:0;
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .state .a{font-size:13px; color:var(--dim); flex:0 0 auto;}
   .state button{flex:0 0 auto; min-height:36px; padding:0 10px; font-size:13px;
@@ -136,7 +141,10 @@
     <h1>返事パネル</h1>
     <div class="state idle" id="state">
       <span class="w" id="stWord">…</span>
-      <span class="s" id="stSubj">読み込み中</span>
+      <span class="c">
+        <span class="s" id="stSubj">読み込み中</span>
+        <span class="k hide" id="stMik"></span>
+      </span>
       <span class="a" id="stAgo"></span>
       <button id="stSet" type="button" class="hide">設定</button>
     </div>
@@ -154,7 +162,7 @@
   </div>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v3（8月23日）</p>
+  <p class="ver" id="verTag">panel v4（8月23日）</p>
 </div>
 
 <script>
@@ -353,10 +361,13 @@
 
   /* いまの状態を一行で出す。
      作業中＝青／ヨシ待ち＝黄／手待ち＝灰。最後の更新から3分を超えたら赤で「連絡なし」。 */
-  function paintState(cls, word, subj, ago) {
+  function paintState(cls, word, subj, ago, mik) {
     $('state').className = 'state ' + cls;
     $('stWord').textContent = word;
     $('stSubj').textContent = subj;
+    /* 見込みは二段目。無いときは畳んで、今までどおりの一行に戻す。 */
+    $('stMik').textContent = mik || '';
+    $('stMik').className = mik ? 'k' : 'k hide';
     $('stAgo').textContent = ago;
   }
 
@@ -399,15 +410,21 @@
         /* 本文の末尾に「（未処理N）」が付いてくる。読み取って一覧の上に出す。 */
         var mt = subj.match(/（未処理(\d+)）\s*$/);
         if (mt) { todoN = parseInt(mt[1], 10); subj = subj.replace(/（未処理\d+）\s*$/, ''); paintBar(); }
+        /* 「作業中」のときだけ末尾に「（見込み15分・開始から6分）」が付いてくる。
+           件名と同じ行に置くと、iPhone の幅では末尾が「…」に呑まれて見込みだけ読めなくなる。
+           実測（390px）：件名＋見込みで 317px 要るのに、箱は 232px しかない。切り出して二段目へ回す。 */
+        var mik = '';
+        var mk = subj.match(/（見込み[^（）]*）[ ]*$/);
+        if (mk) { mik = mk[0].replace(/^（/, '').replace(/）[ ]*$/, ''); subj = subj.slice(0, mk.index); }
         if (sec > STALE_SEC) {
-          paintState('lost', '連絡なし', subj + '（最後は ' + w + '）', agoText(sec));
+          paintState('lost', '連絡なし', subj + '（最後は ' + w + '）', agoText(sec), mik);
           return;
         }
         var cls = 'idle';
         if (w.indexOf('作業中') === 0) { cls = 'run'; }
         else if (w.indexOf('ヨシ待ち') === 0) { cls = 'ask'; }
         else if (w.indexOf('手待ち') === 0) { cls = 'idle'; }
-        paintState(cls, w, subj, agoText(sec));
+        paintState(cls, w, subj, agoText(sec), mik);
       })
       .catch(function (e) {
         paintState('lost', '連絡なし', '状態を読めません（' + e.message + '）', '');
