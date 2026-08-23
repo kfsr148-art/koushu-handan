@@ -1,8 +1,8 @@
 # いまの様子
 
-**作業中** — 状態に「調べた」を足す
+**手待ち** — Claude Code は動いていません
 
-未処理 0 件 ／ 2026-08-23 23:24:15 書き出し（VAIOの時計）
+未処理 0 件 ／ 2026-08-23 23:57:09 書き出し（VAIOの時計）
 
 ＊この頁は知らせが出るたびに書き直されます。話題名は載せません。
 ＊押し送り（ntfy）へ出るのは異常のときだけです。ここには異常でないものも並びます。
@@ -11,41 +11,12 @@
 
 ## 送った知らせ（新しい順に二十件まで）
 
-### 1. 🔎 調べました
+### 1. 🪟 異常です（手が要ります）
 
 ```
 報告の型を八項目へ
-七項目に⑧そのままを足し、⑦を三つに書き分け、同じ題は上書きする形にした。パネルの一覧では⑧を持つ件を畳み、押すと開く。
-ファイル: koushu-handan/panel.html v22（stateWord に調べた／kind に 🔎／sixLines を八項目へ／LABEL に食い違い・答え・そのまま・種類／一覧で⑧持ちを畳む）
-実測: notices.json 11件で先頭が 🔎 調べました ／ 一覧の色分け wait ／ 状態欄 調べた ／ 実測が箇条書きで省略なし ／ notify-record.ps1 と panel.html とも構文OK
-食い違い: なし
-答え: EDA_WHIP.idleFront は枝豆のムチ側でも使われている。よって兎の席だけ別の定数を新設して分ける。
-未決: 枝豆のムチ側の三経路（9472 跳躍の線／9503 edaDir の初期値／9550 edaIdleKey の正面）を実際に通して剣士の絵が出ることを確かめてから兎を納品する
-そのまま: 【この回に Code タブへ書いた本文】
-
-■ 状態に「調べた」を足した（panel v22）
-- panel.html stateWord に 調べました／調べた を足し、終わりましたより先に見る（どちらも「〜ました」で終わるため）
-- panel.html kind に 🔎 を足し、色分けは wait（青）。手は入れていないの意
-- panel.html sixLines で、状態が調べたのときだけ⑥実測を一項目一行の箇条書きにする。「 ／ 」で区切って書き、行に開く
-- watch-notify.ps1 の控えの型に kind を足し、種類: 調べた と書いた回は題を 🔎 調べました にする
-
-■ 兎の件で確かめたこと
-- koushu-handan.html:8501 で x.key === 'usagi' が window.KISHI_IDLE_FRONT を読む
-- koushu-handan.html:9314 で window.KISHI_IDLE_FRONT = EDA_WHIP.idleFront
-- koushu-handan.html:9293 が idleFront の実体（data URI）
-- koushu-handan.html:9472 jumpLineFrame: 'idleFront'（跳躍の線を引くコマ）
-- koushu-handan.html:9503 edaDir の初期値が 'idleFront'
-- koushu-handan.html:9550 edaIdleKey() が正面のとき 'idleFront' を返す
-- 焼き上がりの控え kishi_idle_front.png 115x317 59043バイト
-- 元絵 kishi_idle_front_src.png 704x1524
-- 新しい素材 usagi_v2.png 1024x1024 1342171バイト 外接 y53-960 x309-713
-- 結論 EDA_WHIP.idleFront は触らず、兎専用の定数を新設して分ける
-
-■ 報告の型の四点
-- ⑧そのまま＝要約せずに貼る欄。字数の上限なし。空なら「なし」
-- 報告で表を使わない。ファイル名・行番号・パスは一項目一行の箇条書き。省略記号で切らない
-- ①〜⑧のどれかが空のまま書き出そうとしたら、その前に止めて埋める。書けないときは理由を⑧に書く
-- 一件を書き出すとき、同じ題が status.md にあれば行を足さず上書きする（notify-record.ps1 で実装）
+Claude Code が動いていません。落ちたか、閉じられました。
+こちらがすること：端末で Claude Code を開き直してください。
 ```
 
 ### 2. 🔎 調べました
