@@ -20,7 +20,9 @@ panel-ver.txt = 29、panel.html の版の字 = panel v29、釦の字 = 「写し
 
 ## タスクスケジューラの動作記録を有効にする（管理者の PowerShell で一本）
 
-
+```powershell
+Start-Process powershell -Verb RunAs -ArgumentList '-NoProfile','-Command','wevtutil sl Microsoft-Windows-TaskScheduler/Operational /e:true; wevtutil gl Microsoft-Windows-TaskScheduler/Operational | Select-String enabled; Read-Host "Enterで閉じます"'
+```
 
 - いまの PowerShell から**管理者の窓を立ち上げて**、その中で有効にする形です。UAC の
   問い合わせが一度出ます。
