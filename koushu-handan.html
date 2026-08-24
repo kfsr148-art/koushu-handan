@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1423">
+<html lang="ja" data-ver="1424">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -589,8 +589,11 @@
   .tori-life { display: inline-flex; align-items: center; gap: 4px; }
   .tori-life img { width: 12px; height: 12px; display: block; image-rendering: pixelated; }
   .tori-life img.off { filter: brightness(0.35) saturate(0.4); }
+  /* 収まるときは中央、溢れたら上端から流れる（safe center）。
+     素の center だけだと、中身が箱より高いときに上下へ均等にはみ出し、上端が読めなくなる。 */
   .tori-panel { position: absolute; inset: 0; z-index: 4; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 14px; background: rgba(6,16,12,.86);
+    align-items: center; justify-content: center; justify-content: safe center;
+    overflow-y: auto; gap: 14px; background: rgba(6,16,12,.86);
     color: var(--bone); text-align: center; padding: 16px; }
   .tori-panel h2 { font-family: var(--serif); font-size: 20px; letter-spacing: .12em; margin: 0; color: var(--gold); }
   .tori-panel .tori-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
@@ -623,6 +626,8 @@
   .watch-msg {
     flex: 1; min-height: 0; overflow-y: auto;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
+    /* 送れる箱でも、素の center だと溢れた上端は送っても届かない。safe center で上端から流す。 */
+    justify-content: safe center;
     color: var(--bone); font-size: 13px; line-height: 1.6; text-align: center;
     padding: 6px 16px; white-space: pre-line;
   }
@@ -779,7 +784,8 @@
     .rotate-hint {
       display: flex; flex-direction: column; gap: 14px;
       position: fixed; inset: 0; z-index: 9999;
-      align-items: center; justify-content: center; text-align: center; padding: 40px;
+      align-items: center; justify-content: center; justify-content: safe center;
+      overflow-y: auto; text-align: center; padding: 40px;
       background: #14241c; color: rgba(243,236,224,0.9);
       font-family: var(--serif); font-size: 20px; line-height: 1.7; letter-spacing: 0.08em;
     }
@@ -1181,6 +1187,8 @@
     position: fixed; inset: 0; z-index: 99999;
     background: radial-gradient(ellipse at 50% 0%, var(--felt-light) 0%, var(--felt) 42%, var(--felt-dark) 100%);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
+    /* 背の低い横画面では品書きが視野を超える。safe center で上端から流す。 */
+    justify-content: safe center;
     padding: 2vh 20px; text-align: center; overflow-y: auto;
   }
   #titleScreen h1 {
@@ -1208,6 +1216,7 @@
     #portraitWarn { display: flex; position: fixed; inset: 0; z-index: 9999;
       background: rgba(10,14,18,0.96); color: #f3ece0;
       flex-direction: column; align-items: center; justify-content: center;
+      justify-content: safe center; overflow-y: auto;
       gap: 14px; text-align: center; font-family: var(--sans);
       padding: 24px; }
     #portraitWarn .pw-icon { font-size: 44px; }
@@ -1267,7 +1276,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1423</div>
+  <div id="verTag">v1424</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
