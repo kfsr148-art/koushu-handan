@@ -14,6 +14,7 @@ const path = require('path');
 const ROOT = __dirname;
 const SRC = path.join(ROOT, 'koushu-handan.html');
 const DEST = path.join(ROOT, 'serifu.txt');
+const ADV  = path.join(ROOT, 'serifu-adv.txt');   // 探偵編だけの抜粋（通読用）
 
 /* ── 台詞表の一覧。並び順がそのまま台本の並び順になる ───────────────── */
 const TABLES = [
@@ -33,7 +34,8 @@ const TABLES = [
   ['ADV_DEFEND',      '探偵編・終幕', '生存者のうち最大3名が犯人をかばう'],
   ['ADV_GRUDGE',      '探偵編・終幕', '生存者のうち最大3名が遺恨を述べる'],
   ['ADV_BLAME',       '探偵編・終幕', '最大4名が非難を述べる'],
-  ['ADV_BLAME_OK',    '探偵編・終幕', '非難への受け答え'],
+  /* ADV_BLAME_OK は外した（2026-08-24）。中身は台詞ではなく、非難が当たっているかを
+     見る条件（関数の集まり）。台詞として並べると、空の台詞欄に見えて誤解を招く。 */
   ['ADV_MOTIVE_CLUE', '探偵編',     '動機に繋がる手がかり'],
   ['ADV_TRAIT',       '探偵編',     '背格好と装いの言い回し'],
   ['MD_CLOSE',        '誤診記録',   '締めの一言。話者×当たり外れの帯']
@@ -236,13 +238,15 @@ function speakerOf(keyPath, text){
 const RULE = '-'.repeat(78);
 const BAR  = '='.repeat(78);
 
-function build(){
+/* advOnly が真なら、探偵編の表だけを切り出す（serifu-adv.txt 用）。
+   手で切り出すのはやめた——本体の行が動くたびにずれ、v1411 のまま置き去りになっていた。 */
+function build(advOnly){
   const src = fs.readFileSync(SRC, 'utf8');
   const lineOf = lineIndexer(src);
   const ver = (/<html[^>]*data-ver="([^"]*)"/.exec(src) || [, '?'])[1];
 
   const out = [];
-  out.push('koushu-handan 全台詞');
+  out.push(advOnly ? 'koushu-handan 探偵編の台詞　抜粋（通読用）' : 'koushu-handan 全台詞');
   out.push('版 v' + ver + ' / 本体から機械的に書き出したもの（レビュー用・本体は未変更）');
   out.push('各行は  行番号 ｜ 話者 ｜ 鍵の道筋 ｜ 本文');
   out.push('行番号は台詞そのものが書かれている行。{n} は実行時に名前が入る。');
@@ -252,10 +256,15 @@ function build(){
   let total = 0;
   const all = [];   // 口調の混入を見るため、全台詞を控えておく
 
-  TABLES.forEach(function(t){
+  const empties = [];   // 表はあるが台詞が一件も無いもの。節にはせず、末尾に名前だけ載せる
+  const useTables = advOnly ? TABLES.filter(function(x){ return /探偵編/.test(x[1]); }) : TABLES;
+  useTables.forEach(function(t){
     const [name, tag, cond] = t;
     const rows = readTable(src, name, lineOf);
     if(!rows){ out.push('■ ' + name + '　［' + tag + '］　（本体に見当たらない）'); out.push(''); return; }
+    /* 台詞が一件も無い表は、空の台詞欄として出さない。
+       条件だけを持つ表（関数の集まり）がここへ来る。台詞でないものを台詞として並べない。 */
+    if(rows.length === 0){ empties.push(name); return; }
     const top = rows.length ? rows[0].line - 1 : 0;
     out.push('■ ' + name + '　［' + tag + '］　' + top + '行〜');
     out.push('   出る条件 : ' + cond);
@@ -270,6 +279,9 @@ function build(){
     out.push('');
   });
 
+  /* 実行時に組み立てる台詞と、口調の混入は、全台詞の側にだけ載せる。
+     探偵編の抜粋は「通して読む」ためのものなので、表の中身だけに絞る。 */
+  if(!advOnly){
   out.push('■ 表に入っていない台詞（実行時に組み立てるもの）');
   out.push(RULE);
   out.push('');
@@ -285,7 +297,9 @@ function build(){
     out.push('');
   });
 
-  const mixed = findMixed(all);
+  }
+  const mixed = advOnly ? [] : findMixed(all);
+  if(!advOnly){
   out.push('■ 口調の混入（機械で当たっただけ。台詞は直していない）');
   out.push('   他人の口癖（なのだ／にゃ／ぞ・べし／ノン・ウィ／ヨシ）が、持ち主でない話者の台詞に出た行。');
   out.push('   複数の話者が一行に入る掛け合いは対象外。見るのは人柄七人の台詞だけで、');
@@ -295,6 +309,13 @@ function build(){
     out.push('   ' + x.line + ' ｜ ' + x.who + ' の台詞に ' + x.tic + ' の口癖 ｜ ' + x.table + ' ｜ ' + x.text);
   });
   out.push('');
+  }
+  if(empties.length){
+    out.push('■ 台詞を持たない表（条件だけの表。台詞欄としては出していない）');
+    out.push(RULE);
+    empties.forEach(function(n){ out.push('   ' + n); });
+    out.push('');
+  }
   out.push(BAR);
   out.push('合計 ' + total + ' 行 ／ 口調の混入 ' + mixed.length + ' 件');
   out.push('');
@@ -328,15 +349,23 @@ function findMixed(all){
 const argv = process.argv.slice(2);
 const outAt = argv.indexOf('--out');
 const dest = (outAt >= 0 && argv[outAt + 1]) ? argv[outAt + 1] : DEST;
-const r = build();
+const r = build(false);
+const a = build(true);
 
 if(argv.indexOf('--check') >= 0){
   const now = fs.existsSync(DEST) ? fs.readFileSync(DEST, 'utf8') : '';
   const same = now.replace(/\r\n/g, '\n') === r.text;
+  const nowA = fs.existsSync(ADV) ? fs.readFileSync(ADV, 'utf8') : '';
+  const sameA = nowA.replace(/\r\n/g, '\n') === a.text;
   console.log(same ? 'serifu.txt は本体と一致しています。'
                    : 'serifu.txt が本体とずれています。node serifu-extract.js で作り直してください。');
-  process.exit(same ? 0 : 1);
+  console.log(sameA ? 'serifu-adv.txt は本体と一致しています。'
+                    : 'serifu-adv.txt が本体とずれています。node serifu-extract.js で作り直してください。');
+  process.exit((same && sameA) ? 0 : 1);
 }
 fs.writeFileSync(dest, r.text, 'utf8');
+fs.writeFileSync(ADV, a.text, 'utf8');
 console.log('書き出し : ' + dest);
+console.log('書き出し : ' + ADV);
 console.log('合計 ' + r.total + ' 行 ／ 口調の混入 ' + r.mixed.length + ' 件');
+console.log('探偵編の抜粋 ' + a.total + ' 行');
