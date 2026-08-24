@@ -190,7 +190,7 @@
   <button class="cpall" id="btnCopyAll" type="button">全部写す</button>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v26（8月24日）</p>
+  <p class="ver" id="verTag">panel v27（8月24日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -210,7 +210,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '26';
+  var PANEL_VER = '27';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -560,7 +560,7 @@
     var lines = head.split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
 
     /* 見出しの付いた行は「したこと」から外す。件名（一行目）も外す。 */
-    var LABEL = /^(版|ファイル|実測|未決|待ち|完了|件名|状態|したこと|食い違い|答え|そのまま|種類)[:：]/;
+    var LABEL = /^(版|ファイル|実測|未決|待ち|完了|件名|状態|したこと|食い違い|答え|そのまま|種類|実機|未検収)[:：]/;
     var rest = lines.slice(1).filter(function (x) { return !LABEL.test(x); }).join('\n');
     if (!rest) { rest = lines[0] || ''; }
 
@@ -576,10 +576,13 @@
     var ver = pick(head, ['版', 'バージョン']);
     if (!ver) {
       /* 版は公開ページの ver.txt から取る。main の分が本体、stable の枝の分が stable。
-         取れなかった側だけ「未確認」と書く。 */
+         取れなかった側だけ「未確認」と書く。
+         ＊panel の版も並べる。三つのうち panel だけは取りに行かず、この写し自身が
+           持っている値（PANEL_VER）をそのまま書く。読んでいる写しの版そのものなので、
+           取り違えようがない（2026-08-24 のご指摘：panel が落ちている回があった）。 */
       var a = honVer ? ('本体v' + honVer) : '本体 未確認';
       var b = stbVer ? ('stable v' + stbVer) : 'stable 未確認';
-      ver = a + ' ／ ' + b;
+      ver = a + ' ／ ' + b + ' ／ panel v' + PANEL_VER;
     }
     /* 見出しがあればそれを使う。無ければ本文から拾ったものを使う。 */
     var files = pick(head, ['ファイル', '触ったファイル']);
@@ -593,6 +596,11 @@
     var gap   = pick(head, ['食い違い']);
     var ans   = pick(head, ['答え']);
     var open  = pick(head, ['未決', '待ち']);
+    /* 実機で見るところ＝画面に出るものを直した回に、どの画面のどこがどう変わっていれば
+       合格かを一行で（作法24）。直していない回は控えに欄が無いので、ここも出ない。
+       未検収＝ヨシがまだ出ていない件。日時と件名で並べる。 */
+    var jikki = pick(head, ['実機', '実機で見るところ']);
+    var pend  = pick(head, ['未検収']);
 
     /* ⑧そのまま＝要約せずに貼る欄。字数の上限なし。
        ＊ここだけは plain も twoSentences も通さない。改行も原文のまま残す。
@@ -609,25 +617,43 @@
       meas = '\n' + meas.split(/\s*／\s*/).filter(Boolean).map(function (x) { return '- ' + x; }).join('\n');
     }
 
-    return [
-      /* 一行目は「いつの何の件か」。一件でも一括でも同じ形にする。
-         件名は本文の一行目。**題は使わない**——題の中身（終わりました／異常です など）は
-         次の行の「状態」と同じことを言うので、写しに二度書くことになる
-         （2026-08-23 実測：件名の無い件で「終わりました（返事不要）」が一行目に出た）。 */
-      '[' + hhmm(d.time) + '] ' + (plain(lines[0] || '') || '（件名なし）'),
-      '状態: ' + st,
-      'したこと: ' + (did || '未確認'),
-      '版: ' + ver,
-      'ファイル: ' + (files || '未確認'),
-      '実測: ' + (meas || '未確認'),
-      '食い違い: ' + (gap || 'なし'),
-      '答え: ' + (ans || 'なし'),
-      '未決: ' + (open || 'なし'),
-      /* ⑧は最後。要約せず原文のまま。四つの該当（成立しなかった箇所と理由／訊かれたことへの答え／
-         調べて出たファイル名・行番号・パスの一覧／判断の根拠にしたコマンドの出力）が
-         あれば必ず全文が入る。無いときだけ「なし」。 */
-      'そのまま: ' + (raw || 'なし')
-    ].join('\n');
+    /* 欄の組み立て。**中身の無い欄は行ごと出さない**（2026-08-24 の決め）。
+       ＊以前は「未確認」「なし」で埋めていた。その便が持たない欄まで毎回並ぶので、
+         一覧が空欄の行で埋まって読めなくなる。書けないなら出さない。
+       ＊必ず出るのは一行目（いつの何の件か）と「状態」の二つだけ。 */
+    /* 「なし」「無し」「未確認」だけが書かれた欄は、中身が無いのと同じ扱いにする。
+       ＊控えの側で「待ち: なし」と書く決めにしたので、そのまま出すと「未決: なし」が
+         毎回並ぶ。書いてある語ではなく、中身があるかで出し分ける。 */
+    function has(v) {
+      var s = String(v || '').trim();
+      if (!s) { return ''; }
+      if (/^(なし|無し|ない|無い|未確認|不明|-|—|―)$/.test(s)) { return ''; }
+      return s;
+    }
+    did = has(did); files = has(files); meas = has(meas); jikki = has(jikki);
+    gap = has(gap); ans = has(ans); open = has(open); pend = has(pend);
+
+    var out = [];
+    /* 一行目は「いつの何の件か」。一件でも一括でも同じ形にする。
+       件名は本文の一行目。**題は使わない**——題の中身（終わりました／異常です など）は
+       次の行の「状態」と同じことを言うので、写しに二度書くことになる
+       （2026-08-23 実測：件名の無い件で「終わりました（返事不要）」が一行目に出た）。 */
+    out.push('[' + hhmm(d.time) + '] ' + (plain(lines[0] || '') || '（件名なし）'));
+    out.push('状態: ' + st);
+    if (did)   { out.push('したこと: ' + did); }
+    if (ver)   { out.push('版: ' + ver); }
+    if (files) { out.push('ファイル: ' + files); }
+    if (meas)  { out.push('実測: ' + meas); }
+    if (jikki) { out.push('実機で見るところ: ' + jikki); }
+    if (gap)   { out.push('食い違い: ' + gap); }
+    if (ans)   { out.push('答え: ' + ans); }
+    if (open)  { out.push('未決: ' + open); }
+    if (pend)  { out.push('未検収: ' + pend); }
+    /* ⑧は最後。要約せず原文のまま。四つの該当（成立しなかった箇所と理由／訊かれたことへの答え／
+       調べて出たファイル名・行番号・パスの一覧／判断の根拠にしたコマンドの出力）が
+       あれば必ず全文が入る。無ければ欄ごと出さない。 */
+    if (raw)   { out.push('そのまま: ' + raw); }
+    return out.join('\n');
   }
 
   /* いまの現況を一行に。上部に出しているのと同じ値をそのまま使う。
