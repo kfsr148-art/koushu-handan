@@ -226,12 +226,17 @@
        ＊保存済みの値（localStorage の kh-panel-topics）は消さない。害が無く、
          古い写しへ戻したくなったときに要る。 */
 
+  var sinceTimer = null;
+
   function showMain() {
     $('main').className = '';
     pullVer();
     tick();
     if (timer) { clearInterval(timer); }
     timer = setInterval(tick, 15000);
+    /* 現況行の経過だけは毎秒。取得（15秒）とは別の時計で回す。 */
+    if (sinceTimer) { clearInterval(sinceTimer); }
+    sinceTimer = setInterval(tickSince, 1000);
   }
 
   /* 本体の版を一度だけ取りに行く。取れなければ写しには「未確認」と出る。
@@ -688,6 +693,27 @@
     return Math.floor(sec / 3600) + '時間前';
   }
 
+  /* 現況行の経過の言い回し。1時間未満は「3分12秒」、1時間以上は「1時間4分」。
+     ＊秒まで出すのは1時間未満だけ。長く待つほど秒は読まれないし、毎秒動く字が増えると読みにくい。 */
+  function sinceText(sec) {
+    sec = Math.max(0, Math.floor(sec));
+    if (sec < 3600) { return Math.floor(sec / 60) + '分' + (sec % 60) + '秒'; }
+    return Math.floor(sec / 3600) + '時間' + Math.floor((sec % 3600) / 60) + '分';
+  }
+
+  /* 現況行の経過は、画面側の時計で毎秒数え直す。
+     ＊以前は 15 秒ごとの取得のときだけ数えていたので、表示が飛び飛びに動いた。
+     ＊基準（statAt）は取得のたびに置き直す。画面側の時計がずれても、次の取得で合う。
+     at が 0 のときは数えない（連絡なし・作業中・読めないとき）。 */
+  var sinceBase = { at: 0, word: '' };
+
+  function tickSince() {
+    if (!sinceBase.at || !sinceBase.word) { return; }
+    var el = $('stWord');
+    if (!el) { return; }
+    el.textContent = sinceBase.word + '・' + sinceText(Date.now() / 1000 - sinceBase.at);
+  }
+
   /* いまの様子は state.json から読む（v8）。以前は ntfy の話題へ5分おきに流していたが、
      それだけで1日394件になり、ntfy の1日の上限に当たった（2026-08-23）。
      押し送りは「人を呼ぶもの」三種だけに絞り、状態はこちらから読みに行く形にした。
@@ -718,6 +744,8 @@
         }
 
         if (sec > STALE_SEC) {
+          /* 連絡なしの間は数えない。数えると、毎秒の書き換えが「連絡なし」を上書きしてしまう。 */
+          sinceBase = { at: 0, word: '' };
           paintState('lost', '連絡なし', subj + '（最後は ' + w + '）', agoText(sec), mik);
           return;
         }
@@ -728,16 +756,19 @@
         /* ヨシ待ち・手待ちは、その状態に入ってからの経過を題の横に出す。
            作業中は見込みの段に「開始から◯分」が出るので、こちらには足さない。 */
         var word = w;
-        var since = '';
+        /* 取得のたびに statAt を読み直して基準を合わせ直す。数え直しは tickSince が毎秒行う。 */
         if ((w === 'ヨシ待ち' || w === '手待ち') && d.statAt) {
-          since = Math.max(0, Math.floor((Date.now() / 1000 - d.statAt) / 60)) + '分';
-          word = w + '・' + since;
+          sinceBase = { at: d.statAt, word: w };
+          word = w + '・' + sinceText(Date.now() / 1000 - d.statAt);
+        } else {
+          sinceBase = { at: 0, word: '' };
         }
         lastState = { word: word, since: '', at: d.at || 0 };
         paintFacts(d.at || 0);
         paintState(cls, word, subj, agoText(sec), mik);
       })
       .catch(function (e) {
+        sinceBase = { at: 0, word: '' };
         paintState('lost', '連絡なし', '状態を読めません（' + e.message + '）', '');
       });
   }
