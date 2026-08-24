@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- 取り置きを断る。端末が古いパネルを掴んだまま新しい版を見ない事故を防ぐ。
+     ＊これだけでは足りない（iOS はしばしば無視する）ので、下の checkPanelVer で版を見て跳ぶ。 -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>返事パネル</title>
 <!-- 宣言しておかないと /favicon.ico を勝手に取りに行って起動のたび404になる -->
 <link rel="icon" href="data:,">
@@ -185,7 +190,7 @@
   <button class="cpall" id="btnCopyAll" type="button">全部写す</button>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v25（8月24日）</p>
+  <p class="ver" id="verTag">panel v26（8月24日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -202,6 +207,30 @@
      stable の版はどのファイルにも出ていないので、写しでは「未確認」と書く。 */
   var honVer = '', stbVer = '';
   var VER_URL = 'https://kfsr148-art.github.io/koushu-handan/ver.txt';
+  /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
+     ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
+       新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
+  var PANEL_VER = '26';
+  var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
+
+  /* 版が変わっていたら、問い合わせの字を付けて読み直す。
+     ＊本体（koushu-handan.html）と同じ二段の作り。取り置きを挟まない。
+     ＊一度跳んだ版へは二度跳ばない（堂々巡りを避ける）。 */
+  function checkPanelVer() {
+    fetch(PANEL_VER_URL + '?_chk=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.text() : ''; })
+      .then(function (x) {
+        var n = String(x || '').trim().replace(/[^0-9]/g, '');
+        if (!n || n === PANEL_VER) { return; }
+        var mark = 'kh-panel-jumped';
+        try {
+          if (sessionStorage.getItem(mark) === n) { return; }
+          sessionStorage.setItem(mark, n);
+        } catch (e) {}
+        location.replace(location.pathname + '?_v=' + n);
+      })
+      .catch(function () {});
+  }
   /* ＊読み先は公開ページ（github.io）にする。raw.githubusercontent は
        Cache-Control: max-age=300 で、しかも ?_t= では破れない（2026-08-23 実測。
        押し出し済みの中身が5分間そのまま古く返った）。公開ページ側は ?_t= ごとに
@@ -256,6 +285,7 @@
 
   function showMain() {
     $('main').className = '';
+    checkPanelVer();
     pullVer();
     pullUsage();
     tick();
