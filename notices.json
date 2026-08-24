@@ -1,6 +1,11 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
+        "time":  1787542082,
+        "message":  "直前に触ったファイル：state.json\n（止まる側が控えを書いていません）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
         "time":  1787541362,
         "message":  "公開ページの更新（v1423）。既に配られていたので、確かめて閉じた\nreport-latest.md の未commitは既に無かった（7b68695 で push 済み）。GitHub Pages は main 直下を配る設定なので、v1423 の push 時点で公開は済んでいた。検査を通し、公開ページを実際に開いて版が揃っていることを確かめた\nファイル: 変更なし（確認のみ）。公開の設定 source=main:/ ／ html_url=https://kfsr148-art.github.io/koushu-handan/\n実測: node check.js --fast 21項目すべて PASS（3分48秒）。node adv-check.js 2項目とも PASS（29秒）。公開ページを headless Edge（900x381）で開き、data-ver=1423／画面の verTag=v1423／ver.txt=1423 の三つが一致\nそのまま: 【この回に新しく書いた本文】\n\n■ 前提の訂正が二つ\n- report-latest.md の未commitは、もう残っていなかった。前の回に 7b68695 で commit・push 済みで、作業フォルダは origin/main と一致している\n- 「github.io へ公開を上げる」という別の手順は無い。GitHub Pages は source=main:/ で、main へ push した時点でそれが公開になる。v1423 は b14e513 の push で既に配られていた\n\n■ 公開ページの状態\n- 設定: status=built ／ source=main:/ ／ https_enforced=true ／ public=true\n- 入口 https://kfsr148-art.github.io/koushu-handan/ は HTTP 200\n- 本体 https://kfsr148-art.github.io/koushu-handan/koushu-handan.html も HTTP 200\n\n■ 版の突き合わせ（⑥）\n- 公開ページ : data-ver=1423 ／ 画面の verTag=v1423 ／ ver.txt=1423\n- 手元の本体 : data-ver=1423 ／ verTag=v1423 ／ ver.txt=1423\n- 三箇所とも公開側と手元で一致\n\n■ 実際に開いて確かめた\n- headless Edge（900x381）で公開ページを開き、描画後の DOM から読んだ\n- 題は「配牌 攻守判定」、DOM は 9920KB\n- curl で属性だけ読むのではなく、画面に出る verTag の字を読んでいる\n\n■ 検査\n- node check.js --fast：21項目すべて PASS（12:09:05〜12:12:53、3分48秒）\n- node adv-check.js：2項目とも PASS（12:13:03〜12:13:32、29秒）\n- 前回 8分21秒かかった check.js が 3分48秒に戻った。機械の重さが原因だったと見てよい\n\n■ シム\n- 検査の仕掛けは一時ディレクトリの写しだけ。実行後に消した。本体にシムは無い"
     },
