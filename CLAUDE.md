@@ -180,6 +180,17 @@ commit メッセージは、**v番号と変更内容を一行で書く**。
 記号でも絵文字でもない字が**1件でも出たら FAIL**。`Ａ` と `А` のような見た目の同じ字は
 目では気づけないので、例外表を作らずゼロで通す。
 
+**フル版は `Start-Process` で切り離して回す。**フル版は10〜12分かかり、前面で回すと10分の
+上限に当たり、背後の仕事として回すと途中で止められる（2026-08-24、四回続けて⑯前後で切断）。
+
+```powershell
+Start-Process -FilePath (Get-Command node).Source -ArgumentList check.js `
+  -WorkingDirectory C:UsersuserDesktopmahjongkoushu-handan `
+  -RedirectStandardOutput <出し先> -RedirectStandardError <誤りの出し先> -PassThru
+```
+
+起こしたら出し先のファイルを見て進み具合を確かめる。`adv-check.js` は30秒ほどなので前面でよい。
+
 push の前は `.githooks/pre-push` が速い版を自動で回す。使うには一度だけこれを設定する。
 
 ```
