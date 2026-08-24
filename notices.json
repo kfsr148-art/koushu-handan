@@ -1,7 +1,7 @@
 [
     {
         "title":  "🙋 ヨシしてください",
-        "time":  1787608264,
+        "time":  1787608383,
         "message":  "タスクスケジューラの動作記録は、まだ有効になっていない\n待っているのは：管理者の窓で有効化の一行を打っていただき、済んだら一声ください。こちらで enabled: true と記録が溜まり始めたかを確かめます\n答え方：「ヨシ」で進めます。直すところがあれば、その旨をお書きください。\nそのまま: 【この回に新しく書いた本文】\n\n━━ いまの状態 ━━\n\n  enabled : false（有効になっていない）\n  maxSize : 10485760\n  記録    : 直近20分で0件\n\n  ＊こちらから wevtutil sl を打つと Access is denied で弾かれます（確認済み）。\n    管理者の窓が要ります。\n\n━━ 出した一行 ━━\n\n  ! Start-Process powershell -Verb RunAs -ArgumentList \u0027-NoProfile\u0027,\u0027-Command\u0027,\n    \u0027wevtutil sl Microsoft-Windows-TaskScheduler/Operational /e:true;\n     wevtutil gl Microsoft-Windows-TaskScheduler/Operational | Select-String enabled;\n     Read-Host \"Enterで閉じます\"\u0027\n\n  ＊いまの窓に「!」を付けて打つと、UAC の問い合わせが一度出て管理者の窓が立ち上がる。\n  ＊立ち上がった窓に「enabled: true」と出れば成功。\n  ＊すでに管理者の窓を開いているなら、そちらへは元の一行（wevtutil sl …）をそのまま貼る。\n    どちらでも結果は同じ。"
     },
     {
