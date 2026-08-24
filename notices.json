@@ -1,6 +1,11 @@
 [
     {
         "title":  "🙋 ヨシしてください",
+        "time":  1787609524,
+        "message":  "inbox-watch の4100警告の出どころを特定して直した／動作記録は無効に戻っている\n待っているのは：動作記録をもう一度、強くした手順で有効にしていただけますか（一行は報告書にあります）。済んだら一声ください\n答え方：「ヨシ」で進めます。直すところがあれば、その旨をお書きください。\nそのまま: 【この回に新しく書いた本文】\n\n━━ 1. どの行が出していたか ━━\n\n  **~/.claude/inbox-watch.ps1:183**\n\n    $key = ((Get-Content -LiteralPath $StatePath -Encoding UTF8 | Select-Object -First 1) …\n\n  辿り方（二分）\n    Publish-Status を外す → 0件      ← ここに居る\n    curl を外す           → 4件のまま（無関係）\n    Sweep-Stale を外す    → 4件のまま（無関係）\n    ＊curl の 2\u003e$null も疑ったが、単体で回すと0件だった。\n\n  行の特定（5回ずつ）\n    Get-Content | Select-Object -First 1   5件  ← 1回につき1件。完全に一致\n    Get-Content -TotalCount 1              0件\n    全部読んで [0]                          1件（ノイズ）\n    [System.IO.File]::ReadAllLines         0件\n\n━━ 2. なぜ出るのか ━━\n\n  Select-Object -First は、必要な数が揃った時点で**上流の走を途中で止める**。\n  その止め方が内部の例外（StopUpstreamCommandsException）で、\n  PowerShell 5.1 はそれを警告4100「システム エラーです」として記録に残す。\n  誤りではなく、**止め方そのものが記録される**。$Error にも入らないので、\n  スクリプト側からは見えない。\n\n  16秒ごとの巡回で毎回1件。一日にすると5000件を超える。\n\n━━ 3. 直した中身 ━━\n\n  同じ書き方が3箇所あったので、まとめて -TotalCount 1 へ。\n\n    ~/.claude/inbox-watch.ps1:76    Is-Waiting の中\n    ~/.claude/inbox-watch.ps1:183   Publish-Status の中（16秒ごとに出ていたのはここ）\n    ~/.claude/notify-record.ps1:135 同じ書き方\n\n  それぞれの上に、なぜ使わないかの注記を置いた。\n\n  ＊watch-notify.ps1:275,288 にも Select-Object -First があるが、こちらは配列の切り出しで、\n    毎回は通らない枝にある（記録にも watch-notify からの4100 は出ていない）。今回は触っていない。\n\n  ＊動いていた実体は 2026-08-23 23:54 起動で、直した版を読まない。入れ替えた。\n    新しい実体 PID=11332。\n    ＊入れ替えのとき、絞り込みの文字列に自分のコマンド行が引っ掛かり、\n      自分の窓まで一度止めてしまった。すぐ立て直している。\n\n━━ 4. 実測 ━━\n\n  写しで4周      直す前 4件 → 直したあと 0件\n  本番で3分      直す前 約11件（16秒ごと1件）→ 直したあと **0件**\n\n━━ 5. 動作記録は無効に戻っています ━━\n\n  三通りで読みました。どれも「無効」です。\n\n    wevtutil gl              enabled: false\n    Get-WinEvent -ListLog    IsEnabled: False\n    レジストリ                WINEVT\\Channels\\…\\Enabled = 0\n\n  管理者の窓で「後: enabled: true」と出たとのことなので、そのときは入っていたはずです。\n  あとで戻ったことになりますが、**戻った理由はまだ分かりません。**\n\n  そこで手順を強くしました（~/.claude/enable-tasklog.ps1）。\n    ・wevtutil ／ レジストリ ／ Get-WinEvent の**三通りで読み返す**\n    ・wevtutil で入らなければ**レジストリへ直に書く**\n    ・最後に三つの値を並べて出す\n  これで「入ったのに戻った」のか「そもそも入っていない」のかが切り分きます。"
+    },
+    {
+        "title":  "🙋 ヨシしてください",
         "time":  1787608383,
         "message":  "タスクスケジューラの動作記録は、まだ有効になっていない\n待っているのは：管理者の窓で有効化の一行を打っていただき、済んだら一声ください。こちらで enabled: true と記録が溜まり始めたかを確かめます\n答え方：「ヨシ」で進めます。直すところがあれば、その旨をお書きください。\nそのまま: 【この回に新しく書いた本文】\n\n━━ いまの状態 ━━\n\n  enabled : false（有効になっていない）\n  maxSize : 10485760\n  記録    : 直近20分で0件\n\n  ＊こちらから wevtutil sl を打つと Access is denied で弾かれます（確認済み）。\n    管理者の窓が要ります。\n\n━━ 出した一行 ━━\n\n  ! Start-Process powershell -Verb RunAs -ArgumentList \u0027-NoProfile\u0027,\u0027-Command\u0027,\n    \u0027wevtutil sl Microsoft-Windows-TaskScheduler/Operational /e:true;\n     wevtutil gl Microsoft-Windows-TaskScheduler/Operational | Select-String enabled;\n     Read-Host \"Enterで閉じます\"\u0027\n\n  ＊いまの窓に「!」を付けて打つと、UAC の問い合わせが一度出て管理者の窓が立ち上がる。\n  ＊立ち上がった窓に「enabled: true」と出れば成功。\n  ＊すでに管理者の窓を開いているなら、そちらへは元の一行（wevtutil sl …）をそのまま貼る。\n    どちらでも結果は同じ。"
     },
@@ -93,10 +98,5 @@
         "title":  "🙋 ヨシしてください",
         "time":  1787573643,
         "message":  "返事パネルを二件直した（控えの持ち方 v24／使用量の見せ方 v25）\n待っているのは：なし\n作業内容：作業内容の控えがありません\n答え方：「ヨシ」で進めます。直すところがあれば、その旨をお書きください。\nそのまま: なし"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1787572874,
-        "message":  "返事パネルを二件直した（控えの持ち方 v24／使用量の見せ方 v25）\nこの回は控えを書いていません（前の回の控えが残っています。中身は当てになりません）。\nファイル: panel.html（v24: 107削除・195-200・326-336・343-347・352・631-641・650-655 ／ v25: 93-112・188-192・722-726・731-742・744-788）\n実測: v24 は4項目とも OK（25件全部出る／印の札は出ない／薄く残らない／押した札がその場で消える）。v25 は3通りの幅で OK（30px起点・150pxまで狭めると27pxへ縮む・色は緑/赤/橙）\nそのまま: なし"
     }
 ]
