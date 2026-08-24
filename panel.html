@@ -104,7 +104,6 @@
   li.ack.open .m{display:block;}
   li.ack{cursor:pointer;}
   /* 写し終えた件は薄くする。消しはしない——もう一度押せば、また写せる。 */
-  li.copied{opacity:.45;}
 
   ul{list-style:none; margin:0; padding:0 14px;}
   li{background:var(--card); border-left:6px solid var(--line); border-radius:10px;
@@ -171,7 +170,7 @@
   <button class="cpall" id="btnCopyAll" type="button">全部写す</button>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v23（8月24日）</p>
+  <p class="ver" id="verTag">panel v24（8月24日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <p class="usage" id="usageTag" hidden></p>
   <p class="usage-note" id="usageNote" hidden>この機械のローカルのセッションから見た概算です。他の端末や claude.ai は含みません。</p>
@@ -193,12 +192,12 @@
      ＊stable の版だけは raw のまま。公開ページは main しか出さないので、
        stable の枝のファイルは公開ページからは取れない。版はめったに動かないので5分の遅れで足りる。 */
   var STB_URL = 'https://raw.githubusercontent.com/kfsr148-art/koushu-handan/stable/ver.txt';
-  /* 一覧に出す上限。控えの側（notify-record.ps1 の $KEEP）と揃える。
-     ＊5件に絞っていたが、写す前に実体ごと消える恐れがあるので20へ戻した（2026-08-23）。
-       表示を絞るのは件数ではなく「写したかどうか」で行う。 */
-  var SHOW_MAX = 20;
+  /* 一覧に出す件数の上限は設けない（v24 で撤去）。
+     ＊写していない札は、何件あっても全部残す。写す前に消えるのがいちばん困る。
+       絞るのは「写したかどうか」だけ。 */
   /* 写した件の印。端末の中だけに残る。開き直しても消えない。
-     ＊印の付いた件は一覧で畳む。消してしまうと、もう一度写せなくなるため。 */
+     ＊印の付いた札は一覧から落とす（v24）。薄く残さない。
+       もう一度写したくなったら、公開ページの status.md に同じ本文が残っている。 */
   var COPIED_KEY = 'kh-panel-copied';
   var copied = {};
   /* 上部の常時表示と「全部写す」の末尾で使う、いまの様子。state.json から拾ったものを控える。
@@ -323,34 +322,33 @@
       .then(function (arr) {
         var rows = Array.isArray(arr) ? arr.slice() : [];
         rows.sort(function (a, b) { return (b.time || 0) - (a.time || 0); });
-        /* ＊件数では絞らない。絞るのは「写したかどうか」。
-             写していない件は古くても残す——写す前に消えるのがいちばん困るため。
-             それでも上限は要るので SHOW_MAX（＝控えの上限と同じ20）で頭を切る。 */
-        rows = rows.slice(0, SHOW_MAX);
-        shown = rows;
-
-        /* 控えに無くなった件の印は捨てる。端末の中に溜め続けない。 */
+        /* 控えに無くなった件の印は捨てる。端末の中に溜め続けない。
+           ＊これは「写した札を落とす」より**前**に行う。あとで行うと、落としたばかりの
+             札を「控えに無い」と判じて印まで消し、次の取得でまた出てくる。 */
         var live = {}, changed = false;
         rows.forEach(function (d) { live[keyOf(d)] = 1; });
         Object.keys(copied).forEach(function (k) { if (!live[k]) { delete copied[k]; changed = true; } });
         if (changed) { saveCopied(); }
+
+        /* 写した札は一覧から落とす（v24）。押していない札は、何件あっても全部残す。
+           ＊localStorage に残っている印も、ここで効く。開き直しても写した札は出ない。 */
+        rows = rows.filter(function (d) { return !copied[keyOf(d)]; });
+        shown = rows;
 
         var html = '';
         rows.forEach(function (d, i) {
           var k = kind(d.title);
           /* 受け取り確認（📥／👍）は畳む。題の行を押せば開く。 */
           var ack = isAck(d.title);
-          /* 写した件も同じように畳む。題の行だけ残り、押せばまた開く。 */
-          var cp = !!copied[keyOf(d)];
           /* ⑧そのままを持つ件は畳んでおく。長いので開いたままだと一覧が読めない。
              題の行を押せば開く（畳んだ件と同じ受け）。 */
           var hasRaw = /^そのまま[:：]/m.test(String(d.message || ''));
-          var cls = k + (ack || cp || hasRaw ? ' ack' : '') + (cp ? ' copied' : '');
+          /* 写した札はここへ来ない（上で落としてある）。畳むかどうかは受け取り確認と⑧だけで決める。 */
+          var cls = k + (ack || hasRaw ? ' ack' : '');
           html += '<li class="' + cls.trim() + '" data-i="' + i + '">'
                 + '<p class="t"><span class="tx">' + esc(d.title || '(題なし)')
                 + '<span class="when">' + hhmm(d.time) + '</span></span>'
-                + '<button type="button" class="cp' + (cp ? ' ok' : '') + '" data-i="' + i + '">'
-                + (cp ? '写した' : '写す') + '</button></p>'
+                + '<button type="button" class="cp" data-i="' + i + '">写す</button></p>'
                 + '<p class="m">' + esc(d.message) + '</p></li>';
         });
         if (html) { $('list').innerHTML = html; }
@@ -618,7 +616,7 @@
       saveCopied();
       btn.textContent = r.items.length + '件 写した';
       btn.className = 'cpall ok';
-      pull();   /* 写した件は畳んで薄くなる */
+      pull();   /* 写した件は一覧から消える（v24） */
       setTimeout(function () { btn.textContent = '全部写す'; btn.className = 'cpall'; }, 2000);
     };
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -632,21 +630,15 @@
     var d = shown[i];
     if (!d) { return; }
     var text = sixLines(d);
-    /* すでに写した件をもう一度押したか。押せることは変えないが、
-       字が「写した」のままだと押した手応えが無く、効いていないように見える
-       （2026-08-23 のご指摘）。二度目は字を変えて、1.5秒で戻す。 */
-    var again = !!copied[keyOf(d)];
     var done = function () {
       /* 写した印を端末の中に残す。開き直しても消えない。 */
       copied[keyOf(d)] = 1;
       saveCopied();
-      btn.textContent = again ? 'また写した' : '写した';
-      btn.className = 'cp ok';
+      /* 写した札は、押した時点で一覧から消す（v24）。薄く残さない。
+         ＊次の取得を待たずにその場で消す。待つと、押したのに残って見える。 */
       var li = btn.parentNode && btn.parentNode.parentNode;
-      if (li && li.tagName === 'LI' && li.className.indexOf('copied') < 0) {
-        li.className = (li.className + ' ack copied').replace(/\s+/g, ' ').trim();
-      }
-      if (again) { setTimeout(function () { btn.textContent = '写した'; }, 1500); }
+      if (li && li.tagName === 'LI' && li.parentNode) { li.parentNode.removeChild(li); }
+      if (!$('list').children.length) { sayWhy('写していない知らせはありません。'); }
     };
     /* 写せなかったとき。**成功に見せない**——done は通さない。
        ＊v20 で「落ちたのか分からない」を直そうとして done を通したが、それだと
@@ -657,9 +649,10 @@
       fallback(text);
       btn.textContent = '写せません';
       btn.className = 'cp ng';
+      /* 写せなかった札は一覧に残る（消すのは写せたときだけ）。字を戻す。 */
       setTimeout(function () {
-        btn.textContent = again ? '写した' : '写す';
-        btn.className = again ? 'cp ok' : 'cp';
+        btn.textContent = '写す';
+        btn.className = 'cp';
       }, 3000);
     };
     if (navigator.clipboard && navigator.clipboard.writeText) {
