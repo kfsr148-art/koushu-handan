@@ -90,11 +90,26 @@
   .ver{margin:18px 14px 4px;
     font-size:13px; color:var(--dim); text-align:center;}
   /* 使用量。版の印の隣（すぐ下）に置く。数字は読めるように、断り書きは小さく。 */
-  .usage{margin:0 14px 2px; font-size:13px; color:var(--dim); text-align:center;}
-  .usage b{color:var(--fg); font-weight:600;}
-  .usage .u-old{color:var(--ask);}
+  /* 使用量：三つ横並びの塊。上に小さな名前、下に大きな数字。
+     ＊数字は 30px を起点に、幅に収まらないときだけ縮める（下の fitUsage）。 */
+  .usage{display:flex; gap:8px; justify-content:center; align-items:flex-end;
+    margin:0 14px 4px;}
+  .usage .u{flex:1 1 0; min-width:0; text-align:center;}
+  .usage .u-name{display:block; font-size:11px; color:var(--dim); line-height:1.4;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .usage .u-num{display:block; font-weight:700; line-height:1.1; white-space:nowrap;}
+  /* ％は数字より一回り小さく。太さも一段落とす。 */
+  .usage .u-pct{font-size:.62em; font-weight:600; margin-left:1px;}
+  /* 80%以上は赤、50〜79%は橙、それ未満は緑。名前は灰のまま。 */
+  .usage .hot{color:#ff5a4d;}
+  .usage .warm{color:#ffa63d;}
+  .usage .cool{color:#5ad07a;}
+  /* 取得時刻の一行。塊の下に小さく。 */
+  .usage-when{margin:0 14px 2px; font-size:11px; color:var(--dim); text-align:center;}
+  .usage-when .u-old{color:var(--ask);}
+  .usage-msg{margin:0 14px 4px; font-size:12px; color:var(--dim); text-align:center;}
   .usage-note{margin:0 14px calc(8px + env(safe-area-inset-bottom));
-    font-size:11px; line-height:1.5; color:var(--dim); text-align:center; opacity:.75;}
+    font-size:10px; line-height:1.45; color:var(--dim); text-align:center; opacity:.55;}
   /* 一覧が0件のときの理由。白紙にしない。 */
   li.why{border-left-color:var(--ask);}
   li.why .m{color:var(--fg);}
@@ -170,9 +185,11 @@
   <button class="cpall" id="btnCopyAll" type="button">全部写す</button>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v24（8月24日）</p>
+  <p class="ver" id="verTag">panel v25（8月24日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
-  <p class="usage" id="usageTag" hidden></p>
+  <div class="usage" id="usageTag" hidden></div>
+  <p class="usage-msg" id="usageMsg" hidden></p>
+  <p class="usage-when" id="usageWhen" hidden></p>
   <p class="usage-note" id="usageNote" hidden>この機械のローカルのセッションから見た概算です。他の端末や claude.ai は含みません。</p>
 </div>
 
@@ -701,35 +718,70 @@
   /* usage.json（見張りが10分ごとに置く）をそのまま読む。
      形は {"at":"<ISO8601>","http":<コード>,"body":<APIの応答そのまま>}。
      body.limits[] の kind と percent を拾う——session／weekly_all／weekly_scoped。 */
+  /* 消費率の色。80%以上は赤、50〜79%は橙、それ未満は緑。 */
+  function usageTone(p) {
+    if (p >= 80) { return 'hot'; }
+    if (p >= 50) { return 'warm'; }
+    return 'cool';
+  }
+
+  /* 数字は 30px を起点に、三つが横一列に収まらないときだけ縮める。
+     ＊小さくするのは数字だけ。名前と％の比（.62em）は保つ。
+     ＊16px を下限にする。これ以下は遠目に読めない。 */
+  function fitUsage() {
+    var box = $('usageTag');
+    if (!box || box.hidden) { return; }
+    var nums = box.querySelectorAll('.u-num');
+    if (!nums.length) { return; }
+    var px = 30;
+    var put = function (v) {
+      for (var i = 0; i < nums.length; i++) { nums[i].style.fontSize = v + 'px'; }
+    };
+    put(px);
+    while (px > 16 && box.scrollWidth > box.clientWidth + 1) { px -= 1; put(px); }
+  }
+
   function paintUsage(u) {
     var box = $('usageTag'), note = $('usageNote');
-    if (!box || !note) { return; }
-    if (!u) { box.hidden = true; note.hidden = true; return; }
-    var bits = [];
+    var msg = $('usageMsg'), whenEl = $('usageWhen');
+    if (!box || !note || !msg || !whenEl) { return; }
+    if (!u) { box.hidden = true; note.hidden = true; msg.hidden = true; whenEl.hidden = true; return; }
     var lim = (u.body && u.body.limits) ? u.body.limits : [];
+    var html = '';
     lim.forEach(function (L) {
+      if (typeof L.percent !== 'number') { return; }
       var name = (L.kind === 'session') ? 'セッション'
                : (L.kind === 'weekly_all') ? '週'
                : (L.kind === 'weekly_scoped' && L.scope && L.scope.model && L.scope.model.display_name)
                  ? L.scope.model.display_name
                  : L.kind;
-      if (typeof L.percent === 'number') { bits.push(name + ' <b>' + Math.round(L.percent) + '%</b>'); }
+      var p = Math.round(L.percent);
+      html += '<span class="u"><span class="u-name">' + esc(name) + '</span>'
+           + '<span class="u-num ' + usageTone(p) + '">' + p
+           + '<span class="u-pct">%</span></span></span>';
     });
     var at = u.at ? Math.floor(new Date(u.at).getTime() / 1000) : 0;
     var age = at ? (Date.now() / 1000 - at) : 0;
     var when = at ? (agoText(age) + '取得') : '取得時刻ふめい';
     var cls = (age > 3600) ? ' class="u-old"' : '';
-    var tail = '<span' + cls + '>（' + when + '）</span>';
+    var tail = '<span' + cls + '>' + when + '</span>';
     /* 401／403 は鍵の入れ替えが要る合図。素通ししないで出す。 */
     if (u.http && u.http !== 200) {
       tail += '<span class="u-old">（HTTP ' + u.http + '）</span>';
     }
-    if (!bits.length) {
-      box.innerHTML = '使用量は取れていません ' + tail;
+    if (!html) {
+      box.hidden = true;
+      msg.textContent = '使用量は取れていません';
+      msg.hidden = false;
     } else {
-      box.innerHTML = bits.join(' ／ ') + ' ' + tail;
+      box.innerHTML = html;
+      box.hidden = false;
+      msg.hidden = true;
     }
-    box.hidden = false; note.hidden = false;
+    whenEl.innerHTML = tail;
+    whenEl.hidden = false;
+    note.hidden = false;
+    fitUsage();
   }
 
   /* usage.json は state.json とは別の口。読めなければ黙って畳む。 */
