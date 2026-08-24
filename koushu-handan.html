@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1425">
+<html lang="ja" data-ver="1426">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1276,7 +1276,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1425</div>
+  <div id="verTag">v1426</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -5744,25 +5744,25 @@ document.addEventListener('DOMContentLoaded', function () {
     sensei:    '先生「減点法で見ましょう。……危険区域への立ち入り。まず、そこが減点です」'
   };
   const ADV_CONFESS = {
-    butler:    ['執事は幼い頃から人の顔色で予定を組む役でしたわ。何が欲しいかを訊かれた記憶がないまま、望みという機能が萎びた。',
+    butler:    ['執事は幼い頃から人の顔色で予定を組む役でした。何が欲しいかを訊かれた記憶がないまま、望みという機能が萎びた。',
                 '執事「その萎びたはずのものが、あの壁の前で、動いたのでございます。……聞きたい、と。生まれて初めて、わたくしが、望んだのでございます」',
                 '執事「ですから——手を、掛けました。……崩れる音は、それは、良い音でございましたよ」'],
-    strategist:['軍師は一度読み違えて痛い目を見て以来、裏読みで外さなくなりましたの。外さない代わりに、本物の善意を一つ疑って失いましたわ。',
+    strategist:['軍師は一度読み違えて痛い目を見て以来、裏読みで外さなくなりました。外さない代わりに、本物の善意を一つ疑って失いました。',
                 '軍師「読み違えて以来、ワシは常に後の手よ。人の出方を読み、受けて、外さぬ。……あの晩、初めて先手を取った。順番を、ワシが決めたのだ」',
                 '軍師「……悪くなかったぞ。読まずに、決めるというのはな」'],
-    blunt:     ['ずんだはつぶれる前に誰にも言いませんでしたの。言える相手がいなかったのではなく、言っていい事だと知らなかった。',
+    blunt:     ['ずんだはつぶれる前に誰にも言いませんでした。言える相手がいなかったのではなく、言っていい事だと知らなかった。',
                 'ずんだ「言えなかった分は、どこにも行かないのだ。ずっと、ボクの中に積んであったのだ。……壁牌みたいに、なのだ」',
                 'ずんだ「だから、崩したのだ。……ボクの代わりに、壁が、大きな音で言ってくれたのだ」'],
-    lady:      ['お嬢様は選ばせてもらったことがありませんわ。与えられ続ける檻に、扉が付いていなかっただけですの。',
+    lady:      ['お嬢様は選ばせてもらったことがありません。与えられ続ける檻に、扉が付いていなかっただけです。',
                 'お嬢様「あの晩、気づきましたのよ。壁牌の前で。……これは、わたくしが選べる、と。どの壁を、いつ、崩すか」',
                 'お嬢様「ですから、選びましたの。……生まれて初めての選択が、あれでしたのよ」'],
-    french:    ['マダムは人前の顔だけを褒められ続け、見られない時間が長すぎましたわ。',
+    french:    ['マダムは人前の顔だけを褒められ続け、見られない時間が長すぎました。',
                 'マダム「見られない時間が、人の本当の味を造る。……わたくしの見られない時間は、耳を造ったの。誰も聞いていない音を、聞き分ける耳を」',
                 'マダム「だから、鳴らしたのよ。……誰にも見られない時間に、わたくしだけが聞いた。セ・ラ・ヴィ」'],
-    ichihime:  ['一姫の寂しさは、誰にも通報されませんの。',
+    ichihime:  ['一姫の寂しさは、誰にも通報されません。',
                 '一姫「でも、壁牌が崩れた晩はちがったにゃ。船じゅうが起きて、みんな走って、集まったにゃ。……あの晩だけ、船が、にぎやかだったにゃ」',
                 '一姫「だから、崩したにゃ。……さみしいは通報されないけど、事件は、通報されるにゃ」'],
-    sensei:    ['先生自身が、減点法で育てられましたわ。',
+    sensei:    ['先生自身が、減点法で育てられました。',
                 '先生「点を、つける側になりたかった。……それも、引く側ではなく。足す側に」',
                 '先生「壁牌が崩れるたび、皆さんの反応に、点を足しました。……わたしの初めての加点法は、あれだったのです」']
   };
@@ -6191,7 +6191,10 @@ document.addEventListener('DOMContentLoaded', function () {
       : ((inHall ? 'デルタ・プリンセス号・廊下' : room.label) + '　行動力:' + t.ap + '　証拠:' + advTiles() + '/13')) + advVer;
     advEl.hallRow.style.display = inHall ? 'flex' : 'none';
     advEl.diffRow.style.display = inDiff ? 'flex' : 'none';
-    advEl.row.style.display = (inHall || inDiff || inNote) ? 'none' : 'flex';
+    /* 探偵ノートでも釦の列を出す。中身は「ろうかへ」一つだけにする（下の inNote のところ）。
+       ＊ノートは場面を叩いても閉じるが、その手は遊ぶ側に見えない。出口を釦で示す。
+       ＊叩いて閉じる手（scene.onclick）はそのまま残す。どちらでも閉じられる。 */
+    advEl.row.style.display = (inHall || inDiff) ? 'none' : 'flex';
     advEl.doors.forEach(function(d){
       // 探索の印：収穫のあった扉は◎、調べて空振りだった扉は✕、未踏は無印。労災の赤とは別の軸で示す。
       var _mark = t.searched[d.k] ? (t.gotHere[d.k] ? '◎' : '✕') : '';
@@ -6367,6 +6370,13 @@ document.addEventListener('DOMContentLoaded', function () {
     advEl.bHearCat.style.display = (dis || t.room !== 'office' || t.catHeard) ? 'none' : '';
     advEl.bHearBody.style.display = (dis || t.room !== 'office' || t.bodyHeard) ? 'none' : '';
     advEl.bHall.style.display = dis ? 'none' : '';
+    /* 探偵ノートでは「ろうかへ」だけを残し、ほかの釦は畳む。
+       部屋の釦（しらべる・きく）が出ていると、ノートの中で押せてしまう。 */
+    if(inNote){
+      [advEl.bSearch, advEl.bHear, advEl.bPhone, advEl.bAuto, advEl.bHearCat, advEl.bHearBody,
+       advEl.bKitten, advEl.bRon, advEl.bNext].forEach(function(b){ if(b) b.style.display = 'none'; });
+      advEl.bHall.style.display = '';
+    }
     [advEl.bSearch, advEl.bHear, advEl.bPhone, advEl.bAuto, advEl.bHearCat, advEl.bHearBody, advEl.bKitten, advEl.bRon, advEl.bHall].forEach(b => b.disabled = dis);
     advEl.msg.style.display = (inEnd || inDiff || inNote) ? 'none' : '';
     advEl.inv.innerHTML = '';
