@@ -87,8 +87,14 @@
   .cpall.ok{color:var(--done); border-color:var(--done);}
 
   /* 版の印。画面のいちばん下に小さく。 */
-  .ver{margin:18px 14px calc(8px + env(safe-area-inset-bottom));
+  .ver{margin:18px 14px 4px;
     font-size:13px; color:var(--dim); text-align:center;}
+  /* 使用量。版の印の隣（すぐ下）に置く。数字は読めるように、断り書きは小さく。 */
+  .usage{margin:0 14px 2px; font-size:13px; color:var(--dim); text-align:center;}
+  .usage b{color:var(--fg); font-weight:600;}
+  .usage .u-old{color:var(--ask);}
+  .usage-note{margin:0 14px calc(8px + env(safe-area-inset-bottom));
+    font-size:11px; line-height:1.5; color:var(--dim); text-align:center; opacity:.75;}
   /* 一覧が0件のときの理由。白紙にしない。 */
   li.why{border-left-color:var(--ask);}
   li.why .m{color:var(--fg);}
@@ -166,6 +172,9 @@
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
   <p class="ver" id="verTag">panel v23（8月24日）</p>
+  <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
+  <p class="usage" id="usageTag" hidden></p>
+  <p class="usage-note" id="usageNote" hidden>この機械のローカルのセッションから見た概算です。他の端末や claude.ai は含みません。</p>
 </div>
 
 <script>
@@ -687,6 +696,29 @@
     $('stAgo').textContent = ago;
   }
 
+  /* 使用量を版の印の隣へ出す。
+     ・取れていなければ何も出さない（欄ごと畳む）
+     ・取得時刻を併記する。古ければその字を目立たせる
+     ・取れなかった時刻がある回は、前の値を残したまま「取得できず」を添える */
+  function paintUsage(u) {
+    var box = $('usageTag'), note = $('usageNote');
+    if (!box || !note) { return; }
+    if (!u || (u.session < 0 && u.week < 0)) { box.hidden = true; note.hidden = true; return; }
+    var bits = [];
+    if (u.session >= 0) { bits.push('セッション <b>' + u.session + '%</b>'); }
+    if (u.week >= 0) { bits.push('週 <b>' + u.week + '%</b>'); }
+    if (u.model && u.modelPct >= 0) { bits.push(u.model + ' <b>' + u.modelPct + '%</b>'); }
+    var age = u.at ? (Date.now() / 1000 - u.at) : 0;
+    var when = u.at ? (agoText(age) + '取得') : '取得時刻ふめい';
+    var cls = (age > 3600) ? ' class="u-old"' : '';
+    var tail = '<span' + cls + '>（' + when + '）</span>';
+    if (u.failedAt && u.failedAt > (u.at || 0)) {
+      tail += '<span class="u-old">（' + agoText(Date.now() / 1000 - u.failedAt) + 'に取得できず）</span>';
+    }
+    box.innerHTML = bits.join(' ／ ') + ' ' + tail;
+    box.hidden = false; note.hidden = false;
+  }
+
   function agoText(sec) {
     if (sec < 60) { return Math.max(0, Math.floor(sec)) + '秒前'; }
     if (sec < 3600) { return Math.floor(sec / 60) + '分前'; }
@@ -763,6 +795,7 @@
         } else {
           sinceBase = { at: 0, word: '' };
         }
+        paintUsage(d.usage);
         lastState = { word: word, since: '', at: d.at || 0 };
         paintFacts(d.at || 0);
         paintState(cls, word, subj, agoText(sec), mik);
