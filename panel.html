@@ -236,13 +236,18 @@
          古い写しへ戻したくなったときに要る。 */
 
   var sinceTimer = null;
+  var usageTimer = null;
 
   function showMain() {
     $('main').className = '';
     pullVer();
+    pullUsage();
     tick();
     if (timer) { clearInterval(timer); }
     timer = setInterval(tick, 15000);
+    /* 使用量は10分ごとにしか動かないので、取りに行くのも控えめでよい（2分ごと）。 */
+    if (usageTimer) { clearInterval(usageTimer); }
+    usageTimer = setInterval(pullUsage, 120000);
     /* 現況行の経過だけは毎秒。取得（15秒）とは別の時計で回す。 */
     if (sinceTimer) { clearInterval(sinceTimer); }
     sinceTimer = setInterval(tickSince, 1000);
@@ -700,23 +705,47 @@
      ・取れていなければ何も出さない（欄ごと畳む）
      ・取得時刻を併記する。古ければその字を目立たせる
      ・取れなかった時刻がある回は、前の値を残したまま「取得できず」を添える */
+  /* usage.json（見張りが10分ごとに置く）をそのまま読む。
+     形は {"at":"<ISO8601>","http":<コード>,"body":<APIの応答そのまま>}。
+     body.limits[] の kind と percent を拾う——session／weekly_all／weekly_scoped。 */
   function paintUsage(u) {
     var box = $('usageTag'), note = $('usageNote');
     if (!box || !note) { return; }
-    if (!u || (u.session < 0 && u.week < 0)) { box.hidden = true; note.hidden = true; return; }
+    if (!u) { box.hidden = true; note.hidden = true; return; }
     var bits = [];
-    if (u.session >= 0) { bits.push('セッション <b>' + u.session + '%</b>'); }
-    if (u.week >= 0) { bits.push('週 <b>' + u.week + '%</b>'); }
-    if (u.model && u.modelPct >= 0) { bits.push(u.model + ' <b>' + u.modelPct + '%</b>'); }
-    var age = u.at ? (Date.now() / 1000 - u.at) : 0;
-    var when = u.at ? (agoText(age) + '取得') : '取得時刻ふめい';
+    var lim = (u.body && u.body.limits) ? u.body.limits : [];
+    lim.forEach(function (L) {
+      var name = (L.kind === 'session') ? 'セッション'
+               : (L.kind === 'weekly_all') ? '週'
+               : (L.kind === 'weekly_scoped' && L.scope && L.scope.model && L.scope.model.display_name)
+                 ? L.scope.model.display_name
+                 : L.kind;
+      if (typeof L.percent === 'number') { bits.push(name + ' <b>' + Math.round(L.percent) + '%</b>'); }
+    });
+    var at = u.at ? Math.floor(new Date(u.at).getTime() / 1000) : 0;
+    var age = at ? (Date.now() / 1000 - at) : 0;
+    var when = at ? (agoText(age) + '取得') : '取得時刻ふめい';
     var cls = (age > 3600) ? ' class="u-old"' : '';
     var tail = '<span' + cls + '>（' + when + '）</span>';
-    if (u.failedAt && u.failedAt > (u.at || 0)) {
-      tail += '<span class="u-old">（' + agoText(Date.now() / 1000 - u.failedAt) + 'に取得できず）</span>';
+    /* 401／403 は鍵の入れ替えが要る合図。素通ししないで出す。 */
+    if (u.http && u.http !== 200) {
+      tail += '<span class="u-old">（HTTP ' + u.http + '）</span>';
     }
-    box.innerHTML = bits.join(' ／ ') + ' ' + tail;
+    if (!bits.length) {
+      box.innerHTML = '使用量は取れていません ' + tail;
+    } else {
+      box.innerHTML = bits.join(' ／ ') + ' ' + tail;
+    }
     box.hidden = false; note.hidden = false;
+  }
+
+  /* usage.json は state.json とは別の口。読めなければ黙って畳む。 */
+  var USAGE_URL = 'https://kfsr148-art.github.io/koushu-handan/usage.json';
+  function pullUsage() {
+    fetch(USAGE_URL + '?_t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (u) { paintUsage(u); })
+      .catch(function () { paintUsage(null); });
   }
 
   function agoText(sec) {
@@ -795,7 +824,6 @@
         } else {
           sinceBase = { at: 0, word: '' };
         }
-        paintUsage(d.usage);
         lastState = { word: word, since: '', at: d.at || 0 };
         paintFacts(d.at || 0);
         paintState(cls, word, subj, agoText(sec), mik);
