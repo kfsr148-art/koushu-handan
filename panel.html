@@ -190,7 +190,7 @@
   <button class="cpall" id="btnCopyAll" type="button">全部写す</button>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v28（8月24日）</p>
+  <p class="ver" id="verTag">panel v29（8月25日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -210,7 +210,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '28';
+  var PANEL_VER = '29';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -391,7 +391,7 @@
         if (total > 0 && rows.length === 0) {
           $('list').innerHTML = '<li class="why"><p class="m">'
             + esc(total + '件ぜんぶ写し済みです。新しい知らせが出れば、ここに並びます。')
-            + '</p><p class="m"><button type="button" id="unmark">写した印を消して出す</button></p></li>';
+            + '</p><p class="m"><button type="button" id="unmark">写した札を出す</button></p></li>';
           var ub = $('unmark');
           if (ub) {
             ub.onclick = function () {
