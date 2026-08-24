@@ -1,4 +1,86 @@
-# 報告 — 見張りを止めました（2026-08-24 VAIO時計）
+# 報告 — 公開ページの更新（2026-08-24 VAIO時計）
+
+**状態：終わり（返事不要）。**
+
+## いま何をしているか
+
+**3件目（公開ページの更新）が終わりました。**次は4件目（縦中央揃え）に入ります。
+
+結論を先に三行で。
+
+- **`report-latest.md` の未commitは、もう残っていませんでした。**前の回に `7b68695` で commit・push 済みで、作業フォルダは `origin/main` と一致しています。
+- **「github.io へ公開を上げる」という別の手順はありません。**GitHub Pages は `source=main:/` の設定で、`main` へ push した時点でそれが公開になります。**v1423 は `b14e513` の push で既に配られていました。**
+- **検査は両方 PASS。**公開ページを実際に開いて、版の表示が本体と揃っていることを確かめました。
+
+## 八項目
+
+```
+[12:14] 公開ページの更新（v1423）。既に配られていたので、確かめて閉じた
+状態: 終わり
+したこと: 検査を通し、公開ページを実際に開いて版が揃っていることを確かめた。変更は無し。
+版: 公開ページ v1423 ／ 手元の本体 v1423 ／ stable v1420
+ファイル:
+- 変更なし（確認のみ）
+- 公開の設定: source=main:/ ／ html_url=https://kfsr148-art.github.io/koushu-handan/
+実測:
+- node check.js --fast：21項目すべて PASS（12:09:05〜12:12:53、3分48秒）
+- node adv-check.js：2項目とも PASS（12:13:03〜12:13:32、29秒）
+- 公開ページを headless Edge（900x381）で開き、描画後の DOM から読んだ
+    data-ver=1423 ／ 画面の verTag=v1423 ／ ver.txt=1423
+- 入口・本体とも HTTP 200
+食い違い: ご指示にあった「report-latest.md の未commit」は、既に閉じてありました。
+          また「公開を上げる」手順は存在せず、push がそのまま公開になります。
+答え: 公開ページは既に v1423 を配っていた。表示も本体と一致している。3件目は確認だけで閉じてよい。
+未決: なし
+そのまま: 【この回に新しく書いた本文】
+
+■ 前提の訂正が二つ
+- report-latest.md の未commitは、もう残っていなかった。前の回に 7b68695 で commit・push 済み
+- 「github.io へ公開を上げる」という別の手順は無い。Pages は source=main:/ なので、
+  main へ push した時点でそれが公開になる。v1423 は b14e513 の push で既に配られていた
+
+■ 公開ページの状態
+- status=built ／ source=main:/ ／ https_enforced=true ／ public=true
+- 入口 https://kfsr148-art.github.io/koushu-handan/ は HTTP 200
+- 本体 https://kfsr148-art.github.io/koushu-handan/koushu-handan.html も HTTP 200
+
+■ 版の突き合わせ（⑥）
+- 公開ページ : data-ver=1423 ／ 画面の verTag=v1423 ／ ver.txt=1423
+- 手元の本体 : data-ver=1423 ／ verTag=v1423 ／ ver.txt=1423
+- 三箇所とも公開側と手元で一致
+
+■ 実際に開いて確かめた
+- curl で属性だけ読むのではなく、headless Edge で描画させ、画面に出る verTag の字を読んだ
+- 題は「配牌 攻守判定」、DOM は 9920KB
+
+■ 検査の所要が戻った
+- 前回 8分21秒かかった check.js が 3分48秒に戻った。機械の重さが原因だったと見てよい
+
+■ シム
+- 検査の仕掛けは一時ディレクトリの写しだけ。実行後に消した。本体にシムは無い
+```
+
+## 版の突き合わせ（⑥）
+
+| | `data-ver` | 画面の `verTag` | `ver.txt` |
+|---|---|---|---|
+| 公開ページ（github.io） | **1423** | **v1423** | **1423** |
+| 手元の本体 | **1423** | **v1423** | **1423** |
+
+`curl` で属性だけ読むのではなく、headless Edge（900x381）で実際に描画させ、画面に出る `verTag` の字を読んでいます。
+
+## 公開の仕組み（覚え書き）
+
+```
+$ gh api repos/kfsr148-art/koushu-handan/pages
+{"status":"built","html_url":"https://kfsr148-art.github.io/koushu-handan/",
+ "source":{"branch":"main","path":"/"},"public":true,"https_enforced":true}
+```
+
+`main` の直下をそのまま配る設定です。**別に「公開を上げる」操作はありません。**`main` へ push すれば、それが公開ページになります。逆に言うと、**検査を通していないものを push すると、そのまま利用者に届きます。**
+
+
+# これまでの記録 — 見張りを止めました（2026-08-24 VAIO時計）
 
 **状態：ヨシ待ち。**見張りを止めたままにするか、戻すかの裁定をお願いします。
 
