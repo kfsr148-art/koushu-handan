@@ -1,0 +1,462 @@
+{
+  "stamp": "2026-08-25 13:21:31 JST",
+  "base": "https://kfsr148-art.github.io/koushu-handan/koushu-handan.html",
+  "viewport": "844x390（横）／390x844（縦・回転の一枚のみ）",
+  "scale": 2,
+  "engine": "webkit",
+  "ok": 45,
+  "ng": 0,
+  "dup": [],
+  "shots": [
+    {
+      "name": "00-portrait-rotate",
+      "group": "入口",
+      "label": "縦向き — 画面を横にお回しくださいませ",
+      "file": "00-portrait-rotate.png",
+      "ok": true,
+      "sec": "9.1",
+      "err": null,
+      "view": "390x844（縦）"
+    },
+    {
+      "name": "01-title",
+      "group": "入口",
+      "label": "タイトル",
+      "file": "01-title.png",
+      "ok": true,
+      "sec": "9.2",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "02-info-list",
+      "group": "入口",
+      "label": "案内の一覧",
+      "file": "02-info-list.png",
+      "ok": true,
+      "sec": "7.2",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "03-info-engine",
+      "group": "入口",
+      "label": "案内 — このツール、何がすごいの？",
+      "file": "03-info-engine.png",
+      "ok": true,
+      "sec": "9.4",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "04-board-empty",
+      "group": "盤面",
+      "label": "盤面（牌を入れる前）",
+      "file": "04-board-empty.png",
+      "ok": true,
+      "sec": "8.0",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "05-board-14",
+      "group": "盤面",
+      "label": "盤面（14枚を並べた姿）",
+      "file": "05-board-14.png",
+      "ok": true,
+      "sec": "7.4",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "06-judged",
+      "group": "判定後",
+      "label": "判定の結果（既定＝執事）",
+      "file": "06-judged.png",
+      "ok": true,
+      "sec": "8.7",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "07-1-tone-butler",
+      "group": "判定後（人柄七人）",
+      "label": "人柄 — 執事",
+      "file": "07-1-tone-butler.png",
+      "ok": true,
+      "sec": "8.6",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "07-2-tone-strategist",
+      "group": "判定後（人柄七人）",
+      "label": "人柄 — 軍師",
+      "file": "07-2-tone-strategist.png",
+      "ok": true,
+      "sec": "9.8",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "07-3-tone-blunt",
+      "group": "判定後（人柄七人）",
+      "label": "人柄 — ずんだ",
+      "file": "07-3-tone-blunt.png",
+      "ok": true,
+      "sec": "8.7",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "07-4-tone-lady",
+      "group": "判定後（人柄七人）",
+      "label": "人柄 — お嬢様",
+      "file": "07-4-tone-lady.png",
+      "ok": true,
+      "sec": "10.9",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "07-5-tone-french",
+      "group": "判定後（人柄七人）",
+      "label": "人柄 — マダム",
+      "file": "07-5-tone-french.png",
+      "ok": true,
+      "sec": "8.3",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "07-6-tone-ichihime",
+      "group": "判定後（人柄七人）",
+      "label": "人柄 — 一姫",
+      "file": "07-6-tone-ichihime.png",
+      "ok": true,
+      "sec": "8.7",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "07-7-tone-sensei",
+      "group": "判定後（人柄七人）",
+      "label": "人柄 — 先生",
+      "file": "07-7-tone-sensei.png",
+      "ok": true,
+      "sec": "8.5",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "08-1-tool-cat",
+      "group": "判定後（スイッチ四者）",
+      "label": "道具 — 現場猫",
+      "file": "08-1-tool-cat.png",
+      "ok": true,
+      "sec": "8.8",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "08-2-tool-eda",
+      "group": "判定後（スイッチ四者）",
+      "label": "道具 — 枝豆",
+      "file": "08-2-tool-eda.png",
+      "ok": true,
+      "sec": "8.5",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "08-3-tool-om",
+      "group": "判定後（スイッチ四者）",
+      "label": "道具 — 紳士",
+      "file": "08-3-tool-om.png",
+      "ok": true,
+      "sec": "9.4",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "08-4-tool-usagi",
+      "group": "判定後（スイッチ四者）",
+      "label": "道具 — 兎",
+      "file": "08-4-tool-usagi.png",
+      "ok": true,
+      "sec": "8.7",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "09-1-dialect-miyazaki",
+      "group": "判定後（お国訛り八種）",
+      "label": "訛り — 宮崎",
+      "file": "09-1-dialect-miyazaki.png",
+      "ok": true,
+      "sec": "8.1",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "09-2-dialect-hakata",
+      "group": "判定後（お国訛り八種）",
+      "label": "訛り — 博多",
+      "file": "09-2-dialect-hakata.png",
+      "ok": true,
+      "sec": "8.0",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "09-3-dialect-osaka",
+      "group": "判定後（お国訛り八種）",
+      "label": "訛り — 大阪",
+      "file": "09-3-dialect-osaka.png",
+      "ok": true,
+      "sec": "8.2",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "09-4-dialect-kyoto",
+      "group": "判定後（お国訛り八種）",
+      "label": "訛り — 京都",
+      "file": "09-4-dialect-kyoto.png",
+      "ok": true,
+      "sec": "9.2",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "09-5-dialect-aomori",
+      "group": "判定後（お国訛り八種）",
+      "label": "訛り — 青森",
+      "file": "09-5-dialect-aomori.png",
+      "ok": true,
+      "sec": "9.5",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "09-6-dialect-okinawa",
+      "group": "判定後（お国訛り八種）",
+      "label": "訛り — 沖縄",
+      "file": "09-6-dialect-okinawa.png",
+      "ok": true,
+      "sec": "9.4",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "09-7-dialect-bushi",
+      "group": "判定後（お国訛り八種）",
+      "label": "訛り — 武士",
+      "file": "09-7-dialect-bushi.png",
+      "ok": true,
+      "sec": "8.5",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "09-8-dialect-yoji",
+      "group": "判定後（お国訛り八種）",
+      "label": "訛り — 幼児",
+      "file": "09-8-dialect-yoji.png",
+      "ok": true,
+      "sec": "8.3",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "10-judged-defend",
+      "group": "判定後",
+      "label": "守りの判定（羊／鼠）",
+      "file": "10-judged-defend.png",
+      "ok": true,
+      "sec": "8.6",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "11-judged-kokushi",
+      "group": "判定後",
+      "label": "国士が見えている判定（役満手前＝鳥）",
+      "file": "11-judged-kokushi.png",
+      "ok": true,
+      "sec": "8.3",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "12-mascot",
+      "group": "判定後",
+      "label": "判定獣が述べる（虎・羊・鼠）",
+      "file": "12-mascot.png",
+      "ok": true,
+      "sec": "8.2",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "13-cat-room",
+      "group": "その他の間",
+      "label": "猫部屋（設定）",
+      "file": "13-cat-room.png",
+      "ok": true,
+      "sec": "7.0",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "14-1-watch-verdict",
+      "group": "見張り台",
+      "label": "見張り台 — 攻守の答え合わせ",
+      "file": "14-1-watch-verdict.png",
+      "ok": true,
+      "sec": "7.9",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "14-2-watch-cat",
+      "group": "見張り台",
+      "label": "見張り台 — 猫牌を数える",
+      "file": "14-2-watch-cat.png",
+      "ok": true,
+      "sec": "9.2",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "14-3-watch-eda",
+      "group": "見張り台",
+      "label": "見張り台 — 枝豆の的",
+      "file": "14-3-watch-eda.png",
+      "ok": true,
+      "sec": "7.4",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "14-4-watch-ai",
+      "group": "見張り台",
+      "label": "見張り台 — AIの見立て",
+      "file": "14-4-watch-ai.png",
+      "ok": true,
+      "sec": "8.1",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "15-watch-guide",
+      "group": "見張り台",
+      "label": "見張り台の手引き",
+      "file": "15-watch-guide.png",
+      "ok": true,
+      "sec": "7.5",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "16-adv-start",
+      "group": "探偵編",
+      "label": "探偵編 — 乗船の幕",
+      "file": "16-adv-start.png",
+      "ok": true,
+      "sec": "7.8",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "17-adv-room",
+      "group": "探偵編",
+      "label": "探偵編 — 猫室（部屋に入った姿）",
+      "file": "17-adv-room.png",
+      "ok": true,
+      "sec": "9.5",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "18-tori-menu",
+      "group": "ミニゲーム",
+      "label": "一索の鳥 — 品書き",
+      "file": "18-tori-menu.png",
+      "ok": true,
+      "sec": "8.2",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "19-1-tori-play-easy",
+      "group": "ミニゲーム",
+      "label": "一索の鳥 — 遊んでいる最中 初級（同時2羽・ノルマ3羽）",
+      "file": "19-1-tori-play-easy.png",
+      "ok": true,
+      "sec": "10.4",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "19-2-tori-play-hard",
+      "group": "ミニゲーム",
+      "label": "一索の鳥 — 遊んでいる最中 上級（同時4羽・ノルマ7羽）",
+      "file": "19-2-tori-play-hard.png",
+      "ok": true,
+      "sec": "9.1",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "19-3-tori-play-endless",
+      "group": "ミニゲーム",
+      "label": "一索の鳥 — 遊んでいる最中 連戦（同時4羽・ノルマなし）",
+      "file": "19-3-tori-play-endless.png",
+      "ok": true,
+      "sec": "9.2",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "20-tori-end",
+      "group": "ミニゲーム",
+      "label": "一索の鳥 — 結果の絵（負け「逃げられた」）",
+      "file": "20-tori-end.png",
+      "ok": true,
+      "sec": "39.4",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "21-misdiag",
+      "group": "その他の間",
+      "label": "誤診記録",
+      "file": "21-misdiag.png",
+      "ok": true,
+      "sec": "7.6",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "22-haipai-ledger",
+      "group": "その他の間",
+      "label": "配牌帳",
+      "file": "22-haipai-ledger.png",
+      "ok": true,
+      "sec": "8.1",
+      "err": null,
+      "view": "844x390（横）"
+    },
+    {
+      "name": "23-reader-page",
+      "group": "その他の間",
+      "label": "読み取りページ（reader.html・別ページ）",
+      "file": "23-reader-page.png",
+      "ok": true,
+      "sec": "4.1",
+      "err": null,
+      "view": "844x390（横）"
+    }
+  ]
+}

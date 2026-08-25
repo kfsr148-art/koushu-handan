@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>写し取り一覧 — 配牌攻守判定</title>
+<style>
+  :root { color-scheme: dark; --bg:#0d1b16; --fg:#e8f2ec; --dim:#8fa89c; --line:#24463a; --jade:#3fbf8f; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); line-height:1.7;
+         font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif; }
+  header { padding:20px 16px 12px; border-bottom:1px solid var(--line); }
+  h1 { margin:0 0 6px; font-size:20px; }
+  .meta { color:var(--dim); font-size:13px; }
+  h2 { margin:28px 16px 10px; font-size:16px; color:var(--jade);
+       border-left:4px solid var(--jade); padding-left:10px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; padding:0 16px; }
+  figure { margin:0; }
+  figure a { display:block; border:1px solid var(--line); border-radius:10px; overflow:hidden; background:#000; }
+  figure img { display:block; width:100%; height:auto; }
+  figcaption { font-size:12px; color:var(--dim); padding:6px 2px 0; word-break:break-word; }
+  figcaption b { display:block; color:var(--fg); font-size:13px; font-weight:600; }
+  .miss { margin:0 16px; padding:12px 14px; border:1px solid #6b3b3b; border-radius:10px; background:#241618; }
+  .miss li { font-size:13px; }
+  footer { color:var(--dim); font-size:12px; padding:28px 16px 40px; }
+  code { background:rgba(22,48,39,.6); padding:1px 5px; border-radius:4px; font-size:12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>写し取り一覧 — 配牌攻守判定</h1>
+  <div class="meta">
+    WebKit ／ iPhone の論理寸法 <b>390×844</b>（本体は横向き専用のため <b>844×390</b> で撮影）
+    ／ 画素の倍率 <b>2倍</b><br>
+    撮れた <b>45</b> 枚    ・組み直し <b>2026-08-25 13:21:31 JST</b>
+  </div>
+</header>
+<h2>入口</h2>
+<div class="grid">
+  <figure>
+    <a href="00-portrait-rotate.png" target="_blank" rel="noopener"><img src="00-portrait-rotate.png" alt="縦向き — 画面を横にお回しくださいませ" loading="lazy"></a>
+    <figcaption><b>縦向き — 画面を横にお回しくださいませ</b><code>00-portrait-rotate.png</code> <code>390x844（縦）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="01-title.png" target="_blank" rel="noopener"><img src="01-title.png" alt="タイトル" loading="lazy"></a>
+    <figcaption><b>タイトル</b><code>01-title.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="02-info-list.png" target="_blank" rel="noopener"><img src="02-info-list.png" alt="案内の一覧" loading="lazy"></a>
+    <figcaption><b>案内の一覧</b><code>02-info-list.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="03-info-engine.png" target="_blank" rel="noopener"><img src="03-info-engine.png" alt="案内 — このツール、何がすごいの？" loading="lazy"></a>
+    <figcaption><b>案内 — このツール、何がすごいの？</b><code>03-info-engine.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+</div>
+<h2>盤面</h2>
+<div class="grid">
+  <figure>
+    <a href="04-board-empty.png" target="_blank" rel="noopener"><img src="04-board-empty.png" alt="盤面（牌を入れる前）" loading="lazy"></a>
+    <figcaption><b>盤面（牌を入れる前）</b><code>04-board-empty.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="05-board-14.png" target="_blank" rel="noopener"><img src="05-board-14.png" alt="盤面（14枚を並べた姿）" loading="lazy"></a>
+    <figcaption><b>盤面（14枚を並べた姿）</b><code>05-board-14.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+</div>
+<h2>判定後</h2>
+<div class="grid">
+  <figure>
+    <a href="06-judged.png" target="_blank" rel="noopener"><img src="06-judged.png" alt="判定の結果（既定＝執事）" loading="lazy"></a>
+    <figcaption><b>判定の結果（既定＝執事）</b><code>06-judged.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="10-judged-defend.png" target="_blank" rel="noopener"><img src="10-judged-defend.png" alt="守りの判定（羊／鼠）" loading="lazy"></a>
+    <figcaption><b>守りの判定（羊／鼠）</b><code>10-judged-defend.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="11-judged-kokushi.png" target="_blank" rel="noopener"><img src="11-judged-kokushi.png" alt="国士が見えている判定（役満手前＝鳥）" loading="lazy"></a>
+    <figcaption><b>国士が見えている判定（役満手前＝鳥）</b><code>11-judged-kokushi.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="12-mascot.png" target="_blank" rel="noopener"><img src="12-mascot.png" alt="判定獣が述べる（虎・羊・鼠）" loading="lazy"></a>
+    <figcaption><b>判定獣が述べる（虎・羊・鼠）</b><code>12-mascot.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+</div>
+<h2>判定後（人柄七人）</h2>
+<div class="grid">
+  <figure>
+    <a href="07-1-tone-butler.png" target="_blank" rel="noopener"><img src="07-1-tone-butler.png" alt="人柄 — 執事" loading="lazy"></a>
+    <figcaption><b>人柄 — 執事</b><code>07-1-tone-butler.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="07-2-tone-strategist.png" target="_blank" rel="noopener"><img src="07-2-tone-strategist.png" alt="人柄 — 軍師" loading="lazy"></a>
+    <figcaption><b>人柄 — 軍師</b><code>07-2-tone-strategist.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="07-3-tone-blunt.png" target="_blank" rel="noopener"><img src="07-3-tone-blunt.png" alt="人柄 — ずんだ" loading="lazy"></a>
+    <figcaption><b>人柄 — ずんだ</b><code>07-3-tone-blunt.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="07-4-tone-lady.png" target="_blank" rel="noopener"><img src="07-4-tone-lady.png" alt="人柄 — お嬢様" loading="lazy"></a>
+    <figcaption><b>人柄 — お嬢様</b><code>07-4-tone-lady.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="07-5-tone-french.png" target="_blank" rel="noopener"><img src="07-5-tone-french.png" alt="人柄 — マダム" loading="lazy"></a>
+    <figcaption><b>人柄 — マダム</b><code>07-5-tone-french.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="07-6-tone-ichihime.png" target="_blank" rel="noopener"><img src="07-6-tone-ichihime.png" alt="人柄 — 一姫" loading="lazy"></a>
+    <figcaption><b>人柄 — 一姫</b><code>07-6-tone-ichihime.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="07-7-tone-sensei.png" target="_blank" rel="noopener"><img src="07-7-tone-sensei.png" alt="人柄 — 先生" loading="lazy"></a>
+    <figcaption><b>人柄 — 先生</b><code>07-7-tone-sensei.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+</div>
+<h2>判定後（スイッチ四者）</h2>
+<div class="grid">
+  <figure>
+    <a href="08-1-tool-cat.png" target="_blank" rel="noopener"><img src="08-1-tool-cat.png" alt="道具 — 現場猫" loading="lazy"></a>
+    <figcaption><b>道具 — 現場猫</b><code>08-1-tool-cat.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="08-2-tool-eda.png" target="_blank" rel="noopener"><img src="08-2-tool-eda.png" alt="道具 — 枝豆" loading="lazy"></a>
+    <figcaption><b>道具 — 枝豆</b><code>08-2-tool-eda.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="08-3-tool-om.png" target="_blank" rel="noopener"><img src="08-3-tool-om.png" alt="道具 — 紳士" loading="lazy"></a>
+    <figcaption><b>道具 — 紳士</b><code>08-3-tool-om.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="08-4-tool-usagi.png" target="_blank" rel="noopener"><img src="08-4-tool-usagi.png" alt="道具 — 兎" loading="lazy"></a>
+    <figcaption><b>道具 — 兎</b><code>08-4-tool-usagi.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+</div>
+<h2>判定後（お国訛り八種）</h2>
+<div class="grid">
+  <figure>
+    <a href="09-1-dialect-miyazaki.png" target="_blank" rel="noopener"><img src="09-1-dialect-miyazaki.png" alt="訛り — 宮崎" loading="lazy"></a>
+    <figcaption><b>訛り — 宮崎</b><code>09-1-dialect-miyazaki.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="09-2-dialect-hakata.png" target="_blank" rel="noopener"><img src="09-2-dialect-hakata.png" alt="訛り — 博多" loading="lazy"></a>
+    <figcaption><b>訛り — 博多</b><code>09-2-dialect-hakata.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="09-3-dialect-osaka.png" target="_blank" rel="noopener"><img src="09-3-dialect-osaka.png" alt="訛り — 大阪" loading="lazy"></a>
+    <figcaption><b>訛り — 大阪</b><code>09-3-dialect-osaka.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="09-4-dialect-kyoto.png" target="_blank" rel="noopener"><img src="09-4-dialect-kyoto.png" alt="訛り — 京都" loading="lazy"></a>
+    <figcaption><b>訛り — 京都</b><code>09-4-dialect-kyoto.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="09-5-dialect-aomori.png" target="_blank" rel="noopener"><img src="09-5-dialect-aomori.png" alt="訛り — 青森" loading="lazy"></a>
+    <figcaption><b>訛り — 青森</b><code>09-5-dialect-aomori.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="09-6-dialect-okinawa.png" target="_blank" rel="noopener"><img src="09-6-dialect-okinawa.png" alt="訛り — 沖縄" loading="lazy"></a>
+    <figcaption><b>訛り — 沖縄</b><code>09-6-dialect-okinawa.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="09-7-dialect-bushi.png" target="_blank" rel="noopener"><img src="09-7-dialect-bushi.png" alt="訛り — 武士" loading="lazy"></a>
+    <figcaption><b>訛り — 武士</b><code>09-7-dialect-bushi.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="09-8-dialect-yoji.png" target="_blank" rel="noopener"><img src="09-8-dialect-yoji.png" alt="訛り — 幼児" loading="lazy"></a>
+    <figcaption><b>訛り — 幼児</b><code>09-8-dialect-yoji.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+</div>
+<h2>その他の間</h2>
+<div class="grid">
+  <figure>
+    <a href="13-cat-room.png" target="_blank" rel="noopener"><img src="13-cat-room.png" alt="猫部屋（設定）" loading="lazy"></a>
+    <figcaption><b>猫部屋（設定）</b><code>13-cat-room.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="21-misdiag.png" target="_blank" rel="noopener"><img src="21-misdiag.png" alt="誤診記録" loading="lazy"></a>
+    <figcaption><b>誤診記録</b><code>21-misdiag.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="22-haipai-ledger.png" target="_blank" rel="noopener"><img src="22-haipai-ledger.png" alt="配牌帳" loading="lazy"></a>
+    <figcaption><b>配牌帳</b><code>22-haipai-ledger.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="23-reader-page.png" target="_blank" rel="noopener"><img src="23-reader-page.png" alt="読み取りページ（reader.html・別ページ）" loading="lazy"></a>
+    <figcaption><b>読み取りページ（reader.html・別ページ）</b><code>23-reader-page.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+</div>
+<h2>見張り台</h2>
+<div class="grid">
+  <figure>
+    <a href="14-1-watch-verdict.png" target="_blank" rel="noopener"><img src="14-1-watch-verdict.png" alt="見張り台 — 攻守の答え合わせ" loading="lazy"></a>
+    <figcaption><b>見張り台 — 攻守の答え合わせ</b><code>14-1-watch-verdict.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="14-2-watch-cat.png" target="_blank" rel="noopener"><img src="14-2-watch-cat.png" alt="見張り台 — 猫牌を数える" loading="lazy"></a>
+    <figcaption><b>見張り台 — 猫牌を数える</b><code>14-2-watch-cat.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="14-3-watch-eda.png" target="_blank" rel="noopener"><img src="14-3-watch-eda.png" alt="見張り台 — 枝豆の的" loading="lazy"></a>
+    <figcaption><b>見張り台 — 枝豆の的</b><code>14-3-watch-eda.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="14-4-watch-ai.png" target="_blank" rel="noopener"><img src="14-4-watch-ai.png" alt="見張り台 — AIの見立て" loading="lazy"></a>
+    <figcaption><b>見張り台 — AIの見立て</b><code>14-4-watch-ai.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="15-watch-guide.png" target="_blank" rel="noopener"><img src="15-watch-guide.png" alt="見張り台の手引き" loading="lazy"></a>
+    <figcaption><b>見張り台の手引き</b><code>15-watch-guide.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+</div>
+<h2>探偵編</h2>
+<div class="grid">
+  <figure>
+    <a href="16-adv-start.png" target="_blank" rel="noopener"><img src="16-adv-start.png" alt="探偵編 — 乗船の幕" loading="lazy"></a>
+    <figcaption><b>探偵編 — 乗船の幕</b><code>16-adv-start.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="17-adv-room.png" target="_blank" rel="noopener"><img src="17-adv-room.png" alt="探偵編 — 猫室（部屋に入った姿）" loading="lazy"></a>
+    <figcaption><b>探偵編 — 猫室（部屋に入った姿）</b><code>17-adv-room.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+</div>
+<h2>ミニゲーム</h2>
+<div class="grid">
+  <figure>
+    <a href="18-tori-menu.png" target="_blank" rel="noopener"><img src="18-tori-menu.png" alt="一索の鳥 — 品書き" loading="lazy"></a>
+    <figcaption><b>一索の鳥 — 品書き</b><code>18-tori-menu.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="19-1-tori-play-easy.png" target="_blank" rel="noopener"><img src="19-1-tori-play-easy.png" alt="一索の鳥 — 遊んでいる最中 初級（同時2羽・ノルマ3羽）" loading="lazy"></a>
+    <figcaption><b>一索の鳥 — 遊んでいる最中 初級（同時2羽・ノルマ3羽）</b><code>19-1-tori-play-easy.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="19-2-tori-play-hard.png" target="_blank" rel="noopener"><img src="19-2-tori-play-hard.png" alt="一索の鳥 — 遊んでいる最中 上級（同時4羽・ノルマ7羽）" loading="lazy"></a>
+    <figcaption><b>一索の鳥 — 遊んでいる最中 上級（同時4羽・ノルマ7羽）</b><code>19-2-tori-play-hard.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="19-3-tori-play-endless.png" target="_blank" rel="noopener"><img src="19-3-tori-play-endless.png" alt="一索の鳥 — 遊んでいる最中 連戦（同時4羽・ノルマなし）" loading="lazy"></a>
+    <figcaption><b>一索の鳥 — 遊んでいる最中 連戦（同時4羽・ノルマなし）</b><code>19-3-tori-play-endless.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+  <figure>
+    <a href="20-tori-end.png" target="_blank" rel="noopener"><img src="20-tori-end.png" alt="一索の鳥 — 結果の絵（負け「逃げられた」）" loading="lazy"></a>
+    <figcaption><b>一索の鳥 — 結果の絵（負け「逃げられた」）</b><code>20-tori-end.png</code> <code>844x390（横）</code></figcaption>
+  </figure>
+</div>
+<footer>
+  この一覧は <code>node shot-all.js</code> が組み直します。手で書き換えないでください。<br>
+  第一段は「いま外から呼べる画面」だけです。探偵編の各場やミニゲームの途中の姿は、
+  第二段（遷移口を掘る工事）に回しています。
+</footer>
+</body>
+</html>
