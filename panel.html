@@ -96,6 +96,8 @@
   #copiedList.open{display:block;}
   #copiedList li{opacity:.62;}
   .got{margin-left:6px; font-size:13px; font-weight:700; color:var(--done);}
+  /* 「ここまで読んだ」で片付いた札の印（v34）。押して写した札（緑）とは色を分ける。 */
+  .read{margin-left:6px; font-size:13px; font-weight:700; color:var(--wait);}
 
   /* 常時出す事実の行。版の並びと生存の時刻。 */
   .facts{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:13px; color:var(--dim);
@@ -227,7 +229,7 @@
     <ul id="copiedList"></ul>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v33（8月25日）</p>
+  <p class="ver" id="verTag">panel v34（8月26日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -248,7 +250,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '33';
+  var PANEL_VER = '34';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -297,6 +299,32 @@
   function keyOf(d) { return String(d.time || 0) + '|' + String(d.title || ''); }
   /* 知らせの一覧。ntfy へ出るのは異常だけになったので、読み物はここから取る。 */
   var NOTICES_URL = 'https://kfsr148-art.github.io/koushu-handan/notices.json';
+  /* 「ここまで読んだ」の控え（v34）。{at, upto} の二つだけを持つ。
+     チャットの側で state.json や報告書を直に読んで済ませた回は、パネルの「写す」を
+     押していないので札が残り続ける。その受け。upto **以前**の札は写した扱いにする。
+     ＊書くのは Claude Code の側（node seen-set.js）。パネルからは読むだけ。 */
+  var SEEN_URL = 'https://kfsr148-art.github.io/koushu-handan/seen.json';
+  var seenUpto = 0;
+  /* 「写した札を出す」を押した回だけ、この端末で seen を無視する（その場かぎり）。
+     ＊seen は公開側の値なので端末からは消せない。押しても何も出ないと壊れて見える。 */
+  var ignoreSeen = false;
+  function pullSeen() {
+    fetch(SEEN_URL + '?_t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (s) {
+        var v = (s && typeof s.upto === 'number' && s.upto > 0) ? s.upto : 0;
+        /* 値が動いたら一覧を組み直す。取得は一覧より遅れて返ることがあるので、
+           待たずに一度組んでおいて、届いた時点で直す。 */
+        if (v !== seenUpto) { seenUpto = v; try { pull(); } catch (e) {} }
+      })
+      .catch(function () { seenUpto = 0; });
+  }
+  /* この札は片付いているか。「写す」を押した／「ここまで読んだ」に含まれる、のどちらか。 */
+  function isDone(d) {
+    if (copied[keyOf(d)]) { return true; }
+    if (!ignoreSeen && seenUpto && d && typeof d.time === 'number' && d.time <= seenUpto) { return true; }
+    return false;
+  }
   /* 最後の更新からこれを超えたら「連絡なし」。
      見張りは「変化があったときだけ」流す作りで、変化が無い間は15分（900秒）おきに
      心拍を一本だけ出す。したがってここは 900 より長くないと、生きているのに
@@ -325,6 +353,7 @@
     $('main').className = '';
     checkPanelVer();
     pullVer();
+    pullSeen();   /* 「ここまで読んだ」を先に取る（v34）。一覧を組む前に間に合わせる */
     pullUsage();
     tick();
     if (timer) { clearInterval(timer); }
@@ -361,7 +390,9 @@
   }
 
   /* 15秒ごとに、知らせの一覧と状態の両方を取りに行く。 */
-  function tick() { pull(); pullState(); }
+  /* ＊「ここまで読んだ」も毎回見に行く（v34）。こちらで書き換えた直後に、
+       パネルを開き直さなくても札が片付くようにするため。中身は二つの数だけで軽い。 */
+  function tick() { pull(); pullState(); pullSeen(); }
 
   /* 題の種類で色を分ける。絵文字で頭が揃っているので、そこを見る。
        🙋 ヨシしてください   … 黄（返事が要る）
@@ -434,7 +465,7 @@
         var total = rows.length;
         /* 落とす前の全件を控える。写した札の控え（下の畳んだ箱）がここから作られる。 */
         allRows = rows.slice();
-        rows = rows.filter(function (d) { return !copied[keyOf(d)]; });
+        rows = rows.filter(function (d) { return !isDone(d); });
         shown = rows;
         paintCopied(allRows);
 
@@ -445,13 +476,16 @@
              控え（notices.json）には触らない。 */
         if (total > 0 && rows.length === 0) {
           $('list').innerHTML = '<li class="why"><p class="m">'
-            + esc(total + '件ぜんぶ写し済みです。新しい知らせが出れば、ここに並びます。')
-            + '</p><p class="m"><button type="button" id="unmark">写した札を出す</button></p></li>';
+            + esc(total + '件ぜんぶ片付いています。新しい知らせが出れば、ここに並びます。')
+            + '</p><p class="m"><button type="button" id="unmark">片付いた札を出す</button></p></li>';
           var ub = $('unmark');
           if (ub) {
             ub.onclick = function () {
               copied = {};
               saveCopied();
+              /* 「ここまで読んだ」は公開側の値なので、端末からは消せない。
+                 押しても何も出ないと壊れて見えるので、この端末のこの回だけ無視する（v34）。 */
+              ignoreSeen = true;
               pull();
             };
           }
@@ -746,7 +780,7 @@
 
   /* 写していない件を、古い順にまとめて一本の文にする。 */
   function copyAllText() {
-    var todo = shown.filter(function (d) { return !copied[keyOf(d)]; });
+    var todo = shown.filter(function (d) { return !isDone(d); });
     todo.sort(function (a, b) { return (a.time || 0) - (b.time || 0); });   /* 古い順。上から読めば時系列 */
     if (!todo.length) { return null; }
     var parts = todo.map(function (d) { return sixLines(d); });
@@ -999,26 +1033,33 @@
   function paintCopied(all) {
     var box = $('copiedBox'), head = $('copiedHead'), ul = $('copiedList');
     if (!box || !head || !ul) { return; }
-    var items = (all || []).filter(function (d) { return copied[keyOf(d)]; });
+    /* 片付いた札は二通り（v34）。押して写したものと、「ここまで読んだ」に含まれるもの。
+       どちらもここへ入れるが、**印は書き分ける**——読んだ側に「届いた」は付けない
+       （そちらは押していないので、届いたかどうかを判じる物差しが無い）。 */
+    var items = (all || []).filter(isDone);
     if (!items.length) { box.className = 'done-box hide'; ul.innerHTML = ''; return; }
     box.className = 'done-box';
     var res = lastWatch ? tsOf(lastWatch.lastResume) : null;
-    var got = 0, html = '';
+    var got = 0, red = 0, html = '';
     items.forEach(function (d) {
       var t = copied[keyOf(d)];
-      var ok = (res !== null && typeof t === 'number' && t > 1 && res > t * 1000);
+      var byCopy = !!t;
+      var ok = (byCopy && res !== null && typeof t === 'number' && t > 1 && res > t * 1000);
       if (ok) { got++; }
+      if (!byCopy) { red++; }
       html += '<li class="ack">'
             + '<p class="t"><span class="tx">' + esc(d.title || '(題なし)')
             + '<span class="when">' + hhmm(d.time) + '</span>'
             + (ok ? '<span class="got">届いた</span>' : '')
+            + (byCopy ? '' : '<span class="read">チャットで読んだ</span>')
             + '</span></p>'
             + '<p class="m">' + esc(d.message) + '</p></li>';
     });
     ul.innerHTML = html;
     var open = (ul.className === 'open');
     head.textContent = '写した札 ' + items.length + '件'
-                     + (got ? '（届いた ' + got + '件）' : '') + (open ? ' ▲' : ' ▼');
+                     + (got ? '（届いた ' + got + '件）' : '')
+                     + (red ? '（読んだ ' + red + '件）' : '') + (open ? ' ▲' : ' ▼');
     head.onclick = function () {
       var o = (ul.className !== 'open');
       ul.className = o ? 'open' : '';
