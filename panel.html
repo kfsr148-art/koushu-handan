@@ -227,7 +227,7 @@
     <ul id="copiedList"></ul>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v32（8月25日）</p>
+  <p class="ver" id="verTag">panel v33（8月25日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -248,7 +248,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '32';
+  var PANEL_VER = '33';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -339,16 +339,25 @@
 
   /* 本体の版を一度だけ取りに行く。取れなければ写しには「未確認」と出る。
      画面には出さない。写しの中だけで使う。 */
+  /* 版が届いたら、その場で塗り直す（v33）。
+     ＊版の取得は投げっぱなしで、塗るのは状態の取得（15秒おき）のときだけだった。
+       そのため開いた直後は「公開 v未確認」のまま最大15秒あり、
+       stable の枝は別の宿（raw.githubusercontent）なので、そちらが後から届くと取り残された。
+       ＊塗る材料の at は、直近に読めた状態の時刻を使い回す。無ければ 0（＝横棒）。 */
+  function reFacts() {
+    try { paintFacts((lastState && lastState.at) || 0); } catch (e) {}
+  }
+
   function pullVer() {
     fetch(VER_URL + '?_t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.text() : ''; })
-      .then(function (t) { honVer = String(t || '').trim().replace(/[^0-9]/g, ''); })
-      .catch(function () { honVer = ''; });
+      .then(function (t) { honVer = String(t || '').trim().replace(/[^0-9]/g, ''); reFacts(); })
+      .catch(function () { honVer = ''; reFacts(); });
     /* stable の枝の ver.txt が、検収の済んだ版。タグを動かすとこちらも動く。 */
     fetch(STB_URL + '?_t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.text() : ''; })
-      .then(function (t) { stbVer = String(t || '').trim().replace(/[^0-9]/g, ''); })
-      .catch(function () { stbVer = ''; });
+      .then(function (t) { stbVer = String(t || '').trim().replace(/[^0-9]/g, ''); reFacts(); })
+      .catch(function () { stbVer = ''; reFacts(); });
   }
 
   /* 15秒ごとに、知らせの一覧と状態の両方を取りに行く。 */
@@ -1080,6 +1089,13 @@
           mik = '見込み' + (d.mikomi ? d.mikomi : '不明') + '・開始から' + min + '分';
         }
 
+        /* 版と最終確認は、状態がどうであろうと**必ず**塗る（v33）。
+           ＊v18 から、下の「連絡なし」の早戻りが paintFacts より前にあり、
+             連絡なしの間だけ「版 —／最終確認 —」の初期値のまま残っていた（2026-08-25 実機で発覚）。
+             いちばん知りたいのは、連絡が途切れたときの**最後に見えていた時刻**なので、
+             ここが横棒になるのは筋が通らない。塗るのを先に済ませる。 */
+        paintFacts(d.at || 0);
+
         if (sec > STALE_SEC) {
           /* 連絡なしの間は数えない。数えると、毎秒の書き換えが「連絡なし」を上書きしてしまう。 */
           sinceBase = { at: 0, word: '' };
@@ -1101,7 +1117,6 @@
           sinceBase = { at: 0, word: '' };
         }
         lastState = { word: word, since: '', at: d.at || 0 };
-        paintFacts(d.at || 0);
         paintState(cls, word, subj, agoText(sec), mik);
       })
       .catch(function (e) {
