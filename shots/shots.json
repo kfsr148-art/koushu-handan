@@ -1,10 +1,11 @@
 {
-  "stamp": "2026-08-25 13:21:31 JST",
-  "base": "https://kfsr148-art.github.io/koushu-handan/koushu-handan.html",
+  "stamp": "2026-08-25 22:20:41 JST",
+  "base": "file:///C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/probe.html",
+  "baseNote": "本体の写し（この回に作り直した。遷移口つき）",
   "viewport": "844x390（横）／390x844（縦・回転の一枚のみ）",
   "scale": 2,
   "engine": "webkit",
-  "ok": 45,
+  "ok": 60,
   "ng": 0,
   "dup": [],
   "shots": [
@@ -16,7 +17,11 @@
       "ok": true,
       "sec": "9.1",
       "err": null,
-      "view": "390x844（縦）"
+      "view": "390x844（縦）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663636277 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "01-title",
@@ -24,9 +29,13 @@
       "label": "タイトル",
       "file": "01-title.png",
       "ok": true,
-      "sec": "9.2",
+      "sec": "8.0",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663643094 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "02-info-list",
@@ -34,9 +43,13 @@
       "label": "案内の一覧",
       "file": "02-info-list.png",
       "ok": true,
-      "sec": "7.2",
+      "sec": "6.2",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663650425 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "03-info-engine",
@@ -44,9 +57,13 @@
       "label": "案内 — このツール、何がすごいの？",
       "file": "03-info-engine.png",
       "ok": true,
-      "sec": "9.4",
+      "sec": "5.8",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663656357 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "04-board-empty",
@@ -54,9 +71,13 @@
       "label": "盤面（牌を入れる前）",
       "file": "04-board-empty.png",
       "ok": true,
-      "sec": "8.0",
+      "sec": "7.6",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663663478 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "05-board-14",
@@ -64,9 +85,13 @@
       "label": "盤面（14枚を並べた姿）",
       "file": "05-board-14.png",
       "ok": true,
-      "sec": "7.4",
+      "sec": "6.8",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663670244 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "06-judged",
@@ -74,9 +99,13 @@
       "label": "判定の結果（既定＝執事）",
       "file": "06-judged.png",
       "ok": true,
-      "sec": "8.7",
+      "sec": "7.5",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663676939 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "07-1-tone-butler",
@@ -84,9 +113,13 @@
       "label": "人柄 — 執事",
       "file": "07-1-tone-butler.png",
       "ok": true,
-      "sec": "8.6",
+      "sec": "6.9",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663683947 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "07-2-tone-strategist",
@@ -94,9 +127,13 @@
       "label": "人柄 — 軍師",
       "file": "07-2-tone-strategist.png",
       "ok": true,
-      "sec": "9.8",
+      "sec": "6.9",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663690839 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "07-3-tone-blunt",
@@ -104,9 +141,13 @@
       "label": "人柄 — ずんだ",
       "file": "07-3-tone-blunt.png",
       "ok": true,
-      "sec": "8.7",
+      "sec": "8.2",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663697923 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "07-4-tone-lady",
@@ -114,9 +155,13 @@
       "label": "人柄 — お嬢様",
       "file": "07-4-tone-lady.png",
       "ok": true,
-      "sec": "10.9",
+      "sec": "6.9",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663706128 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "07-5-tone-french",
@@ -124,9 +169,13 @@
       "label": "人柄 — マダム",
       "file": "07-5-tone-french.png",
       "ok": true,
-      "sec": "8.3",
+      "sec": "6.8",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663713075 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "07-6-tone-ichihime",
@@ -134,9 +183,13 @@
       "label": "人柄 — 一姫",
       "file": "07-6-tone-ichihime.png",
       "ok": true,
-      "sec": "8.7",
+      "sec": "7.0",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663719981 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "07-7-tone-sensei",
@@ -144,9 +197,13 @@
       "label": "人柄 — 先生",
       "file": "07-7-tone-sensei.png",
       "ok": true,
-      "sec": "8.5",
+      "sec": "7.2",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663726998 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "08-1-tool-cat",
@@ -154,9 +211,13 @@
       "label": "道具 — 現場猫",
       "file": "08-1-tool-cat.png",
       "ok": true,
-      "sec": "8.8",
+      "sec": "6.5",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663733865 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "08-2-tool-eda",
@@ -164,9 +225,13 @@
       "label": "道具 — 枝豆",
       "file": "08-2-tool-eda.png",
       "ok": true,
-      "sec": "8.5",
+      "sec": "7.6",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663740614 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "08-3-tool-om",
@@ -174,9 +239,13 @@
       "label": "道具 — 紳士",
       "file": "08-3-tool-om.png",
       "ok": true,
-      "sec": "9.4",
+      "sec": "7.2",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663748615 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "08-4-tool-usagi",
@@ -184,9 +253,13 @@
       "label": "道具 — 兎",
       "file": "08-4-tool-usagi.png",
       "ok": true,
-      "sec": "8.7",
+      "sec": "6.8",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663755519 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "09-1-dialect-miyazaki",
@@ -194,9 +267,13 @@
       "label": "訛り — 宮崎",
       "file": "09-1-dialect-miyazaki.png",
       "ok": true,
-      "sec": "8.1",
+      "sec": "7.8",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663763274 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "09-2-dialect-hakata",
@@ -204,9 +281,13 @@
       "label": "訛り — 博多",
       "file": "09-2-dialect-hakata.png",
       "ok": true,
-      "sec": "8.0",
+      "sec": "6.8",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663770097 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "09-3-dialect-osaka",
@@ -214,9 +295,13 @@
       "label": "訛り — 大阪",
       "file": "09-3-dialect-osaka.png",
       "ok": true,
-      "sec": "8.2",
+      "sec": "6.9",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663776862 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "09-4-dialect-kyoto",
@@ -224,9 +309,13 @@
       "label": "訛り — 京都",
       "file": "09-4-dialect-kyoto.png",
       "ok": true,
-      "sec": "9.2",
+      "sec": "7.1",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663783880 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "09-5-dialect-aomori",
@@ -234,9 +323,13 @@
       "label": "訛り — 青森",
       "file": "09-5-dialect-aomori.png",
       "ok": true,
-      "sec": "9.5",
+      "sec": "6.9",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663790974 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "09-6-dialect-okinawa",
@@ -244,9 +337,13 @@
       "label": "訛り — 沖縄",
       "file": "09-6-dialect-okinawa.png",
       "ok": true,
-      "sec": "9.4",
+      "sec": "6.1",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663797677 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "09-7-dialect-bushi",
@@ -254,9 +351,13 @@
       "label": "訛り — 武士",
       "file": "09-7-dialect-bushi.png",
       "ok": true,
-      "sec": "8.5",
+      "sec": "6.6",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663803723 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "09-8-dialect-yoji",
@@ -264,9 +365,13 @@
       "label": "訛り — 幼児",
       "file": "09-8-dialect-yoji.png",
       "ok": true,
-      "sec": "8.3",
+      "sec": "6.6",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663810378 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "10-judged-defend",
@@ -274,9 +379,13 @@
       "label": "守りの判定（羊／鼠）",
       "file": "10-judged-defend.png",
       "ok": true,
-      "sec": "8.6",
+      "sec": "9.3",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663817107 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "11-judged-kokushi",
@@ -284,9 +393,13 @@
       "label": "国士が見えている判定（役満手前＝鳥）",
       "file": "11-judged-kokushi.png",
       "ok": true,
-      "sec": "8.3",
+      "sec": "6.9",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663826348 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "12-mascot",
@@ -294,9 +407,13 @@
       "label": "判定獣が述べる（虎・羊・鼠）",
       "file": "12-mascot.png",
       "ok": true,
-      "sec": "8.2",
+      "sec": "6.0",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663833155 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "13-cat-room",
@@ -304,9 +421,13 @@
       "label": "猫部屋（設定）",
       "file": "13-cat-room.png",
       "ok": true,
-      "sec": "7.0",
+      "sec": "6.1",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663839476 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "14-1-watch-verdict",
@@ -314,9 +435,13 @@
       "label": "見張り台 — 攻守の答え合わせ",
       "file": "14-1-watch-verdict.png",
       "ok": true,
-      "sec": "7.9",
+      "sec": "6.0",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663845366 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "14-2-watch-cat",
@@ -324,9 +449,13 @@
       "label": "見張り台 — 猫牌を数える",
       "file": "14-2-watch-cat.png",
       "ok": true,
-      "sec": "9.2",
+      "sec": "6.0",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663851360 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "14-3-watch-eda",
@@ -334,9 +463,13 @@
       "label": "見張り台 — 枝豆の的",
       "file": "14-3-watch-eda.png",
       "ok": true,
-      "sec": "7.4",
+      "sec": "6.2",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663857621 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "14-4-watch-ai",
@@ -344,9 +477,13 @@
       "label": "見張り台 — AIの見立て",
       "file": "14-4-watch-ai.png",
       "ok": true,
-      "sec": "8.1",
+      "sec": "6.0",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663863671 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "15-watch-guide",
@@ -354,9 +491,13 @@
       "label": "見張り台の手引き",
       "file": "15-watch-guide.png",
       "ok": true,
-      "sec": "7.5",
+      "sec": "6.0",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663869839 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "16-adv-start",
@@ -364,19 +505,181 @@
       "label": "探偵編 — 乗船の幕",
       "file": "16-adv-start.png",
       "ok": true,
-      "sec": "7.8",
+      "sec": "6.3",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663875915 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
-      "name": "17-adv-room",
+      "name": "17-1-adv-hall",
       "group": "探偵編",
-      "label": "探偵編 — 猫室（部屋に入った姿）",
-      "file": "17-adv-room.png",
+      "label": "探偵編 — 廊下",
+      "file": "17-1-adv-hall.png",
       "ok": true,
-      "sec": "9.5",
+      "sec": "8.3",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663883295 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
+    },
+    {
+      "name": "17-2-adv-room-office",
+      "group": "探偵編",
+      "label": "探偵編 — 猫室",
+      "file": "17-2-adv-room-office.png",
+      "ok": true,
+      "sec": "8.5",
+      "err": null,
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663890336 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
+    },
+    {
+      "name": "17-3-adv-room-butler",
+      "group": "探偵編",
+      "label": "探偵編 — 執事の部屋",
+      "file": "17-3-adv-room-butler.png",
+      "ok": true,
+      "sec": "6.9",
+      "err": null,
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663898883 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
+    },
+    {
+      "name": "17-4-adv-room16",
+      "group": "探偵編",
+      "label": "探偵編 — 16号室（罠の部屋。踏まずに撮る）",
+      "file": "17-4-adv-room16.png",
+      "ok": true,
+      "sec": "6.4",
+      "err": null,
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663905790 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
+    },
+    {
+      "name": "17-5-adv-note",
+      "group": "探偵編",
+      "label": "探偵編 — 探偵ノート",
+      "file": "17-5-adv-note.png",
+      "ok": true,
+      "sec": "6.6",
+      "err": null,
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663912307 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
+    },
+    {
+      "name": "17-6-adv-diff",
+      "group": "探偵編",
+      "label": "探偵編 — 難易度の選び",
+      "file": "17-6-adv-diff.png",
+      "ok": true,
+      "sec": "6.9",
+      "err": null,
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663919121 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
+    },
+    {
+      "name": "17-7-adv-end-win",
+      "group": "探偵編",
+      "label": "探偵編 — 終局（勝ち（ロン））",
+      "file": "17-7-adv-end-win.png",
+      "ok": true,
+      "sec": "6.6",
+      "err": null,
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663925741 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
+    },
+    {
+      "name": "17-8-adv-end-ap",
+      "group": "探偵編",
+      "label": "探偵編 — 終局（行動力ぎれ）",
+      "file": "17-8-adv-end-ap.png",
+      "ok": true,
+      "sec": "6.7",
+      "err": null,
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663932453 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
+    },
+    {
+      "name": "17-9-adv-end-knife",
+      "group": "探偵編",
+      "label": "探偵編 — 終局（16号室のナイフ）",
+      "file": "17-9-adv-end-knife.png",
+      "ok": true,
+      "sec": "6.2",
+      "err": null,
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663938983 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
+    },
+    {
+      "name": "17-10-adv-end-alldead",
+      "group": "探偵編",
+      "label": "探偵編 — 終局（皆殺し）",
+      "file": "17-10-adv-end-alldead.png",
+      "ok": true,
+      "sec": "6.8",
+      "err": null,
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663945172 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
+    },
+    {
+      "name": "17-11-adv-end-bribe",
+      "group": "探偵編",
+      "label": "探偵編 — 終局（買収された）",
+      "file": "17-11-adv-end-bribe.png",
+      "ok": true,
+      "sec": "6.7",
+      "err": null,
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663952272 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
+    },
+    {
+      "name": "17-12-adv-end-aground",
+      "group": "探偵編",
+      "label": "探偵編 — 終局（座礁）",
+      "file": "17-12-adv-end-aground.png",
+      "ok": true,
+      "sec": "6.5",
+      "err": null,
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663958818 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "18-tori-menu",
@@ -384,9 +687,13 @@
       "label": "一索の鳥 — 品書き",
       "file": "18-tori-menu.png",
       "ok": true,
-      "sec": "8.2",
+      "sec": "6.0",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663965579 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "19-1-tori-play-easy",
@@ -394,9 +701,13 @@
       "label": "一索の鳥 — 遊んでいる最中 初級（同時2羽・ノルマ3羽）",
       "file": "19-1-tori-play-easy.png",
       "ok": true,
-      "sec": "10.4",
+      "sec": "7.2",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663971517 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "19-2-tori-play-hard",
@@ -404,9 +715,13 @@
       "label": "一索の鳥 — 遊んでいる最中 上級（同時4羽・ノルマ7羽）",
       "file": "19-2-tori-play-hard.png",
       "ok": true,
-      "sec": "9.1",
+      "sec": "7.1",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663978649 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "19-3-tori-play-endless",
@@ -414,19 +729,55 @@
       "label": "一索の鳥 — 遊んでいる最中 連戦（同時4羽・ノルマなし）",
       "file": "19-3-tori-play-endless.png",
       "ok": true,
-      "sec": "9.2",
+      "sec": "7.2",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663985912 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
-      "name": "20-tori-end",
+      "name": "20-1-tori-win",
+      "group": "ミニゲーム",
+      "label": "一索の鳥 — 結果の絵（勝ち「捕まえた」）",
+      "file": "20-1-tori-win.png",
+      "ok": true,
+      "sec": "6.6",
+      "err": null,
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663993240 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
+    },
+    {
+      "name": "20-2-tori-lose",
       "group": "ミニゲーム",
       "label": "一索の鳥 — 結果の絵（負け「逃げられた」）",
-      "file": "20-tori-end.png",
+      "file": "20-2-tori-lose.png",
       "ok": true,
-      "sec": "39.4",
+      "sec": "8.0",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787663999905 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
+    },
+    {
+      "name": "20-3-tori-win-hard",
+      "group": "ミニゲーム",
+      "label": "一索の鳥 — 結果の絵（上級を勝ち）",
+      "file": "20-3-tori-win-hard.png",
+      "ok": true,
+      "sec": "6.7",
+      "err": null,
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787664007897 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "21-misdiag",
@@ -434,9 +785,13 @@
       "label": "誤診記録",
       "file": "21-misdiag.png",
       "ok": true,
-      "sec": "7.6",
+      "sec": "5.1",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787664014204 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "22-haipai-ledger",
@@ -444,9 +799,13 @@
       "label": "配牌帳",
       "file": "22-haipai-ledger.png",
       "ok": true,
-      "sec": "8.1",
+      "sec": "6.2",
       "err": null,
-      "view": "844x390（横）"
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787664019586 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     },
     {
       "name": "23-reader-page",
@@ -454,9 +813,37 @@
       "label": "読み取りページ（reader.html・別ページ）",
       "file": "23-reader-page.png",
       "ok": true,
-      "sec": "4.1",
+      "sec": "5.3",
       "err": null,
       "view": "844x390（横）"
+    },
+    {
+      "name": "24-1-ss-board",
+      "group": "その他の間",
+      "label": "写真読み — 読み取りの盤面（試し画を渡した）",
+      "file": "24-1-ss-board.png",
+      "ok": true,
+      "sec": "6.5",
+      "err": null,
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787664030924 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
+    },
+    {
+      "name": "24-2-ss-calib",
+      "group": "その他の間",
+      "label": "写真読み — 目盛り合わせ",
+      "file": "24-2-ss-calib.png",
+      "ok": true,
+      "sec": "6.9",
+      "err": null,
+      "view": "844x390（横）",
+      "jsErr": [
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/ver.txt?_chk=1787664037489 due to access control checks.",
+        "//C:/Users/user/AppData/Local/Temp/koushu-shot-NzOL3y/templates.json due to access control checks."
+      ]
     }
   ]
 }
