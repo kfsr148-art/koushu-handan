@@ -198,7 +198,7 @@
      target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
   <ul id="list"></ul>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v30（8月25日）</p>
+  <p class="ver" id="verTag">panel v31（8月25日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -218,7 +218,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '30';
+  var PANEL_VER = '31';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -375,7 +375,12 @@
         return r.json();
       })
       .then(function (arr) {
-        var rows = Array.isArray(arr) ? arr.slice() : [];
+        /* 配列でなければ「読めません」へ落とす（v31）。
+           以前は空配列と同じ扱いにしていたので、控えに20件積まれていても
+           画面は「まだ知らせがありません」になった（2026-08-25 実測）。
+           **空の一覧**と**壊れた一覧**は別物で、混ぜると気づけない。 */
+        if (!Array.isArray(arr)) { throw new Error('形が違います（一覧が配列ではありません）'); }
+        var rows = arr.slice();
         rows.sort(function (a, b) { return (b.time || 0) - (a.time || 0); });
         /* 控えに無くなった件の印は捨てる。端末の中に溜め続けない。
            ＊これは「写した札を落とす」より**前**に行う。あとで行うと、落としたばかりの
@@ -921,6 +926,13 @@
         return r.json();
       })
       .then(function (d) {
+        /* JSON として読めても、形が違えば「読めない」と言う（v31）。
+           配列や別物が来ると d.at が無く、`NaN時間前` を**平常の色**で出していた
+           （2026-08-25 実測）。読み手には読めているようにしか見えず、いちばん危うい。
+           ここで投げれば下の catch が拾い、「連絡なし／状態を読めません」になる。 */
+        if (!d || typeof d !== 'object' || Array.isArray(d) || typeof d.at !== 'number') {
+          throw new Error('形が違います（at が数ではありません）');
+        }
         var sec = Math.floor(Date.now() / 1000) - (d.at || 0);
         var w = String(d.stat || '');
         var subj = String(d.subj || '');
