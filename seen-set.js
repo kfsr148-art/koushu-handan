@@ -92,6 +92,22 @@ if (has('--clear')) {
   }
 }
 
+/* この操作で新たに片付く札を、名前を挙げて出す（2026-08-26）。
+   ＊いちばん危ういのは「見ていない札を巻き込む」こと。時刻で切るので、
+     直前に届いたばかりの札まで読んだことにしてしまう窓がある。
+   ＊黙って消さない。何が片付くかを毎回並べる。取り違えたら --clear で戻せる。
+   ＊パネル側でも消えはせず「写した札」の箱へ入る（青い「チャットで読んだ」の印つき）。 */
+const before = cur.upto || 0;
+const newly = notices()
+  .filter(n => (n.time || 0) > before && upto && (n.time || 0) <= upto)
+  .sort((a, b) => (b.time || 0) - (a.time || 0));
+if (newly.length) {
+  console.log('この操作で新たに片付く札 ' + newly.length + ' 件');
+  newly.forEach(n => console.log('  ' + jst(n.time) + '  ' + (n.title || '')));
+} else if (upto) {
+  console.log('この操作で新たに片付く札はありません（既に片付いているか、対象が無い）');
+}
+
 const out = { at: Math.floor(Date.now() / 1000), upto };
 fs.writeFileSync(SEEN, JSON.stringify(out, null, 2) + '\n', 'utf8');
 
