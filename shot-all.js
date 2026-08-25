@@ -22,6 +22,7 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
+const os   = require('os');
 
 const PW_DIR = process.env.PW_DIR || 'C:/Users/user/.claude/tools/pw/node_modules';
 let playwright;
@@ -44,9 +45,9 @@ const stampNow = () =>
 
 const SCALE = Number(arg('--scale', 2));
 const ONLY  = arg('--only', null);
-const BASE  = has('--local')
-  ? 'file:///' + path.join(ROOT, 'koushu-handan.html').replace(/\\/g, '/')
-  : 'https://kfsr148-art.github.io/koushu-handan/koushu-handan.html';
+/* --published を付けたときだけ、公開ページをそのまま撮る。
+   ＊そのときは遷移口が無いので、第二段の場（探偵編の各場・結果の指定・写真読み）は撮れない。 */
+const PUBLISHED = 'https://kfsr148-art.github.io/koushu-handan/koushu-handan.html';
 
 /* 剣士の足元の線。ミニゲームはここを基準に叩かないと剣が届かない（check.js ⑦ と同じ値）。 */
 const FLOOR = (() => {
@@ -55,6 +56,181 @@ const FLOOR = (() => {
     return Number((src.match(/floorRatio:\s*([0-9.]+)/) || [])[1] || 0.5);
   } catch (e) { return 0.5; }
 })();
+
+/* ───────── 検査用の写しと、そこへ差し込む遷移口 ─────────
+ * 作法14 のとおり、**本体には一行も入れない**。回すたびに本体の写しを一時の場所へ作り、
+ * その写しにだけ遷移口を差し込んで駆動し、終わったら写しごと消す。
+ * ＊写しと本物がずれないよう、**毎回その場で本物から作り直す**。溜めない・使い回さない。
+ * ＊差し込みは「この字面がちょうど1件あること」を確かめてから行う。
+ *   本体が変わって当たらなくなったら、黙って撮り続けずに**その場で止める**。
+ *
+ * 遷移口（写しの上でだけ効く。URL に ?probe=… が無ければ何も走らない）
+ *   ?probe=adv&scene=<intro|hall|room|note|diff|end>&room=<部屋のk>&kind=<win|lose>
+ *   ?probe=tori&result=<win|lose>&level=<easy|normal|hard|endless>&caught=<数>
+ *   ?probe=ss&img=<画の在りか>&calib=1
+ */
+const PROBE_PATCHES = [
+  {
+    name: '①URL の読み取り',
+    /* 自動更新が ?_v= 付きのとき URL を書き戻すので、**一番はじめの script** で読んでおく。
+       あとで読むと消えている。 */
+    find: "<script>\n(function(){\n  var bar = document.getElementById('errBar'), n = 0;",
+    /* ＊当てる字面が <script> から始まるので、差し込む側で <script> を書かない。
+         書くと写しの中で二重になり、内側の <script> を JS として読んで丸ごと落ちる
+         （2026-08-25 実測：Unexpected token '<' で PROBE ごと未定義になった）。 */
+    add: (a) => a.replace('<script>', `<script>
+/* ==== 検査用の遷移口（写しにだけ差し込む。本体には入っていない） ==== */
+var PROBE = (function(){
+  var q = {};
+  try{
+    (location.search || '').replace(/^\\?/, '').split('&').forEach(function(kv){
+      if(!kv) return;
+      var i = kv.indexOf('=');
+      var k = decodeURIComponent(i < 0 ? kv : kv.slice(0, i));
+      var v = i < 0 ? '' : decodeURIComponent(kv.slice(i + 1).replace(/\\+/g, ' '));
+      q[k] = v;
+    });
+  }catch(e){}
+  return q.probe ? q : null;
+})();
+`),
+  },
+  {
+    name: '②探偵編の場を開く口',
+    /* advSt / advView / advRender は探偵編の中だけの持ち物なので、その中へ差し込む。 */
+    find: '  window.advStart = advStart;',
+    add: (a) => a + `
+  /* 検査用：場を名指しで開く。advStart() で一式を組んだあと、見せる場と居る部屋を差し替えて描き直す。
+     ＊罠のある部屋（16号室・14号室）も、入る手続きを踏まないので死なずに撮れる。
+     ＊犯人や目撃者は advNew() が毎回振り直すので、場は指定できても中身は毎回変わる。 */
+  if (typeof PROBE !== 'undefined' && PROBE && PROBE.probe === 'adv') {
+    window.addEventListener('load', function(){
+      setTimeout(function(){
+        try{
+          window.closeTitleScreen();
+          advStart();
+          var sc = PROBE.scene || 'hall';
+          if (PROBE.room) { advSt.room = PROBE.room; }
+          if (sc === 'end') {
+            /* 終局は advEnd(kind) がひと揃いを組む（幕の中身・頁割り・描き直しまで）。
+               ＊advBuildEnding() は頁を**返すだけ**で、advEndPages には入れない。
+                 そちらを呼んで捨てると、乗船の幕のまま撮れてしまう（2026-08-25 実測：
+                 勝ちと敗けが同じ絵になった）。 */
+            advEnd(PROBE.kind || 'win');
+            return;
+          } else {
+            advView = sc;
+          }
+          advRender();
+        }catch(e){}
+      }, 400);
+    });
+  }`,
+  },
+  {
+    name: '③ミニゲームの結果を指定する口',
+    /* finish() と caught と level は遊びの中だけの持ち物なので、その中へ差し込む。 */
+    find: `    if(el) el.classList.remove('show');
+    if(window.ssGoTitle) window.ssGoTitle();
+  };
+})();`,
+    add: () => `    if(el) el.classList.remove('show');
+    if(window.ssGoTitle) window.ssGoTitle();
+  };
+  /* 検査用：結果を指定して絵を出す。外から剣を振っても鳥は捕れず（450回振って0/3羽）、
+     出るのは負け絵だけだった。難易度を選んで始めたあと、捕った数を入れて結果を直に出す。
+     ＊この遊びに**引き分けは無い**。finish(win) の真偽二択で、勝ちと負けの二つだけ。
+       ノルマに足りない数で勝ちを指定することはできる（＝絵は勝ち、数は途中）。 */
+  if (typeof PROBE !== 'undefined' && PROBE && PROBE.probe === 'tori') {
+    window.addEventListener('load', function(){
+      setTimeout(function(){
+        try{
+          window.closeTitleScreen();
+          window.toriOpen();
+          window.toriStart(PROBE.level || 'easy');
+          var win = (PROBE.result !== 'lose');
+          var n = parseInt(PROBE.caught, 10);
+          caught = isFinite(n) ? n : (win ? level.quota : 0);
+          finish(win);
+        }catch(e){}
+      }, 500);
+    });
+  }
+})();`,
+  },
+  {
+    name: '④写真読みに写真を与える口',
+    find: `  if(pz){
+    pz.style.display = 'block';
+    if(!pz._bound){ pz.addEventListener('paste', window.ssZonePaste); pz._bound = true; }
+  }
+};
+</script>`,
+    add: () => `  if(pz){
+    pz.style.display = 'block';
+    if(!pz._bound){ pz.addEventListener('paste', window.ssZonePaste); pz._bound = true; }
+  }
+};
+/* 検査用：写真を与えてから開く。ssShow() は window.ssImg が無いと何もせず戻るので、
+   写真を渡さないかぎり読み取りの盤面は出せなかった。
+   ＊img を省くと、その場で描いた試し画（牌を並べた絵）を使う。外の素材に頼らない。
+   ＊描いた画は data URL なので canvas が汚れず、目盛り合わせも切り出しも通る。 */
+var ssProbePhoto = function(){
+  var c = document.createElement('canvas');
+  c.width = 900; c.height = 260;
+  var g = c.getContext('2d');
+  g.fillStyle = '#2b6b4a'; g.fillRect(0, 0, c.width, c.height);
+  for (var i = 0; i < 13; i++) {
+    var x = 24 + i * 66, y = 60;
+    g.fillStyle = '#f3ead6'; g.fillRect(x, y, 56, 140);
+    g.fillStyle = '#c9bfa6'; g.fillRect(x, y + 132, 56, 8);
+    g.fillStyle = '#1d3a2c';
+    g.font = 'bold 34px sans-serif'; g.textAlign = 'center';
+    g.fillText(String((i % 9) + 1), x + 28, y + 92);
+  }
+  return c.toDataURL('image/png');
+};
+if (typeof PROBE !== 'undefined' && PROBE && PROBE.probe === 'ss') {
+  window.addEventListener('load', function(){
+    setTimeout(function(){
+      try{
+        window.closeTitleScreen();
+        var im = new Image();
+        im.onload = function(){
+          window.ssImg = im;
+          try{ window.ssShow(); }catch(e){}
+          if (PROBE.calib) { setTimeout(function(){ try{ window.ssCalibStart(); }catch(e){} }, 400); }
+        };
+        im.src = PROBE.img ? PROBE.img : ssProbePhoto();
+      }catch(e){}
+    }, 400);
+  });
+}
+</script>`,
+  },
+];
+
+/* 本体の写しを一時の場所へ作り、遷移口を差し込む。返すのは写しの在りか。 */
+function makeProbeCopy() {
+  /* 本体は改行が CRLF。差し込む字面は LF で書いてあるので、写しの側だけ LF へ均す。
+     ＊直すのは写しだけで、本体には触れない。写しは撮り終えたら消える。 */
+  const src = fs.readFileSync(path.join(ROOT, 'koushu-handan.html'), 'utf8').replace(/\r\n/g, '\n');
+  let out = src;
+  PROBE_PATCHES.forEach(p => {
+    /* 差し込む前に、その字面がちょうど1件であることを数える（作法5 と同じ考え）。
+       本体が変わって当たらなくなったら、黙って撮り続けずにここで止める。 */
+    const n = out.split(p.find).length - 1;
+    if (n !== 1) {
+      throw new Error('遷移口を差し込めない：' + p.name + ' の当たりが ' + n + ' 件（1件であるべき）。'
+                    + '本体が変わっています。台本の find を取り直してください。');
+    }
+    out = out.replace(p.find, p.add(p.find));
+  });
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'koushu-shot-'));
+  const file = path.join(dir, 'probe.html');
+  fs.writeFileSync(file, out, 'utf8');
+  return { dir, file, url: 'file:///' + file.replace(/\\/g, '/') };
+}
 
 /* 13枚（判定が通る手）と14枚（いちばん幅の要る姿）。check.js ⑦ と同じ牌姿を使う。 */
 /* 主寸法は横（844x390）。iPhone の論理寸法 390x844 を横に倒した姿で、
@@ -165,8 +341,29 @@ const SHOTS = [
   { name: '16-adv-start', group: '探偵編', label: '探偵編 — 乗船の幕',
     go: async p => p.evaluate(() => { window.closeTitleScreen(); window.advStart(); }), wait: 1000 },
 
-  { name: '17-adv-room', group: '探偵編', label: '探偵編 — 猫室（部屋に入った姿）',
-    go: async p => p.evaluate(() => window.advRoom()), wait: 1100 },
+  /* ここから下は**第二段**。写しへ差し込んだ遷移口（?probe=adv）で開く。
+     手順の再現ではなく、場と部屋を名指しして直に描き直す。 */
+  { name: '17-1-adv-hall', group: '探偵編', label: '探偵編 — 廊下',
+    q: 'probe=adv&scene=hall', go: async p => {}, wait: 1400 },
+  { name: '17-2-adv-room-office', group: '探偵編', label: '探偵編 — 猫室',
+    q: 'probe=adv&scene=room&room=office', go: async p => {}, wait: 1400 },
+  { name: '17-3-adv-room-butler', group: '探偵編', label: '探偵編 — 執事の部屋',
+    q: 'probe=adv&scene=room&room=butler', go: async p => {}, wait: 1400 },
+  { name: '17-4-adv-room16', group: '探偵編', label: '探偵編 — 16号室（罠の部屋。踏まずに撮る）',
+    q: 'probe=adv&scene=room&room=room16', go: async p => {}, wait: 1400 },
+  { name: '17-5-adv-note', group: '探偵編', label: '探偵編 — 探偵ノート',
+    q: 'probe=adv&scene=note', go: async p => {}, wait: 1400 },
+  { name: '17-6-adv-diff', group: '探偵編', label: '探偵編 — 難易度の選び',
+    q: 'probe=adv&scene=diff', go: async p => {}, wait: 1400 },
+  ...[['win', '勝ち（ロン）'], ['ap', '行動力ぎれ'], ['knife', '16号室のナイフ'],
+      ['alldead', '皆殺し'], ['bribe', '買収された'], ['aground', '座礁']].map(([k, ja], i) => ({
+    name: '17-' + (7 + i) + '-adv-end-' + k,
+    group: '探偵編',
+    label: '探偵編 — 終局（' + ja + '）',
+    q: 'probe=adv&scene=end&kind=' + k,
+    go: async p => {},
+    wait: 1500,
+  })),
 
   { name: '18-tori-menu', group: 'ミニゲーム', label: '一索の鳥 — 品書き',
     go: async p => p.evaluate(() => { window.closeTitleScreen(); window.toriOpen(); }), wait: 800 },
@@ -182,11 +379,14 @@ const SHOTS = [
     wait: 2200,
   })),
 
-  { name: '20-tori-end', group: 'ミニゲーム', label: '一索の鳥 — 結果の絵（負け「逃げられた」）',
-    go: async p => {
-      await p.evaluate(() => { window.closeTitleScreen(); window.toriOpen(); window.toriStart('easy'); });
-      await p.evaluate(f => window.toriSweep(f), FLOOR);
-    }, wait: 900 },
+  /* 第二段。結果を指定して出す（?probe=tori）。外から振っても鳥は捕れず、負け絵しか出せなかった。
+     ＊この遊びに引き分けは無い。勝ちと負けの二つだけ。 */
+  { name: '20-1-tori-win', group: 'ミニゲーム', label: '一索の鳥 — 結果の絵（勝ち「捕まえた」）',
+    q: 'probe=tori&result=win&level=easy', go: async p => {}, wait: 1400 },
+  { name: '20-2-tori-lose', group: 'ミニゲーム', label: '一索の鳥 — 結果の絵（負け「逃げられた」）',
+    q: 'probe=tori&result=lose&level=easy', go: async p => {}, wait: 1400 },
+  { name: '20-3-tori-win-hard', group: 'ミニゲーム', label: '一索の鳥 — 結果の絵（上級を勝ち）',
+    q: 'probe=tori&result=win&level=hard', go: async p => {}, wait: 1400 },
 
   { name: '21-misdiag', group: 'その他の間', label: '誤診記録',
     go: async p => p.evaluate(() => { window.closeTitleScreen(); window.misdiagOpen(); }), wait: 800 },
@@ -200,6 +400,12 @@ const SHOTS = [
   { name: '23-reader-page', group: 'その他の間', label: '読み取りページ（reader.html・別ページ）',
     url: 'https://kfsr148-art.github.io/koushu-handan/reader.html',
     go: async p => {}, wait: 800 },
+
+  /* 第二段。写真を与えてから開く（?probe=ss）。ssShow() は window.ssImg が無いと何もせず戻る。 */
+  { name: '24-1-ss-board', group: 'その他の間', label: '写真読み — 読み取りの盤面（試し画を渡した）',
+    q: 'probe=ss', go: async p => {}, wait: 1500 },
+  { name: '24-2-ss-calib', group: 'その他の間', label: '写真読み — 目盛り合わせ',
+    q: 'probe=ss&calib=1', go: async p => {}, wait: 1800 },
 ];
 
 /* ───────── ページの中へ置く手 ─────────
@@ -362,6 +568,19 @@ ngRows.map(r =>
   }
   const list = ONLY ? SHOTS.filter(s => s.name.indexOf(ONLY) >= 0 || s.group.indexOf(ONLY) >= 0) : SHOTS;
 
+  /* 本体の写しを、いまここで作る。作り置きはしない＝本物とずれない。
+     --published のときだけ公開ページをそのまま開く（遷移口は無いので第二段の場は撮れない）。 */
+  let copy = null, BASE, baseNote;
+  if (has('--published')) {
+    BASE = PUBLISHED;
+    baseNote = '公開ページ（遷移口なし）';
+  } else {
+    copy = makeProbeCopy();
+    BASE = copy.url;
+    baseNote = '本体の写し（この回に作り直した。遷移口つき）';
+    console.log('写し   : ' + copy.file);
+  }
+
   console.log('開く先 : ' + BASE);
   console.log('寸法   : 844x390（横・主）／ 390x844（縦・回転の一枚）／ 倍率 ' + SCALE + ' ／ WebKit');
   console.log('撮る数 : ' + list.length + ' 枚');
@@ -396,7 +615,18 @@ ngRows.map(r =>
     page.on('pageerror', e => errs.push(String(e.message || e)));
     try {
       /* 掴み直しを防ぐため、開くたびに時刻を付ける（本体の ver.txt 方式と同じ考え） */
-      await page.goto((s.url || BASE) + '?_shot=' + Date.now(), { waitUntil: 'load', timeout: 30000 });
+      /* 遷移口つきの回は ?probe=… を添える。写しの上でだけ効く。 */
+      const q = '?_shot=' + Date.now() + (s.q ? '&' + s.q : '');
+      /* 開くのに失敗したら一度だけ開き直す。本体は8MB近くあり、続けて開くと
+         30秒に間に合わないことがある（2026-08-25 実測：訛りの2枚が時間切れで落ちた）。
+         段取りの誤りと、ただの取りこぼしを混ぜないための受け。 */
+      try {
+        await page.goto((s.url || BASE) + q, { waitUntil: 'load', timeout: 30000 });
+      } catch (e1) {
+        await page.waitForTimeout(1200);
+        await page.goto((s.url || BASE) + '?_shot=' + Date.now() + (s.q ? '&' + s.q : ''),
+                        { waitUntil: 'load', timeout: 45000 });
+      }
       await page.waitForTimeout(700);
       await s.go(page);
       await page.waitForTimeout(s.wait || 600);
@@ -415,6 +645,8 @@ ngRows.map(r =>
   }
 
   await browser.close();
+  /* 写しは撮り終えたら消す。溜めない・使い回さない（作法14）。 */
+  if (copy) { try { fs.rmSync(copy.dir, { recursive: true, force: true }); } catch (e) {} }
 
   const stamp = stampNow();
   /* 「撮れた」は PNG が書けたという意味でしかない。段取りが効かず前の画面のままでも
@@ -433,7 +665,7 @@ ngRows.map(r =>
   }
 
   const manifest = {
-    stamp, base: BASE, viewport: '844x390（横）／390x844（縦・回転の一枚のみ）', scale: SCALE, engine: 'webkit',
+    stamp, base: BASE, baseNote, viewport: '844x390（横）／390x844（縦・回転の一枚のみ）', scale: SCALE, engine: 'webkit',
     ok: rows.filter(r => r.ok).length,
     ng: rows.filter(r => !r.ok).length,
     dup,
@@ -443,8 +675,24 @@ ngRows.map(r =>
       jsErr: (r.jsErr && r.jsErr.length) ? r.jsErr : undefined,
     })),
   };
+  /* --only で一部だけ撮った回は、いまある控えへ**混ぜる**。丸ごと書き換えると、
+     撮っていない分が一覧から消える（2026-08-25 に気づいた取りこぼし）。 */
+  let merged = manifest.shots;
+  if (ONLY) {
+    try {
+      const old = JSON.parse(fs.readFileSync(path.join(OUT, 'shots.json'), 'utf8'));
+      const byName = {};
+      (old.shots || []).forEach(x => { byName[x.name] = x; });
+      manifest.shots.forEach(x => { byName[x.name] = x; });
+      merged = Object.keys(byName).map(k => byName[k]).sort((a, b) => a.name.localeCompare(b.name));
+      manifest.shots = merged;
+      manifest.ok = merged.filter(x => x.ok).length;
+      manifest.ng = merged.filter(x => !x.ok).length;
+      console.log('  ＊一部だけ撮った回なので、いまある控えへ混ぜた（全 ' + merged.length + ' 枚）');
+    } catch (e) {}
+  }
   fs.writeFileSync(path.join(OUT, 'shots.json'), JSON.stringify(manifest, null, 2) + '\n', 'utf8');
-  fs.writeFileSync(path.join(OUT, 'index.html'), buildIndex(rows, stamp), 'utf8');
+  fs.writeFileSync(path.join(OUT, 'index.html'), buildIndex(merged, stamp), 'utf8');
 
   console.log('');
   console.log('まとめ');
