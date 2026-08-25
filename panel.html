@@ -79,6 +79,24 @@
   .bar .sw input{width:22px; height:22px;}
   /* 「未処理◯件」の飾りは v16 で撤去。数える先（受信箱）に書く者がもう居ない。 */
 
+  /* 機械が測った様子の一行（v32）。状態の帯のすぐ下。
+     控え（work-note.txt）由来の状態とは色を分ける。食い違うときは枠を橙にして、両方並べる。 */
+  .mach{margin:0 0 10px; padding:3px 0 3px 9px; font-size:13px; line-height:1.55;
+    color:var(--dim); border-left:3px solid var(--line);}
+  .mach.hide{display:none;}
+  .mach b{color:var(--fg); font-weight:700;}
+  .mach.gap{border-left-color:var(--ask);}
+  .mach.gap b{color:var(--ask);}
+  .mach .n{display:block;}
+
+  /* 写した札の控え（v32）。既定は畳んである。ここでだけ「届いた」の印を出す。 */
+  .done-box{margin:0 0 8px;}
+  .done-box.hide{display:none;}
+  #copiedList{display:none;}
+  #copiedList.open{display:block;}
+  #copiedList li{opacity:.62;}
+  .got{margin-left:6px; font-size:13px; font-weight:700; color:var(--done);}
+
   /* 常時出す事実の行。版の並びと生存の時刻。 */
   .facts{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:13px; color:var(--dim);
     margin:0 0 4px;}
@@ -175,6 +193,10 @@
       </span>
       <span class="a" id="stAgo"></span>
     </div>
+    <!-- 機械が測った様子（v32）。usage.json の watch にある lastStop／lastResume／cpu だけで判じる。
+         控えの字は読まない。控え由来の状態（watch.state・stateSrc:"note"）と食い違ったときは、
+         両方を並べて出す。どちらが正しいかは、ここでは決めない。 -->
+    <p class="mach hide" id="machLine"></p>
     <!-- 常時出す三つ。どれも既にリポジトリへ書いてある値の見せ方だけで、経路は増やしていない。
          版の並び＝ver.txt（本体）と stable の枝の ver.txt（公開）。
          最終確認＝state.json の at。生存の時刻そのもの。 -->
@@ -197,8 +219,15 @@
      href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
      target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
   <ul id="list"></ul>
+  <!-- 写した札の控え（v32）。既定は畳んである。押すと開く。
+       v24 で一覧から落とした札の行き先で、**ここでだけ**「届いた」の印を出す。
+       一覧そのものの見え方は v24 のまま——写した札は上の一覧には戻さない。 -->
+  <div class="done-box hide" id="copiedBox">
+    <button type="button" class="cpall" id="copiedHead"></button>
+    <ul id="copiedList"></ul>
+  </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v31（8月25日）</p>
+  <p class="ver" id="verTag">panel v32（8月25日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -211,6 +240,7 @@
   'use strict';
   var send = '', reply = '', timer = null;
   var shown = [];        // いま一覧に出している知らせ。写す釦から引く。
+  var allRows = [];      // 写した札も含む全件。写した札の控え（畳んだ箱）が読む。
   /* 本体の版。写しの「版:」の行に入れる。公開ページの ver.txt から取る。
      stable の版はどのファイルにも出ていないので、写しでは「未確認」と書く。 */
   var honVer = '', stbVer = '';
@@ -218,7 +248,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '31';
+  var PANEL_VER = '32';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -393,8 +423,11 @@
         /* 写した札は一覧から落とす（v24）。押していない札は、何件あっても全部残す。
            ＊localStorage に残っている印も、ここで効く。開き直しても写した札は出ない。 */
         var total = rows.length;
+        /* 落とす前の全件を控える。写した札の控え（下の畳んだ箱）がここから作られる。 */
+        allRows = rows.slice();
         rows = rows.filter(function (d) { return !copied[keyOf(d)]; });
         shown = rows;
+        paintCopied(allRows);
 
         /* 全部写し済みで一覧が空になった場合。**「知らせがありません」と出さない**。
            ＊控えには届いているのに「ありません」と出ると、壊れたようにしか見えない
@@ -720,7 +753,10 @@
       return;
     }
     var done = function () {
-      r.items.forEach(function (d) { copied[keyOf(d)] = 1; });
+      /* 写した刻（秒）を控える。あとで「届いた」を判じる物差しになる（v32）。
+         ＊v31 以前は 1 を入れていた。その古い印は刻が無いので、印を付けない側へ倒れる。 */
+      var nowSec = Math.floor(Date.now() / 1000);
+      r.items.forEach(function (d) { copied[keyOf(d)] = nowSec; });
       saveCopied();
       btn.textContent = r.items.length + '件 写した';
       btn.className = 'cpall ok';
@@ -740,7 +776,7 @@
     var text = sixLines(d);
     var done = function () {
       /* 写した印を端末の中に残す。開き直しても消えない。 */
-      copied[keyOf(d)] = 1;
+      copied[keyOf(d)] = Math.floor(Date.now() / 1000);   /* 写した刻。届いた印の物差し（v32） */
       saveCopied();
       /* 写した札は、押した時点で一覧から消す（v24）。薄く残さない。
          ＊次の取得を待たずにその場で消す。待つと、押したのに残って見える。 */
@@ -877,11 +913,108 @@
 
   /* usage.json は state.json とは別の口。読めなければ黙って畳む。 */
   var USAGE_URL = 'https://kfsr148-art.github.io/koushu-handan/usage.json';
+  /* 直近に読めた watch（見張りが機械で測った値）。届いた印と、機械の様子の一行が使う。
+     読めていないときは null のまま。**null なら何も言わない**——判じられないものに印を付けない。 */
+  var lastWatch = null;
   function pullUsage() {
     fetch(USAGE_URL + '?_t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (u) { paintUsage(u); })
-      .catch(function () { paintUsage(null); });
+      .then(function (u) {
+        paintUsage(u);
+        lastWatch = (u && u.watch && typeof u.watch === 'object') ? u.watch : null;
+        paintMach(lastWatch);
+        paintCopied(allRows);   /* 届いた印は watch が来てから付く */
+      })
+      .catch(function () { paintUsage(null); lastWatch = null; paintMach(null); });
+  }
+
+  /* 「2026-08-25 14:32:15」を刻へ直す。
+     ＊Safari は空白区切りの日付を読めないことがある。字を割って組み立てる。
+     ＊読めない字なら null を返し、呼ぶ側は「判じられない」として扱う。 */
+  function tsOf(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2}):(\d{2})/.exec(String(s || ''));
+    if (!m) { return null; }
+    return new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]).getTime();
+  }
+
+  /* 機械が測った様子の一行（v32）。
+     控えの字は読まない。hook が鳴った時刻（lastStop / lastResume）と CPU だけで判じる。
+       ・最後に鳴ったのが resume なら「動いています」
+       ・最後に鳴ったのが stop なら「止まっています」
+       ・どちらも読めなければ**何も出さない**
+     ＊watch.state は控え由来（stateSrc:"note"）。食い違ったときは**両方を並べる**。
+       控えが前の回のままのことも、hook が飛ぶこともあるので、どちらが正しいかは決めない。 */
+  function paintMach(w) {
+    var el = $('machLine');
+    if (!el) { return; }
+    var hide = function () { el.className = 'mach hide'; el.textContent = ''; };
+    if (!w || typeof w !== 'object') { hide(); return; }
+    var res = tsOf(w.lastResume), stp = tsOf(w.lastStop);
+    if (res === null && stp === null) { hide(); return; }
+    var running = (res !== null) && (stp === null || res > stp);
+
+    var bits = [];
+    if (running && res !== null) { bits.push('最後の再開 ' + String(w.lastResume).slice(11, 19)); }
+    if (!running && stp !== null) { bits.push('最後の停止 ' + String(w.lastStop).slice(11, 19)); }
+    if (typeof w.cpu === 'number') { bits.push('CPU ' + w.cpu + '%'); }
+    /* この値がいつのものか。見張りは10分ごとに書くので、古いことがある。 */
+    var at = Date.parse(w.at);
+    if (!isFinite(at)) { at = tsOf(w.at); }
+    if (at) {
+      var mm = Math.max(0, Math.floor((Date.now() - at) / 60000));
+      bits.push(mm + '分前の値');
+    }
+
+    /* 控え由来の状態と突き合わせる。異常のときは比べない（別の話なので）。 */
+    var ns = String(w.state || '');
+    var noteKnown = (ns === '作業中' || ns === 'ヨシ待ち' || ns === '手待ち');
+    var gap = noteKnown && ((ns === '作業中') !== running);
+
+    var html = '機械が見た様子：<b>' + (running ? '動いています' : '止まっています') + '</b>'
+             + (bits.length ? '（' + esc(bits.join(' ／ ')) + '）' : '');
+    if (gap) {
+      html += '<span class="n">控えでは：<b>' + esc(ns)
+            + '</b> ── 食い違っています。どちらが正しいかは、ここでは決めていません。</span>';
+    }
+    el.className = 'mach' + (gap ? ' gap' : '');
+    el.innerHTML = html;
+  }
+
+  /* 写した札の控えと、「届いた」の印（v32）。
+     ＊印を付けるのは、**写した刻より後に resume が鳴っている**ときだけ。
+       写した本文を貼って送れば Claude Code は resume で動き出す。その一本を証拠にする。
+     ＊次のどれかに当たれば**何も出さない**。判じられないものに印は付けない。
+         ・watch が読めていない（lastWatch が null）
+         ・lastResume が読めない字
+         ・写した刻を控えていない古い印（v31 以前は 1 を入れていた） */
+  function paintCopied(all) {
+    var box = $('copiedBox'), head = $('copiedHead'), ul = $('copiedList');
+    if (!box || !head || !ul) { return; }
+    var items = (all || []).filter(function (d) { return copied[keyOf(d)]; });
+    if (!items.length) { box.className = 'done-box hide'; ul.innerHTML = ''; return; }
+    box.className = 'done-box';
+    var res = lastWatch ? tsOf(lastWatch.lastResume) : null;
+    var got = 0, html = '';
+    items.forEach(function (d) {
+      var t = copied[keyOf(d)];
+      var ok = (res !== null && typeof t === 'number' && t > 1 && res > t * 1000);
+      if (ok) { got++; }
+      html += '<li class="ack">'
+            + '<p class="t"><span class="tx">' + esc(d.title || '(題なし)')
+            + '<span class="when">' + hhmm(d.time) + '</span>'
+            + (ok ? '<span class="got">届いた</span>' : '')
+            + '</span></p>'
+            + '<p class="m">' + esc(d.message) + '</p></li>';
+    });
+    ul.innerHTML = html;
+    var open = (ul.className === 'open');
+    head.textContent = '写した札 ' + items.length + '件'
+                     + (got ? '（届いた ' + got + '件）' : '') + (open ? ' ▲' : ' ▼');
+    head.onclick = function () {
+      var o = (ul.className !== 'open');
+      ul.className = o ? 'open' : '';
+      head.textContent = head.textContent.replace(/[▼▲]\s*$/, '') + (o ? ' ▲' : ' ▼');
+    };
   }
 
   function agoText(sec) {
@@ -991,6 +1124,18 @@
       return;
     }
     var li = b;
+    while (li && li.tagName !== 'LI') { li = li.parentNode; }
+    if (li && li.className.indexOf('ack') >= 0) {
+      li.className = (li.className.indexOf('open') >= 0)
+        ? li.className.replace(/\s*open/, '')
+        : li.className + ' open';
+    }
+  });
+
+  /* 写した札の控えも、同じ受けで開閉する（v32）。中身は畳んであるので、題の行を押すと開く。
+     ＊こちらには写す釦は無い。開いて読むためだけの箱。 */
+  $('copiedList').addEventListener('click', function (e) {
+    var li = e.target;
     while (li && li.tagName !== 'LI') { li = li.parentNode; }
     if (li && li.className.indexOf('ack') >= 0) {
       li.className = (li.className.indexOf('open') >= 0)
