@@ -1,2 +1,6 @@
 # Claude Code のローカル設定（個人環境固有・共有しない）
 .claude/settings.local.json
+
+# 写し取りの実行記録（Start-Process の出し先）。写しそのものだけを配る。
+shots/run.log
+shots/run.err.log
