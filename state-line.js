@@ -64,14 +64,37 @@ function brief(s) {
   return (t.length > 34) ? (t.slice(0, 34) + '…') : t;
 }
 
+/* 見込みの字（「25分」「不明」など）から分の数だけ抜く。抜けなければ null。
+   ＊「見込みが立てられない仕事」は不明のまま。開始と経過だけ出す。 */
+function mikomiMin(s) {
+  const m = String(s || '').match(/(\d+)/);
+  return m ? parseInt(m[1], 10) : null;
+}
+
+/* 作業の時計 — 「開始HH:MM・見込みN分・経過N分」。
+   ＊出すのは「作業中」のときだけ。手待ち・ヨシ待ちに経過を足すと、
+     状態そのものの経過（statAt）と二つ並んで読めなくなる。 */
+function clock(st) {
+  if (word(st.stat) !== '作業中' || !st.startedAt) { return ''; }
+  const min = Math.max(0, Math.floor((Date.now() / 1000 - st.startedAt) / 60));
+  const n = mikomiMin(st.mikomi);
+  return '開始' + hhmm(st.startedAt)
+       + '・見込み' + (n === null ? '不明' : (n + '分'))
+       + '・経過' + min + '分';
+}
+
 const b = brief(st.subj);
+const c = clock(st);
 const line = '**状態：' + word(st.stat) + '** — ' + ymd(st.at) + ' ' + hhmm(st.at) + ' 時点'
-           + (b ? '／' + b : '');
+           + (b ? '／' + b : '')
+           + (c ? '／' + c : '');
 
 if (has('--json')) {
   console.log(JSON.stringify({
     line,
     state: st.stat, subj: st.subj, at: st.at, atText: hhmm(st.at),
+    startedAt: st.startedAt || 0, startedText: st.startedAt ? hhmm(st.startedAt) : '',
+    mikomi: st.mikomi || '', mikomiMin: mikomiMin(st.mikomi), clock: c,
     watch: us && us.watch ? us.watch : null,
   }, null, 2));
   process.exit(0);
