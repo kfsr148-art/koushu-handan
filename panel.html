@@ -113,6 +113,11 @@
     border:1px solid var(--line); border-radius:10px;}
   .cpall:active{filter:brightness(1.4);}
   .cpall.ok{color:var(--done); border-color:var(--done);}
+  /* 写す物が無いとき（v38）。押せなくしたことが見て分かるように色を落とす。
+     ＊箱の寸法は変えない。押せない状態でも 48px のまま置いておく（作法10）。
+     ＊:active の明るさ変化も止める。押せないのに反応すると押せたように見える。 */
+  .cpall:disabled{color:var(--dim); border-color:var(--line); opacity:.55;}
+  .cpall:disabled:active{filter:none;}
   /* 写し取り一覧への口。釦と同じ見た目にするため、a にも同じ寸法を掛ける。 */
   a.cpall{box-sizing:border-box; text-decoration:none; text-align:center;
     line-height:48px; padding:0 10px;}
@@ -237,7 +242,7 @@
     <ul id="copiedList"></ul>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v37（8月26日）</p>
+  <p class="ver" id="verTag">panel v38（8月27日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -258,7 +263,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '37';
+  var PANEL_VER = '38';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -475,6 +480,7 @@
         allRows = rows.slice();
         rows = rows.filter(function (d) { return !isDone(d); });
         shown = rows;
+        setCopyAllLabel();   /* 釦の字を件数つきに（v38）。落としたあとの数で組む */
         paintCopied(allRows);
 
         /* 全部写し済みで一覧が空になった場合。**「知らせがありません」と出さない**。
@@ -786,6 +792,28 @@
     return a.join(' ／ ');
   }
 
+  /* 「全部写す」の釦の字（v38）。写す対象の件数を添える。
+     ＊Nの数え方は**一覧に出している札と同じ**（`shown`）。写した札は一覧から落ちる作りなので、
+       画面に見えている枚数と釦の数が食い違わない。別の数え方を持ち込まないこと。
+     ＊0件のときは**押せなくし**、「写す物なし」と出す。押しても何も起きない釦を
+       押せる顔で置いておくと、写し損ねたのか写す物が無いのかが見分けられない。
+     ＊写した直後の「N件 写した」から戻すときも、この関数を通す。固定の字に戻すと
+       件数が消えたまま残る。 */
+  function setCopyAllLabel() {
+    var b = $('btnCopyAll');
+    if (!b) { return; }
+    var n = shown.length;
+    if (n === 0) {
+      b.textContent = '写す物なし';
+      b.disabled = true;
+      b.className = 'cpall';
+    } else {
+      b.textContent = '全部写す（' + n + '件）';
+      b.disabled = false;
+      b.className = 'cpall';
+    }
+  }
+
   /* 写していない件を、古い順にまとめて一本の文にする。 */
   function copyAllText() {
     var todo = shown.filter(function (d) { return !isDone(d); });
@@ -800,7 +828,7 @@
     var r = copyAllText();
     if (!r) {
       btn.textContent = '未写しなし';
-      setTimeout(function () { btn.textContent = '全部写す'; }, 2000);
+      setTimeout(setCopyAllLabel, 2000);   /* v38：件数つきの字へ戻す */
       return;
     }
     var done = function () {
@@ -812,7 +840,7 @@
       btn.textContent = r.items.length + '件 写した';
       btn.className = 'cpall ok';
       pull();   /* 写した件は一覧から消える（v24） */
-      setTimeout(function () { btn.textContent = '全部写す'; btn.className = 'cpall'; }, 2000);
+      setTimeout(setCopyAllLabel, 2000);   /* v38：件数つきの字へ戻す（className もここで直る） */
     };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(r.text).then(done, function () { fallback(r.text); done(); });
