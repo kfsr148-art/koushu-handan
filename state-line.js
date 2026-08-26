@@ -71,7 +71,11 @@ function mikomiMin(s) {
   return m ? parseInt(m[1], 10) : null;
 }
 
-/* 作業の時計 — 「開始HH:MM・見込みN分・経過N分」。
+/* 作業の時計 — 「開始HH:MM・終了予定HH:MM・経過N分」（2026-08-26 に言い方を変えた）。
+   ＊以前は「見込みN分」を出していた。読む側が毎回「開始＋見込み」を足し算しないと
+     いつ終わるのかが分からないので、**足した結果の時刻**を出す。
+     着手のときの見積もりは今までどおり分で書いてよい（控えの `見込み: N分`）。
+   ＊見込みが立たない仕事は「終了予定 未定」。開始と経過だけが手掛かりになる。
    ＊出すのは「作業中」のときだけ。手待ち・ヨシ待ちに経過を足すと、
      状態そのものの経過（statAt）と二つ並んで読めなくなる。 */
 function clock(st) {
@@ -79,7 +83,7 @@ function clock(st) {
   const min = Math.max(0, Math.floor((Date.now() / 1000 - st.startedAt) / 60));
   const n = mikomiMin(st.mikomi);
   return '開始' + hhmm(st.startedAt)
-       + '・見込み' + (n === null ? '不明' : (n + '分'))
+       + '・終了予定' + (n === null ? ' 未定' : hhmm(st.startedAt + n * 60))
        + '・経過' + min + '分';
 }
 
@@ -94,7 +98,12 @@ if (has('--json')) {
     line,
     state: st.stat, subj: st.subj, at: st.at, atText: hhmm(st.at),
     startedAt: st.startedAt || 0, startedText: st.startedAt ? hhmm(st.startedAt) : '',
-    mikomi: st.mikomi || '', mikomiMin: mikomiMin(st.mikomi), clock: c,
+    mikomi: st.mikomi || '', mikomiMin: mikomiMin(st.mikomi),
+    endsAt: (st.startedAt && mikomiMin(st.mikomi) !== null)
+              ? (st.startedAt + mikomiMin(st.mikomi) * 60) : 0,
+    endsText: (st.startedAt && mikomiMin(st.mikomi) !== null)
+              ? hhmm(st.startedAt + mikomiMin(st.mikomi) * 60) : '未定',
+    clock: c,
     watch: us && us.watch ? us.watch : null,
   }, null, 2));
   process.exit(0);
