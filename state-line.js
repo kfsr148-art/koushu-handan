@@ -49,9 +49,24 @@ if (!st) {
   process.exit(1);
 }
 
-const line = '**状態：' + word(st.stat) + '** — '
-           + (st.at ? new Date(st.at * 1000).toISOString().slice(0, 10).replace(/-/g, '-') : '')
-           + ' ' + hhmm(st.at) + ' 時点';
+/* 日付は state.json の at（この機械の時刻）から。UTC へ寄せない。 */
+function ymd(sec) {
+  if (!sec) { return ''; }
+  const d = new Date(sec * 1000), p = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+
+/* 一言＝いま何の件かが分かる短い字。state.json の subj をそのまま使う。
+   ＊長い件名は途中で切る。状態行は一行で読めることが値打ちなので、伸ばさない。 */
+function brief(s) {
+  const t = String(s || '').trim();
+  if (!t) { return ''; }
+  return (t.length > 34) ? (t.slice(0, 34) + '…') : t;
+}
+
+const b = brief(st.subj);
+const line = '**状態：' + word(st.stat) + '** — ' + ymd(st.at) + ' ' + hhmm(st.at) + ' 時点'
+           + (b ? '／' + b : '');
 
 if (has('--json')) {
   console.log(JSON.stringify({
