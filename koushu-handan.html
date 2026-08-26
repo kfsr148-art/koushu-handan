@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1426">
+<html lang="ja" data-ver="1427">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1138,21 +1138,58 @@
     body.judged .judged-note { margin-top: 3px !important; }
     body.judged .next-hand-row { margin-top: 4px; }
   }
+  /* 381〜383px の3px帯（v1427）。上の切り詰めと**同じ中身**を、この帯にも掛ける。
+     ＊上の切り詰めは max-height:380px で切れる。381px で外れた瞬間にカード高が
+       370.6→406（+35.4px）へ跳ね、視野は 1px しか増えないので二択が押し出されていた。
+       v1416〜v1426 は折り返しの条件そのものでこの帯を避けていたが、条件が読めなくなるので、
+       段差の側を消す形へ改めた。
+     ＊**min-width:844px を必ず付ける。** これが無いと、折り返しが効かない狭い幅の
+       381〜383px でも一段表示の見た目が変わる。付ければ一段のときは今と一切変わらない。
+     ＊中身は上の塊と一字一句そろえてある。片方を直したら、必ずもう片方も直すこと。 */
+  /* 安全網（v1427）。二択が視野の下へはみ出す高さでは、二択を画面の下へ貼り付けて
+     **常に押せる**状態を保つ。掛けるのは折り返しが効かない 349px 以下の横向きだけ。
+     ＊送れる形（カードの中をスクロール）ではなく貼り付けを採った。目的は「押せること」で、
+       送れるようにしても二択が見えている保証にはならないため（作法16 の合格条件も
+       「二択の bottom が視野の高さ以内」）。
+     ＊貼り付けを効かせるには、包んでいるカードの overflow:hidden を解く必要がある。
+       hidden はそれ自体が送り枠になり、貼り付けの相手が画面ではなくカードになってしまう。
+     ＊地の色を敷く。敷かないと、下を通る中身が字に重なって読めない。 */
+  @media (orientation: landscape) and (max-height: 349px) {
+    body.judged .verdict-card { overflow: visible; }
+    body.judged .next-hand-row {
+      position: sticky; bottom: 0; z-index: 4;
+      background: linear-gradient(to bottom, rgba(13,27,22,0) 0, rgba(13,27,22,0.92) 6px);
+      padding-bottom: 4px;
+    }
+  }
+  @media (orientation: landscape) and (min-width: 844px) and (min-height: 381px) and (max-height: 383px) {
+    body.judged .r-detail { display: none; }
+    body.judged .reasons { margin-top: 2px; padding: 0 12px; }
+    body.judged .reason { padding: 1px 0; }
+    body.judged .r-title { line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    body.judged .r-body { min-width: 0; }
+    body.judged .reason { min-width: 0; }
+    body.judged .say-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    body.judged .judged-hand { margin-top: 4px !important; }
+    body.judged .judged-note { margin-top: 3px !important; }
+    body.judged .next-hand-row { margin-top: 4px; }
+  }
   /* 投票欄が十一人になったので、広い視野では二段に折り返す。
      252px の固定枠（--vz-pair）をやめ、攻め箱・守り箱とも中身に応じて伸ばす。
      守り箱の flex-end（末尾から詰める向き）と、並び順は変えない。
      844px 未満で折り返さないのは、二段ぶんの縦（568x320 で +22.8px）が余白から
      捻出できないため。実測では狭い視野の余白から取れるのは合計 +9.5px しかなく、
      折り返した時点で末尾の二択が画面外へ出る（check.js ⑦ の合格条件を割る）。
-     高さの条件が二本立てなのは、実測で外れる帯が二つあるため。349px 以下は素直に
-     縦が足りない。381〜383px は既存の段差で、max-height:380px の切り詰め（解説行を
-     畳む・根拠欄の余白・助言欄を「…」で切る）が 381px で外れ、カード高が
-     370.6→406（+35.4px）へ跳ねる。視野は 1px しか増えないので二択が押し出される。
-     一段のままなら 356px で収まるため、二段にした v1415 で初めて表に出た段差。
-     読みにくさより実測への忠実さを取っている（v1416・案B）。 */
-  /* ＊この 350/380/384 は、上の切り詰め @media (orientation: landscape) and (max-height: 380px)（1106行）と連動。片方を変えるときは必ず両方を見る。 */
-  @media (orientation: landscape) and (min-width: 844px) and (min-height: 350px) and (max-height: 380px),
-         (orientation: landscape) and (min-width: 844px) and (min-height: 384px) {
+     高さの条件は 350px の一本（v1427）。349px 以下は素直に縦が足りないので折り返さない。
+     ＊v1416〜v1426 は 381〜383px を**外した二本立て**だった。max-height:380px の切り詰め
+       （解説行を畳む・根拠欄の余白・助言欄を「…」で切る）が 381px で外れ、カード高が
+       370.6→406（+35.4px）へ跳ねて二択が押し出されるためで、条件そのもので穴を避けていた。
+       v1427 で、その 3px 帯にも切り詰めが掛かる規則を足した（下の 381〜383 の一組）ので、
+       穴を条件で避ける必要が無くなった。読みやすい一本へ戻す。 */
+  /* ＊この 350 と、下の 381〜383 の一組、そして上の切り詰め
+       @media (orientation: landscape) and (max-height: 380px) は三つで連動している。
+       どれか一つを変えるときは、必ず三つとも見ること。 */
+  @media (orientation: landscape) and (min-width: 844px) and (min-height: 350px) {
     body.judged .verdict-zones .vz { flex-wrap: wrap; overflow: visible; }
     body.judged .verdict-zones .vz-atk,
     body.judged .verdict-zones .vz-def { width: auto; flex: 1 1 0; min-width: 0; }
@@ -1276,7 +1313,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1426</div>
+  <div id="verTag">v1427</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
