@@ -237,7 +237,7 @@
     <ul id="copiedList"></ul>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v36（8月26日）</p>
+  <p class="ver" id="verTag">panel v37（8月26日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -258,7 +258,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '36';
+  var PANEL_VER = '37';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1130,22 +1130,25 @@
 
         paintBar();
 
-        /* 見込みの段は「作業中」のときだけ。経過はここで数えるので、
+        /* 時間の段は「作業中」のときだけ。経過はここで数えるので、
            次の書き出しを待たずに 15 秒ごとの取得で伸びていく。
-           形は「開始HH:MM・見込みN分・経過N分」（v36）。開始の時刻を足したのは、
-           経過だけだと「いつからの経過か」が画面の時計と突き合わせられないため。
-           ＊見込みが立てられない仕事は「見込み不明」で、開始と経過だけ出す。 */
+           形は「開始HH:MM・終了予定HH:MM・経過N分」（v37）。
+           ＊v36 までは「見込みN分」を出していた。読む側が毎回「開始＋見込み」を
+             足し算しないといつ終わるのか分からないので、**足した結果の時刻**を出す。
+             着手のときの見積もりは今までどおり分で書く（控えの `見込み: N分`）。
+           ＊見込みが立てられない仕事は「終了予定 未定」。開始と経過だけが手掛かりになる。 */
         var mik = '';
         if (w === '作業中') {
           var min = d.startedAt ? Math.max(0, Math.floor((Date.now() / 1000 - d.startedAt) / 60)) : 0;
           var mm = String(d.mikomi || '').match(/(\d+)/);
-          var hm = '—';
-          if (d.startedAt) {
-            var sd = new Date(d.startedAt * 1000);
-            hm = ('0' + sd.getHours()).slice(-2) + ':' + ('0' + sd.getMinutes()).slice(-2);
-          }
+          var pad2 = function (sec) {
+            var t = new Date(sec * 1000);
+            return ('0' + t.getHours()).slice(-2) + ':' + ('0' + t.getMinutes()).slice(-2);
+          };
+          var hm = d.startedAt ? pad2(d.startedAt) : '—';
+          var ends = (d.startedAt && mm) ? pad2(d.startedAt + parseInt(mm[1], 10) * 60) : ' 未定';
           mik = '開始' + hm
-              + '・見込み' + (mm ? (mm[1] + '分') : '不明')
+              + '・終了予定' + ends
               + '・経過' + min + '分';
         }
 
