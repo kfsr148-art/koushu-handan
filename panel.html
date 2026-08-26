@@ -103,6 +103,9 @@
   .facts{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:13px; color:var(--dim);
     margin:0 0 4px;}
   .facts .warn{color:var(--ask); font-weight:700;}   /* 版がずれている／生存が古い */
+  /* 「公開v」の遅れの断り（v35）。事実の行より一段小さく、控えめに置く。 */
+  .ver-note{margin:0 0 6px; font-size:11px; line-height:1.5; color:var(--dim); opacity:.75;}
+  .ver-note b{color:var(--ask); font-weight:700;}
 
   /* 全部写す。一覧のいちばん上。的は44px以上。 */
   .cpall{display:block; width:calc(100% - 28px); margin:4px 14px 12px; min-height:48px;
@@ -206,6 +209,11 @@
       <span id="fVer">版 —</span>
       <span id="fSeen">最終確認 —</span>
     </div>
+    <!-- 「公開v」の遅れの断り（v35）。読み元は stable の枝で、raw.githubusercontent から取る。
+         GitHub Pages は stable の中身を配っていないので、遅れの小さい先へは付け替えられない。
+         raw の取り置きは長く、2026-08-26 の実測では押し出しから追いつくまで最大3時間かかった。
+         数字が古いままでも壊れてはいないので、その旨を欄の脇に一行で断っておく。 -->
+    <p class="ver-note">＊「公開v」は stable の枝から読んでいます。<b>最大で数時間遅れる</b>ことがあります。</p>
     <!-- 送る側の道具（ヨシの釦・入力欄・送る釦・言づて欄）は v11 で撤去した。
          Claude アプリの Code タブから直に指せるようになったので、パネルから送る必要がない。
          このパネルは「見る」ためだけの道具になった。 -->
@@ -229,7 +237,7 @@
     <ul id="copiedList"></ul>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v34（8月26日）</p>
+  <p class="ver" id="verTag">panel v35（8月26日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -250,7 +258,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '34';
+  var PANEL_VER = '35';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
