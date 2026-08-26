@@ -1,6 +1,11 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
+        "time":  1787742512,
+        "message":  "時間の表示を「終了予定HH:MM」へ（panel v37）と usage.json の watch 欄\n①再指示ぶんの hook.log 退避は前の回で実施済みと確認（退避の実績1件）②表示を「終了予定HH:MM」へ——state-line.js／panel.html（v37）／見込み超過の知らせ「終了予定HH:MMを過ぎています（経過N分）」／CLAUDE.md 作法25 ③usage.json の watch へ started・ends・elapsed・span の四つを追加（span はウィジェット向けの短い形「〜19:35」）\nファイル: state-line.js／panel.html／panel-ver.txt（37）／CLAUDE.md／~/.claude/watch-notify.ps1（1445行）\n実測: 状態行「開始19:10・終了予定19:35・経過12分」／見込み不明は「終了予定 未定」／パネルの式も同じ結果／知らせの本文「終了予定19:35を過ぎています（経過37分）」／構文検査 watch-notify PASS・panel の script OK・state-line.js node --check OK\n実機: 返事パネルの状態の二段目が「開始HH:MM・終了予定HH:MM・経過N分」（旧「開始HH:MM・見込みN分・経過N分」）／版の字が panel v37\n未検収: 2026-08-26 panel v37（終了予定の表示）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
         "time":  1787742006,
         "message":  "生存記録の書き損ねを直す（粘って書く＋hook-fallback.log へ退避）\n①panel v36 と4件の検収を受けて stable を 02efb97 へ進めた ②hook-notice.ps1 の生存の書き込みを「250ms 待って最大3回・それでも駄目なら hook-fallback.log へ退避」に直した ③watch-notify.ps1 が退避先の生存も読むようにした（片方だけ見ると退避した回を欠けと数えるため）④欠け率の後日報告を記憶 heartbeat-gap-followup へ残した\nファイル: ~/.claude/hook-notice.ps1（271行）／~/.claude/watch-notify.ps1（1405行）／写しは hook-notice.ps1.bak-20260826 と watch-notify.ps1.bak-20260826d／memory/heartbeat-gap-followup.md\n実測: 構文検査は両方 PASS／hook.log を握った状態で生存を打つと3回とも失敗して退避し、戻り値は0のまま（実測 19:54:43）／見張りの拾い方を再現すると、退避先も見た生存は 19:54:43・古さ0分で警報は鳴らない（hook.log だけだと 19:48:07）\n未検収: なし"
     },
@@ -93,10 +98,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1787696352,
         "message":  "三つ目の裁定（見張りの要は構文検査、落ちたら戻す）の在処を確かめた\nこの回は控えを書いていません（前の回の控えが残っています。中身は当てになりません）。\nファイル: なし（読んだだけ）\n実測: 作法29「四つの境目」の中、508-509行目に対象四本（watch-notify.ps1／inbox-watch.ps1／stop-guard.ps1／hook-notice.ps1）を名指しで列挙。511-515行目に四段の手順（写しを取る→直す→構文検査→落ちたら写しから戻す）。517-518行目に $\u0027 の事故（1207行→3081行）はこの形なら被害が出ないことと、壊れたまま次の回を迎えると知らせごと止まることを注記。前の回の 74f0c7c で push 済み"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1787695450,
-        "message":  "三つ目の裁定（見張りの要は構文検査、落ちたら戻す）の在処を確かめた\nCLAUDE.md を見て、三つ目の裁定が既に入っていることを確かめ、行番号で示した。新たな手は入れていない\nファイル: なし（読んだだけ）\n実測: 作法29「四つの境目」の中、508-509行目に対象四本（watch-notify.ps1／inbox-watch.ps1／stop-guard.ps1／hook-notice.ps1）を名指しで列挙。511-515行目に四段の手順（写しを取る→直す→構文検査→落ちたら写しから戻す）。517-518行目に $\u0027 の事故（1207行→3081行）はこの形なら被害が出ないことと、壊れたまま次の回を迎えると知らせごと止まることを注記。前の回の 74f0c7c で push 済み"
     }
 ]
