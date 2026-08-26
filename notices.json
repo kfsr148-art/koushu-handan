@@ -1,13 +1,13 @@
 [
     {
+        "title":  "🕒 延びています",
+        "time":  1787747705,
+        "message":  "Claude Code は動いていません\n終了予定21:11を過ぎています（経過63分）"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1787747354,
         "message":  "話題名の差し替えと試験送信\n①購読ヨシを受けて送り先 rc-ntfy-topic.txt を新しい名前へ入れ替え ②古い名前は retired へ改名（消していない）③試験送信 HTTP 200・公開側でも確認 ④本番と同じ形（題だけ・Cache: no）で再送も HTTP 200 ⑤古い名前の残存を grep で確認（残るのは除外済みの jsonl 6本と log のみ）⑥報告書の六節を「差し替え完了」へ書き直して push\nファイル: ~/.claude/rc-ntfy-topic.txt（差し替え）／同 .retired-20260826（退避）／rc-ntfy-topic-new.txt.retired-20260826-unused（未使用の退避）／~/.claude/orders-open.tsv／report-latest.md\n実測: 試験送信 HTTP 200 ×2（うち1回は本番と同じ形）／公開側 ?poll=1 で題と話題名を確認／git check-ignore で3本とも rc-ntfy-* に当たる・git status にも出ない／check-all --fast 両方PASS／push d53c415"
-    },
-    {
-        "title":  "🕒 延びています",
-        "time":  1787745760,
-        "message":  "Claude Code は動いていません\n終了予定が未定のまま31分が経ちました"
     },
     {
         "title":  "🙋 ヨシしてください",
