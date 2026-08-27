@@ -87,9 +87,36 @@ function clock(st) {
        + '・経過' + min + '分';
 }
 
+/* 台帳（orders-open.tsv）の残り — **数え方を持つのはここ一箇所だけ**（2026-08-27）。
+   ＊これまで三箇所で別々に数えていた——報告書の先頭（手で）／控えの `残り:` 行（手で）／
+     定時の報せ。**規則が同じでも書く人が違えば必ずずれる**（実際に「残り5件」と「8件」で割れた）。
+   ＊落とすのは三つだけ——`済…` ／ `取消…` ／ `…へ統合…`。
+     `発効…`（凍結のような「状態」の行）は**仕事ではないので数えない**。
+   ＊台帳は控えの側（~/.claude）にある。リポジトリからは絶対の道で読む。
+     読めなければ null を返す。**数えられないときに 0 と言わない。** */
+const ORDERS = 'C:\\Users\\user\\.claude\\orders-open.tsv';
+function leftOrders() {
+  let raw;
+  try { raw = fs.readFileSync(ORDERS, 'utf8').replace(/^\uFEFF/, ''); }
+  catch (e) { return null; }
+  const ids = [];
+  const lines = raw.split(/\r?\n/);
+  for (let i = 1; i < lines.length; i++) {
+    const c = lines[i].split('\t');
+    if (c.length < 4) { continue; }
+    const s = c[3];
+    if (/^済/.test(s) || /^取消/.test(s) || /へ統合/.test(s) || /^発効/.test(s)) { continue; }
+    ids.push(c[1]);
+  }
+  return ids;
+}
+
+const leftIds = leftOrders();
 const b = brief(st.subj);
 const c = clock(st);
-const line = '**状態：' + word(st.stat) + '** — ' + ymd(st.at) + ' ' + hhmm(st.at) + ' 時点'
+const line = '**状態：' + word(st.stat)
+           + (leftIds === null ? '' : (leftIds.length ? '（残り' + leftIds.length + '件）' : '（残り0件）'))
+           + '** — ' + ymd(st.at) + ' ' + hhmm(st.at) + ' 時点'
            + (b ? '／' + b : '')
            + (c ? '／' + c : '');
 
@@ -104,6 +131,8 @@ if (has('--json')) {
     endsText: (st.startedAt && mikomiMin(st.mikomi) !== null)
               ? hhmm(st.startedAt + mikomiMin(st.mikomi) * 60) : '未定',
     clock: c,
+    left: leftIds === null ? null : leftIds.length,
+    leftIds: leftIds,
     watch: us && us.watch ? us.watch : null,
   }, null, 2));
   process.exit(0);
