@@ -71,12 +71,8 @@
   #say.ok{color:var(--done);}
   #say.ng{color:var(--act);}
 
-  .bar{display:flex; justify-content:space-between; align-items:center; gap:10px;
-    padding:10px 14px; font-size:14px; color:var(--dim);}
-  .bar button{flex:0 0 auto; font-size:14px; color:var(--dim); background:none;
-    border:1px solid var(--line); border-radius:8px; min-height:44px; padding:0 12px;}
-  .bar .sw{flex:0 0 auto; display:flex; align-items:center; gap:6px; min-height:44px;}
-  .bar .sw input{width:22px; height:22px;}
+  /* ＊帯（`.bar`）の飾りは、帯そのものと一緒に **v48 で外した**。
+       中身は「HH:MM 更新」の一つだけで、それを版の行の右端へ移したため。 */
   /* 「未処理◯件」の飾りは v16 で撤去。数える先（受信箱）に書く者がもう居ない。 */
 
   /* 機械が測った様子の一行（v32）。状態の帯のすぐ下。
@@ -107,9 +103,10 @@
   .facts{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:13px; color:var(--dim);
     margin:0 0 4px;}
   .facts .warn{color:var(--ask); font-weight:700;}   /* 版がずれている／生存が古い */
-  /* 「公開v」の遅れの断り（v35）。事実の行より一段小さく、控えめに置く。 */
-  .ver-note{margin:0 0 6px; font-size:11px; line-height:1.5; color:var(--dim); opacity:.75;}
-  .ver-note b{color:var(--ask); font-weight:700;}
+  /* 「HH:MM 更新」（v48 でここへ移した）。同じ行の**右端**へ寄せる。
+     ＊`margin-left:auto` で寄せるので、版の字が伸びても重ならず、折り返せば下へ落ちる。 */
+  .facts .upd{margin-left:auto;}
+  /* ＊「公開v」の遅れの断り（v35）の飾りは、断り書きごと **v48 で外した**。 */
 
   /* 全部写す。一覧のいちばん上。的は44px以上。 */
   .cpall{display:block; width:calc(100% - 28px); margin:4px 14px 12px; min-height:48px;
@@ -217,30 +214,36 @@
     <div class="facts">
       <span id="fVer">版 —</span>
       <span id="fSeen">最終確認 —</span>
+      <!-- 「HH:MM 更新」は v48 でここへ移した（もとは区切り線の下の帯）。
+           版・最終確認と同じ一行の**右端**に並べる。字も、更新のたびに書き換わる
+           動きも、移す前と同じ（paintBar が書く）。 -->
+      <span id="stat" class="upd">読み込み中…</span>
     </div>
-    <!-- 「公開v」の遅れの断り（v35）。読み元は stable の枝で、raw.githubusercontent から取る。
-         GitHub Pages は stable の中身を配っていないので、遅れの小さい先へは付け替えられない。
-         raw の取り置きは長く、2026-08-26 の実測では押し出しから追いつくまで最大3時間かかった。
-         数字が古いままでも壊れてはいないので、その旨を欄の脇に一行で断っておく。 -->
-    <p class="ver-note">＊「公開v」は stable の枝から読んでいます。<b>最大で数時間遅れる</b>ことがあります。</p>
+    <!-- ＊「公開v」の遅れの断り（v35）は **v48 で消した**。行ごと外し、代わりの文言は置かない。
+         事情は変わっていない——読み元は stable の枝で、raw の取り置きが長く、
+         2026-08-26 の実測では押し出しから追いつくまで最大3時間かかる。
+         数字が古く見えても壊れてはいない。断り書きだけを畳んだ。 -->
     <!-- 送る側の道具（ヨシの釦・入力欄・送る釦・言づて欄）は v11 で撤去した。
          Claude アプリの Code タブから直に指せるようになったので、パネルから送る必要がない。
          このパネルは「見る」ためだけの道具になった。 -->
   </header>
-  <div class="bar">
-    <span id="stat">読み込み中…</span>
-    <!-- 「話題名を入れ直す」は v17 で撤去した。話題名を使う先がもう無い。 -->
-  </div>
-  <button class="cpall" id="btnCopyAll" type="button">全部写す</button>
+  <!-- ＊区切り線の下の帯（`.bar`）は **v48 で外した**。中身は「HH:MM 更新」の一つだけで、
+       それを版の行の右端へ移したので、空の帯だけが残る形になっていた。
+       ＊「話題名を入れ直す」は v17 で撤去済み。話題名を使う先はもう無い。 -->
+  <!-- まとめて写す（v46・並びは v48 でいちばん上へ）。
+       お知らせ・あなた待ち・直近に終わった仕事・今日の報告を一つの控えへ。
+       ＊「お知らせ」の釦とは別物。あちらは**未処理の札を渡す**もので、写した札は一覧から消える。
+         こちらは**読み出すだけ**で、札の写した印には触らない。
+       ＊いちばん上に置くのは、いちばん多く押す釦だから。 -->
+  <button class="cpall" id="btnCopyBoard" type="button">まとめて写す</button>
+  <!-- 未処理の札を渡す釦。字は v48 で「全部写す」から「お知らせ」へ変えた。
+       件数の出し方も押したときの動きも、v38 のまま変えていない。 -->
+  <button class="cpall" id="btnCopyAll" type="button">お知らせ</button>
   <!-- 写し取り一覧への口（v30 で足した）。本体の全画面を撮った PNG を並べたシート。
        組み直すのは node shot-all.js。ここは開くだけで、パネル側は何も持たない。 -->
   <a class="cpall" id="btnShots"
      href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
      target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
-  <!-- まとめて写す（v46）。あなた待ち・直近に終わった仕事・今日の報告を一つの控えへ。
-       ＊「全部写す」とは別物。あちらは**未処理の札を渡す**もので、写した札は一覧から消える。
-         こちらは**読み出すだけ**で、札の写した印には触らない。 -->
-  <button class="cpall" id="btnCopyBoard" type="button">まとめて写す</button>
   <ul id="list"></ul>
   <!-- 写した札の控え（v32）。既定は畳んである。押すと開く。
        v24 で一覧から落とした札の行き先で、**ここでだけ**「届いた」の印を出す。
@@ -259,7 +262,7 @@
     <ul id="copiedList"></ul>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v47（8月28日）</p>
+  <p class="ver" id="verTag">panel v48（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -280,7 +283,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '47';
+  var PANEL_VER = '48';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -510,9 +513,26 @@
 
   function copyWait(btn) { copyInto(btn, waitText(), 'この一覧を写す'); }
 
+  /* お知らせ（まだ写していない札）を全文で（v48）。
+     ＊件名も本文も括弧の中身も**切らない**。写し取るのは読み返すためで、
+       そこで切れていては用をなさない。
+     ＊数え方は釦（setCopyAllLabel）と同じ `shown`。別の数え方を持ち込まない。
+     ＊写した印には触らない。こちらは読み出しで、受け渡しではない。 */
+  function noticesText() {
+    var NL = String.fromCharCode(10);
+    var todo = (shown || []).filter(function (d) { return !isDone(d); });
+    todo.sort(function (a, b) { return (a.time || 0) - (b.time || 0); });   /* 古い順 */
+    var head = 'お知らせ（' + todo.length + '件）';
+    if (!todo.length) { return head + NL + 'いまは有りません。'; }
+    return head + NL + todo.map(function (d) {
+      return '［' + (d.title || '(題なし)') + '］' + hhmm(d.time) + NL + String(d.message || '');
+    }).join(NL + NL);
+  }
+
+  /* 順は お知らせ → あなた待ち → 直近に終わった仕事 → 今日の報告 → 現況の一行（v48）。 */
   function copyBundle(btn) {
     var NL = String.fromCharCode(10);
-    var text = [waitText(), recentText(), todayText(), nowLine()].join(NL + NL);
+    var text = [noticesText(), waitText(), recentText(), todayText(), nowLine()].join(NL + NL);
     copyInto(btn, text, 'まとめて写す');
   }
 
@@ -719,10 +739,16 @@
           /* ⑧そのままを持つ件は畳んでおく。長いので開いたままだと一覧が読めない。
              題の行を押せば開く（畳んだ件と同じ受け）。 */
           var hasRaw = /^そのまま[:：]/m.test(String(d.message || ''));
-          /* 写した札はここへ来ない（上で落としてある）。畳むかどうかは受け取り確認と⑧だけで決める。 */
-          var cls = k + (ack || hasRaw ? ' ack' : '');
+          /* 「終わりました（返事不要）」も畳む（v48）。
+             ＊本文を最初から全部出すと、報告が長い日は一覧が読めなくなる。
+               **表紙の一行（題と時刻）だけを出し、押したときに本文が開く。**
+             ＊畳んだ状態が初期値。写す釦は題の行にあるので、畳んだままでも押せる。 */
+          var isDoneCard = isDoneNotice(d.title);
+          /* 写した札はここへ来ない（上で落としてある）。 */
+          var fold = (ack || hasRaw || isDoneCard);
+          var cls = k + (fold ? ' ack' : '');
           /* 開いてあった件は、開いた形で組み直す（v47）。 */
-          if ((ack || hasRaw) && isOpen(keyOf(d))) { cls = cls + ' open'; }
+          if (fold && isOpen(keyOf(d))) { cls = cls + ' open'; }
           html += '<li class="' + cls.trim() + '" data-i="' + i + '" data-k="' + okey(keyOf(d)) + '">'
                 + '<p class="t"><span class="tx">' + esc(d.title || '(題なし)')
                 + '<span class="when">' + hhmm(d.time) + '</span></span>'
@@ -1014,7 +1040,7 @@
       b.disabled = true;
       b.className = 'cpall';
     } else {
-      b.textContent = '全部写す（' + n + '件）';
+      b.textContent = 'お知らせ（' + n + '件）';   /* v48：字だけ変えた。数え方も動きもそのまま */
       b.disabled = false;
       b.className = 'cpall';
     }
