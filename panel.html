@@ -242,7 +242,7 @@
     <ul id="copiedList"></ul>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v42（8月27日）</p>
+  <p class="ver" id="verTag">panel v43（8月27日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -263,7 +263,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '42';
+  var PANEL_VER = '43';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -318,9 +318,8 @@
      ＊書くのは Claude Code の側（node seen-set.js）。パネルからは読むだけ。 */
   var SEEN_URL = 'https://kfsr148-art.github.io/koushu-handan/seen.json';
   var seenUpto = 0;
-  /* 「写した札を出す」を押した回だけ、この端末で seen を無視する（その場かぎり）。
-     ＊seen は公開側の値なので端末からは消せない。押しても何も出ないと壊れて見える。 */
-  var ignoreSeen = false;
+  /* ＊「写した札を出す」の釦とともに `ignoreSeen` も **v43 で外した**。
+       押す相手が無くなったので、常に false のまま残る死んだ旗になっていた。 */
   function pullSeen() {
     fetch(SEEN_URL + '?_t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
@@ -335,7 +334,7 @@
   /* この札は片付いているか。「写す」を押した／「ここまで読んだ」に含まれる、のどちらか。 */
   function isDone(d) {
     if (copied[keyOf(d)]) { return true; }
-    if (!ignoreSeen && seenUpto && d && typeof d.time === 'number' && d.time <= seenUpto) { return true; }
+    if (seenUpto && d && typeof d.time === 'number' && d.time <= seenUpto) { return true; }
     return false;
   }
   /* 最後の更新からこれを超えたら「連絡なし」。
@@ -500,7 +499,6 @@
 
         /* 写した札は一覧から落とす（v24）。押していない札は、何件あっても全部残す。
            ＊localStorage に残っている印も、ここで効く。開き直しても写した札は出ない。 */
-        var total = rows.length;
         /* 落とす前の全件を控える。写した札の控え（下の畳んだ箱）がここから作られる。 */
         allRows = rows.slice();
         rows = rows.filter(function (d) { return !isDone(d); });
@@ -508,29 +506,15 @@
         setCopyAllLabel();   /* 釦の字を件数つきに（v38）。落としたあとの数で組む */
         paintCopied(allRows);
 
-        /* 全部写し済みで一覧が空になった場合。**「知らせがありません」と出さない**。
-           ＊控えには届いているのに「ありません」と出ると、壊れたようにしか見えない
-             （2026-08-24 のご指摘：写す釦の付いた札が出なくなった）。
-           ＊印を消して出し直せる釦を添える。印は端末の中だけの話なので、消しても
-             控え（notices.json）には触らない。 */
-        if (total > 0 && rows.length === 0) {
-          $('list').innerHTML = '<li class="why"><p class="m">'
-            + esc(total + '件ぜんぶ片付いています。新しい知らせが出れば、ここに並びます。')
-            + '</p><p class="m"><button type="button" id="unmark">片付いた札を出す</button></p></li>';
-          var ub = $('unmark');
-          if (ub) {
-            ub.onclick = function () {
-              copied = {};
-              saveCopied();
-              /* 「ここまで読んだ」は公開側の値なので、端末からは消せない。
-                 押しても何も出ないと壊れて見えるので、この端末のこの回だけ無視する（v34）。 */
-              ignoreSeen = true;
-              pull();
-            };
-          }
-          paintBar();
-          return;
-        }
+        /* ＊「◯件ぜんぶ片付いています」の枠と「片付いた札を出す」の釦は **v43 で外した**。
+             未処理が無いときは**何も出さない**。
+             ＊もともとは「控えには届いているのに『ありません』と出ると壊れて見える」ため
+               置いたものだが、片付いている日は毎回この枠が居座って、
+               **空であることのほうが読み取りにくくなっていた**。
+             ＊出し直したいときは、下の畳んだ箱（写した札の控え）を開けば全件そのまま読める。
+               控え（notices.json）には最初から触っていないので、失われるものは無い。
+             ＊**読めなかったとき**の断りは今までどおり出す（下の catch）。
+               「無い」と「読めない」は別物なので、そちらは黙らせない。 */
 
         var html = '';
         rows.forEach(function (d, i) {
@@ -548,8 +532,8 @@
                 + '<button type="button" class="cp" data-i="' + i + '">写す</button></p>'
                 + '<p class="m">' + esc(d.message) + '</p></li>';
         });
-        if (html) { $('list').innerHTML = html; }
-        else { sayWhy('まだ知らせがありません。出ればここに並びます。'); }
+        /* 未処理が無ければ**空のまま**にする（v43）。字も枠も出さない。 */
+        $('list').innerHTML = html;
         paintBar();
       })
       .catch(function (e) {
@@ -886,7 +870,7 @@
          ＊次の取得を待たずにその場で消す。待つと、押したのに残って見える。 */
       var li = btn.parentNode && btn.parentNode.parentNode;
       if (li && li.tagName === 'LI' && li.parentNode) { li.parentNode.removeChild(li); }
-      if (!$('list').children.length) { sayWhy('写していない知らせはありません。'); }
+      /* 最後の一枚を写して空になっても、**何も出さない**（v43）。 */
     };
     /* 写せなかったとき。**成功に見せない**——done は通さない。
        ＊v20 で「落ちたのか分からない」を直そうとして done を通したが、それだと
