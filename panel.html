@@ -233,6 +233,10 @@
   <a class="cpall" id="btnShots"
      href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
      target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
+  <!-- まとめて写す（v46）。あなた待ち・直近に終わった仕事・今日の報告を一つの控えへ。
+       ＊「全部写す」とは別物。あちらは**未処理の札を渡す**もので、写した札は一覧から消える。
+         こちらは**読み出すだけ**で、札の写した印には触らない。 -->
+  <button class="cpall" id="btnCopyBoard" type="button">まとめて写す</button>
   <ul id="list"></ul>
   <!-- 写した札の控え（v32）。既定は畳んである。押すと開く。
        v24 で一覧から落とした札の行き先で、**ここでだけ**「届いた」の印を出す。
@@ -242,7 +246,7 @@
     <ul id="copiedList"></ul>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v45（8月27日）</p>
+  <p class="ver" id="verTag">panel v46（8月27日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -263,7 +267,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '45';
+  var PANEL_VER = '46';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -370,6 +374,9 @@
     h += '<li class="why"><p class="t"><span class="tx">'
        + esc(w.length ? ('あなた待ち ' + w.length + '件') : 'あなた待ちは0件')
        + '</span></p>';
+    /* この一覧をそのまま写す釦（v46）。件名も括弧の中身も切らずに全文を入れる。
+       ＊`cp` で始まる名は一覧の写す釦の受けが拾ってしまうので、**id で先に分ける**。 */
+    h += '<p class="m"><button type="button" class="cp" id="cpWait">この一覧を写す</button></p>';
     if (w.length) {
       h += '<p class="m">' + esc(w.map(function (it, i) {
              return (i + 1) + '. ' + (it.name || '') + '（' + (it.why || '') + '）';
@@ -393,6 +400,78 @@
     h += '</li>';
 
     return h;
+  }
+
+  /* ---- 板の写し（v46）----
+     ＊画面では長い結果を78字で畳んでいるが、**控えには全文を入れる**。
+       写し取るのは読み返すためで、そこで切れていては用をなさない。
+     ＊改行は逃がし字ではなく符号から作る（差し替えで本物の改行に化けたことがあるため）。 */
+  function ymdText(d) {
+    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+  }
+
+  function waitText() {
+    var NL = String.fromCharCode(10);
+    if (!board) { return 'あなた待ち：板の値を読めません（' + (boardErr || '理由ふめい') + '）'; }
+    var w = (board.waiting && board.waiting.length) ? board.waiting : [];
+    if (!w.length) { return 'あなた待ちは0件'; }
+    return 'あなた待ち ' + w.length + '件' + NL + w.map(function (it, i) {
+      return (i + 1) + '. ' + (it.name || '') + '（' + (it.why || '') + '）';
+    }).join(NL);
+  }
+
+  function recentText() {
+    var NL = String.fromCharCode(10), CR = String.fromCharCode(13);
+    if (!board) { return '直近に終わった仕事：板の値を読めません'; }
+    var r = (board.recent && board.recent.length) ? board.recent : [];
+    if (!r.length) { return '直近に終わった仕事：まだありません。'; }
+    return '直近に終わった仕事' + NL + r.map(function (it) {
+      var line = String(it.result || '').split(CR).join(' ').split(NL).join(' ');
+      return '・' + (it.name || '') + NL + '　　' + line;
+    }).join(NL);
+  }
+
+  /* 今日の報告 ＝ 今日届いた知らせの本文、全部。写した札も含める（読み返すためなので落とさない）。 */
+  function todayText() {
+    var NL = String.fromCharCode(10);
+    var d0 = new Date(); d0.setHours(0, 0, 0, 0);
+    var t0 = Math.floor(d0.getTime() / 1000);
+    var rows = (allRows || []).filter(function (d) {
+      return d && typeof d.time === 'number' && d.time >= t0;
+    });
+    rows.sort(function (a, b) { return (a.time || 0) - (b.time || 0); });
+    var head = '今日の報告（' + ymdText(d0) + '・' + rows.length + '件）';
+    if (!rows.length) { return head + NL + '今日はまだありません。'; }
+    return head + NL + rows.map(function (d) {
+      return '［' + (d.title || '(題なし)') + '］' + hhmm(d.time) + NL + String(d.message || '');
+    }).join(NL + NL);
+  }
+
+  /* 写して、字を戻す。**札の写した印には触らない**——これは読み出しであって受け渡しではない。 */
+  function copyInto(btn, text, back) {
+    var base = (btn.id === 'btnCopyBoard') ? 'cpall' : 'cp';
+    var ok = function () {
+      btn.textContent = '写した';
+      btn.className = base + ' ok';
+      setTimeout(function () { btn.textContent = back; btn.className = base; }, 2000);
+    };
+    var ng = function () {
+      fallback(text);
+      btn.textContent = '写せません';
+      setTimeout(function () { btn.textContent = back; btn.className = base; }, 3000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try { navigator.clipboard.writeText(text).then(ok, ng); } catch (e) { ng(); }
+    } else { ng(); }
+  }
+
+  function copyWait(btn) { copyInto(btn, waitText(), 'この一覧を写す'); }
+
+  function copyBundle(btn) {
+    var NL = String.fromCharCode(10);
+    var text = [waitText(), recentText(), todayText(), nowLine()].join(NL + NL);
+    copyInto(btn, text, 'まとめて写す');
   }
 
   function paintBoard() { $('list').innerHTML = boardHtml(); }
@@ -1306,10 +1385,14 @@
        ヨシか指示かを分ける作りだったことも、そこに残っている。 */
 
   $('btnCopyAll').addEventListener('click', function () { copyAll(this); });
+  $('btnCopyBoard').addEventListener('click', function () { copyBundle(this); });
 
   /* 写す釦と、畳んだ件の開閉。一覧ごと張り替わるので親で受ける。 */
   $('list').addEventListener('click', function (e) {
     var b = e.target;
+    /* あなた待ちの写す釦は id で先に分ける（v46）。名が cp で始まるので、
+       下の受けに任せると data-i が無いまま copyOne へ落ちる。 */
+    if (b && b.id === 'cpWait') { copyWait(b); return; }
     if (b && b.className && b.className.indexOf('cp') === 0) {
       copyOne(parseInt(b.getAttribute('data-i'), 10), b);
       return;
