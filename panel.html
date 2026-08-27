@@ -242,7 +242,7 @@
     <ul id="copiedList"></ul>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v41（8月27日）</p>
+  <p class="ver" id="verTag">panel v42（8月27日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -263,7 +263,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '41';
+  var PANEL_VER = '42';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -367,10 +367,29 @@
 
   var sinceTimer = null;
   var usageTimer = null;
+  var verTimer = null;
+
+  /* 版の見張りを**一度きりにしない**（v42）。
+     ＊`checkPanelVer` は `showMain()` から**開いた一度だけ**呼ばれていた。パネルは
+       開きっぱなしで使うもので、中身は15秒ごとに取りに行くが**頁は読み直されない**。
+       そのため v38 を掴んだ端末が **v39・v40・v41 を三度続けて取り逃がした**
+       （2026-08-27 実機。公開側は panel-ver.txt も panel.html も v41 で正しかった）。
+     ＊二本立てで見る——**5分ごと**と、**画面が手前に戻ったとき**。
+       iOS は背面に回すと時計を止めるので、時間だけでは間に合わない。
+     ＊`checkPanelVer` 自身が「同じ版へ二度は跳ばない」を持っているので、
+       何度呼んでも堂々巡りにはならない。 */
+  function watchPanelVer() {
+    if (verTimer) { clearInterval(verTimer); }
+    verTimer = setInterval(checkPanelVer, 300000);
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) { checkPanelVer(); }
+  });
 
   function showMain() {
     $('main').className = '';
     checkPanelVer();
+    watchPanelVer();
     pullVer();
     pullSeen();   /* 「ここまで読んだ」を先に取る（v34）。一覧を組む前に間に合わせる */
     pullUsage();
