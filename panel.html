@@ -275,7 +275,7 @@
      href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
      target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v52（8月28日）</p>
+  <p class="ver" id="verTag">panel v53（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -296,7 +296,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '52';
+  var PANEL_VER = '53';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -772,8 +772,13 @@
                **表紙の一行（題と時刻）だけを出し、押したときに本文が開く。**
              ＊畳んだ状態が初期値。写す釦は題の行にあるので、畳んだままでも押せる。 */
           var isDoneCard = isDoneNotice(d.title);
+          /* 「調べました」も畳む（v53）。畳む理由は終わりましたと同じで、
+             調べ物の報告は長くなりやすく、開いたままだと一覧が読めなくなる。
+             ＊表紙は題と時刻と写す釦の一行だけ。押せば本文が**全文**開く（どこも切らない）。
+             ＊開閉は openKeys に載るので、15秒の読み直しでも開いたまま保たれる（v47）。 */
+          var isLookCard = isLookNotice(d.title);
           /* 写した札はここへ来ない（上で落としてある）。 */
-          var fold = (ack || hasRaw || isDoneCard);
+          var fold = (ack || hasRaw || isDoneCard || isLookCard);
           var cls = k + (fold ? ' ack' : '');
           /* 開いてあった件は、開いた形で組み直す（v47）。 */
           if (fold && isOpen(keyOf(d))) { cls = cls + ' open'; }
@@ -1356,6 +1361,9 @@
        写せば落ちる。こちらは落ちないので、**過去の札もいつでも全文が読める**。
      ＊題での見分けは `kind()` と同じ字（「終わりました」）で行う。 */
   function isDoneNotice(t) { return String(t || '').indexOf('終わりました') >= 0; }
+  /* 「調べました」かどうか（v53）。一覧で畳むためだけに使う。
+     ＊下の箱の振り分けには使わない。調べました札は今までどおり「写した札」の箱へ入る。 */
+  function isLookNotice(t) { return String(t || '').indexOf('調べました') >= 0; }
   function paintDoneBox(all) {
     var box = $('doneBox'), head = $('doneHead'), ul = $('doneList');
     if (!box || !head || !ul) { return; }
