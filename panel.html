@@ -123,6 +123,12 @@
      ＊`.cpall` が display:block を持つので、hidden の既定（display:none）では消えない。
        同じ札の中で打ち消しておく。 */
   .cpall[hidden]{display:none;}
+  /* まとめて写すだけ青くする（v52）。いちばん多く押す釦なので、他と見分けられるようにする。
+     ＊掛けるのは id なので、他の釦の札（.cpall とその仲間）には一切触れない。
+     ＊丸みも大きさも .cpall のまま。色だけを乗せる。
+     ＊id は .cpall.ok より強いので、写した直後の緑の字に負けない（青地に緑は読めない）。 */
+  #btnCopyBoard{background:#1e6fd9; color:#fff; border-color:#1e6fd9;}
+  #btnCopyBoard:active{background:#1857aa; border-color:#1857aa; filter:none;}
   /* 写し取り一覧への口。釦と同じ見た目にするため、a にも同じ寸法を掛ける。 */
   a.cpall{box-sizing:border-box; text-decoration:none; text-align:center;
     line-height:48px; padding:0 10px;}
@@ -239,7 +245,7 @@
        ＊「お知らせ」の釦とは別物。あちらは**未処理の札を渡す**もので、写した札は一覧から消える。
          こちらは**読み出すだけ**で、札の写した印には触らない。
        ＊いちばん上に置くのは、いちばん多く押す釦だから。 -->
-  <button class="cpall" id="btnCopyBoard" type="button">まとめて写す</button>
+  <button class="cpall" id="btnCopyBoard" type="button">まとめて写す（0件）</button>
   <!-- 未処理の札を渡す釦。字は v48 で「全部写す」から「お知らせ」へ変えた。
        件数の出し方も押したときの動きも、v38 のまま変えていない。 -->
   <button class="cpall" id="btnCopyAll" type="button">お知らせ</button>
@@ -269,7 +275,7 @@
      href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
      target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v51（8月28日）</p>
+  <p class="ver" id="verTag">panel v52（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -290,7 +296,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '51';
+  var PANEL_VER = '52';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -537,10 +543,24 @@
   }
 
   /* 順は お知らせ → あなた待ち → 直近に終わった仕事 → 今日の報告 → 現況の一行（v48）。 */
+  /* まとめて写すの釦に出す件数（v52）。
+     ＊数えるのは**実際に写しに入る札**だけ。noticesText() が拾うのと同じ絞りを使う
+       （`shown` のうち片付いていないもの）。別の数え方を持ち込まない。
+     ＊あなた待ち・直近に終わった仕事・今日の報告・現況の一行は札ではないので数えない。 */
+  function boardCount() {
+    return (shown || []).filter(function (d) { return !isDone(d); }).length;
+  }
+  function boardLabel() { return 'まとめて写す（' + boardCount() + '件）'; }
+  function setCopyBoardLabel() {
+    var b = $('btnCopyBoard');
+    if (b) { b.textContent = boardLabel(); }
+  }
+
   function copyBundle(btn) {
     var NL = String.fromCharCode(10);
     var text = [noticesText(), waitText(), recentText(), todayText(), nowLine()].join(NL + NL);
-    copyInto(btn, text, 'まとめて写す');
+    /* 字を戻す先も件数つきで渡す。渡さないと、戻ったときだけ数字が消える。 */
+    copyInto(btn, text, boardLabel());
   }
 
   function paintBoard() { $('list').innerHTML = boardHtml(); }
@@ -723,6 +743,7 @@
         rows = rows.filter(function (d) { return !isDone(d); });
         shown = rows;
         setCopyAllLabel();   /* 釦の字を件数つきに（v38）。落としたあとの数で組む */
+        setCopyBoardLabel(); /* まとめて写すの側も同じ数で組む（v52） */
         paintDoneBox(allRows);   /* 「終わりました」の箱（v47）。写した写さないに関わらず全部 */
         paintCopied(allRows);
 
@@ -1116,6 +1137,11 @@
       /* 最後の一枚を写して空になったら、その場で板の三つへ入れ替える（v44）。
          ＊次の取得を待たない。待つと、写し終えた直後だけ真っ白になる。 */
       shown = shown.filter(function (x) { return x !== d; });
+      /* 二つの釦の件数も、その場で組み直す（v52）。
+         ＊しないと、次の取得（15秒後）まで古い数字が残る。件数つきの字にした以上、
+           **数字が実際と食い違って見える時間**を作らない。 */
+      setCopyAllLabel();
+      setCopyBoardLabel();
       if (!$('list').children.length) { paintBoard(); }
     };
     /* 写せなかったとき。**成功に見せない**——done は通さない。
