@@ -1,18 +1,49 @@
 # いまの様子
 
-**作業中** — 配牌判定の中核の切り出し（作法との衝突の裁定待ち）
+**作業中** — 配牌判定の中核を node から呼ぶ取り出し器（案A）
 
-未処理 0 件 ／ 2026-08-28 05:20:06 書き出し（VAIOの時計）
+未処理 0 件 ／ 2026-08-28 05:35:24 書き出し（VAIOの時計）
 
 ＊この頁は知らせが出るたびに書き直されます。話題名は載せません。
 ＊押し送り（ntfy）へ出るのはヨシ待ちだけです。ここには押し送っていないものも並びます。
-押し送りは本日 12 件（上限20件）。
+押し送りは本日 13 件（上限20件）。
 
 ---
 
 ## 送った知らせ（新しい順に二十件まで）
 
-### 1. 🙋 ヨシしてください
+### 1. ✅ 終わりました（返事不要）
+
+```
+配牌判定の中核を node から呼ぶ取り出し器（案A）
+y0828-core に案Aでヨシを受けたので、そのとおり作った。本体 koushu-handan.html は一字も触っていない（git diff は空・md5 は e7484d9fa323b93a0a91d093811bc9e4 のまま・変更ファイルの一覧にも出ない）。新しく置いたのは二つで、どちらもリポジトリ直下（check.js や adv-check.js と同じ場所）。① core-probe.js ＝ 取り出し器。実行のたび本体から analyze() の字面をそのまま読み出して評価し、hand / seatWind / roundWind / doraCount の四つを引数で差し込んで呼ぶ。写しを持たないので本体とズレることが原理的に起きない。② core-crosscheck.js ＝ 突き合わせ器。作法14「写しに probe」方式で、本体の写しを一時ディレクトリに作り、そこへ一片を差し込んで headless の msedge で駆動し、判定釦を10回押して、本体が自分で書く記録（localStorage の haipaiLog）と判定カードの字を読み、node 側の値と並べる。作法15 のとおり window に診断口は生やしていない。結果は10通り×17項目＝170件すべて一致、食い違い0、画面に無い項目0。途中で分かったこととして、当初に選んだ「少牌9枚」と「多牌14枚」は画面から判定を押せない（本体1991行 judgeBtn.disabled = (hand.length < 10 || hand.length > 13)）ため突き合わせの相手が出ず、10〜13枚に収まる手牌へ入れ替えた。この入れ替え以外に直した所は無い。シムなし（写しは実行後に消している）。
+ファイル: core-probe.js（新規・159行）／core-crosscheck.js（新規・160行）／orders-open.tsv（切出-3 済・切出-4 取消・切出-5 済）。koushu-handan.html は無変更。
+実測: 中核の切り出し元＝koushu-handan.html 2434〜3058行（625行の analyze() 一つ）。analyze() が外から読む値は hand・seatWind・roundWind・doraCount の四つだけで、document / window の参照は0件。外の定数は YAKUHAI と honorData の二つで、これも写さず本体から字面で抜いている。突き合わせ＝10通り×17項目＝170件、一致170・食い違い0・画面に無い0で PASS。check-all --fast は実行中（結果は次の報告で確定）。git status に koushu-handan.html は出ていない。
+実機: なし（画面に出るものは何も変えていない。本体は無変更）
+そのまま: 【10通りの手牌と両側の値】17項目すべて一致したので、各行の値は node の側と画面の側で同じ。
+1_門前の良形　234m567p88s234s1z　東場東家　verdict=attack baseShanten=1 acceptTiles=9 widthLabel=狭い goodShapes=4 shapeNeeded=4 shapeOK=true yakuhaiPair=false doraValue=0 doraCount=0 redCount=0 defHonors=1 defTerminals=0 kokushiSeen=false kokushiKinds=1 yakumanReach=false yakumanName=（空）　… 一致17／食い違い0
+2_染め寄り　123456789m11p2z　東場南家　verdict=attack baseShanten=1 acceptTiles=9 widthLabel=狭い goodShapes=4 shapeNeeded=4 shapeOK=true yakuhaiPair=false doraValue=0 doraCount=0 redCount=0 defHonors=1 defTerminals=4 kokushiSeen=false kokushiKinds=4 yakumanReach=false yakumanName=（空）　… 一致17／食い違い0
+3_字牌が厚い　19m19p19s1234567z　東場西家　verdict=attack baseShanten=0 acceptTiles=39 widthLabel=好形待ち goodShapes=0 shapeNeeded=4 shapeOK=false yakuhaiPair=false doraValue=0 doraCount=0 redCount=0 defHonors=7 defTerminals=6 kokushiSeen=true kokushiKinds=13 yakumanReach=true yakumanName=国士無双　… 一致17／食い違い0
+4_七対子の手　1199m2288p3377s　南場北家　verdict=defend baseShanten=0 acceptTiles=4 widthLabel=ふつうの待ち goodShapes=6 shapeNeeded=4 shapeOK=true yakuhaiPair=false doraValue=0 doraCount=0 redCount=0 defHonors=0 defTerminals=4 kokushiSeen=false kokushiKinds=2 yakumanReach=false yakumanName=（空）　… 一致17／食い違い0
+5_国士が見える　119m19p19s12345z　東場東家　verdict=attack baseShanten=0 acceptTiles=4 widthLabel=ふつうの待ち goodShapes=1 shapeNeeded=4 shapeOK=false yakuhaiPair=false doraValue=0 doraCount=0 redCount=0 defHonors=5 defTerminals=7 kokushiSeen=true kokushiKinds=11 yakumanReach=true yakumanName=国士無双　… 一致17／食い違い0
+6_赤五を含む　2340m567p88s12z　東場東家　verdict=attack baseShanten=3 acceptTiles=40 widthLabel=広い goodShapes=4 shapeNeeded=4 shapeOK=true yakuhaiPair=false doraValue=1 doraCount=0 redCount=1 defHonors=2 defTerminals=0 kokushiSeen=false kokushiKinds=2 yakumanReach=false yakumanName=（空）　… 一致17／食い違い0
+7_猫牌を含む　234m567p88s2z猫猫　東場南家　verdict=defend baseShanten=3 acceptTiles=46 widthLabel=広い goodShapes=3 shapeNeeded=4 shapeOK=false yakuhaiPair=false doraValue=0 doraCount=0 redCount=0 defHonors=1 defTerminals=0 kokushiSeen=false kokushiKinds=1 yakumanReach=false yakumanName=（空）　… 一致17／食い違い0
+8_十三枚そろい　234m567p888s1234z　東場東家　verdict=defend baseShanten=2 acceptTiles=12 widthLabel=狭い goodShapes=3 shapeNeeded=4 shapeOK=false yakuhaiPair=false doraValue=0 doraCount=0 redCount=0 defHonors=4 defTerminals=0 kokushiSeen=false kokushiKinds=4 yakumanReach=false yakumanName=（空）　… 一致17／食い違い0
+9_十枚ぎりぎり　234m567p88s12z　東場東家　verdict=defend baseShanten=3 acceptTiles=20 widthLabel=ふつう goodShapes=3 shapeNeeded=4 shapeOK=false yakuhaiPair=false doraValue=0 doraCount=0 redCount=0 defHonors=2 defTerminals=0 kokushiSeen=false kokushiKinds=2 yakumanReach=false yakumanName=（空）　… 一致17／食い違い0
+10_役牌が厚い　555z666z777z11m2m　東場東家　verdict=attack baseShanten=1 acceptTiles=17 widthLabel=ふつう goodShapes=4 shapeNeeded=2 shapeOK=true yakuhaiPair=true doraValue=3 doraCount=0 redCount=0 defHonors=9 defTerminals=2 kokushiSeen=false kokushiKinds=4 yakumanReach=true yakumanName=大三元　… 一致17／食い違い0
+合計 — 一致170／食い違い0／画面に無い0。PASS。
+
+【比べた17項目の対応】左が画面の側（本体が自分で書く記録の名）、右が node の側（analyze() の返しの名）
+verdict=verdict ／ sh=baseShanten ／ acceptTiles=acceptTiles ／ widthLabel=widthLabel ／ goodShapes=goodShapes ／ shapeNeeded=shapeNeeded ／ shapeOK=shapeOK ／ yakuhaiPair=yakuhaiPair ／ doraValue=doraValue ／ doraPlain=doraCount ／ red=redCount ／ defHonors=defHonors ／ defTerminals=defTerminals ／ kokushiSeen=kokushiSeen ／ kokushiKinds=kokushiKinds ／ yakumanReach=yakumanReach ／ yakumanName=yakumanName
+
+【切り出し器の名前と置き場所】
+core-probe.js      … リポジトリ直下（C:\Users\user\Desktop\mahjong\koushu-handan\core-probe.js）。取り出し器の本体。
+core-crosscheck.js … リポジトリ直下（同上）。画面の側と突き合わせる道具。
+＊置き場所は check.js / adv-check.js / shot-all.js / state-line.js と同じ、リポジトリ直下の node 道具の並び。
+＊名を core-probe とした理由は、これが「切り出した写し」ではなく「本体から読み出す探り」だから。写しではないことを名で示している。
+```
+
+### 2. 🙋 ヨシしてください
 
 ```
 配牌判定の中核の切り出し（作法との衝突の裁定待ち）
@@ -21,14 +52,14 @@
 答え方：「y0828-core にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。
 ```
 
-### 2. ✅ 終わりました（返事不要）
+### 3. ✅ 終わりました（返事不要）
 
 ```
 断片の受領（05:00「天鳳の牌譜置き場の可否調べと、凍結-0・観察1-3 の行の貼り込み」）
 この回は控えを書いていません（前の回の控えが残っています。中身は当てになりません）。
 ```
 
-### 3. 🔎 調べました
+### 4. 🔎 調べました
 
 ```
 天鳳の牌譜置き場の可否調べと、凍結-0・観察1-3 の行の貼り込み
@@ -63,7 +94,7 @@
 判定の理由 － 技術面の五条は守れる。塞がっているのは用途の側で、この道場は「天鳳での対戦を必要としないサービス」かつ「一般の麻雀への応用」に当たるため、引用元②のとおり support@c-egg.com への問い合わせと許諾が先に要る。加えて robots.txt が /sc/raw/ を全 User-Agent に拒否している一方、同じ置き場のページが自動ダウンロードの手順を公式に案内しており、二つが食い違っている。この食い違いの読み方も問い合わせで併せて確かめるのが確実。
 ```
 
-### 4. 🔎 調べました
+### 5. 🔎 調べました
 
 ```
 台帳の未了・発効中の行を grep で数え直し
@@ -72,7 +103,7 @@ orders-open.tsv の状態欄の先頭語で数え直した。指摘のとおり�
 実測: 総行数80（見出し除く）。状態の先頭語の内訳＝済56／取消16／未了5／「断線-5 へ統合（消していない）」2／発効中1。合計80。未了の5件＝積み残し-1・観察-1・観察-2・観察-3・後日-2。発効中の1件＝凍結-0。合図待ちで始まる行と後日で始まる行は0件。
 ```
 
-### 5. 🔎 調べました
+### 6. 🔎 調べました
 
 ```
 orders-open.tsv の全行の書き出し
@@ -81,7 +112,7 @@ orders-open.tsv を読み、見出し行を除く全80行を「印・件名・�
 実測: 全80行（見出し1行を除く）。状態の内訳＝未了4件（積み残し-1／観察-1／観察-2／観察-3／後日-2の5件のうち書式が「未了：」で始まるもの）＋発効中1件（凍結-0）で、機械の数えでは未了・発効中あわせて6件。
 ```
 
-### 6. ✅ 終わりました（返事不要）
+### 7. ✅ 終わりました（返事不要）
 
 ```
 yoshi-open.tsv の古い印2件を落とす
@@ -90,7 +121,7 @@ yoshi-open.tsv の古い印2件を落とす
 実測: 落とす前2行・落とした後0行（実読み）。写しは227バイト。
 ```
 
-### 7. 🔎 調べました
+### 8. 🔎 調べました
 
 ```
 panel v47 の四点を公開側で実読み確認
@@ -99,7 +130,7 @@ panel v47 の四点を公開側で実読み確認
 実測: 公開 panel-ver.txt=47／公開 panel.html は 88741 バイト・verTag「panel v47（8月28日）」262行・PANEL_VER='47' 283行。語の件数＝openKeys 3／toggleOpen 4／data-k 6／doneBox 2／doneHead 2／doneList 5／paintDoneBox 3／isDoneNotice 2／why ack 1／slice(0,78) 0。「78」の当たりは注記2箇所のみ（435行と448行）。
 ```
 
-### 8. 🔎 調べました
+### 9. 🔎 調べました
 
 ```
 窓の立ち上げ（台帳の残りの申告）
@@ -108,14 +139,14 @@ panel v47 の四点を公開側で実読み確認
 実測: orders-open.tsv の未了5件＝積み残し-1／観察-1／観察-2／観察-3／後日-2。凍結-0 は発効中。inbox.txt の未処理は 0件（末尾は 2026-08-23 17:28:33 で全て [x]）。yoshi-open.tsv は2行。
 ```
 
-### 9. ✅ 終わりました（返事不要）
+### 10. ✅ 終わりました（返事不要）
 
 ```
 v47 の四つが入っているかの確認（三度目の書き込みはしない）
 この回は控えを書いていません（前の回の控えが残っています。中身は当てになりません）。
 ```
 
-### 10. 🪟 異常です（手が要ります）
+### 11. 🪟 異常です（手が要ります）
 
 ```
 v47 の四つが入っているかの確認（三度目の書き込みはしない）
@@ -123,7 +154,7 @@ Claude Code が動いていません。落ちたか、閉じられました。
 こちらがすること：端末で Claude Code を開き直してください。
 ```
 
-### 11. 🔎 調べました
+### 12. 🔎 調べました
 
 ```
 v47 の四つが入っているかの確認（三度目の書き込みはしない）
@@ -133,14 +164,14 @@ v47 の四つが入っているかの確認（三度目の書き込みはしな�
 実機: ①あなた待ちが「あなた待ち（N件）」の一行になり、押すと一覧と写す釦が開く ②「✅ 終わりました N件」の箱が出て、札を押すと本文が途中で切れずに全文出る ③どれかを開いたまま15秒以上待っても勝手に閉じない
 ```
 
-### 12. ✅ 終わりました（返事不要）
+### 13. ✅ 終わりました（返事不要）
 
 ```
 折り畳みの三件（あなた待ち・終わりました・開閉を保つ）panel v47
 この回は控えを書いていません（前の回の控えが残っています。中身は当てになりません）。
 ```
 
-### 13. ✅ 終わりました（返事不要）
+### 14. ✅ 終わりました（返事不要）
 
 ```
 折り畳みの三件（あなた待ち・終わりました・開閉を保つ）panel v47
@@ -150,14 +181,14 @@ v47 の四つが入っているかの確認（三度目の書き込みはしな�
 実機: ①パネルの版の字が panel v47 ②あなた待ちが「あなた待ち（2件）」の一行になり、押すと一覧と写す釦が出る ③下の方に「✅ 終わりました N件」の箱が出て、押すと札が並び、札を押すと本文が全文出る（途中で切れない）④どれかを開いたまま15秒以上待っても、勝手に閉じない
 ```
 
-### 14. 🕒 延びています
+### 15. 🕒 延びています
 
 ```
 返事パネルの工事、入っている物と入っていない物の切り分け
 終了予定02:08を過ぎています（経過11分）
 ```
 
-### 15. 🔎 調べました
+### 16. 🔎 調べました
 
 ```
 返事パネルの工事、入っている物と入っていない物の切り分け
@@ -166,7 +197,7 @@ panel.html（いま公開されている v46）を実読みして五つを分け
 実測: ②=244〜246行（doneBox の箱・表紙・中身）／95〜97行（CSS）／1234行〜（paintCopied）／1253行（届いた印）／1250行（中の札が ack で一枚ずつ畳める）／1411行（開閉の受け）。④=471〜475行（copyBundle＝waitText＋recentText＋todayText＋nowLine）、446〜448行（今日の報告は本文をそのまま）、recentText に切りは無い。①=374行で class="why"（畳めるのは ack だけ）。③=doneBox／isDoneNotice は grep で0件、678行の ack は受け取り確認と⑧そのままだけ、654行で写した札は一覧から落ちる。⑤=openKeys／toggleOpen／data-k は grep で0件、688行と1258行で innerHTML を丸ごと差し替えるので544行の15秒ごとの読み直しで開閉が消える
 ```
 
-### 16. ✅ 終わりました（返事不要）
+### 17. ✅ 終わりました（返事不要）
 
 ```
 板を写し取る釦を二つ付ける（panel v46）
@@ -176,32 +207,25 @@ panel.html（いま公開されている v46）を実読みして五つを分け
 実機: ①パネルの版の字が panel v46 ②画面上部、写し取り一覧の口の下に「まとめて写す」が出る。押すと「写した」に変わり、貼ると あなた待ち→直近に終わった仕事→今日の報告→現況 の順で全部入っている ③未処理が無いとき、あなた待ちの枠の中に「この一覧を写す」が出る。押すと件名と括弧の中身まで入る ④どちらを押しても、一覧の札は消えない
 ```
 
-### 17. ✅ 終わりました（返事不要）
+### 18. ✅ 終わりました（返事不要）
 
 ```
 返事パネルの「片付いています」の枠と釦を外す（panel v43）
 この回は控えを書いていません（前の回の控えが残っています。中身は当てになりません）。
 ```
 
-### 18. 🕒 延びています
+### 19. 🕒 延びています
 
 ```
 返事パネルの「Fable」の出どころを一行で答える
 終了予定21:23を過ぎています（経過6分）
 ```
 
-### 19. 🔎 調べました
+### 20. 🔎 調べました
 
 ```
 返事パネルの「Fable」の出どころを一行で答える
 パネルの Fable の割合は usage.json の body.limits[] のうち kind==="weekly_scoped" の要素から出ている。名前は L.scope.model.display_name をそのまま表示し、割合は Math.round(L.percent)。paintUsage() の中で、session→「セッション」・weekly_all→「週」・weekly_scoped→表示名、と振り分けている。別ファイルでもその場の計算でもなく、"Fable" の綴りは JSON から来たものをそのまま出している。調べただけで、ファイルには手を付けていない
 ファイル: なし（panel.html を読んだだけ）
 実測: panel.html の paintUsage()（975〜990行あたり）を実読み。いまの usage.json では limits に session／weekly_all／weekly_scoped(display_name="Fable") の三つが入っている
-```
-
-### 20. ✅ 終わりました（返事不要）
-
-```
-確認9件（新規は定時の報せと値の寄せの2件）
-この回は控えを書いていません（前の回の控えが残っています。中身は当てになりません）。
 ```
