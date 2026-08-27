@@ -242,7 +242,7 @@
     <ul id="copiedList"></ul>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v44（8月27日）</p>
+  <p class="ver" id="verTag">panel v45（8月27日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -263,7 +263,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '44';
+  var PANEL_VER = '45';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -332,10 +332,11 @@
       .catch(function () { seenUpto = 0; });
   }
 
-  /* 板の値（v44）。**未処理の知らせが無いときだけ**、一覧の場所に三つ出す。
-       ① 台帳の残り一覧（番号と件名で全件。0件なら「残り0件」）
-       ② 今日の押し送りの件数と、直近の失敗（無ければ「失敗なし」）
-       ③ ~/.claude のバックアップの最終実行の日時と結果
+  /* 板の値（v45）。**未処理の知らせが無いときだけ**、一覧の場所に二段で出す。
+       上段 ① あなた待ち … 人の合図や返事が無いと進まない件（無ければ「あなた待ちは0件」）
+       下段 ② 直近に終わった仕事3件 … 件名と結果一行
+     ＊v44 で置いた三つ（台帳の残り一覧・今日の押し送り・控えの最終実行）は **v45 で外した**。
+       未処理が無い画面で読みたいのは「数」ではなく「**こちらの番かどうか**」だから。
      ＊値はどれも VAIO の側にしか無いので、`board-emit.ps1` が10分ごとに
        `board.json` へ書いて押し出す。パネルは**読むだけ**で、何も数えない。
      ＊読めなかったら**そう書く**。黙って空にしない。 */
@@ -360,46 +361,36 @@
            + esc('板の値を読めません（' + (boardErr || '理由ふめい') + '）。board.json が公開ページに無いか、通信が届いていません。')
            + '</p></li>';
     }
+    /* 改行は逃がし字ではなく符号から作る。差し替えの途中で本物の改行に化けたことがあるため。 */
+    var NL = String.fromCharCode(10), CR = String.fromCharCode(13);
     var h = '';
 
-    /* ① 台帳の残り */
-    var o = board.orders || {};
-    var items = (o.items && o.items.length) ? o.items : [];
-    var head1 = (typeof o.left === 'number')
-              ? (o.left > 0 ? ('台帳の残り ' + o.left + '件') : '台帳の残り0件')
-              : '台帳の残り（数えられません）';
-    var body1 = '';
-    if (items.length) {
-      body1 = items.map(function (it, i) {
-        return (i + 1) + '. ' + (it.no || '') + '　' + (it.name || '') + '（' + (it.state || '') + '）';
-      }).join('\n');
-    } else if (o.left === 0) {
-      body1 = '残っている仕事はありません。';
-    } else if (typeof o.left !== 'number') {
-      body1 = 'orders-open.tsv が読めていません。';
-    }
-    h += '<li class="why"><p class="t"><span class="tx">' + esc(head1) + '</span></p>'
-       + (body1 ? '<p class="m">' + esc(body1) + '</p>' : '') + '</li>';
-
-    /* ② 今日の押し送り */
-    var n = board.ntfy || {};
-    var f = n.lastFail;
-    var body2 = '内わけ … ヨシ待ち ' + (n.wait || 0) + '件・終わり ' + (n.done || 0) + '件\n'
-              + '直近の失敗 … ' + (f ? ((f.at || '') + '　' + (f.why || '')) : '失敗なし');
+    /* 上段 — あなた待ち。**こちらの番の件だけ**。無ければ「0件」とだけ言う。 */
+    var w = (board.waiting && board.waiting.length) ? board.waiting : [];
     h += '<li class="why"><p class="t"><span class="tx">'
-       + esc('今日の押し送り ' + (typeof n.sent === 'number' ? n.sent : '—') + '件'
-             + (n.day ? '（' + n.day + '）' : '')) + '</span></p>'
-       + '<p class="m">' + esc(body2) + '</p></li>';
+       + esc(w.length ? ('あなた待ち ' + w.length + '件') : 'あなた待ちは0件')
+       + '</span></p>';
+    if (w.length) {
+      h += '<p class="m">' + esc(w.map(function (it, i) {
+             return (i + 1) + '. ' + (it.name || '') + '（' + (it.why || '') + '）';
+           }).join(NL)) + '</p>';
+    }
+    h += '</li>';
 
-    /* ③ 控えのバックアップ */
-    var b = board.backup || {};
-    var res = (typeof b.result === 'number')
-            ? (b.result === 0 ? '結果 0（成功）' : ('結果 ' + b.result + '（失敗）'))
-            : '結果ふめい';
-    var body3 = (b.at ? b.at : '最終実行ふめい') + '　' + res
-              + (b.next ? '\n次回 … ' + b.next : '');
-    h += '<li class="why"><p class="t"><span class="tx">' + esc('~/.claude のバックアップ') + '</span></p>'
-       + '<p class="m">' + esc(body3) + '</p></li>';
+    /* 下段 — 直近に終わった仕事3件。件名と、結果を一行だけ。 */
+    var r = (board.recent && board.recent.length) ? board.recent : [];
+    h += '<li class="ack"><p class="t"><span class="tx">' + esc('直近に終わった仕事') + '</span></p>';
+    if (r.length) {
+      h += '<p class="m">' + esc(r.map(function (it) {
+             /* 結果は一行に畳む。長い控えをそのまま出すと、下段が画面を埋める。 */
+             var line = String(it.result || '').split(CR).join(' ').split(NL).join(' ');
+             if (line.length > 78) { line = line.slice(0, 78) + '…'; }
+             return '・' + (it.name || '') + NL + '　　' + line;
+           }).join(NL)) + '</p>';
+    } else {
+      h += '<p class="m">' + esc('まだありません。') + '</p>';
+    }
+    h += '</li>';
 
     return h;
   }
