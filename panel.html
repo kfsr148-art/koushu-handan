@@ -275,7 +275,7 @@
      href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
      target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v53（8月28日）</p>
+  <p class="ver" id="verTag">panel v54（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -296,7 +296,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '53';
+  var PANEL_VER = '54';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -558,9 +558,48 @@
 
   function copyBundle(btn) {
     var NL = String.fromCharCode(10);
-    var text = [noticesText(), waitText(), recentText(), todayText(), nowLine()].join(NL + NL);
-    /* 字を戻す先も件数つきで渡す。渡さないと、戻ったときだけ数字が消える。 */
-    copyInto(btn, text, boardLabel());
+    /* 写しに入る札（v54）。この並びが、そのまま「落とす札」「印を付ける札」になる。
+       ＊数え方は boardCount() と同じ絞り。別の数え方を持ち込まない。 */
+    var todo = (shown || []).filter(function (d) { return !isDone(d); });
+    /* お知らせの釦が写す中身も足す（v54）。いま入っている中身は一つも落とさない。
+       ＊お知らせの側は copyAllText() が組む。七行の形にまとめた札で、noticesText() の
+         本文そのままとは別の見え方になる。だから重ねても意味がある。
+       ＊copyAllText() の末尾には現況の一行が付いている。二重にしないため、
+         こちらの nowLine() は「お知らせが無いとき」だけ足す。 */
+    var all = copyAllText();
+    var parts = [noticesText(), waitText(), recentText(), todayText()];
+    if (all) { parts.push('お知らせの写し（釦「お知らせ」と同じ中身）' + NL + all.text); }
+    else { parts.push(nowLine()); }
+    var text = parts.join(NL + NL);
+
+    /* 写せたときだけ、一枚ずつ写したときと同じ始末をする（v54）。
+       ＊印を付ける → 一覧から落とす → 下の箱を組み直す → 二つの釦の字を組み直す。
+         振り分けは箱の側が持つので、終わりましたは終わりましたの箱、
+         調べました・その他は写した札の箱へ入る。
+       ＊次の取得を待たない。待つと、押したのに残って見える。 */
+    var done = function () {
+      var nowSec = Math.floor(Date.now() / 1000);
+      todo.forEach(function (d) { copied[keyOf(d)] = nowSec; });
+      saveCopied();
+      shown = shown.filter(function (x) { return todo.indexOf(x) < 0; });
+      paintDoneBox(allRows);
+      paintCopied(allRows);
+      setCopyAllLabel();
+      paintBoard();        /* 札が0件になるので、跡地へ板の二段を出す */
+      btn.textContent = todo.length + '件 写した';
+      btn.className = 'cpall ok';
+      setTimeout(function () { setCopyBoardLabel(); btn.className = 'cpall'; }, 2000);
+    };
+    /* 写せなかったときは印を付けない。落としもしない（copyOne と同じ構え）。
+       ＊成功に見せると、写せていない札が片付いたように見える。 */
+    var ng = function () {
+      fallback(text);
+      btn.textContent = '写せません';
+      setTimeout(function () { setCopyBoardLabel(); btn.className = 'cpall'; }, 3000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try { navigator.clipboard.writeText(text).then(done, ng); } catch (e) { ng(); }
+    } else { ng(); }
   }
 
   function paintBoard() { $('list').innerHTML = boardHtml(); }
@@ -1396,7 +1435,11 @@
     /* 片付いた札は二通り（v34）。押して写したものと、「ここまで読んだ」に含まれるもの。
        どちらもここへ入れるが、**印は書き分ける**——読んだ側に「届いた」は付けない
        （そちらは押していないので、届いたかどうかを判じる物差しが無い）。 */
-    var items = (all || []).filter(isDone);
+    /* 終わりました（返事不要）はここへ入れない（v54）。
+       ＊あちらには専用の「終わりました N件」の箱があり、二つに出ると同じ札が二度並ぶ。
+         写した札の箱に入れるのは**調べました・その他**だけにする。
+       ＊表紙の件数は下で items.length から組むので、外した分がそのまま数にも効く。 */
+    var items = (all || []).filter(function (d) { return isDone(d) && !isDoneNotice(d.title); });
     if (!items.length) { box.className = 'done-box hide'; ul.innerHTML = ''; return; }
     box.className = 'done-box';
     var res = lastWatch ? tsOf(lastWatch.lastResume) : null;
