@@ -239,11 +239,8 @@
   <!-- 未処理の札を渡す釦。字は v48 で「全部写す」から「お知らせ」へ変えた。
        件数の出し方も押したときの動きも、v38 のまま変えていない。 -->
   <button class="cpall" id="btnCopyAll" type="button">お知らせ</button>
-  <!-- 写し取り一覧への口（v30 で足した）。本体の全画面を撮った PNG を並べたシート。
-       組み直すのは node shot-all.js。ここは開くだけで、パネル側は何も持たない。 -->
-  <a class="cpall" id="btnShots"
-     href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
-     target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
+  <!-- ＊写し取り一覧への口は、**v49 でいちばん下へ移した**（写した札の箱の下・版の字の上）。
+       釦の中身も押したときの動きも変えていない。置き場所だけを変えた。 -->
   <ul id="list"></ul>
   <!-- 写した札の控え（v32）。既定は畳んである。押すと開く。
        v24 で一覧から落とした札の行き先で、**ここでだけ**「届いた」の印を出す。
@@ -261,8 +258,14 @@
     <button type="button" class="cpall" id="copiedHead"></button>
     <ul id="copiedList"></ul>
   </div>
+  <!-- 写し取り一覧への口（v30 で足した・並びは v49 でいちばん下へ）。
+       本体の全画面を撮った PNG を並べたシート。組み直すのは node shot-all.js。
+       ここは開くだけで、パネル側は何も持たない。 -->
+  <a class="cpall" id="btnShots"
+     href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
+     target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v48（8月28日）</p>
+  <p class="ver" id="verTag">panel v50（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -283,7 +286,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '48';
+  var PANEL_VER = '50';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1089,6 +1092,13 @@
       /* 写した印を端末の中に残す。開き直しても消えない。 */
       copied[keyOf(d)] = Math.floor(Date.now() / 1000);   /* 写した刻。届いた印の物差し（v32） */
       saveCopied();
+      /* 押した直後に下の箱も組み直す（v50）。
+         ＊これが無いと、箱へ現れるのは次の取得（15秒後）になる。上からは同じ瞬間に
+           消えているので、そのあいだ**札がどこにも無いように見える**。
+         ＊終わりました（返事不要）は「終わりました N件」の箱、
+           調べました・その他は「写した札 N件」の箱。振り分けは箱の側が持つ。 */
+      paintDoneBox(allRows);
+      paintCopied(allRows);
       /* 写した札は、押した時点で一覧から消す（v24）。薄く残さない。
          ＊次の取得を待たずにその場で消す。待つと、押したのに残って見える。 */
       var li = btn.parentNode && btn.parentNode.parentNode;
