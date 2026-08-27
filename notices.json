@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🕒 延びています",
+        "time":  1787833878,
+        "message":  "返事パネルの「Fable」の出どころを一行で答える\n終了予定21:23を過ぎています（経過6分）"
+    },
+    {
         "title":  "🔎 調べました",
         "time":  1787832749,
         "message":  "返事パネルの「Fable」の出どころを一行で答える\nパネルの Fable の割合は usage.json の body.limits[] のうち kind===\"weekly_scoped\" の要素から出ている。名前は L.scope.model.display_name をそのまま表示し、割合は Math.round(L.percent)。paintUsage() の中で、session→「セッション」・weekly_all→「週」・weekly_scoped→表示名、と振り分けている。別ファイルでもその場の計算でもなく、\"Fable\" の綴りは JSON から来たものをそのまま出している。調べただけで、ファイルには手を付けていない\nファイル: なし（panel.html を読んだだけ）\n実測: panel.html の paintUsage()（975〜990行あたり）を実読み。いまの usage.json では limits に session／weekly_all／weekly_scoped(display_name=\"Fable\") の三つが入っている"
@@ -93,10 +98,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1787751426,
         "message":  "断線分のまとめ5件（締め・後始末・突き合わせ・再起動）\nClaude Code が戻りました。"
-    },
-    {
-        "title":  "🪟 異常です（手が要ります）",
-        "time":  1787751364,
-        "message":  "断線分のまとめ5件（締め・後始末・突き合わせ・再起動）\nClaude Code が動いていません。落ちたか、閉じられました。\nこちらがすること：端末で Claude Code を開き直してください。"
     }
 ]
