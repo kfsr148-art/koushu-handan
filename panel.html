@@ -119,6 +119,10 @@
      ＊:active の明るさ変化も止める。押せないのに反応すると押せたように見える。 */
   .cpall:disabled{color:var(--dim); border-color:var(--line); opacity:.55;}
   .cpall:disabled:active{filter:none;}
+  /* 写す物が0件のときは、灰色の帯を残さず**行ごと消す**（v51）。
+     ＊`.cpall` が display:block を持つので、hidden の既定（display:none）では消えない。
+       同じ札の中で打ち消しておく。 */
+  .cpall[hidden]{display:none;}
   /* 写し取り一覧への口。釦と同じ見た目にするため、a にも同じ寸法を掛ける。 */
   a.cpall{box-sizing:border-box; text-decoration:none; text-align:center;
     line-height:48px; padding:0 10px;}
@@ -265,7 +269,7 @@
      href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
      target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v50（8月28日）</p>
+  <p class="ver" id="verTag">panel v51（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -286,7 +290,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '50';
+  var PANEL_VER = '51';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1039,13 +1043,19 @@
     if (!b) { return; }
     var n = shown.length;
     if (n === 0) {
+      /* 0件のときは**行ごと出さない**（v51）。
+         ＊v38 から v50 までは「写す物なし」の灰色の帯を残していたが、
+           押せない帯が常に居座るぶん、読む場所が一つ増えるだけだった。
+         ＊字と押せない印はそのまま残す。出し直したときに元の姿へ戻る。 */
       b.textContent = '写す物なし';
       b.disabled = true;
       b.className = 'cpall';
+      b.hidden = true;
     } else {
       b.textContent = 'お知らせ（' + n + '件）';   /* v48：字だけ変えた。数え方も動きもそのまま */
       b.disabled = false;
       b.className = 'cpall';
+      b.hidden = false;
     }
   }
 
