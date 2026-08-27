@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🕒 延びています",
+        "time":  1787798107,
+        "message":  "05:08の窓落ちの真偽を記録で確定し、脈を戻す\n終了予定10:14を過ぎています（経過106分）"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1787791682,
         "message":  "05:08の窓落ちの真偽を記録で確定し、脈を戻す\n①05:08〜08:48 の帯は「窓は生きていて無言だった」が正。09:13 の報告が正しく、09:18 の報告が誤り。決め手は 08:48:41 の resume が 05:07 に付けた題のまま同じ取っ手（656324）へ繋がっていること。落ちた窓には繋がりようがない ②裏づけは独立に三つ——題と取っ手の一致／usage.json の windows:1 が帯の全域／cpu 0.5〜0.9% が途切れず（入れ替われば null、居なくなれば 0.0 になる）③09:18 の側に根拠の記録は無く、前の回の控えの「記録に残っていない」を逆向きに読んだもの。heartbeat 生存は予定表の仕事が無条件に書く行なので、どちらの証拠にもならない ④正が「生きて無言」なので、撤回した手待ちの脈を戻した——PULSE_SEC=1800 復活・panel の STALE_SEC を 1200→2700（脈より長い閾値でないと、脈を打っているのに赤帯が出る）・panel v41 三箇所同時 ⑤watch-notify の「迷子を引く」直しは残す（窓なしの実測で裏が取れている）。訂正したのは、その直しに添えた根拠の一節だけで振る舞いは変えていない ⑥窓は 1本。閉じる操作は不要だった\nファイル: ~/.claude/inbox-watch.ps1（脈を復活・写し .bak-20260827d）／~/.claude/watch-notify.ps1（根拠の一節を訂正・写し .bak-20260827b）／panel.html・panel-ver.txt（v41）／report-latest.md（十三の節・先頭）／~/.claude/orders-open.tsv\n実測: 両方 PSParser 構文OK（inbox-watch 419→431行・watch-notify 1619→1622行）。panel の script も node --check OK。脈の門を6通り確認——同じ内容10分/29分は書かない・30分ちょうど/31分は書く・内容が変われば1分でも書く・初回は書く。常駐 PID=11112・09:33:29 起動（台本 09:32:14 より後）・1本のみ。check-all --fast 両方PASS。窓の数え直し：claude.exe は PID 5672（09:23:39 起動）の1本のみ、親を辿って自分の窓であることを確認、node.exe で走る claude も無し\n実機: ①パネルの版の字が panel v41 ②手待ちのまま30分以上置いても「連絡なし」の赤帯が出ない（30分ごとに時刻だけ打ち直すので、最終確認の時刻が動き続ける）③本当に窓を閉じた場合は、45分で赤帯が出る"
@@ -93,10 +98,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1787742512,
         "message":  "時間の表示を「終了予定HH:MM」へ（panel v37）と usage.json の watch 欄\n①再指示ぶんの hook.log 退避は前の回で実施済みと確認（退避の実績1件）②表示を「終了予定HH:MM」へ——state-line.js／panel.html（v37）／見込み超過の知らせ「終了予定HH:MMを過ぎています（経過N分）」／CLAUDE.md 作法25 ③usage.json の watch へ started・ends・elapsed・span の四つを追加（span はウィジェット向けの短い形「〜19:35」）\nファイル: state-line.js／panel.html／panel-ver.txt（37）／CLAUDE.md／~/.claude/watch-notify.ps1（1445行）\n実測: 状態行「開始19:10・終了予定19:35・経過12分」／見込み不明は「終了予定 未定」／パネルの式も同じ結果／知らせの本文「終了予定19:35を過ぎています（経過37分）」／構文検査 watch-notify PASS・panel の script OK・state-line.js node --check OK\n実機: 返事パネルの状態の二段目が「開始HH:MM・終了予定HH:MM・経過N分」（旧「開始HH:MM・見込みN分・経過N分」）／版の字が panel v37\n未検収: 2026-08-26 panel v37（終了予定の表示）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1787742006,
-        "message":  "生存記録の書き損ねを直す（粘って書く＋hook-fallback.log へ退避）\n①panel v36 と4件の検収を受けて stable を 02efb97 へ進めた ②hook-notice.ps1 の生存の書き込みを「250ms 待って最大3回・それでも駄目なら hook-fallback.log へ退避」に直した ③watch-notify.ps1 が退避先の生存も読むようにした（片方だけ見ると退避した回を欠けと数えるため）④欠け率の後日報告を記憶 heartbeat-gap-followup へ残した\nファイル: ~/.claude/hook-notice.ps1（271行）／~/.claude/watch-notify.ps1（1405行）／写しは hook-notice.ps1.bak-20260826 と watch-notify.ps1.bak-20260826d／memory/heartbeat-gap-followup.md\n実測: 構文検査は両方 PASS／hook.log を握った状態で生存を打つと3回とも失敗して退避し、戻り値は0のまま（実測 19:54:43）／見張りの拾い方を再現すると、退避先も見た生存は 19:54:43・古さ0分で警報は鳴らない（hook.log だけだと 19:48:07）\n未検収: なし"
     }
 ]
