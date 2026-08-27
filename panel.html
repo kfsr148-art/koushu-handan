@@ -95,6 +95,10 @@
   #copiedList{display:none;}
   #copiedList.open{display:block;}
   #copiedList li{opacity:.62;}
+  /* 「終わりました」の箱（v47）。畳んである見え方は控えと同じ。
+     ＊ただし**薄くしない**。片付けた札ではなく、読み返す先だから。 */
+  #doneList{display:none;}
+  #doneList.open{display:block;}
   .got{margin-left:6px; font-size:13px; font-weight:700; color:var(--done);}
   /* 「ここまで読んだ」で片付いた札の印（v34）。押して写した札（緑）とは色を分ける。 */
   .read{margin-left:6px; font-size:13px; font-weight:700; color:var(--wait);}
@@ -241,12 +245,21 @@
   <!-- 写した札の控え（v32）。既定は畳んである。押すと開く。
        v24 で一覧から落とした札の行き先で、**ここでだけ**「届いた」の印を出す。
        一覧そのものの見え方は v24 のまま——写した札は上の一覧には戻さない。 -->
+  <!-- 「終わりました（返事不要）」の箱（v47）。**画面から消さない**。
+       ＊表紙は件数の一行。押すと中身が出て、中の札も押せば**本文が全文**開く。
+         **どこでも中身を切らない。**
+       ＊写した札の控え（下）とは別物。あちらは「片付けた札の行き先」で、
+         こちらは「終わりましたの報告を、写した写さないに関わらず全部残す場所」。 -->
+  <div class="done-box hide" id="doneBox">
+    <button type="button" class="cpall" id="doneHead"></button>
+    <ul id="doneList"></ul>
+  </div>
   <div class="done-box hide" id="copiedBox">
     <button type="button" class="cpall" id="copiedHead"></button>
     <ul id="copiedList"></ul>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v46（8月27日）</p>
+  <p class="ver" id="verTag">panel v47（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -267,7 +280,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '46';
+  var PANEL_VER = '47';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -314,6 +327,29 @@
   }
   /* 一件の見分け。題と時刻で決める。控えが入れ替わっても同じ件は同じ鍵になる。 */
   function keyOf(d) { return String(d.time || 0) + '|' + String(d.title || ''); }
+
+  /* 開いてある折り畳みの控え（v47）。
+     ＊一覧は15秒ごとに丸ごと組み直される。開閉は組み直しのたびに消えるので、
+       読んでいる途中の件が**勝手に閉じていた**。開いた札の鍵をここに残し、
+       組み直すときに付け直す。**開閉が変わるのは人が押したときだけ**にする。
+     ＊端末には残さない。開いた畳んだは、その場の読み方の話なので、
+       頁を開き直したら畳んだ既定へ戻ってよい。
+     ＊鍵は札と同じ keyOf。札でない枠（あなた待ち・直近に終わった仕事）には
+       決め打ちの名を与える。属性へ入れるので、必ず encodeURIComponent を通す
+       ——題に引用符が入っていても壊れないように。 */
+  var openKeys = {};
+  function okey(v) { return encodeURIComponent(String(v == null ? '' : v)); }
+  function isOpen(v) { return !!openKeys[okey(v)]; }
+  /* 押されたら覚え直す。開閉の受けは**すべてここを通す**。 */
+  function toggleOpen(li) {
+    if (!li || li.className.indexOf('ack') < 0) { return; }
+    var k = li.getAttribute('data-k') || '';
+    var now = (li.className.indexOf('open') < 0);
+    li.className = now ? (li.className + ' open') : li.className.split(' open').join('');
+    if (!k) { return; }
+    if (now) { openKeys[k] = 1; } else { delete openKeys[k]; }
+  }
+
   /* 知らせの一覧。ntfy へ出るのは異常だけになったので、読み物はここから取る。 */
   var NOTICES_URL = 'https://kfsr148-art.github.io/koushu-handan/notices.json';
   /* 「ここまで読んだ」の控え（v34）。{at, upto} の二つだけを持つ。
@@ -371,8 +407,11 @@
 
     /* 上段 — あなた待ち。**こちらの番の件だけ**。無ければ「0件」とだけ言う。 */
     var w = (board.waiting && board.waiting.length) ? board.waiting : [];
-    h += '<li class="why"><p class="t"><span class="tx">'
-       + esc(w.length ? ('あなた待ち ' + w.length + '件') : 'あなた待ちは0件')
+    /* 折り畳み式（v47）。表紙は「あなた待ち（N件）」の一行だけ。押すと全文が開く。 */
+    var wk = 'board:waiting';
+    h += '<li class="why ack' + (isOpen(wk) ? ' open' : '') + '" data-k="' + okey(wk) + '">'
+       + '<p class="t"><span class="tx">'
+       + esc(w.length ? ('あなた待ち（' + w.length + '件）') : 'あなた待ちは0件')
        + '</span></p>';
     /* この一覧をそのまま写す釦（v46）。件名も括弧の中身も切らずに全文を入れる。
        ＊`cp` で始まる名は一覧の写す釦の受けが拾ってしまうので、**id で先に分ける**。 */
@@ -386,12 +425,15 @@
 
     /* 下段 — 直近に終わった仕事3件。件名と、結果を一行だけ。 */
     var r = (board.recent && board.recent.length) ? board.recent : [];
-    h += '<li class="ack"><p class="t"><span class="tx">' + esc('直近に終わった仕事') + '</span></p>';
+    /* 板の枠は札ではないので、決め打ちの鍵を与える（v47）。 */
+    var rk = 'board:recent';
+    h += '<li class="ack' + (isOpen(rk) ? ' open' : '') + '" data-k="' + okey(rk) + '">'
+       + '<p class="t"><span class="tx">' + esc('直近に終わった仕事（' + r.length + '件）') + '</span></p>';
     if (r.length) {
       h += '<p class="m">' + esc(r.map(function (it) {
-             /* 結果は一行に畳む。長い控えをそのまま出すと、下段が画面を埋める。 */
+             /* 結果は**切らない**（v47）。畳んである枠なので、開いた人は全文が読める。
+                ＊v45 では78字で切っていたが、**中身を切って出す形はやめた**。 */
              var line = String(it.result || '').split(CR).join(' ').split(NL).join(' ');
-             if (line.length > 78) { line = line.slice(0, 78) + '…'; }
              return '・' + (it.name || '') + NL + '　　' + line;
            }).join(NL)) + '</p>';
     } else {
@@ -654,6 +696,7 @@
         rows = rows.filter(function (d) { return !isDone(d); });
         shown = rows;
         setCopyAllLabel();   /* 釦の字を件数つきに（v38）。落としたあとの数で組む */
+        paintDoneBox(allRows);   /* 「終わりました」の箱（v47）。写した写さないに関わらず全部 */
         paintCopied(allRows);
 
         /* ＊「◯件ぜんぶ片付いています」の枠と「片付いた札を出す」の釦は **v43 で外した**。
@@ -678,7 +721,9 @@
           var hasRaw = /^そのまま[:：]/m.test(String(d.message || ''));
           /* 写した札はここへ来ない（上で落としてある）。畳むかどうかは受け取り確認と⑧だけで決める。 */
           var cls = k + (ack || hasRaw ? ' ack' : '');
-          html += '<li class="' + cls.trim() + '" data-i="' + i + '">'
+          /* 開いてあった件は、開いた形で組み直す（v47）。 */
+          if ((ack || hasRaw) && isOpen(keyOf(d))) { cls = cls + ' open'; }
+          html += '<li class="' + cls.trim() + '" data-i="' + i + '" data-k="' + okey(keyOf(d)) + '">'
                 + '<p class="t"><span class="tx">' + esc(d.title || '(題なし)')
                 + '<span class="when">' + hhmm(d.time) + '</span></span>'
                 + '<button type="button" class="cp" data-i="' + i + '">写す</button></p>'
@@ -1166,6 +1211,7 @@
         paintUsage(u);
         lastWatch = (u && u.watch && typeof u.watch === 'object') ? u.watch : null;
         paintMach(lastWatch);
+        paintDoneBox(allRows);
         paintCopied(allRows);   /* 届いた印は watch が来てから付く */
       })
       .catch(function () { paintUsage(null); lastWatch = null; paintMach(null); });
@@ -1230,6 +1276,40 @@
          ・watch が読めていない（lastWatch が null）
          ・lastResume が読めない字
          ・写した刻を控えていない古い印（v31 以前は 1 を入れていた） */
+  /* 「終わりました（返事不要）」の箱（v47）。
+     ＊写した写さないに関わらず、**届いた分を全部**入れる。新しい順。
+     ＊表紙は件数の一行。押すと中身が出て、中の札も押せば**本文が全文**開く。
+       **どこでも中身を切らない。**
+     ＊一覧（上）からは何も変えていない。あちらは「まだ写していない札」の置き場で、
+       写せば落ちる。こちらは落ちないので、**過去の札もいつでも全文が読める**。
+     ＊題での見分けは `kind()` と同じ字（「終わりました」）で行う。 */
+  function isDoneNotice(t) { return String(t || '').indexOf('終わりました') >= 0; }
+  function paintDoneBox(all) {
+    var box = $('doneBox'), head = $('doneHead'), ul = $('doneList');
+    if (!box || !head || !ul) { return; }
+    var items = (all || []).filter(function (d) { return d && isDoneNotice(d.title); });
+    items.sort(function (a, b) { return (b.time || 0) - (a.time || 0); });   /* 新しい順 */
+    if (!items.length) { box.className = 'done-box hide'; ul.innerHTML = ''; return; }
+    box.className = 'done-box';
+    var html = '';
+    items.forEach(function (d) {
+      /* 一覧や控えの札と鍵がぶつからないよう、箱の名を前に付ける。 */
+      var k = 'done:' + keyOf(d);
+      html += '<li class="ack' + (isOpen(k) ? ' open' : '') + '" data-k="' + okey(k) + '">'
+            + '<p class="t"><span class="tx">' + esc(d.title || '(題なし)')
+            + '<span class="when">' + hhmm(d.time) + '</span></span></p>'
+            + '<p class="m">' + esc(d.message) + '</p></li>';
+    });
+    ul.innerHTML = html;
+    var open = (ul.className === 'open');
+    head.textContent = '✅ 終わりました ' + items.length + '件' + (open ? ' ▲' : ' ▼');
+    head.onclick = function () {
+      var o = (ul.className !== 'open');
+      ul.className = o ? 'open' : '';
+      head.textContent = '✅ 終わりました ' + items.length + '件' + (o ? ' ▲' : ' ▼');
+    };
+  }
+
   function paintCopied(all) {
     var box = $('copiedBox'), head = $('copiedHead'), ul = $('copiedList');
     if (!box || !head || !ul) { return; }
@@ -1247,7 +1327,7 @@
       var ok = (byCopy && res !== null && typeof t === 'number' && t > 1 && res > t * 1000);
       if (ok) { got++; }
       if (!byCopy) { red++; }
-      html += '<li class="ack">'
+      html += '<li class="ack' + (isOpen(keyOf(d)) ? ' open' : '') + '" data-k="' + okey(keyOf(d)) + '">'
             + '<p class="t"><span class="tx">' + esc(d.title || '(題なし)')
             + '<span class="when">' + hhmm(d.time) + '</span>'
             + (ok ? '<span class="got">届いた</span>' : '')
@@ -1399,11 +1479,14 @@
     }
     var li = b;
     while (li && li.tagName !== 'LI') { li = li.parentNode; }
-    if (li && li.className.indexOf('ack') >= 0) {
-      li.className = (li.className.indexOf('open') >= 0)
-        ? li.className.replace(/\s*open/, '')
-        : li.className + ' open';
-    }
+    toggleOpen(li);   /* 開閉は一箇所で。開いた印を覚えるのもここ（v47） */
+  });
+
+  /* 「終わりました」の箱も同じ受けで開閉する（v47）。 */
+  $('doneList').addEventListener('click', function (e) {
+    var li = e.target;
+    while (li && li.tagName !== 'LI') { li = li.parentNode; }
+    toggleOpen(li);
   });
 
   /* 写した札の控えも、同じ受けで開閉する（v32）。中身は畳んであるので、題の行を押すと開く。
@@ -1411,11 +1494,7 @@
   $('copiedList').addEventListener('click', function (e) {
     var li = e.target;
     while (li && li.tagName !== 'LI') { li = li.parentNode; }
-    if (li && li.className.indexOf('ack') >= 0) {
-      li.className = (li.className.indexOf('open') >= 0)
-        ? li.className.replace(/\s*open/, '')
-        : li.className + ' open';
-    }
+    toggleOpen(li);   /* 開閉は一箇所で。開いた印を覚えるのもここ（v47） */
   });
 
   /* ＊「確認も見る」の切り替えと、ヨシ・入力欄・送るの受けは v11 で撤去した。
