@@ -4,3 +4,7 @@
 # 写し取りの実行記録（Start-Process の出し先）。写しそのものだけを配る。
 shots/run.log
 shots/run.err.log
+
+# 麻雀ライブラリの実体（版は package.json に固定してある）。
+# 中身は npm ci で入れ直せるので、写しは配らない。
+node_modules/
