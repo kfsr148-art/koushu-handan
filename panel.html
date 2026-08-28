@@ -77,13 +77,7 @@
 
   /* 機械が測った様子の一行（v32）。状態の帯のすぐ下。
      控え（work-note.txt）由来の状態とは色を分ける。食い違うときは枠を橙にして、両方並べる。 */
-  .mach{margin:0 0 10px; padding:3px 0 3px 9px; font-size:13px; line-height:1.55;
-    color:var(--dim); border-left:3px solid var(--line);}
-  .mach.hide{display:none;}
-  .mach b{color:var(--fg); font-weight:700;}
-  .mach.gap{border-left-color:var(--ask);}
-  .mach.gap b{color:var(--ask);}
-  .mach .n{display:block;}
+  /* ＊「機械が見た様子：…」の一行の飾り（v32）は、行ごと **v70 で外した**。 */
 
   /* 写した札の控え（v32）。既定は畳んである。ここでだけ「届いた」の印を出す。 */
   .done-box{margin:0 0 8px;}
@@ -134,9 +128,7 @@
      ＊件名より一段小さく、色も落とす。読む順が件名 → 添えの一行になるように。 */
   .wmeta{font-size:12px; line-height:1.6; color:var(--dim);}
   /* ＊「未達 N件：」の行の飾り（v59）は、行ごと **v68 で外した**。 */
-  /* 受け取った指示の一行（v61）。状態の帯のすぐ下。長ければ折り返す。 */
-  .ordline{margin:2px 14px 6px;}
-  .ordline[hidden]{display:none;}
+  /* ＊「受け取った指示 …」の一行の飾り（v61）も、行ごと **v70 で外した**。 */
   /* まとめて写すだけ青くする（v52）。いちばん多く押す釦なので、他と見分けられるようにする。
      ＊掛けるのは id なので、他の釦の札（.cpall とその仲間）には一切触れない。
      ＊丸みも大きさも .cpall のまま。色だけを乗せる。
@@ -237,14 +229,10 @@
       </span>
       <span class="a" id="stAgo"></span>
     </div>
-    <!-- 受け取った指示（v61）。状態の帯のすぐ下。最新の一件だけを出す。
-         ＊書く者は inbox-feed.ps1（UserPromptSubmit のフック）。新しい読み口は作っていない。
-         ＊値が無い回は行ごと出さない。 -->
-    <p class="wmeta ordline" id="stOrder" hidden></p>
-    <!-- 機械が測った様子（v32）。usage.json の watch にある lastStop／lastResume／cpu だけで判じる。
-         控えの字は読まない。控え由来の状態（watch.state・stateSrc:"note"）と食い違ったときは、
-         両方を並べて出す。どちらが正しいかは、ここでは決めない。 -->
-    <p class="mach hide" id="machLine"></p>
+    <!-- ＊「受け取った指示 HH:MM「…」」の一行（v61）は **v70 で画面から消した**。
+         器ごと外している。値を書く側（inbox-feed.ps1 → last-order.txt → state.json）は
+         そのまま動いており、まとめて写しの中には今までどおり入る。
+         ＊「機械が見た様子：…」の一行（v32）も **v70 で消した**。こちらは器も飾りも処理も外した。 -->
     <!-- 常時出す三つ。どれも既にリポジトリへ書いてある値の見せ方だけで、経路は増やしていない。
          版の並び＝ver.txt（本体）と stable の枝の ver.txt（公開）。
          最終確認＝state.json の at。生存の時刻そのもの。 -->
@@ -308,7 +296,7 @@
     <button type="button" class="cpall url" id="btnCopyUrl">URLを写す</button>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v69（8月28日）</p>
+  <p class="ver" id="verTag">panel v70（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -329,7 +317,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '69';
+  var PANEL_VER = '70';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1453,8 +1441,9 @@
   /* 受け取った指示の一行（v61）。「受け取った指示 HH:MM「冒頭40字…」」。
      ＊orderAt は「yyyy-MM-dd HH:mm:ss」で来る。出すのは時と分だけ。
      ＊値が揃っていない回は行ごと畳む。「—」で埋めない。 */
+  /* ＊画面へ出す行は **v70 で消した**。この手が残っているのは、
+       まとめて写しが使う一行（lastOrderLine）を組むため。ほかで使っているので落とせない。 */
   function paintOrder(at, tx) {
-    var e = $('stOrder');
     var t = String(tx || '').trim();
     var a = String(at || '').trim();
     /* 写しの側でも同じ字を使うので、組んだ字をここに控える（v62）。
@@ -1464,10 +1453,6 @@
       var m = a.match(/(\d{2}):(\d{2})/);
       lastOrderLine = '受け取った指示 ' + (m ? m[1] + ':' + m[2] : a) + '「' + t + '…」';
     }
-    if (!e) { return; }
-    if (!t) { e.textContent = ''; e.hidden = true; return; }
-    e.textContent = lastOrderLine;
-    e.hidden = false;
   }
 
   /* 使用量を版の印の隣へ出す。
@@ -1553,12 +1538,13 @@
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (u) {
         paintUsage(u);
+        /* lastWatch は残す。「届いた」の印を判じるのに要る（paintCopied が読む）。
+           ＊機械が見た様子の一行そのものは v70 で消した。 */
         lastWatch = (u && u.watch && typeof u.watch === 'object') ? u.watch : null;
-        paintMach(lastWatch);
         paintDoneBox(allRows);
         paintCopied(allRows);   /* 届いた印は watch が来てから付く */
       })
-      .catch(function () { paintUsage(null); lastWatch = null; paintMach(null); });
+      .catch(function () { paintUsage(null); lastWatch = null; });
   }
 
   /* 「2026-08-25 14:32:15」を刻へ直す。
@@ -1577,41 +1563,8 @@
        ・どちらも読めなければ**何も出さない**
      ＊watch.state は控え由来（stateSrc:"note"）。食い違ったときは**両方を並べる**。
        控えが前の回のままのことも、hook が飛ぶこともあるので、どちらが正しいかは決めない。 */
-  function paintMach(w) {
-    var el = $('machLine');
-    if (!el) { return; }
-    var hide = function () { el.className = 'mach hide'; el.textContent = ''; };
-    if (!w || typeof w !== 'object') { hide(); return; }
-    var res = tsOf(w.lastResume), stp = tsOf(w.lastStop);
-    if (res === null && stp === null) { hide(); return; }
-    var running = (res !== null) && (stp === null || res > stp);
-
-    var bits = [];
-    if (running && res !== null) { bits.push('最後の再開 ' + String(w.lastResume).slice(11, 19)); }
-    if (!running && stp !== null) { bits.push('最後の停止 ' + String(w.lastStop).slice(11, 19)); }
-    if (typeof w.cpu === 'number') { bits.push('CPU ' + w.cpu + '%'); }
-    /* この値がいつのものか。見張りは10分ごとに書くので、古いことがある。 */
-    var at = Date.parse(w.at);
-    if (!isFinite(at)) { at = tsOf(w.at); }
-    if (at) {
-      var mm = Math.max(0, Math.floor((Date.now() - at) / 60000));
-      bits.push(mm + '分前の値');
-    }
-
-    /* 控え由来の状態と突き合わせる。異常のときは比べない（別の話なので）。 */
-    var ns = String(w.state || '');
-    var noteKnown = (ns === '作業中' || ns === 'ヨシ待ち' || ns === '手待ち');
-    var gap = noteKnown && ((ns === '作業中') !== running);
-
-    var html = '機械が見た様子：<b>' + (running ? '動いています' : '止まっています') + '</b>'
-             + (bits.length ? '（' + esc(bits.join(' ／ ')) + '）' : '');
-    if (gap) {
-      html += '<span class="n">控えでは：<b>' + esc(ns)
-            + '</b> ── 食い違っています。どちらが正しいかは、ここでは決めていません。</span>';
-    }
-    el.className = 'mach' + (gap ? ' gap' : '');
-    el.innerHTML = html;
-  }
+  /* ＊paintMach（v32）は **v70 で外した**。「機械が見た様子：…」の一行を組む手で、
+       行を消したので呼ぶ相手がいない。器も飾りも一緒に落としてある。 */
 
   /* 写した札の控えと、「届いた」の印（v32）。
      ＊印を付けるのは、**写した刻より後に resume が鳴っている**ときだけ。
