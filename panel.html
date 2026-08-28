@@ -94,8 +94,11 @@
   .read{margin-left:6px; font-size:13px; font-weight:700; color:var(--wait);}
 
   /* 常時出す事実の行。版の並びと生存の時刻。 */
+  /* ＊v71 で頭の帯の中から、画面のいちばん下（版の字のすぐ上）へ移した。
+       帯の中に居たときは header の左右の余白（14px）に乗っていたので、
+       出たぶんの余白をこちらで持つ。上の空きは 18px で版の字と同じ間合いにする。 */
   .facts{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:13px; color:var(--dim);
-    margin:0 0 4px;}
+    margin:18px 14px 0;}
   .facts .warn{color:var(--ask); font-weight:700;}   /* 版がずれている／生存が古い */
   /* 「HH:MM 更新」（v48 でここへ移した）。同じ行の**右端**へ寄せる。
      ＊`margin-left:auto` で寄せるので、版の字が伸びても重ならず、折り返せば下へ落ちる。 */
@@ -140,7 +143,9 @@
     line-height:48px; padding:0 10px;}
 
   /* 版の印。画面のいちばん下に小さく。 */
-  .ver{margin:18px 14px 4px;
+  /* ＊上の空きは v71 で 18px → 2px にした。すぐ上へ来た版と最終確認の行が
+       18px を持っているので、二重に空くのを避ける。 */
+  .ver{margin:2px 14px 4px;
     font-size:13px; color:var(--dim); text-align:center;}
   /* 使用量。版の印の隣（すぐ下）に置く。数字は読めるように、断り書きは小さく。 */
   /* 使用量：三つ横並びの塊。上に小さな名前、下に大きな数字。
@@ -158,11 +163,12 @@
   .usage .warm{color:#ffa63d;}
   .usage .cool{color:#5ad07a;}
   /* 取得時刻の一行。塊の下に小さく。 */
-  .usage-when{margin:0 14px 2px; font-size:11px; color:var(--dim); text-align:center;}
+  .usage-when{margin:0 14px calc(8px + env(safe-area-inset-bottom));
+    font-size:11px; color:var(--dim); text-align:center;}
   .usage-when .u-old{color:var(--ask);}
   .usage-msg{margin:0 14px 4px; font-size:12px; color:var(--dim); text-align:center;}
-  .usage-note{margin:0 14px calc(8px + env(safe-area-inset-bottom));
-    font-size:10px; line-height:1.45; color:var(--dim); text-align:center; opacity:.55;}
+  /* ＊使用量の下の断り書きの飾り（.usage-note）は、行ごと **v71 で外した**。
+       ＊下端の余白はこの札が持っていたので、取得時刻の行（.usage-when）へ移した。 */
   /* 一覧が0件のときの理由。白紙にしない。 */
   li.why{border-left-color:var(--ask);}
   li.why .m{color:var(--fg);}
@@ -233,17 +239,8 @@
          器ごと外している。値を書く側（inbox-feed.ps1 → last-order.txt → state.json）は
          そのまま動いており、まとめて写しの中には今までどおり入る。
          ＊「機械が見た様子：…」の一行（v32）も **v70 で消した**。こちらは器も飾りも処理も外した。 -->
-    <!-- 常時出す三つ。どれも既にリポジトリへ書いてある値の見せ方だけで、経路は増やしていない。
-         版の並び＝ver.txt（本体）と stable の枝の ver.txt（公開）。
-         最終確認＝state.json の at。生存の時刻そのもの。 -->
-    <div class="facts">
-      <span id="fVer">版 —</span>
-      <span id="fSeen">最終確認 —</span>
-      <!-- 「HH:MM 更新」は v48 でここへ移した（もとは区切り線の下の帯）。
-           版・最終確認と同じ一行の**右端**に並べる。字も、更新のたびに書き換わる
-           動きも、移す前と同じ（paintBar が書く）。 -->
-      <span id="stat" class="upd">読み込み中…</span>
-    </div>
+    <!-- ＊版と最終確認の一行（.facts）は **v71 で画面のいちばん下へ移した**（版の字のすぐ上）。
+         中身も並びも変えていない。跡に空きは残していない。 -->
     <!-- ＊「公開v」の遅れの断り（v35）は **v48 で消した**。行ごと外し、代わりの文言は置かない。
          事情は変わっていない——読み元は stable の枝で、raw の取り置きが長く、
          2026-08-26 の実測では押し出しから追いつくまで最大3時間かかる。
@@ -295,13 +292,26 @@
        target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
     <button type="button" class="cpall url" id="btnCopyUrl">URLを写す</button>
   </div>
+  <!-- 常時出す三つ。どれも既にリポジトリへ書いてある値の見せ方だけで、経路は増やしていない。
+       版の並び＝ver.txt（本体）と stable の枝の ver.txt（公開）。
+       最終確認＝state.json の at。生存の時刻そのもの。
+       ＊置き場所は **v71 で画面のいちばん下（版の字のすぐ上）へ移した**。中身と並びはそのまま。 -->
+  <div class="facts">
+    <span id="fVer">版 —</span>
+    <span id="fSeen">最終確認 —</span>
+    <!-- 「HH:MM 更新」は v48 でこの行へ移した（もとは区切り線の下の帯）。
+         版・最終確認と同じ一行の**右端**に並べる。字も、更新のたびに書き換わる
+         動きも、移す前と同じ（paintBar が書く）。 -->
+    <span id="stat" class="upd">読み込み中…</span>
+  </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v70（8月28日）</p>
+  <p class="ver" id="verTag">panel v71（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
   <p class="usage-when" id="usageWhen" hidden></p>
-  <p class="usage-note" id="usageNote" hidden>この機械のローカルのセッションから見た概算です。他の端末や claude.ai は含みません。</p>
+  <!-- ＊使用量の下の断り書き（この機械のローカルの…）は **v71 で消した**。器ごと外している。
+       数字の三つと「N分前取得」の行はそのまま。 -->
 </div>
 
 <script>
@@ -317,7 +327,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '70';
+  var PANEL_VER = '71';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1486,10 +1496,11 @@
   }
 
   function paintUsage(u) {
-    var box = $('usageTag'), note = $('usageNote');
+    /* ＊断り書き（usageNote）は v71 で外した。数字と取得時刻の行だけを持つ。 */
+    var box = $('usageTag');
     var msg = $('usageMsg'), whenEl = $('usageWhen');
-    if (!box || !note || !msg || !whenEl) { return; }
-    if (!u) { box.hidden = true; note.hidden = true; msg.hidden = true; whenEl.hidden = true; return; }
+    if (!box || !msg || !whenEl) { return; }
+    if (!u) { box.hidden = true; msg.hidden = true; whenEl.hidden = true; return; }
     var lim = (u.body && u.body.limits) ? u.body.limits : [];
     var html = '';
     lim.forEach(function (L) {
@@ -1524,7 +1535,6 @@
     }
     whenEl.innerHTML = tail;
     whenEl.hidden = false;
-    note.hidden = false;
     fitUsage();
   }
 
