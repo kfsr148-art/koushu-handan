@@ -312,7 +312,7 @@
     <button type="button" class="cpall url" id="btnCopyUrl">URLを写す</button>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v64（8月28日）</p>
+  <p class="ver" id="verTag">panel v65（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -333,7 +333,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '64';
+  var PANEL_VER = '65';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -679,26 +679,69 @@
     if (b) { b.textContent = boardLabel(); }
   }
 
-  function copyBundle(btn) {
+  /* ---- まとめて写しの中身（v65）----
+     ＊全文をやめて、短い頭紙にする。狙いは写し全体を千五百字以内へ収めること。
+       長い本文を貼ると、受け取る側が添付へ変えてしまい、本文のまま届かない。
+     ＊並びは上から URL の一行 → 現況の一行 → 受け取った指示の一行（値が有る回だけ）
+       → 一件一行（上の一覧・あなた待ち・直近に終わった仕事）。
+     ＊札の本文は入れない。全文が要るときは札ごとの写す釦を押す（そちらは今までどおり）。 */
+  var NOTICES_PAGE = 'https://kfsr148-art.github.io/koushu-handan/notices.json';
+  var BUNDLE_MAX = 1500;
+
+  /* 一件一行。時刻・種別・件名・台帳の印を、この順に繋ぐ。空の項目は落とす。 */
+  function briefOf(when, kind, name, no) {
+    var a = [];
+    if (when) { a.push(when); }
+    if (kind) { a.push(kind); }
+    if (name) { a.push(name); }
+    if (no) { a.push('印 ' + no); }
+    return a.join(' ／ ');
+  }
+
+  /* 一件一行の並び。新しい順（上の一覧がそもそも新しい順に組んである）。 */
+  function bundleLines() {
     var NL = String.fromCharCode(10);
+    var out = [];
+    (shown || []).filter(function (d) { return !isDone(d); }).forEach(function (d) {
+      var head = String(d.message || '').split(NL)[0];
+      out.push(briefOf(hhmm(d.time), kindWord(d.title), plain(head) || '（件名なし）', ''));
+    });
+    if (board && !boardTaken) {
+      ((board.waiting) || []).forEach(function (it) {
+        /* 立てた時刻は「yyyy-MM-dd HH:mm」で来る。出すのは時と分だけ。 */
+        var m = String(it.at || '').match(/(\d{2}:\d{2})/);
+        out.push(briefOf(m ? m[1] : '', 'あなた待ち', String(it.name || ''), it.no || ''));
+      });
+      ((board.recent) || []).forEach(function (it) {
+        out.push(briefOf('', '直近に終わった仕事', String(it.name || ''), it.no || ''));
+      });
+    }
+    return out;
+  }
+
+  function bundleText() {
+    var NL = String.fromCharCode(10);
+    var head = [NOTICES_PAGE, nowLine()];
+    if (lastOrderLine) { head.push(lastOrderLine); }
+    var base = head.join(NL) + NL;
+    var lines = bundleLines();
+    /* 千五百字に収める。溢れたら**古い側から**落とし、「ほかN件」で締める。 */
+    var n = lines.length, text;
+    for (;;) {
+      var extra = lines.length - n;
+      text = base + lines.slice(0, n).join(NL) + (extra > 0 ? NL + 'ほか' + extra + '件' : '');
+      if (text.length <= BUNDLE_MAX || n === 0) { break; }
+      n--;
+    }
+    return text;
+  }
+
+  function copyBundle(btn) {
     /* 写しに入る札（v54）。この並びが、そのまま「落とす札」「印を付ける札」になる。
-       ＊数え方は boardCount() と同じ絞り。別の数え方を持ち込まない。 */
+       ＊数え方は boardCount() と同じ絞り。別の数え方を持ち込まない。
+       ＊落とす動きは v65 でも変えていない。変えたのは写す中身だけ。 */
     var todo = (shown || []).filter(function (d) { return !isDone(d); });
-    /* お知らせの釦が写す中身も足す（v54）。いま入っている中身は一つも落とさない。
-       ＊お知らせの側は copyAllText() が組む。七行の形にまとめた札で、noticesText() の
-         本文そのままとは別の見え方になる。だから重ねても意味がある。
-       ＊copyAllText() の末尾には現況の一行が付いている。二重にしないため、
-         こちらの nowLine() は「お知らせが無いとき」だけ足す。 */
-    var all = copyAllText();
-    var parts = [noticesText(), waitText(), recentText(), todayText()];
-    if (all) { parts.push('お知らせの写し（釦「お知らせ」と同じ中身）' + NL + all.text); }
-    else { parts.push(nowLine()); }
-    /* 受け取った指示の一行を、写しの**先頭**へ置く（v62）。
-       ＊画面には出ているのに写しに乗っていなかったので、写しだけを見る側から
-         受領を確かめられなかった。字は paintOrder が組んだものをそのまま使う。
-       ＊値が無い回は足さない。既に入っている中身は一つも落とさない。 */
-    if (lastOrderLine) { parts.unshift(lastOrderLine); }
-    var text = parts.join(NL + NL);
+    var text = bundleText();
 
     /* 写せたときだけ、一枚ずつ写したときと同じ始末をする（v54）。
        ＊印を付ける → 一覧から落とす → 下の箱を組み直す → 二つの釦の字を組み直す。
