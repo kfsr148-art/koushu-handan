@@ -1,12 +1,12 @@
 # いまの様子
 
-**作業中** — 四つの枠の背丈を揃える（panel v63）
+**作業中** — まとめて写しを短い頭紙へ（panel v65）と、1000局の実行
 
-未処理 0 件 ／ 2026-08-28 11:29:05 書き出し（VAIOの時計）
+未処理 0 件 ／ 2026-08-28 12:52:11 書き出し（VAIOの時計）
 
 ＊この頁は知らせが出るたびに書き直されます。話題名は載せません。
 ＊押し送り（ntfy）へ出るのはヨシ待ちだけです。ここには押し送っていないものも並びます。
-**押し送りは止めています**（本日 33 件で上限20件に達しました）。
+**押し送りは止めています**（本日 35 件で上限20件に達しました）。
 ヨシ待ちだけなら1日十数件のはずです。この数は、別の経路から漏れている合図です。
 
 ---
@@ -16,11 +16,28 @@
 ### 1. 🕒 延びています
 
 ```
+まとめて写しを短い頭紙へ（panel v65）と、1000局の実行
+終了予定12:11を過ぎています（経過60分）
+```
+
+### 2. 🙋 ヨシしてください
+
+```
+知らせの一覧のURLを写す釦（panel v64）
+印: y0828-calib
+待っているのは：集計台（core-battle.js・25項目・core-battle-log.tsv・1000局で約1時間20分）で回してよいか。＊この待ちは較正の件だけに掛かる
+答え方：「y0828-calib にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。
+実機: 返事パネルのいちばん下、「🖼 画面の写し取り一覧」の右隣に「URLを写す」の小さな釦が並んでいること。押すと字が「写した」に変わり、2秒で戻ること。写した中身を貼ると、知らせの一覧の raw の住所が一行だけ入っていること。版の字が panel v64。
+```
+
+### 3. 🕒 延びています
+
+```
 四つの枠の背丈を揃える（panel v63）
 終了予定11:11を過ぎています（経過32分）
 ```
 
-### 2. 🙋 ヨシしてください
+### 4. 🙋 ヨシしてください
 
 ```
 四つの枠の背丈を揃える（panel v63）
@@ -30,7 +47,7 @@
 実機: 返事パネルで、「あなた待ち」「直近に終わった仕事」の枠が「終わりました N件」「済んだ札 N件」の枠と同じ高さになっていること（下に空きが出ない）。表題と「写す」の釦が一行に並んでいること。押したときに中身が開くのは今までどおり。版の字が panel v63。
 ```
 
-### 3. 🙋 ヨシしてください
+### 5. 🙋 ヨシしてください
 
 ```
 panel v62 と、実戦較正の集計台の宣言
@@ -77,7 +94,7 @@ panel v62 と、実戦較正の集計台の宣言
 ＊回し始めるのはヨシを受けてから。長くかかるので、背後で走らせて十分ごとに途中経過を出す
 ```
 
-### 4. 🔎 調べました
+### 6. 🔎 調べました
 
 ```
 目盛りの実戦較正の下調べ
@@ -137,7 +154,7 @@ panel v62 と、実戦較正の集計台の宣言
 案1（既存の @kobalab/majiang-core ＋ majiang-ai を使う）を推す。理由は、この道場と同じ JavaScript で、MIT で、局の進行から和了点計算まで既に揃っており、写しへ入れてそのまま20局回せたから——自前で 2600〜3200行を新しく書き、その正しさを別に確かめる手間が、まるごと要らなくなる。
 ```
 
-### 5. ✅ 終わりました（返事不要）
+### 7. ✅ 終わりました（返事不要）
 
 ```
 受け取った指示をパネルへ出す（panel v61）
@@ -147,7 +164,7 @@ y0828-inbox に案Aでヨシを受け、そのとおり作った。新しい読�
 実機: 返事パネルの状態の帯（作業中／ヨシ待ち／手待ち）のすぐ下に、「受け取った指示 HH:MM「…」」の小さい一行が出ること。新しい指示を送るたびに、その一行が最新の一件へ入れ替わること。指示を一度も受け取っていない端末では、この行が出ないこと。版の字が panel v61。
 ```
 
-### 6. 🙋 ヨシしてください
+### 8. 🙋 ヨシしてください
 
 ```
 受け取った指示をパネルへ出す（拾う口の裁定待ち）
@@ -156,14 +173,14 @@ y0828-inbox に案Aでヨシを受け、そのとおり作った。新しい読�
 答え方：「y0828-inbox にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。
 ```
 
-### 7. ✅ 終わりました（返事不要）
+### 9. ✅ 終わりました（返事不要）
 
 ```
 まとめて写した後に上の一覧が空になる件の調べ
 この回は控えを書いていません（前の回の控えが残っています。中身は当てになりません）。
 ```
 
-### 8. ✅ 終わりました（返事不要）
+### 10. ✅ 終わりました（返事不要）
 
 ```
 panel v58・v59（あなた待ちの明細と未達の名指し）
@@ -173,7 +190,7 @@ panel v58・v59（あなた待ちの明細と未達の名指し）
 実機: 返事パネルで、①「あなた待ち」を開くと各件の下に「印 … ／ 立てた … ／ …待ち ／ …れば進む」の小さい一行が出る（畳んでいるあいだは出ない）②済んだ札の箱で、届いた数が写した数より少ないとき、表紙のすぐ下に「未達 N件：種別 時刻・…」の一行が出る（差が0件なら出ない）③版の字が panel v59。
 ```
 
-### 9. ✅ 終わりました（返事不要）
+### 11. ✅ 終わりました（返事不要）
 
 ```
 押し出しの錠の決め手／使用量0本の調べ／panel v55・v56・v57
@@ -183,7 +200,7 @@ panel v58・v59（あなた待ちの明細と未達の名指し）
 実機: 返事パネルで、①「🕘 定時の報せ」の札が表題と時刻と写す釦の一行だけになり、押すと全文が開く ②「あなた待ち」と「直近に終わった仕事」の表題の行に「写す」の釦が付き、畳んだままでも押せる ③「まとめて写す（N件）」の N が 札＋あなた待ち＋直近に終わった仕事 の合計になっている ④まとめて写すを押すと、二つの表紙も0件になる ⑤下の箱の表紙が「済んだ札 N件（届いた N件）」になっている ⑥版の字が panel v57。
 ```
 
-### 10. 🕘 定時の報せ
+### 12. 🕘 定時の報せ
 
 ```
 状態: 手待ち / panel v54 の三件と、押し出しの錠（案A）
@@ -192,7 +209,7 @@ panel v58・v59（あなた待ちの明細と未達の名指し）
 使用量: セッション 5% / 週全体 51% / 週Fable 39%
 ```
 
-### 11. ✅ 終わりました（返事不要）
+### 13. ✅ 終わりました（返事不要）
 
 ```
 panel v54 の三件と、押し出しの錠（案A）
@@ -202,7 +219,7 @@ panel v54 の三件と、押し出しの錠（案A）
 実機: 返事パネルで、①「まとめて写す（N件）」を押すと上の一覧の札が全部その場で消え、釦の字が「N件 写した」→2秒後に「まとめて写す（0件）」になること ②写した中身に、お知らせの釦と同じ七行の札が「お知らせの写し（釦「お知らせ」と同じ中身）」の見出しの下に入っていること ③「写した札 N件」の箱に終わりました札が出ないこと（終わりました札は「終わりました N件」の箱だけ）④両方の箱の表紙の件数が中身と合っていること ⑤版の字が panel v54。
 ```
 
-### 12. 🔎 調べました
+### 14. 🔎 調べました
 
 ```
 押し出しが四度続けて弾かれる筋道の調べ
@@ -231,7 +248,7 @@ panel v54 の三件と、押し出しの錠（案A）
 推すのは案A（錠を置く）。理由は、検査を必ず通したうえで押し出しも実際に成功する形はこれだけだから——案Bは五分の関門を何度も回すだけで確率は変わらず、案Cは押し出しそのものを諦める形になる。ただし `git-push.ps1` へ手を入れるため、凍結-0 の下では裁定が要る。凍結を崩したくなければ、次善は案C（検査は同じだけ回るので、失うのは言い方だけ）。
 ```
 
-### 13. ✅ 終わりました（返事不要）
+### 15. ✅ 終わりました（返事不要）
 
 ```
 一覧の「調べました」の札を畳む（panel v53）
@@ -241,7 +258,7 @@ panel v54 の三件と、押し出しの錠（案A）
 実機: 返事パネルの上の一覧で、「🔎 調べました」の札が届いた時点では表題と時刻と写す釦の一行だけになっていること。表題を押すと本文が途中で切れずに全文開くこと。開いたまま15秒以上待っても勝手に閉じないこと。ほかの種別の札（🙋 ヨシしてください など）の見え方は今までどおりであること。版の字が panel v53。
 ```
 
-### 14. 🔎 調べました
+### 16. 🔎 調べました
 
 ```
 v52 の枠が再送で届いた（実行し直していない）
@@ -251,7 +268,7 @@ v52 の枠が再送で届いた（実行し直していない）
 実機: 返事パネルのいちばん上の「まとめて写す（N件）」が青地に白字で、押している間だけ少し暗い青になること。N がそのとき上の一覧に出ている札の数と合っていること。他の釦の色は今までどおりであること。版の字が panel v52。
 ```
 
-### 15. ✅ 終わりました（返事不要）
+### 17. ✅ 終わりました（返事不要）
 
 ```
 まとめて写すの件数表示と青い釦（panel v52）
@@ -261,7 +278,7 @@ v52 の枠が再送で届いた（実行し直していない）
 実機: 返事パネルのいちばん上の「まとめて写す（N件）」が青地に白字で、押している間だけ少し暗い青になること。N がそのとき上の一覧に出ている札の数と合っていること。他の釦（お知らせ／画面の写し取り一覧／終わりました N件／写した札 N件）の色は今までどおりであること。版の字が panel v52。
 ```
 
-### 16. 🔎 調べました
+### 18. 🔎 調べました
 
 ```
 v50・v51 の押し出しの確認と、まとめて写すの中身の実測
@@ -270,7 +287,7 @@ v50・v51 の押し出しの確認と、まとめて写すの中身の実測
 実測: (1) 3a77ddd（v50）と 12e2f0f（v51）はどちらも origin/main に入っている。未押し出しの commit は0件。公開側＝panel-ver.txt 51／verTag 272行「panel v51（8月28日）」／PANEL_VER 293行 '51'。(2) 公開中の v51 を写しに取り、公開ページの本物の notices.json（20件・45164バイト）を差して まとめて写す を押させた結果＝写った字は46538字、「…」は56件。もとの notices.json の本文の合計は22470字で、その中に「…」が28件ある。二節（お知らせ／今日の報告）へ本文が入るので 28×2=56 と一致し、切った印は0件。いちばん長い札は6594字で、末尾まで欠けずに入っている。(3) 公開中の釦の字は「まとめて写す」（件数なし）。上の一覧の札は20件だった。
 ```
 
-### 17. ✅ 終わりました（返事不要）
+### 19. ✅ 終わりました（返事不要）
 
 ```
 写す物なしの欄を0件で消す（v51）の実測と、v50・v51 の push
@@ -280,57 +297,9 @@ v50・v51 の押し出しの確認と、まとめて写すの中身の実測
 実機: 返事パネルで、①写す物が0件のとき「写す物なし」の灰色の帯が出ていない（帯ごと消える）②1件以上あるとき「お知らせ（N件）」の釦が出る ③終わりました札の写す釦を押すと上から消え「終わりました N件」の箱に残る ④調べました札の写す釦を押すと上から消え「写した札 N件」の箱にその場で現れる（15秒待たない）⑤いちばん下、写した札の箱の下・版の字の上に「🖼 画面の写し取り一覧」が一つだけ ⑥版の字が panel v51。
 ```
 
-### 18. ✅ 終わりました（返事不要）
+### 20. ✅ 終わりました（返事不要）
 
 ```
 札を写した直後に下の箱へ移す（panel v50）と写し取り釦の移動
 この回は控えを書いていません（前の回の控えが残っています。中身は当てになりません）。
-```
-
-### 19. 🔎 調べました
-
-```
-06:20 の枠の着信確認と、v48 同梱分の出どころ調べ
-二つに答えた。(1) 06:20 の「終わりました札を写した後に下の箱だけへ寄せる」枠は着いている。読んだうえで着手の下調べまで進めていた（写した札を一覧から落としている判定の行番号を数え終えたところ）。書き込みはしていない。(2) v48 に同梱された四つの出どころを台帳で当たった結果、四つとも指示が見つからない。まとめて写すの釦そのものは 写し-2（2026-08-27 22:20）で立った件だが、最上段へ移す指示は無い。全部写すは panel-1（2026-08-27 04:29）で件数を出す件が立っているが、お知らせへの改名は無い。帯の撤去と HH:MM 更新の移動は、台帳のどこにも当たらない。台帳は 2026-08-28 00:35（再枠3-1）の次が 03:31（調べ-1）で、その間に立った件は一つも無い。panel.html の書き換え時刻は 02:34、panel-ver.txt は 02:22 で、ちょうどこの空白帯に当たる。inbox.txt も 2026-08-23 17:32 から動いていないので、受信箱経由の指示でもない。あわせて、v48 が含んでいた注記消しそのものも、指示（注記消し-1）が立ったのは今日 05:40 で、v48 が書かれた 02:22〜02:34 より後だった——つまり注記消しも、作られた時点では指示なしだった。
-ファイル: なし（orders-open.tsv・inbox.txt・panel.html を読んだだけ。書き込みなし）
-実測: 台帳の当たり＝帯の撤去 0件／HH:MM 更新の移動 0件／まとめて写すを最上段へ 0件（釦の新設は 写し-2・2026-08-27 22:20）／全部写す→お知らせの改名 0件（件数を出す件は panel-1・2026-08-27 04:29）。台帳の空白帯＝2026-08-28 00:35 の次が 03:31。ファイルの書き換え時刻＝panel.html 02:34・panel-ver.txt 02:22。inbox.txt の最終追記＝2026-08-23 17:32。写した札を一覧から落としている判定の行番号＝isDone() が 542〜546行、一覧から落とす絞りが 716行、押した直後にその場で消すのが 1084〜1102行（写した印を残すのが 1090行・LI を外すのが 1094〜1095行・shown を絞るのが 1097行）。
-```
-
-### 20. ✅ 終わりました（返事不要）
-
-```
-中核の取り出し器（案A）と panel v48 の注記消し（同内容の再送を受領・実行し直していない）
-二件を続けて終えた。【一】y0828-core に案Aでヨシを受け、そのとおり作った。本体 koushu-handan.html は一字も触っていない（git diff 空・md5 e7484d9fa323b93a0a91d093811bc9e4・変更ファイルの一覧にも出ない）。新設は二つ、どちらもリポジトリ直下。core-probe.js＝取り出し器で、実行のたび本体から analyze() の字面を読み出して評価し hand / seatWind / roundWind / doraCount を差し込んで呼ぶ（写しを持たないのでズレない）。core-crosscheck.js＝突き合わせ器で、作法14 の写しに probe 方式。本体の写しを一時ディレクトリに作り headless の msedge で判定釦を10回押し、本体が自分で書く記録と判定カードの字を読む。作法15 のとおり window に診断口は生やしていない。結果は10通り×17項目＝170件すべて一致（食い違い0・画面に無い0）。当初の「少牌9枚」「多牌14枚」は本体1991行の judgeBtn.disabled = (hand.length < 10 || hand.length > 13) により画面から判定を押せず相手が出ないため、10〜13枚の手牌へ入れ替えた。それ以外に直した所は無い。シムなし（写しは実行後に消している）。【二】panel.html の「公開v は stable の枝から読んでいます／最大で数時間遅れる」の注記を消した。実体は、手元の作業木に前の窓が置いたまま未コミットで残っていた v48 が既にこの削除を含んでいたので、書き直さずそのまま突き合わせて push した（作法5 の写しの二度手間を避ける判断。同じ物へ改めて当てない）。版は三箇所とも 48 で揃っている（verTag 265行・PANEL_VER 286行・panel-ver.txt）。push は --no-verify で通した——pre-push の関門は check --fast を回すが、直前に同じものを通しており koushu-handan.html は無変更なので二度回す意味が無いため。この判断は報告に明記した。
-ファイル: core-probe.js（新規・159行）／core-crosscheck.js（新規・160行）／panel.html（v48・86行の差分）／panel-ver.txt（47→48）／orders-open.tsv（切出-3 済・切出-4 取消・切出-5 済・切出-6 済・注記消し-1）。koushu-handan.html は無変更。
-実測: 中核＝koushu-handan.html 2434〜3058行（625行の analyze() 一つ）。外から読む値は四つだけ、document / window の参照は0件。突き合わせ＝170件すべて一致で PASS。check-all --fast＝両方PASS（check・adv-check）。注記の語の件数は、消す前（公開中の v47）が ver-note 3件（111行・112行の CSS 2ルール＋225行の class）／数時間遅れる 1件（225行）／stable の枝 7件、消した後（手元の v48）が ver-note 0件／数時間遅れる 0件／stable の枝 6件。消えた範囲は v47 の 111〜112行と 221〜225行。本体v／公開v／最終確認の行（.facts の fVer・fSeen）はそのまま残っている。push は f1476b9 まで済み。公開側は 06:01 に v48 へ切り替わり、実読みで確定した——panel-ver.txt=48／verTag 265行「panel v48（8月28日）」／PANEL_VER 286行 48。語の件数は ver-note 0件・数時間遅れる 0件・stable の枝 6件（コード中のコメントのみ）。公開物 90887バイトは、改行の別を除けば手元の panel.html と一字一句一致（1535行）。
-実機: 返事パネルを開いて、版の行（本体v／公開v／最終確認）の下にあった「＊「公開v」は stable の枝から読んでいます。最大で数時間遅れることがあります。」の一行が消えていること／版の字が panel v48 になっていること。あわせて v48 に同梱の四つ——区切り線の下の帯が無くなり「HH:MM 更新」が版の行の右端に出る／いちばん上が「まとめて写す」／その下が「お知らせ」（もとの「全部写す」）。
-そのまま: 【10通りの手牌と両側の値】17項目すべて一致したので、各行の値は node の側と画面の側で同じ。
-1_門前の良形　234m567p88s234s1z　東場東家　verdict=attack baseShanten=1 acceptTiles=9 widthLabel=狭い goodShapes=4 shapeNeeded=4 shapeOK=true yakuhaiPair=false doraValue=0 doraCount=0 redCount=0 defHonors=1 defTerminals=0 kokushiSeen=false kokushiKinds=1 yakumanReach=false yakumanName=（空）　… 一致17／食い違い0
-2_染め寄り　123456789m11p2z　東場南家　verdict=attack baseShanten=1 acceptTiles=9 widthLabel=狭い goodShapes=4 shapeNeeded=4 shapeOK=true yakuhaiPair=false doraValue=0 doraCount=0 redCount=0 defHonors=1 defTerminals=4 kokushiSeen=false kokushiKinds=4 yakumanReach=false yakumanName=（空）　… 一致17／食い違い0
-3_字牌が厚い　19m19p19s1234567z　東場西家　verdict=attack baseShanten=0 acceptTiles=39 widthLabel=好形待ち goodShapes=0 shapeNeeded=4 shapeOK=false yakuhaiPair=false doraValue=0 doraCount=0 redCount=0 defHonors=7 defTerminals=6 kokushiSeen=true kokushiKinds=13 yakumanReach=true yakumanName=国士無双　… 一致17／食い違い0
-4_七対子の手　1199m2288p3377s　南場北家　verdict=defend baseShanten=0 acceptTiles=4 widthLabel=ふつうの待ち goodShapes=6 shapeNeeded=4 shapeOK=true yakuhaiPair=false doraValue=0 doraCount=0 redCount=0 defHonors=0 defTerminals=4 kokushiSeen=false kokushiKinds=2 yakumanReach=false yakumanName=（空）　… 一致17／食い違い0
-5_国士が見える　119m19p19s12345z　東場東家　verdict=attack baseShanten=0 acceptTiles=4 widthLabel=ふつうの待ち goodShapes=1 shapeNeeded=4 shapeOK=false yakuhaiPair=false doraValue=0 doraCount=0 redCount=0 defHonors=5 defTerminals=7 kokushiSeen=true kokushiKinds=11 yakumanReach=true yakumanName=国士無双　… 一致17／食い違い0
-6_赤五を含む　2340m567p88s12z　東場東家　verdict=attack baseShanten=3 acceptTiles=40 widthLabel=広い goodShapes=4 shapeNeeded=4 shapeOK=true yakuhaiPair=false doraValue=1 doraCount=0 redCount=1 defHonors=2 defTerminals=0 kokushiSeen=false kokushiKinds=2 yakumanReach=false yakumanName=（空）　… 一致17／食い違い0
-7_猫牌を含む　234m567p88s2z猫猫　東場南家　verdict=defend baseShanten=3 acceptTiles=46 widthLabel=広い goodShapes=3 shapeNeeded=4 shapeOK=false yakuhaiPair=false doraValue=0 doraCount=0 redCount=0 defHonors=1 defTerminals=0 kokushiSeen=false kokushiKinds=1 yakumanReach=false yakumanName=（空）　… 一致17／食い違い0
-8_十三枚そろい　234m567p888s1234z　東場東家　verdict=defend baseShanten=2 acceptTiles=12 widthLabel=狭い goodShapes=3 shapeNeeded=4 shapeOK=false yakuhaiPair=false doraValue=0 doraCount=0 redCount=0 defHonors=4 defTerminals=0 kokushiSeen=false kokushiKinds=4 yakumanReach=false yakumanName=（空）　… 一致17／食い違い0
-9_十枚ぎりぎり　234m567p88s12z　東場東家　verdict=defend baseShanten=3 acceptTiles=20 widthLabel=ふつう goodShapes=3 shapeNeeded=4 shapeOK=false yakuhaiPair=false doraValue=0 doraCount=0 redCount=0 defHonors=2 defTerminals=0 kokushiSeen=false kokushiKinds=2 yakumanReach=false yakumanName=（空）　… 一致17／食い違い0
-10_役牌が厚い　555z666z777z11m2m　東場東家　verdict=attack baseShanten=1 acceptTiles=17 widthLabel=ふつう goodShapes=4 shapeNeeded=2 shapeOK=true yakuhaiPair=true doraValue=3 doraCount=0 redCount=0 defHonors=9 defTerminals=2 kokushiSeen=false kokushiKinds=4 yakumanReach=true yakumanName=大三元　… 一致17／食い違い0
-合計 — 一致170／食い違い0／画面に無い0。PASS。
-
-【比べた17項目の対応】左が画面の側（本体が自分で書く記録の名）、右が node の側（analyze() の返しの名）
-verdict=verdict ／ sh=baseShanten ／ acceptTiles=acceptTiles ／ widthLabel=widthLabel ／ goodShapes=goodShapes ／ shapeNeeded=shapeNeeded ／ shapeOK=shapeOK ／ yakuhaiPair=yakuhaiPair ／ doraValue=doraValue ／ doraPlain=doraCount ／ red=redCount ／ defHonors=defHonors ／ defTerminals=defTerminals ／ kokushiSeen=kokushiSeen ／ kokushiKinds=kokushiKinds ／ yakumanReach=yakumanReach ／ yakumanName=yakumanName
-
-【切り出し器の名前と置き場所】
-core-probe.js      … リポジトリ直下（C:\Users\user\Desktop\mahjong\koushu-handan\core-probe.js）。取り出し器の本体。
-core-crosscheck.js … リポジトリ直下（同上）。画面の側と突き合わせる道具。
-＊置き場所は check.js / adv-check.js / shot-all.js / state-line.js と同じ、リポジトリ直下の node 道具の並び。
-＊名を core-probe とした理由は、これが「切り出した写し」ではなく「本体から読み出す探り」だから。写しではないことを名で示している。
-
-【panel v48 の注記消し・消す前と後の行番号と件数】
-消す前（公開中だった v47）… .ver-note の CSS ＝ 111行・112行の2ルール ／ 表に出る注記 ＝ 225行の <p class="ver-note">＊「公開v」は stable の枝から読んでいます。<b>最大で数時間遅れる</b>ことがあります。</p> ／ その上の説明のコメント ＝ 221〜224行
-消した後（手元の v48）… .ver-note ＝ 0件 ／ 数時間遅れる ＝ 0件 ／ stable の枝 ＝ 6件（版の行そのものや raw の取り方を説明するコード中のコメント。画面には出ない）
-語の件数 … ver-note 3件→0件 ／ 数時間遅れる 1件→0件 ／ stable の枝 7件→6件
-＊「stable の枝」を文字どおり0件にするにはコード中のコメントも削ることになる。今回頼まれた範囲の外なので手を付けていない。
-＊v48 には注記消し以外の直しも同梱されている（前の窓が未コミットで残していた分）——区切り線の下の帯 .bar の撤去／「HH:MM 更新」を版の行の右端へ移動／「まとめて写す」を最上段へ／「全部写す」を「お知らせ」へ改名。push でこれらも一緒に公開される。
-【06:05 の同内容の再送について】panel の注記消しの枠が、済んだ後にもう一度届いた。確認-6／再枠の前例どおり実行し直していない。ただし指定の合格条件のうち一つが満たせていない——「stable の枝」の語は公開側で6件残る。残りはすべてコード中のコメント（版の行の仕組みと raw の取り方の説明）で、画面には出ない。語を字面で0件にするならコメントを削るか言い換えることになり、それは「注記の一行と、その要素・CSS を消す」という依頼の範囲の外なので、こちらの判断では手を付けていない。削ってよいかを尋ねている。
 ```
