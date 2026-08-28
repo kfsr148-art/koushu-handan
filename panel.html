@@ -312,7 +312,7 @@
     <button type="button" class="cpall url" id="btnCopyUrl">URLを写す</button>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v66（8月28日）</p>
+  <p class="ver" id="verTag">panel v67（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -333,7 +333,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '66';
+  var PANEL_VER = '67';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1351,6 +1351,23 @@
     }
   }
 
+  /* 下の箱に収まった札の写す釦（v67）。
+     ＊写る中身も釦の見え方も、上の一覧の写す釦（copyOne）と同じ。
+     ＊違うのは**札を動かさない**ところだけ。ここに居る札はもう片付いた札なので、
+       印を付け直す相手も、落とす先も無い。箱に収まったまま置く。
+     ＊どの札かは、箱を組んだときに控えた並び（doneItems／copiedItems）から引く。 */
+  var doneItems = [], copiedItems = [];
+  function copyBoxed(items, i, btn) {
+    var d = (items || [])[i];
+    if (!d) { return; }
+    /* 写すのは**本文の全文**。上の一覧の写す釦（copyOne）は七行にまとめた形を渡すが、
+       こちらは「本文が全文で写る」ことを求められている箱なので、
+       題と時刻の一行を頭に付けたうえで、本文をそのまま渡す（どこも切らない）。 */
+    var NL = String.fromCharCode(10);
+    var text = '［' + (d.title || '(題なし)') + '］' + hhmm(d.time) + NL + String(d.message || '');
+    copyInto(btn, text, '写す');
+  }
+
   function copyOne(i, btn) {
     var d = shown[i];
     if (!d) { return; }
@@ -1639,13 +1656,16 @@
     items.sort(function (a, b) { return (b.time || 0) - (a.time || 0); });   /* 新しい順 */
     if (!items.length) { box.className = 'done-box hide'; ul.innerHTML = ''; return; }
     box.className = 'done-box';
+    /* 箱の中の札にも写す釦を付ける（v67）。押したときにどの札かを引くため、並びを控える。 */
+    doneItems = items;
     var html = '';
-    items.forEach(function (d) {
+    items.forEach(function (d, i) {
       /* 一覧や控えの札と鍵がぶつからないよう、箱の名を前に付ける。 */
       var k = 'done:' + keyOf(d);
       html += '<li class="ack' + (isOpen(k) ? ' open' : '') + '" data-k="' + okey(k) + '">'
             + '<p class="t"><span class="tx">' + esc(d.title || '(題なし)')
-            + '<span class="when">' + hhmm(d.time) + '</span></span></p>'
+            + '<span class="when">' + hhmm(d.time) + '</span></span>'
+            + '<button type="button" class="cp" data-i="' + i + '">写す</button></p>'
             + '<p class="m">' + esc(d.message) + '</p></li>';
     });
     ul.innerHTML = html;
@@ -1676,7 +1696,9 @@
     /* 届いたの印が付かなかった札を、そのまま控える（v59）。
        ＊拾う条件は下の `ok` そのもので、別の数え方は作らない。 */
     var miss = [];
-    items.forEach(function (d) {
+    /* 箱の中の札にも写す釦を付ける（v67）。押したときにどの札かを引くため、並びを控える。 */
+    copiedItems = items;
+    items.forEach(function (d, i) {
       var t = copied[keyOf(d)];
       var byCopy = !!t;
       var ok = (byCopy && res !== null && typeof t === 'number' && t > 1 && res > t * 1000);
@@ -1687,7 +1709,8 @@
             + '<span class="when">' + hhmm(d.time) + '</span>'
             + (ok ? '<span class="got">届いた</span>' : '')
             + (byCopy ? '' : '<span class="read">チャットで読んだ</span>')
-            + '</span></p>'
+            + '</span>'
+            + '<button type="button" class="cp" data-i="' + i + '">写す</button></p>'
             + '<p class="m">' + esc(d.message) + '</p></li>';
     });
     ul.innerHTML = html;
@@ -1857,17 +1880,26 @@
     toggleOpen(li);   /* 開閉は一箇所で。開いた印を覚えるのもここ（v47） */
   });
 
-  /* 「終わりました」の箱も同じ受けで開閉する（v47）。 */
+  /* 「終わりました」の箱。写す釦と開閉を、この一つの受けで分ける（開閉は v47・釦は v67）。 */
   $('doneList').addEventListener('click', function (e) {
-    var li = e.target;
+    var b = e.target;
+    if (b && b.className && b.className.indexOf('cp') === 0) {
+      copyBoxed(doneItems, parseInt(b.getAttribute('data-i'), 10), b);
+      return;
+    }
+    var li = b;
     while (li && li.tagName !== 'LI') { li = li.parentNode; }
     toggleOpen(li);
   });
 
-  /* 写した札の控えも、同じ受けで開閉する（v32）。中身は畳んであるので、題の行を押すと開く。
-     ＊こちらには写す釦は無い。開いて読むためだけの箱。 */
+  /* 済んだ札の箱も同じ形（開閉は v32・写す釦は v67）。 */
   $('copiedList').addEventListener('click', function (e) {
-    var li = e.target;
+    var b = e.target;
+    if (b && b.className && b.className.indexOf('cp') === 0) {
+      copyBoxed(copiedItems, parseInt(b.getAttribute('data-i'), 10), b);
+      return;
+    }
+    var li = b;
     while (li && li.tagName !== 'LI') { li = li.parentNode; }
     toggleOpen(li);   /* 開閉は一箇所で。開いた印を覚えるのもここ（v47） */
   });
