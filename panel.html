@@ -291,7 +291,7 @@
      href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
      target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v61（8月28日）</p>
+  <p class="ver" id="verTag">panel v62（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -312,7 +312,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '61';
+  var PANEL_VER = '62';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -351,6 +351,9 @@
   /* 上部の常時表示と「全部写す」の末尾で使う、いまの様子。state.json から拾ったものを控える。
      ＊新しい経路は増やさない。すでに読んでいる state.json / ver.txt の値の見せ方だけ。 */
   var lastState = { word: '', since: '', at: 0 };
+  /* 受け取った指示の一行（v62）。画面へ出したのと同じ字を、写しでも使う。
+     ＊値が無い回は空のまま。空なら写しにも出さない。 */
+  var lastOrderLine = '';
   function loadCopied() {
     try { copied = JSON.parse(localStorage.getItem(COPIED_KEY) || '{}') || {}; } catch (e) { copied = {}; }
   }
@@ -652,6 +655,11 @@
     var parts = [noticesText(), waitText(), recentText(), todayText()];
     if (all) { parts.push('お知らせの写し（釦「お知らせ」と同じ中身）' + NL + all.text); }
     else { parts.push(nowLine()); }
+    /* 受け取った指示の一行を、写しの**先頭**へ置く（v62）。
+       ＊画面には出ているのに写しに乗っていなかったので、写しだけを見る側から
+         受領を確かめられなかった。字は paintOrder が組んだものをそのまま使う。
+       ＊値が無い回は足さない。既に入っている中身は一つも落とさない。 */
+    if (lastOrderLine) { parts.unshift(lastOrderLine); }
     var text = parts.join(NL + NL);
 
     /* 写せたときだけ、一枚ずつ写したときと同じ始末をする（v54）。
@@ -1336,12 +1344,18 @@
      ＊値が揃っていない回は行ごと畳む。「—」で埋めない。 */
   function paintOrder(at, tx) {
     var e = $('stOrder');
-    if (!e) { return; }
     var t = String(tx || '').trim();
     var a = String(at || '').trim();
+    /* 写しの側でも同じ字を使うので、組んだ字をここに控える（v62）。
+       ＊画面と写しで別々に組むと、片方だけ直したときに食い違う。組むのは一箇所にする。 */
+    lastOrderLine = '';
+    if (t) {
+      var m = a.match(/(\d{2}):(\d{2})/);
+      lastOrderLine = '受け取った指示 ' + (m ? m[1] + ':' + m[2] : a) + '「' + t + '…」';
+    }
+    if (!e) { return; }
     if (!t) { e.textContent = ''; e.hidden = true; return; }
-    var m = a.match(/(\d{2}):(\d{2})/);
-    e.textContent = '受け取った指示 ' + (m ? m[1] + ':' + m[2] : a) + '「' + t + '…」';
+    e.textContent = lastOrderLine;
     e.hidden = false;
   }
 
