@@ -284,7 +284,7 @@
      href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
      target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v59（8月28日）</p>
+  <p class="ver" id="verTag">panel v60（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -305,7 +305,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '59';
+  var PANEL_VER = '60';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -467,7 +467,10 @@
        ＊もとは本文の側（p.m）に置いていたが、そこは畳んでいるあいだ隠れるので、
          表紙だけ見えている状態では押せなかった。
        ＊`cp` で始まる名は一覧の写す釦の受けが拾ってしまうので、**id で先に分ける**。 */
-    h += '<li class="why ack' + (isOpen(wk) ? ' open' : '') + '" data-k="' + okey(wk) + '">'
+    /* 開いた形で組み直すのは**中身があるときだけ**（v60）。
+       ＊0件のときに開いた印が残っていると、中身が無いのに開いた形になり、
+         空の帯だけが居座って見えた。0件は必ず畳んだ形にする。 */
+    h += '<li class="why ack' + ((w.length && isOpen(wk)) ? ' open' : '') + '" data-k="' + okey(wk) + '">'
        + '<p class="t"><span class="tx">'
        + esc(w.length ? ('あなた待ち（' + w.length + '件）') : 'あなた待ちは0件')
        + '</span>'
@@ -494,7 +497,8 @@
     /* 板の枠は札ではないので、決め打ちの鍵を与える（v47）。 */
     var rk = 'board:recent';
     /* こちらにも写す釦を付ける（v56）。あなた待ちと同じで、表題の行に置く。 */
-    h += '<li class="ack' + (isOpen(rk) ? ' open' : '') + '" data-k="' + okey(rk) + '">'
+    /* こちらも、開いた形で組み直すのは中身があるときだけ（v60）。 */
+    h += '<li class="ack' + ((r.length && isOpen(rk)) ? ' open' : '') + '" data-k="' + okey(rk) + '">'
        + '<p class="t"><span class="tx">' + esc('直近に終わった仕事（' + r.length + '件）') + '</span>'
        + '<button type="button" class="cp" id="cpRecent">写す</button></p>';
     if (r.length) {
@@ -504,9 +508,10 @@
              var line = String(it.result || '').split(CR).join(' ').split(NL).join(' ');
              return '・' + (it.name || '') + NL + '　　' + line;
            }).join(NL)) + '</p>';
-    } else {
-      h += '<p class="m">' + esc('まだありません。') + '</p>';
     }
+    /* ＊0件のときの「まだありません。」は **v60 で外した**。
+         表紙が「直近に終わった仕事（0件）」と既に言っているので、中身の側で言い直す必要が無い。
+         残しておくと、畳んだはずの箱に27pxの空の帯が居座って見えた。 */
     h += '</li>';
 
     return h;
