@@ -1,0 +1,25 @@
+{
+  "name": "koushu-handan",
+  "version": "1.0.0",
+  "description": "麻雀の配牌13枚を入れると、その手で**攻めるか守るか**を判定する。 判定の根拠（打点の種・埋まり・伸びしろ・見える手）と、七人の人柄＋三つの物差しの言い分が並ぶ。",
+  "main": "adv-check.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kfsr148-art/koushu-handan.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kfsr148-art/koushu-handan/issues"
+  },
+  "homepage": "https://github.com/kfsr148-art/koushu-handan#readme",
+  "dependencies": {
+    "@kobalab/majiang-ai": "1.2.0",
+    "@kobalab/majiang-core": "1.4.1"
+  }
+}

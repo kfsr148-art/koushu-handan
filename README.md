@@ -65,3 +65,18 @@ node check-all ../old.html  # 旧版に当てる（検査が本当に落ちる�
 
 検査はブラウザを使うものを含む（headless の Edge か Chrome）。
 見つからない環境では、その検査だけ飛ばして先へ進む。
+
+## 実戦較正の記録（core-battle-log.tsv）
+
+`core-battle.js` が書き出す、配牌の判定とその局の結末を対にした記録。
+
+**母集団は「機械打ち同士」** — `@kobalab/majiang-ai` の思考を四人とも同じにして、
+一局戦を1000局打ち切らせたもの（2026-08-28・較正-1）。**人の打ち筋ではない。**
+
+```
+node core-battle.js 1000    # 1000局を回して core-battle-log.tsv へ書き出す
+```
+
+局を打ち切らせるのは `@kobalab/majiang-core`、打牌の思考は `@kobalab/majiang-ai`
+（どちらも MIT・版は `package.json` に固定）。配牌の判定は `core-probe.js` 越しに
+本体の `analyze()` を呼ぶので、**`koushu-handan.html` には触れない**。
