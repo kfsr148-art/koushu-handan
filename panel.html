@@ -123,6 +123,13 @@
      ＊`.cpall` が display:block を持つので、hidden の既定（display:none）では消えない。
        同じ札の中で打ち消しておく。 */
   .cpall[hidden]{display:none;}
+  /* 写し取り一覧と「URLを写す」を横並びにする（v64）。
+     ＊.cpall は幅いっぱいの作りなので、この行の中でだけ幅と余白を外す。
+       ほかの .cpall（まとめて写す・お知らせ・箱の表紙）には触れない。 */
+  .shotsrow{display:flex; gap:8px; margin:4px 14px 12px;}
+  .shotsrow > .cpall{margin:0; width:auto;}
+  .shotsrow > #btnShots{flex:1 1 auto;}
+  .shotsrow > .url{flex:0 0 auto; padding:0 12px; font-size:14px;}
   /* あなた待ちの各件に添える一行（v58）。印・立てた時刻・待ちの種類・動く条件。
      ＊件名より一段小さく、色も落とす。読む順が件名 → 添えの一行になるように。 */
   .wmeta{font-size:12px; line-height:1.6; color:var(--dim);}
@@ -296,11 +303,16 @@
   <!-- 写し取り一覧への口（v30 で足した・並びは v49 でいちばん下へ）。
        本体の全画面を撮った PNG を並べたシート。組み直すのは node shot-all.js。
        ここは開くだけで、パネル側は何も持たない。 -->
-  <a class="cpall" id="btnShots"
-     href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
-     target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
+  <!-- 知らせの一覧のURLを写す小さな釦（v64）。写し取り一覧の隣に横並びで置く。
+       ＊写るのは一行だけ。改行も空白も入れず、一続きの字でそのまま渡す。 -->
+  <div class="shotsrow">
+    <a class="cpall" id="btnShots"
+       href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
+       target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
+    <button type="button" class="cpall url" id="btnCopyUrl">URLを写す</button>
+  </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v63（8月28日）</p>
+  <p class="ver" id="verTag">panel v64（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -321,7 +333,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '63';
+  var PANEL_VER = '64';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -606,6 +618,23 @@
     };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       try { navigator.clipboard.writeText(text).then(ok, ng); } catch (e) { ng(); }
+    } else { ng(); }
+  }
+
+  /* 知らせの一覧のURLを写す（v64）。
+     ＊写すのは**この一行だけ**。前後に改行も空白も付けない。
+     ＊copyInto は釦の名で札を選ぶ作りで、こちらは cpall のままにしたいので、
+       同じ手をここへ書く。字を戻す先も札も、この釦のものを使う。 */
+  var NOTICES_RAW = 'https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/notices.json';
+  function copyUrl(btn) {
+    var back = 'URLを写す';
+    var reset = function (ms) {
+      setTimeout(function () { btn.textContent = back; btn.className = 'cpall url'; }, ms);
+    };
+    var ok = function () { btn.textContent = '写した'; btn.className = 'cpall url ok'; reset(2000); };
+    var ng = function () { fallback(NOTICES_RAW); btn.textContent = '写せません'; reset(3000); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try { navigator.clipboard.writeText(NOTICES_RAW).then(ok, ng); } catch (e) { ng(); }
     } else { ng(); }
   }
 
@@ -1753,6 +1782,7 @@
 
   $('btnCopyAll').addEventListener('click', function () { copyAll(this); });
   $('btnCopyBoard').addEventListener('click', function () { copyBundle(this); });
+  $('btnCopyUrl').addEventListener('click', function () { copyUrl(this); });
 
   /* 写す釦と、畳んだ件の開閉。一覧ごと張り替わるので親で受ける。 */
   $('list').addEventListener('click', function (e) {
