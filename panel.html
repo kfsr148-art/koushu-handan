@@ -123,6 +123,12 @@
      ＊`.cpall` が display:block を持つので、hidden の既定（display:none）では消えない。
        同じ札の中で打ち消しておく。 */
   .cpall[hidden]{display:none;}
+  /* あなた待ちの各件に添える一行（v58）。印・立てた時刻・待ちの種類・動く条件。
+     ＊件名より一段小さく、色も落とす。読む順が件名 → 添えの一行になるように。 */
+  .wmeta{font-size:12px; line-height:1.6; color:var(--dim);}
+  /* 済んだ札の箱の「未達 N件：」の行（v59）。表紙のすぐ下。長ければ折り返す。 */
+  .miss{margin:0 14px 8px;}
+  .miss[hidden]{display:none;}
   /* まとめて写すだけ青くする（v52）。いちばん多く押す釦なので、他と見分けられるようにする。
      ＊掛けるのは id なので、他の釦の札（.cpall とその仲間）には一切触れない。
      ＊丸みも大きさも .cpall のまま。色だけを乗せる。
@@ -266,6 +272,9 @@
   </div>
   <div class="done-box hide" id="copiedBox">
     <button type="button" class="cpall" id="copiedHead"></button>
+    <!-- 届いたの印が付いていない札の名指し（v59）。差が0件のときは行ごと出さない。
+         ＊数える元は箱の中の各札と同じ判じ（下の paintCopied の `ok`）。別の数え方は持たない。 -->
+    <p class="wmeta miss" id="copiedMiss" hidden></p>
     <ul id="copiedList"></ul>
   </div>
   <!-- 写し取り一覧への口（v30 で足した・並びは v49 でいちばん下へ）。
@@ -275,7 +284,7 @@
      href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
      target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v57（8月28日）</p>
+  <p class="ver" id="verTag">panel v59（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -296,7 +305,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '57';
+  var PANEL_VER = '59';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -417,6 +426,27 @@
       .catch(function (e) { board = null; boardErr = e.message; if (!shown.length) { paintBoard(); } });
   }
 
+  /* 待ちの種類を、台帳の状態欄から機械で判じる（v58）。
+     ＊出すのは 実機会待ち／裁定待ち／返事待ち の三つだけ。どれにも当たらなければ「不明」。
+     ＊字面だけで判じる。台帳の書き方が変われば当たらなくなるので、そのときは「不明」に倒れる。 */
+  function waitKind(why) {
+    var s = String(why || '');
+    if (s.indexOf('実機') >= 0) { return '実機会待ち'; }
+    if (s.indexOf('ヨシ') >= 0 || s.indexOf('裁定') >= 0) { return '裁定待ち'; }
+    if (s.indexOf('返事') >= 0 || s.indexOf('合図') >= 0 || s.indexOf('指示') >= 0) { return '返事待ち'; }
+    return '不明';
+  }
+  /* 何が起きれば進むかを一行で（v58）。種類から引く。日付だけの件は、その日を出す。 */
+  function waitCond(why) {
+    var k = waitKind(why);
+    if (k === '実機会待ち') { return 'その場面が実機で起きれば進む'; }
+    if (k === '裁定待ち') { return 'ヨシ（裁定）が返れば進む'; }
+    if (k === '返事待ち') { return '返事か合図が届けば進む'; }
+    var m = String(why || '').match(/(\d{4}-\d{2}-\d{2})/);
+    if (m) { return m[1] + ' が来れば進む'; }
+    return '';
+  }
+
   /* 「N件」を数字と単位に分けずに、そのまま字で組む。 */
   function boardHtml() {
     if (!board) {
@@ -443,9 +473,19 @@
        + '</span>'
        + '<button type="button" class="cp" id="cpWait">写す</button></p>';
     if (w.length) {
-      h += '<p class="m">' + esc(w.map(function (it, i) {
-             return (i + 1) + '. ' + (it.name || '') + '（' + (it.why || '') + '）';
-           }).join(NL)) + '</p>';
+      /* 件名の下に、印・立てた時刻・待ちの種類・動く条件を小さめの字で一行足す（v58）。
+         ＊この一行は本文（p.m）の中なので、畳んでいるあいだは出ない。開いたときだけ見える。
+         ＊元の値に無い項目は、その項目だけ落とす（無いことを「—」で埋めない）。 */
+      h += '<p class="m">' + w.map(function (it, i) {
+             var head = esc((i + 1) + '. ' + (it.name || '') + '（' + (it.why || '') + '）');
+             var bits = [];
+             if (it.no) { bits.push('印 ' + it.no); }
+             if (it.at) { bits.push('立てた ' + it.at); }
+             bits.push(waitKind(it.why));
+             var cond = waitCond(it.why);
+             if (cond) { bits.push(cond); }
+             return head + '<br><span class="wmeta">' + esc(bits.join(' ／ ')) + '</span>';
+           }).join('<br>') + '</p>';
     }
     h += '</li>';
 
@@ -486,8 +526,17 @@
     if (!board) { return 'あなた待ち：板の値を読めません（' + (boardErr || '理由ふめい') + '）'; }
     var w = (board.waiting && board.waiting.length) ? board.waiting : [];
     if (!w.length) { return 'あなた待ちは0件'; }
+    /* 画面に出した添えの一行（印・立てた時刻・種類・動く条件）も、そのまま写しへ入れる（v58）。
+       ＊この釦は「一覧をそのまま写す」ためのもの。画面と写しで中身が違うと用をなさない。 */
     return 'あなた待ち ' + w.length + '件' + NL + w.map(function (it, i) {
-      return (i + 1) + '. ' + (it.name || '') + '（' + (it.why || '') + '）';
+      var bits = [];
+      if (it.no) { bits.push('印 ' + it.no); }
+      if (it.at) { bits.push('立てた ' + it.at); }
+      bits.push(waitKind(it.why));
+      var cond = waitCond(it.why);
+      if (cond) { bits.push(cond); }
+      return (i + 1) + '. ' + (it.name || '') + '（' + (it.why || '') + '）'
+           + NL + '   ' + bits.join(' ／ ');
     }).join(NL);
   }
 
@@ -1436,6 +1485,18 @@
        見張り四つの生死・使用量の割合で、開いたままだと一覧の背が高くなる。
      ＊下の箱の振り分けには使わない。調べました・その他と同じで「写した札」の箱へ入る。 */
   function isDailyNotice(t) { return String(t || '').indexOf('定時の報せ') >= 0; }
+  /* 題から種別の語だけを取り出す（v59）。未達の名指しで使う。
+     ＊絵文字を落として言葉だけにする。当たらない題は、先頭の一語（絵文字）を落として返す。 */
+  function kindWord(t) {
+    var s = String(t || '');
+    if (isDoneNotice(s)) { return '終わりました'; }
+    if (isLookNotice(s)) { return '調べました'; }
+    if (isDailyNotice(s)) { return '定時の報せ'; }
+    if (s.indexOf('ヨシしてください') >= 0) { return 'ヨシしてください'; }
+    if (s.indexOf('延びています') >= 0) { return '延びています'; }
+    if (s.indexOf('異常です') >= 0) { return '異常です'; }
+    return s.replace(/^\S+\s*/, '') || '(題なし)';
+  }
   function paintDoneBox(all) {
     var box = $('doneBox'), head = $('doneHead'), ul = $('doneList');
     if (!box || !head || !ul) { return; }
@@ -1477,11 +1538,14 @@
     box.className = 'done-box';
     var res = lastWatch ? tsOf(lastWatch.lastResume) : null;
     var got = 0, red = 0, html = '';
+    /* 届いたの印が付かなかった札を、そのまま控える（v59）。
+       ＊拾う条件は下の `ok` そのもので、別の数え方は作らない。 */
+    var miss = [];
     items.forEach(function (d) {
       var t = copied[keyOf(d)];
       var byCopy = !!t;
       var ok = (byCopy && res !== null && typeof t === 'number' && t > 1 && res > t * 1000);
-      if (ok) { got++; }
+      if (ok) { got++; } else { miss.push(d); }
       if (!byCopy) { red++; }
       html += '<li class="ack' + (isOpen(keyOf(d)) ? ' open' : '') + '" data-k="' + okey(keyOf(d)) + '">'
             + '<p class="t"><span class="tx">' + esc(d.title || '(題なし)')
@@ -1498,6 +1562,18 @@
     head.textContent = '済んだ札 ' + items.length + '件'
                      + (got ? '（届いた ' + got + '件）' : '')
                      + (red ? '（読んだ ' + red + '件）' : '') + (open ? ' ▲' : ' ▼');
+    /* 未達の名指し（v59）。差が0件のときは行ごと出さない。 */
+    var mis = $('copiedMiss');
+    if (mis) {
+      if (miss.length) {
+        mis.textContent = '未達 ' + miss.length + '件：'
+          + miss.map(function (d) { return kindWord(d.title) + ' ' + hhmm(d.time); }).join('・');
+        mis.hidden = false;
+      } else {
+        mis.textContent = '';
+        mis.hidden = true;
+      }
+    }
     head.onclick = function () {
       var o = (ul.className !== 'open');
       ul.className = o ? 'open' : '';
