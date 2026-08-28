@@ -308,7 +308,7 @@
     <button type="button" class="cpall url" id="btnCopyUrl">URLを写す</button>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v68（8月28日）</p>
+  <p class="ver" id="verTag">panel v69（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -329,7 +329,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '68';
+  var PANEL_VER = '69';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -682,7 +682,10 @@
        → 一件一行（上の一覧・あなた待ち・直近に終わった仕事）。
      ＊札の本文は入れない。全文が要るときは札ごとの写す釦を押す（そちらは今までどおり）。 */
   var NOTICES_PAGE = 'https://kfsr148-art.github.io/koushu-handan/notices.json';
-  var BUNDLE_MAX = 1500;
+  /* 本文を全文で入れる上限（v69）。ここに達したら、そこから先の札は一行だけにする。
+     ＊四千字は「貼り付けが本文のまま届く上限」としてまず置いた値。
+       実地で壊れるようなら下げる。下げるときはこの一行だけを直す。 */
+  var BUNDLE_FULL_MAX = 4000;
 
   /* 一件一行。時刻・種別・件名・台帳の印を、この順に繋ぐ。空の項目は落とす。 */
   function briefOf(when, kind, name, no) {
@@ -694,29 +697,30 @@
     return a.join(' ／ ');
   }
 
-  /* 一件一行の並び。新しい順（上の一覧がそもそも新しい順に組んである）。 */
-  function bundleLines() {
+  /* 札の並び。新しい順（上の一覧がそもそも新しい順に組んである）。
+     ＊一枚につき、一行の形（brief）と全文の形（full）の両方を作っておく。
+       どちらを使うかは bundleText() が上限を見て決める。 */
+  function bundleCards() {
     var NL = String.fromCharCode(10);
-    var out = [];
-    (shown || []).filter(function (d) { return !isDone(d); }).forEach(function (d) {
+    return (shown || []).filter(function (d) { return !isDone(d); }).map(function (d) {
       var body = String(d.message || '');
       var head = body.split(NL)[0];
       var line = briefOf(hhmm(d.time), kindWord(d.title), plain(head) || '（件名なし）', '');
-      /* 「🙋 ヨシしてください」の札だけは、本文を全文入れる（v66）。
-         ＊頭紙は件名だけで足りるが、ヨシを返す判断はここでしかできない。
-           何を待っているかが写しに無いと、写しだけを見て返事ができない。
-         ＊ほかの種別は今までどおり一件一行のまま。 */
-      if (kind(d.title) === 'ask') { out.push({ t: line + NL + body, ask: true }); }
-      else { out.push({ t: line, ask: false }); }
+      return { brief: line, full: line + NL + body, ask: (kind(d.title) === 'ask') };
     });
+  }
+
+  /* 板の二段（あなた待ち・直近に終わった仕事）。こちらは本文を持たないので、常に一行。 */
+  function bundleBoard() {
+    var out = [];
     if (board && !boardTaken) {
       ((board.waiting) || []).forEach(function (it) {
         /* 立てた時刻は「yyyy-MM-dd HH:mm」で来る。出すのは時と分だけ。 */
         var m = String(it.at || '').match(/(\d{2}:\d{2})/);
-        out.push({ t: briefOf(m ? m[1] : '', 'あなた待ち', String(it.name || ''), it.no || ''), ask: false });
+        out.push(briefOf(m ? m[1] : '', 'あなた待ち', String(it.name || ''), it.no || ''));
       });
       ((board.recent) || []).forEach(function (it) {
-        out.push({ t: briefOf('', '直近に終わった仕事', String(it.name || ''), it.no || ''), ask: false });
+        out.push(briefOf('', '直近に終わった仕事', String(it.name || ''), it.no || ''));
       });
     }
     return out;
@@ -724,26 +728,25 @@
 
   function bundleText() {
     var NL = String.fromCharCode(10);
-    var head = [NOTICES_PAGE, nowLine()];
-    if (lastOrderLine) { head.push(lastOrderLine); }
-    var base = head.join(NL) + NL;
-    var items = bundleLines();
-    var keep = items.map(function () { return true; });
-    var build = function () {
-      var kept = [], cut = 0;
-      items.forEach(function (it, i) { if (keep[i]) { kept.push(it.t); } else { cut++; } });
-      return base + kept.join(NL) + (cut > 0 ? NL + 'ほか' + cut + '件' : '');
-    };
-    var text = build();
-    /* 千五百字に収める。落とすのは**古い側から**で、締めは「ほかN件」。
-       ＊ヨシしてくださいの札だけは落とさない（v66）。返事の判断がそこでしかできないため、
-         これを削ると写しの用をなさない。ほかを全部落としても足りなければ、そのまま超える。 */
-    for (var i = items.length - 1; i >= 0 && text.length > BUNDLE_MAX; i--) {
-      if (items[i].ask) { continue; }
-      keep[i] = false;
-      text = build();
-    }
-    return text;
+    var out = [NOTICES_PAGE, nowLine()];
+    if (lastOrderLine) { out.push(lastOrderLine); }
+    var cards = bundleCards();
+    /* 「🙋 ヨシしてください」の札は、何枚あっても全部を全文で入れる（v66）。
+       ＊ヨシを返す判断はここでしかできない。何を待っているかが写しに無いと、
+         写しだけを見て返事ができない。上限の勘定より先に置く。 */
+    cards.forEach(function (c) { if (c.ask) { out.push(c.full); } });
+    /* 残りは新しい順に全文で入れ、全体が上限に達したら、そこから先は一行だけにする（v69）。
+       ＊落とすのではなく**短くする**。写しに名前は残るので、要る札は箱や一覧の
+         写す釦で個別に全文を取れる。 */
+    var brief = 0;
+    cards.forEach(function (c) {
+      if (c.ask) { return; }
+      if (out.join(NL).length < BUNDLE_FULL_MAX) { out.push(c.full); }
+      else { out.push(c.brief); brief++; }
+    });
+    bundleBoard().forEach(function (t) { out.push(t); });
+    if (brief) { out.push('ほか' + brief + '件（写す釦で個別に写せます）'); }
+    return out.join(NL);
   }
 
   function copyBundle(btn) {
