@@ -275,7 +275,7 @@
      href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
      target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v55（8月28日）</p>
+  <p class="ver" id="verTag">panel v57（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -296,7 +296,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '55';
+  var PANEL_VER = '57';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -399,10 +399,17 @@
   var BOARD_URL = 'https://kfsr148-art.github.io/koushu-handan/board.json';
   var board = null;        /* 読めた中身 */
   var boardErr = '';       /* 読めなかった理由 */
+  /* 板の二段（あなた待ち・直近に終わった仕事）を写した印（v56）。
+     ＊札と違って行き先の箱が無いので、印は端末にも残さず、その場かぎりで持つ。
+     ＊板の中身が変わったら解く。新しい件が来たのに0件のままでは出しようが無い。 */
+  var boardTaken = false, boardSig = '';
+
   function pullBoard() {
     fetch(BOARD_URL + '?_t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { if (!r.ok) { throw new Error('HTTP ' + r.status); } return r.json(); })
       .then(function (b) {
+        var sig = JSON.stringify(b);
+        if (sig !== boardSig) { boardSig = sig; boardTaken = false; }
         board = b; boardErr = '';
         /* 一覧が空のときだけ描き直す。札が出ている画面は触らない。 */
         if (!shown.length) { paintBoard(); }
@@ -421,17 +428,20 @@
     var NL = String.fromCharCode(10), CR = String.fromCharCode(13);
     var h = '';
 
-    /* 上段 — あなた待ち。**こちらの番の件だけ**。無ければ「0件」とだけ言う。 */
-    var w = (board.waiting && board.waiting.length) ? board.waiting : [];
+    /* 上段 — あなた待ち。**こちらの番の件だけ**。無ければ「0件」とだけ言う。
+       ＊まとめて写したあとは 0件 として出す（v56）。中身も出さない。 */
+    var w = (!boardTaken && board.waiting && board.waiting.length) ? board.waiting : [];
     /* 折り畳み式（v47）。表紙は「あなた待ち（N件）」の一行だけ。押すと全文が開く。 */
     var wk = 'board:waiting';
+    /* 写す釦は**表題の行**へ置く（v56）。札の写す釦と同じ形・同じ場所にする。
+       ＊もとは本文の側（p.m）に置いていたが、そこは畳んでいるあいだ隠れるので、
+         表紙だけ見えている状態では押せなかった。
+       ＊`cp` で始まる名は一覧の写す釦の受けが拾ってしまうので、**id で先に分ける**。 */
     h += '<li class="why ack' + (isOpen(wk) ? ' open' : '') + '" data-k="' + okey(wk) + '">'
        + '<p class="t"><span class="tx">'
        + esc(w.length ? ('あなた待ち（' + w.length + '件）') : 'あなた待ちは0件')
-       + '</span></p>';
-    /* この一覧をそのまま写す釦（v46）。件名も括弧の中身も切らずに全文を入れる。
-       ＊`cp` で始まる名は一覧の写す釦の受けが拾ってしまうので、**id で先に分ける**。 */
-    h += '<p class="m"><button type="button" class="cp" id="cpWait">この一覧を写す</button></p>';
+       + '</span>'
+       + '<button type="button" class="cp" id="cpWait">写す</button></p>';
     if (w.length) {
       h += '<p class="m">' + esc(w.map(function (it, i) {
              return (i + 1) + '. ' + (it.name || '') + '（' + (it.why || '') + '）';
@@ -440,11 +450,13 @@
     h += '</li>';
 
     /* 下段 — 直近に終わった仕事3件。件名と、結果を一行だけ。 */
-    var r = (board.recent && board.recent.length) ? board.recent : [];
+    var r = (!boardTaken && board.recent && board.recent.length) ? board.recent : [];
     /* 板の枠は札ではないので、決め打ちの鍵を与える（v47）。 */
     var rk = 'board:recent';
+    /* こちらにも写す釦を付ける（v56）。あなた待ちと同じで、表題の行に置く。 */
     h += '<li class="ack' + (isOpen(rk) ? ' open' : '') + '" data-k="' + okey(rk) + '">'
-       + '<p class="t"><span class="tx">' + esc('直近に終わった仕事（' + r.length + '件）') + '</span></p>';
+       + '<p class="t"><span class="tx">' + esc('直近に終わった仕事（' + r.length + '件）') + '</span>'
+       + '<button type="button" class="cp" id="cpRecent">写す</button></p>';
     if (r.length) {
       h += '<p class="m">' + esc(r.map(function (it) {
              /* 結果は**切らない**（v47）。畳んである枠なので、開いた人は全文が読める。
@@ -524,7 +536,9 @@
     } else { ng(); }
   }
 
-  function copyWait(btn) { copyInto(btn, waitText(), 'この一覧を写す'); }
+  function copyWait(btn) { copyInto(btn, waitText(), '写す'); }
+  /* 直近に終わった仕事の写す釦（v56）。中身は recentText() の全文で、どこも切らない。 */
+  function copyRecent(btn) { copyInto(btn, recentText(), '写す'); }
 
   /* お知らせ（まだ写していない札）を全文で（v48）。
      ＊件名も本文も括弧の中身も**切らない**。写し取るのは読み返すためで、
@@ -546,9 +560,16 @@
   /* まとめて写すの釦に出す件数（v52）。
      ＊数えるのは**実際に写しに入る札**だけ。noticesText() が拾うのと同じ絞りを使う
        （`shown` のうち片付いていないもの）。別の数え方を持ち込まない。
-     ＊あなた待ち・直近に終わった仕事・今日の報告・現況の一行は札ではないので数えない。 */
+     ＊今日の報告と現況の一行は数えない。あちらは読み返すための添えで、片付く物ではない。
+     ＊あなた待ちと直近に終わった仕事は**数える**（v56）。まとめて写すで一緒に渡り、
+       押したあとは 0件 になるので、片付く物として数の中に入れる。 */
   function boardCount() {
-    return (shown || []).filter(function (d) { return !isDone(d); }).length;
+    var n = (shown || []).filter(function (d) { return !isDone(d); }).length;
+    if (board && !boardTaken) {
+      n += ((board.waiting && board.waiting.length) ? board.waiting.length : 0);
+      n += ((board.recent && board.recent.length) ? board.recent.length : 0);
+    }
+    return n;
   }
   function boardLabel() { return 'まとめて写す（' + boardCount() + '件）'; }
   function setCopyBoardLabel() {
@@ -582,6 +603,9 @@
       todo.forEach(function (d) { copied[keyOf(d)] = nowSec; });
       saveCopied();
       shown = shown.filter(function (x) { return todo.indexOf(x) < 0; });
+      /* 板の二段も写した扱いにする（v56）。行き先の箱が無いので、表紙を0件にして中身を消す。
+         ＊板の中身が変わればこの印は解ける（pullBoard で見ている）。 */
+      boardTaken = true;
       paintDoneBox(allRows);
       paintCopied(allRows);
       setCopyAllLabel();
@@ -1469,7 +1493,9 @@
     });
     ul.innerHTML = html;
     var open = (ul.className === 'open');
-    head.textContent = '写した札 ' + items.length + '件'
+    /* 表紙の字は v57 で「写した札」から「済んだ札」へ変えた。
+       ＊変えたのは**表紙の字だけ**。件数の数え方も中身も開閉の動きも触っていない。 */
+    head.textContent = '済んだ札 ' + items.length + '件'
                      + (got ? '（届いた ' + got + '件）' : '')
                      + (red ? '（読んだ ' + red + '件）' : '') + (open ? ' ▲' : ' ▼');
     head.onclick = function () {
@@ -1605,6 +1631,7 @@
     /* あなた待ちの写す釦は id で先に分ける（v46）。名が cp で始まるので、
        下の受けに任せると data-i が無いまま copyOne へ落ちる。 */
     if (b && b.id === 'cpWait') { copyWait(b); return; }
+    if (b && b.id === 'cpRecent') { copyRecent(b); return; }
     if (b && b.className && b.className.indexOf('cp') === 0) {
       copyOne(parseInt(b.getAttribute('data-i'), 10), b);
       return;
