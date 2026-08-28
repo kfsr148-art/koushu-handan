@@ -48,7 +48,7 @@
     white-space:normal; overflow-wrap:anywhere;}
   .state .k{font-size:13px; color:var(--dim); min-width:0;
     white-space:normal; overflow-wrap:anywhere;}
-  .state .a{font-size:13px; color:var(--dim); flex:0 0 auto;}
+  /* ＊右端の「N分前」の飾り（.state .a）は、字ごと **v73 で外した**。 */
   .state button{flex:0 0 auto; min-height:36px; padding:0 10px; font-size:13px;
     color:var(--dim); background:none; border:1px solid var(--line); border-radius:8px;}
   .state.run  {border-left-color:var(--wait);} .state.run  .w{color:var(--wait);}
@@ -233,7 +233,8 @@
         <span class="s" id="stSubj">読み込み中</span>
         <span class="k hide" id="stMik"></span>
       </span>
-      <span class="a" id="stAgo"></span>
+      <!-- ＊右端の「N分前」（.a / #stAgo）は **v73 で消した**。器ごと外している。
+           経過は二段目の「開始HH:MM・終了予定…・経過N分」が持っている。 -->
     </div>
     <!-- ＊「受け取った指示 HH:MM「…」」の一行（v61）は **v70 で画面から消した**。
          器ごと外している。値を書く側（inbox-feed.ps1 → last-order.txt → state.json）は
@@ -305,7 +306,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v72（8月28日）</p>
+  <p class="ver" id="verTag">panel v73（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -327,7 +328,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '72';
+  var PANEL_VER = '73';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1439,14 +1440,15 @@
 
   /* いまの状態を一行で出す。
      作業中＝青／ヨシ待ち＝黄／手待ち＝灰。最後の更新から3分を超えたら赤で「連絡なし」。 */
-  function paintState(cls, word, subj, ago, mik) {
+  /* ＊右端の「N分前」は **v73 で消した**。器も飾りも引数も落としてある。
+       ＊経過は二段目の「開始HH:MM・終了予定…・経過N分」が持っているので、二重に出ていた。 */
+  function paintState(cls, word, subj, mik) {
     $('state').className = 'state ' + cls;
     $('stWord').textContent = word;
     $('stSubj').textContent = subj;
     /* 見込みは二段目。無いときは畳んで、今までどおりの一行に戻す。 */
     $('stMik').textContent = mik || '';
     $('stMik').className = mik ? 'k' : 'k hide';
-    $('stAgo').textContent = ago;
   }
 
   /* ＊paintOrder（v61）は **v72 で外した**。画面の行は v70 で、写しの行は v72 で落としたので、
@@ -1765,7 +1767,7 @@
         if (sec > STALE_SEC) {
           /* 連絡なしの間は数えない。数えると、毎秒の書き換えが「連絡なし」を上書きしてしまう。 */
           sinceBase = { at: 0, word: '' };
-          paintState('lost', '連絡なし', subj + '（最後は ' + w + '）', agoText(sec), mik);
+          paintState('lost', '連絡なし', subj + '（最後は ' + w + '）', mik);
           return;
         }
         var cls = 'idle';
@@ -1783,7 +1785,7 @@
           sinceBase = { at: 0, word: '' };
         }
         lastState = { word: word, since: '', at: d.at || 0 };
-        paintState(cls, word, subj, agoText(sec), mik);
+        paintState(cls, word, subj, mik);
       })
       .catch(function (e) {
         sinceBase = { at: 0, word: '' };
