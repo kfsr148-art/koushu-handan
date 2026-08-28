@@ -275,7 +275,7 @@
      href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
      target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v54（8月28日）</p>
+  <p class="ver" id="verTag">panel v55（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -296,7 +296,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '54';
+  var PANEL_VER = '55';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -816,8 +816,12 @@
              ＊表紙は題と時刻と写す釦の一行だけ。押せば本文が**全文**開く（どこも切らない）。
              ＊開閉は openKeys に載るので、15秒の読み直しでも開いたまま保たれる（v47）。 */
           var isLookCard = isLookNotice(d.title);
+          /* 「🕘 定時の報せ」も畳む（v55）。畳む理由は調べました・終わりましたと同じ。
+             ＊表紙は題と時刻と写す釦の一行だけ。押せば本文が**全文**開く（どこも切らない）。
+             ＊開閉は openKeys に載るので、15秒の読み直しでも開いたまま保たれる（v47）。 */
+          var isDailyCard = isDailyNotice(d.title);
           /* 写した札はここへ来ない（上で落としてある）。 */
-          var fold = (ack || hasRaw || isDoneCard || isLookCard);
+          var fold = (ack || hasRaw || isDoneCard || isLookCard || isDailyCard);
           var cls = k + (fold ? ' ack' : '');
           /* 開いてあった件は、開いた形で組み直す（v47）。 */
           if (fold && isOpen(keyOf(d))) { cls = cls + ' open'; }
@@ -1403,6 +1407,11 @@
   /* 「調べました」かどうか（v53）。一覧で畳むためだけに使う。
      ＊下の箱の振り分けには使わない。調べました札は今までどおり「写した札」の箱へ入る。 */
   function isLookNotice(t) { return String(t || '').indexOf('調べました') >= 0; }
+  /* 「🕘 定時の報せ」かどうか（v55）。一覧で畳むためだけに使う。
+     ＊毎日9時と21時に、仕事の有無にかかわらず一発だけ来る便り。中身は状態・台帳の残り・
+       見張り四つの生死・使用量の割合で、開いたままだと一覧の背が高くなる。
+     ＊下の箱の振り分けには使わない。調べました・その他と同じで「写した札」の箱へ入る。 */
+  function isDailyNotice(t) { return String(t || '').indexOf('定時の報せ') >= 0; }
   function paintDoneBox(all) {
     var box = $('doneBox'), head = $('doneHead'), ul = $('doneList');
     if (!box || !head || !ul) { return; }
