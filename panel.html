@@ -129,6 +129,9 @@
   /* 済んだ札の箱の「未達 N件：」の行（v59）。表紙のすぐ下。長ければ折り返す。 */
   .miss{margin:0 14px 8px;}
   .miss[hidden]{display:none;}
+  /* 受け取った指示の一行（v61）。状態の帯のすぐ下。長ければ折り返す。 */
+  .ordline{margin:2px 14px 6px;}
+  .ordline[hidden]{display:none;}
   /* まとめて写すだけ青くする（v52）。いちばん多く押す釦なので、他と見分けられるようにする。
      ＊掛けるのは id なので、他の釦の札（.cpall とその仲間）には一切触れない。
      ＊丸みも大きさも .cpall のまま。色だけを乗せる。
@@ -220,6 +223,10 @@
       </span>
       <span class="a" id="stAgo"></span>
     </div>
+    <!-- 受け取った指示（v61）。状態の帯のすぐ下。最新の一件だけを出す。
+         ＊書く者は inbox-feed.ps1（UserPromptSubmit のフック）。新しい読み口は作っていない。
+         ＊値が無い回は行ごと出さない。 -->
+    <p class="wmeta ordline" id="stOrder" hidden></p>
     <!-- 機械が測った様子（v32）。usage.json の watch にある lastStop／lastResume／cpu だけで判じる。
          控えの字は読まない。控え由来の状態（watch.state・stateSrc:"note"）と食い違ったときは、
          両方を並べて出す。どちらが正しいかは、ここでは決めない。 -->
@@ -284,7 +291,7 @@
      href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
      target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v60（8月28日）</p>
+  <p class="ver" id="verTag">panel v61（8月28日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -305,7 +312,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '60';
+  var PANEL_VER = '61';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1324,6 +1331,20 @@
     $('stAgo').textContent = ago;
   }
 
+  /* 受け取った指示の一行（v61）。「受け取った指示 HH:MM「冒頭40字…」」。
+     ＊orderAt は「yyyy-MM-dd HH:mm:ss」で来る。出すのは時と分だけ。
+     ＊値が揃っていない回は行ごと畳む。「—」で埋めない。 */
+  function paintOrder(at, tx) {
+    var e = $('stOrder');
+    if (!e) { return; }
+    var t = String(tx || '').trim();
+    var a = String(at || '').trim();
+    if (!t) { e.textContent = ''; e.hidden = true; return; }
+    var m = a.match(/(\d{2}):(\d{2})/);
+    e.textContent = '受け取った指示 ' + (m ? m[1] + ':' + m[2] : a) + '「' + t + '…」';
+    e.hidden = false;
+  }
+
   /* 使用量を版の印の隣へ出す。
      ・取れていなければ何も出さない（欄ごと畳む）
      ・取得時刻を併記する。古ければその字を目立たせる
@@ -1669,6 +1690,10 @@
              いちばん知りたいのは、連絡が途切れたときの**最後に見えていた時刻**なので、
              ここが横棒になるのは筋が通らない。塗るのを先に済ませる。 */
         paintFacts(d.at || 0);
+        /* 受け取った指示も、状態がどうであろうと必ず塗る（v61）。
+           ＊連絡なしの早戻りより前に置く。連絡が途切れたときこそ、
+             最後に受け取った指示が何だったかを見たいため。 */
+        paintOrder(d.orderAt, d.order);
 
         if (sec > STALE_SEC) {
           /* 連絡なしの間は数えない。数えると、毎秒の書き換えが「連絡なし」を上書きしてしまう。 */
