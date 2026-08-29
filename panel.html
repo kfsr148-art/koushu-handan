@@ -142,6 +142,12 @@
      ＊id は .cpall.ok より強いので、写した直後の緑の字に負けない（青地に緑は読めない）。 */
   #btnCopyBoard{background:#1e6fd9; color:#fff; border-color:#1e6fd9;}
   #btnCopyBoard:active{background:#1857aa; border-color:#1857aa; filter:none;}
+  /* 作業中の札があるあいだは押せなくする（v78）。青を落として、押せないと目で分かる形に。
+     ＊上の #btnCopyBoard より弱いと青のままなので、同じ id に :disabled を足して勝たせる。
+     ＊個別の「写す」釦（.cp）には掛けない。あちらは作業中でも押せる。 */
+  #btnCopyBoard:disabled{background:var(--card); color:var(--dim);
+    border-color:var(--line); opacity:.55; cursor:default;}
+  #btnCopyBoard:disabled:active{background:var(--card); border-color:var(--line); filter:none;}
   /* 写し取り一覧への口。釦と同じ見た目にするため、a にも同じ寸法を掛ける。 */
   a.cpall{box-sizing:border-box; text-decoration:none; text-align:center;
     line-height:48px; padding:0 10px;}
@@ -322,7 +328,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v77（8月30日）</p>
+  <p class="ver" id="verTag">panel v78（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -344,7 +350,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '77';
+  var PANEL_VER = '78';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -676,9 +682,29 @@
        押したあとは 0件 になるので、片付く物として数の中に入れる。 */
   function boardCount() { return buildBundle().count; }
   function boardLabel() { return 'まとめて写す（' + boardCount() + '件）'; }
+  /* 作業中の札（v78）。写しに入る札のうち、題から読める状態が「作業中」のもの。
+     ＊見るのは buildBundle() と同じ todo（＝片付いていない札）なので、
+       釦の数と同じ走査を見ていることになる。
+     ＊stateWord() は五つのどれかを必ず返す。題から読み取れない札も「作業中」に落ちる。 */
+  function workingCards() {
+    var todo = (shown || []).filter(function (d) { return !isDone(d); });
+    return todo.filter(function (d) { return stateWord(d && d.title) === '作業中'; });
+  }
+  /* 作業中が一件でもあれば、まとめて写すは押させない（v78）。
+     ＊字を「作業中 — 終わるまで待つ」に変え、disabled にする（見た目は上の CSS）。
+     ＊0件に戻れば、そのまま元の「まとめて写す（N件）」へ戻る。
+     ＊個別の「写す」釦は触らない。要る札は一枚ずつ取れる。 */
   function setCopyBoardLabel() {
     var b = $('btnCopyBoard');
-    if (b) { b.textContent = boardLabel(); }
+    if (!b) { return; }
+    var w = workingCards();
+    if (w.length) {
+      b.textContent = '作業中 — 終わるまで待つ';
+      b.disabled = true;
+    } else {
+      b.textContent = boardLabel();
+      b.disabled = false;
+    }
   }
 
   /* ---- まとめて写しの中身（v65 で頭紙へ・v69 で本文を戻し・v72 で受領の行を落とした）----
@@ -749,6 +775,17 @@
          画面から消した行は写しにも入れない、で揃える。
        ＊足していたのは push の一行だけなので、抜いても空行は残らない。 */
     var out = [NOTICES_PAGE, nowLine()];
+    /* 作業中の札があるときは、文の頭に一行だけ立てる（v78）。
+       ＊「未了 N件：（題）、（題）」の形。題は読点で並べる。
+       ＊0件のときは行ごと出さない（空の見出しを残さない）。
+       ＊釦は作業中のあいだ押せない（setCopyBoardLabel）ので、この行が出るのは
+         個別の写しや、字を組んだ後に状態が変わった回の備え。写しだけを見て
+         「まだ途中がある」と分かるようにしておく。 */
+    var working = workingCards();
+    if (working.length) {
+      out.unshift('未了 ' + working.length + '件：'
+        + working.map(function (d) { return String((d && d.title) || '(題なし)'); }).join('、'));
+    }
     var count = 0;   /* 実際に out へ入れた札の数。釦に出るのはこの数 */
     /* 走査はここ一度きり。ここで選んだ札が、そのまま写しの中身になり、落とす札になる。 */
     var todo = (shown || []).filter(function (d) { return !isDone(d); });
