@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1428">
+<html lang="ja" data-ver="1429">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1313,7 +1313,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1428</div>
+  <div id="verTag">v1429</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -2511,8 +2511,6 @@ document.addEventListener('DOMContentLoaded', function () {
       (r.nums || []).forEach(n=>shapeTiles.push({ suit:key, num:n, n:1 }));
     }
 
-    const totalBlocks = goodShapes + weakShapes;
-
     // ============================================================
     //  埋まり方の質：和了形（4面子1雀頭）に向けて、
     //  残りブロックが「好形（両面・対子）で埋まる見込み」か
@@ -2869,7 +2867,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if(doraCount>0) valueSources.push('ドラ'+doraCount + (doraIsolated ? '（孤立）' : ''));
     if(redCount>0)  valueSources.push('赤'+ (redCount>1? redCount : ''));
     yakuhaiNames.forEach(n=> valueSources.push(n));
-    const hasValue = doraValue>0;
+    // 境目は執事の票（doraValue >= 1）と揃える（v1429）。孤立ドラ一枚の 0.5 は「打点あり」に数えない。
+    // 4000行の実測（打点の種が赤五一枚だけの手で代用）＝孤立は和了16.3%・点棒+62 で、
+    // 打点0（18.0%・−72）に近く、組に入る場合（20.9%・+622）とは離れている。
+    const hasValue = doraValue>=1;
 
     // --- 判定ロジック（ドラ枚数で形の要求が変動）---
     // 基本は良形4ブロックで攻め。打点が厚いほど、必要な良形数を下げる。
@@ -3024,6 +3025,10 @@ document.addEventListener('DOMContentLoaded', function () {
         weakShapes = 0;    // 七対子に塔子の概念はない
       }
     }
+    // まとまりの総数は、七対子ルートの上書きが済んだ後で数える（v1429）。
+    // 上書き前に数えると、エンジンが採らなかった面子手の分解の数を「総数」と名乗ることになり、
+    // 判定（shapeOK）や虎の台詞が見る goodShapes と食い違う（4000行で493件・12.3%）。
+    const totalBlocks = goodShapes + weakShapes;
     const shapeOK = goodShapes >= shapeNeeded;
     const isDealer = seatWind === 'E';   // 東家＝親
 
@@ -4067,6 +4072,9 @@ document.addEventListener('DOMContentLoaded', function () {
       /* 兎＝残り枠の埋まり方。ブロックが五つを超えて余っていれば攻め、
          残り枠が愚形で詰まるか、好形で埋まる見込みがあっても形が足りていなければ守り。
          実測50000回：攻め1.34%・的中83.1%／守り26.50%・的中71.8%／黙る72.16%。
+         ＊この数字は totalBlocks を寄せる前（v1428 まで）の数え方で取ったもの。v1429 で
+           totalBlocks を七対子の上書き後へ寄せたため、4000行では攻め率が 1.40%→1.25% に動く
+           （票が変わるのは 6/4000＝0.15%・すべて 攻→黙る）。50000回の測り直しは別件。
          スイッチを切っている端末では票を出さない（設定の usagiSwitch）。 */
       { key:'usagi',      mark:'兎', lean: usagiLean(a),
         say: (usagiLean(a) === 'a')
@@ -8389,7 +8397,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const attack = a.verdict==='attack';
-    // 撤退予約線：受け入れ枚数から「一段進むのに要する巡目」を見積もり、期限を先に決めておく
+    // 撤退予約線：初期シャンテンから「一段進むのに要する巡目」を見積もり、期限を先に決めておく
     const retreatLine = (function(){
       if(!attack) return '';
       if(catN >= 4) return '撤退予約線：本牌が薄く、期限が引けない。伸びなければ早めに守りへ回る';   // 猫牌4枚以上は本牌が薄く、巡目の期限が当てにならない
@@ -8472,8 +8480,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // 根拠の深掘り（detail）は詰め込み解説で統一。タップで開くと、数字の意味まで読める。
     reasons.push({
       ok: a.hasValue,
-      title: a.hasValue ? `打点 ${a.doraValue} — ${a.valueSources.join('・')}` : '打点の種なし',
-      detail: (a.hasValue
+      // 印（✓×）は hasValue＝執事と同じ境目。題と詳細は valueSources で分ける（v1429）。
+      // 孤立ドラ一枚の手は打点の種が「ある」ので、字は出したまま印だけ × にする。
+      title: a.valueSources.length ? `打点 ${a.doraValue} — ${a.valueSources.join('・')}` : '打点の種なし',
+      detail: (a.valueSources.length
         ? `打点 ${a.doraValue} 。手が高いほど、形が多少悪くても押す価値が出ます。`
         : `ドラ・赤・役牌対子なし。安手は良形でないと押す価値が出にくい。`)
         + (attack ? `役の芽は『見える手』欄に。` : ``)
