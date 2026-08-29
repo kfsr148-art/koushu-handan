@@ -346,7 +346,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v81（8月30日）</p>
+  <p class="ver" id="verTag">panel v82（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -368,7 +368,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '81';
+  var PANEL_VER = '82';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -415,6 +415,42 @@
   /* 終了予定の候補を一つ受け取り、いちばん遅いものだけを残す（v80）。 */
   function noteEnd(sec) {
     if (typeof sec === 'number' && sec > 0 && sec > lastEndAt) { lastEndAt = sec; }
+  }
+  /* いまの状態の一語と、着手の刻（v82）。釦の字はこの二つで決める。
+     ＊状態は state.json の stat（作業中／ヨシ待ち／終わり／手待ち／異常）。
+       v81 まで札の題から数え直していたので、ヨシ待ちの札が立っていても
+       題から読めない札が一枚あれば「作業中」と出ていた。**状態は状態から読む**。 */
+  var lastStat = '', lastStartedAt = 0, lastSubj = '';
+  /* 過去の実測（estimates.json）。見込みが無いときの終了予定を、ここから当てる。 */
+  var EST_URL = 'https://kfsr148-art.github.io/koushu-handan/estimates.json';
+  var est = null;
+  function pullEst() {
+    fetch(EST_URL + '?_t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { if (j && typeof j.all === 'number') { est = j; setCopyBoardLabel(); } })
+      .catch(function () { });
+  }
+  /* 件名から印の系統を取る（v82）。「パネルと受け口-7（四件）」→「パネルと受け口」。 */
+  function seriesOfSubj(subj) {
+    var m = String(subj || '').match(/^([^\s（(：:]+?)-\d+/);
+    return m ? m[1] : '';
+  }
+  /* 件名から種類を当てる（v82）。控えの分け方に合わせた粗い当て方。 */
+  function kindOfSubj(subj) {
+    var s = String(subj || '');
+    if (s.indexOf('パネル') >= 0) { return 'パネル'; }
+    if (s.indexOf('本体') >= 0) { return '本体'; }
+    return '調べ';
+  }
+  /* 見込みが無いときの所要（分）を、実測から当てる（v82）。
+     順は 同じ系統 → 同じ種類 → 全体。どれも無ければ 0（＝出せない）。 */
+  function guessMin(subj) {
+    if (!est) { return 0; }
+    var sr = seriesOfSubj(subj);
+    if (sr && est.series && est.series[sr] && est.series[sr].min) { return est.series[sr].min; }
+    var kd = kindOfSubj(subj);
+    if (est.kind && est.kind[kd] && est.kind[kd].min) { return est.kind[kd].min; }
+    return est.all || 0;
   }
   /* ＊受け取った指示の一行の控え（v62）は **v72 で外した**。画面にも写しにも出さないため。 */
   function loadCopied() {
@@ -724,13 +760,32 @@
   function setCopyBoardLabel() {
     var b = $('btnCopyBoard');
     if (!b) { return; }
+    /* 作業中かどうかは、札の題からではなく**状態**から読む（v82）。
+       ＊v81 まで workingCards().length で判じていたので、ヨシ待ちの札が立っていても
+         題から状態を読めない札が一枚あれば「作業中」と出ていた。 */
+    var busy = (lastStat === '作業中');
     var w = workingCards();
-    if (w.length) {
+    if (busy) {
       /* 字は「作業中、HH時MM分終了予定」（v80）。刻は作業中の終了予定をそのまま出す。
          ＊候補が複数あるときは、noteEnd がいちばん遅いものを残している。
-         ＊刻が取れていなければ「作業中、終了予定不明」。押せない形と薄い見た目は据え置き。 */
-      if (lastEndAt > 0) {
-        var e = new Date(lastEndAt * 1000);
+         ＊見込みが無くて刻が取れないときは、過去の実測から当てる（v82）。
+           順は 同じ系統 → 同じ種類 → 全体（guessMin）。
+         ＊出す刻が既に過ぎていたら、当てた分を足して**先へ延ばす**（v82）。
+           過ぎた時刻を出したままにしない。 */
+      var endSec = lastEndAt;
+      var gm = 0;
+      if (endSec <= 0) {
+        gm = guessMin(lastSubj);
+        if (gm > 0 && lastStartedAt > 0) { endSec = lastStartedAt + gm * 60; }
+      }
+      var nowSec = Math.floor(Date.now() / 1000);
+      if (endSec > 0 && endSec <= nowSec) {
+        var step = (gm > 0 ? gm : 10) * 60;   /* 延ばす幅。当てが無ければ10分刻み */
+        var guard = 0;
+        while (endSec <= nowSec && guard < 200) { endSec += step; guard++; }
+      }
+      if (endSec > 0) {
+        var e = new Date(endSec * 1000);
         b.textContent = '作業中、' + e.getHours() + '時'
                       + ('0' + e.getMinutes()).slice(-2) + '分終了予定';
       } else {
@@ -745,10 +800,10 @@
        ＊作業中のあいだは body へ busy を掛けて帯ごと畳む（見た目は CSS が持つ）。
        ＊個別の釦も disabled にしておく。帯が畳まれていても、押せる物を残さないため。
        ＊URLを写す（#btnCopyUrl）と写し取り一覧（#btnShots）は .cpall なので当たらない。 */
-    if (w.length) { document.body.classList.add('busy'); }
+    if (busy) { document.body.classList.add('busy'); }
     else { document.body.classList.remove('busy'); }
     var cps = document.querySelectorAll('button.cp');
-    for (var i = 0; i < cps.length; i++) { cps[i].disabled = (w.length > 0); }
+    for (var i = 0; i < cps.length; i++) { cps[i].disabled = busy; }
   }
 
   /* ---- まとめて写しの中身（v65 で頭紙へ・v69 で本文を戻し・v72 で受領の行を落とした）----
@@ -825,7 +880,8 @@
        ＊釦は作業中のあいだ押せない（setCopyBoardLabel）ので、この行が出るのは
          個別の写しや、字を組んだ後に状態が変わった回の備え。写しだけを見て
          「まだ途中がある」と分かるようにしておく。 */
-    var working = workingCards();
+    /* ＊v82：未了の行も、状態が「作業中」の回だけ立てる。 */
+    var working = (lastStat === '作業中') ? workingCards() : [];
     if (working.length) {
       /* ＊v79：一行目は必ず notices.json の URL。未了の行はその**次**へ入れる。
            v78 では unshift で頭へ入れていたので、URL が二行目へ落ちていた。 */
@@ -959,6 +1015,7 @@
     checkPanelVer();
     watchPanelVer();
     pullVer();
+    pullEst();   /* 過去の実測（estimates.json）。見込みが無いときの終了予定に使う（v82） */
     pullSeen();   /* 「ここまで読んだ」を先に取る（v34）。一覧を組む前に間に合わせる */
     pullBoard();  /* 板の三つ（v44）。一覧が空のときだけ出るが、取得は先に始める */
     pullUsage();
@@ -1874,6 +1931,8 @@
         var sec = Math.floor(Date.now() / 1000) - (d.at || 0);
         var w = String(d.stat || '');
         var subj = String(d.subj || '');
+        /* 釦の字が見る三つ（v82）。状態・着手の刻・件名。 */
+        lastStat = w; lastStartedAt = (d.startedAt || 0); lastSubj = subj;
 
         paintBar();
 
