@@ -331,7 +331,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v79（8月30日）</p>
+  <p class="ver" id="verTag">panel v80（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -353,7 +353,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '79';
+  var PANEL_VER = '80';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -392,6 +392,15 @@
   /* 上部の常時表示と「全部写す」の末尾で使う、いまの様子。state.json から拾ったものを控える。
      ＊新しい経路は増やさない。すでに読んでいる state.json / ver.txt の値の見せ方だけ。 */
   var lastState = { word: '', since: '', at: 0 };
+  /* 作業中の終了予定の刻（秒・v80）。まとめて写すの釦の字に出す。
+     ＊いまの持ち主は state.json の startedAt ＋ 見込み。**候補が増えたら、いちばん遅いものを採る**
+       ように書いてある（下の noteEnd）。0 は「取れていない」の意で、釦は「終了予定不明」を出す。
+     ＊作業中でない回は 0 に戻す。前の仕事の刻が居残らないようにするため。 */
+  var lastEndAt = 0;
+  /* 終了予定の候補を一つ受け取り、いちばん遅いものだけを残す（v80）。 */
+  function noteEnd(sec) {
+    if (typeof sec === 'number' && sec > 0 && sec > lastEndAt) { lastEndAt = sec; }
+  }
   /* ＊受け取った指示の一行の控え（v62）は **v72 で外した**。画面にも写しにも出さないため。 */
   function loadCopied() {
     try { copied = JSON.parse(localStorage.getItem(COPIED_KEY) || '{}') || {}; } catch (e) { copied = {}; }
@@ -702,7 +711,16 @@
     if (!b) { return; }
     var w = workingCards();
     if (w.length) {
-      b.textContent = '作業中 — 終わるまで待つ';
+      /* 字は「作業中、HH時MM分終了予定」（v80）。刻は作業中の終了予定をそのまま出す。
+         ＊候補が複数あるときは、noteEnd がいちばん遅いものを残している。
+         ＊刻が取れていなければ「作業中、終了予定不明」。押せない形と薄い見た目は据え置き。 */
+      if (lastEndAt > 0) {
+        var e = new Date(lastEndAt * 1000);
+        b.textContent = '作業中、' + e.getHours() + '時'
+                      + ('0' + e.getMinutes()).slice(-2) + '分終了予定';
+      } else {
+        b.textContent = '作業中、終了予定不明';
+      }
       b.disabled = true;
     } else {
       b.textContent = boardLabel();
@@ -1852,7 +1870,10 @@
             return ('0' + t.getHours()).slice(-2) + ':' + ('0' + t.getMinutes()).slice(-2);
           };
           var hm = d.startedAt ? pad2(d.startedAt) : '—';
-          var ends = (d.startedAt && mm) ? pad2(d.startedAt + parseInt(mm[1], 10) * 60) : ' 未定';
+          var endSec = (d.startedAt && mm) ? (d.startedAt + parseInt(mm[1], 10) * 60) : 0;
+          var ends = endSec ? pad2(endSec) : ' 未定';
+          /* 釦の字にも同じ刻を出す（v80）。いちばん遅い候補だけを残す。 */
+          lastEndAt = 0; noteEnd(endSec);
           mik = '開始' + hm
               + '・終了予定' + ends
               + '・経過' + min + '分';
@@ -1862,6 +1883,8 @@
            ＊読む元は state.json の orderAt。形は "YYYY-MM-DD HH:MM:SS" の字。
              刻が読めない回は行ごと出さない（「—」で埋めない）。
            ＊指示を受けていない状態＝作業中の札が無いときは、そもそもここへ来ない。 */
+        if (w !== '作業中') { lastEndAt = 0; }
+        setCopyBoardLabel();   /* 刻が変わった／作業中でなくなった回に、釦の字も合わせ直す（v80） */
         var ord = '';
         if (w === '作業中') {
           var om = String(d.orderAt || '').match(/(\d{1,2}):(\d{2})/);
