@@ -167,16 +167,19 @@ daily-notice.ps1 L116 の「🕘 定時の報せ」を、見張り四つが全�
 
 ---
 
+---
+
 <!-- 控えの一覧 ここから -->
 
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **44件**ある。
+　ここに出るのは新しい20件。全部で **45件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`写しの独立-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%86%99%E3%81%97%E3%81%AE%E7%8B%AC%E7%AB%8B-2.md) | 08-30 05:42 | 写しの独立-2 — 済んだ札の写しを、作業の状態から切り離した（panel v84） |
 | [`写しの網-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%86%99%E3%81%97%E3%81%AE%E7%B6%B2-1.md) | 08-30 05:36 | 写しの網-1 — 報告の札が写しに入らなかった原因と直し |
 | [`札の題-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E6%9C%AD%E3%81%AE%E9%A1%8C-1.md) | 08-30 05:34 | 札の題-1 — 作業中の札の題が前の仕事の名のままだった |
 | [`通知の題-5.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%80%9A%E7%9F%A5%E3%81%AE%E9%A1%8C-5.md) | 08-30 05:01 | 通知の題-5 — 😽 の押し送りが止まっていた原因と直し |
@@ -196,6 +199,5 @@ daily-notice.ps1 L116 の「🕘 定時の報せ」を、見張り四つが全�
 | [`パネルと受け口-3.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%83%91%E3%83%8D%E3%83%AB%E3%81%A8%E5%8F%97%E3%81%91%E5%8F%A3-3.md) | 08-29 21:23 | パネルと受け口-3 — 作業中は帯を畳む／釦の字／指示を受けた刻（panel v81） |
 | [`パネルと受け口-1-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%83%91%E3%83%8D%E3%83%AB%E3%81%A8%E5%8F%97%E3%81%91%E5%8F%A3-1-2.md) | 08-29 21:16 | パネルと受け口-1（二度目）— 釦の字に終了予定を出す（panel v80） |
 | [`パネルと受け口-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%83%91%E3%83%8D%E3%83%AB%E3%81%A8%E5%8F%97%E3%81%91%E5%8F%A3-1.md) | 08-29 20:58 | パネルと受け口-1 — 写しの一行目・指示を受けた刻・同じ印の二度受け |
-| [`報告の残し方-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%A0%B1%E5%91%8A%E3%81%AE%E6%AE%8B%E3%81%97%E6%96%B9-1.md) | 08-29 20:42 | 報告の残し方-1 — 報告を印ごとに reports/ へ残す |
 
 <!-- 控えの一覧 ここまで -->

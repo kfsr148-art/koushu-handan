@@ -159,13 +159,13 @@
        いちばん下の写し取り一覧・URLを写す（.shotsrow）／版と最終確認の行（.facts・#verTag）。
      ＊display:none で器ごと畳む。中の札も一緒に消えるので、押せる物が残らない。
      ＊作業中が0件になれば class が外れ、そのまま元どおり出る。 */
-  /* ＊v83 で、下の二箱（#doneBox＝終わりました N件／#copiedBox＝ヨシした数）を
-       畳む対象から**外した**。あの二つは読み返すための置き場なので、
-       まとめて写すが押せない間も常に出す。中の個別の「写す」釦は、
-       作業中のあいだ押せない形のまま（上の .cp:disabled と、釦を disabled にする側が持つ）。
-     ＊畳むのは上の二つだけ——「お知らせ」の釦（#btnCopyAll）と、その一覧（#list）。 */
-  body.busy #btnCopyAll,
-  body.busy #list { display:none !important; }
+  /* ＊v84 で、**畳むのをやめた**。写しは作業の状態から切り離す。
+       ＊v81〜v83 は作業中のあいだ「お知らせ」の釦と一覧を畳んでいた。畳むと
+         **済んだ札まで写せなくなる**——写せない理由が「まだ終わっていないから」ではなく
+         「作業中だから」になっていた。済んだ札は、いつでも読み返して写せるべきもの。
+       ＊釦の押せる押せないは、作業の状態ではなく**写せる札が在るかどうか**で決める
+         （setCopyBoardLabel）。作業中の分は写しの頭の一行が受け持つ。
+       ＊body.busy の class は付けない。掛ける先が無くなったので、この決まりも外した。 */
   /* 写し取り一覧への口。釦と同じ見た目にするため、a にも同じ寸法を掛ける。 */
   a.cpall{box-sizing:border-box; text-decoration:none; text-align:center;
     line-height:48px; padding:0 10px;}
@@ -349,7 +349,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v83（8月30日）</p>
+  <p class="ver" id="verTag">panel v84（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -371,7 +371,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '83';
+  var PANEL_VER = '84';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -767,8 +767,18 @@
        ＊v81 まで workingCards().length で判じていたので、ヨシ待ちの札が立っていても
          題から状態を読めない札が一枚あれば「作業中」と出ていた。 */
     var busy = (lastStat === '作業中');
-    var w = workingCards();
-    if (busy) {
+    /* ---- 釦の順序は「写すが先、予定表示が後」（v84）----
+       ＊写せる札が1件でも在るあいだは、**作業中でも**「まとめて写す（N件）」を出して押させる。
+         済んだ札は作業の状態と関わりが無い。写せるものを、作業中だからと止めない。
+       ＊写し終えて0件になったとき、はじめて「作業中、HH時MM分終了予定」へ切り替える。
+         予定の表示は「もう写す物が無い」ことの言い換えであって、押させない理由ではない。
+       ＊N は写しに入る**札の数**（buildBundle().count）。押せば必ずこの数が写る。 */
+    var n = buildBundle().count;
+    if (n > 0) {
+      b.textContent = 'まとめて写す（' + n + '件）';
+      b.disabled = false;
+      b.hidden = false;
+    } else if (busy) {
       /* 字は「作業中、HH時MM分終了予定」（v80）。刻は作業中の終了予定をそのまま出す。
          ＊候補が複数あるときは、noteEnd がいちばん遅いものを残している。
          ＊見込みが無くて刻が取れないときは、過去の実測から当てる（v82）。
@@ -795,18 +805,21 @@
         b.textContent = '作業中、終了予定不明';
       }
       b.disabled = true;
+      b.hidden = false;
     } else {
-      b.textContent = boardLabel();
-      b.disabled = false;
+      /* 作業中でもなく、写せる札も無い。畳む（v84）。
+         ＊字は残しておく。出し直したときに元の姿へ戻る。 */
+      b.textContent = 'まとめて写す（0件）';
+      b.disabled = true;
+      b.hidden = true;
     }
-    /* 帯の出し入れと、個別の「写す」の押せる押せないを、この一箇所で揃える（v81）。
-       ＊作業中のあいだは body へ busy を掛けて帯ごと畳む（見た目は CSS が持つ）。
-       ＊個別の釦も disabled にしておく。帯が畳まれていても、押せる物を残さないため。
-       ＊URLを写す（#btnCopyUrl）と写し取り一覧（#btnShots）は .cpall なので当たらない。 */
-    if (busy) { document.body.classList.add('busy'); }
-    else { document.body.classList.remove('busy'); }
+    /* 個別の「写す」は**常に押せる**（v84）。
+       ＊v81〜v83 は作業中のあいだ全部 disabled にしていた。済んだ札まで写せなくなるので外した。
+       ＊body.busy の class も付けない。掛ける先（CSS）を v84 で外した。
+       ＊URLを写す（#btnCopyUrl）と写し取り一覧（#btnShots）は .cpall なので、もともと当たらない。 */
+    document.body.classList.remove('busy');
     var cps = document.querySelectorAll('button.cp');
-    for (var i = 0; i < cps.length; i++) { cps[i].disabled = busy; }
+    for (var i = 0; i < cps.length; i++) { cps[i].disabled = false; }
   }
 
   /* ---- まとめて写しの中身（v65 で頭紙へ・v69 で本文を戻し・v72 で受領の行を落とした）----
@@ -883,13 +896,16 @@
        ＊釦は作業中のあいだ押せない（setCopyBoardLabel）ので、この行が出るのは
          個別の写しや、字を組んだ後に状態が変わった回の備え。写しだけを見て
          「まだ途中がある」と分かるようにしておく。 */
-    /* ＊v82：未了の行も、状態が「作業中」の回だけ立てる。 */
-    var working = (lastStat === '作業中') ? workingCards() : [];
-    if (working.length) {
-      /* ＊v79：一行目は必ず notices.json の URL。未了の行はその**次**へ入れる。
-           v78 では unshift で頭へ入れていたので、URL が二行目へ落ちていた。 */
-      out.splice(1, 0, '未了 ' + working.length + '件：'
-        + working.map(function (d) { return String((d && d.title) || '(題なし)'); }).join('、'));
+    /* 作業中の分は、頭の一行だけで示す（v84）。
+       ＊いま動いている仕事には、まだ中身（報告）が無い。名前だけを一行で立てる。
+       ＊出す名は札の題（lastSubj）＝**受けた枠の印**。控えを書き直す前は印そのもの、
+         書き直したあとは件名になる（inbox-watch の側が決める）。
+       ＊v78〜v83 は「未了 N件：（題）、（題）」の形だった。題は種別しか語らないので
+         「🕒 延びています、🕘 定時の報せ」のように並び、何の件か分からなかった。
+       ＊v79：一行目は必ず notices.json の URL。この行はその**次**へ入れる。
+       ＊この行は数（N）に入れない。札ではないため。 */
+    if (lastStat === '作業中') {
+      out.splice(1, 0, '作業中 1件：' + (lastSubj || '（件名なし）'));
     }
     var count = 0;   /* 実際に out へ入れた札の数。釦に出るのはこの数 */
     /* 走査はここ一度きり。ここで選んだ札が、そのまま写しの中身になり、落とす札になる。 */
@@ -909,7 +925,13 @@
       else { out.push(c.brief); brief++; }
       count++;
     });
-    bundleBoard().forEach(function (t) { out.push(t); count++; });
+    /* 板の二段（あなた待ち・直近に終わった仕事）は、写しには入れるが**数には入れない**（v84）。
+       ＊v74〜v83 は板の行も count に足していた。そのため釦の「N件」は
+         「お知らせの札＋板の行」の合計になり、**N と札の枚数が食い違って見えた**
+         （2026-08-30 実測：札20枚に対して count は 23）。
+       ＊N は「押せば写る札の数」に揃える。板の行は札ではなく添えの一行なので、
+         中身には入れたまま、数からは外す。 */
+    bundleBoard().forEach(function (t) { out.push(t); });
     if (brief) { out.push('ほか' + brief + '件（写す釦で個別に写せます）'); }
     return { text: out.join(NL), todo: todo, count: count };
   }
