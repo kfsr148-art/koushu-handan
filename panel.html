@@ -48,6 +48,10 @@
     white-space:normal; overflow-wrap:anywhere;}
   .state .k{font-size:13px; color:var(--dim); min-width:0;
     white-space:normal; overflow-wrap:anywhere;}
+  /* 郵便受けの読み残し（v74）。0件のときは行ごと畳むので、常には出ない。
+     ＊出るときは必ず異常なので、見込みの段（灰）と同じ大きさのまま色だけ変える。 */
+  .state .mail{font-size:13px; color:var(--act); font-weight:700; min-width:0;
+    white-space:normal; overflow-wrap:anywhere;}
   /* ＊右端の「N分前」の飾り（.state .a）は、字ごと **v73 で外した**。 */
   .state button{flex:0 0 auto; min-height:36px; padding:0 10px; font-size:13px;
     color:var(--dim); background:none; border:1px solid var(--line); border-radius:8px;}
@@ -232,6 +236,8 @@
       <span class="c">
         <span class="s" id="stSubj">読み込み中</span>
         <span class="k hide" id="stMik"></span>
+        <!-- 郵便受けの読み残し（v74）。0件のときは行ごと畳む。 -->
+        <span class="mail hide" id="stMail"></span>
       </span>
       <!-- ＊右端の「N分前」（.a / #stAgo）は **v73 で消した**。器ごと外している。
            経過は二段目の「開始HH:MM・終了予定…・経過N分」が持っている。 -->
@@ -306,7 +312,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v73（8月28日）</p>
+  <p class="ver" id="verTag">panel v74（8月29日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -328,7 +334,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '73';
+  var PANEL_VER = '74';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -652,20 +658,13 @@
   }
 
   /* 順は お知らせ → あなた待ち → 直近に終わった仕事 → 今日の報告 → 現況の一行（v48）。 */
-  /* まとめて写すの釦に出す件数（v52）。
-     ＊数えるのは**実際に写しに入る札**だけ。noticesText() が拾うのと同じ絞りを使う
-       （`shown` のうち片付いていないもの）。別の数え方を持ち込まない。
+  /* まとめて写すの釦に出す件数（v52・v74 で数え方を一箇所へ寄せた）。
+     ＊数えるのは**実際に写しに入る札**だけ。数えるのは buildBundle() ただ一つで、
+       押す前の字も、押した後の「N件 写した」も、同じ一回の走査の結果を使う。
      ＊今日の報告と現況の一行は数えない。あちらは読み返すための添えで、片付く物ではない。
      ＊あなた待ちと直近に終わった仕事は**数える**（v56）。まとめて写すで一緒に渡り、
        押したあとは 0件 になるので、片付く物として数の中に入れる。 */
-  function boardCount() {
-    var n = (shown || []).filter(function (d) { return !isDone(d); }).length;
-    if (board && !boardTaken) {
-      n += ((board.waiting && board.waiting.length) ? board.waiting.length : 0);
-      n += ((board.recent && board.recent.length) ? board.recent.length : 0);
-    }
-    return n;
-  }
+  function boardCount() { return buildBundle().count; }
   function boardLabel() { return 'まとめて写す（' + boardCount() + '件）'; }
   function setCopyBoardLabel() {
     var b = $('btnCopyBoard');
@@ -696,10 +695,12 @@
 
   /* 札の並び。新しい順（上の一覧がそもそも新しい順に組んである）。
      ＊一枚につき、一行の形（brief）と全文の形（full）の両方を作っておく。
-       どちらを使うかは bundleText() が上限を見て決める。 */
-  function bundleCards() {
+       どちらを使うかは buildBundle() が上限を見て決める。
+     ＊絞りはここでは掛けない（v74）。渡された札をそのまま形にするだけにして、
+       「写す札を選ぶ」走査を buildBundle() の一箇所に集める。 */
+  function bundleCards(todo) {
     var NL = String.fromCharCode(10);
-    return (shown || []).filter(function (d) { return !isDone(d); }).map(function (d) {
+    return (todo || []).map(function (d) {
       var body = String(d.message || '');
       var head = body.split(NL)[0];
       var line = briefOf(hhmm(d.time), kindWord(d.title), plain(head) || '（件名なし）', '');
@@ -723,38 +724,51 @@
     return out;
   }
 
-  function bundleText() {
+  /* 写しの中身・落とす札・釦に出す数を、**同じ一回の走査**から作る（v74）。
+     ＊v73 まではこれが四箇所に散っていた——boardCount()（押す前の字）／bundleCards()（写す札）／
+       bundleBoard()（板の二枠）／copyBundle() の todo（落とす札と「N件 写した」の数）。
+       同じ絞りを四度書いていたので、どれか一つが揃わないだけで数がずれた。
+       実際 v73 では「N件 写した」だけが板の二枠を数えず、枠が1件以上ある回は必ずその数だけ少なく出た。
+     ＊数え方はこう決める——**実際に out へ入れた札だけを数える**。
+       札を一つ入れるたびに数を一つ増やす。入れ損ねた札は数に入らない。
+     ＊返すのは三つ。text（写す字）／todo（落とす札の並び）／count（釦に出す数）。 */
+  function buildBundle() {
     var NL = String.fromCharCode(10);
     /* ＊「受け取った指示 …」の一行は **v72 で写しからも落とした**。
          v70 で画面から消したので、写しにだけ残っているのは筋が通らない。
          画面から消した行は写しにも入れない、で揃える。
        ＊足していたのは push の一行だけなので、抜いても空行は残らない。 */
     var out = [NOTICES_PAGE, nowLine()];
-    var cards = bundleCards();
+    var count = 0;   /* 実際に out へ入れた札の数。釦に出るのはこの数 */
+    /* 走査はここ一度きり。ここで選んだ札が、そのまま写しの中身になり、落とす札になる。 */
+    var todo = (shown || []).filter(function (d) { return !isDone(d); });
+    var cards = bundleCards(todo);
     /* 「🙋 ヨシしてください」の札は、何枚あっても全部を全文で入れる（v66）。
        ＊ヨシを返す判断はここでしかできない。何を待っているかが写しに無いと、
          写しだけを見て返事ができない。上限の勘定より先に置く。 */
-    cards.forEach(function (c) { if (c.ask) { out.push(c.full); } });
+    cards.forEach(function (c) { if (c.ask) { out.push(c.full); count++; } });
     /* 残りは新しい順に全文で入れ、全体が上限に達したら、そこから先は一行だけにする（v69）。
        ＊落とすのではなく**短くする**。写しに名前は残るので、要る札は箱や一覧の
-         写す釦で個別に全文を取れる。 */
+         写す釦で個別に全文を取れる。短くした札も写しには入っているので、数には入れる。 */
     var brief = 0;
     cards.forEach(function (c) {
       if (c.ask) { return; }
       if (out.join(NL).length < BUNDLE_FULL_MAX) { out.push(c.full); }
       else { out.push(c.brief); brief++; }
+      count++;
     });
-    bundleBoard().forEach(function (t) { out.push(t); });
+    bundleBoard().forEach(function (t) { out.push(t); count++; });
     if (brief) { out.push('ほか' + brief + '件（写す釦で個別に写せます）'); }
-    return out.join(NL);
+    return { text: out.join(NL), todo: todo, count: count };
   }
 
   function copyBundle(btn) {
     /* 写しに入る札（v54）。この並びが、そのまま「落とす札」「印を付ける札」になる。
-       ＊数え方は boardCount() と同じ絞り。別の数え方を持ち込まない。
-       ＊落とす動きは v65 でも変えていない。変えたのは写す中身だけ。 */
-    var todo = (shown || []).filter(function (d) { return !isDone(d); });
-    var text = bundleText();
+       ＊組むのは一度だけ（v74）。写す字も、落とす札も、釦に出す数も、この一回から取る。
+       ＊落とす動きは v65 でも変えていない。変えたのは写す中身と数え方だけ。 */
+    var bundle = buildBundle();
+    var todo = bundle.todo;
+    var text = bundle.text;
 
     /* 写せたときだけ、一枚ずつ写したときと同じ始末をする（v54）。
        ＊印を付ける → 一覧から落とす → 下の箱を組み直す → 二つの釦の字を組み直す。
@@ -773,7 +787,8 @@
       paintCopied(allRows);
       setCopyAllLabel();
       paintBoard();        /* 札が0件になるので、跡地へ板の二段を出す */
-      btn.textContent = todo.length + '件 写した';
+      /* 出す数は「実際に写しへ入った札の数」（v74）。todo.length は板の二枠を数えないので使わない。 */
+      btn.textContent = bundle.count + '件 写した';
       btn.className = 'cpall ok';
       setTimeout(function () { setCopyBoardLabel(); btn.className = 'cpall'; }, 2000);
     };
@@ -911,6 +926,7 @@
     if (t.indexOf('✅') >= 0) { return 'done'; }
     if (t.indexOf('👀') >= 0) { return 'wait'; }
     if (t.indexOf('🪟') >= 0) { return 'act'; }
+    if (t.indexOf('📮') >= 0) { return 'act'; }   /* 郵便受けが詰まった（v74）。手が要るので act と同じ扱い */
     /* 絵文字の無い古い知らせも読めるようにしておく */
     if (t.indexOf('ヨシしてください') >= 0 || t.indexOf('返事してください') === 0) { return 'ask'; }
     if (t.indexOf('受けました') >= 0) { return ''; }
@@ -1442,13 +1458,18 @@
      作業中＝青／ヨシ待ち＝黄／手待ち＝灰。最後の更新から3分を超えたら赤で「連絡なし」。 */
   /* ＊右端の「N分前」は **v73 で消した**。器も飾りも引数も落としてある。
        ＊経過は二段目の「開始HH:MM・終了予定…・経過N分」が持っているので、二重に出ていた。 */
-  function paintState(cls, word, subj, mik) {
+  /* ＊三段目は郵便受けの読み残し（v74）。**0件のときは行ごと畳む**ので、
+       普段はこれまでどおり二段のまま。詰まったときだけ一行増える。 */
+  function paintState(cls, word, subj, mik, mail) {
     $('state').className = 'state ' + cls;
     $('stWord').textContent = word;
     $('stSubj').textContent = subj;
     /* 見込みは二段目。無いときは畳んで、今までどおりの一行に戻す。 */
     $('stMik').textContent = mik || '';
     $('stMik').className = mik ? 'k' : 'k hide';
+    var n = (typeof mail === 'number' && mail > 0) ? mail : 0;
+    $('stMail').textContent = n ? ('郵便受け 未取り込み ' + n + '件') : '';
+    $('stMail').className = n ? 'mail' : 'mail hide';
   }
 
   /* ＊paintOrder（v61）は **v72 で外した**。画面の行は v70 で、写しの行は v72 で落としたので、
@@ -1598,6 +1619,7 @@
     if (isDailyNotice(s)) { return '定時の報せ'; }
     if (s.indexOf('ヨシしてください') >= 0) { return 'ヨシしてください'; }
     if (s.indexOf('延びています') >= 0) { return '延びています'; }
+    if (s.indexOf('郵便受けが詰まって') >= 0) { return '郵便受けが詰まっています'; }
     if (s.indexOf('異常です') >= 0) { return '異常です'; }
     return s.replace(/^\S+\s*/, '') || '(題なし)';
   }
@@ -1767,7 +1789,7 @@
         if (sec > STALE_SEC) {
           /* 連絡なしの間は数えない。数えると、毎秒の書き換えが「連絡なし」を上書きしてしまう。 */
           sinceBase = { at: 0, word: '' };
-          paintState('lost', '連絡なし', subj + '（最後は ' + w + '）', mik);
+          paintState('lost', '連絡なし', subj + '（最後は ' + w + '）', mik, d.mailUnread);
           return;
         }
         var cls = 'idle';
@@ -1785,7 +1807,7 @@
           sinceBase = { at: 0, word: '' };
         }
         lastState = { word: word, since: '', at: d.at || 0 };
-        paintState(cls, word, subj, mik);
+        paintState(cls, word, subj, mik, d.mailUnread);
       })
       .catch(function (e) {
         sinceBase = { at: 0, word: '' };
