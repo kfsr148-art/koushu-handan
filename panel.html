@@ -159,10 +159,13 @@
        いちばん下の写し取り一覧・URLを写す（.shotsrow）／版と最終確認の行（.facts・#verTag）。
      ＊display:none で器ごと畳む。中の札も一緒に消えるので、押せる物が残らない。
      ＊作業中が0件になれば class が外れ、そのまま元どおり出る。 */
+  /* ＊v83 で、下の二箱（#doneBox＝終わりました N件／#copiedBox＝ヨシした数）を
+       畳む対象から**外した**。あの二つは読み返すための置き場なので、
+       まとめて写すが押せない間も常に出す。中の個別の「写す」釦は、
+       作業中のあいだ押せない形のまま（上の .cp:disabled と、釦を disabled にする側が持つ）。
+     ＊畳むのは上の二つだけ——「お知らせ」の釦（#btnCopyAll）と、その一覧（#list）。 */
   body.busy #btnCopyAll,
-  body.busy #list,
-  body.busy #doneBox,
-  body.busy #copiedBox { display:none !important; }
+  body.busy #list { display:none !important; }
   /* 写し取り一覧への口。釦と同じ見た目にするため、a にも同じ寸法を掛ける。 */
   a.cpall{box-sizing:border-box; text-decoration:none; text-align:center;
     line-height:48px; padding:0 10px;}
@@ -346,7 +349,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v82（8月30日）</p>
+  <p class="ver" id="verTag">panel v83（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -368,7 +371,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '82';
+  var PANEL_VER = '83';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
