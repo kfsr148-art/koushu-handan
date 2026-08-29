@@ -322,7 +322,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v75（8月29日）</p>
+  <p class="ver" id="verTag">panel v76（8月29日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -344,7 +344,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '75';
+  var PANEL_VER = '76';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1711,10 +1711,11 @@
     });
     ul.innerHTML = html;
     var open = (ul.className === 'open');
-    /* 表紙の字は v57 で「写した札」から「済んだ札」へ変えた。
+    /* 表紙の字は v57 で「写した札」から「済んだ札」へ、v76 で「ヨシした数」へ変えた。
+       「届いた」も v76 で「ヨシ済み確認」へ。
        ＊変えたのは**表紙の字だけ**。件数の数え方も中身も開閉の動きも触っていない。 */
-    head.textContent = '済んだ札 ' + items.length + '件'
-                     + (got ? '（届いた ' + got + '件）' : '')
+    head.textContent = 'ヨシした数 ' + items.length + '件'
+                     + (got ? '（ヨシ済み確認 ' + got + '件）' : '')
                      + (red ? '（読んだ ' + red + '件）' : '') + (open ? ' ▲' : ' ▼');
     /* ＊「未達 N件：」の名指し（v59）は **v68 で消した**。行も、行を組む処理も、
          そのために控えていた値も外した。表紙の「済んだ札 N件（届いた N件）」は
