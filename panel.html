@@ -148,6 +148,21 @@
   #btnCopyBoard:disabled{background:var(--card); color:var(--dim);
     border-color:var(--line); opacity:.55; cursor:default;}
   #btnCopyBoard:disabled:active{background:var(--card); border-color:var(--line); filter:none;}
+  /* 個別の「写す」も、作業中のあいだは押せなくする（v81）。見た目はまとめて写すと同じ薄さ。
+     ＊掛けるのは .cp だけ。.cpall（まとめて写す・お知らせ・箱の表紙・URLを写す・写し取り一覧）
+       には掛からない。 */
+  .cp:disabled{color:var(--dim); border-color:var(--line); opacity:.55; cursor:default;}
+  .cp:disabled:active{filter:none;}
+  /* 作業中のあいだは、知らせの帯を一切出さない（v81）。
+     ＊消すのは「お知らせ」の釦と一覧、「終わりました N件」の箱、「ヨシした数」の箱の四つ。
+     ＊残すのは いちばん上の作業中の札（#state）／まとめて写す（#btnCopyBoard）／
+       いちばん下の写し取り一覧・URLを写す（.shotsrow）／版と最終確認の行（.facts・#verTag）。
+     ＊display:none で器ごと畳む。中の札も一緒に消えるので、押せる物が残らない。
+     ＊作業中が0件になれば class が外れ、そのまま元どおり出る。 */
+  body.busy #btnCopyAll,
+  body.busy #list,
+  body.busy #doneBox,
+  body.busy #copiedBox { display:none !important; }
   /* 写し取り一覧への口。釦と同じ見た目にするため、a にも同じ寸法を掛ける。 */
   a.cpall{box-sizing:border-box; text-decoration:none; text-align:center;
     line-height:48px; padding:0 10px;}
@@ -331,7 +346,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v80（8月30日）</p>
+  <p class="ver" id="verTag">panel v81（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -353,7 +368,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '80';
+  var PANEL_VER = '81';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -726,6 +741,14 @@
       b.textContent = boardLabel();
       b.disabled = false;
     }
+    /* 帯の出し入れと、個別の「写す」の押せる押せないを、この一箇所で揃える（v81）。
+       ＊作業中のあいだは body へ busy を掛けて帯ごと畳む（見た目は CSS が持つ）。
+       ＊個別の釦も disabled にしておく。帯が畳まれていても、押せる物を残さないため。
+       ＊URLを写す（#btnCopyUrl）と写し取り一覧（#btnShots）は .cpall なので当たらない。 */
+    if (w.length) { document.body.classList.add('busy'); }
+    else { document.body.classList.remove('busy'); }
+    var cps = document.querySelectorAll('button.cp');
+    for (var i = 0; i < cps.length; i++) { cps[i].disabled = (w.length > 0); }
   }
 
   /* ---- まとめて写しの中身（v65 で頭紙へ・v69 で本文を戻し・v72 で受領の行を落とした）----
