@@ -907,20 +907,35 @@ section('⑩', 'ミニゲームの定数と八方位・親補正の写し', () =
   /* --- 親補正の境目の写し ---
      analyze() は window に出ていないので、実際の手を通した照合はできない。
      ここでは analyze() 側の字面と、虎（mascotDealerNudged）が持つ写しを突き合わせる。
-     どちらかを直したときに、もう一方が取り残されるのを捕まえるのが狙い。 */
-  const nd = (src.match(/acceptTiles\s*<\s*\(isDealer\s*\?\s*(\d+)\s*:\s*(\d+)\)/) || []);
-  const wa = (src.match(/acceptTiles\s*>=\s*\(isDealer\s*\?\s*(\d+)\s*:\s*(\d+)\)/) || []);
-  const cp = (src.match(/r\s*>=\s*(\d+)\s*&&\s*r\s*<\s*(\d+)\s*\)\s*:\s*\(d\s*>=\s*1\s*&&\s*r\s*>=\s*(\d+)\s*&&\s*r\s*<\s*(\d+)/) || []);
-  if (!nd.length || !wa.length || !cp.length) {
+     どちらかを直したときに、もう一方が取り残されるのを捕まえるのが狙い。
+     幅の関門は向聴の層ごと（較正-1・2026-08-29）なので、層の数値と親の甘さも併せて見る。 */
+  const GATE_RE = /baseShanten\s*>=\s*4\s*\?\s*Infinity\s*:\s*\(\s*(?:a\.)?baseShanten\s*>=\s*3\s*\?\s*(\d+)\s*:\s*(\d+)\s*\)/;
+  /* 同じ字面が analyze 側と写し側の両方にあるので、写しの関数の手前で切り分けて読む。 */
+  const cpAt = src.indexOf('function mascotDealerNudged');
+  const anaSrc = cpAt < 0 ? src : src.slice(0, cpAt);
+  const cpSrc = cpAt < 0 ? '' : src.slice(cpAt, src.indexOf('function mascotSay', cpAt));
+  const nd = (anaSrc.match(/acceptTiles\s*<\s*\(isDealer\s*\?\s*(\d+)\s*:\s*(\d+)\)/) || []);
+  const wg = (anaSrc.match(GATE_RE) || []);
+  const wa = (anaSrc.match(/acceptTiles\s*>=\s*\(isDealer\s*\?\s*widthGate\s*-\s*(\d+)\s*:\s*widthGate\)/) || []);
+  const cg = (cpSrc.match(GATE_RE) || []);
+  const cn = (cpSrc.match(/d\s*<=\s*1\s*&&\s*r\s*>=\s*(\d+)\s*&&\s*r\s*<\s*(\d+)/) || []);
+  const cw = (cpSrc.match(/r\s*>=\s*gate\s*-\s*(\d+)\s*&&\s*r\s*<\s*gate/) || []);
+  const cInf = /gate\s*!==\s*Infinity/.test(cpSrc);
+  if (!nd.length || !wg.length || !wa.length || !cg.length || !cn.length || !cw.length) {
     ng('境目の数値を読み取れない（analyze 側または写し側の書き方が変わった）');
     bad++;
   } else {
-    const a = [Number(nd[1]), Number(nd[2]), Number(wa[1]), Number(wa[2])];   // 親6 子8 親20 子24
-    const b = [Number(cp[1]), Number(cp[2]), Number(cp[3]), Number(cp[4])];
-    note('analyze の境目 : 親' + a[0] + '/子' + a[1] + '・親' + a[2] + '/子' + a[3]);
-    note('虎が持つ写し   : ' + b[0] + '〜' + b[1] + '枚・' + b[2] + '〜' + b[3] + '枚');
-    if (a[0] !== b[0] || a[1] !== b[1] || a[2] !== b[2] || a[3] !== b[3]) {
+    const a = [Number(nd[1]), Number(nd[2]), Number(wg[1]), Number(wg[2]), Number(wa[1])];
+    const b = [Number(cn[1]), Number(cn[2]), Number(cg[1]), Number(cg[2]), Number(cw[1])];
+    note('analyze の境目 : 狭い側 親' + a[0] + '/子' + a[1]
+       + '・幅の関門 向聴3=' + a[2] + '/向聴2以下=' + a[3] + '（向聴4以上は関門なし）・親は' + a[4] + '枚甘く');
+    note('虎が持つ写し   : 狭い側 ' + b[0] + '〜' + b[1] + '枚'
+       + '・幅の関門 向聴3=' + b[2] + '/向聴2以下=' + b[3] + '（向聴4以上は無言）・親は' + b[4] + '枚甘く');
+    if (a.some((v, i) => v !== b[i])) {
       ng('写しが analyze の境目とずれている');
+      bad++;
+    } else if (!cInf) {
+      ng('写しが向聴4以上を外していない（関門の無い層で親補正を語ってしまう）');
       bad++;
     } else note('写しは一致（※実際の手を通した照合ではなく、字面の照合）');
   }
