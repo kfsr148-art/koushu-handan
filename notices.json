@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🙋 ヨシしてください",
+        "time":  1787983808,
+        "message":  "副産物三件の直し（撤退予約線のコメント／totalBlocks の寄せ／執事と根拠欄①の閾値）— 宣言してヨシ待ち\n印: y0829-fukusan\n待っているのは：本体（koushu-handan.html）へ当てる三件の宣言にヨシ。①撤退予約線 L8392 のコメントを実装（baseShanten）に合わせる②totalBlocks を L2514 から七対子の上書きの直後へ移す（兎の票が6/4000だけ攻→棄権）③hasValue を doraValue\u003e=1 へ揃え、根拠欄①の題と詳細の分岐を valueSources.length へ差し替える\n答え方：「y0829-fukusan にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1787981403,
         "message":  "被り-1の調べ（審査者の材料の総当たり表・被りの洗い出し・空き軸の候補・4000行での検定）\n四件すべて済。①画面に出る審査者（七人の見立て・判定カード・根拠欄・集計行・撤退予約線）が読む analyze() の33項目を行番号つきで総当たりの表にした。②同じ材料を見ている組を全員の総当たりで洗い、関数従属5組（新規3組）と相関|r|\u003e=0.60 の14組を出した。③厳密な未使用は0件。攻守の傾きに一切効いていない＝空き軸の候補は14件。④core-probe.js で4000行に analyze() を掛け直し、五数要約と向聴別の和了率・放銃率・平均点棒を出した。本体には一字も触れていない\nファイル: report-latest.md（全面書き直し）／~/.claude/orders-open.tsv（被り調べ-1〜4 を済へ）\n実測: 【突き合わせ】再計算 vs 記録＝baseShanten 0/4000・acceptTiles 0/4000・goodShapes 0/4000・defHonors 0/4000・verdict 890/4000（記録は較正-1 前）。【新規の被り】acceptTypes⇔acceptTiles r=0.996／kokushiShanten⇔defHonors+defTerminals r=-0.967／weakShapes⇔fillWeak r=0.824／関数従属 widthLabel→widthGood・kokushiKinds→kokushiSeen・valueSources→hasValue。【空き軸】fillRemain が最強＝向聴2で2枠38.2% vs 4枠23.0%（15.2pt・点棒+1815 vs +841）、向聴3で32.8% vs 23.3%（9.5pt）。borderline は向聴3で24.6% vs 41.5%（+16.9pt・n=53）。acceptTypes は acceptTiles を固定すると単調でなくなり空き軸ではない。doraCount は記録が全0で判じられない。【副産物】totalBlocks は七対子ルート（L3022-3025）で goodShapes+weakShapes と食い違う 493/4000＝12.3%／撤退予約線 L8392 のコメントは「受け入れ枚数から」だが実装 L8397-8405 は baseShanten だけを読む／執事の票（doraValue\u003e=1）と根拠欄①の✓×（doraValue\u003e0）は孤立ドラ1枚（0.5・L2864）でだけ食い違う"
@@ -93,10 +98,5 @@
         "title":  "🙋 ヨシしてください",
         "time":  1787965206,
         "message":  "窓の立ち上げ。残り4件の申告と、報告書の積み残しの片付け\n印: y0829-start\n待っているのは：本日期日の観察三件（観察-1・観察-2・観察-3）から着手してよいか、別の件を先にするか\n答え方：「y0829-start にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。"
-    },
-    {
-        "title":  "🕒 延びています",
-        "time":  1787964723,
-        "message":  "三種の即時性の実測と、ヨシ待ち中に取り込みが止まる穴の修理\n終了予定09:50を過ぎています（経過51分）"
     }
 ]
