@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1429">
+<html lang="ja" data-ver="1430">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1313,7 +1313,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1429</div>
+  <div id="verTag">v1430</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -4015,12 +4015,12 @@ document.addEventListener('DOMContentLoaded', function () {
   //   執事＝打点1以上／軍師＝距離ごとの受け入れ／ずんだ＝良形4組以上
   //   お嬢様＝距離ごとの守りの弾／マダム＝浮き牌／一姫＝見える役／先生＝向聴
   //   現場猫・枝豆・AIスイッチは既存の目盛りをそのまま使う
-  /* 兎の判定式。ブロックが余っていれば攻め、残り枠の埋まり方が悪ければ守り。
+  /* 兎の判定式。残り枠が愚形で一つも詰まらなければ攻め、二つ以上詰まれば守り。
      閾値の字面はここだけが持つ（枝豆の目盛りと同じ流儀）。 */
   function usagiLean(a){
     try{ if(localStorage.getItem('usagiSwitch') === '0') return ''; }catch(e){}
-    if(!a || typeof a.totalBlocks !== 'number') return '';
-    if(a.totalBlocks >= 6) return 'a';
+    if(!a || typeof a.fillWeak !== 'number') return '';
+    if(a.fillWeak === 0) return 'a';
     if(a.fillWeak >= 2) return 'd';
     if(a.fillGood >= 3 && a.goodShapes <= 3) return 'd';
     return '';
@@ -4069,12 +4069,19 @@ document.addEventListener('DOMContentLoaded', function () {
           + (edaVoteLean(pairKinds) === 'attack' ? '揃い' : '薄い——守り') },
       { key:'ai',         mark:'🎩', lean: (om >= 3) ? 'd' : ((om === 0 && yaochu <= 2) ? 'a' : ''),
         say: '一枚きりの字牌' + om + '枚。わたしの見立ては' + (om >= 3 ? '守り' : '攻め') + 'です' },
-      /* 兎＝残り枠の埋まり方。ブロックが五つを超えて余っていれば攻め、
-         残り枠が愚形で詰まるか、好形で埋まる見込みがあっても形が足りていなければ守り。
-         実測50000回：攻め1.34%・的中83.1%／守り26.50%・的中71.8%／黙る72.16%。
-         ＊この数字は totalBlocks を寄せる前（v1428 まで）の数え方で取ったもの。v1429 で
-           totalBlocks を七対子の上書き後へ寄せたため、4000行では攻め率が 1.40%→1.25% に動く
-           （票が変わるのは 6/4000＝0.15%・すべて 攻→黙る）。50000回の測り直しは別件。
+      /* 兎＝残り枠の埋まり方。愚形で詰まる枠が一つも無ければ攻め、二つ以上あれば守り。
+         v1430 で攻の材料を totalBlocks から fillWeak へ移した（core-battle-log-dora.tsv の4000行）。
+         旧③（totalBlocks>=6 で攻）は 50件しか発火せず、その50件は
+           和了24.0%・放銃18.0%・平均+126。地の値（21.2%／12.9%／+172）に対し
+           放銃だけ 5.1pt 高く、点棒は 46 下回っていた＝攻の側が働いていない。
+         新③（fillWeak==0 で攻）は 1323件（33.08%）。守は fillWeak>=2 の 1032件（25.80%）で、
+           2・3・4・5向聴の全4層で「攻が地の値より上・守が下」に揃う（旧は0層）。
+         四人のうち攻が3人揃った行の成績も 18.2%／18.2%／-100 から
+           35.6%／8.2%／+1945 へ変わる（件数は33→73）。
+         ＊旧注記にあった実測50000回（攻め1.34%・的中83.1%／守り26.50%・的中71.8%／黙る72.16%）は
+           旧③の数字。新③では測り直しが要る（別件）。
+         ＊④⑤は残してある。⑤は4000行で成立0件（成立する59件は全て fillWeak==0 で③が先に返す）だが、
+           fillRemain=4 なら fillWeak=1 かつ fillGood=3 はありうるので消さない。
          スイッチを切っている端末では票を出さない（設定の usagiSwitch）。 */
       { key:'usagi',      mark:'兎', lean: usagiLean(a),
         say: (usagiLean(a) === 'a')
