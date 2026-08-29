@@ -134,16 +134,19 @@ panel.html L162-168 の body.busy の並びから #doneBox（終わりました 
 
 ---
 
+---
+
 <!-- 控えの一覧 ここから -->
 
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **35件**ある。
+　ここに出るのは新しい20件。全部で **36件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`連携の穴-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%80%A3%E6%90%BA%E3%81%AE%E7%A9%B4-1.md) | 08-30 03:41 | 連携の穴-1 — Codeタブ・返事パネル・GitHub の連携の棚卸し |
 | [`指示を受けた刻-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E6%8C%87%E7%A4%BA%E3%82%92%E5%8F%97%E3%81%91%E3%81%9F%E5%88%BB-1.md) | 08-30 03:35 | 指示を受けた刻-1 — 止まっていた原因と直し |
 | [`パネルと受け口-8.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%83%91%E3%83%8D%E3%83%AB%E3%81%A8%E5%8F%97%E3%81%91%E5%8F%A3-8.md) | 08-30 03:26 | パネルと受け口-8 — 下の二箱を畳む対象から外した（panel v83） |
 | [`写せます-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%86%99%E3%81%9B%E3%81%BE%E3%81%99-1.md) | 08-29 23:28 | 写せます-1 — 作業中0件へ転じたら「写せます（N件）」を一発（甲案） |
@@ -163,6 +166,5 @@ panel.html L162-168 の body.busy の並びから #doneBox（終わりました 
 | [`兎の攻守-8.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%85%8E%E3%81%AE%E6%94%BB%E5%AE%88-8.md) | 08-29 18:54 | 兎の攻守-8 — fillWeak と fillGood を両側へ割った（数字のみ） |
 | [`兎の攻守-7.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%85%8E%E3%81%AE%E6%94%BB%E5%AE%88-7.md) | 08-29 18:45 | 兎の攻守-7 — 染めA（字牌を除く最多色の枚数）を測った（数字のみ） |
 | [`兎の攻守-6.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%85%8E%E3%81%AE%E6%94%BB%E5%AE%88-6.md) | 08-29 18:35 | 兎の攻守-6 — 染めBの線を詰めた（数字のみ） |
-| [`兎の攻守-5.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%85%8E%E3%81%AE%E6%94%BB%E5%AE%88-5.md) | 08-29 18:27 | 兎の攻守-5 — 追補5〜8（手役の芽）の数字を出し直した |
 
 <!-- 控えの一覧 ここまで -->
