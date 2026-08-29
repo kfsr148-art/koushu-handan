@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1430">
+<html lang="ja" data-ver="1431">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -258,6 +258,16 @@
   .verdict-zones .vz-atk { width: var(--vz-a, calc(var(--vz-pair) / 2)); }
   .verdict-zones .vz-def { width: calc(var(--vz-pair) - var(--vz-a, calc(var(--vz-pair) / 2))); }
   @media (max-width: 745px) { :root { --vz-show: var(--vz-show-narrow); } }
+  /* 判定後は箱の中で折り返し、横の送りをやめる（v1431）。
+     v1430 まで、狭い視野では札が箱からはみ出して横に送る形だった（--vz-show の端数で
+     「送れる」と見せる作り）。当たり判定44pxと間隔8pxは動かせないので、
+     568px の視野に8枚を一列で並べることは幾何として不可能——折り返しに変える。
+     ＊実測（写しに probe・5通り×4視野の20回）：切れる通りは v1430 の 4/5 から 0/5 へ。
+       末尾の二択は 568x320・844x390・745x380・1024x600 のどれでも視野の内に残る。
+       箱の高さは一段48pxから、詰まった箱だけ98〜150pxへ伸びる。
+     ＊下の @media (min-width:844px) の一組は、これに加えて幅を等分にし直す規則。
+       あちらは幅の配り方も変えるので、この行とは役目が違う。 */
+  body.judged .verdict-zones .vz { flex-wrap: wrap; overflow: visible; }
   .verdict-zones .vz-atk { justify-content: flex-start; }
   .verdict-zones .vz-def { justify-content: flex-end; }
   /* 外箱が当たり判定（44px）、中身が見た目（40px）。
@@ -1313,7 +1323,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1430</div>
+  <div id="verTag">v1431</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
