@@ -322,7 +322,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v76（8月29日）</p>
+  <p class="ver" id="verTag">panel v77（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -344,7 +344,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '76';
+  var PANEL_VER = '77';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1087,8 +1087,11 @@
     var v = $('fVer'), s = $('fSeen');
     if (!v || !s) { return; }
     var hv = honVer || '未確認', sv = stbVer || '未確認';
-    v.textContent = '本体 v' + hv + ' ／ 公開 v' + sv;
-    /* 二つがずれている＝実機へ出ている版が本体より遅れている。 */
+    /* 右の数は stable の枝の ver.txt（STB_URL）。v76 まで「公開v」と呼んでいたが、
+       公開しているのは main（VER_URL＝左の数）なので、名と中身が食い違っていた。
+       v77 で「stable v」へ改めた。下の nowLine() も同じ名にしてある。 */
+    v.textContent = '本体 v' + hv + ' ／ stable v' + sv;
+    /* 二つがずれている＝検収の済んだ版（stable）が本体より遅れている。 */
     v.className = (honVer && stbVer && honVer !== stbVer) ? 'warn' : '';
     var age = atSec ? Math.floor(Date.now() / 1000 - atSec) : -1;
     s.textContent = '最終確認 ' + (atSec ? hhmm(atSec) : '—');
@@ -1322,7 +1325,8 @@
     var a = [];
     a.push('現況：' + (lastState.word || '—') + (lastState.since ? '・' + lastState.since : ''));
     a.push('本体v' + (honVer || '未確認'));
-    a.push('公開v' + (stbVer || '未確認'));
+    /* stable の枝の ver.txt。v77 で「公開v」から名を改めた（上の paintFacts と同じ理由）。 */
+    a.push('stable v' + (stbVer || '未確認'));
     a.push('最終確認' + (lastState.at ? hhmm(lastState.at) : '—'));
     return a.join(' ／ ');
   }
