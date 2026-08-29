@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1427">
+<html lang="ja" data-ver="1428">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1313,7 +1313,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1427</div>
+  <div id="verTag">v1428</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -3037,7 +3037,12 @@ document.addEventListener('DOMContentLoaded', function () {
       verdict = narrowDefend ? 'defend' : 'attack';
       if(narrowDefend) edgeFlag = true;                        // 攻の形だが受けが狭く守へ倒した紙一重
     } else {
-      const wideAttack = acceptTiles >= (isDealer ? 20 : 24) && doraValue >= 1;
+      // 幅の関門は向聴の層ごとに置く（較正-1・2026-08-29 の4000行の実測で確定）。
+      //   向聴2 …… 25枚／向聴3 …… 60枚／向聴4以上 …… 幅では救わない（関門を置かない）。
+      //   向聴0と1は件数が18件しかないため線を引けず、向聴2の値を流用する。
+      //   親子差は件数不足につき据え置き（従来どおり、親は子より4枚甘く見る）。
+      const widthGate = baseShanten >= 4 ? Infinity : (baseShanten >= 3 ? 60 : 25);
+      const wideAttack = acceptTiles >= (isDealer ? widthGate - 4 : widthGate) && doraValue >= 1;
       verdict = wideAttack ? 'attack' : 'defend';
       if(wideAttack) edgeFlag = true;                          // 形は足りぬが受けの広さで攻へ格上げした紙一重
     }
@@ -4081,14 +4086,20 @@ document.addEventListener('DOMContentLoaded', function () {
     dealer:       '親番なので、基準を少し攻め寄りにしています。'
   };
   /* 親の甘め補正が判定を実際に動かした回だけ true。
-     6/8/20/24 は analyze() が使う境目の写し（あちらには触れないため、ここに置く）。
+     6/8 と幅の関門は analyze() が使う境目の写し（あちらには触れないため、ここに置く）。
+     幅の関門は向聴の層ごとに置いてある（較正-1・2026-08-29）。
+     向聴2 …… 25枚／向聴3 …… 60枚／向聴4以上 …… 関門を置かない。
+     向聴0と1は件数が18件しかないため線を引けず、向聴2の値を流用する。
+     関門の無い向聴4以上では、幅で語れることが無いので親補正の一言も出さない。
      子の基準なら守りになる帯に居て、親だから攻めに残った回を拾う。
      国士・役満で攻めへ上書きされた回は、補正が効いた回ではないので外す。 */
   function mascotDealerNudged(a){
     if(!a || !a.isDealer || a.kokushiSeen || a.yakumanReach) return false;
     const r = a.acceptTiles, d = a.doraValue;
     if(typeof r !== 'number') return false;
-    return a.shapeOK ? (d <= 1 && r >= 6 && r < 8) : (d >= 1 && r >= 20 && r < 24);
+    const gate = a.baseShanten >= 4 ? Infinity : (a.baseShanten >= 3 ? 60 : 25);
+    return a.shapeOK ? (d <= 1 && r >= 6 && r < 8)
+                     : (d >= 1 && gate !== Infinity && r >= gate - 4 && r < gate);
   }
   function mascotSay(a){
     if(!a) return '';
