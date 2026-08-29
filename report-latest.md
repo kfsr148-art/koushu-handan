@@ -90,11 +90,11 @@ $ diff 公開物 手元 → 完全一致
 この間にまとまった知らせ 2本
 
 ［✅ 終わりました（返事不要）］
-穴の直し-1 ①state.json の競合（名前つきの錠で直列化）
-inbox-feed.ps1 L122-158 と inbox-watch.ps1 L468-497 に名前つきの Mutex（Local\ClaudeStateJson）を入れ、両者の state.json への読み書きを直列化した。inbox-feed は錠の中で読み直して orderAt/order の二鍵だけ差し替える。消えていたのは orderAt ではなく相手の鍵（stat/subj/statAt/startedAt/mikomi/todo/at）だった。押し出しは錠の外に置き、5秒で諦める形にした。常駐を起こし直し済み。
-ファイル: ~/.claude/inbox-feed.ps1（L122-158／写し .bak-20260830c）、~/.claude/inbox-watch.ps1（L468-497／写し .bak-20260830b）、reports/穴の直し-1.md
-実測: 実測は三度やり直した（Start-Job の立ち上がりに1〜2秒かかり順番が崩れていた。二度目は錠なしの最後の姿が B399 で消えていたのに0回と出ており、数え方が間違っていた）。B が読み終えた札を起点にする形で再現：錠なしは2回とも stat=A9 が消え、錠ありは2回とも両方残った（A が錠を取るまで 429ms と 435ms 待った）。常駐は PID 3216→8876 の1本、起動04:21:55 > 台本の更新04:11:43。本物でフックを撃った結果 orderAt=2026-08-30 04:22:14 と stat=作業中／subj／startedAt／at がすべて残った。構文OK 196行／898行・BOM 有り。
-実機: 返事パネルの作業中の札で、「指示を受けた」と「件名／開始／終了予定」が同時に正しく出ていること（直す前は枠を受けた直後の巡回で件名が古いものへ巻き戻ることがあり得た）。
+通知の題-5（😽 の押し送りが止まっていた原因と直し）
+原因は通知の題-1〜4 ではなく、写せます-1 で足した ready の知らせだった。done（終わり）と ready（写せます）が60秒の溜めに一緒に入り、まとめて出す段（Flush-Held）が名乗りまで最後の一本＝ready のものを使っていたため、押し送りが Push-Ntfy L575 で断られていた。パネルには札が立つのに iPhone が鳴らない形。watch-notify.ps1 L866-885 で、名乗りは溜まっている中のいちばん強い一つ（over>wait>done>その他）を採るようにした。題・重み・印は今までどおり最後の一本。試し送り一本を HTTP 200 で出した。
+ファイル: ~/.claude/watch-notify.ps1（L866-885／写し .bak-20260830e）、reports/通知の題-5.md
+実測: watch-notify.log の 04:28:10「押し送りはしない（送る状態でない: ready）」＝送る処理へ入る前に断られており、ntfy への通信は一度も起きていない。直した選び方を六通りで確認——done→ready は ready から done へ直り押し送りが出る／ready 一本だけは今までどおり出ない／done→wait は wait のまま。試し送りは題「😽 終わったにゃ、写して」・Title ヘッダ =?UTF-8?B?8J+YvSDntYLjgo/jgaPjgZ/jgavjgoPjgIHlhpnjgZfjgaY=?=・HTTP 200・宛先の末尾 ue6i。構文OK 1971行・BOM 有り。通知の題-4 は済（実機の証しは 4:21 に届いた 🙀 異変発見だにゃ）。
+実機: いま届いているはずの試し送りの題が「😽 終わったにゃ、写して」・本文が「試し送りです（通知の題-5）。」。次に仕事が終わったとき、写せますと一緒に溜まっても 😽 が届くこと。
 
 ［✅ 終わりました（返事不要）］
 写せます（20件）
@@ -148,6 +148,9 @@ daily-notice.ps1 L116 の「🕘 定時の報せ」を、見張り四つが全�
 
 
 
+
+---
+
 ---
 
 ---
@@ -169,11 +172,13 @@ daily-notice.ps1 L116 の「🕘 定時の報せ」を、見張り四つが全�
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **42件**ある。
+　ここに出るのは新しい20件。全部で **44件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`写しの網-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%86%99%E3%81%97%E3%81%AE%E7%B6%B2-1.md) | 08-30 05:36 | 写しの網-1 — 報告の札が写しに入らなかった原因と直し |
+| [`札の題-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E6%9C%AD%E3%81%AE%E9%A1%8C-1.md) | 08-30 05:34 | 札の題-1 — 作業中の札の題が前の仕事の名のままだった |
 | [`通知の題-5.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%80%9A%E7%9F%A5%E3%81%AE%E9%A1%8C-5.md) | 08-30 05:01 | 通知の題-5 — 😽 の押し送りが止まっていた原因と直し |
 | [`穴の直し-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E7%A9%B4%E3%81%AE%E7%9B%B4%E3%81%97-1.md) | 08-30 04:23 | 穴の直し-1 ①state.json の競合 — 名前つきの錠で直列にした |
 | [`通知の題-4.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%80%9A%E7%9F%A5%E3%81%AE%E9%A1%8C-4.md) | 08-30 04:09 | 通知の題-4 — 二字を上書きし、押し送りの🙀 も揃えた |
@@ -192,7 +197,5 @@ daily-notice.ps1 L116 の「🕘 定時の報せ」を、見張り四つが全�
 | [`パネルと受け口-1-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%83%91%E3%83%8D%E3%83%AB%E3%81%A8%E5%8F%97%E3%81%91%E5%8F%A3-1-2.md) | 08-29 21:16 | パネルと受け口-1（二度目）— 釦の字に終了予定を出す（panel v80） |
 | [`パネルと受け口-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%83%91%E3%83%8D%E3%83%AB%E3%81%A8%E5%8F%97%E3%81%91%E5%8F%A3-1.md) | 08-29 20:58 | パネルと受け口-1 — 写しの一行目・指示を受けた刻・同じ印の二度受け |
 | [`報告の残し方-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%A0%B1%E5%91%8A%E3%81%AE%E6%AE%8B%E3%81%97%E6%96%B9-1.md) | 08-29 20:42 | 報告の残し方-1 — 報告を印ごとに reports/ へ残す |
-| [`パネルの写し-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%83%91%E3%83%8D%E3%83%AB%E3%81%AE%E5%86%99%E3%81%97-1.md) | 08-29 20:42 | パネルの写し-1 — 作業中は「まとめて写す」を止め、写しの頭へ「未了 N件」を立てる（panel v78） |
-| [`直し-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E7%9B%B4%E3%81%97-1.md) | 08-29 20:41 | 直し-1 — パネルの題の箱／現況の行の版／投票欄の切れ |
 
 <!-- 控えの一覧 ここまで -->
