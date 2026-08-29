@@ -84,7 +84,14 @@ $ diff 公開物 手元 → 完全一致
 
 直近に ntfy へ送ったものを、新しい順に五件まで。**要約せず、送った本文をそのまま写しています。**
 
-### 1. ✅ 終わりました（返事不要）
+### 1. 🕒 延びています
+
+```
+指示を受けた刻-1（フックが日本語の枠を一件も読めていなかった）
+終了予定03:48を過ぎています（経過13分）
+```
+
+### 2. ✅ 終わりました（返事不要）
 
 ```
 パネルと受け口-8（下の二箱を畳む対象から外す）— panel v83
@@ -94,13 +101,13 @@ panel.html L162-168 の body.busy の並びから #doneBox（終わりました 
 実機: 返事パネル ── 作業中のあいだも下の「✅ 終わりました N件」と「ヨシした数 N件（ヨシ済み確認 N件）」の箱が見える（開いて中身も読める）が、中の「写す」釦は薄くて押せない／消えているのは上の「お知らせ」の釦とその一覧だけ／版の字が panel v83
 ```
 
-### 2. ✅ 終わりました（返事不要）
+### 3. ✅ 終わりました（返事不要）
 
 ```
 写せます（20件）
 ```
 
-### 3. ✅ 終わりました（返事不要）
+### 4. ✅ 終わりました（返事不要）
 
 ```
 写せます-1（甲案の押し送り）／台帳の刻-1（受領時刻のずれの原因・使う場所・直し・照合）
@@ -110,7 +117,7 @@ panel.html L162-168 の body.busy の並びから #doneBox（終わりました 
 実機: iPhone ── 作業中が終わった直後（最大60秒以内）に「写せます（N件）」が届く。続けてパネルを開き直しても二度目は鳴らない。次に作業中へ入って終わったとき、また一度だけ鳴る
 ```
 
-### 4. ✅ 終わりました（返事不要）
+### 5. ✅ 終わりました（返事不要）
 
 ```
 パネルと受け口-7（終了予定を実測から当てる・釦の字を状態から読む）— panel v82
@@ -120,15 +127,11 @@ panel.html L162-168 の body.busy の並びから #doneBox（終わりました 
 実機: 返事パネル ── 作業中のあいだ「まとめて写す」の釦に「作業中、HH時MM分終了予定」が出る（見込みが無い回も時刻が出て、「終了予定不明」は出ない）／時刻が過ぎると次の刻へ延びる／ヨシ待ち・手待ちのときは「まとめて写す（N件）」に戻って押せる／版の字が panel v82
 ```
 
-### 5. 🕒 延びています
-
-```
-パネルと受け口-5（「写せます（N件）」の押し送りの可否と手順）— 調べのみ、実装はしていない
-終了予定23:09を過ぎています（経過21分）
-```
-
 <!-- 送った知らせ ここまで -->
 
+
+
+---
 
 ---
 
@@ -141,11 +144,13 @@ panel.html L162-168 の body.busy の並びから #doneBox（終わりました 
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **36件**ある。
+　ここに出るのは新しい20件。全部で **38件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`通知の題-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%80%9A%E7%9F%A5%E3%81%AE%E9%A1%8C-1.md) | 08-30 03:50 | 通知の題-1 — ntfy の押し送りの題を、猫の顔ごとに変えた |
+| [`欠陥調べ-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E6%AC%A0%E9%99%A5%E8%AA%BF%E3%81%B9-1.md) | 08-30 03:48 | 欠陥調べ-1 — 三つの持ち場それぞれの欠陥の棚卸し |
 | [`連携の穴-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%80%A3%E6%90%BA%E3%81%AE%E7%A9%B4-1.md) | 08-30 03:41 | 連携の穴-1 — Codeタブ・返事パネル・GitHub の連携の棚卸し |
 | [`指示を受けた刻-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E6%8C%87%E7%A4%BA%E3%82%92%E5%8F%97%E3%81%91%E3%81%9F%E5%88%BB-1.md) | 08-30 03:35 | 指示を受けた刻-1 — 止まっていた原因と直し |
 | [`パネルと受け口-8.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%83%91%E3%83%8D%E3%83%AB%E3%81%A8%E5%8F%97%E3%81%91%E5%8F%A3-8.md) | 08-30 03:26 | パネルと受け口-8 — 下の二箱を畳む対象から外した（panel v83） |
@@ -164,7 +169,5 @@ panel.html L162-168 の body.busy の並びから #doneBox（終わりました 
 | [`兎の攻守-10.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%85%8E%E3%81%AE%E6%94%BB%E5%AE%88-10.md) | 08-29 19:44 | v1430 — 兎の攻の材料を fillWeak へ移した／panel v76 見出しの書き換え |
 | [`兎の攻守-9.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%85%8E%E3%81%AE%E6%94%BB%E5%AE%88-9.md) | 08-29 19:02 | 兎の攻守-9 — fillWeak 単独案を当てる前の確かめ（数字と写しのみ） |
 | [`兎の攻守-8.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%85%8E%E3%81%AE%E6%94%BB%E5%AE%88-8.md) | 08-29 18:54 | 兎の攻守-8 — fillWeak と fillGood を両側へ割った（数字のみ） |
-| [`兎の攻守-7.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%85%8E%E3%81%AE%E6%94%BB%E5%AE%88-7.md) | 08-29 18:45 | 兎の攻守-7 — 染めA（字牌を除く最多色の枚数）を測った（数字のみ） |
-| [`兎の攻守-6.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%85%8E%E3%81%AE%E6%94%BB%E5%AE%88-6.md) | 08-29 18:35 | 兎の攻守-6 — 染めBの線を詰めた（数字のみ） |
 
 <!-- 控えの一覧 ここまで -->
