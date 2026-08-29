@@ -181,6 +181,16 @@
   li.ack .m{display:none;}
   li.ack.open .m{display:block;}
   li.ack{cursor:pointer;}
+  /* 畳んだ札の件名（v75）。畳むと題と時刻しか出ず、**どの件の札かが分からなかった**。
+     ＊「✅ 終わりました（返事不要）」は v48 から畳んである。題は種別しか語らないので、
+       畳んだ札が何本並んでも見分けが付かない。答えを本文に書いても、開くまで届かない。
+       2026-08-29、同じ数字を四度求められた。四度とも本文には入って公開もされていたが、
+       畳んだ表紙に何も出ないので、読む側からは「返っていない」ことと区別が付かなかった。
+     ＊出すのは本文の一行目（＝控えの「件名:」がそのまま来る）。
+     ＊開いたら本文の側に同じ字が出るので、こちらは畳んでいる間だけ出す。 */
+  li .sj{font-size:12px; line-height:1.5; color:var(--dim); margin:2px 0 0; padding:0 2px;
+         overflow-wrap:anywhere;}
+  li.ack.open .sj{display:none;}
   /* 板の二段（あなた待ち・直近に終わった仕事）は、下の二つの箱と同じ背丈にする（v63）。
      ＊下の箱の表紙は .cpall の釦で、min-height 48px・字 16px・左右の余白 14px。
        こちらは li の上下の余白（12px）と .t の字（17px）と下の空き（4px）で
@@ -312,7 +322,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v74（8月29日）</p>
+  <p class="ver" id="verTag">panel v75（8月29日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -334,7 +344,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '74';
+  var PANEL_VER = '75';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1032,6 +1042,7 @@
                 + '<p class="t"><span class="tx">' + esc(d.title || '(題なし)')
                 + '<span class="when">' + hhmm(d.time) + '</span></span>'
                 + '<button type="button" class="cp" data-i="' + i + '">写す</button></p>'
+                + (fold ? '<p class="sj">' + esc(headOf(d)) + '</p>' : '')
                 + '<p class="m">' + esc(d.message) + '</p></li>';
         });
         /* 未処理が無ければ、跡地に板の三つを出す（v44）。札があるときは今までどおり札だけ。 */
@@ -1044,6 +1055,19 @@
              + 'notices.json が公開ページに無いか、通信が届いていません。');
         paintBar();
       });
+  }
+
+  /* 畳んだ札の表紙に添える件名（v75）。本文の一行目＝控えの「件名:」がそのまま来る。
+     ＊題（「✅ 終わりました（返事不要）」など）は種別しか語らないので、
+       畳んだ札が並ぶとどれが何の件か分からない。一行目を添えて見分けられるようにする。 */
+  function headOf(d) {
+    var NL = String.fromCharCode(10);
+    var L = String((d && d.message) || '').split(NL);
+    for (var i = 0; i < L.length; i++) {
+      var t = L[i].replace(/^\s+|\s+$/g, '');
+      if (t) { return t; }
+    }
+    return '';
   }
 
   /* 受け取り確認かどうか。ここだけ一覧で畳む。 */
@@ -1640,6 +1664,7 @@
             + '<p class="t"><span class="tx">' + esc(d.title || '(題なし)')
             + '<span class="when">' + hhmm(d.time) + '</span></span>'
             + '<button type="button" class="cp" data-i="' + i + '">写す</button></p>'
+            + '<p class="sj">' + esc(headOf(d)) + '</p>'
             + '<p class="m">' + esc(d.message) + '</p></li>';
     });
     ul.innerHTML = html;
