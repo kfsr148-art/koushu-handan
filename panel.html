@@ -252,6 +252,9 @@
       <span class="c">
         <span class="s" id="stSubj">読み込み中</span>
         <span class="k hide" id="stMik"></span>
+        <!-- 最後に指示を受けた刻（v79）。作業中のときだけ出し、ほかは行ごと畳む。
+             読む元は state.json の orderAt（inbox-feed.ps1 → last-order.txt が書く）。 -->
+        <span class="k hide" id="stOrder"></span>
         <!-- 郵便受けの読み残し（v74）。0件のときは行ごと畳む。 -->
         <span class="mail hide" id="stMail"></span>
       </span>
@@ -328,7 +331,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v78（8月30日）</p>
+  <p class="ver" id="verTag">panel v79（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -350,7 +353,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '78';
+  var PANEL_VER = '79';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -783,7 +786,9 @@
          「まだ途中がある」と分かるようにしておく。 */
     var working = workingCards();
     if (working.length) {
-      out.unshift('未了 ' + working.length + '件：'
+      /* ＊v79：一行目は必ず notices.json の URL。未了の行はその**次**へ入れる。
+           v78 では unshift で頭へ入れていたので、URL が二行目へ落ちていた。 */
+      out.splice(1, 0, '未了 ' + working.length + '件：'
         + working.map(function (d) { return String((d && d.title) || '(題なし)'); }).join('、'));
     }
     var count = 0;   /* 実際に out へ入れた札の数。釦に出るのはこの数 */
@@ -1437,6 +1442,11 @@
        印を付け直す相手も、落とす先も無い。箱に収まったまま置く。
      ＊どの札かは、箱を組んだときに控えた並び（doneItems／copiedItems）から引く。 */
   var doneItems = [], copiedItems = [];
+  /* 写しの一行目には、必ず notices.json の道を置く（v79）。
+     ＊まとめて写しは前から入れていたが、個別の「写す」には入っていなかった。
+       受け取る側は写された文だけを見るので、どの札の写しにも読み元を添える。
+     ＊「URLを写す」の釦（#btnCopyUrl・L319）はそのまま残す。あちらは道だけを渡す口。 */
+  function withPage(t) { return NOTICES_PAGE + String.fromCharCode(10) + String(t); }
   function copyBoxed(items, i, btn) {
     var d = (items || [])[i];
     if (!d) { return; }
@@ -1445,13 +1455,13 @@
        題と時刻の一行を頭に付けたうえで、本文をそのまま渡す（どこも切らない）。 */
     var NL = String.fromCharCode(10);
     var text = '［' + (d.title || '(題なし)') + '］' + hhmm(d.time) + NL + String(d.message || '');
-    copyInto(btn, text, '写す');
+    copyInto(btn, withPage(text), '写す');
   }
 
   function copyOne(i, btn) {
     var d = shown[i];
     if (!d) { return; }
-    var text = sixLines(d);
+    var text = withPage(sixLines(d));   /* 一行目に notices.json の道（v79） */
     var done = function () {
       /* 写した印を端末の中に残す。開き直しても消えない。 */
       copied[keyOf(d)] = Math.floor(Date.now() / 1000);   /* 写した刻。届いた印の物差し（v32） */
@@ -1525,13 +1535,16 @@
        ＊経過は二段目の「開始HH:MM・終了予定…・経過N分」が持っているので、二重に出ていた。 */
   /* ＊三段目は郵便受けの読み残し（v74）。**0件のときは行ごと畳む**ので、
        普段はこれまでどおり二段のまま。詰まったときだけ一行増える。 */
-  function paintState(cls, word, subj, mik, mail) {
+  function paintState(cls, word, subj, mik, mail, ord) {
     $('state').className = 'state ' + cls;
     $('stWord').textContent = word;
     $('stSubj').textContent = subj;
     /* 見込みは二段目。無いときは畳んで、今までどおりの一行に戻す。 */
     $('stMik').textContent = mik || '';
     $('stMik').className = mik ? 'k' : 'k hide';
+    /* 最後に指示を受けた刻は三段目（v79）。作業中でないときは空で渡るので畳む。 */
+    $('stOrder').textContent = ord || '';
+    $('stOrder').className = ord ? 'k' : 'k hide';
     var n = (typeof mail === 'number' && mail > 0) ? mail : 0;
     $('stMail').textContent = n ? ('郵便受け 未取り込み ' + n + '件') : '';
     $('stMail').className = n ? 'mail' : 'mail hide';
@@ -1845,6 +1858,16 @@
               + '・経過' + min + '分';
         }
 
+        /* 最後に指示を受けた刻（v79）。作業中のときだけ出す。
+           ＊読む元は state.json の orderAt。形は "YYYY-MM-DD HH:MM:SS" の字。
+             刻が読めない回は行ごと出さない（「—」で埋めない）。
+           ＊指示を受けていない状態＝作業中の札が無いときは、そもそもここへ来ない。 */
+        var ord = '';
+        if (w === '作業中') {
+          var om = String(d.orderAt || '').match(/(\d{1,2}):(\d{2})/);
+          if (om) { ord = '指示を受けた ' + om[1] + ':' + om[2]; }
+        }
+
         /* 版と最終確認は、状態がどうであろうと**必ず**塗る（v33）。
            ＊v18 から、下の「連絡なし」の早戻りが paintFacts より前にあり、
              連絡なしの間だけ「版 —／最終確認 —」の初期値のまま残っていた（2026-08-25 実機で発覚）。
@@ -1856,7 +1879,7 @@
         if (sec > STALE_SEC) {
           /* 連絡なしの間は数えない。数えると、毎秒の書き換えが「連絡なし」を上書きしてしまう。 */
           sinceBase = { at: 0, word: '' };
-          paintState('lost', '連絡なし', subj + '（最後は ' + w + '）', mik, d.mailUnread);
+          paintState('lost', '連絡なし', subj + '（最後は ' + w + '）', mik, d.mailUnread, ord);
           return;
         }
         var cls = 'idle';
@@ -1874,7 +1897,7 @@
           sinceBase = { at: 0, word: '' };
         }
         lastState = { word: word, since: '', at: d.at || 0 };
-        paintState(cls, word, subj, mik, d.mailUnread);
+        paintState(cls, word, subj, mik, d.mailUnread, ord);
       })
       .catch(function (e) {
         sinceBase = { at: 0, word: '' };
