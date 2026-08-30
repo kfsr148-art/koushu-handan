@@ -218,6 +218,17 @@
      ＊`li.why.stline .m` と重ねて書くのは、上の `li.why .m` に負けないため。
        同じ強さだと並び順で決まるので、class を一つ足して先に立たせる。 */
   li.why.stline .m{color:var(--ask);}
+  /* 高さを固定する（v100）。**字の長さで下の釦の位置が動かない**ようにするため。
+     ＊値は実測から採った。iPhone 縦持ち（本体の幅 390px）で組んだときの高さ——
+       「作業中、HH時MM分終了予定（開始…・経過…・指示…）」**78.38px**（経過が3桁でも、
+       終了予定が不明でも同じ78px）／「次の指示待ち」51px／「ヨシを返してください」51px。
+       その最大値を、端数を切り上げて 79px。**78px では 0.38px 足りず、釦の上端が
+       299.39px と 299.77px でずれた**（実測）。
+     ＊`min-height` なので、これより長い字が来たら折り返して伸びる（切り捨てない）。
+       伸びるのは例外で、ふだんの三通りはこの高さに収まる。
+     ＊中の一行を上へ寄せるのではなく、箱の中で**縦の中ほど**に置く。
+       字が一行の回（次の指示待ち）でも、二行の回（作業中）と同じ位置に見える。 */
+  li.why.stline{min-height:79px; display:flex; align-items:center;}
 
   /* 受け取り確認と、写し終えた件は畳んでおく。題の行だけ出し、押すと本文が開く。 */
   li.ack .m{display:none;}
@@ -379,7 +390,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v99（8月30日）</p>
+  <p class="ver" id="verTag">panel v100（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -401,7 +412,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '99';
+  var PANEL_VER = '100';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
