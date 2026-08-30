@@ -349,7 +349,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v88（8月30日）</p>
+  <p class="ver" id="verTag">panel v89（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -371,7 +371,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '88';
+  var PANEL_VER = '89';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -773,23 +773,12 @@
        ＊写し終えて0件になったとき、はじめて「作業中、HH時MM分終了予定」へ切り替える。
          予定の表示は「もう写す物が無い」ことの言い換えであって、押させない理由ではない。
        ＊N は写しに入る**札の数**（buildBundle().count）。押せば必ずこの数が写る。 */
-    /* ＊v88：字に**内訳を出す**。押せば全部（N＋M）が一本で写るのは v87 のまま。
-         ・新しく終わった分が有り、読み返しも有る … 「まとめて写す（新N件＋読み返しM件）」
-         ・読み返しが0件                          … 「まとめて写す（N件）」
-         ・新しく終わった分が0件                  … 「読み返す（M件）」
-       ＊v87 は数だけを言う一本の字にしたが、**新しく片付いたのが何件かが分からない**。
-         知らせの「写せます（N件）」も新しい分だけを言う形に戻したので、字も揃える。
-       ＊押したときの中身は変えない。頭の一行（未写し N件＋読み返し M件）もそのまま。 */
-    var bb = buildBundle();
-    var n = bb.count;
+    /* ＊v89：字は「まとめて写す（N件）」の一つだけ。N は**未写しの数**。
+         読み返しをやめたので、内訳を出す相手が無くなった（v88 の三分岐は取り消し）。
+       ＊N は写せますの知らせの N と**同じ物**を指す——どちらも「まだ写していない分」。 */
+    var n = buildBundle().count;
     if (n > 0) {
-      if (bb.unread > 0 && bb.back > 0) {
-        b.textContent = 'まとめて写す（新' + bb.unread + '件＋読み返し' + bb.back + '件）';
-      } else if (bb.unread > 0) {
-        b.textContent = 'まとめて写す（' + bb.unread + '件）';
-      } else {
-        b.textContent = '読み返す（' + bb.back + '件）';
-      }
+      b.textContent = 'まとめて写す（' + n + '件）';
       b.disabled = false;
       b.hidden = false;
     } else if (busy) {
@@ -921,31 +910,17 @@
     if (lastStat === '作業中') {
       out.splice(1, 0, '作業中 1件：' + (lastSubj || '（件名なし）'));
     }
-    /* 読み返しの回の断り書きは、札を選んだあと（下）で入れる。ここでは場所だけ空けておく。 */
     var count = 0;   /* 実際に out へ入れた札の数。釦に出るのはこの数 */
     /* 走査はここ一度きり。ここで選んだ札が、そのまま写しの中身になり、落とす札になる。 */
-    /* ---- 一回の貼りで、写せるもの全部（v87）----
-       ＊v85/v86 は「未写しが先、読み返しが後」で**別々の回**に分けていた。そのため
-         写せますの知らせを受けて貼ると、**未写しの分だけ**が入り、前の分を取るのに
-         もう一度貼る要があった。**貼り付けが二回要る**形になっていた。
-       ＊v87 は分けない。**控えに載っている札を全部**、一本の文に入れる。
-         写した印が付いている札も入る（＝読み返し）。一回で足りる。
-       ＊頭の断り書きは「未写し N件＋読み返し M件」の一行。分けて出すのは**字だけ**にして、
-         中身は分けない。
-       ＊数（釦の N）は N＋M ＝ 控えの札の数。押せば必ずこの数が写る。
-         **写せますの知らせの N も同じ数**（watch-notify.ps1 が notices.json の件数で出す）。 */
-    var all = (allRows || []).slice();
-    var unread = all.filter(function (d) { return !isDone(d); }).length;
-    var back = all.length - unread;
-    var todo = all;
-    var reread = (unread === 0);
-    /* 内訳の一行（v87）。頭の三行目に入れる（URL・作業中の行の次）。
-       ＊「未写し N件＋読み返し M件」。どちらも同じ一本の文に入っている。
-       ＊札が0件のときは行ごと出さない。 */
-    if (todo.length) {
-      out.splice((lastStat === '作業中') ? 2 : 1, 0,
-        '未写し ' + unread + '件＋読み返し ' + back + '件');
-    }
+    /* ---- 写すのは未写しの分だけ（v89）----
+       ＊v87/v88 は「写した印の付いた札」も混ぜて一本にしていた（読み返し）。
+         押すたびに同じ札が何度も入り、写しが太るだけだった。**v89 で読み返しをやめた。**
+       ＊写した札を後から見たいときは、**「終わりました」の箱の個別の「写す」**で足りる。
+         あちらは v84 から作業中でも押せる。
+       ＊数（釦の N）＝ 未写しの札の数。押せば必ずこの数が写り、この数だけ落ちる。
+         **写せますの知らせの N も同じ物**（watch-notify.ps1 が「前に知らせてから増えた分」を数える）。 */
+    var todo = (shown || []).filter(function (d) { return !isDone(d); });
+    /* ＊読み返しの断り書きは v89 で外した。写すのは未写しの分だけなので、断る要が無い。 */
     var cards = bundleCards(todo);
     /* 「🙋 ヨシしてください」の札は、何枚あっても全部を全文で入れる（v66）。
        ＊ヨシを返す判断はここでしかできない。何を待っているかが写しに無いと、
@@ -969,9 +944,8 @@
          中身には入れたまま、数からは外す。 */
     bundleBoard().forEach(function (t) { out.push(t); });
     if (brief) { out.push('ほか' + brief + '件（写す釦で個別に写せます）'); }
-    /* unread / back は釦の字の内訳に使う（v88）。写す中身は v87 のまま（全部で一本）。 */
-    return { text: out.join(NL), todo: todo, count: count, reread: reread,
-             unread: unread, back: back };
+    /* ＊v89：reread / unread / back は返さない。写すのは未写しだけなので、count が全部を語る。 */
+    return { text: out.join(NL), todo: todo, count: count };
   }
 
   function copyBundle(btn) {
