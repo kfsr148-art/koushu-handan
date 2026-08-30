@@ -360,7 +360,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v94（8月30日）</p>
+  <p class="ver" id="verTag">panel v95（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -382,7 +382,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '94';
+  var PANEL_VER = '95';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -844,8 +844,13 @@
          v90 で板の跡地にも同じ字の行を置いたので、**同じ字が二段に並んでいた**。
          押せない釦は用が無いので釦の側を外し、**字だけの一行**（黄色）を残す。 */
     var n = buildBundle().count;
+    /* 全数 M ＝ 控えに載っている札の数（未写し＋写した印の付いた札）。v95。
+       ＊N だけだと「あと何件あるのか」は分かっても「全体でどれだけ溜まっているか」が
+         見えない。押して写るのは今までどおり N だけで、M は**目安として添えるだけ**。
+       ＊M は allRows の数をそのまま使う。数え直しはしない（同じ数を二箇所で作らないため）。 */
+    var m = (allRows || []).length;
     if (n > 0) {
-      b.textContent = 'まとめて写す（' + n + '件）';
+      b.textContent = 'まとめて写す（残' + n + '／全' + m + '件）';
       b.disabled = false;
       b.hidden = false;
     } else {
