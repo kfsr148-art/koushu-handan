@@ -46,7 +46,11 @@
   .state{display:flex; align-items:center; gap:8px; min-height:134px;
     border:1px solid var(--line); border-left-width:6px; border-radius:10px;
     padding:6px 10px; margin:0 0 10px; background:var(--card);}
-  .state .w{font-size:18px; font-weight:700; flex:0 0 auto;}
+  /* ＊v99：左の字が「作業中」の三文字ではなく**枠の印**（例：パネルの整理-10）になったので、
+       縮まない指定（flex:0 0 auto）だと長い印が右の欄を押し出す。縮みと折り返しを許す。
+       ＊上限を半分に切るのは、印が長い回でも右の説明が読める幅を残すため。 */
+  .state .w{font-size:18px; font-weight:700; flex:0 1 auto;
+    max-width:50%; min-width:0; overflow-wrap:anywhere;}
   .state .c{flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:2px;}
   /* 件名も見込みも切らない。入りきらなければ「…」で削らず、枠のほうを縦に伸ばす。
      一行箱（nowrap＋ellipsis）だと iPhone の幅では末尾から呑まれ、
@@ -375,7 +379,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v98（8月30日）</p>
+  <p class="ver" id="verTag">panel v99（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -397,7 +401,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '98';
+  var PANEL_VER = '99';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -628,6 +632,32 @@
   }
   /* 黄色の行が使う値。pullState が取得のたびに置き直す（v98）。 */
   var lastStartHM = '', lastOrderHM = '';
+
+  /* 件名を「印」と「説明」に割る（v99）。
+       例 … 「パネルの整理-8（お知らせを消し、黄色の行を固定位置へ）— panel v97」
+              → 印 ＝ パネルの整理-8
+                 説明 ＝ お知らせを消し、黄色の行を固定位置へ — panel v97
+     ＊印は頭から、括弧・空白・ダッシュのどれかに当たるまで。
+     ＊括弧の中は説明の頭へ回し、括弧の外に続く分（「— panel v97」など）はその後ろへ繋ぐ。
+     ＊説明が無い件名（「パネルの整理-9」だけ）は、説明を空にする。
+       **印を左に出すので、右へ同じ字をもう一度出さない。**
+     ＊割れない形（印が取れない）のときは、印を空にして全部を説明へ回す。
+       そのときは今までどおり右側だけに出る。 */
+  function splitSubj(t) {
+    var s = String(t || '').trim();
+    if (!s) { return { mark: '', rest: '' }; }
+    var m = s.match(/^([^（(\s—]+)\s*(?:（([^）]*)）)?\s*(.*)$/);
+    if (!m || !m[1]) { return { mark: '', rest: s }; }
+    var inner = m[2] || '';
+    var tail = (m[3] || '').trim();
+    var rest = (inner + ((inner && tail) ? ' ' : '') + tail).trim();
+    /* 頭に残った繋ぎのダッシュは落とす（v99）。
+       ＊「v1429 — 副産物三件を…」のように括弧で始まらない件名だと、
+         印を外したあとに「— 副産物三件を…」と横棒から始まってしまう。
+       ＊落とすのは**頭の一つだけ**。文中のダッシュには触らない。 */
+    rest = rest.replace(/^[—–ー-]\s*/, '');
+    return { mark: m[1], rest: rest };
+  }
 
   function stateLineText() {
     if (lastStat === '作業中') {
@@ -2164,6 +2194,18 @@
            ＊経過を出さない回は sinceBase を空にする。**空にしないと tickSince が
              毎秒この字を「手待ち・N分N秒」で上書きする。** */
         var word = w;
+        /* ---- 作業中の札の左は「印」（v99）----
+           ＊v98 までは左が「作業中」だった。状態は**下の黄色の行**が受け持っているので、
+             札の左に状態の字を出すと同じことを二度言うことになる。
+             左には**いま動いている枠の印**（例：パネルの整理-8）を出す。
+           ＊右側は説明の分だけにする。印は左に一度だけ。
+           ＊印が取れない件名のときは、左を空にして右側だけに出す（今までどおりの姿）。
+           ＊次の指示待ち・ヨシ待ちの左の字は今のまま（下の枝が決める）。 */
+        if (w === '作業中') {
+          var sp = splitSubj(subj);
+          word = sp.mark || '';
+          subj = sp.mark ? sp.rest : subj;
+        }
         /* 取得のたびに statAt を読み直して基準を合わせ直す。数え直しは tickSince が毎秒行う。 */
         if (w === '手待ち') {
           sinceBase = { at: 0, word: '' };
