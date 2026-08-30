@@ -250,16 +250,19 @@ $ diff 公開物 手元 → 完全一致
 
 ---
 
+---
+
 <!-- 控えの一覧 ここから -->
 
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **72件**ある。
+　ここに出るのは新しい20件。全部で **73件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`穴の直し-1-4.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E7%A9%B4%E3%81%AE%E7%9B%B4%E3%81%97-1-4.md) | 08-30 16:32 | 穴の直し-1 ③ の裁定 — 焼き付けの四枚を消した（6.97MB） |
 | [`穴の直し-1-3.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E7%A9%B4%E3%81%AE%E7%9B%B4%E3%81%97-1-3.md) | 08-30 16:12 | 穴の直し-1 ③ — 掃除の候補 25ファイル 32.0MB の一覧（消していない） |
 | [`穴の直し-1-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E7%A9%B4%E3%81%AE%E7%9B%B4%E3%81%97-1-2.md) | 08-30 16:04 | 穴の直し-1 ② — Pages の errored の内訳（数えただけ） |
 | [`通知の急ぎ-2-4.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%80%9A%E7%9F%A5%E3%81%AE%E6%80%A5%E3%81%8E-2-4.md) | 08-30 14:51 | 通知の急ぎ-2 ④ — 乙で確定。実測で三点のずれが出たので、知らせに自分の札を足した |
@@ -279,6 +282,5 @@ $ diff 公開物 手元 → 完全一致
 | [`控えの穴-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E6%8E%A7%E3%81%88%E3%81%AE%E7%A9%B4-1.md) | 08-30 12:06 | 控えの穴-1 — 控えが書かれなかった理由と、届かなかった実測の出し直し |
 | [`パネルの整理-3.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%83%91%E3%83%8D%E3%83%AB%E3%81%AE%E6%95%B4%E7%90%86-3.md) | 08-30 12:03 | パネルの整理-3 — 二段になっていた予定表示の、釦の側を外した（panel v92） |
 | [`パネルの整理-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%83%91%E3%83%8D%E3%83%AB%E3%81%AE%E6%95%B4%E7%90%86-2.md) | 08-30 11:58 | パネルの整理-2 — 状態の行を三通りにした（panel v91） |
-| [`使用量の配分-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E4%BD%BF%E7%94%A8%E9%87%8F%E3%81%AE%E9%85%8D%E5%88%86-1.md) | 08-30 11:36 | 使用量の配分-1 — 定時の報せへ「1日あたり使ってよい%」の一行を足した |
 
 <!-- 控えの一覧 ここまで -->
