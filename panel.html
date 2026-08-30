@@ -349,7 +349,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v89（8月30日）</p>
+  <p class="ver" id="verTag">panel v90（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -371,7 +371,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '89';
+  var PANEL_VER = '90';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -510,8 +510,9 @@
   }
 
   /* 板の値（v45）。**未処理の知らせが無いときだけ**、一覧の場所に二段で出す。
-       上段 ① あなた待ち … 人の合図や返事が無いと進まない件（無ければ「あなた待ちは0件」）
-       下段 ② 直近に終わった仕事3件 … 件名と結果一行
+       上段 ① あなた待ち … 人の合図や返事が無いと進まない件（**無ければ箱ごと出さない**・v90）
+       中  ② 作業中の終了予定 … 作業中のときだけ、字だけの一行（v90）
+       下段 ③ 直近に終わった仕事3件 … 件名と結果一行
      ＊v44 で置いた三つ（台帳の残り一覧・今日の押し送り・控えの最終実行）は **v45 で外した**。
        未処理が無い画面で読みたいのは「数」ではなく「**こちらの番かどうか**」だから。
      ＊値はどれも VAIO の側にしか無いので、`board-emit.ps1` が10分ごとに
@@ -559,6 +560,32 @@
     return '';
   }
 
+  /* 作業中の終了予定の字（v90）。**釦と、板の跡地の一行の両方**がここを見る。
+     ＊v89 まではこの組み立てが setCopyBoardLabel() の中にしか無かった。
+       同じ字を二箇所で作ると必ずずれるので、先に一箇所へ寄せる。
+     ＊刻は作業中の終了予定をそのまま出す。候補が複数あるときは noteEnd がいちばん遅いものを残す。
+     ＊見込みが無くて刻が取れないときは、過去の実測から当てる（順は 系統 → 種類 → 全体）。
+     ＊出す刻が既に過ぎていたら、当てた分を足して先へ延ばす。過ぎた時刻を出したままにしない。 */
+  function endPredText() {
+    var endSec = lastEndAt;
+    var gm = 0;
+    if (endSec <= 0) {
+      gm = guessMin(lastSubj);
+      if (gm > 0 && lastStartedAt > 0) { endSec = lastStartedAt + gm * 60; }
+    }
+    var nowSec = Math.floor(Date.now() / 1000);
+    if (endSec > 0 && endSec <= nowSec) {
+      var step = (gm > 0 ? gm : 10) * 60;   /* 延ばす幅。当てが無ければ10分刻み */
+      var guard = 0;
+      while (endSec <= nowSec && guard < 200) { endSec += step; guard++; }
+    }
+    if (endSec > 0) {
+      var e = new Date(endSec * 1000);
+      return '作業中、' + e.getHours() + '時' + ('0' + e.getMinutes()).slice(-2) + '分終了予定';
+    }
+    return '作業中、終了予定不明';
+  }
+
   /* 「N件」を数字と単位に分けずに、そのまま字で組む。 */
   function boardHtml() {
     if (!board) {
@@ -582,12 +609,17 @@
     /* 開いた形で組み直すのは**中身があるときだけ**（v60）。
        ＊0件のときに開いた印が残っていると、中身が無いのに開いた形になり、
          空の帯だけが居座って見えた。0件は必ず畳んだ形にする。 */
-    h += '<li class="why ack board' + ((w.length && isOpen(wk)) ? ' open' : '') + '" data-k="' + okey(wk) + '">'
-       + '<p class="t"><span class="tx">'
-       + esc(w.length ? ('あなた待ち（' + w.length + '件）') : 'あなた待ちは0件')
-       + '</span>'
-       + '<button type="button" class="cp" id="cpWait">写す</button></p>';
+    /* ---- 0件の箱は出さない（v90）----
+       ＊v89 までは「あなた待ちは0件」という表紙だけの箱が常に居座っていた。
+         **無いことを言うためだけの箱**で、読む場所が一つ増えるだけだった。
+       ＊有るときの表示（表紙＋写す釦＋開いた中身）は**そのまま残す**。
+       ＊この跡地へは、作業中のときだけ終了予定の一行が入る（下の endPredText）。 */
     if (w.length) {
+      h += '<li class="why ack board' + (isOpen(wk) ? ' open' : '') + '" data-k="' + okey(wk) + '">'
+         + '<p class="t"><span class="tx">'
+         + esc('あなた待ち（' + w.length + '件）')
+         + '</span>'
+         + '<button type="button" class="cp" id="cpWait">写す</button></p>';
       /* 件名の下に、印・立てた時刻・待ちの種類・動く条件を小さめの字で一行足す（v58）。
          ＊この一行は本文（p.m）の中なので、畳んでいるあいだは出ない。開いたときだけ見える。
          ＊元の値に無い項目は、その項目だけ落とす（無いことを「—」で埋めない）。 */
@@ -601,8 +633,16 @@
              if (cond) { bits.push(cond); }
              return head + '<br><span class="wmeta">' + esc(bits.join(' ／ ')) + '</span>';
            }).join('<br>') + '</p>';
+      h += '</li>';
     }
-    h += '</li>';
+
+    /* 作業中のときだけ、終了予定を字だけの一行で出す（v90）。
+       ＊置き所は「あなた待ちは0件」の箱が居た跡地。**釦とは別**で、押せる物ではない。
+       ＊字は釦と同じ endPredText() から取る。二箇所で作らない。
+       ＊作業中でなければ、この行ごと出さない。 */
+    if (lastStat === '作業中') {
+      h += '<li class="why"><p class="m">' + esc(endPredText()) + '</p></li>';
+    }
 
     /* 下段 — 直近に終わった仕事3件。件名と、結果を一行だけ。 */
     var r = (!boardTaken && board.recent && board.recent.length) ? board.recent : [];
@@ -782,31 +822,9 @@
       b.disabled = false;
       b.hidden = false;
     } else if (busy) {
-      /* 字は「作業中、HH時MM分終了予定」（v80）。刻は作業中の終了予定をそのまま出す。
-         ＊候補が複数あるときは、noteEnd がいちばん遅いものを残している。
-         ＊見込みが無くて刻が取れないときは、過去の実測から当てる（v82）。
-           順は 同じ系統 → 同じ種類 → 全体（guessMin）。
-         ＊出す刻が既に過ぎていたら、当てた分を足して**先へ延ばす**（v82）。
-           過ぎた時刻を出したままにしない。 */
-      var endSec = lastEndAt;
-      var gm = 0;
-      if (endSec <= 0) {
-        gm = guessMin(lastSubj);
-        if (gm > 0 && lastStartedAt > 0) { endSec = lastStartedAt + gm * 60; }
-      }
-      var nowSec = Math.floor(Date.now() / 1000);
-      if (endSec > 0 && endSec <= nowSec) {
-        var step = (gm > 0 ? gm : 10) * 60;   /* 延ばす幅。当てが無ければ10分刻み */
-        var guard = 0;
-        while (endSec <= nowSec && guard < 200) { endSec += step; guard++; }
-      }
-      if (endSec > 0) {
-        var e = new Date(endSec * 1000);
-        b.textContent = '作業中、' + e.getHours() + '時'
-                      + ('0' + e.getMinutes()).slice(-2) + '分終了予定';
-      } else {
-        b.textContent = '作業中、終了予定不明';
-      }
+      /* 字は「作業中、HH時MM分終了予定」（v80）。組み立ては endPredText() へ寄せた（v90）。
+         ＊板の跡地の一行も同じ字を使う。二箇所で作るとずれるため。 */
+      b.textContent = endPredText();
       b.disabled = true;
       b.hidden = false;
     } else {
