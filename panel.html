@@ -349,7 +349,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v87（8月30日）</p>
+  <p class="ver" id="verTag">panel v88（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -371,7 +371,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '87';
+  var PANEL_VER = '88';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -773,14 +773,23 @@
        ＊写し終えて0件になったとき、はじめて「作業中、HH時MM分終了予定」へ切り替える。
          予定の表示は「もう写す物が無い」ことの言い換えであって、押させない理由ではない。
        ＊N は写しに入る**札の数**（buildBundle().count）。押せば必ずこの数が写る。 */
-    /* ＊v87：字は**一本に戻した**。v86 は「まとめて写す」と「読み返す」を分けていたが、
-         v87 で一回の貼りに未写しも読み返しも全部入るようになり、**押す前に区別する意味が
-         無くなった**。押せば同じ物が写るのに字が二つあると、違う物が出ると読める。
-       ＊内訳（未写し N件＋読み返し M件）は、写した文の頭の一行が持つ。 */
+    /* ＊v88：字に**内訳を出す**。押せば全部（N＋M）が一本で写るのは v87 のまま。
+         ・新しく終わった分が有り、読み返しも有る … 「まとめて写す（新N件＋読み返しM件）」
+         ・読み返しが0件                          … 「まとめて写す（N件）」
+         ・新しく終わった分が0件                  … 「読み返す（M件）」
+       ＊v87 は数だけを言う一本の字にしたが、**新しく片付いたのが何件かが分からない**。
+         知らせの「写せます（N件）」も新しい分だけを言う形に戻したので、字も揃える。
+       ＊押したときの中身は変えない。頭の一行（未写し N件＋読み返し M件）もそのまま。 */
     var bb = buildBundle();
     var n = bb.count;
     if (n > 0) {
-      b.textContent = 'まとめて写す（' + n + '件）';
+      if (bb.unread > 0 && bb.back > 0) {
+        b.textContent = 'まとめて写す（新' + bb.unread + '件＋読み返し' + bb.back + '件）';
+      } else if (bb.unread > 0) {
+        b.textContent = 'まとめて写す（' + bb.unread + '件）';
+      } else {
+        b.textContent = '読み返す（' + bb.back + '件）';
+      }
       b.disabled = false;
       b.hidden = false;
     } else if (busy) {
@@ -960,8 +969,9 @@
          中身には入れたまま、数からは外す。 */
     bundleBoard().forEach(function (t) { out.push(t); });
     if (brief) { out.push('ほか' + brief + '件（写す釦で個別に写せます）'); }
-    /* reread は釦の字を分けるために返す（v86）。写す中身は v85 のまま。 */
-    return { text: out.join(NL), todo: todo, count: count, reread: reread };
+    /* unread / back は釦の字の内訳に使う（v88）。写す中身は v87 のまま（全部で一本）。 */
+    return { text: out.join(NL), todo: todo, count: count, reread: reread,
+             unread: unread, back: back };
   }
 
   function copyBundle(btn) {
