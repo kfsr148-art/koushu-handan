@@ -220,6 +220,11 @@
   /* お知らせの釦と一覧は画面から消す（v97）。**中身と記録はそのまま**で、見せ方だけ止める。
      ＊まとめて写す（#btnCopyBoard）と、終わりました／ヨシした数の箱は今までどおり出る。 */
   #btnCopyAll, #list{display:none !important;}
+  /* 一番上の状態の札は画面から消す（v102）。**器と塗る処理はそのまま**で、見せ方だけ止める。
+     ＊中身は下で全部賄えている——状態と時間は黄色の行、終わった題は
+       「直近に終わった仕事」の箱。**いま動いている枠の印**は黄色の行の頭へ移した。
+     ＊消したので、画面の頭は黄色の行から始まる。 */
+  #state{display:none !important;}
   /* 板の跡地の状態の一行（v92）。黄色（ヨシ待ちと同じ --ask）で出す。
      ＊`li.why.stline .m` と重ねて書くのは、上の `li.why .m` に負けないため。
        同じ強さだと並び順で決まるので、class を一つ足して先に立たせる。 */
@@ -396,7 +401,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v101（8月30日）</p>
+  <p class="ver" id="verTag">panel v102（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -418,7 +423,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '101';
+  var PANEL_VER = '102';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -613,7 +618,12 @@
      ＊刻は作業中の終了予定をそのまま出す。候補が複数あるときは noteEnd がいちばん遅いものを残す。
      ＊見込みが無くて刻が取れないときは、過去の実測から当てる（順は 系統 → 種類 → 全体）。
      ＊出す刻が既に過ぎていたら、当てた分を足して先へ延ばす。過ぎた時刻を出したままにしない。 */
-  function endPredText() {
+  function endPredText(head) {
+    /* head … 頭に置く字（v102）。既定は「作業中」。
+       ＊v101 まで、いま動いている枠の印は**一番上の札の左**に出ていた。
+         v102 でその札ごと畳んだので、印の出しどころがここになった。
+       ＊呼ぶ側が「作業中（パネルの整理-13）」のような字を渡す。渡さなければ今までどおり。 */
+    var W = head || '作業中';
     var endSec = lastEndAt;
     var gm = 0;
     if (endSec <= 0) {
@@ -628,9 +638,9 @@
     }
     if (endSec > 0) {
       var e = new Date(endSec * 1000);
-      return '作業中、' + e.getHours() + '時' + ('0' + e.getMinutes()).slice(-2) + '分終了予定';
+      return W + '、' + e.getHours() + '時' + ('0' + e.getMinutes()).slice(-2) + '分終了予定';
     }
-    return '作業中、終了予定不明';
+    return W + '、終了予定不明';
   }
 
   /* 板の跡地へ出す状態の一行（v91 で三通り・v94 で字を替えた）。
@@ -649,6 +659,8 @@
   }
   /* 黄色の行が使う値。pullState が取得のたびに置き直す（v98）。 */
   var lastStartHM = '', lastOrderHM = '';
+  /* いま動いている枠の印（v102）。黄色の行の頭に出す。pullState が置き直す。 */
+  var lastMark = '';
 
   /* 件名を「印」と「説明」に割る（v99）。
        例 … 「パネルの整理-8（お知らせを消し、黄色の行を固定位置へ）— panel v97」
@@ -688,7 +700,13 @@
         bits.push('経過' + Math.max(0, Math.floor((Date.now() / 1000 - lastStartedAt) / 60)) + '分');
       }
       if (lastOrderHM) { bits.push('指示' + lastOrderHM); }
-      return endPredText() + (bits.length ? ('（' + bits.join('・') + '）') : '');
+      /* 頭に**いま動いている枠の印**を入れる（v102）。
+         ＊v101 まで印は一番上の札の左に出ていた。v102 でその札を畳んだので、
+           **印の出しどころがこの行だけ**になった。出さないと、何の件で動いているかが
+           画面のどこにも無くなる。
+         ＊印が取れない回（件名が割れない形）は、今までどおり「作業中、…」のまま。 */
+      var head = '作業中' + (lastMark ? '（' + lastMark + '）' : '');
+      return endPredText(head) + (bits.length ? ('（' + bits.join('・') + '）') : '');
     }
     if (lastStat === '手待ち')   { return '次の指示待ち'; }
     if (lastStat === 'ヨシ待ち') { return 'ヨシを返してください'; }
@@ -2218,10 +2236,12 @@
            ＊右側は説明の分だけにする。印は左に一度だけ。
            ＊印が取れない件名のときは、左を空にして右側だけに出す（今までどおりの姿）。
            ＊次の指示待ち・ヨシ待ちの左の字は今のまま（下の枝が決める）。 */
+        lastMark = '';
         if (w === '作業中') {
           var sp = splitSubj(subj);
           word = sp.mark || '';
           subj = sp.mark ? sp.rest : subj;
+          lastMark = sp.mark || '';   /* 黄色の行の頭へ渡す（v102） */
         }
         /* 取得のたびに statAt を読み直して基準を合わせ直す。数え直しは tickSince が毎秒行う。 */
         if (w === '手待ち') {
