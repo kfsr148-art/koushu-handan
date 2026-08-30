@@ -74,6 +74,30 @@ function hhmm(d) {
   return p(d.getHours()) + ':' + p(d.getMinutes());
 }
 
+/* ボーダーライン（2026-08-30・使用量の配分-2）。
+ *   「いまの時点で、週の割り当てのうちどこまで使ってよいか」の目安。
+ *   式 … **直近リセット刻からの経過24時間の数 × 100 ÷ 7**（端数の日は数えない）。
+ *        直近リセット刻は resets_at（次のリセット）から週期＝7日を引いて導く。
+ *        リセットは毎週 20:00（現地）なので、表示は「20:00まで N%」。
+ *   例 … リセットが 8/31(月)20:00 のとき、8/30(土)20:00 を過ぎた時点で 6×100÷7 = 85.7%。
+ *        8/31 20:00 ちょうどで 7×100÷7 = 100%。
+ *   ＊古い台本の「19:59まで」の引き方は**採らない**（この関数がその置き換え）。
+ *   ＊週全体も週 Fable も resets_at は同じ刻なので、**各自の物差しで同じ値**になる。 */
+function borderPct(iso) {
+  if (!iso) { return null; }
+  let next = Date.parse(iso);
+  if (isNaN(next)) { return null; }
+  /* **分へ丸める。** 実物の resets_at には小数秒が乗り（…T11:00:00.469877Z）、
+     二つの物差しで約1秒ずれてもいる（weekly_all 11:00:00.697 ／ weekly_scoped 10:59:59.697）。
+     そのままだと 20:00 ちょうどの境目で「まだ6日目が満ちていない」と読まれて1日ずれ、
+     二つの行の値も食い違う。分へ丸めれば、どちらも同じ 20:00 になる。 */
+  next = Math.round(next / 60000) * 60000;
+  const last = next - 7 * 86400000;              /* 直近リセット刻 ＝ 次 − 7日 */
+  const days = Math.floor((Date.now() - last) / 86400000);   /* 経過24時間の数 */
+  if (days < 0) { return null; }
+  return Math.round(Math.min(7, days) * 1000 / 7) / 10;      /* 0.1% 刻み・上限100 */
+}
+
 /* 一行 ＝ 名前・割合・棒・戻るまで。 */
 function row(stack, name, p, back) {
   const line = stack.addStack();
@@ -151,8 +175,14 @@ async function build() {
   const fb = fableLimit(body);
 
   row(w, 'セッション', pct(fh.utilization), until(fh.resets_at));
-  row(w, '週全体',     pct(sd.utilization), until(sd.resets_at));
-  if (fb) { row(w, '週 Fable', pct(fb.percent), until(fb.resets_at)); }
+  /* 週の二行には、ボーダー（20:00まで N%）を「戻るまで」の左に添える（2026-08-30）。
+     ＊値が出ない回（resets_at が読めない）は添えず、今までどおりの形に落ちる。 */
+  const bAll = borderPct(sd.resets_at);
+  const bFab = fb ? borderPct(fb.resets_at) : null;
+  row(w, '週全体',     pct(sd.utilization),
+      (bAll !== null ? ('20:00まで ' + bAll + '%  ') : '') + until(sd.resets_at));
+  if (fb) { row(w, '週 Fable', pct(fb.percent),
+      (bFab !== null ? ('20:00まで ' + bFab + '%  ') : '') + until(fb.resets_at)); }
 
   w.addSpacer();
   const at = j && j.at ? new Date(j.at) : null;
