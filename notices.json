@@ -1,13 +1,13 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
-        "time":  1788077766,
-        "message":  "RunCat の走る猫のコマ絵を集める（二度目の受領・回し直しで確認）\n同じ枠を二度受けた。一度目（17:05 ごろ）に一本のスクリプト ~/Desktop/neko-koma-collect.js で実施済みだったので、同じスクリプトを回し直して現状を確かめた。clone 済みの二フォルダは「既に在るので clone しない」で残っており、集め直しも同じ結果。\nファイル: ~/Desktop/neko-koma-collect.js、~/Desktop/neko-koma/（99枚＋_collected.json）、~/Desktop/RunCatNeo、~/Desktop/RunnerGallery\n実測: 総99枚（RunCatNeo 56＋RunnerGallery 43）。猫のコマ10枚、うちデフォルトの走りのコマは5枚で全部 56×36px（cat-frame-0〜4）。縦36px の規格は全体95枚・猫のコマ9枚が満たす。規格外は Assets_cat.png（1617×1043）ほかコマでない絵。二フォルダとも消していない。\nそのまま: デフォルトの猫のコマ（コマ送りの順）\n1. cat-frame-0.imageset_cat-frame-0.png   56×36px\n2. cat-frame-1.imageset_cat-frame-1.png   56×36px\n3. cat-frame-2.imageset_cat-frame-2.png   56×36px\n4. cat-frame-3.imageset_cat-frame-3.png   56×36px\n5. cat-frame-4.imageset_cat-frame-4.png   56×36px\n（sleeping-cat.imageset_sleeping-cat.png 56×36px は眠りの静止絵で、走りのコマではない）"
+        "time":  1788077858,
+        "message":  "写せます（2件）"
     },
     {
         "title":  "✅ 終わりました（返事不要）",
-        "time":  1788077437,
-        "message":  "写せます（2件）"
+        "time":  1788077766,
+        "message":  "RunCat の走る猫のコマ絵を集める（二度目の受領・回し直しで確認）\n同じ枠を二度受けた。一度目（17:05 ごろ）に一本のスクリプト ~/Desktop/neko-koma-collect.js で実施済みだったので、同じスクリプトを回し直して現状を確かめた。clone 済みの二フォルダは「既に在るので clone しない」で残っており、集め直しも同じ結果。\nファイル: ~/Desktop/neko-koma-collect.js、~/Desktop/neko-koma/（99枚＋_collected.json）、~/Desktop/RunCatNeo、~/Desktop/RunnerGallery\n実測: 総99枚（RunCatNeo 56＋RunnerGallery 43）。猫のコマ10枚、うちデフォルトの走りのコマは5枚で全部 56×36px（cat-frame-0〜4）。縦36px の規格は全体95枚・猫のコマ9枚が満たす。規格外は Assets_cat.png（1617×1043）ほかコマでない絵。二フォルダとも消していない。\nそのまま: デフォルトの猫のコマ（コマ送りの順）\n1. cat-frame-0.imageset_cat-frame-0.png   56×36px\n2. cat-frame-1.imageset_cat-frame-1.png   56×36px\n3. cat-frame-2.imageset_cat-frame-2.png   56×36px\n4. cat-frame-3.imageset_cat-frame-3.png   56×36px\n5. cat-frame-4.imageset_cat-frame-4.png   56×36px\n（sleeping-cat.imageset_sleeping-cat.png 56×36px は眠りの静止絵で、走りのコマではない）"
     },
     {
         "title":  "✅ 終わりました（返事不要）",
