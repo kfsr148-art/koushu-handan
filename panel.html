@@ -349,7 +349,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v84（8月30日）</p>
+  <p class="ver" id="verTag">panel v85（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -371,7 +371,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '84';
+  var PANEL_VER = '85';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -907,9 +907,29 @@
     if (lastStat === '作業中') {
       out.splice(1, 0, '作業中 1件：' + (lastSubj || '（件名なし）'));
     }
+    /* 読み返しの回の断り書きは、札を選んだあと（下）で入れる。ここでは場所だけ空けておく。 */
     var count = 0;   /* 実際に out へ入れた札の数。釦に出るのはこの数 */
     /* 走査はここ一度きり。ここで選んだ札が、そのまま写しの中身になり、落とす札になる。 */
     var todo = (shown || []).filter(function (d) { return !isDone(d); });
+    /* ---- 未写しが0件なら、終わりましたの箱を読み返しで写す（v85）----
+       ＊v84 は未写しが0件になると釦ごと畳んでいた。**「終わりました」に14件並んでいるのに
+         写す手が無い**という姿になり、2026-08-30 に実際に踏んだ（実測：shown 0枚・
+         終わりました 14件・釦は畳まれていた）。
+       ＊写しの独立-1 の①は「終わりましたに立った札とヨシした数の札も写せる形にする」。
+         写した印が付いていても、読み返して写せるべきもの。
+       ＊順は「未写しが先、読み返しが後」。未写しが1枚でもあれば、そちらだけを写す
+         （読み返しを混ぜると、写したばかりの札がまた出てくる）。
+       ＊読み返しの回は、頭にその旨の一行を立てる。何を写しているかが字だけで分かるように。 */
+    var reread = false;
+    if (!todo.length) {
+      var back = (allRows || []).filter(function (d) { return isDoneNotice(d && d.title); });
+      if (back.length) { todo = back; reread = true; }
+    }
+    /* 読み返しの回の断り書き（v85）。頭の三行目に入れる（URL・作業中の行の次）。 */
+    if (reread) {
+      out.splice((lastStat === '作業中') ? 2 : 1, 0,
+        '読み返し ' + todo.length + '件：未写しは0件なので、終わりましたの箱をそのまま写します');
+    }
     var cards = bundleCards(todo);
     /* 「🙋 ヨシしてください」の札は、何枚あっても全部を全文で入れる（v66）。
        ＊ヨシを返す判断はここでしかできない。何を待っているかが写しに無いと、
