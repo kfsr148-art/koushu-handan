@@ -32,7 +32,21 @@
   header{position:sticky; top:0; z-index:10; background:var(--bg);
     border-bottom:1px solid var(--line);
     padding:calc(10px + env(safe-area-inset-top)) 14px 14px;}
-  h1{font-size:19px; margin:0 0 10px; letter-spacing:.05em;}
+  h1{font-size:19px; margin:0 0 10px; letter-spacing:.05em;
+    display:flex; align-items:center; gap:10px;}
+  /* RunCat の猫（v103）。題字の右隣に常駐する。
+     Cat sprites: RunCat Neo (runcat-dev, Apache-2.0)
+     ＊等倍（高さ36px）・背景透過のまま。h1 は 19px の一行なので、猫の 36px が
+       そのまま行の高さになるが、h1 を flex にして縦の中央で並べているため
+       題字の位置は動かない。ヘッダーの高さは 36px 側で決まる（実測は報告に）。
+     ＊絵の切り替えは script 側（runCatTick）。作業中＝cat0〜4 のコマ送り、
+       それ以外＝cat-sleep の静止絵。 */
+  #runcat{width:56px; height:36px; flex:0 0 auto;
+    background:transparent; image-rendering:auto;
+    /* 猫の36pxは h1 の行（約30px）より高い。そのまま置くとヘッダーが 65.4→71px に
+       5.6px 伸びる（実測）。縦の余白を負に取り、**箱の上では30pxぶん**として数えさせる。
+       絵は等倍のまま、上下へ3pxずつはみ出して描かれる（header の余白の中なので切れない）。 */
+    margin:-3px 0;}
 
   /* いまの状態の一行。ヨシの釦より上に置く。
      リモートデスクトップを開かずに、動いているか止まっているかを見るため。 */
@@ -304,7 +318,7 @@
 
 <div id="main" class="hide">
   <header>
-    <h1>返事パネル</h1>
+    <h1>返事パネル<img id="runcat" src="cat-sleep.png" alt="" width="56" height="36"></h1>
     <div class="state idle" id="state">
       <span class="w" id="stWord">…</span>
       <span class="c">
@@ -401,7 +415,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v102（8月30日）</p>
+  <p class="ver" id="verTag">panel v103（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -423,7 +437,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '102';
+  var PANEL_VER = '103';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1222,6 +1236,33 @@
     if (!document.hidden) { checkPanelVer(); }
   });
 
+  /* ---- RunCat の猫（v103）----
+     Cat sprites: RunCat Neo (runcat-dev, Apache-2.0)
+     ＊現況（lastStat）で切り替える。**新しい取得はしない**——パネルが既に読んでいる値だけ見る。
+         作業中       … cat0→1→2→3→4→0 のコマ送り（1コマ100ミリ秒）
+         それ以外全部 … cat-sleep の静止絵（次の指示待ち・ヨシ待ち・連絡なし・読めない、みな眠る）
+     ＊六枚は最初に一度だけ先読みして持つ。毎コマ src を替えるだけなので、通信は起きない。
+     ＊眠りへ入るときに src を一度だけ替え、眠っている間は書き換えない（無駄な描き直しを避ける）。 */
+  var catTimer = null;
+  var catFrames = ['cat0.png', 'cat1.png', 'cat2.png', 'cat3.png', 'cat4.png'];
+  var catI = 0;
+  var catAwake = false;
+  (function () {   /* 先読み。読めなくても画面は壊れない（img が出ないだけ） */
+    catFrames.concat(['cat-sleep.png']).forEach(function (n) { var im = new Image(); im.src = n; });
+  })();
+  function runCatTick() {
+    var el = $('runcat');
+    if (!el) { return; }
+    if (lastStat === '作業中') {
+      catAwake = true;
+      catI = (catI + 1) % catFrames.length;
+      el.src = catFrames[catI];
+    } else if (catAwake || el.src.indexOf('cat-sleep') < 0) {
+      catAwake = false;
+      el.src = 'cat-sleep.png';
+    }
+  }
+
   function showMain() {
     $('main').className = '';
     checkPanelVer();
@@ -1243,6 +1284,7 @@
     /* 現況行の経過だけは毎秒。取得（15秒）とは別の時計で回す。 */
     if (sinceTimer) { clearInterval(sinceTimer); }
     sinceTimer = setInterval(tickSince, 1000);
+    catTimer = setInterval(runCatTick, 100);   /* 猫のコマ送り（v103）。1コマ100ミリ秒 */
   }
 
   /* 本体の版を一度だけ取りに行く。取れなければ写しには「未確認」と出る。
