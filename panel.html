@@ -360,7 +360,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v93（8月30日）</p>
+  <p class="ver" id="verTag">panel v94（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -382,7 +382,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '93';
+  var PANEL_VER = '94';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -597,23 +597,19 @@
     return '作業中、終了予定不明';
   }
 
-  /* 板の跡地へ出す状態の一行（v91）。三通り。
-       ・作業中   … 「作業中、HH時MM分終了予定」（v90 のまま。endPredText が組む）
-       ・手待ち   … 「手待ち・経過N分」
-       ・ヨシ待ち … 「ヨシ待ち・経過N分」
-     ＊経過の基準は**上の札と同じ** `sinceBase.at`（＝ state.json の statAt）。
-       二つの経過が食い違わないよう、同じ値から数える。
-     ＊上の札は「12分34秒」と秒まで出すが、こちらは**分だけ**。
-       跡地の行は毎秒は描き直さない（15秒ごとの取得で組み直す）ので、秒を出すと
-       止まって見える。
-     ＊基準が取れないとき（連絡なし・読めないとき）は**行ごと出さない**。 */
+  /* 板の跡地へ出す状態の一行（v91 で三通り・v94 で字を替えた）。
+       ・作業中   … 「作業中、HH時MM分終了予定」（endPredText が組む。今までどおり）
+       ・手待ち   … **「次の指示待ち」**
+       ・ヨシ待ち … **「ヨシを返してください」**
+     ＊v93 までは「手待ち・経過N分」「ヨシ待ち・経過N分」と数字を出していた。**数字はやめた。**
+       この行が言うべきは「いま誰の番か」であって、待った長さではない。
+       ＊数字が要るときは、上の札のヨシ待ちの側（「ヨシ待ち・N分N秒」）が持っている。
+     ＊数字を出さなくなったので、経過の基準（sinceBase）はもう見ない。
+     ＊上の三つ以外（連絡なし・読めないとき）は**行ごと出さない**。 */
   function stateLineText() {
-    if (lastStat === '作業中') { return endPredText(); }
-    if (lastStat === '手待ち' || lastStat === 'ヨシ待ち') {
-      if (!sinceBase || !sinceBase.at) { return ''; }
-      var min = Math.max(0, Math.floor((Date.now() / 1000 - sinceBase.at) / 60));
-      return lastStat + '・経過' + min + '分';
-    }
+    if (lastStat === '作業中')   { return endPredText(); }
+    if (lastStat === '手待ち')   { return '次の指示待ち'; }
+    if (lastStat === 'ヨシ待ち') { return 'ヨシを返してください'; }
     return '';
   }
 
@@ -2072,11 +2068,20 @@
         if (w.indexOf('作業中') === 0) { cls = 'run'; }
         else if (w.indexOf('ヨシ待ち') === 0) { cls = 'ask'; }
         else if (w.indexOf('手待ち') === 0) { cls = 'idle'; }
-        /* ヨシ待ち・手待ちは、その状態に入ってからの経過を題の横に出す。
-           作業中は見込みの段に「開始から◯分」が出るので、こちらには足さない。 */
+        /* 札の左の字（v93 まで三通りとも「状態・経過」だった。v94 で手待ちだけ替えた）。
+             ・作業中   … 「作業中」。経過は見込みの段（開始・終了予定・経過）が持つ
+             ・ヨシ待ち … 「ヨシ待ち・N分N秒」。待たせている長さが要るので経過を残す
+             ・手待ち   … **「次の指示待ち」**。数字は出さない
+           ＊手待ちは「何分待っているか」より「こちらの番だ」ということのほうが要る。
+             経過を出すと、待たせている長さのように読めてしまう。
+           ＊経過を出さない回は sinceBase を空にする。**空にしないと tickSince が
+             毎秒この字を「手待ち・N分N秒」で上書きする。** */
         var word = w;
         /* 取得のたびに statAt を読み直して基準を合わせ直す。数え直しは tickSince が毎秒行う。 */
-        if ((w === 'ヨシ待ち' || w === '手待ち') && d.statAt) {
+        if (w === '手待ち') {
+          sinceBase = { at: 0, word: '' };
+          word = '次の指示待ち';
+        } else if (w === 'ヨシ待ち' && d.statAt) {
           sinceBase = { at: d.statAt, word: w };
           word = w + '・' + sinceText(Date.now() / 1000 - d.statAt);
         } else {
