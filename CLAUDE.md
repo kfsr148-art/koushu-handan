@@ -281,6 +281,21 @@ git log -1 --format="%h %s" stable
 暗背景の一覧に並べて初めて分かる。白地の側は、輪郭に白い縁が残っていないか（アンマットの
 取りこぼし）を見るために要る。
 
+**焼き付けの四枚は、リポジトリに置き続けない（2026-08-30 の裁定）。**
+`asset-proof-dark.png` ／ `asset-proof-light.png` ／ `head-proof-dark.png` ／
+`head-proof-light.png` の四枚は、**道具で何度でも焼き直せる**ので**消してよい**。
+点検が要るときは、その場で焼いて見て、見終わったら置いておかなくてよい。
+
+```
+node asset-proof.js     → asset-proof-dark.png ／ asset-proof-light.png
+node head-proof.js      → head-proof-dark.png  ／ head-proof-light.png
+```
+
+＊**消してよいのはこの四枚だけ。** 同じ「確認の絵」でも
+`usagi-proof-dark.png` ／ `usagi-proof-light.png` ／ `sizing-review.png` の三枚は、
+**焼いた道具がリポジトリに無い**ので消さない（消すと戻らない）。
+＊**元絵（`*_src.png`）は上の「原版として残す」がそのまま効く。** 消さない。
+
 **白抜きに明るさを使わない。** `char_export.js` は、画像の縁から繋がっている白だけを背景とみなし、
 人物の内側はどれだけ白くても不透明のまま残す。縁2画素だけ半透明にして馴染ませ、そこにだけ
 アンマットを掛ける。**元絵の縁には 219〜235 の薄い枠が一画素だけ回っていることがある**ので、
