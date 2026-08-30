@@ -207,6 +207,9 @@
   /* 一覧が0件のときの理由。白紙にしない。 */
   li.why{border-left-color:var(--ask);}
   li.why .m{color:var(--fg);}
+  /* お知らせの釦と一覧は画面から消す（v97）。**中身と記録はそのまま**で、見せ方だけ止める。
+     ＊まとめて写す（#btnCopyBoard）と、終わりました／ヨシした数の箱は今までどおり出る。 */
+  #btnCopyAll, #list{display:none !important;}
   /* 板の跡地の状態の一行（v92）。黄色（ヨシ待ちと同じ --ask）で出す。
      ＊`li.why.stline .m` と重ねて書くのは、上の `li.why .m` に負けないため。
        同じ強さだと並び順で決まるので、class を一つ足して先に立たせる。 */
@@ -312,13 +315,25 @@
        ＊「お知らせ」の釦とは別物。あちらは**未処理の札を渡す**もので、写した札は一覧から消える。
          こちらは**読み出すだけ**で、札の写した印には触らない。
        ＊いちばん上に置くのは、いちばん多く押す釦だから。 -->
+  <!-- 状態の一行（v97 でここへ出した）。**固定の置き場**。
+       ＊v90〜v96 は板（#board）の中に混ぜていたので、板が出ない回には消えていた。
+         お知らせの一覧を畳んだ v97 では、この行が**常に見えている**ことが要る。
+       ＊中身は stateLineText()。作業中／次の指示待ち／ヨシを返してください の三通り。 -->
+  <ul id="stLine"></ul>
   <button class="cpall" id="btnCopyBoard" type="button">まとめて写す（0件）</button>
   <!-- 未処理の札を渡す釦。字は v48 で「全部写す」から「お知らせ」へ変えた。
        件数の出し方も押したときの動きも、v38 のまま変えていない。 -->
   <button class="cpall" id="btnCopyAll" type="button">お知らせ</button>
   <!-- ＊写し取り一覧への口は、**v49 でいちばん下へ移した**（写した札の箱の下・版の字の上）。
        釦の中身も押したときの動きも変えていない。置き場所だけを変えた。 -->
+  <!-- お知らせの一覧（v97 で**画面から消した**。器と中身は残してある）。
+       ＊消したのは見せ方だけ。数える中身（shown / allRows）も、まとめて写すの組み立ても、
+         控えの記録も、今までどおり動く。CSS の display:none で隠しているだけ。 -->
   <ul id="list"></ul>
+  <!-- 板の二段（あなた待ち・直近に終わった仕事）。v97 で **#list から切り離した**。
+       ＊v96 まではお知らせの札と同じ器を使い、札が0件の回だけ跡地へ出していた。
+         お知らせを畳んだので、板は**いつでも出る**自分の器を持つ。 -->
+  <ul id="board"></ul>
   <!-- 写した札の控え（v32）。既定は畳んである。押すと開く。
        v24 で一覧から落とした札の行き先で、**ここでだけ**「届いた」の印を出す。
        一覧そのものの見え方は v24 のまま——写した札は上の一覧には戻さない。 -->
@@ -360,7 +375,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v96（8月30日）</p>
+  <p class="ver" id="verTag">panel v97（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -382,7 +397,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '96';
+  var PANEL_VER = '97';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -545,9 +560,9 @@
         if (sig !== boardSig) { boardSig = sig; boardTaken = false; }
         board = b; boardErr = '';
         /* 一覧が空のときだけ描き直す。札が出ている画面は触らない。 */
-        if (!shown.length) { paintBoard(); }
+        paintBoard();   /* v97：札の有無に関わらず、板は常に塗る */
       })
-      .catch(function (e) { board = null; boardErr = e.message; if (!shown.length) { paintBoard(); } });
+      .catch(function (e) { board = null; boardErr = e.message; paintBoard(); });
   }
 
   /* 待ちの種類を、台帳の状態欄から機械で判じる（v58）。
@@ -663,14 +678,8 @@
       h += '</li>';
     }
 
-    /* 状態の一行（v90 で作業中だけ・v91 で三通りへ）。
-       ＊置き所は「あなた待ちは0件」の箱が居た跡地。**釦とは別**で、押せる物ではない。
-       ＊字は stateLineText() が組む。作業中の分は釦と同じ endPredText() を通る。
-       ＊字が取れないときは、この行ごと出さない。 */
-    var sl = stateLineText();
-    if (sl) {
-      h += '<li class="why stline"><p class="m">' + esc(sl) + '</p></li>';
-    }
+    /* ＊状態の一行は **v97 でここから出した**（#stLine へ移した）。
+         板が出ない回にも常に見えている要があるため。組むのは paintStateLine()。 */
 
     /* 下段 — 直近に終わった仕事3件。件名と、結果を一行だけ。 */
     var r = (!boardTaken && board.recent && board.recent.length) ? board.recent : [];
@@ -1061,7 +1070,17 @@
     } else { ng(); }
   }
 
-  function paintBoard() { $('list').innerHTML = boardHtml(); }
+  function paintBoard() { $('board').innerHTML = boardHtml(); }
+
+  /* 状態の一行を、固定の置き場（#stLine）へ塗る（v97）。
+     ＊お知らせの一覧とも板とも切り離してあるので、**どの回でも同じ場所に出る**。
+     ＊字が取れないとき（連絡なし・読めないとき）は器を空にする。行ごと消える。 */
+  function paintStateLine() {
+    var el = $('stLine');
+    if (!el) { return; }
+    var sl = stateLineText();
+    el.innerHTML = sl ? ('<li class="why stline"><p class="m">' + esc(sl) + '</p></li>') : '';
+  }
 
   /* この札は片付いているか。「写す」を押した／「ここまで読んだ」に含まれる、のどちらか。 */
   function isDone(d) {
@@ -1206,7 +1225,10 @@
   /* ntfy の poll は一行に一件の JSON（JSON の配列ではない）。行ごとに解く。 */
   /* 一覧が0件のときは、白紙にせず理由を出す。 */
   function sayWhy(msg) {
-    $('list').innerHTML = '<li class="why"><p class="m">' + esc(msg) + '</p></li>';
+    /* ＊出し先は **#board**（v97）。#list は画面から消したので、そこへ入れると
+         「一覧を読めません」が**誰にも見えないまま**消える。
+         「無い」と「読めない」を混ぜないための文言なので、見える器へ出す。 */
+    $('board').innerHTML = '<li class="why"><p class="m">' + esc(msg) + '</p></li>';
   }
 
   function pull() {
@@ -1294,7 +1316,9 @@
                 + '<p class="m">' + esc(d.message) + '</p></li>';
         });
         /* 未処理が無ければ、跡地に板の三つを出す（v44）。札があるときは今までどおり札だけ。 */
-        if (html) { $('list').innerHTML = html; } else { paintBoard(); }
+        $('list').innerHTML = html;   /* 器は残す（画面には出さない・v97） */
+        paintBoard();                  /* 板はいつでも塗る（v97） */
+        paintStateLine();              /* 状態の一行も塗り直す（v97） */
         paintBar();
       })
       .catch(function (e) {
@@ -1691,7 +1715,7 @@
            **数字が実際と食い違って見える時間**を作らない。 */
       setCopyAllLabel();
       setCopyBoardLabel();
-      if (!$('list').children.length) { paintBoard(); }
+      paintBoard();
     };
     /* 写せなかったとき。**成功に見せない**——done は通さない。
        ＊v20 で「落ちたのか分からない」を直そうとして done を通したが、それだと
@@ -2120,6 +2144,10 @@
         }
         lastState = { word: word, since: '', at: d.at || 0 };
         paintState(cls, word, subj, mik, d.mailUnread, ord);
+        /* 状態が変わったら、黄色の一行もその場で塗り直す（v97）。
+           ＊お知らせの取得（pull）とは別の呼び出しなので、ここでも塗る。
+             塗らないと、状態が変わってから次の pull までのあいだ古い字が残る。 */
+        paintStateLine();
       })
       .catch(function (e) {
         sinceBase = { at: 0, word: '' };
@@ -2135,8 +2163,11 @@
   $('btnCopyBoard').addEventListener('click', function () { copyBundle(this); });
   $('btnCopyUrl').addEventListener('click', function () { copyUrl(this); });
 
-  /* 写す釦と、畳んだ件の開閉。一覧ごと張り替わるので親で受ける。 */
-  $('list').addEventListener('click', function (e) {
+  /* 写す釦と、畳んだ件の開閉。一覧ごと張り替わるので親で受ける。
+     ＊v97 で板を #board へ切り離したので、**両方に同じ受けを掛ける**。
+       掛けないと、あなた待ち・直近に終わった仕事の「写す」釦と開閉が効かなくなる。 */
+  ['list', 'board'].forEach(function (id) {
+  $(id).addEventListener('click', function (e) {
     var b = e.target;
     /* あなた待ちの写す釦は id で先に分ける（v46）。名が cp で始まるので、
        下の受けに任せると data-i が無いまま copyOne へ落ちる。 */
@@ -2149,6 +2180,7 @@
     var li = b;
     while (li && li.tagName !== 'LI') { li = li.parentNode; }
     toggleOpen(li);   /* 開閉は一箇所で。開いた印を覚えるのもここ（v47） */
+  });
   });
 
   /* 「終わりました」の箱。写す釦と開閉を、この一つの受けで分ける（開閉は v47・釦は v67）。 */
