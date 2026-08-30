@@ -1,6 +1,11 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
+        "time":  1788077766,
+        "message":  "RunCat の走る猫のコマ絵を集める（二度目の受領・回し直しで確認）\n同じ枠を二度受けた。一度目（17:05 ごろ）に一本のスクリプト ~/Desktop/neko-koma-collect.js で実施済みだったので、同じスクリプトを回し直して現状を確かめた。clone 済みの二フォルダは「既に在るので clone しない」で残っており、集め直しも同じ結果。\nファイル: ~/Desktop/neko-koma-collect.js、~/Desktop/neko-koma/（99枚＋_collected.json）、~/Desktop/RunCatNeo、~/Desktop/RunnerGallery\n実測: 総99枚（RunCatNeo 56＋RunnerGallery 43）。猫のコマ10枚、うちデフォルトの走りのコマは5枚で全部 56×36px（cat-frame-0〜4）。縦36px の規格は全体95枚・猫のコマ9枚が満たす。規格外は Assets_cat.png（1617×1043）ほかコマでない絵。二フォルダとも消していない。\nそのまま: デフォルトの猫のコマ（コマ送りの順）\n1. cat-frame-0.imageset_cat-frame-0.png   56×36px\n2. cat-frame-1.imageset_cat-frame-1.png   56×36px\n3. cat-frame-2.imageset_cat-frame-2.png   56×36px\n4. cat-frame-3.imageset_cat-frame-3.png   56×36px\n5. cat-frame-4.imageset_cat-frame-4.png   56×36px\n（sleeping-cat.imageset_sleeping-cat.png 56×36px は眠りの静止絵で、走りのコマではない）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
         "time":  1788077437,
         "message":  "写せます（2件）"
     },
@@ -93,10 +98,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1788062526,
         "message":  "パネルの整理-4（状態の札の高さを固定）— panel v93\n一番上の状態の札の min-height を 44px から 134px へ固定した（panel.html L39-47）。値は実測から採った——今日の控えと報告の件名130件からいちばん長い題（61字）を取り、本体の幅390px（iPhone 縦持ち）で三通りを組んだときの高さが 作業中132px／手待ち110px／ヨシ待ち134px で、その最大値。min-height なので想定より長い題は折り返して伸びる（切り捨てない）。本体には触っていない。\nファイル: panel.html（L39-47・L352・L374）／panel-ver.txt（93）／reports/パネルの整理-4.md\n実測: 直す前は 札の高さ44〜134px・釦の上端123〜213px で、題の長さで90px 動いていた。直したあとは九通り（三状態×最長61字/次に長い54字/最短4字）すべて 札の高さ134px・釦の上端213px で一致。115字の作り値では 204〜254px へ伸び、どれも切れなし（scrollHeight \u003e clientHeight で判定）。headless の --window-size は内寸に効かなかった（492px）ので、本体の max-width を 390px に絞って測った。panel 構文OK。\n実機: ①題が短い件でも長い件でも一番上の札の高さが変わらない（下の釦が動かない）②切れていない（題は折り返して全部出る）③版の字が panel v93。短い題のときは札の中に余白が出るが、下を動かさないための余白"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1788058869,
-        "message":  "この間にまとまった知らせ 2本\n\n［✅ 終わりました（返事不要）］\nパネルの整理-2（板の跡地の状態の行を三通りへ）— panel v91\nこの回は控えを書いていません（前の回の控えが残っています。中身は当てになりません）。\n\n［✅ 終わりました（返事不要）］\n写せます（1件）"
     }
 ]
