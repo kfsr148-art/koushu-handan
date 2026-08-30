@@ -349,7 +349,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v90（8月30日）</p>
+  <p class="ver" id="verTag">panel v91（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -371,7 +371,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '90';
+  var PANEL_VER = '91';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -586,6 +586,26 @@
     return '作業中、終了予定不明';
   }
 
+  /* 板の跡地へ出す状態の一行（v91）。三通り。
+       ・作業中   … 「作業中、HH時MM分終了予定」（v90 のまま。endPredText が組む）
+       ・手待ち   … 「手待ち・経過N分」
+       ・ヨシ待ち … 「ヨシ待ち・経過N分」
+     ＊経過の基準は**上の札と同じ** `sinceBase.at`（＝ state.json の statAt）。
+       二つの経過が食い違わないよう、同じ値から数える。
+     ＊上の札は「12分34秒」と秒まで出すが、こちらは**分だけ**。
+       跡地の行は毎秒は描き直さない（15秒ごとの取得で組み直す）ので、秒を出すと
+       止まって見える。
+     ＊基準が取れないとき（連絡なし・読めないとき）は**行ごと出さない**。 */
+  function stateLineText() {
+    if (lastStat === '作業中') { return endPredText(); }
+    if (lastStat === '手待ち' || lastStat === 'ヨシ待ち') {
+      if (!sinceBase || !sinceBase.at) { return ''; }
+      var min = Math.max(0, Math.floor((Date.now() / 1000 - sinceBase.at) / 60));
+      return lastStat + '・経過' + min + '分';
+    }
+    return '';
+  }
+
   /* 「N件」を数字と単位に分けずに、そのまま字で組む。 */
   function boardHtml() {
     if (!board) {
@@ -636,12 +656,13 @@
       h += '</li>';
     }
 
-    /* 作業中のときだけ、終了予定を字だけの一行で出す（v90）。
+    /* 状態の一行（v90 で作業中だけ・v91 で三通りへ）。
        ＊置き所は「あなた待ちは0件」の箱が居た跡地。**釦とは別**で、押せる物ではない。
-       ＊字は釦と同じ endPredText() から取る。二箇所で作らない。
-       ＊作業中でなければ、この行ごと出さない。 */
-    if (lastStat === '作業中') {
-      h += '<li class="why"><p class="m">' + esc(endPredText()) + '</p></li>';
+       ＊字は stateLineText() が組む。作業中の分は釦と同じ endPredText() を通る。
+       ＊字が取れないときは、この行ごと出さない。 */
+    var sl = stateLineText();
+    if (sl) {
+      h += '<li class="why"><p class="m">' + esc(sl) + '</p></li>';
     }
 
     /* 下段 — 直近に終わった仕事3件。件名と、結果を一行だけ。 */
