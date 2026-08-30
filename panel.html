@@ -375,7 +375,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v97（8月30日）</p>
+  <p class="ver" id="verTag">panel v98（8月30日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -397,7 +397,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '97';
+  var PANEL_VER = '98';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -621,8 +621,28 @@
        ＊数字が要るときは、上の札のヨシ待ちの側（「ヨシ待ち・N分N秒」）が持っている。
      ＊数字を出さなくなったので、経過の基準（sinceBase）はもう見ない。
      ＊上の三つ以外（連絡なし・読めないとき）は**行ごと出さない**。 */
+  /* 刻を「HH:MM」の字にする。黄色の行と、上の札を組む側の両方が使う（v98）。 */
+  function pad2s(sec) {
+    var t = new Date(sec * 1000);
+    return ('0' + t.getHours()).slice(-2) + ':' + ('0' + t.getMinutes()).slice(-2);
+  }
+  /* 黄色の行が使う値。pullState が取得のたびに置き直す（v98）。 */
+  var lastStartHM = '', lastOrderHM = '';
+
   function stateLineText() {
-    if (lastStat === '作業中')   { return endPredText(); }
+    if (lastStat === '作業中') {
+      /* 添えの括弧（v98）。上の札から移してきた三つ。
+         ＊開始と指示は pullState が控えた字をそのまま使う。
+         ＊経過は**ここで数え直す**。塗るたびに新しくなる（15秒ごとの取得で進む）。
+         ＊取れない項目は落とす。「—」で埋めない（無いことを字で埋めない決め）。 */
+      var bits = [];
+      if (lastStartHM) { bits.push('開始' + lastStartHM); }
+      if (lastStartedAt > 0) {
+        bits.push('経過' + Math.max(0, Math.floor((Date.now() / 1000 - lastStartedAt) / 60)) + '分');
+      }
+      if (lastOrderHM) { bits.push('指示' + lastOrderHM); }
+      return endPredText() + (bits.length ? ('（' + bits.join('・') + '）') : '');
+    }
     if (lastStat === '手待ち')   { return '次の指示待ち'; }
     if (lastStat === 'ヨシ待ち') { return 'ヨシを返してください'; }
     return '';
@@ -2079,10 +2099,8 @@
         if (w === '作業中') {
           var min = d.startedAt ? Math.max(0, Math.floor((Date.now() / 1000 - d.startedAt) / 60)) : 0;
           var mm = String(d.mikomi || '').match(/(\d+)/);
-          var pad2 = function (sec) {
-            var t = new Date(sec * 1000);
-            return ('0' + t.getHours()).slice(-2) + ':' + ('0' + t.getMinutes()).slice(-2);
-          };
+          /* ＊v98 で pad2s（上）へ寄せた。同じ刻の作り方を二箇所に置かない。 */
+          var pad2 = pad2s;
           var hm = d.startedAt ? pad2(d.startedAt) : '—';
           var endSec = (d.startedAt && mm) ? (d.startedAt + parseInt(mm[1], 10) * 60) : 0;
           var ends = endSec ? pad2(endSec) : ' 未定';
@@ -2103,6 +2121,20 @@
         if (w === '作業中') {
           var om = String(d.orderAt || '').match(/(\d{1,2}):(\d{2})/);
           if (om) { ord = '指示を受けた ' + om[1] + ':' + om[2]; }
+        }
+        /* ---- 時間の刻は黄色の行が持つ（v98）----
+           ＊v97 までは上の札の二段（`開始…・終了予定…・経過…` と `指示を受けた …`）に出していた。
+             v90 で黄色の行にも終了予定を出したので、**同じ刻が二箇所**にあった。
+             上の札は題だけにし、刻はまとめて黄色の行へ寄せる。
+           ＊黄色の行が組むのに要る三つを、ここで控えておく。
+             開始（HH:MM）／指示を受けた（HH:MM）／開始の epoch（経過を数え直すため）。
+           ＊経過はここで固めない。黄色の行を塗るたびに数え直す（v98 も今までと同じで、
+             15秒ごとの取得で進む）。 */
+        lastStartHM = (w === '作業中' && d.startedAt) ? pad2s(d.startedAt) : '';
+        lastOrderHM = '';
+        if (w === '作業中') {
+          var om2 = String(d.orderAt || '').match(/(\d{1,2}):(\d{2})/);
+          if (om2) { lastOrderHM = om2[1] + ':' + om2[2]; }
         }
 
         /* 版と最終確認は、状態がどうであろうと**必ず**塗る（v33）。
@@ -2143,7 +2175,11 @@
           sinceBase = { at: 0, word: '' };
         }
         lastState = { word: word, since: '', at: d.at || 0 };
-        paintState(cls, word, subj, mik, d.mailUnread, ord);
+        /* ＊上の札は**題だけ**にする（v98）。時間の二段（mik / ord）は黄色の行へ移した。
+             同じ刻を二箇所に出さないため、ここでは空を渡す（渡す先で行ごと畳まれる）。
+             ＊mik と ord の**組み立てそのものは残してある**——lastEndAt を決めるのに要り、
+               まとめて写しの中でも使う。画面へ出す口だけを閉じた。 */
+        paintState(cls, word, subj, '', d.mailUnread, '');
         /* 状態が変わったら、黄色の一行もその場で塗り直す（v97）。
            ＊お知らせの取得（pull）とは別の呼び出しなので、ここでも塗る。
              塗らないと、状態が変わってから次の pull までのあいだ古い字が残る。 */
