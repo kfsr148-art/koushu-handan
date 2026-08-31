@@ -415,7 +415,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v103（8月30日）</p>
+  <p class="ver" id="verTag">panel v104（8月31日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -437,7 +437,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '103';
+  var PANEL_VER = '104';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1098,7 +1098,7 @@
          あちらは v84 から作業中でも押せる。
        ＊数（釦の N）＝ 未写しの札の数。押せば必ずこの数が写り、この数だけ落ちる。
          **写せますの知らせの N も同じ物**（watch-notify.ps1 が「前に知らせてから増えた分」を数える）。 */
-    var todo = (shown || []).filter(function (d) { return !isDone(d); });
+    var todo = (shown || []).filter(function (d) { return !isCopied(d); });   /* v104：写した印だけで見る */
     /* ＊読み返しの断り書きは v89 で外した。写すのは未写しの分だけなので、断る要が無い。 */
     var cards = bundleCards(todo);
     /* 「🙋 ヨシしてください」の札は、何枚あっても全部を全文で入れる（v66）。
@@ -1187,6 +1187,16 @@
     if (seenUpto && d && typeof d.time === 'number' && d.time <= seenUpto) { return true; }
     return false;
   }
+  /* 写した印だけで見る側（v104・写しの食い違い-1）。
+     ＊「まとめて写す」の束ねと残の数えは**こちら**を使う。
+       isDone は seenUpto（ヨシした数の印）でも札を落とすが、**写せますの N を数える側
+       （watch-notify.ps1）は印より後を種類も問わず全部数える**。seenUpto で落ちた札
+       （ヨシ済みの定時の報せ・延びています等）が「数えたのに束ねない」ずれを作っていた
+       ——2026-08-31 の実測：写せます（4件）に対し、束ねる側だけが札を落とし得た。
+     ＊束ねる側は**写した印（copied）だけ**で落とす。押せば全部に印が付くので、
+       次の回からは残0。数える側には例外を入れない（あちらは触らない）。
+     ＊seenUpto は「ヨシした数」の箱の見せ方に残る。役目を分けた。 */
+  function isCopied(d) { return !!copied[keyOf(d)]; }
   /* 最後の更新からこれを超えたら「連絡なし」。
      ＊見張りは「変化があったときだけ」流す作りだったので、**手待ちの間は何も書かない**。
        そこへ v39 で 30分の脈（`$PULSE_SEC`）を入れた。**この閾値は脈と対で決まる**——
@@ -1389,7 +1399,7 @@
            ＊localStorage に残っている印も、ここで効く。開き直しても写した札は出ない。 */
         /* 落とす前の全件を控える。写した札の控え（下の畳んだ箱）がここから作られる。 */
         allRows = rows.slice();
-        rows = rows.filter(function (d) { return !isDone(d); });
+        rows = rows.filter(function (d) { return !isCopied(d); });   /* v104：写した印だけで落とす。seenUpto では落とさない */
         shown = rows;
         setCopyAllLabel();   /* 釦の字を件数つきに（v38）。落としたあとの数で組む */
         setCopyBoardLabel(); /* まとめて写すの側も同じ数で組む（v52） */
