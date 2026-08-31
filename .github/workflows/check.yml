@@ -1,9 +1,13 @@
 # 自動検査（2026-08-31・自動検査-1）
 #
 #   push のたびに check.js（本体の納品前チェック）と adv-check.js（探偵編の回帰）を回す。
-#   入口は手元と同じ `node check-all`——**完全版**（2026-08-31・自動検査-2）。
-#   ＊はじめは --fast（速い版）だった。機械が勝手に回るぶんには待たせる相手が居ないので、
-#     ⑦を4視野で回す完全版へ上げた。手元の push 前は今までどおり速い版（作法18）。
+#   入口は手元と同じ `node check-all --fast`（作法18：push 前は速い版）。
+#   ＊完全版（node check-all）へ上げる試みは 2026-08-31 に一度行い、**環境差で⑦が落ちて戻した**。
+#     check.js は視野の寸を「窓の寸＋幅24／高さ92」の補正で作るが、この補正は Windows の
+#     Edge の額縁の値。Linux の google-chrome では額縁が違い、**測る視野そのものがずれる**
+#     （667x375 のつもりが 691x380 になり、judged の二択が bottom=388.8>380 で8件落ちた。
+#     592x325 など他のずれた視野は通っており、本体の悪化ではない）。
+#     緩めずに速い版へ戻した（速い版のずれた視野では通ることを実測済み）。
 #
 #   ＊paths で絞る——本体と検査の道具、検査が読む ver.txt、それとこの workflow 自身が
 #     変わったときだけ走る。notices.json / state.json / shots / reports などの
@@ -31,7 +35,7 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 35   # 完全版は手元で約9〜12分。倍の余裕（2026-08-31）
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -51,8 +55,8 @@ jobs:
             sudo apt-get update -qq && sudo apt-get install -y -qq chromium-browser
           fi
 
-      - name: 検査（check.js ＋ adv-check.js・完全版)
-        run: node check-all
+      - name: 検査（check.js ＋ adv-check.js・速い版)
+        run: node check-all --fast
 
       # 落ちたときだけ。題は「🚨 自動検査が落ちました（commit短縮）」。
       #   ＊題は UTF-8 なので RFC2047（=?UTF-8?B?…?=）で包む（手元の押し送りと同じ流儀）。
