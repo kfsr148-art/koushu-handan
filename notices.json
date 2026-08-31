@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🕒 延びています",
+        "time":  1788158837,
+        "message":  "自動検査-3 — 本体の溢れを発見（667x375・環境差ではない）。フル版の完走待ち\n終了予定15:43を過ぎています（経過18分）"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1788146559,
         "message":  "この間にまとまった知らせ 2本\n\n［✅ 終わりました（返事不要）］\n待ちの決め-2（🙋 の関門に「待ちなしは立てない」）と ⑦の材料 — 終わり（残り1件）\n①watch-notify.ps1 L1415-1425 に「待ち: なし と明言した回は 🙋 を立てず run:（作業中）の扱いを続ける」枝を実装。書き分けは維持——中身あり＝🙋／なしと明言＝作業中のまま／行が無い（書き忘れ）＝🙋。実測三通りとも指示どおり。構文OK 2295行・BOM 有り・写し .bak-20260831a。②⑦の材料（項目名・検査の中身・Actions の実際の出力 ✗ judged 691x380：8件 bottom=388.8\u003e380・環境差＝Edge の額縁 +24/+92 と google-chrome の額縁の違いで視野が 667x375→691x380 へずれる）を reports/待ちの決め-2.md と report-latest.md に明記。台帳2行を済にし、reports-index を貼り直して push 済み（origin 反映確認）。速い版へ戻したのはそのまま。\nファイル: ~/.claude/watch-notify.ps1（L1415-1425／写し .bak-20260831a）、reports/待ちの決め-2.md、report-latest.md、~/.claude/orders-open.tsv、~/.claude/yoshi-open.tsv\n実測: 判定の枝 L1414-1432 を字面のまま抜き出して三通り——(a)待ちの中身あり＝wait（🙋 出る）／(b)なしと明言＝run（出ない）／(c)行が無い＝wait（🙋 出る）。PSParser 構文OK 2295行。\n実機: 外の処理を待つ回（控えが 待ち: なし）で iPhone に 🙋 が来ないこと。返事が要る待ちでは今までどおり 🙋 が来ること\n\n［✅ 終わりました（返事不要）］\n写せます（2件）"
@@ -93,10 +98,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1788086591,
         "message":  "使用量の配分-2（「19:59まで N%」の出どころ調べ）— 触れない物のため報告して止まり\nVAIO の側を全部当てた（panel.html・usage-widget.js の全履歴・daily-notice.ps1・watch-notify.ps1・home-backup.ps1・board-emit.ps1・notify-record.ps1・state-line.js・リポジトリ全体）。「19:59まで N%」の行を作っている者は一つも無い。出どころは iPhone の Scriptable に貼ってある古いウィジェット台本（台帳の「ウィジェット-1／貼り替え待ち」と符合。公開した差し替え台本にはこの行が無い）。VAIO から触れない物なので、指示どおり名と場所を報告して止まった。いまの式は機械に写しが無く、実物から写せない。式の検算は済——直近リセット8/24 月20:00 から 今日8/30 20:00＝6×100÷7＝85.7%、明日8/31 20:00＝7×100÷7＝100% で指示の値と一致。\nファイル: reports/使用量の配分-2.md、~/.claude/orders-open.tsv\n実測: 経過24時間の数×100÷7 の検算：今日20:00＝85.7%／明日20:00＝100%／参考 いま19:45＝71.4%。usage.json の resets_at（2026-08-31T11:00Z＝月20:00 JST）とリセット週期も符合。\n未検収: 公開している usage-widget.js へ正しい式の一行を足すか（足せば iPhone で一度貼り替えるだけで直る）。ご指示があれば実装する"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1788079028,
-        "message":  "猫の常駐-1（題字の右に RunCat の猫）— panel v103\nneko-koma から6枚（走り5＋眠り1・全部56×36px）をリポジトリ直下へ cat0〜cat4・cat-sleep.png として複製し、h1 の右隣へ \u003cimg id=\"runcat\"\u003e を置いた。runCatTick（100ms）が lastStat で切り替える——作業中は cat0→4 の循環、それ以外は cat-sleep の静止絵で、新しい取得はしない。猫の36pxが h1 より高くヘッダーが 65.4→71px に伸びたため margin:-3px 0 で吸収し 65.4px（v102 と同じ）へ戻した。出典「Cat sprites: RunCat Neo (runcat-dev, Apache-2.0)」を二箇所のコメントに入れた。panel v103 として push（040b53f）。本体には触っていない。\nファイル: panel.html（L35-46・L307・L1236-1262・L1289）／cat0.png〜cat4.png・cat-sleep.png（新規6枚）／panel-ver.txt（103）／shots/cat-run.png・shots/cat-sleep-state.png／reports/猫の常駐-1.md\n実測: probe で切り替えを確認——作業中10コマは cat4→0→1→2→3→4→0→1→2→3 の循環／手待ちへ一度で cat-sleep・眠り中は書き換えない／ヨシ待ちも眠ったまま／作業中へ戻ると走り出す。猫 56×36px 等倍・h1 30.4px・header 65.4px（v102 と同値）。公開側は panel-ver.txt=103・手元と完全一致・絵6枚とも HTTP 200 で手元と byte 一致。写し二枚：cat-run.png（公開URLの実物・走り）と cat-sleep-state.png（公開側の実物 HTML に状態だけ手待ちを固定・Zzz の眠り。一度目は本物の pullState の上書きに負けて走りが写ったので、毎50ms の固定で撮り直した）。\n実機: ①題字の右に黒い猫 ②作業中は走り・それ以外は眠る ③ヘッダーの高さと他の要素の位置が変わっていない ④版の字が panel v103"
     }
 ]
