@@ -618,7 +618,10 @@ section('⑥', '未使用の埋め込み画像・音声', () => {
    ============================================================ */
 let viewSkipped = false;   // ブラウザが無くて測れなかったか（まとめで PASS と紛れないように持つ）
 section('⑦', '狭い画面での溢れ', () => {
-  /* headless の窓は視野より 幅+24 / 高さ+92 大きい。測るのは実際の innerWidth/innerHeight。 */
+  /* headless の窓は視野（innerWidth/innerHeight）より額縁のぶん大きい。その差は OS とブラウザで
+     違う——Windows の Edge は 幅+24/高さ+92 だが、Linux の google-chrome は別の値で、決め打ちだと
+     測る視野そのものがずれる（667x375 のつもりが 691x380 になり、Actions で⑦だけ落ちた）。
+     起動して一度だけ内寸を実測し、その差を全視野に足す（自動較正）。測るのは実際の innerWidth/innerHeight。 */
   /* 速い版はいちばん狭い視野と、壊れやすい段差の一点だけ。狭いほど溢れやすいので、画面の取りこぼしは作らずに時間だけ縮む。 */
   /* 900x381 は「切り詰めが外れてカード高が跳ねる」段差そのもの（v1416 の報告）。
      レイアウトを触るたび壊れやすい場所なので、速い版でも常に見張る。
@@ -672,12 +675,39 @@ section('⑦', '狭い画面での溢れ', () => {
     fs.writeFileSync(probe, src.replace(/<\/body>\s*$/m,
       VIEW_PROBE.replace('__FLOOR__', FLOOR_RATIO) + '</body>'), 'utf8');
 
+    /* 額縁の較正。素の一枚を 667x375 の窓で開いて内寸を読み、窓と視野の差を実測する。
+       読めない回は従来の決め打ち（+24/+92）へ落とし、その旨を出力に残す。
+       ＊プロファイルは run() と別（prof-cal）にする。同じにすると較正のブラウザの残りが
+         singleton ロックを握り、直後の一回目（title）が120秒返らずに落ちた（2026-08-31 実測）。 */
+    let padW = 24, padH = 92;
+    {
+      const cal = path.join(tmpDir, 'cal.html');
+      fs.writeFileSync(cal, '<!doctype html><html><body><script>document.body.textContent=' +
+        '"KOUSHU_CAL["+window.innerWidth+","+window.innerHeight+"]LAC";</script></body></html>', 'utf8');
+      /* 初回起動はプロファイル作りが挟まって読めない回がある（Edge で実測）。三回まで試す。 */
+      let m = null;
+      for (let t = 0; t < 3 && !m; t++) {
+        const r = spawnSync(browser, ['--headless=new', '--disable-gpu', '--hide-scrollbars',
+          '--force-device-scale-factor=1', '--window-size=667,375',
+          '--user-data-dir=' + path.join(tmpDir, 'prof-cal')].concat(VIEW_FLAGS)
+          .concat(['--virtual-time-budget=3000', '--dump-dom', 'file:///' + cal.replace(/\\/g, '/')]),
+          { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024, windowsHide: true, timeout: VIEW_TIMEOUT });
+        m = /KOUSHU_CAL\[(\d+),(\d+)\]LAC/.exec(String(r.stdout || ''));
+      }
+      if (m) {
+        padW = 667 - Number(m[1]); padH = 375 - Number(m[2]);
+        note('額縁の較正 : 窓667x375で内寸' + m[1] + 'x' + m[2] + ' → 差は 幅+' + padW + ' / 高さ+' + padH);
+      } else {
+        note('額縁の較正に失敗（内寸を読めない）。従来の決め打ち 幅+24 / 高さ+92 で測る');
+      }
+    }
+
     let bad = 0, done = 0, extra = 0;
     const TONE_JP = { butler:'執事', strategist:'軍師', blunt:'ずんだ', lady:'お嬢様',
                       french:'マダム', ichihime:'一姫', sensei:'先生' };
     const run = (vw, vh, screen) => {
       const args = ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1',
-        '--window-size=' + (vw + 24) + ',' + (vh + 92),
+        '--window-size=' + (vw + padW) + ',' + (vh + padH),
         '--user-data-dir=' + path.join(tmpDir, 'prof')].concat(VIEW_FLAGS).concat([
         /* ミニゲームだけは、遊びを通すぶんの時間が要る（9秒だと勝ち抜けきる前に打ち切られる回がある）。 */
         /* toriend は制限時間（30秒）を跨げるだけ回す。捕まえられなくても「逃げられた」で
