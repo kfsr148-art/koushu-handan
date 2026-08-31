@@ -725,7 +725,33 @@ section('⑦', '狭い画面での溢れ', () => {
     let bad = 0, done = 0, extra = 0;
     const TONE_JP = { butler:'執事', strategist:'軍師', blunt:'ずんだ', lady:'お嬢様',
                       french:'マダム', ichihime:'一姫', sensei:'先生' };
-    const run = (vw, vh, screen) => {
+    /* 走りの前後で、置き去りのブラウザを掃除する（2026-09-01・検査の取りこぼし-1）。
+       ＊目印は写しの一時ディレクトリの名（koushu-view-）。**この検査が起こした分だけ**に当てる。
+         ゆるく数えると人が開いているブラウザまで落とすので、必ず目印で絞る。
+       ＊置き去りが残っていると、次の起動が profile の singleton を待ち続けて返らない。
+         今夜の一回目（v1435 の速い版）で title と judged の 568x320 が120秒で打ち切られたのがこれ。 */
+    const sweep = (when) => {
+      try {
+        if (process.platform === 'win32') {
+          const ps = "Get-CimInstance Win32_Process -Filter \"Name='msedge.exe' or Name='chrome.exe'\" | " +
+                     "Where-Object { $_.CommandLine -match 'koushu-view-' } | " +
+                     "ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }";
+          spawnSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', ps],
+                    { encoding: 'utf8', windowsHide: true, timeout: 30000 });
+        } else {
+          spawnSync('pkill', ['-f', 'koushu-view-'], { encoding: 'utf8', timeout: 30000 });
+        }
+      } catch (e) { note('掃除に失敗（' + when + '）：' + e.message); }
+    };
+    sweep('走りの前');
+
+    /* 打ち切り（ブラウザが返らない）は**溢れの落ちとは別**に数える。
+       ＊測れなかっただけで、溢れているとは限らない。同じ組み合わせを一度だけ自動でやり直す。
+       ＊やり直しても測れなければ、落ちとは別の題（測れなかった組み合わせ）で報告する。 */
+    let retried = 0;
+    const unmeasured = [];
+
+    const run = (vw, vh, screen, isRetry) => {
       const args = ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1',
         '--window-size=' + (vw + padW) + ',' + (vh + padH),
         '--user-data-dir=' + path.join(tmpDir, 'prof')].concat(VIEW_FLAGS).concat([
@@ -737,10 +763,20 @@ section('⑦', '狭い画面での溢れ', () => {
         'file:///' + probe.replace(/\\/g, '/') + '#' + screen]);
       const r = spawnSync(browser, args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true,
                                            timeout: VIEW_TIMEOUT });
-      /* 返らないまま待ち続けると検査ごと止まる。切ったことを黙って PASS にはせず、落として次へ。 */
+      /* 返らないまま待ち続けると検査ごと止まる。切ったことは黙って PASS にしないが、
+         **溢れの落ちとしては数えない**——測れなかっただけで、溢れている証拠ではない。
+         一度だけ掃除してやり直し、それでも駄目なら「測れなかった組み合わせ」として別に挙げる。 */
       if (r.error && (r.error.code === 'ETIMEDOUT' || r.signal)) {
-        ng(screen + ' ' + vw + 'x' + vh + '：ブラウザが' + (VIEW_TIMEOUT / 1000) + '秒で返らないため打ち切った');
-        bad++; return;
+        if (!isRetry) {
+          note(screen + ' ' + vw + 'x' + vh + '：ブラウザが' + (VIEW_TIMEOUT / 1000) +
+               '秒で返らないため打ち切った → 掃除してやり直す');
+          sweep('打ち切りの後');
+          retried++;
+          return run(vw, vh, screen, true);
+        }
+        note(screen + ' ' + vw + 'x' + vh + '：やり直しても返らない（測れなかった）');
+        unmeasured.push(screen + ' ' + vw + 'x' + vh);
+        return;
       }
       const hit = /KOUSHU_VIEW_BEGIN([A-Za-z0-9+/=]+)KOUSHU_VIEW_END/.exec(String(r.stdout || ''));
       if (!hit) { ng(screen + ' ' + vw + 'x' + vh + '：測定結果を取り出せない'); bad++; return; }
@@ -816,7 +852,15 @@ section('⑦', '狭い画面での溢れ', () => {
       '（視野 ' + VIEWS.map(v => v[0] + 'x' + v[1]).join(' ') + (extra ? ' ＋ judged だけ 844x390' : '') + '）');
     note('横溢れは ' + SLACK + 'px まで見逃す（.tile.pick::before の当たり判定ぶん）');
     note('judged だけは縦の溢れと、送れる箱（overflow-x:auto/scroll）・「…」で切る箱の横溢れを数えない');
-    if (bad === 0) ok('どの視野でも、はみ出し・重なり・横溢れなし');
+    if (retried) { note('打ち切りからやり直した組み合わせ : ' + retried + '件（やり直して測れた分は落ちに数えない）'); }
+    /* 測れなかった件は**溢れの落ちとは別の題**で挙げる。黙って PASS にはしない。 */
+    if (unmeasured.length) {
+      ng('測れなかった組み合わせ ' + unmeasured.length + '件（溢れの落ちではない。ブラウザが二度とも返らなかった）');
+      unmeasured.forEach(u => note('  ' + u));
+    }
+    if (bad === 0 && unmeasured.length === 0) ok('どの視野でも、はみ出し・重なり・横溢れなし');
+    else if (bad === 0) note('溢れは 0件（測れなかった分を除く）');
+    sweep('走りの後');
   } finally {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   }
