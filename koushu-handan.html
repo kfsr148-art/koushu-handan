@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1433">
+<html lang="ja" data-ver="1434">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -901,17 +901,35 @@
     .picker-head { display: none; }   /* 盤面の説明文は横では省略 */
 
     /* 下段：左から 配牌枠＋枚数 / ドラ / 入力 / 判定ボタン */
+    /* 牌と隙間は、幅の固定値ではなく**枠の実寸**に合わせて詰める（v1434・案A）。
+       ＊枠の幅は「視野の幅 − 26px」、中身の幅はそこから左右の余白 49+23px を引いた
+         `100vw - 98px`。`%` は使わない——`%` は使う場所ごとに基準が変わり（高さなら
+         親の高さ、字なら親の字の大きさ）、同じ式が縦や字で別の値に解けてしまう。
+       ＊まず隙間が 12→3px へ詰まり、それでも足りなければ牌が 36→30px へ縮む。
+         上限・下限は v1433 までの二段（36px/12px と 30px/3px）と同じ値で、
+         「牌を縮めるより先に隙間を削る」という元の作りをそのまま連続にしたもの。
+       ＊137 = 余白98 ＋ 隙間の下限 3px×13 ／ 602 = 余白98 ＋ 牌の上限 36px×14。
+       ＊v1433 まではこれを「幅745px以下だけ小型化」で切っていたため、
+         **746〜757px の12px幅の帯で 14枚が枠を最大12px はみ出していた**
+         （収まるのに要る中身は 732px＝余白72＋牌504＋隙間156、視野に直すと 758px。
+         実測：746=12px・750=8px・754=4px・757=1px はみ出し。⑦は4pxまで見逃すので
+         754〜757 は落ちずに切れていた）。実寸に合わせれば、幅がいくつでも枠に収まる。 */
     .hand {
       grid-area: hand; margin: 0;
       height: 52px; min-height: 52px; max-height: 52px; padding: 4px 23px 4px 49px;
-      flex-wrap: nowrap; gap: 12px;   /* 折り返さず一列に。横幅フルなので13枚が余裕で並ぶ */
+      flex-wrap: nowrap;                       /* 折り返さず一列に */
+      --tile-w: clamp(30px, calc((100vw - 137px) / 14), 36px);
+      gap: clamp(3px, calc((100vw - 602px) / 13), 12px);
       overflow: hidden; justify-content: space-between; align-items: center;
       box-sizing: border-box;
     }
     /* 配牌枠の高さは 32px に固定。空でも牌が入っても枠の高さが変わらないので、
-       牌を出し入れしても上の盤面が上下に動かない。牌はこの高さに収まる寸法にする。 */
-    .hand .tile { width: 36px; height: 42px; font-size: 16px; flex: 0 0 auto; flex-direction: column; }
-    .hand .tile .suf { font-size: 9px; margin-bottom: 1px; }
+       牌を出し入れしても上の盤面が上下に動かない。牌はこの高さに収まる寸法にする。
+       ＊縦と字の大きさは牌の幅に連れる（36px のとき 42px・16px・9px で v1433 までと同じ。
+         30px のとき 35px・13.3px・7.5px で、旧・小型化の 36×36px・13px・8px とほぼ同じ）。 */
+    .hand .tile { width: var(--tile-w); height: calc(var(--tile-w) * 7 / 6);
+      font-size: calc(var(--tile-w) * 0.444); flex: 0 0 auto; flex-direction: column; }
+    .hand .tile .suf { font-size: calc(var(--tile-w) * 0.25); margin-bottom: 1px; }
     .counter {
       grid-area: hand;            /* 配牌枠の左の余白帯（最初の牌より左）に縦二段で置く。牌に被らない。 */
       align-self: center; justify-self: start;
@@ -1111,9 +1129,10 @@
      牌を縮めるより先に隙間と余白を削り、足りないぶんだけ牌を詰める。
      見張り台は牌が二段に折れると回答ボタンが画面外へ落ちるので、一段に収めることが肝。 */
   @media (orientation: landscape) and (max-width: 745px) {
-    .hand { padding: 4px 6px 4px 49px; gap: 3px; }
-    .hand .tile { width: 30px; height: 36px; font-size: 13px; }
-    .hand .tile .suf { font-size: 8px; }
+    /* ＊配牌枠（.hand）の小型化は v1434 で丸ごと外した。牌・隙間・右余白のどれも
+       幅で切る必要がなくなったため（牌と隙間は 903行あたりの clamp が実寸に合わせて詰める。
+       右余白は 23px のままで、いちばん狭い 568px でも収まることを実測した）。
+       ここに残るのは見張り台まわりだけ。 */
     .watch-hand { padding: 4px 6px 2px; gap: 2px; }
     .watch-hand .tile { width: 32px; height: 42px; }
     .watch-tones { gap: 2px; padding: 0 6px 2px; }
@@ -1333,7 +1352,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1433</div>
+  <div id="verTag">v1434</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
