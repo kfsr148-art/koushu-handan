@@ -1,89 +1,134 @@
-# 検査の取りこぼし-1 — 打ち切りは「落ちた」ではなく「測れなかった」として扱う
+# ウィジェットの自動更新-1 — 殻を新設して、Scriptable への貼り替えを不要にした
 
-**状態：終わり（残り0件）／VAIO 2026-09-01 06:0x ／ 本体（`koushu-handan.html`）には触っていない**
+**状態：終わり（残り0件）／VAIO 2026-09-01 08:0x ／ 本体（`koushu-handan.html`）には触っていない**
 
-**結論** — ⑦の打ち切り（ブラウザが返らない）を**溢れの落ちから切り離した**。打ち切った組み合わせは
-**掃除してから一度だけ自動でやり直し**、やり直して測れれば落ちに数えない。二度とも駄目なときだけ
-**「測れなかった組み合わせ」**という別の題で挙げる。置き去りのブラウザの掃除は**走りの前後**にも入れた。
-作り値二通りと実走で確かめ、どれも狙いどおり。
+**結論** — 公開側に **`usage-widget-loader.js`（殻）** を新設した。**この殻を一度だけ Scriptable へ貼れば、
+以後は `usage-widget.js` をこちらで直すだけで端末に届く。** 取れた中身は端末のローカルへ控え、
+取れなかった回は**控えで描く**（真っ白にしない）。控えも無い初回だけ「取得できませんでした」と出す。
+四通りの実測とも狙いどおりで、公開側にも殻と本体の両方が配られている。
 
 ---
 
-## ① なぜ✗2件が出たのか
-
-⑦は視野ごとに headless を起こすが、**プロファイルは一つ（`tmp/prof`）を使い回す**作り
-（毎回新しく作ると初回の支度で一版90秒かかるため）。ここに**前の検査の置き去りが居ると、
-次の起動が profile の singleton ロックを待ち続けて返らない**。
-
-今夜の一回目（v1435 の速い版）はまさにその状態だった。
-
-- 直前に、時間の上限に当たった速い版を強制終了しており、**`koushu-` の msedge が2本残っていた**
-- CPU も **66%** で、起動そのものも遅かった
-- 結果、**title 568x320 と judged 568x320 が120秒で打ち切られ**、`✗` として数えられた
-- 掃除して（残骸0本・CPU 44%）回し直したら **19/19・全てPASS**
-
-**打ち切りは「溢れている証拠」ではない。** それを `ng()` で溢れと同じ扱いにしていたのが取りこぼしの元。
-＊機械の側にも兆候は出ていた——`watch-notify` の 22:33:01 に
-`★逆向きの疑い：鍵は done:…（止まっている扱い）なのに CPU 17.2%`。
-
-## ② 「測れなかった」の区別と、自動のやり直し（`check.js` ⑦）
+## ① 殻（`usage-widget-loader.js`）
 
 ```
-打ち切り（一回目） → note「…返らないため打ち切った → 掃除してやり直す」
-                    → sweep（置き去りを落とす）→ 同じ組み合わせをもう一度
-   ├ 測れた   → 落ちに数えない（まとめに「打ち切りからやり直した組み合わせ N件」と出す）
-   └ また駄目 → note「やり直しても返らない（測れなかった）」
-                → まとめで ✗「測れなかった組み合わせ N件（溢れの落ちではない）」
-                  ＋「溢れは 0件（測れなかった分を除く）」
+取りに行く（?_chk=<時刻> を付けて中間の控えを挟ませない）
+  ├ 取れた   → 端末のローカルへ控えを書き直し、その中身で描く
+  ├ 取れない → 控え（前に取れた分）で描く
+  └ 控えも無い → 「取得できませんでした」と出す（初回だけここへ来る）
 ```
 
-- **`bad`（溢れの数）には一切足さない。** 溢れと測定不能を混ぜない。
-- **黙って PASS にもしない。** 測れていない以上「溢れなし」とは言えないので、
-  ⑦は落ちる。ただし**題が違う**ので、報告を読めば本体の悪化か機械の都合かが分かる。
-- 「測った組み合わせ」の数は測れた分だけを数える（18/19 のように出る）。
+- **途中で切れた中身を控えへ書かない。** 最後まで来た印（`module.exports`）が無ければ捨てる。
+- 控えの置き場は `FileManager.local()` の documents（オフラインでも読める側）。
+- 待ちは10秒。取得に失敗しても**例外で落ちず**、控えへ落ちる。
 
-## ③ 置き去りの掃除（走りの前後）
+## ② 本体（`usage-widget.js`）の直し
+
+末尾だけを直した。**ボーダーの式（`ceil((now−last)/24h)×100÷7`・最小1・上限7・分の丸め）も、
+表示の形（`20:00まで N%` の添え方）も、一切変えていない。**
 
 ```js
-const sweep = (when) => { … 'koushu-view-' を含む msedge/chrome だけを落とす … };
-sweep('走りの前');   // ⑦に入る前
-…（打ち切りのたびにも sweep）…
-sweep('走りの後');   // ⑦を出るとき
+module.exports = { build: build };
+
+if (!globalThis.__USAGE_LOADER) {   /* 殻を通さず直に走らせたときは、今までどおり自分で貼る */
+  const widget = await build();
+  if (config.runsInWidget) { Script.setWidget(widget); }
+  else { widget.presentSmall(); }
+  Script.complete();
+}
 ```
 
-**目印は写しの一時ディレクトリ名（`koushu-view-`）**で、**この検査が起こした分だけ**に当てる。
-ゆるく当てると人が開いているブラウザまで落とすため（作法の「置き去りの検査を片付ける」と同じ流儀）。
-Windows は PowerShell の `Get-CimInstance`＋`Stop-Process`、それ以外は `pkill -f`。
+殻は `__USAGE_LOADER` を立ててから `importModule` するので、**中身は二重に貼らない**。
+直に走らせる従来の使い方も、そのまま残っている。
 
-## ④ 実測
+## ③ 実測（Scriptable の道具を真似た台で、本物の殻と本物の中身をそのまま走らせた）
 
-**作り値**（作法14「写しに probe」。本体の `check.js` には仕掛けを入れず、**写しの待ち時間だけ**短くして
-打ち切りを故意に起こした）
+| 通り | 結果 |
+|---|---|
+| **(甲) 取得できる** | 描いた字＝`Claude 使用量／セッション／3%／4.0時間後／週全体／5%`。**控えに6561字を保存** |
+| **(乙) 公開側を一字変える** | 次の回に **`Claude 使用量★`** が出た。**控えも新しい中身に入れ替わった** |
+| **(丙) 取得を失敗させる** | **控えの中身で描けた**（`Claude 使用量★／セッション…`）。真っ白にならない |
+| (丁) 控えも無い初回で失敗 | `取得できませんでした` ＋ `中身をまだ一度も取れていません。通信を確かめて、もう一度お試しください。` |
 
-| 通り | 出力 | 判定 |
-|---|---|---|
-| **一回目だけ打ち切り** | `title 568x320：…打ち切った → 掃除してやり直す`／`測った組み合わせ : 19 / 19`／`打ち切りからやり直した組み合わせ : 1件`／`✓ どの視野でも、はみ出し・重なり・横溢れなし` | **⑦は PASS**。全体は FAIL にならず、**該当分だけやり直された** |
-| **やり直しても打ち切り** | `やり直しても返らない（測れなかった）`／`測った組み合わせ : 18 / 19`／`✗ 測れなかった組み合わせ 1件（溢れの落ちではない…）`／`溢れは 0件（測れなかった分を除く）` | **落ちとは別の題**で挙がる |
+## ④ 公開側の実読み
 
-＊作り値の走りでは①②④の項目にも ✗ が出るが、これは**写しを一時ディレクトリから回したため**
-（`ver.txt` や音声ファイルを写しの隣に探しにいく）。⑦の振る舞いとは関係がない。
+| | 結果 |
+|---|---|
+| `usage-widget-loader.js` | **HTTP 200・2128字・手元と一致**。控えの仕掛けあり・初回の文言あり |
+| `usage-widget.js` | **6561字・手元と一致**。`module.exports` あり・**ボーダーの式は今のまま** |
 
-**実走**（本物の `node check-all --fast`・05:49:55〜06:01:45）
+## 端末でやること（一度だけ）
 
+Scriptable の台本（名は「Claude 使用量」）の中身を、**下の殻の全文で置き換える**だけ。
+以後の直しは貼り替え不要で届く。
+
+```js
+/* Claude 使用量ウィジェットの殻（Scriptable）— 中身を取りに行って走らせるだけ
+ *
+ * これを **一度だけ** Scriptable に貼れば、あとは中身（usage-widget.js）を
+ * こちらで直すだけで端末に届く。**貼り替えは要らない。**
+ *
+ * 置き方
+ *   1. Scriptable で新しい台本を作り、この中身を貼る（名は「Claude 使用量」）
+ *   2. ホーム画面のウィジェット（小 or 中）に Scriptable を置き、
+ *      Script にこの台本、When Interacting は Run Script
+ *
+ * 何をするか
+ *   ・公開側から usage-widget.js を取ってきて、端末のローカルへ控える
+ *   ・取れた回は、その中身で描く（控えも新しくする）
+ *   ・取れなかった回は、**控えで描く**（真っ白にしない）
+ *   ・控えも無い初回だけ「取得できませんでした」と出す
+ */
+
+const SRC   = 'https://kfsr148-art.github.io/koushu-handan/usage-widget.js';
+const NAME  = 'usage-widget.js';   /* 端末のローカルに置く控えの名 */
+const TIMEO = 10;                  /* 取得の待ち（秒） */
+
+const BG  = new Color('#0d1b16');
+const FG  = new Color('#e8f0ea');
+const HOT = new Color('#c0392b');
+
+const fm   = FileManager.local();
+const path = fm.joinPath(fm.documentsDirectory(), NAME);
+
+/* 取りに行く。中間の控えを挟まないよう、毎回ちがう問い合わせにする（本体の ver.txt と同じ流儀）。 */
+let fresh = null;
+try {
+  const r = new Request(SRC + '?_chk=' + Date.now());
+  r.timeoutInterval = TIMEO;
+  const t = await r.loadString();
+  /* 途中で切れた中身を控えへ書かない。**最後まで来た印**（module.exports）が無ければ捨てる。 */
+  if (t && t.indexOf('module.exports') >= 0) { fresh = t; }
+} catch (e) { /* 取れないだけ。控えで描く */ }
+
+if (fresh) { try { fm.writeString(path, fresh); } catch (e) { /* 書けなくても描ける */ } }
+
+/* 控え（さっき書いた分か、前に取れた分）を読む。 */
+let code = null;
+try { if (fm.fileExists(path)) { code = fm.readString(path); } } catch (e) { }
+
+if (!code) {
+  /* 控えも無い＝いちばん最初の一回だけここへ来る。 */
+  const w = new ListWidget();
+  w.backgroundColor = BG;
+  const t1 = w.addText('取得できませんでした');
+  t1.font = Font.semiboldSystemFont(13);
+  t1.textColor = HOT;
+  w.addSpacer(4);
+  const t2 = w.addText('中身をまだ一度も取れていません。通信を確かめて、もう一度お試しください。');
+  t2.font = Font.systemFont(11);
+  t2.textColor = FG;
+  if (config.runsInWidget) { Script.setWidget(w); } else { w.presentSmall(); }
+  Script.complete();
+} else {
+  /* 中身の側に「殻から呼ばれた」と伝える。中身は自分では貼らず、build() を渡してくる。 */
+  globalThis.__USAGE_LOADER = true;
+  const mod = importModule(path);
+  const widget = await mod.build();
+  if (config.runsInWidget) { Script.setWidget(widget); } else { widget.presentSmall(); }
+  Script.complete();
+}
 ```
-測った組み合わせ : 19 / 19（視野 568x320 900x381 ＋ judged だけ 844x390）
-✓ どの視野でも、はみ出し・重なり・横溢れなし
-  PASS  check      本体の納品前チェック
-  PASS  adv-check  探偵編の回帰（即死罠・時間切れ）
-両方PASS
-```
-
-**打ち切りは0件**（走りの前の掃除が効いて、一回目から普通に測れた）。
-
-## 触ったもの
-
-`check.js` の⑦のみ（`sweep` の追加、`run()` のやり直し、まとめでの区別）。
-**本体には触っていない。** 版も上げていない（`check.js` は配られる物ではないため）。
 
 ---
 
@@ -92,11 +137,12 @@ Windows は PowerShell の `Get-CimInstance`＋`Stop-Process`、それ以外は 
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **93件**ある。
+　ここに出るのは新しい20件。全部で **94件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`ウィジェットの自動更新-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%82%A6%E3%82%A3%E3%82%B8%E3%82%A7%E3%83%83%E3%83%88%E3%81%AE%E8%87%AA%E5%8B%95%E6%9B%B4%E6%96%B0-1.md) | 09-01 08:02 | ウィジェットの自動更新-1 — 殻を新設して、Scriptable への貼り替えを不要にした |
 | [`検査の取りこぼし-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E6%A4%9C%E6%9F%BB%E3%81%AE%E5%8F%96%E3%82%8A%E3%81%93%E3%81%BC%E3%81%97-1.md) | 09-01 06:02 | 検査の取りこぼし-1 — 打ち切りは「落ちた」ではなく「測れなかった」として扱う |
 | [`手牌の境目-3.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E6%89%8B%E7%89%8C%E3%81%AE%E5%A2%83%E7%9B%AE-3.md) | 09-01 03:47 | 手牌の境目-3 — `--vz-show` の745は据え置きで確定（掘り返さないための裁定の控え） |
 | [`手牌の境目-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E6%89%8B%E7%89%8C%E3%81%AE%E5%A2%83%E7%9B%AE-2.md) | 09-01 03:07 | 手牌の境目-2 — 案Aを実装（v1434）。手元も Actions も 189/189 全通過 |
@@ -116,6 +162,5 @@ Windows は PowerShell の `Get-CimInstance`＋`Stop-Process`、それ以外は 
 | [`猫の常駐-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E7%8C%AB%E3%81%AE%E5%B8%B8%E9%A7%90-1.md) | 08-30 17:36 | 猫の常駐-1 — 題字の右に RunCat の猫を置いた（panel v103） |
 | [`途切れの回収-1-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%80%94%E5%88%87%E3%82%8C%E3%81%AE%E5%9B%9E%E5%8F%8E-1-2.md) | 08-30 17:02 | 途切れの回収-1 の裁定 — dead / stale: も一発だけ押し送る |
 | [`通知の宛先-1-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%80%9A%E7%9F%A5%E3%81%AE%E5%AE%9B%E5%85%88-1-2.md) | 08-30 16:44 | 通知の宛先-1 — 旧話題へ送る・読む箇所は **0件** |
-| [`通知の急ぎ-3.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%80%9A%E7%9F%A5%E3%81%AE%E6%80%A5%E3%81%8E-3.md) | 08-30 16:33 | 通知の急ぎ-3 — 見切り送信を撤廃した |
 
 <!-- 控えの一覧 ここまで -->
