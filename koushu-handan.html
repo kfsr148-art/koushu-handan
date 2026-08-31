@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1434">
+<html lang="ja" data-ver="1435">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -257,6 +257,14 @@
   .verdict-zones { --vz-pair: calc((var(--vz-hit) * var(--vz-show) + var(--vz-gap) * (var(--vz-show) - 0.5)) * 2); }
   .verdict-zones .vz-atk { width: var(--vz-a, calc(var(--vz-pair) / 2)); }
   .verdict-zones .vz-def { width: calc(var(--vz-pair) - var(--vz-a, calc(var(--vz-pair) / 2))); }
+  /* この 745 は**据え置きで確定**（2026-09-01 の裁定）。連続化しない。
+     ＊実測すると 1px で見た目は跳ぶ——745 までは 投票枠2.5・攻の箱 198×150px（3段）・
+       中央の列 447px・二択 bottom=375、746 からは 投票枠5.5・攻の箱 493.5×48px（1段）・
+       中央の列 136px・二択 bottom=347.3。**溢れも送り（スクロール）も両側0で、二択はどちらも視野の内**。
+       跳ぶのは見た目だけで実害が無い。
+     ＊連続化（--vz-pair を幅に連動させる形）は、667x375＝iPhone 8 の横で
+       **中央の列を約200px 削る**設計変更になる。虎と台詞の置き場が半分近くになるので採らない。
+     ＊配牌枠はこの 745 を見ていない（v1434 で実寸に合わせる形へ移した）。ここを動かしても手牌に影響はない。 */
   @media (max-width: 745px) { :root { --vz-show: var(--vz-show-narrow); } }
   /* 判定後は箱の中で折り返し、横の送りをやめる（v1431）。
      v1430 まで、狭い視野では札が箱からはみ出して横に送る形だった（--vz-show の端数で
@@ -1352,7 +1360,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1434</div>
+  <div id="verTag">v1435</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
