@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1432">
+<html lang="ja" data-ver="1433">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -266,9 +266,9 @@
        末尾の二択は 568x320・844x390・745x380・1024x600 のどれでも視野の内に残る。
        箱の高さは一段48pxから、詰まった箱だけ98〜150pxへ伸びる。
      ＊**667x375 は v1431 では測っていなかった**（v1432 で測った）。そこだけ二択が
-       bottom=396.3 > 375 と 21.3px はみ出していた——幅844px未満なので余白削り（1211〜1219行）が
+       bottom=396.3 > 375 と 21.3px はみ出していた——幅844px未満なので余白削り（1221〜1229行）が
        効かず、高さ350px以上なので当時の安全網（349px以下）にも入らない帯だったため。
-       v1432 で安全網の帯を 380px まで広げて塞いだ（1167行）。同視野の実測は bottom=375.0（溢れなし）。
+       v1432 で安全網の帯を 380px まで広げて塞いだ（1177行）。同視野の実測は bottom=375.0（溢れなし）。
      ＊下の @media (min-width:844px) の一組は、これに加えて幅を等分にし直す規則。
        あちらは幅の配り方も変えるので、この行とは役目が違う。 */
   body.judged .verdict-zones .vz { flex-wrap: wrap; overflow: visible; }
@@ -1162,8 +1162,8 @@
      ＊中身は上の塊と一字一句そろえてある。片方を直したら、必ずもう片方も直すこと。 */
   /* 安全網（v1427／v1432 で帯を 349px から 380px へ広げた）。二択が視野の下へはみ出す高さでは、
      二択を画面の下へ貼り付けて**常に押せる**状態を保つ。掛けるのは 380px 以下の横向き。
-     ＊v1431 で判定後の折り返し（270行）を幅の条件なしで入れたため、投票欄が一段（44+8px）増える。
-       伸びを余白から返す規則（1211〜1219行）は幅844px以上、この安全網は高さ349px以下にしかなく、
+     ＊v1431 で判定後の折り返し（274行）を幅の条件なしで入れたため、投票欄が一段（44+8px）増える。
+       伸びを余白から返す規則（1221〜1229行）は幅844px以上、この安全網は高さ349px以下にしかなく、
        **幅746〜843px × 高さ350〜380px の帯**がどちらの網からも漏れていた。667x375（実測 bottom=396.3 > 375）が
        そこに当たる。帯を 380px まで広げて塞ぐ（v1432・実測は下の一覧）。
      ＊380px は上の切り詰め（max-height:380px）と同じ境目。作法16 の三つ巴（切り詰め380／
@@ -1333,7 +1333,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1432</div>
+  <div id="verTag">v1433</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
