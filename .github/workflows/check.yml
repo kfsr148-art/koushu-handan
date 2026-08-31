@@ -1,0 +1,69 @@
+# 自動検査（2026-08-31・自動検査-1）
+#
+#   push のたびに check.js（本体の納品前チェック）と adv-check.js（探偵編の回帰）を回す。
+#   入口は手元と同じ `node check-all --fast`（作法18：push 前は速い版）。
+#
+#   ＊paths で絞る——本体と検査の道具、検査が読む ver.txt、それとこの workflow 自身が
+#     変わったときだけ走る。notices.json / state.json / shots / reports などの
+#     知らせの押しでは走らない。
+#   ＊落ちたときだけ ntfy へ「🚨 自動検査が落ちました（commit短縮）」を押し送る。
+#     話題名は公開リポジトリに書かない決まりどおり secret（NTFY_TOPIC）から取る。
+#     通ったときは鳴らさない。
+name: 自動検査
+
+on:
+  push:
+    paths:
+      - 'koushu-handan.html'
+      - 'check.js'
+      - 'adv-check.js'
+      - 'check-all.js'
+      - 'ver.txt'
+      - '.github/workflows/check.yml'
+
+# 同じ枝で新しい push が来たら、古い走りは打ち切る。
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      # 手元は node v24。同じ大版で揃える。
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # headless ブラウザ（check.js ⑦ と adv-check.js の駆動）。
+      # ubuntu-latest には Chrome が入っており、check.js は /usr/bin/google-chrome を
+      # 既定の探し先に持っている。無い回だけ入れる。
+      - name: ブラウザを確かめる
+        run: |
+          if [ -x /usr/bin/google-chrome ] || [ -x /usr/bin/chromium ] || [ -x /usr/bin/chromium-browser ]; then
+            echo "ブラウザあり: $(command -v google-chrome chromium chromium-browser 2>/dev/null | head -1)"
+          else
+            sudo apt-get update -qq && sudo apt-get install -y -qq chromium-browser
+          fi
+
+      - name: 検査（check.js ＋ adv-check.js・速い版)
+        run: node check-all --fast
+
+      # 落ちたときだけ。題は「🚨 自動検査が落ちました（commit短縮）」。
+      #   ＊題は UTF-8 なので RFC2047（=?UTF-8?B?…?=）で包む（手元の押し送りと同じ流儀）。
+      #   ＊本文は幅ゼロ空白（ntfy は空の本文に "triggered" を勝手に入れるため）。
+      #   ＊Cache: no … ntfy の側に溜めない（手元の決めと同じ）。
+      - name: 落ちたときだけ知らせる
+        if: failure()
+        run: |
+          SHORT="${GITHUB_SHA:0:7}"
+          TITLE_B64=$(printf '🚨 自動検査が落ちました（%s）' "$SHORT" | base64 -w0)
+          printf '\xe2\x80\x8b' | curl -s --max-time 20 \
+            -H "Title: =?UTF-8?B?${TITLE_B64}?=" \
+            -H "Priority: 5" \
+            -H "Cache: no" \
+            --data-binary @- \
+            "https://ntfy.sh/${{ secrets.NTFY_TOPIC }}" > /dev/null || true
