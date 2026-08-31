@@ -197,7 +197,15 @@ async function build() {
   return w;
 }
 
-const widget = await build();
-if (config.runsInWidget) { Script.setWidget(widget); }
-else { widget.presentSmall(); }
-Script.complete();
+/* 殻（usage-widget-loader.js）から呼べるように、組み立てだけを渡す（2026-09-01）。
+   ＊殻は importModule でこれを読み、build() を呼んで自分で貼る。
+   ＊殻を通さずに、この台本そのものを走らせたときは、今までどおり自分で貼る。
+     見分けは殻が立てる目印（__USAGE_LOADER）。**表示も式も今までと同じ**。 */
+module.exports = { build: build };
+
+if (!globalThis.__USAGE_LOADER) {
+  const widget = await build();
+  if (config.runsInWidget) { Script.setWidget(widget); }
+  else { widget.presentSmall(); }
+  Script.complete();
+}
