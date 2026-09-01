@@ -415,7 +415,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v106（9月1日）</p>
+  <p class="ver" id="verTag">panel v107（9月2日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -437,7 +437,10 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '106';
+  /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
+     押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
+  var FAR_SEC = 12 * 3600;
+  var PANEL_VER = '107';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -645,6 +648,8 @@
       if (gm > 0 && lastStartedAt > 0) { endSec = lastStartedAt + gm * 60; }
     }
     var nowSec = Math.floor(Date.now() / 1000);
+    /* 遠すぎる刻は当てにしない（v107）。上の黄色の行と同じ見張り。 */
+    if (endSec > 0 && (endSec - nowSec) > FAR_SEC) { endSec = 0; gm = 0; }
     if (endSec > 0 && endSec <= nowSec) {
       var step = (gm > 0 ? gm : 10) * 60;   /* 延ばす幅。当てが無ければ10分刻み */
       var guard = 0;
@@ -1989,7 +1994,16 @@
     var msg = $('usageMsg'), whenEl = $('usageWhen');
     if (!box || !msg || !whenEl) { return; }
     if (!u) { box.hidden = true; msg.hidden = true; whenEl.hidden = true; return; }
-    var lim = (u.body && u.body.limits) ? u.body.limits : [];
+    /* 値の入っていない本文を 0% として描かない（v107・使用量の空振り-1）。
+       ＊2026-09-02 03:06〜、HTTP 200 のまま全枠が 0 ／ resets_at が null の本文が返り続けた。
+         ウィジェットもここも「0%」と出していたが、読めていないだけで 0% ではない。
+       ＊空かどうかを判じるのは見張りの側（usage.json の `empty`）。ここでは判じ直さない——
+         同じ見分けを二つ書くと、必ず片方だけずれる。
+       ＊控え（`good`）があればその値を出し、**いつの値かを足元に添える**。 */
+    var emptyU = !!u.empty;
+    var goodU  = (u.good && u.good.body) ? u.good : null;
+    var srcU   = emptyU ? (goodU ? goodU.body : null) : (u.body || null);
+    var lim = (srcU && srcU.limits) ? srcU.limits : [];
     var html = '';
     lim.forEach(function (L) {
       if (typeof L.percent !== 'number') { return; }
@@ -2007,6 +2021,12 @@
     var age = at ? (Date.now() / 1000 - at) : 0;
     var when = at ? (agoText(age) + '取得') : '取得時刻ふめい';
     var cls = (age > 3600) ? ' class="u-old"' : '';
+    /* 控えを出している回は、いまの取得の刻ではなく**その値がいつのものか**を出す。 */
+    if (emptyU && goodU) {
+      var gAt = goodU.at ? Math.floor(new Date(goodU.at).getTime() / 1000) : 0;
+      when = (gAt ? agoText(Date.now() / 1000 - gAt) : '') + '時点の値・いまは取れていません';
+      cls = ' class="u-old"';
+    }
     var tail = '<span' + cls + '>' + when + '</span>';
     /* 401／403 は鍵の入れ替えが要る合図。素通ししないで出す。 */
     if (u.http && u.http !== 200) {
@@ -2014,7 +2034,7 @@
     }
     if (!html) {
       box.hidden = true;
-      msg.textContent = '使用量は取れていません';
+      msg.textContent = emptyU ? '使用量は取れていません（控えもありません）' : '使用量は取れていません';
       msg.hidden = false;
     } else {
       box.innerHTML = html;
@@ -2252,6 +2272,13 @@
           var pad2 = pad2s;
           var hm = d.startedAt ? pad2(d.startedAt) : '—';
           var endSec = (d.startedAt && mm) ? (d.startedAt + parseInt(mm[1], 10) * 60) : 0;
+          /* 遠すぎる刻は数字にしない（v107・走り出しの時刻ずれ-1）。
+             ＊開始の刻（state.json の startedAt）は、仕事が替わってから十数秒あとに書き換わる。
+               その隙に読むと **前の仕事の開始 ＋ 新しい見込み** で足してしまう。
+               2026-09-02 06:11:55、押し送りの側が同じ材料で「22時58分」（16時間46分先）を出した。
+             ＊いまより前の刻は伏せない。**超過して走っている回の終了予定は過去になる**のが正しく、
+               経過の分と並べて読むためにここに要る。伏せるのは先へ飛んだ刻だけ。 */
+          if (endSec && (endSec - Math.floor(Date.now() / 1000)) > FAR_SEC) { endSec = 0; }
           var ends = endSec ? pad2(endSec) : ' 未定';
           /* 釦の字にも同じ刻を出す（v80）。いちばん遅い候補だけを残す。 */
           lastEndAt = 0; noteEnd(endSec);

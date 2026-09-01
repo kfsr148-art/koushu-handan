@@ -9,6 +9,7 @@
  *   ④ 四通りの状態（作業中／手待ち／ヨシ待ち／異常）で build が例外を出さずウィジェットを返す
  *   ⑤ ボーダーの式が境目の三点で正しい（リセット直後14.3％／境目前85.7％／境目後100％）
  *   ⑥ 猫の絵四枚が公開側に在る（**404 は落ち**。通信そのものが出来ない回だけ「測れなかった」）
+ *   ⑦ 値の入っていない使用量を 0% として描かず、控えがあれば刻を添えて出す（三通り）
  *
  * 真似た台のこと
  *   Scriptable の道具（Color/Font/ListWidget/Request…）は node に無いので、**使う分だけ真似た台**を
@@ -222,6 +223,45 @@ head('② 本体の出し口');
       if (code === 200) { ok(n + ' … 200'); }
       else if (code === 0) { note(n + ' … 通信できないので測れない'); skipped++; }
       else { ng(n + ' … HTTP ' + code + '（公開側に無い）'); }
+    }
+  }
+
+  /* ---- ⑦ 値の無い使用量（2026-09-02・使用量の空振り-1） ---- */
+  /*   2026-09-02 03:06〜、HTTP 200 のまま全枠 0 ／ resets_at が null の本文が返り続け、
+   *   三行とも「0%」・戻る刻は「—」で出ていた（06:04 更新の実機）。**読めていない**のに
+   *   使い切っていないと読める字が出るのが害なので、三通りで見る。 */
+  head('⑦ 値の無い使用量を 0% と描かない');
+  {
+    const iso = (t) => new Date(t).toISOString();
+    const BODY_OK = { five_hour: { utilization: 21, resets_at: iso(Date.now() + 3600e3) },
+                      seven_day: { utilization: 11, resets_at: iso(Date.now() + 86400e3) },
+                      limits: [{ kind: 'weekly_scoped', percent: 5, resets_at: iso(Date.now() + 86400e3),
+                                 scope: { model: { display_name: 'Fable' } } }] };
+    const BODY_EMPTY = { five_hour: { utilization: 0, resets_at: null },
+                         seven_day: { utilization: 0, resets_at: null }, limits: [] };
+    const st = { stat: '手待ち', subj: 'x', mikomi: '', startedAt: 0 };
+    const notices2 = [{ title: '✅', time: 100, message: '写せます（3件）' }];
+    const CASES = [
+      ['読める',          { at: iso(Date.now()), http: 200, empty: false, body: BODY_OK,
+                            good: { at: iso(Date.now()), body: BODY_OK } },
+       (d) => d.some(x => /21%/.test(x)) && !d.some(x => /時点の値/.test(x)),
+       '三行に数字が出て、控えの断りは付かない'],
+      ['空・控えあり',    { at: iso(Date.now()), http: 200, empty: true, body: BODY_EMPTY,
+                            good: { at: iso(Date.now() - 7200e3), body: BODY_OK } },
+       (d) => d.some(x => /21%/.test(x)) && d.some(x => /時点の値/.test(x)) && !d.some(x => /^0%$/.test(x)),
+       '控えの値を出し、足元に「…時点の値 ・ いまは取れていません」'],
+      ['空・控えなし',    { at: iso(Date.now()), http: 200, empty: true, body: BODY_EMPTY, good: null },
+       (d) => d.some(x => /取れていません/.test(x)) && !d.some(x => /%/.test(x)),
+       '数字を一つも出さず「使用量は取れていません」']
+    ];
+    for (const [nm, usage2, want, why] of CASES) {
+      try {
+        const { t, mod } = await loadWidget(W, { state: st, notices: notices2, usage: usage2, ver: '1435' });
+        const w = await mod.exports.build();
+        if (!w) { ng(nm + '：ウィジェットが返らない'); continue; }
+        if (want(t.drawn)) { ok(nm + '：' + why); }
+        else { ng(nm + '：' + why + '（出た字 ' + t.drawn.join(' / ').slice(0, 90) + '）'); }
+      } catch (e) { ng(nm + '：例外 ' + e.message); }
     }
   }
 
