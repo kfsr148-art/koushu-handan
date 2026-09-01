@@ -415,7 +415,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v105（9月1日）</p>
+  <p class="ver" id="verTag">panel v106（9月1日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -437,7 +437,7 @@
   /* このパネルの版。**三箇所を必ず同時に直す**——ここ／下の verTag の字／panel-ver.txt。
      ＊panel-ver.txt は端末が「新しい版が出たか」を見に行く先。ここが古いと、
        新しいパネルを置いても端末は古いものを掴んだままになる（2026-08-24 の事故）。 */
-  var PANEL_VER = '105';
+  var PANEL_VER = '106';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1037,10 +1037,36 @@
        どちらを使うかは buildBundle() が上限を見て決める。
      ＊絞りはここでは掛けない（v74）。渡された札をそのまま形にするだけにして、
        「写す札を選ぶ」走査を buildBundle() の一箇所に集める。 */
+  /* 写しから落とす行の絞り（v106・写しの絞り-1）。
+     ＊落とすのは**貼る写しだけ**。reports 側の記録も、パネルの画面も、今までどおり全部残る。
+     ＊「ファイル:」は、読む側が判断に使わない行なので落とす。
+       **ただし壊れの調べ・原因の特定が本題の回は残す**——どのファイルを見たかが答えの一部になるため。
+       見分けは題と本文の字（調べました／原因／不具合／壊れ／落ちた／直し…）。
+     ＊「実機:」は残す（触って確かめるのは読む側）。「実測:」と本文は今までどおり全部。 */
+  var FILE_KEEP = /調べました|調べた|原因|不具合|壊れ|こわれ|落ちた|落ちて|失敗|誤り|直し|直す|異常|穴|取りこぼし|詰まり/;
+  function trimForCopy(title, body) {
+    var NL = String.fromCharCode(10);
+    var keepFile = FILE_KEEP.test(String(title || '')) || FILE_KEEP.test(String(body || ''));
+    if (keepFile) { return body; }
+    var lines = String(body || '').split(NL);
+    var out = [], drop = false;
+    for (var i = 0; i < lines.length; i++) {
+      var l = lines[i];
+      if (/^ファイル[:：]/.test(l)) { drop = true; continue; }      /* 行の頭から落とす */
+      /* 続きの行（字下げ）も落とす。次の見出しが来たら戻す。 */
+      if (drop) {
+        if (/^(件名|待ち|外待ち|完了|実測|実機|未検収|種類|そのまま|印|版)[:：]/.test(l) || l === '') { drop = false; }
+        else { continue; }
+      }
+      out.push(l);
+    }
+    return out.join(NL);
+  }
+
   function bundleCards(todo) {
     var NL = String.fromCharCode(10);
     return (todo || []).map(function (d) {
-      var body = String(d.message || '');
+      var body = trimForCopy(d.title, String(d.message || ''));
       var head = body.split(NL)[0];
       var line = briefOf(hhmm(d.time), kindWord(d.title), plain(head) || '（件名なし）', '');
       return { brief: line, full: line + NL + body, ask: (kind(d.title) === 'ask') };
@@ -1056,9 +1082,9 @@
         var m = String(it.at || '').match(/(\d{2}:\d{2})/);
         out.push(briefOf(m ? m[1] : '', 'あなた待ち', String(it.name || ''), it.no || ''));
       });
-      ((board.recent) || []).forEach(function (it) {
-        out.push(briefOf('', '直近に終わった仕事', String(it.name || ''), it.no || ''));
-      });
+      /* ＊「直近に終わった仕事」の三行は **v106 で写しから落とした**（写しの絞り-1）。
+           既に検収の済んだ分の繰り返しで、貼った先での判断には使わないため。
+           **画面には今までどおり出る**（畳んだ箱の中）。落としたのは貼る写しだけ。 */
     }
     return out;
   }
