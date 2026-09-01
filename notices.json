@@ -1,13 +1,13 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
-        "time":  1788235392,
-        "message":  "ウィジェットの猫の色-1（ウィジェットの猫を白へ）— 終わり（残り0件）\n①三枚（cat2・cat-sleep・cat4）は黒一色だったので色を反転して白へ。焼き直しの道具 cat-white.js をリポジトリへ置き、元絵は残して *-white.png の別名で保存。②panel-icon.png は透明0%・深緑の背景ごと不透明で四角い塊に見えるため、差し替えず背景を抜いて白い影絵にした（ヨシ待ちに現場猫を当てるのは作法11 に沿うので絵は替えない。兜と指差しの形は残る）。③替えたのは usage-widget.js の CAT_OF だけで、返事パネルの猫は今までどおり。④公開の実物で四通りとも白い絵に切り替わっていることを実測。\nファイル: cat-white.js、cat2-white.png、cat-sleep-white.png、cat4-white.png、panel-icon-white.png、usage-widget.js、reports/ウィジェットの猫の色-1.md、report-latest.md\n実測: 作業中=cat2-white.png／手待ち=cat-sleep-white.png／ヨシ待ち=panel-icon-white.png／異常=cat4-white.png。白い四枚は公開側で HTTP 200（12:59:25 push→13:00:50 反映）。暗背景の確認絵で四枚とも白く、26px幅でも区別が付く\n実機: ウィジェットの猫が白いこと（作業中＝走る猫／次の指示待ち＝眠り猫／ヨシ待ち＝現場猫／異常＝跳ねる猫）。返事パネルの猫は黒のまま"
+        "time":  1788235480,
+        "message":  "写せます（2件）"
     },
     {
         "title":  "✅ 終わりました（返事不要）",
-        "time":  1788232366,
-        "message":  "写せます（2件）"
+        "time":  1788235392,
+        "message":  "ウィジェットの猫の色-1（ウィジェットの猫を白へ）— 終わり（残り0件）\n①三枚（cat2・cat-sleep・cat4）は黒一色だったので色を反転して白へ。焼き直しの道具 cat-white.js をリポジトリへ置き、元絵は残して *-white.png の別名で保存。②panel-icon.png は透明0%・深緑の背景ごと不透明で四角い塊に見えるため、差し替えず背景を抜いて白い影絵にした（ヨシ待ちに現場猫を当てるのは作法11 に沿うので絵は替えない。兜と指差しの形は残る）。③替えたのは usage-widget.js の CAT_OF だけで、返事パネルの猫は今までどおり。④公開の実物で四通りとも白い絵に切り替わっていることを実測。\nファイル: cat-white.js、cat2-white.png、cat-sleep-white.png、cat4-white.png、panel-icon-white.png、usage-widget.js、reports/ウィジェットの猫の色-1.md、report-latest.md\n実測: 作業中=cat2-white.png／手待ち=cat-sleep-white.png／ヨシ待ち=panel-icon-white.png／異常=cat4-white.png。白い四枚は公開側で HTTP 200（12:59:25 push→13:00:50 反映）。暗背景の確認絵で四枚とも白く、26px幅でも区別が付く\n実機: ウィジェットの猫が白いこと（作業中＝走る猫／次の指示待ち＝眠り猫／ヨシ待ち＝現場猫／異常＝跳ねる猫）。返事パネルの猫は黒のまま"
     },
     {
         "title":  "✅ 終わりました（返事不要）",
