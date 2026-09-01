@@ -198,14 +198,19 @@ async function build() {
 }
 
 /* 殻（usage-widget-loader.js）から呼べるように、組み立てだけを渡す（2026-09-01）。
-   ＊殻は importModule でこれを読み、build() を呼んで自分で貼る。
+   ＊殻はこの中身をその場で評価し、build() を受け取って自分で貼る。
    ＊殻を通さずに、この台本そのものを走らせたときは、今までどおり自分で貼る。
-     見分けは殻が立てる目印（__USAGE_LOADER）。**表示も式も今までと同じ**。 */
-module.exports = { build: build };
+     見分けは、殻が module を手渡しているかどうか。**表示も式も今までと同じ**。
+   ＊**この末尾で await を使わない**（殻の直し-1）。てっぺんの await があると、
+     読み込ませ方によっては module.exports を受け取る前に返ってしまう。 */
+if (typeof module !== 'undefined' && module) { module.exports = { build: build }; }
 
-if (!globalThis.__USAGE_LOADER) {
-  const widget = await build();
-  if (config.runsInWidget) { Script.setWidget(widget); }
-  else { widget.presentSmall(); }
-  Script.complete();
+/* 殻から呼ばれた回は、殻が module に viaLoader を立てている。そのときは自分で貼らない。
+   ＊Scriptable は台本にも module を渡すので、module の有無では見分けられない。 */
+if (!(typeof module !== 'undefined' && module && module.viaLoader)) {
+  build().then(function (widget) {
+    if (config.runsInWidget) { Script.setWidget(widget); }
+    else { widget.presentSmall(); }
+    Script.complete();
+  });
 }
