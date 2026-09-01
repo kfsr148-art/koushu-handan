@@ -24,6 +24,9 @@ on:
       - 'adv-check.js'
       - 'check-all.js'
       - 'ver.txt'
+      - 'usage-widget.js'
+      - 'usage-widget-loader.js'
+      - 'widget-check.js'
       - '.github/workflows/check.yml'
 
 # 同じ枝で新しい push が来たら、古い走りは打ち切る。
@@ -56,6 +59,14 @@ jobs:
 
       - name: 検査（check.js ＋ adv-check.js・完全版)
         run: node check-all
+
+      # ウィジェット側（Scriptable の台本）を、node の上で真似た台を使って確かめる。
+      #   ＊見るもの … 構文／module.exports と build／殻の控えの名（台本名との取り違え）／
+      #     四通りの状態で build が返ること／ボーダーの式の境目三点／猫の絵が公開側に在るか（404 は落ち）。
+      #   ＊真似た台では拾えないもの（importModule と置き場・絵の見え方・見た目・遷移・iOS の控え）は、
+      #     検査そのものが末尾に書き出す。
+      - name: ウィジェットの検査（widget-check.js）
+        run: node widget-check.js
 
       # 落ちたときだけ。題は「🚨 自動検査が落ちました（commit短縮）」。
       #   ＊題は UTF-8 なので RFC2047（=?UTF-8?B?…?=）で包む（手元の押し送りと同じ流儀）。
