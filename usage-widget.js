@@ -140,6 +140,100 @@ function row(stack, name, p, back) {
   stack.addSpacer(6);
 }
 
+/* ---- 状態まわり（2026-09-01・ウィジェットの状態表示-1）----
+   ＊読む先はどれも公開側。返事パネルが見ているものと同じ。
+   ＊猫の絵はリポジトリにあるものをそのまま使う（RunCat の走りコマと眠り、現場猫の絵）。
+     ウィジェットは動かせないので、走るコマは**静止の一枚**を選ぶ。 */
+const URL_STATE   = 'https://kfsr148-art.github.io/koushu-handan/state.json';
+const URL_NOTICES = 'https://kfsr148-art.github.io/koushu-handan/notices.json';
+const URL_VER     = 'https://kfsr148-art.github.io/koushu-handan/ver.txt';
+const URL_PANEL   = 'https://kfsr148-art.github.io/koushu-handan/panel.html';
+const URL_IMG     = 'https://kfsr148-art.github.io/koushu-handan/';
+
+/* 状態 → 猫の絵。四通り。 */
+const CAT_OF = {
+  '作業中':   'cat2.png',        /* 走るコマの一枚 */
+  '手待ち':   'cat-sleep.png',   /* 眠り */
+  'ヨシ待ち': 'panel-icon.png',  /* 現場猫（ヨシは現場猫の言葉） */
+  '異常':     'cat4.png'         /* ふだんと違う姿 */
+};
+
+async function loadState() {
+  const s = { stat: '', subj: '', mikomi: '', startedAt: 0, ready: null, ver: '' };
+  try {
+    const r = new Request(URL_STATE + '?_chk=' + Date.now());
+    r.timeoutInterval = 8;
+    const d = await r.loadJSON();
+    if (d) {
+      s.stat = String(d.stat || '');
+      s.subj = String(d.subj || '');
+      s.mikomi = String(d.mikomi || '');
+      s.startedAt = Number(d.startedAt || 0);
+    }
+  } catch (e) { }
+  /* 写せますの件数 … いちばん新しい「写せます（N件）」の札から取る（返事パネルと同じ拾い方）。 */
+  try {
+    const r2 = new Request(URL_NOTICES + '?_chk=' + Date.now());
+    r2.timeoutInterval = 8;
+    const n = await r2.loadJSON();
+    const rows = Array.isArray(n) ? n : (n && n.items ? n.items : []);
+    let newest = null;
+    for (const x of rows) {
+      const m = String((x && x.message) || '').match(/写せます（(\d+)件）/);
+      if (m && (!newest || (x.time || 0) > newest.time)) { newest = { time: x.time || 0, n: Number(m[1]) }; }
+    }
+    if (newest) { s.ready = newest.n; }
+  } catch (e) { }
+  try {
+    const r3 = new Request(URL_VER + '?_chk=' + Date.now());
+    r3.timeoutInterval = 8;
+    s.ver = String(await r3.loadString()).trim();
+  } catch (e) { }
+  return s;
+}
+
+async function loadCat(stat) {
+  const name = CAT_OF[stat] || CAT_OF['手待ち'];
+  try {
+    const r = new Request(URL_IMG + name);
+    r.timeoutInterval = 8;
+    return await r.loadImage();
+  } catch (e) { return null; }
+}
+
+/* 状態の字。**返事パネルの黄色の行と同じ計算・同じ言い回し**。
+     ・作業中   … 「作業中、H時MM分終了予定」（開始＋見込み。過ぎていれば見込みの幅で先へ送る）
+     ・手待ち   … 「次の指示待ち」
+     ・ヨシ待ち … 「ヨシを返してください」
+     ・異常     … 「異常です」 */
+function stateText(s) {
+  if (s.stat === '作業中') {
+    const mm = s.mikomi.match(/(\d+)/);
+    let end = (s.startedAt && mm) ? (s.startedAt + parseInt(mm[1], 10) * 60) : 0;
+    if (!end) { return '作業中、終了予定不明'; }
+    const now = Math.floor(Date.now() / 1000);
+    const step = (mm ? parseInt(mm[1], 10) : 10) * 60;
+    let guard = 0;
+    while (end <= now && guard < 200) { end += step; guard++; }
+    const e = new Date(end * 1000);
+    return '作業中、' + e.getHours() + '時' + ('0' + e.getMinutes()).slice(-2) + '分終了予定';
+  }
+  if (s.stat === '手待ち')   { return '次の指示待ち'; }
+  if (s.stat === 'ヨシ待ち') { return 'ヨシを返してください'; }
+  if (s.stat === '異常')     { return '異常です'; }
+  return '状態が読めません';
+}
+
+function stateColor(stat) {
+  if (stat === 'ヨシ待ち') { return WARN; }
+  if (stat === '異常')     { return HOT; }
+  return FG;
+}
+
+function readyText(s) {
+  return (s.ready === null) ? '写せます—' : ('写せます' + s.ready + '件');
+}
+
 async function build() {
   const w = new ListWidget();
   w.backgroundColor = BG;
@@ -154,14 +248,35 @@ async function build() {
     err = '読めません';
   }
 
+  /* ---- 状態の行（2026-09-01・ウィジェットの状態表示-1）----
+     ＊返事パネルの黄色の行と**同じ計算・同じ言い回し**。
+     ＊猫は state.json の状態で出し分ける。ウィジェットは動かせないので一枚絵。 */
+  const st  = await loadState();
+  const cat = await loadCat(st.stat);
+
   const head = w.addStack();
   head.layoutHorizontally();
   head.centerAlignContent();
-  const ttl = head.addText('Claude 使用量');
-  ttl.font = Font.semiboldSystemFont(12);
-  ttl.textColor = FG;
+  if (cat) { const im = head.addImage(cat); im.imageSize = new Size(26, 17); im.resizable = true; }
+  else { const sp = head.addText('　'); sp.font = Font.systemFont(11); }
+  head.addSpacer(6);
+  const sl = head.addText(stateText(st));
+  sl.font = Font.semiboldSystemFont(11);
+  sl.textColor = stateColor(st.stat);
+  sl.lineLimit = 2;
+  sl.minimumScaleFactor = 0.7;
   head.addSpacer();
-  w.addSpacer(8);
+  w.addSpacer(4);
+
+  /* 写せますの件数と、本体の版を一行で（同上）。 */
+  const sub = w.addText(readyText(st) + ' ・ ' + (st.ver ? ('v' + st.ver) : '版—'));
+  sub.font = Font.systemFont(10);
+  sub.textColor = DIM;
+  sub.lineLimit = 1;
+  w.addSpacer(6);
+
+  /* 触ったら返事パネルを開く（同上）。 */
+  w.url = URL_PANEL;
 
   /* 中身が壊れていたら、古い値を新しい値として見せない。**読めないと書く。**
      ＊書きかけの JSON を掴んだときに、前の値が残って見えるのがいちばん危ない。 */
