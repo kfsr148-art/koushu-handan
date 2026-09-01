@@ -1,83 +1,173 @@
-# 知らせの詰まり-1 — 「外待ち」の消し忘れで198分止まっていた。網を足した
+# 殻の直し-1 — 実機の `importModule` エラーは台本名と控え名の衝突。直に評価する形へ
 
-**状態：終わり（残り0件）／VAIO 2026-09-01 11:3x ／ 本体（`koushu-handan.html`）には触っていない**
+**状態：終わり（残り0件）／VAIO 2026-09-01 11:5x ／ 本体（`koushu-handan.html`）には触っていない**
 
-**結論** — **私が控えの `外待ち:` を消し忘れた**のが原因。08:03:46 に stop は叩かれていたが、
-外待ちが立っていたので見張りは「まだ外の処理を待っている」と判じ、**08:04〜11:23 の198分ぶん
-`run:`（作業中）を続けた**。終わりの札も押し送りも積まれず、公開にも出ていない。
-**同じ型を拾う網は無かった**ので足した——外待ちのまま控えが40分書き換わらなければ、
-**🪟 異常（手が要ります）を一発**鳴らす。作り値四通りで確かめた。
+**結論** — 落ちた元は **`importModule` に渡した控えの置き先**。控えを
+`documentsDirectory/usage-widget.js` に置いていたので、**台本の名が `usage-widget` だと
+自分自身を上書きし、自分自身を読み込みにいく**形になっていた（エラーが
+`in usage-widget module` の中で出ていたのがその印）。**`importModule` をやめて直に評価する形**へ
+作り替え、控えの名も台本名と衝突しないものにした。公開の実物で五通り実測して合格。
 
 ---
 
-## ① 何が起きていたか（刻つき）
+## ① 原因
 
-| 刻 | 何が起きたか |
-|---|---|
-| 08:01:22 | 殻と本体を push（commit `955bfcf`） |
-| 08:02:14 | 公開側の実読みで両方そろったことを確認（ここで**仕事は終わっていた**） |
-| **08:03:46** | **stop のフックは叩かれている**（`hook.log`：`stop 押し通知=なし タイトル=OK`／`stop-guard 控えあり（この回に書いた・待ちの行あり）。通す`） |
-| **08:04:08** | 見張り：`外の処理を待つ回（外待ち: 公開側に殻と本体が出るのを待っている）なので、stop でも終わりにせず作業中を続ける`／`鍵 run: → run:` |
-| 08:04:48 | notification（プロンプトへ戻った） |
-| 08:05:07 | 見張り：同じく `外待ち…作業中のまま続ける`／`鍵 run: → run:2026-09-01 08:04:51` |
-| 08:15〜11:22 | 毎分 `外待ち…古くなっても手待ちへ落とさない` の一行だけ（**約198分**） |
-| **11:23:14** | 私が控えを書き換えて外待ちを外した stop |
-| 11:23:28 | `急ぎの知らせに積んだ [🔎 調べました]`／`鍵 run: → done:` |
-| 11:23:56 | 押し送り（この回のうちに出す） |
-| 11:24:42 | `公開側にまだ出ない（30秒）。次の回へ預ける`／`控えへ入れた [🔎 調べました]` |
+実機のエラー … `Error on line 39:27 in usage-widget module: TypeError: undefined is not an object (evaluating 'importModule(path)')`
 
-**三点の答え**
+- **`in usage-widget module`** … 落ちた場所が「usage-widget という名の台本」の中。
+  つまり**貼った台本の名が `usage-widget`** で、殻はそこから走っていた。
+- 旧・殻は控えを **`documentsDirectory/usage-widget.js`** に書いていた。これは
+  **その台本のファイルそのもの**。`fm.writeString` で**自分を上書き**し、
+  `importModule(path)` で**自分を読み込む**ことになる。
+- `importModule` は Scriptable の台本として読み込む仕掛けなので、**名前・拡張子・置き場（ローカル／iCloud）に
+  依存する**。台本名と重なると、この形で壊れる。
 
-- **stop のフックは叩かれた**（08:03:46）。フックの側は正常。
-- **押し送りは一度も積まれていない**。位相が `run:` のままで、`done:` にならなかったため
-  （押し送りへ回るのは `wait:` と `done:` だけ）。
-- **公開へも出ていない**。積まれていないので出しようがない。
+**加えて危うかった点** … 旧・本体はてっぺんに `await`（`const widget = await build();`）を持っていた。
+`importModule` は中身にトップレベル await があると**約束（Promise）を返す**ので、
+`mod.build` を掴めない形になり得た。ここも合わせて外した。
 
-**なぜ `run:` のままだったか** … 8月31日の「状態の穴-1」で入れた枝がそのまま効いていた。
-控えに `外待ち:` があれば、stop が鳴っても終わりにせず、古くなっても手待ちへ落とさない。
-**外の処理が済んだら私が外待ちの行を消す**という前提で、その**消し忘れを拾う網が無かった**。
+## ② `importModule` に頼らない形（採った案）
 
-＊`🕒 終了予定を過ぎています` も鳴らなかった。あのときの控えに **`見込み:` の行が無かった**ため、
-比べる相手が無く、超過の知らせは出ない作りだった（作法25 のとおり）。
-
-## ② 網が無かったので足した（`watch-notify.ps1`）
-
-```powershell
-$OUTWAIT_MAX = 40   # 外待ちが立ったまま控えがこの分数を超えて書き換わらなければ異常
-
-$outStuck = $false; $outAge = 0
-if ($note.outwait -and -not $note.stale -and $key -like 'run:*') {
-  $outAge = [int](((Get-Date) - (Get-Item $NotePath).LastWriteTime).TotalMinutes)
-  if ($outAge -gt $OUTWAIT_MAX) { $outStuck = $true }
-}
-… elseif ($outStuck) { $badKind = 'outwait' }
-```
-
-- **物差しは控えの書き換え時刻**。外の処理を本当に待っているなら、控えは見込みを延ばすなどで
-  触れられている。**40分放置は「消し忘れて止まっている」**と判じる。
-- 題は **`🪟 異常です（手が要ります）`**（ひとりでには戻らないため A ではなく B）。本文に
-  件名・何分放置か・「働き手へ一声かけてください」・「この間は作業中のまま止まり、終わりの札も
-  押し送りも出ません」を入れる。
-- **一発だけ**（印 `outwait`）。控えを書き換えれば印が落ち、また起きればまた一発。
-- 送る側の関門も直した——`run:` は普段送らないが、**外待ちの消し忘れ（`bad`）だけは例外**。
-  `run:` のまま止まっているのが異常そのものなので、ここで送らないと誰も気づけない。
-
-## ③ 実測（判定の枝 L1663〜L1703 を字面のまま抜き出して作り値で回した）
-
-| 通り | 控えの古さ | 結果 |
+| 案 | 中身 | 判断 |
 |---|---|---|
-| (甲) 外待ち・控えが新しい | 5分 | **鳴らない**（作業中のまま。ふつうの外待ちは邪魔しない） |
-| **(乙) 外待ち・控えが198分前**（今回の型） | 198分 | **鳴る**：`🪟 異常です（手が要ります）`／名乗り `bad`／記録『異常の押し送りを一発出す（outwait）』 |
-| (丙) 続けてもう一度 | 198分 | **鳴らない**：『押し送りはしない（outwait は既に一発送った。戻るまで出さない）』 |
-| (丁) 控えを直して外待ちを外した | 0分 | 印が落ちる：『異変から戻ったので、異常の押し送りの印を落とした（前は outwait）』。終わりの札が出る側へ戻る |
+| 旧：`importModule(path)` | 控えを台本として読み込む | **不採用**。名前・置き場に依存し、台本名と重なると自分を読む |
+| 採用：**`AsyncFunction` で直に評価** | 取ってきた字をその場で関数にして `module.exports` を受け取る | **採用**。ファイル名にも置き場にも依存しない |
+| `eval` | 同上 | 不採用。スコープが曖昧で、道具の見え方が読めない |
 
-写し `.bak-20260901a`／構文OK **2352行**／BOM 有り／`watch-notify.ps1` は毎分呼び直しなので起こし直し不要。
+採った形の要点。
 
-## こちら側の詰め
+- 控えの名を **`claude-usage-cache.js`** に変えた（台本の名と重ならない）。
+  さらに **走っている台本と同名なら書きも読みもしない**（`Script.name() + '.js'` と突き合わせる）。
+- 中身は `new AsyncFunction('module','exports','Color','Font','ListWidget','Size','Request','Script','config', src)`
+  として評価し、**道具は引数で手渡す**。台本ごとの見え方に頼らない。
+- 殻は `module.viaLoader = true` を立てる。**本体はこれを見て「自分では貼らない」**と決める
+  （Scriptable は台本にも `module` を渡すので、`module` の有無では見分けられない）。
+- 本体のてっぺんの `await` は撤去（`build().then(...)` へ）。
+- 中身で誤りが出た回は、**その字を札に出す**（真っ白にしない）。
 
-**外の処理が済んだ回は、控えの `外待ち:` を必ず消す。** 消し忘れても40分で鳴るようになったが、
-鳴らせないのが本来。今回は「公開の実読みまで済んだのに控えを書き換えなかった」ことが直接の原因で、
-作法25 の「件名は作業の切り替え時点で書き換える」と同じ抜けだった。
+## ③ 直した殻の全文
+
+このあとの節に、前置きも囲みも付けずに載せる（知らせの本文にも同じものを写した）。
+
+## ④ 確かめ方と結果（真似た中身ではなく、**公開から取ってきた実物**で）
+
+`https://kfsr148-art.github.io/koushu-handan/usage-widget.js` を実際に取得し、**殻と同じ道筋**
+（`AsyncFunction` で評価して `build` を受け取る）で走らせた。取ってきた中身は
+**6867字・`module.exports` あり・てっぺんの await なし**。
+
+| 通り | 何を再現したか | 結果 |
+|---|---|---|
+| **(甲)** 公開の実物で描く | 端末が毎回する動き | `Claude 使用量／セッション／26%／7分後／週全体／7%`。控えは **`claude-usage-cache.js`** に保存 |
+| **(乙)** 台本名が `usage-widget` | **実機で落ちた形そのもの** | 描けた（`Claude 使用量／セッション／26%`）。**台本を上書きしていない** |
+| **(丙)** 取得できない | 圏外・公開の詰まり | **控えで描けた** |
+| **(丁)** 控えも無い | いちばん最初の一回 | `取得できませんでした` ＋ 案内の一行 |
+| **(戊)** 本体を直に走らせる | 殻を通さない従来の使い方 | **自分で貼った**（従来どおり動く） |
+
+＊端末そのものでの確認は残っています——**貼り替えた殻でウィジェットが描けること（エラー窓が出ないこと）**。
+数字は `usage.json` と同じものが出ます。
+
+---
+
+/* Claude 使用量ウィジェットの殻（Scriptable）— 中身を取りに行って走らせるだけ
+ *
+ * これを **一度だけ** Scriptable に貼れば、あとは中身（usage-widget.js）を
+ * こちらで直すだけで端末に届く。**貼り替えは要らない。**
+ *
+ * 置き方
+ *   1. Scriptable で新しい台本を作り、この中身を貼る（名は「Claude 使用量」）
+ *   2. ホーム画面のウィジェット（小 or 中）に Scriptable を置き、
+ *      Script にこの台本、When Interacting は Run Script
+ *
+ * 何をするか
+ *   ・公開側から usage-widget.js を取ってきて、端末のローカルへ控える
+ *   ・取れた回は、その中身で描く（控えも新しくする）
+ *   ・取れなかった回は、**控えで描く**（真っ白にしない）
+ *   ・控えも無い初回だけ「取得できませんでした」と出す
+ *
+ * 直し（2026-09-01・殻の直し-1）
+ *   ・**importModule は使わない。** 控えを台本として読み込ませる形は、
+ *     台本の名と控えの名が重なると自分自身を読みにいって落ちる。
+ *     実機で `TypeError: undefined is not an object (evaluating 'importModule(path)')` が出た。
+ *   ・控えの名を **claude-usage-cache.js** にして、台本の名と重ならないようにした。
+ *     走っている台本と同じ名になる場合は、書き込みも読み込みもしない（自分を上書きしない）。
+ *   ・中身は **AsyncFunction で直に評価**し、道具（Color/Font/ListWidget/Size/Request/Script/config）は
+ *     引数で手渡す。台本ごとの見え方に頼らないので、どの置き方でも同じに動く。
+ */
+
+const SRC   = 'https://kfsr148-art.github.io/koushu-handan/usage-widget.js';
+const CACHE = 'claude-usage-cache.js';   /* 控えの名。台本の名と重ならないものにする */
+const TIMEO = 10;                        /* 取得の待ち（秒） */
+
+const BG  = new Color('#0d1b16');
+const FG  = new Color('#e8f0ea');
+const HOT = new Color('#c0392b');
+
+const fm   = FileManager.local();
+const path = fm.joinPath(fm.documentsDirectory(), CACHE);
+
+/* 走っている台本そのものを指していないか。指していれば控えは使わない（自分を上書きしない）。 */
+let selfHit = false;
+try { selfHit = (Script.name() + '.js') === CACHE; } catch (e) { }
+
+/* 取りに行く。中間の控えを挟まないよう、毎回ちがう問い合わせにする（本体の ver.txt と同じ流儀）。 */
+let fresh = null;
+try {
+  const r = new Request(SRC + '?_chk=' + Date.now());
+  r.timeoutInterval = TIMEO;
+  const t = await r.loadString();
+  /* 途中で切れた中身を控えへ書かない。**最後まで来た印**（module.exports）が無ければ捨てる。 */
+  if (t && t.indexOf('module.exports') >= 0) { fresh = t; }
+} catch (e) { /* 取れないだけ。控えで描く */ }
+
+if (fresh && !selfHit) { try { fm.writeString(path, fresh); } catch (e) { /* 書けなくても描ける */ } }
+
+/* 使う中身を決める。取れた分が最優先、無ければ控え。 */
+let code = fresh;
+if (!code && !selfHit) {
+  try { if (fm.fileExists(path)) { code = fm.readString(path); } } catch (e) { }
+}
+
+/* 中身から build を取り出す。**importModule は使わない**——台本として読み込ませず、
+   その場で評価して module.exports を受け取る。道具は引数で手渡す。 */
+async function takeBuild(src) {
+  const AsyncFn = Object.getPrototypeOf(async function () { }).constructor;
+  const mod = { exports: {}, viaLoader: true };   /* 中身は これを見て「自分では貼らない」と決める */
+  const fn = new AsyncFn('module', 'exports', 'Color', 'Font', 'ListWidget', 'Size',
+                         'Request', 'Script', 'config', src);
+  await fn(mod, mod.exports, Color, Font, ListWidget, Size, Request, Script, config);
+  return (mod.exports && typeof mod.exports.build === 'function') ? mod.exports.build : null;
+}
+
+function panel(head, note) {
+  const w = new ListWidget();
+  w.backgroundColor = BG;
+  const t1 = w.addText(head);
+  t1.font = Font.semiboldSystemFont(13);
+  t1.textColor = HOT;
+  w.addSpacer(4);
+  const t2 = w.addText(note);
+  t2.font = Font.systemFont(11);
+  t2.textColor = FG;
+  return w;
+}
+
+let widget = null;
+if (code) {
+  try {
+    const build = await takeBuild(code);
+    if (build) { widget = await build(); }
+    else { widget = panel('中身が読めません', '取ってきた中身に build がありません。次の更新でやり直します。'); }
+  } catch (e) {
+    widget = panel('中身で誤りが出ました', String(e));
+  }
+} else {
+  /* 控えも無い＝いちばん最初の一回だけここへ来る。 */
+  widget = panel('取得できませんでした',
+                 '中身をまだ一度も取れていません。通信を確かめて、もう一度お試しください。');
+}
+
+if (config.runsInWidget) { Script.setWidget(widget); } else { widget.presentSmall(); }
+Script.complete();
 
 ---
 
@@ -86,11 +176,12 @@ if ($note.outwait -and -not $note.stale -and $key -like 'run:*') {
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **95件**ある。
+　ここに出るのは新しい20件。全部で **96件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`殻の直し-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E6%AE%BB%E3%81%AE%E7%9B%B4%E3%81%97-1.md) | 09-01 11:54 | 殻の直し-1 — 実機の `importModule` エラーは台本名と控え名の衝突。直に評価する形へ |
 | [`知らせの詰まり-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E7%9F%A5%E3%82%89%E3%81%9B%E3%81%AE%E8%A9%B0%E3%81%BE%E3%82%8A-1.md) | 09-01 11:29 | 知らせの詰まり-1 — 「外待ち」の消し忘れで198分止まっていた。網を足した |
 | [`ウィジェットの自動更新-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%82%A6%E3%82%A3%E3%82%B8%E3%82%A7%E3%83%83%E3%83%88%E3%81%AE%E8%87%AA%E5%8B%95%E6%9B%B4%E6%96%B0-1.md) | 09-01 08:02 | ウィジェットの自動更新-1 — 殻を新設して、Scriptable への貼り替えを不要にした |
 | [`検査の取りこぼし-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E6%A4%9C%E6%9F%BB%E3%81%AE%E5%8F%96%E3%82%8A%E3%81%93%E3%81%BC%E3%81%97-1.md) | 09-01 06:02 | 検査の取りこぼし-1 — 打ち切りは「落ちた」ではなく「測れなかった」として扱う |
@@ -110,6 +201,5 @@ if ($note.outwait -and -not $note.stale -and $key -like 'run:*') {
 | [`使用量の配分-2-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E4%BD%BF%E7%94%A8%E9%87%8F%E3%81%AE%E9%85%8D%E5%88%86-2-2.md) | 08-30 19:52 | 使用量の配分-2 の続き — usage-widget.js へボーダーの行を実装した |
 | [`使用量の配分-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E4%BD%BF%E7%94%A8%E9%87%8F%E3%81%AE%E9%85%8D%E5%88%86-2.md) | 08-30 19:42 | 使用量の配分-2 — 「19:59まで N%」の行は VAIO の側に無い。名と場所を報告して止まる |
 | [`猫の常駐-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E7%8C%AB%E3%81%AE%E5%B8%B8%E9%A7%90-1.md) | 08-30 17:36 | 猫の常駐-1 — 題字の右に RunCat の猫を置いた（panel v103） |
-| [`途切れの回収-1-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%80%94%E5%88%87%E3%82%8C%E3%81%AE%E5%9B%9E%E5%8F%8E-1-2.md) | 08-30 17:02 | 途切れの回収-1 の裁定 — dead / stale: も一発だけ押し送る |
 
 <!-- 控えの一覧 ここまで -->
