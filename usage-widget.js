@@ -150,12 +150,15 @@ const URL_VER     = 'https://kfsr148-art.github.io/koushu-handan/ver.txt';
 const URL_PANEL   = 'https://kfsr148-art.github.io/koushu-handan/panel.html';
 const URL_IMG     = 'https://kfsr148-art.github.io/koushu-handan/';
 
-/* 状態 → 猫の絵。四通り。 */
+/* 状態 → 猫の絵。四通り。**ウィジェットは白い猫**（2026-09-01・ウィジェットの猫の色-1）。
+   ＊元の絵（cat2.png など）は残してあり、返事パネルの猫はそちらのまま。
+   ＊白い方は cat-white.js で焼き直したもの。黒一色の影絵は色を反転、
+     現場猫（panel-icon.png）は透明が無く四角い塊に見えるので、背景を抜いて白い影絵にした。 */
 const CAT_OF = {
-  '作業中':   'cat2.png',        /* 走るコマの一枚 */
-  '手待ち':   'cat-sleep.png',   /* 眠り */
-  'ヨシ待ち': 'panel-icon.png',  /* 現場猫（ヨシは現場猫の言葉） */
-  '異常':     'cat4.png'         /* ふだんと違う姿 */
+  '作業中':   'cat2-white.png',        /* 走るコマの一枚 */
+  '手待ち':   'cat-sleep-white.png',   /* 眠り */
+  'ヨシ待ち': 'panel-icon-white.png',  /* 現場猫の白い影絵（ヨシは現場猫の言葉） */
+  '異常':     'cat4-white.png'         /* ふだんと違う姿 */
 };
 
 async function loadState() {
