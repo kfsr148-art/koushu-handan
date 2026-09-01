@@ -1,134 +1,83 @@
-# ウィジェットの自動更新-1 — 殻を新設して、Scriptable への貼り替えを不要にした
+# 知らせの詰まり-1 — 「外待ち」の消し忘れで198分止まっていた。網を足した
 
-**状態：終わり（残り0件）／VAIO 2026-09-01 08:0x ／ 本体（`koushu-handan.html`）には触っていない**
+**状態：終わり（残り0件）／VAIO 2026-09-01 11:3x ／ 本体（`koushu-handan.html`）には触っていない**
 
-**結論** — 公開側に **`usage-widget-loader.js`（殻）** を新設した。**この殻を一度だけ Scriptable へ貼れば、
-以後は `usage-widget.js` をこちらで直すだけで端末に届く。** 取れた中身は端末のローカルへ控え、
-取れなかった回は**控えで描く**（真っ白にしない）。控えも無い初回だけ「取得できませんでした」と出す。
-四通りの実測とも狙いどおりで、公開側にも殻と本体の両方が配られている。
+**結論** — **私が控えの `外待ち:` を消し忘れた**のが原因。08:03:46 に stop は叩かれていたが、
+外待ちが立っていたので見張りは「まだ外の処理を待っている」と判じ、**08:04〜11:23 の198分ぶん
+`run:`（作業中）を続けた**。終わりの札も押し送りも積まれず、公開にも出ていない。
+**同じ型を拾う網は無かった**ので足した——外待ちのまま控えが40分書き換わらなければ、
+**🪟 異常（手が要ります）を一発**鳴らす。作り値四通りで確かめた。
 
 ---
 
-## ① 殻（`usage-widget-loader.js`）
+## ① 何が起きていたか（刻つき）
 
-```
-取りに行く（?_chk=<時刻> を付けて中間の控えを挟ませない）
-  ├ 取れた   → 端末のローカルへ控えを書き直し、その中身で描く
-  ├ 取れない → 控え（前に取れた分）で描く
-  └ 控えも無い → 「取得できませんでした」と出す（初回だけここへ来る）
-```
-
-- **途中で切れた中身を控えへ書かない。** 最後まで来た印（`module.exports`）が無ければ捨てる。
-- 控えの置き場は `FileManager.local()` の documents（オフラインでも読める側）。
-- 待ちは10秒。取得に失敗しても**例外で落ちず**、控えへ落ちる。
-
-## ② 本体（`usage-widget.js`）の直し
-
-末尾だけを直した。**ボーダーの式（`ceil((now−last)/24h)×100÷7`・最小1・上限7・分の丸め）も、
-表示の形（`20:00まで N%` の添え方）も、一切変えていない。**
-
-```js
-module.exports = { build: build };
-
-if (!globalThis.__USAGE_LOADER) {   /* 殻を通さず直に走らせたときは、今までどおり自分で貼る */
-  const widget = await build();
-  if (config.runsInWidget) { Script.setWidget(widget); }
-  else { widget.presentSmall(); }
-  Script.complete();
-}
-```
-
-殻は `__USAGE_LOADER` を立ててから `importModule` するので、**中身は二重に貼らない**。
-直に走らせる従来の使い方も、そのまま残っている。
-
-## ③ 実測（Scriptable の道具を真似た台で、本物の殻と本物の中身をそのまま走らせた）
-
-| 通り | 結果 |
+| 刻 | 何が起きたか |
 |---|---|
-| **(甲) 取得できる** | 描いた字＝`Claude 使用量／セッション／3%／4.0時間後／週全体／5%`。**控えに6561字を保存** |
-| **(乙) 公開側を一字変える** | 次の回に **`Claude 使用量★`** が出た。**控えも新しい中身に入れ替わった** |
-| **(丙) 取得を失敗させる** | **控えの中身で描けた**（`Claude 使用量★／セッション…`）。真っ白にならない |
-| (丁) 控えも無い初回で失敗 | `取得できませんでした` ＋ `中身をまだ一度も取れていません。通信を確かめて、もう一度お試しください。` |
+| 08:01:22 | 殻と本体を push（commit `955bfcf`） |
+| 08:02:14 | 公開側の実読みで両方そろったことを確認（ここで**仕事は終わっていた**） |
+| **08:03:46** | **stop のフックは叩かれている**（`hook.log`：`stop 押し通知=なし タイトル=OK`／`stop-guard 控えあり（この回に書いた・待ちの行あり）。通す`） |
+| **08:04:08** | 見張り：`外の処理を待つ回（外待ち: 公開側に殻と本体が出るのを待っている）なので、stop でも終わりにせず作業中を続ける`／`鍵 run: → run:` |
+| 08:04:48 | notification（プロンプトへ戻った） |
+| 08:05:07 | 見張り：同じく `外待ち…作業中のまま続ける`／`鍵 run: → run:2026-09-01 08:04:51` |
+| 08:15〜11:22 | 毎分 `外待ち…古くなっても手待ちへ落とさない` の一行だけ（**約198分**） |
+| **11:23:14** | 私が控えを書き換えて外待ちを外した stop |
+| 11:23:28 | `急ぎの知らせに積んだ [🔎 調べました]`／`鍵 run: → done:` |
+| 11:23:56 | 押し送り（この回のうちに出す） |
+| 11:24:42 | `公開側にまだ出ない（30秒）。次の回へ預ける`／`控えへ入れた [🔎 調べました]` |
 
-## ④ 公開側の実読み
+**三点の答え**
 
-| | 結果 |
-|---|---|
-| `usage-widget-loader.js` | **HTTP 200・2128字・手元と一致**。控えの仕掛けあり・初回の文言あり |
-| `usage-widget.js` | **6561字・手元と一致**。`module.exports` あり・**ボーダーの式は今のまま** |
+- **stop のフックは叩かれた**（08:03:46）。フックの側は正常。
+- **押し送りは一度も積まれていない**。位相が `run:` のままで、`done:` にならなかったため
+  （押し送りへ回るのは `wait:` と `done:` だけ）。
+- **公開へも出ていない**。積まれていないので出しようがない。
 
-## 端末でやること（一度だけ）
+**なぜ `run:` のままだったか** … 8月31日の「状態の穴-1」で入れた枝がそのまま効いていた。
+控えに `外待ち:` があれば、stop が鳴っても終わりにせず、古くなっても手待ちへ落とさない。
+**外の処理が済んだら私が外待ちの行を消す**という前提で、その**消し忘れを拾う網が無かった**。
 
-Scriptable の台本（名は「Claude 使用量」）の中身を、**下の殻の全文で置き換える**だけ。
-以後の直しは貼り替え不要で届く。
+＊`🕒 終了予定を過ぎています` も鳴らなかった。あのときの控えに **`見込み:` の行が無かった**ため、
+比べる相手が無く、超過の知らせは出ない作りだった（作法25 のとおり）。
 
-```js
-/* Claude 使用量ウィジェットの殻（Scriptable）— 中身を取りに行って走らせるだけ
- *
- * これを **一度だけ** Scriptable に貼れば、あとは中身（usage-widget.js）を
- * こちらで直すだけで端末に届く。**貼り替えは要らない。**
- *
- * 置き方
- *   1. Scriptable で新しい台本を作り、この中身を貼る（名は「Claude 使用量」）
- *   2. ホーム画面のウィジェット（小 or 中）に Scriptable を置き、
- *      Script にこの台本、When Interacting は Run Script
- *
- * 何をするか
- *   ・公開側から usage-widget.js を取ってきて、端末のローカルへ控える
- *   ・取れた回は、その中身で描く（控えも新しくする）
- *   ・取れなかった回は、**控えで描く**（真っ白にしない）
- *   ・控えも無い初回だけ「取得できませんでした」と出す
- */
+## ② 網が無かったので足した（`watch-notify.ps1`）
 
-const SRC   = 'https://kfsr148-art.github.io/koushu-handan/usage-widget.js';
-const NAME  = 'usage-widget.js';   /* 端末のローカルに置く控えの名 */
-const TIMEO = 10;                  /* 取得の待ち（秒） */
+```powershell
+$OUTWAIT_MAX = 40   # 外待ちが立ったまま控えがこの分数を超えて書き換わらなければ異常
 
-const BG  = new Color('#0d1b16');
-const FG  = new Color('#e8f0ea');
-const HOT = new Color('#c0392b');
-
-const fm   = FileManager.local();
-const path = fm.joinPath(fm.documentsDirectory(), NAME);
-
-/* 取りに行く。中間の控えを挟まないよう、毎回ちがう問い合わせにする（本体の ver.txt と同じ流儀）。 */
-let fresh = null;
-try {
-  const r = new Request(SRC + '?_chk=' + Date.now());
-  r.timeoutInterval = TIMEO;
-  const t = await r.loadString();
-  /* 途中で切れた中身を控えへ書かない。**最後まで来た印**（module.exports）が無ければ捨てる。 */
-  if (t && t.indexOf('module.exports') >= 0) { fresh = t; }
-} catch (e) { /* 取れないだけ。控えで描く */ }
-
-if (fresh) { try { fm.writeString(path, fresh); } catch (e) { /* 書けなくても描ける */ } }
-
-/* 控え（さっき書いた分か、前に取れた分）を読む。 */
-let code = null;
-try { if (fm.fileExists(path)) { code = fm.readString(path); } } catch (e) { }
-
-if (!code) {
-  /* 控えも無い＝いちばん最初の一回だけここへ来る。 */
-  const w = new ListWidget();
-  w.backgroundColor = BG;
-  const t1 = w.addText('取得できませんでした');
-  t1.font = Font.semiboldSystemFont(13);
-  t1.textColor = HOT;
-  w.addSpacer(4);
-  const t2 = w.addText('中身をまだ一度も取れていません。通信を確かめて、もう一度お試しください。');
-  t2.font = Font.systemFont(11);
-  t2.textColor = FG;
-  if (config.runsInWidget) { Script.setWidget(w); } else { w.presentSmall(); }
-  Script.complete();
-} else {
-  /* 中身の側に「殻から呼ばれた」と伝える。中身は自分では貼らず、build() を渡してくる。 */
-  globalThis.__USAGE_LOADER = true;
-  const mod = importModule(path);
-  const widget = await mod.build();
-  if (config.runsInWidget) { Script.setWidget(widget); } else { widget.presentSmall(); }
-  Script.complete();
+$outStuck = $false; $outAge = 0
+if ($note.outwait -and -not $note.stale -and $key -like 'run:*') {
+  $outAge = [int](((Get-Date) - (Get-Item $NotePath).LastWriteTime).TotalMinutes)
+  if ($outAge -gt $OUTWAIT_MAX) { $outStuck = $true }
 }
+… elseif ($outStuck) { $badKind = 'outwait' }
 ```
+
+- **物差しは控えの書き換え時刻**。外の処理を本当に待っているなら、控えは見込みを延ばすなどで
+  触れられている。**40分放置は「消し忘れて止まっている」**と判じる。
+- 題は **`🪟 異常です（手が要ります）`**（ひとりでには戻らないため A ではなく B）。本文に
+  件名・何分放置か・「働き手へ一声かけてください」・「この間は作業中のまま止まり、終わりの札も
+  押し送りも出ません」を入れる。
+- **一発だけ**（印 `outwait`）。控えを書き換えれば印が落ち、また起きればまた一発。
+- 送る側の関門も直した——`run:` は普段送らないが、**外待ちの消し忘れ（`bad`）だけは例外**。
+  `run:` のまま止まっているのが異常そのものなので、ここで送らないと誰も気づけない。
+
+## ③ 実測（判定の枝 L1663〜L1703 を字面のまま抜き出して作り値で回した）
+
+| 通り | 控えの古さ | 結果 |
+|---|---|---|
+| (甲) 外待ち・控えが新しい | 5分 | **鳴らない**（作業中のまま。ふつうの外待ちは邪魔しない） |
+| **(乙) 外待ち・控えが198分前**（今回の型） | 198分 | **鳴る**：`🪟 異常です（手が要ります）`／名乗り `bad`／記録『異常の押し送りを一発出す（outwait）』 |
+| (丙) 続けてもう一度 | 198分 | **鳴らない**：『押し送りはしない（outwait は既に一発送った。戻るまで出さない）』 |
+| (丁) 控えを直して外待ちを外した | 0分 | 印が落ちる：『異変から戻ったので、異常の押し送りの印を落とした（前は outwait）』。終わりの札が出る側へ戻る |
+
+写し `.bak-20260901a`／構文OK **2352行**／BOM 有り／`watch-notify.ps1` は毎分呼び直しなので起こし直し不要。
+
+## こちら側の詰め
+
+**外の処理が済んだ回は、控えの `外待ち:` を必ず消す。** 消し忘れても40分で鳴るようになったが、
+鳴らせないのが本来。今回は「公開の実読みまで済んだのに控えを書き換えなかった」ことが直接の原因で、
+作法25 の「件名は作業の切り替え時点で書き換える」と同じ抜けだった。
 
 ---
 
@@ -137,11 +86,12 @@ if (!code) {
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **94件**ある。
+　ここに出るのは新しい20件。全部で **95件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`知らせの詰まり-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E7%9F%A5%E3%82%89%E3%81%9B%E3%81%AE%E8%A9%B0%E3%81%BE%E3%82%8A-1.md) | 09-01 11:29 | 知らせの詰まり-1 — 「外待ち」の消し忘れで198分止まっていた。網を足した |
 | [`ウィジェットの自動更新-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%82%A6%E3%82%A3%E3%82%B8%E3%82%A7%E3%83%83%E3%83%88%E3%81%AE%E8%87%AA%E5%8B%95%E6%9B%B4%E6%96%B0-1.md) | 09-01 08:02 | ウィジェットの自動更新-1 — 殻を新設して、Scriptable への貼り替えを不要にした |
 | [`検査の取りこぼし-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E6%A4%9C%E6%9F%BB%E3%81%AE%E5%8F%96%E3%82%8A%E3%81%93%E3%81%BC%E3%81%97-1.md) | 09-01 06:02 | 検査の取りこぼし-1 — 打ち切りは「落ちた」ではなく「測れなかった」として扱う |
 | [`手牌の境目-3.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E6%89%8B%E7%89%8C%E3%81%AE%E5%A2%83%E7%9B%AE-3.md) | 09-01 03:47 | 手牌の境目-3 — `--vz-show` の745は据え置きで確定（掘り返さないための裁定の控え） |
@@ -161,6 +111,5 @@ if (!code) {
 | [`使用量の配分-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E4%BD%BF%E7%94%A8%E9%87%8F%E3%81%AE%E9%85%8D%E5%88%86-2.md) | 08-30 19:42 | 使用量の配分-2 — 「19:59まで N%」の行は VAIO の側に無い。名と場所を報告して止まる |
 | [`猫の常駐-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E7%8C%AB%E3%81%AE%E5%B8%B8%E9%A7%90-1.md) | 08-30 17:36 | 猫の常駐-1 — 題字の右に RunCat の猫を置いた（panel v103） |
 | [`途切れの回収-1-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%80%94%E5%88%87%E3%82%8C%E3%81%AE%E5%9B%9E%E5%8F%8E-1-2.md) | 08-30 17:02 | 途切れの回収-1 の裁定 — dead / stale: も一発だけ押し送る |
-| [`通知の宛先-1-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%80%9A%E7%9F%A5%E3%81%AE%E5%AE%9B%E5%85%88-1-2.md) | 08-30 16:44 | 通知の宛先-1 — 旧話題へ送る・読む箇所は **0件** |
 
 <!-- 控えの一覧 ここまで -->
