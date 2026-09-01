@@ -27,6 +27,8 @@ on:
       - 'usage-widget.js'
       - 'usage-widget-loader.js'
       - 'widget-check.js'
+      - 'panel.html'
+      - 'panel-check.js'
       - '.github/workflows/check.yml'
 
 # 同じ枝で新しい push が来たら、古い走りは打ち切る。
@@ -67,6 +69,15 @@ jobs:
       #     検査そのものが末尾に書き出す。
       - name: ウィジェットの検査（widget-check.js）
         run: node widget-check.js
+
+      # 返事パネル（panel.html）。写しに probe を差して headless で駆動する。
+      #   ＊見るもの … 構文／四通りの状態／まとめて写すの「残N」と実際に写る数／
+      #     iPhone の横縦の視野の溢れ／状態の札の高さが題の長短で変わらないこと／
+      #     終了予定がウィジェットと同じ計算になっていること。
+      #   ＊真似た台では拾えないもの（公開の遅れ・iOS Safari の描き方・触り心地・押し通知）は、
+      #     検査そのものが末尾に書き出す。
+      - name: 返事パネルの検査（panel-check.js）
+        run: node panel-check.js
 
       # 落ちたときだけ。題は「🚨 自動検査が落ちました（commit短縮）」。
       #   ＊題は UTF-8 なので RFC2047（=?UTF-8?B?…?=）で包む（手元の押し送りと同じ流儀）。
