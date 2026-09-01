@@ -30,6 +30,7 @@ const OK    = new Color('#4fb286');
 const WARN  = new Color('#d9a441');
 const HOT   = new Color('#c0392b');
 
+
 /* 割合の色。80% から橙、95% から赤。 */
 function hue(p) {
   if (p >= 95) { return HOT; }
@@ -292,9 +293,32 @@ async function build() {
     return w;
   }
 
-  const fh = body.five_hour || {};
-  const sd = body.seven_day || {};
-  const fb = fableLimit(body);
+  /* 値の入っていない本文を、0% として描かない（2026-09-02・使用量の空振り-1）。
+     ＊2026-09-02 03:06〜、HTTP 200 のまま全枠が 0 ／ resets_at が null の本文が返り続け、
+       ウィジェットは三行とも「0%」・戻る刻を「—」で出していた。**読めていない**のに、
+       使い切っていない、という**逆の意味に読める字**が出るのがいちばん悪い。
+     ＊空かどうかを判じるのは見張りの側（usage.json の `empty`）。ここでは判じ直さない。
+     ＊控え（`good`）があれば**その値を、取得の刻を添えて**出す。無ければ数字を出さない。 */
+  const empty = !!(j && j.empty);
+  const good  = (j && j.good && j.good.body) ? j.good : null;
+  const src   = empty ? (good ? good.body : null) : body;
+  if (!src) {
+    const e = w.addText('使用量は取れていません');
+    e.font = Font.semiboldSystemFont(13);
+    e.textColor = HOT;
+    const e2 = w.addText('控えもありません');
+    e2.font = Font.systemFont(10);
+    e2.textColor = DIM;
+    w.addSpacer();
+    const ft0 = w.addText('更新 ' + (j && j.at && !isNaN(new Date(j.at)) ? hhmm(new Date(j.at)) : '—'));
+    ft0.font = Font.systemFont(10);
+    ft0.textColor = DIM;
+    return w;
+  }
+
+  const fh = src.five_hour || {};
+  const sd = src.seven_day || {};
+  const fb = fableLimit(src);
 
   row(w, 'セッション', pct(fh.utilization), until(fh.resets_at));
   /* 週の二行には、ボーダー（20:00まで N%）を「戻るまで」の左に添える（2026-08-30）。
@@ -307,10 +331,17 @@ async function build() {
       (bFab !== null ? ('20:00まで ' + bFab + '%  ') : '') + until(fb.resets_at)); }
 
   w.addSpacer();
+  /* 足元の一行。**控えを出している回は、その値がいつのものかを必ず添える。**
+     ＊「更新 06:04」とだけ出すと、いま取れた値のように読める。 */
   const at = j && j.at ? new Date(j.at) : null;
-  const ft = w.addText('更新 ' + (at && !isNaN(at) ? hhmm(at) : '—'));
+  let foot = '更新 ' + (at && !isNaN(at) ? hhmm(at) : '—');
+  if (empty && good) {
+    const ga = good.at ? new Date(good.at) : null;
+    foot = (ga && !isNaN(ga) ? hhmm(ga) : '—') + '時点の値 ・ いまは取れていません';
+  }
+  const ft = w.addText(foot);
   ft.font = Font.systemFont(10);
-  ft.textColor = DIM;
+  ft.textColor = (empty && good) ? WARN : DIM;
 
   return w;
 }

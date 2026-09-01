@@ -10,6 +10,8 @@
  *   ④ iPhone の横と縦の視野で、溢れと重なりが無い
  *   ⑤ 状態の札（黄色の行）の高さが、題の長短で変わらない
  *   ⑥ 黄色の行の終了予定が、ウィジェットと同じ計算（開始＋見込み）になっている
+ *   ⑦ 遠すぎる終了予定（前の仕事の開始を引きずった形）を、数字にせず「未定」と出す
+ *   ⑧ 値の入っていない使用量を 0% として描かず、控えがあれば刻を添えて出す
  *
  * やり方は作法14「写しに probe」。panel.html を一時ディレクトリへ写し、fetch を作り値へ
  * 差し替えて headless で駆動する。**本体には一片も残さない。**
@@ -85,7 +87,7 @@ function probeSource(scene) {
     if (u.indexOf('board.json') >= 0)    return J(S.board || { waiting: [], recent: [] });
     if (u.indexOf('seen.json') >= 0)     return J({ upto: S.seen || 0 });
     if (u.indexOf('state.json') >= 0)    return J(S.state || {});
-    if (u.indexOf('usage.json') >= 0)    return J({});
+    if (u.indexOf('usage.json') >= 0)    return J(S.usage || {});
     if (u.indexOf('stable') >= 0)        return J('1434');
     if (u.indexOf('ver.txt') >= 0)       return J('1435');
     return J({});
@@ -123,6 +125,11 @@ function probeSource(scene) {
     var st = document.getElementById('stLine');
     o.stText = txt(st);
     o.stH = st ? Math.round(st.getBoundingClientRect().height * 10) / 10 : null;
+    /* 使用量の三行と、その足元の一行 */
+    o.uText = txt(document.getElementById('usageTag'));
+    o.uShown = vis(document.getElementById('usageTag'));
+    o.uMsg  = txt(document.getElementById('usageMsg'));
+    o.uWhen = txt(document.getElementById('usageWhen'));
     /* 板に出ている札の題（異常の札などを見る） */
     var bd = document.getElementById('board');
     o.cards = [];
@@ -213,6 +220,27 @@ const MIX = [
   N(now - 600, '🙋 ヨシしてください', 'パネルの守り-1 の実測をご確認ください'),
   N(now - 500, '✅ 終わりました（返事不要）', '写せます（3件）')
 ];
+/* 使用量の作り値（2026-09-02・使用量の空振り-1）。
+   ＊読める … 戻る刻の入った本文。三行に数字が出る。
+   ＊空・控えあり … 全枠 0 ／ resets_at が null（実物の 06:04 と同じ形）。控えの値を出す。
+   ＊空・控えなし … 同上で控えが無い。数字を出さず「取れていません」と言う。 */
+const U_LIM = (pc) => ([
+  { kind: 'session',       group: 'session', percent: pc[0], resets_at: new Date((now + 3600) * 1000).toISOString() },
+  { kind: 'weekly_all',    group: 'weekly',  percent: pc[1], resets_at: new Date((now + 86400) * 1000).toISOString() },
+  { kind: 'weekly_scoped', group: 'weekly',  percent: pc[2], resets_at: new Date((now + 86400) * 1000).toISOString(),
+    scope: { model: { display_name: 'Fable' } } }
+]);
+const U_BODY_OK = { five_hour: { utilization: 21, resets_at: new Date((now + 3600) * 1000).toISOString() },
+                    seven_day: { utilization: 11, resets_at: new Date((now + 86400) * 1000).toISOString() },
+                    limits: U_LIM([21, 11, 5]) };
+const U_BODY_EMPTY = { five_hour: { utilization: 0, resets_at: null },
+                       seven_day: { utilization: 0, resets_at: null },
+                       limits: [{ kind: 'session', group: 'session', percent: 0, resets_at: null },
+                                { kind: 'weekly_all', group: 'weekly', percent: 0, resets_at: null }] };
+const U_OK    = { at: new Date(now * 1000).toISOString(), http: 200, empty: false, body: U_BODY_OK, good: { at: new Date(now * 1000).toISOString(), body: U_BODY_OK } };
+const U_HELD  = { at: new Date(now * 1000).toISOString(), http: 200, empty: true,  body: U_BODY_EMPTY, good: { at: new Date((now - 7200) * 1000).toISOString(), body: U_BODY_OK } };
+const U_NONE  = { at: new Date(now * 1000).toISOString(), http: 200, empty: true,  body: U_BODY_EMPTY, good: null };
+
 const ST = {
   '作業中':   { stat: '作業中', subj: 'パネルの守り-1（実測）', mikomi: '30分', startedAt: now - 300, statAt: now - 300, at: now },
   '手待ち':   { stat: '手待ち', subj: 'パネルの守り-1', mikomi: '', startedAt: 0, statAt: now - 100, at: now },
@@ -404,6 +432,74 @@ try {
     else if (String(r.stText).indexOf(want) >= 0) { ok('黄色の行に「' + want + '」（開始＋見込みの計算が一致）'); }
     else { ng('終了予定が合わない（欲しい「' + want + '」／出た「' + String(r.stText).slice(0, 40) + '」）'); }
   }
+
+  /* ---- ⑦ 遠すぎる終了予定を数字にしない（2026-09-02・走り出しの時刻ずれ-1） ---- */
+  /*   仕事が替わってから work-started.txt が書き換わるまでの十数秒に読むと、
+   *   **前の仕事の開始 ＋ 新しい見込み** で足してしまう。実際に押し送りが
+   *   2026-09-02 06:11:55 に「22時58分」（16時間46分先）を出した。
+   *   ここでは、開始を8時間前に置いた作り値で **数字が出ないこと** を見る。
+   *   ＊いまより前の刻は伏せないのが正しい（超過して走っている回がそれ）。併せて見る。 */
+  head('⑦ 遠すぎる終了予定は数字にしない');
+  {
+    /* 黄色の行（stLine）が出す刻を拾って、**いまから12時間以内**であることを見る。
+       ＊材料が狂うと、この行は平然と16時間先の刻を出す。字の形は同じなので、
+         「数字が出ているか」では捕まらない。**出た数字を刻に戻して測る**。 */
+    const far = Object.assign({}, ST['作業中'], { startedAt: now - 8 * 3600, mikomi: '40分' });
+    const bad = new Date((now - 8 * 3600 + 40 * 60) * 1000);
+    const badText = bad.getHours() + '時' + ('0' + bad.getMinutes()).slice(-2) + '分';
+    const r = run(tmp, { state: far, notices: MIX, settle: 1500 }, 390, 844);
+    if (!r) { ng('測れない'); }
+    else {
+      const t = String(r.stText);
+      const m = t.match(/([0-9]+)時([0-9]+)分終了予定/);
+      if (t.indexOf(badText) >= 0) {
+        ng('前の仕事の開始を引きずった刻がそのまま出た（' + badText + '）');
+      } else if (!m) {
+        ok('前の仕事の開始（8時間前）を引きずった形で、刻を出していない（' + t.slice(0, 40) + '）');
+      } else {
+        const e = new Date(); e.setHours(Number(m[1]), Number(m[2]), 0, 0);
+        let ahead = (e.getTime() / 1000) - now;
+        if (ahead < -12 * 3600) { ahead += 24 * 3600; }
+        if (ahead <= 12 * 3600) {
+          ok('引きずった刻（' + badText + '）は出ず、いまから' +
+             Math.round(ahead / 60) + '分先の刻に収まった（' + m[0] + '）');
+        } else {
+          ng('12時間より先の刻が出た（' + m[0] + '・' + Math.round(ahead / 3600) + '時間先）');
+        }
+      }
+    }
+    /* 超過して走っている回は、これまでどおり（endPredText が先へ送る）。
+       伏せるのは先へ飛んだ刻だけで、超過そのものを消さないことを見る。 */
+    const over = Object.assign({}, ST['作業中'], { startedAt: now - 3600, mikomi: '20分' });
+    const r2 = run(tmp, { state: over, notices: MIX, settle: 1500 }, 390, 844);
+    if (!r2) { ng('測れない'); }
+    else if (/[0-9]+時[0-9]+分終了予定/.test(String(r2.stText))) {
+      ok('超過中（開始60分前・見込み20分）でも刻は消えない（' + String(r2.stText).slice(0, 34) + '）');
+    } else { ng('超過中の刻まで消えた（' + String(r2.stText).slice(0, 50) + '）'); }
+  }
+
+
+  /* ---- ⑧ 値の無い使用量を 0% として描かない（2026-09-02・使用量の空振り-1） ---- */
+  head('⑧ 値の無い使用量を 0% と描かない');
+  {
+    const a = run(tmp, { state: ST['手待ち'], notices: MIX, usage: U_OK, settle: 1200 }, 390, 844);
+    if (!a) { ng('測れない'); }
+    else if (a.uShown && /21/.test(a.uText) && /11/.test(a.uText)) { ok('読める回：三行に数字が出る（' + a.uText.replace(/s+/g, ' ').slice(0, 30) + '）'); }
+    else { ng('読める回に数字が出ない（出た「' + String(a.uText).slice(0, 40) + '」）'); }
+
+    const b = run(tmp, { state: ST['手待ち'], notices: MIX, usage: U_HELD, settle: 1200 }, 390, 844);
+    if (!b) { ng('測れない'); }
+    else if (!b.uShown || /0%/.test(String(b.uText))) { ng('空の回に 0% を描いた（' + String(b.uText).slice(0, 40) + '）'); }
+    else if (/21/.test(b.uText) && /時点の値/.test(String(b.uWhen))) { ok('空・控えあり：控えの値を出し、足元に「' + String(b.uWhen).slice(0, 26) + '」'); }
+    else { ng('空・控えありの出し方が違う（値「' + String(b.uText).slice(0, 24) + '」／足元「' + String(b.uWhen).slice(0, 30) + '」）'); }
+
+    const c = run(tmp, { state: ST['手待ち'], notices: MIX, usage: U_NONE, settle: 1200 }, 390, 844);
+    if (!c) { ng('測れない'); }
+    else if (c.uShown) { ng('空・控えなしで数字の箱が出た（' + String(c.uText).slice(0, 40) + '）'); }
+    else if (/取れていません/.test(String(c.uMsg))) { ok('空・控えなし：数字を出さず「' + String(c.uMsg) + '」'); }
+    else { ng('空・控えなしの断りが出ない（' + String(c.uMsg) + '）'); }
+  }
+
 } finally {
   fs.rmSync(tmp, { recursive: true, force: true });
 }
