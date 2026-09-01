@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🔎 調べました",
+        "time":  1788230638,
+        "message":  "usage-widget-loader.js の全文の写し\n何をしたかの控えがありません（止まる側の書き忘れです）。\nそのまま: /* Claude 使用量ウィジェットの殻（Scriptable）— 中身を取りに行って走らせるだけ\n *\n * これを **一度だけ** Scriptable に貼れば、あとは中身（usage-widget.js）を\n * こちらで直すだけで端末に届く。**貼り替えは要らない。**\n *\n * 置き方\n *   1. Scriptable で新しい台本を作り、この中身を貼る（名は「Claude 使用量」）\n *   2. ホーム画面のウィジェット（小 or 中）に Scriptable を置き、\n *      Script にこの台本、When Interacting は Run Script\n *\n * 何をするか\n *   ・公開側から usage-widget.js を取ってきて、端末のローカルへ控える\n *   ・取れた回は、その中身で描く（控えも新しくする）\n *   ・取れなかった回は、**控えで描く**（真っ白にしない）\n *   ・控えも無い初回だけ「取得できませんでした」と出す\n */\n\nconst SRC   = \u0027https://kfsr148-art.github.io/koushu-handan/usage-widget.js\u0027;\nconst NAME  = \u0027usage-widget.js\u0027;   /* 端末のローカルに置く控えの名 */\nconst TIMEO = 10;                  /* 取得の待ち（秒） */\n\nconst BG  = new Color(\u0027#0d1b16\u0027);\nconst FG  = new Color(\u0027#e8f0ea\u0027);\nconst HOT = new Color(\u0027#c0392b\u0027);\n\nconst fm   = FileManager.local();\nconst path = fm.joinPath(fm.documentsDirectory(), NAME);\n\n/* 取りに行く。中間の控えを挟まないよう、毎回ちがう問い合わせにする（本体の ver.txt と同じ流儀）。 */\nlet fresh = null;\ntry {\n  const r = new Request(SRC + \u0027?_chk=\u0027 + Date.now());\n  r.timeoutInterval = TIMEO;\n  const t = await r.loadString();\n  /* 途中で切れた中身を控えへ書かない。**最後まで来た印**（module.exports）が無ければ捨てる。 */\n  if (t \u0026\u0026 t.indexOf(\u0027module.exports\u0027) \u003e= 0) { fresh = t; }\n} catch (e) { /* 取れないだけ。控えで描く */ }\n\nif (fresh) { try { fm.writeString(path, fresh); } catch (e) { /* 書けなくても描ける */ } }\n\n/* 控え（さっき書いた分か、前に取れた分）を読む。 */\nlet code = null;\ntry { if (fm.fileExists(path)) { code = fm.readString(path); } } catch (e) { }\n\nif (!code) {\n  /* 控えも無い＝いちばん最初の一回だけここへ来る。 */\n  const w = new ListWidget();\n  w.backgroundColor = BG;\n  const t1 = w.addText(\u0027取得できませんでした\u0027);\n  t1.font = Font.semiboldSystemFont(13);\n  t1.textColor = HOT;\n  w.addSpacer(4);\n  const t2 = w.addText(\u0027中身をまだ一度も取れていません。通信を確かめて、もう一度お試しください。\u0027);\n  t2.font = Font.systemFont(11);\n  t2.textColor = FG;\n  if (config.runsInWidget) { Script.setWidget(w); } else { w.presentSmall(); }\n  Script.complete();\n} else {\n  /* 中身の側に「殻から呼ばれた」と伝える。中身は自分では貼らず、build() を渡してくる。 */\n  globalThis.__USAGE_LOADER = true;\n  const mod = importModule(path);\n  const widget = await mod.build();\n  if (config.runsInWidget) { Script.setWidget(widget); } else { widget.presentSmall(); }\n  Script.complete();\n}"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1788229973,
         "message":  "写せます（2件）"
@@ -93,10 +98,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1788179292,
         "message":  "自動検査-5（丙を実装・v1432）— Actions と公開の実読み待ち\n丙を実装（1167行の安全網を 349px→380px）。甲は併用せず現状のまま。v1431 の注記へ 667x375 の実測を追記。版は三箇所とも1432。手元の完全版 node check-all は21:04〜21:26で全通過（72/72・⑦の667x375 は bottom=375/375）。本体・ver.txt・check.yml（完全版へ）を一度に push（f6c548e）。Actions の走り 33391832358 が完全版で進行中。公開側の ver.txt が 1432 になるのも併せて見張り中。\nファイル: koushu-handan.html（1167行と注記二箇所、版三箇所）、ver.txt、.github/workflows/check.yml\n実測: 手元完全版 全てPASS・72/72（judged の二択 bottom＝568x320:320／667x375:375／844x390:362.5／932x430:382／900x300:300／900x340:329.8／900x375:338.8／900x381:339.8）\n実機: 判定後の画面を iPhone 横向き（667x375 相当）で開き、二択（連チャン／親流れ）が画面の下に貼り付いて常に押せること。版の字が v1432"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1788178149,
-        "message":  "この間にまとまった知らせ 2本\n\n［✅ 終わりました（返事不要）］\n自動検査-5（丙を実装・v1432）\n丙を実装した——1167行の安全網を max-height:349px から 380px へ広げ、判定後の二択を380px以下の帯でも画面下へ貼り付ける。甲（1211〜1219行の余白削り）は現状のまま併用しない。v1431 の注記261〜269行へ「667x375 は当時測っていなかった／bottom=396.3\u003e375 だった／v1432 で塞ぎ 375.0」を追記。版を三箇所（data-ver・verTag・ver.txt）とも 1432 へ。本体スクリプトの構文OK。いまから手元の完全版を回す。\nファイル: koushu-handan.html（1152〜1174行の安全網と注記、261〜269行の注記、版三箇所）、ver.txt\n実測: Actions の前回の走り 33389165607 は較正後に本物の 667x375 を測って同じ溢れを出した（bottom=386.3\u003e375・8件／較正は 幅+0/高さ+87）。手元の完全版はこれから\n実機: 判定後の画面を iPhone 横向き（667x375 相当）で開き、二択（連チャン／親流れ）が画面の下に貼り付いて常に押せること。版の字が v1432\n\n［✅ 終わりました（返事不要）］\n写せます（2件）"
     }
 ]
