@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🕒 延びています",
+        "time":  1788268709,
+        "message":  "走り出しの黙り-2＝走り出しの😸が鳴らなかった件\n終了予定21:41を過ぎています（経過56分）"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1788266919,
         "message":  "写せます（2件）"
@@ -93,10 +98,5 @@
         "title":  "🔎 調べました",
         "time":  1788230638,
         "message":  "usage-widget-loader.js の全文の写し\n何をしたかの控えがありません（止まる側の書き忘れです）。\nそのまま: /* Claude 使用量ウィジェットの殻（Scriptable）— 中身を取りに行って走らせるだけ\n *\n * これを **一度だけ** Scriptable に貼れば、あとは中身（usage-widget.js）を\n * こちらで直すだけで端末に届く。**貼り替えは要らない。**\n *\n * 置き方\n *   1. Scriptable で新しい台本を作り、この中身を貼る（名は「Claude 使用量」）\n *   2. ホーム画面のウィジェット（小 or 中）に Scriptable を置き、\n *      Script にこの台本、When Interacting は Run Script\n *\n * 何をするか\n *   ・公開側から usage-widget.js を取ってきて、端末のローカルへ控える\n *   ・取れた回は、その中身で描く（控えも新しくする）\n *   ・取れなかった回は、**控えで描く**（真っ白にしない）\n *   ・控えも無い初回だけ「取得できませんでした」と出す\n */\n\nconst SRC   = \u0027https://kfsr148-art.github.io/koushu-handan/usage-widget.js\u0027;\nconst NAME  = \u0027usage-widget.js\u0027;   /* 端末のローカルに置く控えの名 */\nconst TIMEO = 10;                  /* 取得の待ち（秒） */\n\nconst BG  = new Color(\u0027#0d1b16\u0027);\nconst FG  = new Color(\u0027#e8f0ea\u0027);\nconst HOT = new Color(\u0027#c0392b\u0027);\n\nconst fm   = FileManager.local();\nconst path = fm.joinPath(fm.documentsDirectory(), NAME);\n\n/* 取りに行く。中間の控えを挟まないよう、毎回ちがう問い合わせにする（本体の ver.txt と同じ流儀）。 */\nlet fresh = null;\ntry {\n  const r = new Request(SRC + \u0027?_chk=\u0027 + Date.now());\n  r.timeoutInterval = TIMEO;\n  const t = await r.loadString();\n  /* 途中で切れた中身を控えへ書かない。**最後まで来た印**（module.exports）が無ければ捨てる。 */\n  if (t \u0026\u0026 t.indexOf(\u0027module.exports\u0027) \u003e= 0) { fresh = t; }\n} catch (e) { /* 取れないだけ。控えで描く */ }\n\nif (fresh) { try { fm.writeString(path, fresh); } catch (e) { /* 書けなくても描ける */ } }\n\n/* 控え（さっき書いた分か、前に取れた分）を読む。 */\nlet code = null;\ntry { if (fm.fileExists(path)) { code = fm.readString(path); } } catch (e) { }\n\nif (!code) {\n  /* 控えも無い＝いちばん最初の一回だけここへ来る。 */\n  const w = new ListWidget();\n  w.backgroundColor = BG;\n  const t1 = w.addText(\u0027取得できませんでした\u0027);\n  t1.font = Font.semiboldSystemFont(13);\n  t1.textColor = HOT;\n  w.addSpacer(4);\n  const t2 = w.addText(\u0027中身をまだ一度も取れていません。通信を確かめて、もう一度お試しください。\u0027);\n  t2.font = Font.systemFont(11);\n  t2.textColor = FG;\n  if (config.runsInWidget) { Script.setWidget(w); } else { w.presentSmall(); }\n  Script.complete();\n} else {\n  /* 中身の側に「殻から呼ばれた」と伝える。中身は自分では貼らず、build() を渡してくる。 */\n  globalThis.__USAGE_LOADER = true;\n  const mod = importModule(path);\n  const widget = await mod.build();\n  if (config.runsInWidget) { Script.setWidget(widget); } else { widget.presentSmall(); }\n  Script.complete();\n}"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1788229857,
-        "message":  "知らせの詰まり-1（外待ちの消し忘れで198分止まっていた件）— 終わり（残り0件）\n①原因を刻つきで特定——stop は 08:03:46 に叩かれていた（hook.log）が、控えの「外待ち:」が残っていたため 08:04:08 に見張りが『stop でも終わりにせず作業中を続ける』と判じ、11:23 まで毎分 run: のまま（約198分）。押し送りは一度も積まれず（回るのは wait: と done: だけ）、公開にも出ていない。見込みの行が無かったので🕒超過も鳴らなかった。②同じ型を拾う網は無かったので足した——外待ちが立ったまま控えが40分書き換わらなければ🪟異常（手が要ります）を一発だけ押し送る。run: でも state=bad のときだけは送るよう関門も直した。③作り値四通りで確認。原因はこちらの消し忘れなので、外の処理が済んだ回は必ず外待ちの行を消す。\nファイル: ~/.claude/watch-notify.ps1（OUTWAIT_MAX と outStuck の判定・送る関門。写し .bak-20260901a）、reports/知らせの詰まり-1.md、report-latest.md\n実測: (甲)控えが新しい(5分)=鳴らない／(乙)198分前=🪟鳴る（名乗り bad）／(丙)二度目=鳴らない（一発だけ）／(丁)外待ちを外した=印が落ちる。構文OK 2352行・BOM 有り"
     }
 ]
