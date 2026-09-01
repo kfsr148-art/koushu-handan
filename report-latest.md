@@ -84,6 +84,10 @@ headless で駆動する。**本体には一片も残さない。** 額縁は毎
 
 ＊見た目も、検査の落ちる条件も変えていない（異常はもともと落ちに数えていない）。
 
+実測 … 手元・Actions とも **全てPASS**。異常の行は `異常：パネルには出さない（押し送りで知らせる）＝2026-09-01 裁定` と出る。
+公開側も panel-ver.txt=**105**・本体の `verTag`=**panel v105**・注記入りを実読みで確認（16:48）。
+Actions は **run 33483850232・success・9分39秒**（07:47:36Z → 07:57:15Z）。
+
 
 
 ---
@@ -142,6 +146,8 @@ headless で駆動する。**本体には一片も残さない。** 額縁は毎
 
 ---
 
+---
+
 <!-- 控えの一覧 ここから -->
 
 ## 控えの一覧（reports/・新しい順に20件）
@@ -152,7 +158,7 @@ headless で駆動する。**本体には一片も残さない。** 額縁は毎
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
-| [`パネルの守り-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%83%91%E3%83%8D%E3%83%AB%E3%81%AE%E5%AE%88%E3%82%8A-1.md) | 09-01 16:44 | パネルの守り-1 — 返事パネルを検査の網に入れた |
+| [`パネルの守り-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%83%91%E3%83%8D%E3%83%AB%E3%81%AE%E5%AE%88%E3%82%8A-1.md) | 09-01 16:57 | パネルの守り-1 — 返事パネルを検査の網に入れた |
 | [`ウィジェットの守り-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%82%A6%E3%82%A3%E3%82%B8%E3%82%A7%E3%83%83%E3%83%88%E3%81%AE%E5%AE%88%E3%82%8A-1.md) | 09-01 15:24 | ウィジェットの守り-1 — ウィジェット側を検査の網に入れた |
 | [`ウィジェットの猫の色-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%82%A6%E3%82%A3%E3%82%B8%E3%82%A7%E3%83%83%E3%83%88%E3%81%AE%E7%8C%AB%E3%81%AE%E8%89%B2-1.md) | 09-01 13:01 | ウィジェットの猫の色-1 — ウィジェットの猫を白へ（元絵とパネルはそのまま） |
 | [`ウィジェットの状態表示-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%82%A6%E3%82%A3%E3%82%B8%E3%82%A7%E3%83%83%E3%83%88%E3%81%AE%E7%8A%B6%E6%85%8B%E8%A1%A8%E7%A4%BA-1.md) | 09-01 12:10 | ウィジェットの状態表示-1 — 返事パネルと同じ状態をウィジェットにも出した |
