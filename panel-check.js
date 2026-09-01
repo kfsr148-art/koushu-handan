@@ -166,6 +166,7 @@ function probeSource(scene) {
           o.afterBtn = txt(btn);
           o.copied = countCards(CAP.clip);
           o.clipLen = CAP.clip ? CAP.clip.length : 0;
+          o.clip = String(CAP.clip || '').slice(0, 4000);   /* 貼る字そのもの（絞りを見るため） */
           out2(o);
         }, 700);
         return;
@@ -300,6 +301,56 @@ try {
     } else {
       ok('作り値 ' + WANT_N + '件 ＝ 残' + r.btnRest + '件 ＝ 写った ' + r.copied + '件（種類を落としていない）');
       if (r.btnAll !== null) { note('釦の字 … ' + r.beforeBtn + ' → 押した後 ' + r.afterBtn); }
+    }
+  }
+
+  /* ---- ③の続き 写しの絞り（2026-09-01・写しの絞り-2）----
+     ＊貼る写しから落とすもの … 板の「直近に終わった仕事」の三行／ふつうの回の「ファイル:」
+     ＊残すもの … 「実測:」「実機:」と報告の本文／あなた待ち／**壊れの調べの回の「ファイル:」**
+     ＊reports 側や画面は絞らない決めなので、ここで見るのは**貼る字だけ**。 */
+  head('③の続き 写しの絞り');
+  {
+    const F_PLAIN = 'panel.html（写しの組み立て）、panel-ver.txt';
+    const F_SHIRA = 'panel.html（1074行あたり）、watch-notify.ps1';
+    const NL = '\n';
+    const plainCard = { time: now - 300, title: '✅ 終わりました（返事不要）',
+      message: ['写しの絞り-2（作り値のふつうの回）',
+                '完了: 貼る写しの絞りを検査で守る形にした。',
+                'ファイル: ' + F_PLAIN,
+                '実測: 甲＝落ちる／乙＝落ちる／丙＝通る',
+                '実機: パネルで「まとめて写す」を押して貼った字を見ること'].join(NL) };
+    const shiraCard = { time: now - 200, title: '🔎 調べました',
+      message: ['写しの絞り-2（作り値の調べの回・原因の特定）',
+                '完了: 落ちた原因を追った。',
+                'ファイル: ' + F_SHIRA,
+                '実測: 幅746のときだけ落ちる'].join(NL) };
+    const boardMix = { waiting: [{ at: '2026-09-01 17:00', name: '待っている件', no: 'y0901-x' }],
+                       recent: [{ name: '直近その一', result: '済んだ' },
+                                { name: '直近その二', result: '済んだ' },
+                                { name: '直近その三', result: '済んだ' }] };
+    const r = run(tmp, { state: ST['手待ち'], notices: [plainCard, shiraCard], board: boardMix,
+                         press: true, settle: 1500 }, 390, 844);
+    if (!r || !r.clip) { ng('写しを組めない（貼る字が取れない）'); }
+    else {
+      const t = r.clip;
+      if (/／ 直近に終わった仕事 ／/.test(t)) { ng('写しに「直近に終わった仕事」の行が混ざっている'); }
+      else { ok('「直近に終わった仕事」の行は混ざっていない'); }
+      if (t.indexOf(F_PLAIN) >= 0) { ng('ふつうの回の「ファイル:」が写しに残っている'); }
+      else { ok('ふつうの回の「ファイル:」は落ちている'); }
+      if (t.indexOf(F_SHIRA) >= 0) { ok('調べの回の「ファイル:」は残っている（例外の枝）'); }
+      else { ng('調べの回の「ファイル:」まで落ちている（例外が効いていない）'); }
+      /* ＊「実測:」は**ふつうの回の字そのもの**で見る（2026-09-01・写しの絞り-2 の実測で分かった）。
+           `^実測[:：]` だけだと、調べの回（絞りを掛けない側）の実測に釣られて、
+           ふつうの回から実測が落ちても通ってしまう。 */
+      if (t.indexOf('実測: 甲＝落ちる／乙＝落ちる／丙＝通る') >= 0) { ok('「実測:」の行が残っている（ふつうの回）'); }
+      else { ng('ふつうの回の「実測:」の行が落ちている'); }
+      if (/^実機[:：]/m.test(t)) { ok('「実機:」の行が残っている'); }
+      else { ng('「実機:」の行が落ちている'); }
+      if (/^完了[:：]/m.test(t) && t.indexOf('写しの絞り-2（作り値のふつうの回）') >= 0) {
+        ok('報告の本文（件名の行・完了の行）が落ちていない');
+      } else { ng('報告の本文が落ちている'); }
+      if (/／ あなた待ち ／/.test(t)) { ok('「あなた待ち」は残っている'); }
+      else { ng('「あなた待ち」まで落ちている'); }
     }
   }
 
