@@ -12,6 +12,7 @@
  *   ⑥ 黄色の行の終了予定が、ウィジェットと同じ計算（開始＋見込み）になっている
  *   ⑦ 遠すぎる終了予定（前の仕事の開始を引きずった形）を、数字にせず「未定」と出す
  *   ⑧ 値の入っていない使用量を 0% として描かず、控えがあれば刻を添えて出す
+ *   ⑨ 黄色の行のうち終了予定の刻だけが別色（明るい水色）で、地とのコントラスト比が 4.5 以上
  *
  * やり方は作法14「写しに probe」。panel.html を一時ディレクトリへ写し、fetch を作り値へ
  * 差し替えて headless で駆動する。**本体には一片も残さない。**
@@ -124,6 +125,14 @@ function probeSource(scene) {
     /* 黄色の行（状態の一行）と、その箱の高さ */
     var st = document.getElementById('stLine');
     o.stText = txt(st);
+    /* 黄色の行の色（v108・パネルの色-1）。刻だけ別色にしてあるので、二つ測る。
+       ＊地の色は、行の箱（li）から取る。CSS の字面ではなく**描かれた実際の色**を見る。 */
+    o.stColor = st ? getComputedStyle(st.querySelector('p.m') || st).color : null;
+    var pr = st ? st.querySelector('.pred') : null;
+    o.predText  = pr ? String(pr.textContent || '').trim() : '';
+    o.predColor = pr ? getComputedStyle(pr).color : null;
+    var li = st ? st.querySelector('li') : null;
+    o.stBg = li ? getComputedStyle(li).backgroundColor : null;
     o.stH = st ? Math.round(st.getBoundingClientRect().height * 10) / 10 : null;
     /* 使用量の三行と、その足元の一行 */
     o.uText = txt(document.getElementById('usageTag'));
@@ -498,6 +507,45 @@ try {
     else if (c.uShown) { ng('空・控えなしで数字の箱が出た（' + String(c.uText).slice(0, 40) + '）'); }
     else if (/取れていません/.test(String(c.uMsg))) { ok('空・控えなし：数字を出さず「' + String(c.uMsg) + '」'); }
     else { ng('空・控えなしの断りが出ない（' + String(c.uMsg) + '）'); }
+  }
+
+
+  /* ---- ⑨ 終了予定の刻だけが別色（2026-09-02・パネルの色-1） ---- */
+  /*   ＊刻は明るい水色（--pred:#7fdfff）、それ以外は今までどおり黄色（--ask:#e8c14a）。
+   *   ＊描かれた実際の色を読み、**地とのコントラスト比も出して 4.5 以上**を見る。
+   *   ＊刻の無い状態（次の指示待ち・ヨシを返してください）では、包む相手がいないので
+   *     .pred が出ないことを見る。 */
+  head('⑨ 終了予定の刻だけが別色');
+  {
+    const rgb = (c) => { const m = String(c || '').match(/([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)/); return m ? [ +m[1], +m[2], +m[3] ] : null; };
+    const lum = (c) => { const v = c.map(x => x / 255).map(x => x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4)); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; };
+    const cr  = (a, b) => { const l1 = lum(a), l2 = lum(b); const hi = Math.max(l1, l2), lo = Math.min(l1, l2); return (hi + 0.05) / (lo + 0.05); };
+    const ASK  = [232, 193, 74];
+    const PRED = [127, 223, 255];
+    const same = (a, b) => a && b && a[0] === b[0] && a[1] === b[1] && a[2] === b[2];
+
+    const r = run(tmp, { state: ST['作業中'], notices: MIX, settle: 1500 }, 390, 844);
+    if (!r) { ng('測れない'); }
+    else {
+      const pc = rgb(r.predColor), sc = rgb(r.stColor), bg = rgb(r.stBg);
+      if (!pc) { ng('作業中：刻が包まれていない（' + String(r.stText).slice(0, 40) + '）'); }
+      else if (!same(pc, PRED)) { ng('作業中：刻の色が違う（' + r.predColor + '）'); }
+      else if (!/[0-9]+時[0-9]+分終了予定/.test(r.predText)) { ng('作業中：包んだ字が刻でない（' + r.predText + '）'); }
+      else if (!same(sc, ASK)) { ng('作業中：刻の外が黄色でない（' + r.stColor + '）'); }
+      else if (!bg) { ng('作業中：地の色が読めない'); }
+      else {
+        const c1 = cr(pc, bg), c2 = cr(sc, bg);
+        if (c1 < 4.5) { ng('刻と地のコントラスト比が足りない（' + c1.toFixed(2) + '）'); }
+        else { ok('作業中：刻「' + r.predText + '」が水色（比 ' + c1.toFixed(2) + '）／外は黄色（比 ' + c2.toFixed(2) + '）'); }
+      }
+    }
+    for (const nm of ['手待ち', 'ヨシ待ち']) {
+      const r2 = run(tmp, { state: ST[nm], notices: MIX, settle: 1200 }, 390, 844);
+      if (!r2) { ng(nm + '：測れない'); }
+      else if (r2.predColor) { ng(nm + '：刻が無いのに包まれている（' + r2.predText + '）'); }
+      else if (same(rgb(r2.stColor), ASK)) { ok(nm + '：包まず黄色のまま（' + String(r2.stText).slice(0, 20) + '）'); }
+      else { ng(nm + '：色が黄色でない（' + r2.stColor + '）'); }
+    }
   }
 
 } finally {

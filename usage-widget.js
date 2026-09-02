@@ -29,6 +29,9 @@ const DIM   = new Color('#7f9a8c');
 const OK    = new Color('#4fb286');
 const WARN  = new Color('#d9a441');
 const HOT   = new Color('#c0392b');
+/* 終了予定の刻だけに使う明るい水色（2026-09-02・パネルの色-1）。返事パネルの --pred と同じ値。
+   ＊二箇所で違う色を使わない。片方だけ変えると、同じ物が別の色で出る。 */
+const PRED  = new Color('#7fdfff');
 
 
 /* 割合の色。80% から橙、95% から赤。 */
@@ -210,6 +213,18 @@ async function loadCat(stat) {
      ・手待ち   … 「次の指示待ち」
      ・ヨシ待ち … 「ヨシを返してください」
      ・異常     … 「異常です」 */
+/* 状態の字を「頭」と「刻」に分ける（2026-09-02・パネルの色-1）。
+   ＊Scriptable の addText は色を一つしか持てないので、色を分けるには字を分けるしかない。
+     返事パネル側は span で包んでいる。**出る字は両方とも同じ。**
+   ＊分けるのは「HH時MM分終了予定」の形だけ。「終了予定不明」には刻が無いので分けない。
+   ＊字そのものは stateText が作る。**組み立てを二つ持たない。** */
+function stateParts(s) {
+  const t = stateText(s);
+  const m = t.match(/([0-9]+時[0-9]+分終了予定)/);
+  if (!m) { return { head: t, pred: '' }; }
+  return { head: t.slice(0, m.index), pred: m[1] };
+}
+
 function stateText(s) {
   if (s.stat === '作業中') {
     const mm = s.mikomi.match(/(\d+)/);
@@ -264,11 +279,25 @@ async function build() {
   if (cat) { const im = head.addImage(cat); im.imageSize = new Size(26, 17); im.resizable = true; }
   else { const sp = head.addText('　'); sp.font = Font.systemFont(11); }
   head.addSpacer(6);
-  const sl = head.addText(stateText(st));
+  /* 状態と刻を**縦に積む**（2026-09-02・パネルの色-1）。
+     ＊横に並べると折り返せず、狭いウィジェットで刻が切れる。縦なら切れない。
+     ＊刻が無い状態（次の指示待ち・ヨシを返してください・異常）は一行のまま——
+       いままでと同じ見え方になる。 */
+  const parts = stateParts(st);
+  const col = head.addStack();
+  col.layoutVertically();
+  const sl = col.addText(parts.head);
   sl.font = Font.semiboldSystemFont(11);
   sl.textColor = stateColor(st.stat);
   sl.lineLimit = 2;
   sl.minimumScaleFactor = 0.7;
+  if (parts.pred) {
+    const pv = col.addText(parts.pred);
+    pv.font = Font.semiboldSystemFont(11);
+    pv.textColor = PRED;
+    pv.lineLimit = 1;
+    pv.minimumScaleFactor = 0.7;
+  }
   head.addSpacer();
   w.addSpacer(4);
 

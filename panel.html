@@ -22,6 +22,13 @@
     --bg:#14241c; --card:#1d3328; --line:#2f4b3c; --fg:#f3ece0;
     --dim:rgba(243,236,224,0.65);
     --ask:#e8c14a; --done:#4caf7d; --wait:#4a9fe8; --act:#e05a4a;
+    /* 終了予定の刻だけに使う明るい水色（v108・パネルの色-1）。
+       ＊黄色（--ask）の補色にあたるので、同じ行に並べたときの見分けがいちばん付く。
+       ＊白（#fff）にしなかったのは、本文の色（--fg:#f3ece0）と近く、
+         ふつうの字に見えてしまうため。
+       ＊実測のコントラスト比 … 札の地（--card:#1d3328）に 8.93 ／ 頁の地（--bg:#14241c）に 10.70。
+         どちらも 4.5 を超える（いまの黄色は 7.81 ／ 9.36）。 */
+    --pred:#7fdfff;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0; background:var(--bg); color:var(--fg);
@@ -243,6 +250,10 @@
      ＊`li.why.stline .m` と重ねて書くのは、上の `li.why .m` に負けないため。
        同じ強さだと並び順で決まるので、class を一つ足して先に立たせる。 */
   li.why.stline .m{color:var(--ask);}
+  /* 終了予定の**刻だけ**を水色にする（v108）。
+     ＊「作業中（…）」と括弧の中の 開始・経過・指示 は今までどおり黄色のまま。
+     ＊太さは変えない。字幅が変わると、固定した高さ（79px）の見積もりが崩れるため。 */
+  li.why.stline .m .pred{color:var(--pred);}
   /* 高さを固定する（v100）。**字の長さで下の釦の位置が動かない**ようにするため。
      ＊値は実測から採った。iPhone 縦持ち（本体の幅 390px）で組んだときの高さ——
        「作業中、HH時MM分終了予定（開始…・経過…・指示…）」**78.38px**（経過が3桁でも、
@@ -415,7 +426,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v107（9月2日）</p>
+  <p class="ver" id="verTag">panel v108（9月2日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -440,7 +451,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '107';
+  var PANEL_VER = '108';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1215,7 +1226,12 @@
     var el = $('stLine');
     if (!el) { return; }
     var sl = stateLineText();
-    el.innerHTML = sl ? ('<li class="why stline"><p class="m">' + esc(sl) + '</p></li>') : '';
+    /* 刻だけを包む（v108）。**逃がしたあとで包む**——包んでから逃がすと、
+       足した札そのものが字として出てしまう。刻は数字と漢字だけなので、逃がしても形は変わらない。
+       ＊包むのは「HH時MM分終了予定」の形だけ。「終了予定不明」「終了予定 未定」は包まない
+         （刻が無いので、目立たせる相手がいない）。 */
+    var sh = sl ? esc(sl).replace(/([0-9]+時[0-9]+分終了予定)/, '<span class="pred">$1</span>') : '';
+    el.innerHTML = sh ? ('<li class="why stline"><p class="m">' + sh + '</p></li>') : '';
   }
 
   /* この札は片付いているか。「写す」を押した／「ここまで読んだ」に含まれる、のどちらか。 */
