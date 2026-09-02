@@ -372,6 +372,13 @@
        ＊中身は stateLineText()。作業中／次の指示待ち／ヨシを返してください の三通り。 -->
   <ul id="stLine"></ul>
   <button class="cpall" id="btnCopyBoard" type="button">まとめて写す（0件）</button>
+  <!-- 押し送った本文をそのまま写す（v109・通知のコピー-1）。
+       ＊ntfy は長い本文を一通に収められないので、送る側は 2600 バイトずつに割っている。
+         公開側の ntfy-latest.txt には**割る前の一枚**が置いてあり、この釦はそれを写す。
+         何通に割れて届いても、写しは一枚で済む。
+       ＊**一度のタップで写る**こと。そのために本文は先に取っておき、押したときは写すだけにする
+         （押してから取りに行くと、待つあいだに触られた印が切れて一度目で写せない）。 -->
+  <button class="cpall" id="btnCopyNtfy" type="button" hidden>通知の本文を写す（0件）</button>
   <!-- 未処理の札を渡す釦。字は v48 で「全部写す」から「お知らせ」へ変えた。
        件数の出し方も押したときの動きも、v38 のまま変えていない。 -->
   <button class="cpall" id="btnCopyAll" type="button">お知らせ</button>
@@ -426,7 +433,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v108（9月2日）</p>
+  <p class="ver" id="verTag">panel v111（9月2日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -451,7 +458,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '108';
+  var PANEL_VER = '111';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1217,6 +1224,86 @@
     } else { ng(); }
   }
 
+  /* 押し送った本文を写す（v111・通知のコピー-1）。**「まとめて写す」と同じ形**にした。
+     ＊一度のタップで写る … 本文は**先に取っておく**。押してから取りに行くと、
+       取得を待つあいだに iOS Safari の「触られた」印が切れ、一度目のタップで写せない。
+       **押したときにするのは写すことだけ**。
+     ＊印と残N／M件 … 写した本文には印を付け（`localStorage`）、釦は「残N／M件」を出す。
+       N は未写しの本数、M は控えにある本数。押すごとに N が減る。
+     ＊畳み … 未写しが0本になったら釦ごと畳む（「まとめて写す」と同じ）。
+     ＊分割は結合して一枚 … 控えには**割る前の一枚**が入っている。未写しが複数あれば、
+       古い順に continuous へ繋いで**一度に一枚**で写す。 */
+  var NTFY_SENT_URL = 'https://kfsr148-art.github.io/koushu-handan/ntfy-sent.json';
+  var NTFY_COPIED_KEY = 'ntfyCopied.v1';
+  var ntfySent = [];          /* 先に取っておいた一覧（古い順） */
+  var ntfyCopied = {};        /* 写した印。鍵は 刻|題 */
+  var ntfyBusy = false;      /* 「N件 写した」を見せている間。字を上書きさせない目印（v111） */
+  try { ntfyCopied = JSON.parse(localStorage.getItem(NTFY_COPIED_KEY) || '{}') || {}; } catch (e) { ntfyCopied = {}; }
+  function ntfyKeyOf(d) { return String(d.time || 0) + '|' + String(d.title || ''); }
+  function ntfyLeft() {
+    var a = [];
+    for (var i = 0; i < ntfySent.length; i++) {
+      if (!ntfyCopied[ntfyKeyOf(ntfySent[i])]) { a.push(ntfySent[i]); }
+    }
+    return a;
+  }
+  /* 未写しを一枚へ繋ぐ。頭の一行（題と刻と通数）を付ける——
+     どの知らせの本文なのかが分からないと、貼った先で使えない。 */
+  function ntfyBundle() {
+    var a = ntfyLeft(), out = [];
+    for (var i = 0; i < a.length; i++) {
+      out.push(String(a[i].title || '') + '（' + String(a[i].at || '') + '・' + (a[i].parts || 1) + '通）');
+      out.push('----------------------------------------');
+      out.push(String(a[i].body || ''));
+      if (i < a.length - 1) { out.push(''); }
+    }
+    return { text: out.join(String.fromCharCode(10)), count: a.length, rows: a };
+  }
+  function setCopyNtfyLabel() {
+    var b = $('btnCopyNtfy');
+    if (!b) { return; }
+    /* 写した直後の字（「N件 写した」）を、取り直しの返りで消さない（v111）。
+       ＊消すと、押した手応えが一瞬で消えて押せたのか分からなくなる。 */
+    if (ntfyBusy) { return; }
+    var n = ntfyLeft().length, m = ntfySent.length;
+    if (m < n) { m = n; }
+    if (n > 0) {
+      b.textContent = '通知の本文を写す（残' + n + '／' + m + '件）';
+      b.disabled = false; b.hidden = false;
+    } else {
+      b.textContent = '通知の本文を写す（0件）';
+      b.disabled = true; b.hidden = true;
+    }
+  }
+  function pullNtfyLatest() {
+    return fetch(NTFY_SENT_URL + '?_t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (a) { if (Array.isArray(a)) { ntfySent = a; setCopyNtfyLabel(); } })
+      .catch(function () { /* 取れない回は前の控えを残す。空で塗り潰さない */ });
+  }
+  function copyNtfyLatest(btn) {
+    var back = function (msg, ms) {
+      ntfyBusy = true;
+      btn.textContent = msg;
+      setTimeout(function () { ntfyBusy = false; setCopyNtfyLabel(); btn.className = 'cpall'; }, ms || 2000);
+    };
+    var bundle = ntfyBundle();
+    if (!bundle.count) { btn.className = 'cpall'; back('本文がありません', 3000); pullNtfyLatest(); return; }
+    /* ここから先に待ちを挟まない。触られた印が生きているうちに写す。 */
+    var done = function () {
+      for (var i = 0; i < bundle.rows.length; i++) { ntfyCopied[ntfyKeyOf(bundle.rows[i])] = 1; }
+      try { localStorage.setItem(NTFY_COPIED_KEY, JSON.stringify(ntfyCopied)); } catch (e) {}
+      btn.className = 'cpall ok';
+      back(bundle.count + '件 写した');
+      pullNtfyLatest();
+    };
+    /* 写せなかったときは印を付けない（copyBundle と同じ構え）。 */
+    var ng = function () { fallback(bundle.text); btn.className = 'cpall'; back('写せません', 3000); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try { navigator.clipboard.writeText(bundle.text).then(done, ng); } catch (e) { ng(); }
+    } else { ng(); }
+  }
+
   function paintBoard() { $('board').innerHTML = boardHtml(); }
 
   /* 状態の一行を、固定の置き場（#stLine）へ塗る（v97）。
@@ -1337,6 +1424,8 @@
     pullUsage();
     tick();
     if (timer) { clearInterval(timer); }
+    setCopyNtfyLabel();   /* 釦の字を先に整える（控えが空なら畳んだまま・v111） */
+    pullNtfyLatest();     /* 押したその場で写せるよう、開いたときに一度取っておく */
     timer = setInterval(tick, 15000);
     /* 使用量は10分ごとにしか動かないので、取りに行くのも控えめでよい（2分ごと）。 */
     if (usageTimer) { clearInterval(usageTimer); }
@@ -1376,7 +1465,7 @@
   /* 15秒ごとに、知らせの一覧と状態の両方を取りに行く。 */
   /* ＊「ここまで読んだ」も毎回見に行く（v34）。こちらで書き換えた直後に、
        パネルを開き直さなくても札が片付くようにするため。中身は二つの数だけで軽い。 */
-  function tick() { pull(); pullState(); pullSeen(); }
+  function tick() { pull(); pullState(); pullSeen(); pullNtfyLatest(); }
 
   /* 題の種類で色を分ける。絵文字で頭が揃っているので、そこを見る。
        🙋 ヨシしてください   … 黄（返事が要る）
@@ -2403,6 +2492,7 @@
 
   $('btnCopyAll').addEventListener('click', function () { copyAll(this); });
   $('btnCopyBoard').addEventListener('click', function () { copyBundle(this); });
+  $('btnCopyNtfy').addEventListener('click', function () { copyNtfyLatest(this); });
   $('btnCopyUrl').addEventListener('click', function () { copyUrl(this); });
 
   /* 写す釦と、畳んだ件の開閉。一覧ごと張り替わるので親で受ける。

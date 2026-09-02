@@ -13,6 +13,7 @@
  *   ⑦ 遠すぎる終了予定（前の仕事の開始を引きずった形）を、数字にせず「未定」と出す
  *   ⑧ 値の入っていない使用量を 0% として描かず、控えがあれば刻を添えて出す
  *   ⑨ 黄色の行のうち終了予定の刻だけが別色（明るい水色）で、地とのコントラスト比が 4.5 以上
+ *   ⑩ 通知の本文を写す釦が、割れずに一枚で写す（短い／長い／空の三通り）
  *
  * やり方は作法14「写しに probe」。panel.html を一時ディレクトリへ写し、fetch を作り値へ
  * 差し替えて headless で駆動する。**本体には一片も残さない。**
@@ -88,6 +89,10 @@ function probeSource(scene) {
     if (u.indexOf('board.json') >= 0)    return J(S.board || { waiting: [], recent: [] });
     if (u.indexOf('seen.json') >= 0)     return J({ upto: S.seen || 0 });
     if (u.indexOf('state.json') >= 0)    return J(S.state || {});
+    if (u.indexOf('ntfy-sent.json') >= 0) {
+      if (S.ntfy === null) { return Promise.resolve({ ok: false, status: 404, json: function () { return Promise.resolve(null); } }); }
+      return J(S.ntfy || []);
+    }
     if (u.indexOf('usage.json') >= 0)    return J(S.usage || {});
     if (u.indexOf('stable') >= 0)        return J('1434');
     if (u.indexOf('ver.txt') >= 0)       return J('1435');
@@ -120,6 +125,13 @@ function probeSource(scene) {
   }
   function num(s, re) { var m = String(s || '').match(re); return m ? Number(m[1]) : null; }
 
+  /* 釦を押して、写しへ入った字を拾う（v109・通知のコピー-1）。
+     ＊押したあとの取得と写しは非同期なので、settle のあいだ待ってから測る。 */
+  function pressNtfy() {
+    var b = document.getElementById('btnCopyNtfy');
+    if (b) { b.click(); }
+  }
+
   function measure() {
     var o = { w: window.innerWidth, h: window.innerHeight };
     /* 黄色の行（状態の一行）と、その箱の高さ */
@@ -128,11 +140,17 @@ function probeSource(scene) {
     /* 黄色の行の色（v108・パネルの色-1）。刻だけ別色にしてあるので、二つ測る。
        ＊地の色は、行の箱（li）から取る。CSS の字面ではなく**描かれた実際の色**を見る。 */
     o.stColor = st ? getComputedStyle(st.querySelector('p.m') || st).color : null;
+    /* 通知の本文を写す釦（v109） */
+    var bn = document.getElementById('btnCopyNtfy');
+    o.ntfyBtn = bn ? txt(bn) : null;
+    o.ntfyShown = vis(bn);
     var pr = st ? st.querySelector('.pred') : null;
     o.predText  = pr ? String(pr.textContent || '').trim() : '';
     o.predColor = pr ? getComputedStyle(pr).color : null;
     var li = st ? st.querySelector('li') : null;
     o.stBg = li ? getComputedStyle(li).backgroundColor : null;
+    o.ntfyClip = CAP.clip;
+    o.ntfyBtn2 = bn ? txt(bn) : null;
     o.stH = st ? Math.round(st.getBoundingClientRect().height * 10) / 10 : null;
     /* 使用量の三行と、その足元の一行 */
     o.uText = txt(document.getElementById('usageTag'));
@@ -174,6 +192,16 @@ function probeSource(scene) {
   window.addEventListener('load', function () {
     setTimeout(function () {
       var o = measure();
+      /* 通知の本文を写す釦（v109・通知のコピー-1）。押してから写しを拾う。 */
+      if (S.pressNtfy) {
+        pressNtfy();
+        setTimeout(function () {
+          o.ntfyClip = CAP.clip;
+          o.ntfyBtn2 = txt(document.getElementById('btnCopyNtfy'));
+          out2(o);
+        }, 900);
+        return;
+      }
       if (S.press) {
         var btn = document.getElementById('btnCopyBoard');
         o.beforeBtn = o.btn;
@@ -545,6 +573,69 @@ try {
       else if (r2.predColor) { ng(nm + '：刻が無いのに包まれている（' + r2.predText + '）'); }
       else if (same(rgb(r2.stColor), ASK)) { ok(nm + '：包まず黄色のまま（' + String(r2.stText).slice(0, 20) + '）'); }
       else { ng(nm + '：色が黄色でない（' + r2.stColor + '）'); }
+    }
+  }
+
+
+  /* ---- ⑩ 通知の本文を写す釦（2026-09-02・通知のコピー-1） ---- */
+  /*   ＊三通り：短い通知／長い報告（送る側では7通に割れる長さ）／空。
+   *   ＊眼目は**割れずに一枚で写る**こと。置き場には割る前の一枚しか無いので、
+   *     写しの字数が置き場の字数とぴったり合えば、一枚で写せている。 */
+  head('⑩ 通知の本文を写す釦');
+  {
+    /* 一度のタップで写れるかは、真似た台では拾えない（iOS の「触られた」印は node に無い）。
+       代わりに**字面で**見る——押したときの手（copyNtfyLatest）の中で取りに行っていないこと。
+       押してから取りに行くと、待つあいだに印が切れて一度目で写せない。 */
+    const a = html.indexOf('function copyNtfyLatest(btn) {');
+    const b = a >= 0 ? html.indexOf(String.fromCharCode(10) + '  }', a) : -1;
+    if (a < 0 || b < 0) { ng('押したときの手が見つからない'); }
+    else {
+      const fn = html.slice(a, b).split('pullNtfyLatest()').join('');
+      if (fn.indexOf('fetch(') >= 0) { ng('押したときの手の中で取りに行っている（一度のタップで写せない）'); }
+      else { ok('押したときの手は写すだけ（取りに行く待ちを挟んでいない）'); }
+    }
+    if (html.indexOf('function tick() { pull(); pullState(); pullSeen(); pullNtfyLatest(); }') >= 0) {
+      ok('本文は開いたときと15秒ごとに先に取ってある');
+    } else { ng('本文を先に取る手が無い'); }
+  }
+  {
+    /* 作り値は ntfy-sent.json の形（古い順の一覧）。
+       ＊三通り … 短い一本／7通に割れる長さの一本／空の一覧。
+       ＊眼目は**割れずに一枚で写る**ことと、**残N／M件**と**畳み**。 */
+    const mk = (t, title, body, parts) => ({ time: t, at: '2026-09-02 18:50:33', title: title, parts: parts || 1, body: body });
+    const SHORT = '積んだ刻 15:48:13／預けた刻 無し／読めた刻 無し／送った刻 無し';
+    let long = '';
+    for (let i = 0; i < 205; i++) { long += '行' + i + '：実測の数字と字がここに並ぶ。長さを稼ぐための行。' + String.fromCharCode(10); }
+
+    const CASES = [
+      ['短い通知', [mk(1, '調べ 終わりの黙り-3', SHORT, 1)], 1],
+      ['長い報告', [mk(2, '報告 長いもの', long, 7)], 1],
+      ['空',     [], 0]
+    ];
+    for (const [nm, list, want] of CASES) {
+      const r = run(tmp, { state: ST['手待ち'], notices: MIX, ntfy: list, pressNtfy: true, settle: 1200 }, 390, 844);
+      if (!r) { ng(nm + '：測れない'); continue; }
+      const clip = String(r.ntfyClip || '');
+      if (!want) {
+        /* 写すものが無い回は**釦ごと畳む**（「まとめて写す」と同じ）。
+           ＊畳んだ釦は押せないので、断りの字は出ない——出す相手がいない。 */
+        if (clip) { ng(nm + '：写すものが無いのに写した（' + clip.length + '字）'); }
+        else if (!r.ntfyShown && /（0件）/.test(String(r.ntfyBtn || ''))) { ok(nm + '：釦ごと畳んだ（字は「' + r.ntfyBtn + '」・押せない）'); }
+        else { ng(nm + '：畳んでいない（見えている=' + r.ntfyShown + '・字「' + String(r.ntfyBtn) + '」）'); }
+        continue;
+      }
+      /* 一枚で写れたか … 本文が丸ごと入っていて、頭の一行が付いていること */
+      const one = list[0];
+      if (clip.indexOf(one.body) < 0) { ng(nm + '：本文が丸ごと入っていない（写し ' + clip.length + '字／本文 ' + one.body.length + '字）'); continue; }
+      if (clip.indexOf(one.title) < 0) { ng(nm + '：頭の一行が無い'); continue; }
+      /* 押す前の字が「残N／M件」であること（まとめて写すと同じ形） */
+      const before = String(r.ntfyBtn || '');
+      if (!/残1／1件/.test(before)) { ng(nm + '：押す前の字が残N／M件でない（「' + before + '」）'); continue; }
+      /* 写したあとは印が付いて畳む */
+      const after = String(r.ntfyBtn2 || '');
+      if (!/1件 写した/.test(after)) { ng(nm + '：写したあとの字が違う（「' + after + '」）'); continue; }
+      const bytes = Buffer.byteLength(one.body, 'utf8');
+      ok(nm + '：残1／1件 → 一枚で写した（' + one.body.length + '字・送る側なら' + Math.ceil(bytes / 2600) + '通に割れる長さ）');
     }
   }
 
