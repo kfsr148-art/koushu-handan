@@ -14,6 +14,7 @@
  *   ⑧ 値の入っていない使用量を 0% として描かず、控えがあれば刻を添えて出す
  *   ⑨ 黄色の行のうち終了予定の刻だけが別色（明るい水色）で、地とのコントラスト比が 4.5 以上
  *   ⑩ 通知の本文を写す釦が、割れずに一枚で写す（短い／長い／空の三通り）
+ *   ⑪ 長い報告の札を、まとめて写すが割らずに一枚で写す
  *
  * やり方は作法14「写しに probe」。panel.html を一時ディレクトリへ写し、fetch を作り値へ
  * 差し替えて headless で駆動する。**本体には一片も残さない。**
@@ -636,6 +637,28 @@ try {
       if (!/1件 写した/.test(after)) { ng(nm + '：写したあとの字が違う（「' + after + '」）'); continue; }
       const bytes = Buffer.byteLength(one.body, 'utf8');
       ok(nm + '：残1／1件 → 一枚で写した（' + one.body.length + '字・送る側なら' + Math.ceil(bytes / 2600) + '通に割れる長さ）');
+    }
+  }
+
+
+  /* ---- ⑪ 長い報告の札を、まとめて写すが一枚で写す（2026-09-02・通知の分け方-1） ---- */
+  /*   ＊長い報告は ntfy へ送らない。**札として立てて、釦で写す**形にした。
+   *   ＊眼目は、6000字級の札でも**割れずに丸ごと**写しへ入ること。 */
+  head('⑪ 長い報告の札を一枚で写す');
+  {
+    let long = '';
+    for (let i = 0; i < 205; i++) { long += '行' + i + '：実測の数字と字がここに並ぶ。長さを稼ぐための行。' + String.fromCharCode(10); }
+    const cards = [ { time: now - 60, title: '報告 長いもの', message: long } ];
+    const r = run(tmp, { state: ST['手待ち'], notices: cards, press: true, settle: 1500 }, 390, 844);
+    if (!r) { ng('測れない'); }
+    else {
+      const clip = String(r.clip || '');
+      const full = String(r.clipLen || 0);
+      if (r.clipLen >= long.length && clip.indexOf(long.slice(0, 80)) >= 0) {
+        ok('6000字級の札が一枚で写しへ入った（本文 ' + long.length + '字／写し ' + full + '字）');
+      } else {
+        ng('長い札が丸ごと入っていない（本文 ' + long.length + '字／写し ' + full + '字）');
+      }
     }
   }
 
