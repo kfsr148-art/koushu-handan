@@ -449,7 +449,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v115（9月3日）</p>
+  <p class="ver" id="verTag">panel v116（9月4日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -474,7 +474,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '115';
+  var PANEL_VER = '116';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1219,9 +1219,20 @@
      ＊まとめて写すはこの並びだけを見る。数（残N）も、写す字も、印を付ける相手も、ここから取る。
      ＊未写しだけを返す。印の持ち方は別々（札は copied、通知は ntfyCopied）なので、
        それぞれの見方で外す。 */
+  /* 「写せます（N件）」の札は、数にも目次にも入れない（v116・数の不一致-1 の裁定）。
+     ＊あれは**数の知らせ**であって仕事ではない。入れると、釦の残・目次の行数・知らせの N の
+       三つが揃わなくなる（2026-09-04 の実測：釦「残2／3件」・目次2行・知らせ「写せます（3件）」）。
+     ＊三つとも**写した印の無い、中身のある札の数**で揃える。見張りの側も同じ決めで
+       自分の一枚を足すのをやめた。
+     ＊写す中身からも外れる（このふるいを通った物だけが写しに入る）。 */
+  function isCountCard(d) {
+    return /^写せます（[0-9]+件）$/.test(String((d && d.message) || '').trim());
+  }
+
   function mergedTodo() {
     var a = [];
     (shown || []).forEach(function (d) {
+      if (isCountCard(d)) { return; }
       if (!isCopied(d)) { a.push({ t: d.time || 0, kind: 'card', card: d }); }
     });
     (ntfySent || []).forEach(function (e) {
