@@ -18,6 +18,7 @@
  *   ⑫ 本文の全行（5行）が写しへ入る（写しの絞りで落ちるのはファイルの行だけ）
  *   ⑬ 板の取得が転んでも、前に読めた値を捨てない
  *   ⑭ 通知の印は札に掛からない／黄色の行に終わった題／釦の下に写せる札の目次
+ *   ⑮ 札だけの回の通し（残3／3件→押して0・写しに本文全部・題・目次）
  *
  * やり方は作法14「写しに probe」。panel.html を一時ディレクトリへ写し、fetch を作り値へ
  * 差し替えて headless で駆動する。**本体には一片も残さない。**
@@ -167,6 +168,7 @@ function probeSource(scene) {
     var tl = document.getElementById('todoList');
     o.todoText = tl ? String(tl.innerText || '').replace(/s+/g, ' ').trim() : '';
     o.todoRows = tl ? tl.querySelectorAll('li').length : 0;
+    o.btnHidden = (function () { var bb = document.getElementById('btnCopyBoard'); return bb ? bb.hidden : null; })();
     try { o.cardMarks = localStorage.getItem('kh-panel-copied') || ''; } catch (e) { o.cardMarks = ''; }
     o.ntfyClip = CAP.clip;
     o.ntfyBtn2 = bn ? txt(bn) : null;
@@ -743,6 +745,34 @@ try {
       if (r.todoRows === 3 && /札その3/.test(td) && /✅/.test(td) && /🔎/.test(td)) {
         ok('釦の下に写せる札の目次が3行（題＋印＋刻）');
       } else { ng('目次が違う（' + r.todoRows + '行／' + td.slice(0, 50) + '）'); }
+    }
+  }
+
+
+  /* ---- ⑮ 札だけの回の通し（2026-09-03・連携の立て直し-1） ---- */
+  /*   ＊一つの作り値（札3件・本文3行ずつ）で、四つを続けて見る——
+   *     残3／3件 → 押して 0件で畳む ／ 写しに本文が全部 ／ 黄色の行に終わった題 ／ 釦の下に目次。 */
+  head('⑮ 札だけの回（残3／3件→押して0・本文全部・題・目次）');
+  {
+    const NLc = String.fromCharCode(10);
+    const cards = [
+      { time: now - 900, title: '✅ 終わりました（返事不要）', message: '読みの道-2（名を変えた写しを置く）' + NLc + '本文の二行目' + NLc + '本文の三行目' },
+      { time: now - 500, title: '🔎 調べました',               message: '巡回の固まり-2（根を当てる）' + NLc + '本文の二行目' + NLc + '本文の三行目' },
+      { time: now - 100, title: '✅ 終わりました（返事不要）', message: '読みの道-3（URL 一行にする）' + NLc + '本文の二行目' + NLc + '本文の三行目' }
+    ];
+    const r = run(tmp, { state: ST['手待ち'], notices: cards, ntfy: [], press: true, settle: 1800 }, 390, 844);
+    if (!r) { ng('測れない'); }
+    else {
+      const before = String(r.beforeBtn || ''), after = String(r.afterBtn || '');
+      const clip = String(r.clip || ''), st = String(r.stText || ''), td = String(r.todoText || '');
+      if (!/残3／3件/.test(before)) { ng('押す前が残3／3件でない（「' + before + '」）'); }
+      else if (!/3件 写した/.test(after)) { ng('押した後の字が違う（「' + after + '」）'); }
+      else if (['本文の二行目', '本文の三行目', '読みの道-2', '読みの道-3', '巡回の固まり-2'].some(w => clip.indexOf(w) < 0)) {
+        ng('写しに欠けがある（' + clip.split(NLc).length + '行）');
+      }
+      else if (!/読みの道-3 が終わりました/.test(st)) { ng('黄色の行に題が無い（' + st.slice(0, 40) + '）'); }
+      else if (r.todoRows !== 3) { ng('目次が3行でない（' + r.todoRows + '行）'); }
+      else { ok('残3／3件 → 3件 写した。写し ' + clip.split(NLc).length + '行に本文全部、黄色の行に題、目次3行'); }
     }
   }
 
