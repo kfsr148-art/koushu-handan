@@ -16,6 +16,7 @@
  *   ⑩ 通知の本文を写す釦が、割れずに一枚で写す（短い／長い／空の三通り）
  *   ⑪ 長い報告の札を、まとめて写すが割らずに一枚で写す
  *   ⑫ 本文の全行（5行）が写しへ入る（写しの絞りで落ちるのはファイルの行だけ）
+ *   ⑬ 板の取得が転んでも、前に読めた値を捨てない
  *
  * やり方は作法14「写しに probe」。panel.html を一時ディレクトリへ写し、fetch を作り値へ
  * 差し替えて headless で駆動する。**本体には一片も残さない。**
@@ -79,6 +80,7 @@ function probeSource(scene) {
   return '\n<script>\n(function () {\n  var S = ' + JSON.stringify(scene) + ';\n' + String.raw`
   try { localStorage.clear(); } catch (e) {}
   var CAP = { clip: null };
+  var boardHits = 0;
   var J = function (o) {
     return Promise.resolve({ ok: true, status: 200,
       json: function () { return Promise.resolve(o); },
@@ -88,7 +90,13 @@ function probeSource(scene) {
     u = String(u);
     if (u.indexOf('panel-ver.txt') >= 0) return J(String(S.panelVer || '104'));
     if (u.indexOf('notices.json') >= 0)  return J(S.notices || []);
-    if (u.indexOf('board.json') >= 0)    return J(S.board || { waiting: [], recent: [] });
+    if (u.indexOf('board.json') >= 0) {
+      /* S.boardFailAfter 回目から先は取得そのものを失敗させる（v113・板の欠け-1）。
+         iPhone の「Load failed」と同じ、fetch が転ぶ形を作る。 */
+      boardHits++;
+      if (typeof S.boardFailAfter === 'number' && boardHits > S.boardFailAfter) { return Promise.reject(new Error('Load failed')); }
+      return J(S.board || { waiting: [], recent: [] });
+    }
     if (u.indexOf('seen.json') >= 0)     return J({ upto: S.seen || 0 });
     if (u.indexOf('state.json') >= 0)    return J(S.state || {});
     if (u.indexOf('ntfy-sent.json') >= 0) {
@@ -151,6 +159,7 @@ function probeSource(scene) {
     o.predColor = pr ? getComputedStyle(pr).color : null;
     var li = st ? st.querySelector('li') : null;
     o.stBg = li ? getComputedStyle(li).backgroundColor : null;
+    o.boardText = txt(document.getElementById('board'));
     o.ntfyClip = CAP.clip;
     o.ntfyBtn2 = bn ? txt(bn) : null;
     o.stH = st ? Math.round(st.getBoundingClientRect().height * 10) / 10 : null;
@@ -689,6 +698,28 @@ try {
       else if (clip.indexOf('ファイル: panel.html') >= 0) { ng('ファイルの行が落ちていない（写しの絞りが効いていない）'); }
       else { ok('本文5行＋実測＋実機が入り、ファイルの行だけ落ちた（写し ' + clip.split(NLc).length + '行）'); }
     }
+  }
+
+
+  /* ---- ⑬ 板の取得が転んでも、前に読めた値を捨てない（2026-09-03・板の欠け-1） ---- */
+  /*   ＊2分ごとの取得が一度こけただけで、板の箱と写しの板の行が消えていた。
+   *   ＊一度読めたあとに転ばせて、箱が残り「読めません」に化けないことを見る。
+   *   ＊一度も読めていないときは、今までどおり理由を出す。 */
+  head('⑬ 板が取れない回に前の値を残す');
+  {
+    const B = { waiting: [{ at: '2026-09-03 10:00', name: '板の欠け-1 の実機確認', no: '1' }], recent: [] };
+    const a = run(tmp, { state: ST['手待ち'], notices: MIX, board: B, boardFailAfter: 1, settle: 2600 }, 390, 844);
+    if (!a) { ng('測れない'); }
+    else if (/板の値を読めません/.test(String(a.boardText || ''))) {
+      ng('一度読めたのに「読めません」へ化けた（' + String(a.boardText).slice(0, 40) + '）');
+    } else if (String(a.boardText || '').indexOf('あなた待ち') >= 0) {
+      ok('取得が転んでも板の箱が残った（' + String(a.boardText).replace(/s+/g, ' ').slice(0, 34) + '）');
+    } else { ng('板の箱が出ていない（' + String(a.boardText).slice(0, 40) + '）'); }
+
+    const b = run(tmp, { state: ST['手待ち'], notices: MIX, board: B, boardFailAfter: 0, settle: 1500 }, 390, 844);
+    if (!b) { ng('測れない'); }
+    else if (/板の値を読めません/.test(String(b.boardText || ''))) { ok('一度も読めない回は、今までどおり理由を出す'); }
+    else { ng('一度も読めないのに理由が出ない（' + String(b.boardText).slice(0, 40) + '）'); }
   }
 
 } finally {
