@@ -254,6 +254,21 @@
      ＊「作業中（…）」と括弧の中の 開始・経過・指示 は今までどおり黄色のまま。
      ＊太さは変えない。字幅が変わると、固定した高さ（79px）の見積もりが崩れるため。 */
   li.why.stline .m .pred{color:var(--pred);}
+  /* 写せる札の一覧（v115・パネルの見え方-1）。釦のすぐ下に、題と刻を一行ずつ。
+     ＊札の箱ではなく**目次**なので、飾りは薄く小さく。押せる物ではない。
+     ＊長い題は「…」で切る（横に溢れさせない）。刻は右端へ寄せる。 */
+  .todoList{list-style:none; margin:2px 14px 6px; padding:0;}
+  .todoList li{display:flex; gap:6px; align-items:baseline; background:none; border:0;
+               border-radius:0; padding:1px 0; margin:0; font-size:12px; line-height:1.5;}
+  .todoList .tt{flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis;
+                white-space:nowrap; color:var(--fg);}
+  .todoList .tm{flex:0 0 auto; color:var(--dim); font-size:11px;}
+  /* 板の畳んだ表紙の下に出す小さな行（v115）。開かなくても題と刻が読める。 */
+  li.board .sub{margin:2px 0 0; font-size:11px; line-height:1.6; color:var(--dim);}
+  li.board .sub span{display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  /* 黄色の行に添える「何が終わったか」（v115）。 */
+  li.why.stline .m .fin{color:var(--done);}
+  li.why.stline .m .finT{color:var(--dim); font-size:.86em;}
   /* 高さを固定する（v100）。**字の長さで下の釦の位置が動かない**ようにするため。
      ＊値は実測から採った。iPhone 縦持ち（本体の幅 390px）で組んだときの高さ——
        「作業中、HH時MM分終了予定（開始…・経過…・指示…）」**78.38px**（経過が3桁でも、
@@ -372,6 +387,10 @@
        ＊中身は stateLineText()。作業中／次の指示待ち／ヨシを返してください の三通り。 -->
   <ul id="stLine"></ul>
   <button class="cpall" id="btnCopyBoard" type="button">まとめて写す（0件）</button>
+  <!-- 写せる札の題を一行ずつ（v115・パネルの見え方-1）。
+       ＊数字（残N／M件）だけでは**何が写せるのか**が分からない。開いた瞬間に読めるようにする。
+       ＊器だけ置いて、中身は setCopyBoardLabel が塗る（数と同じ一回の走査から作る）。 -->
+  <ul id="todoList" class="todoList"></ul>
   <!-- ＊「通知の本文を写す」の釦は **v114 で畳んだ**（写しの一本化-1）。
        まとめて写すが札と通知の両方を数え、刻の順で一枚に並べて写すようになったので、
        押す所を二つ持つ要が無くなった。**器は残さない**——押せない釦は用が無い。
@@ -430,7 +449,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v114（9月3日）</p>
+  <p class="ver" id="verTag">panel v115（9月3日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -455,7 +474,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '114';
+  var PANEL_VER = '115';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -740,6 +759,23 @@
      ＊よってこの行は 作業中／次の指示待ち／ヨシ待ち の**三通りのまま**でよい。
        状態が異常の回は、今までどおり行ごと出さない（下の return ''）。
      ＊この点は**今後掘り返さない**。検査（panel-check.js）にも同じ一行が入っている。 */
+  /* 最後に終わった仕事（v115）。控えの札から、いちばん新しい「終わり／調べた」を採る。
+     ＊名は一行目の括弧より前だけ（「読みの道-3（…）」→「読みの道-3」）。
+     ＊写した札も含めて見る（写したら消える、では「何を終えたか」が分からなくなる）。 */
+  function lastDone() {
+    var best = null;
+    (allRows || []).forEach(function (d) {
+      var t = String(d.title || '');
+      if (t.indexOf('終わりました') < 0 && t.indexOf('調べました') < 0) { return; }
+      if (/写せます（/.test(String(d.message || ''))) { return; }   /* 数だけの札は仕事ではない */
+      if (!best || (d.time || 0) > (best.time || 0)) { best = d; }
+    });
+    if (!best) { return null; }
+    var nm = plain(headOf(best)).split(/[（(＝=]/)[0].replace(/s+$/, '');
+    if (!nm) { return null; }
+    return { name: nm, at: hhmm(best.time) };
+  }
+
   function stateLineText() {
     if (lastStat === '作業中') {
       /* 添えの括弧（v98）。上の札から移してきた三つ。
@@ -760,7 +796,19 @@
       var head = '作業中' + (lastMark ? '（' + lastMark + '）' : '');
       return endPredText(head) + (bits.length ? ('（' + bits.join('・') + '）') : '');
     }
-    if (lastStat === '手待ち')   { return '次の指示待ち'; }
+    /* ---- 何を終えて待っているのかを、先に出す（v115・パネルの見え方-1 ③⑥）----
+       ＊「次の指示待ち」だけでは、**何が終わってこうなったのか**が画面のどこにも無い。
+       ＊形は「<題> が終わりました・次の指示待ち」。題を**先**に置く。
+       ＊題は最後に終わった札の一行目から、括弧より前だけを採る（長い件名で行が溢れないため）。
+       ＊刻は小さく添える。終わった札が見つからない回は、今までどおり「次の指示待ち」だけ。 */
+    if (lastStat === '手待ち') {
+      var fin = lastDone();
+      if (fin) {
+        return '<span class="fin">' + esc(fin.name) + ' が終わりました</span>'
+             + '<span class="finT"> ' + esc(fin.at) + '</span>・次の指示待ち';
+      }
+      return '次の指示待ち';
+    }
     if (lastStat === 'ヨシ待ち') { return 'ヨシを返してください'; }
     return '';
   }
@@ -827,6 +875,16 @@
     h += '<li class="ack board' + ((r.length && isOpen(rk)) ? ' open' : '') + '" data-k="' + okey(rk) + '">'
        + '<p class="t"><span class="tx">' + esc('直近に終わった仕事（' + r.length + '件）') + '</span>'
        + '<button type="button" class="cp" id="cpRecent">写す</button></p>';
+    /* 畳んだままでも題が読めるように、小さな行を添える（v115・パネルの見え方-1）。
+       ＊`.m` は開いたときだけ見える。こちらは**表紙の下に常に出る**。
+       ＊出すのは番号（no）と題（name）だけ。中身（result）は開いてから読む。 */
+    if (r.length) {
+      h += '<p class="sub">' + r.map(function (it) {
+             var nm = String(it.no || '');
+             var tt = String(it.name || '');
+             return '<span>' + esc('・' + (nm ? nm + '　' : '') + tt) + '</span>';
+           }).join('') + '</p>';
+    }
     if (r.length) {
       h += '<p class="m">' + esc(r.map(function (it) {
              /* 結果は**切らない**（v47）。畳んである枠なので、開いた人は全文が読める。
@@ -991,8 +1049,45 @@
     return best ? best.n : 0;
   }
 
+  /* 写せる札の目次を塗る（v115・パネルの見え方-1）。
+     ＊並びは釦の数と**同じ一回の走査**（mergedTodo）から取る。数と中身がずれない。
+     ＊題は札の一行目（headOf）、通知は題そのもの。刻は時と分だけ。 */
+  function paintTodoList() {
+    var el = $('todoList');
+    if (!el) { return; }
+    var a = mergedTodo();
+    if (!a.length) { el.innerHTML = ''; el.hidden = true; return; }
+    el.hidden = false;
+    el.innerHTML = a.map(function (m) {
+      var name, mark, t;
+      if (m.kind === 'card') {
+        name = plain(headOf(m.card)) || '（件名なし）';
+        mark = kindMark(m.card.title);
+        t = hhmm(m.card.time);
+      } else {
+        name = String(m.ntfy.title || '（題なし）');
+        mark = '📣';
+        t = hhmm(m.ntfy.time);
+      }
+      return '<li><span class="tt">' + esc(name) + '</span>'
+           + '<span class="tm">' + esc(mark + ' ' + t) + '</span></li>';
+    }).join('');
+  }
+
+  /* 種類の一字（v115）。写せる札の目次で使う。 */
+  function kindMark(title) {
+    var t = String(title || '');
+    if (t.indexOf('🙋') >= 0) { return '🙋'; }
+    if (t.indexOf('🔎') >= 0) { return '🔎'; }
+    if (t.indexOf('🪟') >= 0) { return '🪟'; }
+    if (t.indexOf('🕒') >= 0) { return '🕒'; }
+    if (t.indexOf('🕘') >= 0) { return '🕘'; }
+    return '✅';
+  }
+
   function setCopyBoardLabel() {
     var b = $('btnCopyBoard');
+    paintTodoList();   /* 目次は釦の字と同じ回に塗る（v115） */
     if (!b) { return; }
     /* ＊v92：この関数は作業中かどうかを見なくなった。釦の出し入れは
          「写せる札が在るか」だけで決まる。状態は板の跡地の一行が受け持つ。
@@ -1015,9 +1110,15 @@
          N は写すごとに減る。**全部写せば N は 0。
        ＊出どころは控えそのもの（allRows）。**知らせの本文に書いてある数**を読むので、
          知らせ側（watch-notify.ps1）と必ず同じ値になる。数え直しはしない。 */
-    /* M ＝ 直近の「写せます（N件）」の数 ＋ 控えにある通知の本数（v114）。
-       ＊押す所を一つにしたので、分母も両方を足した数にする。 */
-    var m = lastReadyCount() + (ntfySent || []).length;
+    /* ---- M は「この束の大きさ」（v115・残の数の食い違い-1）----
+       ＊v114 で `+ 通知の本数` を足したのは**誤り**だった。控えの通知は直近30本を**溜めて**
+         持つ在庫で、**いまの束の大きさではない**。足すと分母だけが膨らみ、
+         **押してもいない札が写した扱いに見える**。
+         2026-09-03 の実測：写せます（2件）＋通知の控え7本 ＝ 9 で「残3／9件」。
+         引き算の6は**誰も写していない**——分母の作り方が違っただけ。
+       ＊M は元の意味（直近の「写せます（N件）」の数）へ戻す。N より小さいときは N に揃える
+         （下の行）。**N は今までどおり札と通知の両方を数える。** */
+    var m = lastReadyCount();
     /* ＊知らせが一度も出ていない（控えに「写せます」の札が無い）ときは M が 0 になる。
          そのときは N をそのまま使う（「残N／N件」）。0 と出すより意味が通る。
        ＊知らせのあとに札が増えると N が M を超えることがある。そのときも N に揃える。
@@ -1322,7 +1423,11 @@
        足した札そのものが字として出てしまう。刻は数字と漢字だけなので、逃がしても形は変わらない。
        ＊包むのは「HH時MM分終了予定」の形だけ。「終了予定不明」「終了予定 未定」は包まない
          （刻が無いので、目立たせる相手がいない）。 */
-    var sh = sl ? esc(sl).replace(/([0-9]+時[0-9]+分終了予定)/, '<span class="pred">$1</span>') : '';
+    /* ＊v115 から、手待ちの行は**組んだ時点で札を含む**（題を色分けするため）。
+         その回は逃がさない——逃がすと札そのものが字として出る。
+         刻の色分け（v108）は作業中の行だけなので、包む相手も作業中のときだけ。 */
+    var hasTag = (sl.indexOf('<span') >= 0);
+    var sh = sl ? (hasTag ? sl : esc(sl).replace(/([0-9]+時[0-9]+分終了予定)/, '<span class="pred">$1</span>')) : '';
     el.innerHTML = sh ? ('<li class="why stline"><p class="m">' + sh + '</p></li>') : '';
   }
 
