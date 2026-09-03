@@ -433,7 +433,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v112（9月3日）</p>
+  <p class="ver" id="verTag">panel v113（9月3日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -458,7 +458,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '112';
+  var PANEL_VER = '113';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -608,6 +608,7 @@
   var BOARD_URL = 'https://kfsr148-art.github.io/koushu-handan/board.json';
   var board = null;        /* 読めた中身 */
   var boardErr = '';       /* 読めなかった理由 */
+  var boardEverRead = false;  /* 一度でも読めたか（v113）。読めていれば、取れない回も前の値を出す */
   /* 板の二段（あなた待ち・直近に終わった仕事）を写した印（v56）。
      ＊札と違って行き先の箱が無いので、印は端末にも残さず、その場かぎりで持つ。
      ＊板の中身が変わったら解く。新しい件が来たのに0件のままでは出しようが無い。 */
@@ -619,11 +620,22 @@
       .then(function (b) {
         var sig = JSON.stringify(b);
         if (sig !== boardSig) { boardSig = sig; boardTaken = false; }
-        board = b; boardErr = '';
+        board = b; boardErr = ''; boardEverRead = true;
         /* 一覧が空のときだけ描き直す。札が出ている画面は触らない。 */
         paintBoard();   /* v97：札の有無に関わらず、板は常に塗る */
       })
-      .catch(function (e) { board = null; boardErr = e.message; paintBoard(); });
+      /* ---- 取れない回に、前に読めた値を捨てない（v113・板の欠け-1）----
+           ＊v112 まではここで board = null にしていた。取りに行くのは2分ごとなので、
+             **通信が一度こけただけで、板の箱も写しの板の行も最大2分消える**。
+             2026-09-03 11:45、公開側の board.json は 200・909バイト・JSON も通る
+             （中身も 10:14:02 から変わっていない）のに、画面には
+             「板の値を読めません（Load failed）」が出ていた。**消えていたのは手元の値**。
+           ＊よって値は残す。断りは boardErr に持ち、**一度も読めていないときだけ**
+             箱の代わりに理由を出す（下の boardHtml）。 */
+      .catch(function (e) {
+        boardErr = e.message;
+        paintBoard();
+      });
   }
 
   /* 待ちの種類を、台帳の状態欄から機械で判じる（v58）。
