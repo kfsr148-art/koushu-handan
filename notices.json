@@ -1,6 +1,11 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
+        "time":  1788437448,
+        "message":  "写せます（2件）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
         "time":  1788437308,
         "message":  "読みの道-3（latest-name.txt を完全な URL にする）\nnotify-record.ps1 で latest-name.txt の中身だけを完全な URL へ替えた。\ngit へ渡す道は今までどおり名のまま。理由は、チャット側の読み口が前に読んだ中身に\n書いてある URL しか開けないため（名だけでは道を組み立てられない）。\n前＝notices-1788436199.json ／ 後＝https://kfsr148-art.github.io/koushu-handan/notices-1788436239.json\nファイル: ~/.claude/notify-record.ps1（写し .bak-20260903b・構文OK・BOM有）／\nreports/読みの道-3.md／report-latest.md／~/.claude/orders-open.tsv\n実測: 手元＝その名の中身は notices.json と一字も違わない。\n公開側＝20:52:06 に latest-name.txt が URL を返し、その URL を開くと HTTP 200・\nContent-Length 32044・Age 0・X-Cache MISS、いちばん新しい札は 20:49:16。\n読む側の手順は「latest-name.txt を読む → 書いてある URL をそのまま開く」の二段だけ。"
     },
@@ -8,11 +13,6 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1788436156,
         "message":  "読みの道-2（名を変えた写しを置く）\n①札を控える手（notify-record.ps1）に足した。notices-\u003cepoch\u003e.json を notices.json と\n同じ中身で置き、latest-name.txt にいまの名を一行だけ書く。同じ commit で押す。\n読む側の順は latest-name.txt を読む → その名で本体を取る。latest-name.txt は同じ道なので\nキャッシュに掛かるが、古くても「名が一つ古い」だけで、その名の中身は必ずその名のもの。\n②KEEP_NAMED=5。名の降順で6個目から先を消し、消した分も commit に入れて公開側からも消す。\n③中身の一致・掃除・公開側の読みを実測した。三回の終わりでの一致は、これからの終わりで数える。\nファイル: ~/.claude/notify-record.ps1（写し .bak-20260903a・構文OK 234行・BOM有）／\nreports/読みの道-2.md／report-latest.md／~/.claude/orders-open.tsv\n実測: 中身＝新しい名 notices-1788435030.json の中身は notices.json と一字も違わない。\n掃除＝残ったのは5個（1788434841／848／867／875／886）で6個目から先は消えた。\n公開側＝latest-name.txt が notices-1788434886.json を返し、その名で HTTP 200・\nContent-Length 30677・Age 0・X-Cache MISS。一度も取られていない道なので必ず新しい。\n＊公開に出るまでは 20:28 の押しに対し 20:29:53 に読めた（約2分）。"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1788434095,
-        "message":  "写せます（2件）"
     },
     {
         "title":  "✅ 終わりました（返事不要）",
