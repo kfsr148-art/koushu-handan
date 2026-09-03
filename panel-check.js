@@ -17,6 +17,7 @@
  *   ⑪ 長い報告の札を、まとめて写すが割らずに一枚で写す
  *   ⑫ 本文の全行（5行）が写しへ入る（写しの絞りで落ちるのはファイルの行だけ）
  *   ⑬ 板の取得が転んでも、前に読めた値を捨てない
+ *   ⑭ 通知の印は札に掛からない／黄色の行に終わった題／釦の下に写せる札の目次
  *
  * やり方は作法14「写しに probe」。panel.html を一時ディレクトリへ写し、fetch を作り値へ
  * 差し替えて headless で駆動する。**本体には一片も残さない。**
@@ -79,6 +80,8 @@ function calibrate(tmp) {
 function probeSource(scene) {
   return '\n<script>\n(function () {\n  var S = ' + JSON.stringify(scene) + ';\n' + String.raw`
   try { localStorage.clear(); } catch (e) {}
+  /* 通知だけ写した状態を作れるようにする（2026-09-03・パネルの立て直し-1）。 */
+  try { if (S.ntfyCopied) { localStorage.setItem('ntfyCopied.v1', JSON.stringify(S.ntfyCopied)); } } catch (e) {}
   var CAP = { clip: null };
   var boardHits = 0;
   var J = function (o) {
@@ -160,6 +163,11 @@ function probeSource(scene) {
     var li = st ? st.querySelector('li') : null;
     o.stBg = li ? getComputedStyle(li).backgroundColor : null;
     o.boardText = txt(document.getElementById('board'));
+    /* 写せる札の目次と、札の印そのもの（v115） */
+    var tl = document.getElementById('todoList');
+    o.todoText = tl ? String(tl.innerText || '').replace(/s+/g, ' ').trim() : '';
+    o.todoRows = tl ? tl.querySelectorAll('li').length : 0;
+    try { o.cardMarks = localStorage.getItem('kh-panel-copied') || ''; } catch (e) { o.cardMarks = ''; }
     o.ntfyClip = CAP.clip;
     o.ntfyBtn2 = bn ? txt(bn) : null;
     o.stH = st ? Math.round(st.getBoundingClientRect().height * 10) / 10 : null;
@@ -698,6 +706,44 @@ try {
     if (!b) { ng('測れない'); }
     else if (/板の値を読めません/.test(String(b.boardText || ''))) { ok('一度も読めない回は、今までどおり理由を出す'); }
     else { ng('一度も読めないのに理由が出ない（' + String(b.boardText).slice(0, 40) + '）'); }
+  }
+
+
+  /* ---- ⑭ 通知の印は札に掛からない／黄色の行に題／釦の下に目次（2026-09-03・パネルの立て直し-1） ---- */
+  head('⑭ 通知の印は札に掛からない・題が出る・目次が並ぶ');
+  {
+    const t0 = now;
+    const NLc = String.fromCharCode(10);
+    const cards = [
+      { time: t0 - 900, title: '✅ 終わりました（返事不要）', message: '札その1（作り値）' + NLc + '二行目' },
+      { time: t0 - 600, title: '🔎 調べました',               message: '札その2（作り値）' + NLc + '二行目' },
+      { time: t0 - 100, title: '✅ 終わりました（返事不要）', message: '札その3（作り値）' + NLc + '二行目' }
+    ];
+    const ntfy = [
+      { time: t0 - 700, at: '2026-09-03 21:00:00', title: '通知その1', parts: 1, body: '通知1の本文' },
+      { time: t0 - 300, at: '2026-09-03 21:05:00', title: '通知その2', parts: 1, body: '通知2の本文' }
+    ];
+    /* 通知だけを写した状態にする（札には一つも印を置かない） */
+    const seeded = {};
+    ntfy.forEach(e => { seeded[String(e.time) + '|' + e.title] = 1; });
+    const r = run(tmp, { state: ST['手待ち'], notices: cards, ntfy: ntfy, ntfyCopied: seeded, settle: 1800 }, 390, 844);
+    if (!r) { ng('測れない'); }
+    else {
+      const btn = String(r.btn || '');
+      if (!/残3／3件/.test(btn)) { ng('通知を写したのに札の残が動いた（釦「' + btn + '」）'); }
+      else if (r.cardMarks) { ng('札の側にも印が付いている（' + String(r.cardMarks).slice(0, 40) + '）'); }
+      else { ok('通知だけ写しても札の残は 残3／3件のまま。札の印は空'); }
+
+      const st = String(r.stText || '');
+      if (/札その3 が終わりました/.test(st) && /次の指示待ち/.test(st)) {
+        ok('黄色の行に題が先に出る（' + st.slice(0, 34) + '）');
+      } else { ng('黄色の行に題が出ない（' + st.slice(0, 40) + '）'); }
+
+      const td = String(r.todoText || '');
+      if (r.todoRows === 3 && /札その3/.test(td) && /✅/.test(td) && /🔎/.test(td)) {
+        ok('釦の下に写せる札の目次が3行（題＋印＋刻）');
+      } else { ng('目次が違う（' + r.todoRows + '行／' + td.slice(0, 50) + '）'); }
+    }
   }
 
 } finally {
