@@ -372,13 +372,10 @@
        ＊中身は stateLineText()。作業中／次の指示待ち／ヨシを返してください の三通り。 -->
   <ul id="stLine"></ul>
   <button class="cpall" id="btnCopyBoard" type="button">まとめて写す（0件）</button>
-  <!-- 押し送った本文をそのまま写す（v109・通知のコピー-1）。
-       ＊ntfy は長い本文を一通に収められないので、送る側は 2600 バイトずつに割っている。
-         公開側の ntfy-latest.txt には**割る前の一枚**が置いてあり、この釦はそれを写す。
-         何通に割れて届いても、写しは一枚で済む。
-       ＊**一度のタップで写る**こと。そのために本文は先に取っておき、押したときは写すだけにする
-         （押してから取りに行くと、待つあいだに触られた印が切れて一度目で写せない）。 -->
-  <button class="cpall" id="btnCopyNtfy" type="button" hidden>通知の本文を写す（0件）</button>
+  <!-- ＊「通知の本文を写す」の釦は **v114 で畳んだ**（写しの一本化-1）。
+       まとめて写すが札と通知の両方を数え、刻の順で一枚に並べて写すようになったので、
+       押す所を二つ持つ要が無くなった。**器は残さない**——押せない釦は用が無い。
+       ＊通知を一行にする形（ntfyCardOf）と印の持ち方（ntfyCopied）はそのまま使っている。 -->
   <!-- 未処理の札を渡す釦。字は v48 で「全部写す」から「お知らせ」へ変えた。
        件数の出し方も押したときの動きも、v38 のまま変えていない。 -->
   <button class="cpall" id="btnCopyAll" type="button">お知らせ</button>
@@ -433,7 +430,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v113（9月3日）</p>
+  <p class="ver" id="verTag">panel v114（9月3日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -458,7 +455,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '113';
+  var PANEL_VER = '114';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1009,7 +1006,7 @@
          v84〜v91 は作業中のとき「作業中、HH時MM分終了予定」を押せない釦として出していたが、
          v90 で板の跡地にも同じ字の行を置いたので、**同じ字が二段に並んでいた**。
          押せない釦は用が無いので釦の側を外し、**字だけの一行**（黄色）を残す。 */
-    var n = buildBundle().count;
+    var n = buildBundle().count;   /* v114：札と通知の合計（mergedTodo が数える） */
     /* M ＝ **直近の「写せます（N件）」の知らせと同じ数**（v96）。
        ＊v95 は控えの札の全数（allRows.length）だった。あれは「溜まっている総量」で、
          **いま片付いたひとまとまりの大きさ**ではない。知らせが「写せます（2件）」と
@@ -1018,7 +1015,9 @@
          N は写すごとに減る。**全部写せば N は 0。
        ＊出どころは控えそのもの（allRows）。**知らせの本文に書いてある数**を読むので、
          知らせ側（watch-notify.ps1）と必ず同じ値になる。数え直しはしない。 */
-    var m = lastReadyCount();
+    /* M ＝ 直近の「写せます（N件）」の数 ＋ 控えにある通知の本数（v114）。
+       ＊押す所を一つにしたので、分母も両方を足した数にする。 */
+    var m = lastReadyCount() + (ntfySent || []).length;
     /* ＊知らせが一度も出ていない（控えに「写せます」の札が無い）ときは M が 0 になる。
          そのときは N をそのまま使う（「残N／N件」）。0 と出すより意味が通る。
        ＊知らせのあとに札が増えると N が M を超えることがある。そのときも N に揃える。
@@ -1106,6 +1105,31 @@
        ＊`ファイル:` の行だけが写しから消えるのは、写しの絞り（v106・trimForCopy）の仕事。
          こちらは意図どおりで、切れではない。
        ＊この裏は panel-check の ⑫ が取り続ける。 */
+  /* 通知（ntfy-sent.json の一本）を、札と同じ形の「一行＋本文」にする（v114・写しの一本化-1）。
+     ＊頭に**「通知」**と入れて、札と見分けられるようにする。刻と題は札と同じ並びに揃える。
+     ＊本文は割る前の一枚がそのまま入っている（通知の分け方-1 以降、長い報告は札の側に立つ）。 */
+  function ntfyCardOf(e) {
+    var NL = String.fromCharCode(10);
+    var line = briefOf(hhmm(e.time), '通知', String(e.title || '（題なし）'), '');
+    return { brief: line, full: line + NL + String(e.body || ''), ask: false };
+  }
+
+  /* 札と通知を、刻の順（新しい順）で一本に並べる（v114）。
+     ＊まとめて写すはこの並びだけを見る。数（残N）も、写す字も、印を付ける相手も、ここから取る。
+     ＊未写しだけを返す。印の持ち方は別々（札は copied、通知は ntfyCopied）なので、
+       それぞれの見方で外す。 */
+  function mergedTodo() {
+    var a = [];
+    (shown || []).forEach(function (d) {
+      if (!isCopied(d)) { a.push({ t: d.time || 0, kind: 'card', card: d }); }
+    });
+    (ntfySent || []).forEach(function (e) {
+      if (!ntfyCopied[ntfyKeyOf(e)]) { a.push({ t: e.time || 0, kind: 'ntfy', ntfy: e }); }
+    });
+    a.sort(function (x, y) { return y.t - x.t; });
+    return a;
+  }
+
   function bundleCards(todo) {
     var NL = String.fromCharCode(10);
     return (todo || []).map(function (d) {
@@ -1173,9 +1197,17 @@
          あちらは v84 から作業中でも押せる。
        ＊数（釦の N）＝ 未写しの札の数。押せば必ずこの数が写り、この数だけ落ちる。
          **写せますの知らせの N も同じ物**（watch-notify.ps1 が「前に知らせてから増えた分」を数える）。 */
-    var todo = (shown || []).filter(function (d) { return !isCopied(d); });   /* v104：写した印だけで見る */
+    /* ---- 札と通知を一本にまとめる（v114・写しの一本化-1）----
+       ＊「通知を写す」の釦は畳んだ。**押す所を二つに分けない**のが眼目。
+       ＊並びは刻の新しい順。札も通知も同じ物差しで並ぶ。 */
+    var merged = mergedTodo();
+    var todo = merged.filter(function (m) { return m.kind === 'card'; }).map(function (m) { return m.card; });
+    var ntodo = merged.filter(function (m) { return m.kind === 'ntfy'; }).map(function (m) { return m.ntfy; });
     /* ＊読み返しの断り書きは v89 で外した。写すのは未写しの分だけなので、断る要が無い。 */
-    var cards = bundleCards(todo);
+    /* 刻の順のまま、札は bundleCards、通知は ntfyCardOf で同じ形にする。 */
+    var cards = merged.map(function (m) {
+      return m.kind === 'card' ? bundleCards([m.card])[0] : ntfyCardOf(m.ntfy);
+    });
     /* 「🙋 ヨシしてください」の札は、何枚あっても全部を全文で入れる（v66）。
        ＊ヨシを返す判断はここでしかできない。何を待っているかが写しに無いと、
          写しだけを見て返事ができない。上限の勘定より先に置く。 */
@@ -1199,7 +1231,7 @@
     bundleBoard().forEach(function (t) { out.push(t); });
     if (brief) { out.push('ほか' + brief + '件（写す釦で個別に写せます）'); }
     /* ＊v89：reread / unread / back は返さない。写すのは未写しだけなので、count が全部を語る。 */
-    return { text: out.join(NL), todo: todo, count: count };
+    return { text: out.join(NL), todo: todo, ntodo: ntodo, count: count };
   }
 
   function copyBundle(btn) {
@@ -1219,6 +1251,9 @@
       var nowSec = Math.floor(Date.now() / 1000);
       todo.forEach(function (d) { copied[keyOf(d)] = nowSec; });
       saveCopied();
+      /* 通知の側にも印を付ける（v114）。持ち方は別だが、押す所は一つ。 */
+      (bundle.ntodo || []).forEach(function (e) { ntfyCopied[ntfyKeyOf(e)] = 1; });
+      try { localStorage.setItem(NTFY_COPIED_KEY, JSON.stringify(ntfyCopied)); } catch (e) {}
       shown = shown.filter(function (x) { return todo.indexOf(x) < 0; });
       /* 板の二段も写した扱いにする（v56）。行き先の箱が無いので、表紙を0件にして中身を消す。
          ＊板の中身が変わればこの印は解ける（pullBoard で見ている）。 */
@@ -1260,68 +1295,18 @@
   var ntfyBusy = false;      /* 「N件 写した」を見せている間。字を上書きさせない目印（v111） */
   try { ntfyCopied = JSON.parse(localStorage.getItem(NTFY_COPIED_KEY) || '{}') || {}; } catch (e) { ntfyCopied = {}; }
   function ntfyKeyOf(d) { return String(d.time || 0) + '|' + String(d.title || ''); }
-  function ntfyLeft() {
-    var a = [];
-    for (var i = 0; i < ntfySent.length; i++) {
-      if (!ntfyCopied[ntfyKeyOf(ntfySent[i])]) { a.push(ntfySent[i]); }
-    }
-    return a;
-  }
-  /* 未写しを一枚へ繋ぐ。頭の一行（題と刻と通数）を付ける——
-     どの知らせの本文なのかが分からないと、貼った先で使えない。 */
-  function ntfyBundle() {
-    var a = ntfyLeft(), out = [];
-    for (var i = 0; i < a.length; i++) {
-      out.push(String(a[i].title || '') + '（' + String(a[i].at || '') + '・' + (a[i].parts || 1) + '通）');
-      out.push('----------------------------------------');
-      out.push(String(a[i].body || ''));
-      if (i < a.length - 1) { out.push(''); }
-    }
-    return { text: out.join(String.fromCharCode(10)), count: a.length, rows: a };
-  }
-  function setCopyNtfyLabel() {
-    var b = $('btnCopyNtfy');
-    if (!b) { return; }
-    /* 写した直後の字（「N件 写した」）を、取り直しの返りで消さない（v111）。
-       ＊消すと、押した手応えが一瞬で消えて押せたのか分からなくなる。 */
-    if (ntfyBusy) { return; }
-    var n = ntfyLeft().length, m = ntfySent.length;
-    if (m < n) { m = n; }
-    if (n > 0) {
-      b.textContent = '通知の本文を写す（残' + n + '／' + m + '件）';
-      b.disabled = false; b.hidden = false;
-    } else {
-      b.textContent = '通知の本文を写す（0件）';
-      b.disabled = true; b.hidden = true;
-    }
-  }
+  /* ＊`ntfyLeft` / `ntfyBundle` / `setCopyNtfyLabel` / `copyNtfyLatest` は **v114 で畳んだ**
+       （写しの一本化-1）。押す所を一つにしたので、通知だけを数える手も写す手も要らない。
+       ＊残してあるのは `ntfyKeyOf`（印の鍵）と `ntfyCopied`（印）と `pullNtfyLatest`（取得）。
+         この三つは、まとめて写すの側（mergedTodo）がそのまま使う。 */
+
   function pullNtfyLatest() {
     return fetch(NTFY_SENT_URL + '?_t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (a) { if (Array.isArray(a)) { ntfySent = a; setCopyNtfyLabel(); } })
+      /* 通知が増えたら**まとめて写すの字**を組み直す（v114）。
+         ＊釦を一つにしたので、数え直す先もそちら一つ。 */
+      .then(function (a) { if (Array.isArray(a)) { ntfySent = a; setCopyBoardLabel(); } })
       .catch(function () { /* 取れない回は前の控えを残す。空で塗り潰さない */ });
-  }
-  function copyNtfyLatest(btn) {
-    var back = function (msg, ms) {
-      ntfyBusy = true;
-      btn.textContent = msg;
-      setTimeout(function () { ntfyBusy = false; setCopyNtfyLabel(); btn.className = 'cpall'; }, ms || 2000);
-    };
-    var bundle = ntfyBundle();
-    if (!bundle.count) { btn.className = 'cpall'; back('本文がありません', 3000); pullNtfyLatest(); return; }
-    /* ここから先に待ちを挟まない。触られた印が生きているうちに写す。 */
-    var done = function () {
-      for (var i = 0; i < bundle.rows.length; i++) { ntfyCopied[ntfyKeyOf(bundle.rows[i])] = 1; }
-      try { localStorage.setItem(NTFY_COPIED_KEY, JSON.stringify(ntfyCopied)); } catch (e) {}
-      btn.className = 'cpall ok';
-      back(bundle.count + '件 写した');
-      pullNtfyLatest();
-    };
-    /* 写せなかったときは印を付けない（copyBundle と同じ構え）。 */
-    var ng = function () { fallback(bundle.text); btn.className = 'cpall'; back('写せません', 3000); };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      try { navigator.clipboard.writeText(bundle.text).then(done, ng); } catch (e) { ng(); }
-    } else { ng(); }
   }
 
   function paintBoard() { $('board').innerHTML = boardHtml(); }
@@ -1444,7 +1429,6 @@
     pullUsage();
     tick();
     if (timer) { clearInterval(timer); }
-    setCopyNtfyLabel();   /* 釦の字を先に整える（控えが空なら畳んだまま・v111） */
     pullNtfyLatest();     /* 押したその場で写せるよう、開いたときに一度取っておく */
     timer = setInterval(tick, 15000);
     /* 使用量は10分ごとにしか動かないので、取りに行くのも控えめでよい（2分ごと）。 */
@@ -2512,7 +2496,6 @@
 
   $('btnCopyAll').addEventListener('click', function () { copyAll(this); });
   $('btnCopyBoard').addEventListener('click', function () { copyBundle(this); });
-  $('btnCopyNtfy').addEventListener('click', function () { copyNtfyLatest(this); });
   $('btnCopyUrl').addEventListener('click', function () { copyUrl(this); });
 
   /* 写す釦と、畳んだ件の開閉。一覧ごと張り替わるので親で受ける。

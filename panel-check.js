@@ -13,7 +13,7 @@
  *   ⑦ 遠すぎる終了予定（前の仕事の開始を引きずった形）を、数字にせず「未定」と出す
  *   ⑧ 値の入っていない使用量を 0% として描かず、控えがあれば刻を添えて出す
  *   ⑨ 黄色の行のうち終了予定の刻だけが別色（明るい水色）で、地とのコントラスト比が 4.5 以上
- *   ⑩ 通知の本文を写す釦が、割れずに一枚で写す（短い／長い／空の三通り）
+ *   ⑩ まとめて写すが札と通知の両方を束ね、刻の順で一枚に写す（押す所は一つ）
  *   ⑪ 長い報告の札を、まとめて写すが割らずに一枚で写す
  *   ⑫ 本文の全行（5行）が写しへ入る（写しの絞りで落ちるのはファイルの行だけ）
  *   ⑬ 板の取得が転んでも、前に読めた値を捨てない
@@ -592,64 +592,42 @@ try {
   /*   ＊三通り：短い通知／長い報告（送る側では7通に割れる長さ）／空。
    *   ＊眼目は**割れずに一枚で写る**こと。置き場には割る前の一枚しか無いので、
    *     写しの字数が置き場の字数とぴったり合えば、一枚で写せている。 */
-  head('⑩ 通知の本文を写す釦');
+  head('⑩ まとめて写すが札と通知の両方を束ねる');
   {
-    /* 一度のタップで写れるかは、真似た台では拾えない（iOS の「触られた」印は node に無い）。
-       代わりに**字面で**見る——押したときの手（copyNtfyLatest）の中で取りに行っていないこと。
-       押してから取りに行くと、待つあいだに印が切れて一度目で写せない。 */
-    const a = html.indexOf('function copyNtfyLatest(btn) {');
-    const b = a >= 0 ? html.indexOf(String.fromCharCode(10) + '  }', a) : -1;
-    if (a < 0 || b < 0) { ng('押したときの手が見つからない'); }
-    else {
-      const fn = html.slice(a, b).split('pullNtfyLatest()').join('');
-      if (fn.indexOf('fetch(') >= 0) { ng('押したときの手の中で取りに行っている（一度のタップで写せない）'); }
-      else { ok('押したときの手は写すだけ（取りに行く待ちを挟んでいない）'); }
-    }
-    if (html.indexOf('function tick() { pull(); pullState(); pullSeen(); pullNtfyLatest(); }') >= 0) {
-      ok('本文は開いたときと15秒ごとに先に取ってある');
-    } else { ng('本文を先に取る手が無い'); }
-  }
-  {
-    /* 作り値は ntfy-sent.json の形（古い順の一覧）。
-       ＊三通り … 短い一本／7通に割れる長さの一本／空の一覧。
-       ＊眼目は**割れずに一枚で写る**ことと、**残N／M件**と**畳み**。 */
-    const mk = (t, title, body, parts) => ({ time: t, at: '2026-09-02 18:50:33', title: title, parts: parts || 1, body: body });
-    const SHORT = '積んだ刻 15:48:13／預けた刻 無し／読めた刻 無し／送った刻 無し';
-    let long = '';
-    for (let i = 0; i < 205; i++) { long += '行' + i + '：実測の数字と字がここに並ぶ。長さを稼ぐための行。' + String.fromCharCode(10); }
-
-    const CASES = [
-      ['短い通知', [mk(1, '調べ 終わりの黙り-3', SHORT, 1)], 1],
-      ['長い報告', [mk(2, '報告 長いもの', long, 7)], 1],
-      ['空',     [], 0]
+    /* ---- 押す所は一つ（2026-09-03・写しの一本化-1）----
+     *   ＊「通知の本文を写す」の釦は畳んだ。まとめて写すが**札と通知の両方**を数え、
+     *     刻の順（新しい順）で一枚に並べて写す。通知には頭に「通知」が付く。
+     *   ＊作り値は 札3枚＋通知2本＝5件。残5／5件 → 押す → 5件 写した → 0件で畳む。 */
+    const t0 = now;
+    const cards = [
+      { time: t0 - 500, title: '✅ 終わりました（返事不要）', message: '札その1' + String.fromCharCode(10) + '札1の二行目' },
+      { time: t0 - 300, title: '🔎 調べました',               message: '札その2' + String.fromCharCode(10) + '札2の二行目' },
+      { time: t0 - 100, title: '✅ 終わりました（返事不要）', message: '札その3' + String.fromCharCode(10) + '札3の二行目' }
     ];
-    for (const [nm, list, want] of CASES) {
-      const r = run(tmp, { state: ST['手待ち'], notices: MIX, ntfy: list, pressNtfy: true, settle: 1200 }, 390, 844);
-      if (!r) { ng(nm + '：測れない'); continue; }
-      const clip = String(r.ntfyClip || '');
-      if (!want) {
-        /* 写すものが無い回は**釦ごと畳む**（「まとめて写す」と同じ）。
-           ＊畳んだ釦は押せないので、断りの字は出ない——出す相手がいない。 */
-        if (clip) { ng(nm + '：写すものが無いのに写した（' + clip.length + '字）'); }
-        else if (!r.ntfyShown && /（0件）/.test(String(r.ntfyBtn || ''))) { ok(nm + '：釦ごと畳んだ（字は「' + r.ntfyBtn + '」・押せない）'); }
-        else { ng(nm + '：畳んでいない（見えている=' + r.ntfyShown + '・字「' + String(r.ntfyBtn) + '」）'); }
-        continue;
-      }
-      /* 一枚で写れたか … 本文が丸ごと入っていて、頭の一行が付いていること */
-      const one = list[0];
-      if (clip.indexOf(one.body) < 0) { ng(nm + '：本文が丸ごと入っていない（写し ' + clip.length + '字／本文 ' + one.body.length + '字）'); continue; }
-      if (clip.indexOf(one.title) < 0) { ng(nm + '：頭の一行が無い'); continue; }
-      /* 押す前の字が「残N／M件」であること（まとめて写すと同じ形） */
-      const before = String(r.ntfyBtn || '');
-      if (!/残1／1件/.test(before)) { ng(nm + '：押す前の字が残N／M件でない（「' + before + '」）'); continue; }
-      /* 写したあとは印が付いて畳む */
-      const after = String(r.ntfyBtn2 || '');
-      if (!/1件 写した/.test(after)) { ng(nm + '：写したあとの字が違う（「' + after + '」）'); continue; }
-      const bytes = Buffer.byteLength(one.body, 'utf8');
-      ok(nm + '：残1／1件 → 一枚で写した（' + one.body.length + '字・送る側なら' + Math.ceil(bytes / 2600) + '通に割れる長さ）');
+    const ntfy = [
+      { time: t0 - 400, at: '2026-09-03 13:40:00', title: '通知その1', parts: 1, body: '通知1の本文' },
+      { time: t0 - 200, at: '2026-09-03 13:45:00', title: '通知その2', parts: 1, body: '通知2の本文' }
+    ];
+    const r = run(tmp, { state: ST['手待ち'], notices: cards, ntfy: ntfy, press: true, settle: 1800 }, 390, 844);
+    if (!r) { ng('測れない'); }
+    else {
+      const before = String(r.beforeBtn || '');
+      const clip = String(r.clip || '');
+      const lines = clip.split(String.fromCharCode(10));
+      const want = ['札その1', '札その2', '札その3', '通知その1', '通知その2'];
+      const miss = want.filter(w => clip.indexOf(w) < 0);
+      const idx = want.map(w => clip.indexOf(w));
+      /* 刻の順（新しい順）… 札3 → 通知2 → 札2 → 通知1 → 札1 */
+      const order = ['札その3', '通知その2', '札その2', '通知その1', '札その1'].map(w => clip.indexOf(w));
+      const sorted = order.every((v, i) => i === 0 || (v > order[i - 1]));
+      if (!/残5／5件/.test(before)) { ng('押す前の字が残5／5件でない（「' + before + '」）'); }
+      else if (miss.length) { ng('写しに入っていないものがある（' + miss.join('・') + '）'); }
+      else if (clip.indexOf('／ 通知 ／ 通知その1') < 0) { ng('通知の頭（「通知」）が付いていない'); }
+      else if (!sorted) { ng('刻の順に並んでいない（' + order.join('/') + '）'); }
+      else if (!/5件 写した/.test(String(r.afterBtn || ''))) { ng('押した後の字が違う（「' + String(r.afterBtn) + '」）'); }
+      else { ok('残5／5件 → 5件 写した。札3＋通知2が刻の順で一枚に入った（写し ' + lines.length + '行）'); }
     }
   }
-
 
   /* ---- ⑪ 長い報告の札を、まとめて写すが一枚で写す（2026-09-02・通知の分け方-1） ---- */
   /*   ＊長い報告は ntfy へ送らない。**札として立てて、釦で写す**形にした。
