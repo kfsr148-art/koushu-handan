@@ -789,12 +789,13 @@ try {
     const cards = [
       { time: now - 600, title: '✅ 終わりました（返事不要）', message: '中身のある札その1' + NLc + '二行目' },
       { time: now - 300, title: '🔎 調べました',               message: '中身のある札その2' + NLc + '二行目' },
-      { time: now - 60,  title: '✅ 終わりました（返事不要）', message: '写せます（2件）' }
+      { time: now - 60,  title: '✅ 終わりました（返事不要）', message: '写せます（3件）' }   /* v117：札が3件と言っても分母は2 */
     ];
     const r = run(tmp, { state: ST['手待ち'], notices: cards, ntfy: [], press: true, settle: 1800 }, 390, 844);
     if (!r) { ng('測れない'); }
     else {
       const before = String(r.beforeBtn || ''), clip = String(r.clip || '');
+      /* v117：写せますの札が「3件」と言っていても、分母は**いま残っている数**に揃う。 */
       if (!/残2／2件/.test(before)) { ng('釦が残2／2件でない（「' + before + '」）'); }
       else if (r.todoRows !== 2) { ng('目次が2行でない（' + r.todoRows + '行）'); }
       else if (clip.indexOf('写せます（') >= 0) { ng('写しに「写せます」の札が入っている'); }
