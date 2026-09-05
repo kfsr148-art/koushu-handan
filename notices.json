@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 連携に訴えがあります（cards-full・subj-gap）",
+        "time":  1788614476,
+        "message":  "連携の見張りから訴えが出ています。\n\n・cards-full … 札が上限に張り付いている（40/40枚）。いちばん古い札は 09-03 21:08。ここから先は、新しい札が立つたびに**古い札が消える**\n・subj-gap … 作業中の件名が食い違っている（控え「根の試験-1（本物の pre-push を一回通して見届けた）」／出ている「先の穴-1＝土台に触らず二つを塞ぐ。①生存の手を」）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1788613432,
         "message":  "写せます（1件）"
@@ -193,10 +198,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1788440323,
         "message":  "パネルの立て直し-1（panel v115）と ntfy へは題だけの決め\n①通知の印と札の印はもともと混ざっていなかった（置き場が kh-panel-copied と\nntfyCopied.v1 で別、書く相手も別）。外すべき印は無い。「残3／9件」の6は分母の誤りで、\n直近の写せます（2件）＋通知の在庫7本＝9 を M にしていたのが原因。通知の在庫は\nいまの束の大きさではないので M から外し、元の意味（写せますの数）へ戻した。\n②黄色の行を「〈題〉が終わりました HH:MM・次の指示待ち」に。題は最後に終わった札の\n一行目の括弧より前だけを採る。③終わりの押し通知の題に件名を添える\n（😽 終わったにゃ、写して：〈題〉）。④釦の下に写せる札の目次（題＋印＋刻）を一行ずつ。\n併せて直近に終わった仕事を畳んだままでも題が読める形にした。\n⑤probe と panel-check ⑭ で実測。\n別途：ntfy へ流すのは題の一行だけという決めを受け、ntfy-say.ps1 も題だけに揃えた\n（見張りは 2026-08-24 から既に題だけ）。今後「直書き」の指示が来てもパネルの札に書く。\n記憶へ ntfy-title-only を足し、古い answers-go-in-the-notice-body に上書きの断りを入れた。\nファイル: panel.html（v115）／panel-ver.txt／panel-check.js（⑭）／~/.claude/watch-notify.ps1\n（写し .bak-20260903e）／~/.claude/ntfy-say.ps1／reports/パネルの立て直し-1.md／\nreport-latest.md／~/.claude/orders-open.tsv／記憶2件\n実測: probe＝通知だけ写しても釦は「まとめて写す（残3／3件）」のまま・札の印は空／\n黄色の行「札その3 が終わりました 21:19・次の指示待ち」／目次3行（✅🔎の印と刻つき）。\n溢れ＝390x844 と 844x390 のどちらも横溢れ0件・文書幅は視野と同じ。\npanel-check ①〜⑭ 全PASS。\n実機: ①版の字が panel v115 ②釦の下に写せる札の題と刻が一行ずつ ③黄色の行が\n「〈題〉が終わりました HH:MM・次の指示待ち」 ④直近に終わった仕事が畳んだままで題が読める\n⑤次の終わりの押し通知が「😽 終わったにゃ、写して：〈題〉」"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1788437308,
-        "message":  "読みの道-3（latest-name.txt を完全な URL にする）\nnotify-record.ps1 で latest-name.txt の中身だけを完全な URL へ替えた。\ngit へ渡す道は今までどおり名のまま。理由は、チャット側の読み口が前に読んだ中身に\n書いてある URL しか開けないため（名だけでは道を組み立てられない）。\n前＝notices-1788436199.json ／ 後＝https://kfsr148-art.github.io/koushu-handan/notices-1788436239.json\nファイル: ~/.claude/notify-record.ps1（写し .bak-20260903b・構文OK・BOM有）／\nreports/読みの道-3.md／report-latest.md／~/.claude/orders-open.tsv\n実測: 手元＝その名の中身は notices.json と一字も違わない。\n公開側＝20:52:06 に latest-name.txt が URL を返し、その URL を開くと HTTP 200・\nContent-Length 32044・Age 0・X-Cache MISS、いちばん新しい札は 20:49:16。\n読む側の手順は「latest-name.txt を読む → 書いてある URL をそのまま開く」の二段だけ。"
     }
 ]
