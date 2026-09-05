@@ -124,6 +124,13 @@
   /* 写した札の控え（v32）。既定は畳んである。ここでだけ「届いた」の印を出す。 */
   .done-box{margin:0 0 8px;}
   .done-box.hide{display:none;}
+  #arcList{display:none;}
+  #arcList.open{display:block;}
+  /* 訴えの行（v118）。黄色の行の下に赤で一行。 */
+  .pipe{margin:4px 0 0;padding:6px 8px;border-radius:6px;background:#3a1414;color:#ff9b9b;font-size:12px;line-height:1.5;}
+  .pipe.hide{display:none;}
+  /* 最後に受けた枠（v118）。控えめに、しかし必ず出す。 */
+  .lastord{margin:4px 0 0;font-size:11px;color:#8fa6a0;line-height:1.5;}
   #copiedList{display:none;}
   #copiedList.open{display:block;}
   #copiedList li{opacity:.62;}
@@ -385,6 +392,14 @@
        ＊v90〜v96 は板（#board）の中に混ぜていたので、板が出ない回には消えていた。
          お知らせの一覧を畳んだ v97 では、この行が**常に見えている**ことが要る。
        ＊中身は stateLineText()。作業中／次の指示待ち／ヨシを返してください の三通り。 -->
+  <!-- 連携の訴え（v118・先の穴-2 ④）。ntfy が落ちると知らせ自体が届かないので、
+       落ちたことは**画面から**知るしかない。読む元は pipe-warn.json（pipe-check.ps1 が置く）。
+       訴えが無い回は行ごと出さない。 -->
+  <p class="pipe hide" id="pipeWarn"></p>
+  <!-- 最後に受けた枠（v118・先の穴-2 ⑤）。状態に関わらず**必ず**出す。
+       送ったのに題が古いままなら「届いていない」と分かる。
+       読む元は state.json の order と orderAt（inbox-feed.ps1 → last-order.txt が書く）。 -->
+  <p class="lastord" id="lastOrd">最後に受けた枠：—</p>
   <ul id="stLine"></ul>
   <button class="cpall" id="btnCopyBoard" type="button">まとめて写す（0件）</button>
   <!-- 写せる札の題を一行ずつ（v115・パネルの見え方-1）。
@@ -420,6 +435,13 @@
     <button type="button" class="cpall" id="doneHead"></button>
     <ul id="doneList"></ul>
   </div>
+  <!-- 過去の札（v118・先の穴-2 ②）。上限で押し出された札の行き先。
+       読む元は notices-archive.json（notify-record.ps1 が押し出す前に移す）。
+       ＊開いたときに初めて取りに行く（起動のたびに取ると重い）。 -->
+  <div class="done-box hide" id="arcBox">
+    <button type="button" class="cpall" id="arcHead">🗄 過去の札 ▼</button>
+    <ul id="arcList"></ul>
+  </div>
   <div class="done-box hide" id="copiedBox">
     <button type="button" class="cpall" id="copiedHead"></button>
     <!-- ＊「未達 N件：」の一行（v59）は **v68 で消した**。器ごと外している。 -->
@@ -449,7 +471,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v117（9月4日）</p>
+  <p class="ver" id="verTag">panel v118（9月5日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -474,7 +496,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '117';
+  var PANEL_VER = '118';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -2287,6 +2309,8 @@
         lastWatch = (u && u.watch && typeof u.watch === 'object') ? u.watch : null;
         paintDoneBox(allRows);
         paintCopied(allRows);   /* 届いた印は watch が来てから付く */
+      paintArcBox();     /* 過去の札の箱（v118）。中身は開いたときに取る */
+      paintPipeWarn();   /* 連携の訴えの行（v118） */
       })
       .catch(function () { paintUsage(null); lastWatch = null; });
   }
@@ -2374,6 +2398,81 @@
       ul.className = o ? 'open' : '';
       head.textContent = '✅ 終わりました ' + items.length + '件' + (o ? ' ▲' : ' ▼');
     };
+  }
+
+  /* ---- 過去の札（v118・先の穴-2 ②）----
+     上限（40枚）で押し出された札は、消える前に notices-archive.json へ移してある。
+     ここはそれを**開いたときにだけ**取りに行って並べる。写す釦は今までの箱と同じ形。
+     ＊取れなくても画面は壊さない。頭の字だけ「読めません」にして終わる。 */
+  var ARCHIVE_URL = "https://kfsr148-art.github.io/koushu-handan/notices-archive.json";
+  var arcItems = [];
+  var arcLoaded = false;
+  function arcLabel(n, open) {
+    return "🗄 過去の札" + (n >= 0 ? " " + n + "件" : "") + (open ? " ▲" : " ▼");
+  }
+  function paintArcList() {
+    var ul = $("arcList");
+    if (!ul) { return; }
+    var html = "";
+    arcItems.forEach(function (d, i) {
+      var k = "arc:" + keyOf(d);
+      html += '<li class="ack' + (isOpen(k) ? " open" : "") + '" data-k="' + okey(k) + '">'
+            + '<p class="t"><span class="tx">' + esc(d.title || "(題なし)")
+            + '<span class="when">' + hhmm(d.time) + '</span></span>'
+            + '<button type="button" class="cp" data-i="' + i + '">写す</button></p>'
+            + '<p class="sj">' + esc(headOf(d)) + '</p>'
+            + '<p class="m">' + esc(d.message) + '</p></li>';
+    });
+    ul.innerHTML = html;
+  }
+  function loadArchive(head, ul) {
+    if (arcLoaded) { return; }
+    arcLoaded = true;
+    head.textContent = "🗄 過去の札 … 読み込み中";
+    fetch(ARCHIVE_URL + "?_t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        arcItems = (j || []).filter(function (d) { return d && d.message; });
+        arcItems.sort(function (a, b) { return (b.time || 0) - (a.time || 0); });
+        paintArcList();
+        head.textContent = arcLabel(arcItems.length, ul.className === "open");
+      })
+      .catch(function () {
+        arcLoaded = false;
+        head.textContent = "🗄 過去の札 … 読めません（もう一度押す）";
+      });
+  }
+  function paintArcBox() {
+    var box = $("arcBox"), head = $("arcHead"), ul = $("arcList");
+    if (!box || !head || !ul) { return; }
+    box.className = "done-box";
+    head.textContent = arcLabel(arcLoaded ? arcItems.length : -1, false);
+    head.onclick = function () {
+      var o = (ul.className !== "open");
+      ul.className = o ? "open" : "";
+      if (o) { loadArchive(head, ul); }
+      head.textContent = arcLabel(arcLoaded ? arcItems.length : -1, o);
+    };
+  }
+
+  /* ---- 連携の訴え（v118・先の穴-2 ④）----
+     ntfy が落ちていると、知らせでは知らせようがない。画面に出す。
+     ＊読む元は pipe-warn.json。ntfyDown が真のときだけ出す（ほかの訴えは定時と札で足りる）。 */
+  var PIPEWARN_URL = "https://kfsr148-art.github.io/koushu-handan/pipe-warn.json";
+  function paintPipeWarn() {
+    var el = $("pipeWarn");
+    if (!el) { return; }
+    fetch(PIPEWARN_URL + "?_t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        if (j && j.ntfyDown) {
+          el.textContent = "⚠ 知らせの道が落ちています … " + (j.text || "ntfy が返しません") + "（" + (j.at || "") + "）";
+          el.className = "pipe";
+        } else {
+          el.className = "pipe hide";
+        }
+      })
+      .catch(function () { /* 読めない回は出さない（前の姿を残す） */ });
   }
 
   function paintCopied(all) {
@@ -2544,6 +2643,17 @@
              連絡なしの間だけ「版 —／最終確認 —」の初期値のまま残っていた（2026-08-25 実機で発覚）。
              いちばん知りたいのは、連絡が途切れたときの**最後に見えていた時刻**なので、
              ここが横棒になるのは筋が通らない。塗るのを先に済ませる。 */
+        /* ---- 最後に受けた枠（v118・先の穴-2 ⑤）----
+           ＊状態に関わらず**必ず**出す。送ったのに題が古いままなら、届いていないと分かる。
+           ＊題は state.json の order（枠の一行目）。長いので頭だけ出す。 */
+        (function () {
+          var lo = $("lastOrd");
+          if (!lo) { return; }
+          var t = String(d.order || "").replace(/s+/g, " ").trim();
+          if (t.length > 34) { t = t.slice(0, 34) + "…"; }
+          var am = String(d.orderAt || "").match(/(d{1,2}):(d{2})/);
+          lo.textContent = "最後に受けた枠：" + (t || "—") + (am ? "  " + am[1] + ":" + am[2] : "");
+        })();
         paintFacts(d.at || 0);
         /* ＊受け取った指示を塗る呼び出し（v61）は **v72 で外した**。画面にも写しにも出さないため。 */
 
@@ -2636,6 +2746,18 @@
   });
 
   /* 「終わりました」の箱。写す釦と開閉を、この一つの受けで分ける（開閉は v47・釦は v67）。 */
+  /* 過去の札の箱も同じ形（v118）。 */
+  $('arcList').addEventListener('click', function (e) {
+    var b = e.target;
+    if (b && b.className && b.className.indexOf('cp') === 0) {
+      copyBoxed(arcItems, parseInt(b.getAttribute("data-i"), 10), b);
+      return;
+    }
+    var li = b;
+    while (li && li.tagName !== 'LI') { li = li.parentNode; }
+    toggleOpen(li);
+  });
+
   $('doneList').addEventListener('click', function (e) {
     var b = e.target;
     if (b && b.className && b.className.indexOf('cp') === 0) {

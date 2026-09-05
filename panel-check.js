@@ -808,6 +808,47 @@ try {
   fs.rmSync(tmp, { recursive: true, force: true });
 }
 
+/* ---- ⑰ v118 で足した三つが、字面のとおり繋がっているか（2026-09-05・先の穴-2）----
+     ＊ここは真似た台を立てずに**字面で照合する**。器・読む元・呼び出しの三点が
+       揃っていることだけを見る（描き方そのものは⑦の画面の実測が見ている）。 */
+head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠）');
+{
+  /* ＊正規表現は使わない。**字面をそのまま探す**（indexOf）。
+     　書き出しの途中で escape が落ちて、パターンが別物になる事故を避けるため
+     　（2026-09-05、ここで一度踏んだ）。 */
+  const need = [
+    ['過去の札の器',       'id="arcBox"',                   '器（arcBox）が無い'],
+    ['過去の札の読む元',   'notices-archive.json',           '読む元が無い'],
+    ['過去の札の呼び出し', 'paintArcBox();',                 '起動での呼び出しが無い'],
+    ['過去の札の押し受け', "$('arcList').addEventListener",  '押し受けが無い'],
+    ['訴えの行の器',       'id="pipeWarn"',                 '器（pipeWarn）が無い'],
+    ['訴えの行の読む元',   'pipe-warn.json',                 '読む元が無い'],
+    ['訴えの行の見る鍵',   'ntfyDown',                       'ntfyDown を見ていない'],
+    ['訴えの行の呼び出し', 'paintPipeWarn();',               '起動での呼び出しが無い'],
+    ['最後に受けた枠の器', 'id="lastOrd"',                  '器（lastOrd）が無い'],
+    ['最後に受けた枠の元', 'd.order',                        'state.json の order を読んでいない'],
+  ];
+  for (const [name, needle, msg] of need) {
+    if (html.indexOf(needle) >= 0) { ok(name); } else { ng(name + ' … ' + msg); }
+  }
+  /* 版の三箇所（作法4）。ここも字面で切り出す。 */
+  function pick(src, head, tail) {
+    const a = src.indexOf(head);
+    if (a < 0) { return ''; }
+    const b = src.indexOf(tail, a + head.length);
+    if (b < 0) { return ''; }
+    return src.slice(a + head.length, b);
+  }
+  const vScript = pick(html, "var PANEL_VER = '", "'");
+  /* ＊「panel v」は注記にも出る（6箇所）ので、**verTag の器から**切り出す。 */
+  const vTag    = pick(html, 'id="verTag">panel v', '（');
+  let vFile = '';
+  try { vFile = fs.readFileSync(path.join(path.dirname(SRC), 'panel-ver.txt'), 'utf8').trim(); } catch (e) { vFile = ''; }
+  if (!vScript || !vTag || !vFile) { ng('版の三箇所のどれかが読めない（PANEL_VER「' + vScript + '」／verTag「' + vTag + '」／panel-ver.txt「' + vFile + '」）'); }
+  else if (vScript !== vTag || vScript !== vFile) { ng('版が揃っていない（PANEL_VER ' + vScript + ' ／ verTag ' + vTag + ' ／ panel-ver.txt ' + vFile + '）'); }
+  else { ok('版が三箇所とも v' + vScript); }
+}
+
 head('まとめ（返事パネルの検査）');
 note('真似た台では拾えないもの … 公開側の遅れや詰まり／iOS Safari 固有の描き方（折り返し・字送り・慣性）／');
 note('　実機の触り心地と、写しがクリップボードへ本当に入るか／ntfy の押し通知そのもの');
