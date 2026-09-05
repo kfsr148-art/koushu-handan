@@ -12,6 +12,43 @@ if ! command -v node >/dev/null 2>&1; then
   exit 0
 fi
 
+# 重い帯 … 検査の間だけ、見張りの起こしを間引かせる（2026-09-05・帯の漏れ-1）。
+#   ＊手で heavy-on を打つ手順に頼らない。**入口で自動に書き、出口で必ず消す**。
+#     18:34〜18:46 の穴は、検査が帯の外で走ったために起きた（帯は 18:33 に出ていた）。
+#   ＊既に誰かが帯を出していたら、こちらは書かないし消さない（**書いた者だけが消す**）。
+#   ＊帯が作れなくても push は止めない。検査そのものには関わらないため。
+PSEXE=$(command -v powershell.exe 2>/dev/null || command -v powershell 2>/dev/null || true)
+# ＊git が hook を呼ぶときの PATH には powershell.exe が無いことがある（2026-09-05 に踏んだ）。
+#   手で `bash .githooks/pre-push` と打つと帯が出るのに、`git push` 経由では出なかった。
+#   PATH だけに頼らず、決まった場所も当たる。
+if [ -z "$PSEXE" ] && [ -x "/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe" ]; then PSEXE="/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"; fi
+if [ -z "$PSEXE" ] && [ -n "$SYSTEMROOT" ] && [ -x "$SYSTEMROOT/System32/WindowsPowerShell/v1.0/powershell.exe" ]; then PSEXE="$SYSTEMROOT/System32/WindowsPowerShell/v1.0/powershell.exe"; fi
+CLAUDE_WIN=$(cygpath -w "$HOME/.claude" 2>/dev/null || echo 'C:\Users\user\.claude')
+HEAVY_FILE="$HOME/.claude/heavy.txt"
+HEAVY_MINE=0
+
+heavy_on() {
+  if [ -z "$PSEXE" ]; then
+    echo "pre-push: powershell が見つからないので重い帯は作らない（検査はこのまま回す）"
+    return 0
+  fi
+  [ -e "$HEAVY_FILE" ] && return 0
+  if "$PSEXE" -NoProfile -ExecutionPolicy Bypass -File "$CLAUDE_WIN\heavy-on.ps1" -Why 'pre-push の検査' >/dev/null 2>&1; then
+    HEAVY_MINE=1
+    echo "pre-push: 重い帯に入った（検査の間だけ見張りの起こしを間引く）"
+  fi
+}
+
+heavy_off() {
+  [ "$HEAVY_MINE" = "1" ] || return 0
+  HEAVY_MINE=0
+  "$PSEXE" -NoProfile -ExecutionPolicy Bypass -File "$CLAUDE_WIN\heavy-off.ps1" >/dev/null 2>&1
+}
+
+# 通っても落ちても、途中で止められても消す。
+trap heavy_off EXIT INT TERM
+heavy_on
+
 echo "pre-push: node check-all --fast を回す（止めたいときは --no-verify）"
 node check-all.js --fast
 status=$?
