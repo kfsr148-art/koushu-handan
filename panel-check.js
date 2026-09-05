@@ -827,6 +827,9 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     ['訴えの行の呼び出し', 'paintPipeWarn();',               '起動での呼び出しが無い'],
     ['最後に受けた枠の器', 'id="lastOrd"',                  '器（lastOrd）が無い'],
     ['最後に受けた枠の元', 'd.order',                        'state.json の order を読んでいない'],
+    ['過去の札の件数の読む元', 'archive-count.txt',              '件数の読む元が無い'],
+    ['過去の札の件数の控え',   'arcCount',                       '件数を控える変数が無い'],
+    ['過去の札の件数を先に読む','loadArcCount(head, ul);',        '起動で件数を読んでいない'],
   ];
   for (const [name, needle, msg] of need) {
     if (html.indexOf(needle) >= 0) { ok(name); } else { ng(name + ' … ' + msg); }
