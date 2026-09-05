@@ -471,7 +471,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v118（9月5日）</p>
+  <p class="ver" id="verTag">panel v119（9月6日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -496,7 +496,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '118';
+  var PANEL_VER = '119';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -2405,10 +2405,17 @@
      ここはそれを**開いたときにだけ**取りに行って並べる。写す釦は今までの箱と同じ形。
      ＊取れなくても画面は壊さない。頭の字だけ「読めません」にして終わる。 */
   var ARCHIVE_URL = "https://kfsr148-art.github.io/koushu-handan/notices-archive.json";
+  /* 件数だけを別に読む（v119・過去の札の件数-1）。
+     ＊見出しに数を出すために本体（notices-archive.json）を毎回取りに行くのは重い。
+       notify-record が退避のたびに書く archive-count.txt を読む。0件なら「0件」。 */
+  var ARCHIVE_COUNT_URL = "https://kfsr148-art.github.io/koushu-handan/archive-count.txt";
+  var arcCount = -1;
   var arcItems = [];
   var arcLoaded = false;
   function arcLabel(n, open) {
-    return "🗄 過去の札" + (n >= 0 ? " " + n + "件" : "") + (open ? " ▲" : " ▼");
+    /* n が -1 のときは、控えの数（arcCount）を使う。どちらも無ければ数を出さない。 */
+    var v = (n >= 0) ? n : arcCount;
+    return "🗄 過去の札" + (v >= 0 ? " " + v + "件" : "") + (open ? " ▲" : " ▼");
   }
   function paintArcList() {
     var ul = $("arcList");
@@ -2442,11 +2449,24 @@
         head.textContent = "🗄 過去の札 … 読めません（もう一度押す）";
       });
   }
+  function loadArcCount(head, ul) {
+    fetch(ARCHIVE_COUNT_URL + "?_t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.text() : null; })
+      .then(function (t) {
+        var n = parseInt(String(t || "").trim(), 10);
+        if (isNaN(n)) { return; }
+        arcCount = n;
+        if (head && !arcLoaded) { head.textContent = arcLabel(-1, ul && ul.className === "open"); }
+      })
+      .catch(function () { /* 読めない回は数を出さない（見出しはそのまま） */ });
+  }
+
   function paintArcBox() {
     var box = $("arcBox"), head = $("arcHead"), ul = $("arcList");
     if (!box || !head || !ul) { return; }
     box.className = "done-box";
     head.textContent = arcLabel(arcLoaded ? arcItems.length : -1, false);
+    loadArcCount(head, ul);   /* 件数だけ先に読む（v119） */
     head.onclick = function () {
       var o = (ul.className !== "open");
       ul.className = o ? "open" : "";
