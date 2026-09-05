@@ -131,6 +131,59 @@ heavy_on
 ＊**生存は帯でも間引かない**（飽和の回避-1 の確定）。それでも 19:41〜19:48 のように穴が出るのは、
 　**上限 PT2M で殺されるから**で、帯とは別の話。塞ぐ三案は土台に触るので止めてある。
 
+## 直しの途中で踏んだ二つ（どちらも記録に残す）
+
+### 一．**git が hook を呼ぶときの PATH に `powershell.exe` が無い**
+
+手で `bash .githooks/pre-push` と打つと帯は出た。ところが **`git push` 経由では出なかった**。
+
+```
+20:14:24  押しの最中 … msedge 5本（検査は走っている）／帯は **無い**
+```
+
+`command -v powershell.exe` が git の hook の PATH では空になるためで、
+こちらは「見つからなければ帯を作らず、押しは止めない」枝へ落ちていた。**黙って落ちる形**だった。
+
+**決まった場所も当たるようにした。** `/c/Windows/System32/…/powershell.exe` と
+`$SYSTEMROOT/System32/…` を順に見る。見つからないときは
+**「powershell が見つからないので重い帯は作らない」と画面へ出す**（黙って落ちない）。
+
+**実地（本物の `git push`）**
+
+```
+20:29:15  帯が **自動で出た**（git push 経由でも出るようになった）
+20:5x     押しが終わり、帯が **自動で消えた**
+```
+
+### 二．**見張りの自動押しの `--autostash` が、手元の直しを飲み込んだ**
+
+hook を直したあと、**その直しが消えていた**（ファイルが元の25行に戻っていた）。
+
+犯人は `git-push.ps1` の押し直し。
+
+```
+$pull = @('-C', $Repo, 'pull', '--rebase', '--autostash', '-q', 'origin', 'main')
+```
+
+`--autostash` は**手元の未コミットの変更を退避して、rebase のあと戻す**。
+ところが `Git-Run $pull 30000` と**30秒で切る**作りなので、切られると**戻しが走らない**。
+退避は `stash@{0}: autostash` として残り、**手元からは消えたように見える**。
+
+**取り戻した。**
+
+```
+git checkout stash@{0} -- .githooks/pre-push   → 54行が戻った
+```
+
+**教訓** … `~/.claude` の見張りが毎分押している以上、**このリポジトリで直したら、すぐ commit する**。
+未コミットのまま重い仕事を挟むと、押し直しの退避に飲まれる。
+＊退避はそのまま残してある（消すのは④取り返しのつかない削除に当たるため、勝手に消さない）。
+
+### 併せて分かったこと … **見張りの自動押しは hook を通らない**
+
+`git-push.ps1` は commit も push も **`--no-verify`** で打つ。
+だから**毎分の自動押しでは検査も帯も走らない**。**帯が出るのは手押しのときだけ**でよい。
+
 ---
 
 <!-- 控えの一覧 ここから -->
@@ -143,7 +196,7 @@ heavy_on
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
-| [`帯の漏れ-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%B8%AF%E3%81%AE%E6%BC%8F%E3%82%8C-1.md) | 09-05 20:03 | 帯の漏れ-1 — 重い帯を pre-push 自身に持たせた |
+| [`帯の漏れ-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%B8%AF%E3%81%AE%E6%BC%8F%E3%82%8C-1.md) | 09-05 20:53 | 帯の漏れ-1 — 重い帯を pre-push 自身に持たせた |
 | [`飽和の回避-1-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%A3%BD%E5%92%8C%E3%81%AE%E5%9B%9E%E9%81%BF-1-2.md) | 09-05 18:23 | 飽和の回避-1（追補）— 札を立て直した／控えが空だった理由 |
 | [`飽和の回避-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%A3%BD%E5%92%8C%E3%81%AE%E5%9B%9E%E9%81%BF-1.md) | 09-05 16:29 | 飽和の回避-1 — 重い帯だけ、起こしを間引く |
 | [`連携の改善-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%80%A3%E6%90%BA%E3%81%AE%E6%94%B9%E5%96%84-1.md) | 09-05 14:33 | 連携の改善-1 — 止めた5件を外から見る手で近づけ、訴えを定時へ乗せた |
