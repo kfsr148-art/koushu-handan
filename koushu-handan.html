@@ -2356,6 +2356,8 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
     const doraCode = indicatorToDora(doraIndicator);
+    // 切り候補（切り候補-1）が三段目で読む。ここは analyze() の外で、ドラが判る唯一の所。
+    window._doraCode = doraCode;
     doraCount = hand.filter(t => t.code === doraCode).length;
     doraReadout.innerHTML =
         `<span class="dr-hint">表示</span>${tileChip(doraIndicator)}`
@@ -4598,6 +4600,23 @@ document.addEventListener('DOMContentLoaded', function () {
   return Math.min(minSt, chiitoiSt, kokushiSt);
     }
 
+  // 標準形だけでなく、七対子・国士も見た最小の向聴（analyze() の中の式と同じ字面の写し）。
+  //   ＊写した cutShanten は**標準形だけ**を測る。七対子向きの手で切り候補を誤らないよう、
+  //     analyze() が使っているのと同じ二つの式をここにも置く。**片方だけ直さないこと。**
+  function cutShantenMin(tiles){
+    const st = cutShanten(tiles);
+    const allCnt = {};
+    tiles.forEach(c => allCnt[c] = (allCnt[c]||0) + 1);
+    let kinds = 0, pairs = 0;
+    Object.values(allCnt).forEach(c => { kinds++; if(c >= 2) pairs++; });
+    const chiitoiSt = 6 - pairs + Math.max(0, 7 - kinds);
+    const yao = ['m1','m9','p1','p9','s1','s9','E','S','W','N','P','F','C'];
+    let koKinds = 0, koPair = 0;
+    yao.forEach(t => { const c = allCnt[t]||0; if(c >= 1) koKinds++; if(c >= 2) koPair = 1; });
+    const kokushiSt = 13 - koKinds - koPair;
+    return Math.min(st, chiitoiSt, kokushiSt);
+  }
+
   // 13枚から、切る候補を一枚選ぶ。四段で割る。
   //   一段 切った後の向聴が最小
   //   二段 孤立牌の順（字牌 → 19牌 → 28牌）
@@ -4637,11 +4656,13 @@ document.addEventListener('DOMContentLoaded', function () {
     for(const su of ['m','p','s']) for(let n=1;n<=9;n++) ALL.push(su+n);
     HONOR.forEach(h=>ALL.push(h));
     function acceptTypes(left){
-      const base = cutShanten(left.concat(['E']).slice(0,13));
+      // 埋め草は**手に無い字牌**を使う（手にある牌で埋めると対子になって向聴が動く）。
+      const filler = HONOR.filter(h => left.indexOf(h) < 0)[0] || 'C';
+      const base = cutShantenMin(left.concat([filler]));
       let k = 0;
       ALL.forEach(code=>{
         if(left.filter(c=>c===code).length >= 4) return;
-        const st = cutShanten(left.concat([code]));
+        const st = cutShantenMin(left.concat([code]));
         if(st < base) k++;
       });
       return k;
@@ -4649,7 +4670,8 @@ document.addEventListener('DOMContentLoaded', function () {
     let best = null;
     for(let i=0;i<codes.length;i++){
       const left = codes.slice(0,i).concat(codes.slice(i+1));   // 12枚
-      const st = cutShanten(left.concat(['E']));                 // 13枚相当（孤立字牌で埋める）
+      const fill = HONOR.filter(h => left.indexOf(h) < 0)[0] || 'C';
+      const st = cutShantenMin(left.concat([fill]));            // 13枚相当（手に無い字牌で埋める）
       const rank = lonelyRank(codes[i], codes);
       const keepsValue = valueTile(codes[i], tiles[i]) ? 1 : 0;  // 1＝打点の種。切ると減る
       const acc = acceptTypes(left);

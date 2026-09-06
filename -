@@ -1,0 +1,150 @@
+global.window = {};
+    function cutShanten(tiles, mode){
+  // tiles: array of codes like 'm1','p5','E'
+  const man=[],pin=[],sou=[],hon={};
+  tiles.forEach(c=>{
+    if('mps'.includes(c[0])){
+      const n=+c[1];
+      if(c[0]==='m')man.push(n); else if(c[0]==='p')pin.push(n); else sou.push(n);
+    } else hon[c]=(hon[c]||0)+1;
+  });
+  const cnt=arr=>{const o=[0,0,0,0,0,0,0,0,0,0]; arr.forEach(n=>o[n]++); return o;};
+  const m=cnt(man),p=cnt(pin),s=cnt(sou);
+
+  // 字牌の面子・塔子（対子）
+  let honMelds=0, honPartial=0;
+  Object.values(hon).forEach(c=>{
+    if(c>=3) honMelds++;
+    else if(c===2) honPartial++;
+  });
+
+  // 数牌1スートを (面子, 塔子) の全分解で評価し、
+  // 各 (melds, partials) 候補を集める
+  function decompose(c,i,melds,partials,results){
+    // 末端まで来たら記録
+    if(i>9){ results.push([melds,partials]); return; }
+    if(c[i]===0){ decompose(c,i+1,melds,partials,results); return; }
+    // 暗刻
+    if(c[i]>=3){ c[i]-=3; decompose(c,i,melds+1,partials,results); c[i]+=3; }
+    // 順子
+    if(i<=7&&c[i]>0&&c[i+1]>0&&c[i+2]>0){ c[i]--;c[i+1]--;c[i+2]--; decompose(c,i,melds+1,partials,results); c[i]++;c[i+1]++;c[i+2]++; }
+    // 対子
+    if(c[i]>=2){ c[i]-=2; decompose(c,i,melds,partials+1,results); c[i]+=2; }
+    // 両面・嵌張
+    if(i<=8&&c[i]>0&&c[i+1]>0){ c[i]--;c[i+1]--; decompose(c,i,melds,partials+1,results); c[i]++;c[i+1]++; }
+    if(i<=7&&c[i]>0&&c[i+2]>0){ c[i]--;c[i+2]--; decompose(c,i,melds,partials+1,results); c[i]++;c[i+2]++; }
+    // 浮き牌
+    c[i]--; decompose(c,i,melds,partials,results); c[i]++;
+  }
+
+  // 3スートを合成。全組合せだと重いので、各スートの非劣解だけ残す
+  function frontier(c){
+    const all=[]; decompose(c.slice(),1,0,0,all);
+    // melds最大ごとにpartials最大を残す
+    const bestByMeld={};
+    all.forEach(([me,pa])=>{ if(bestByMeld[me]===undefined||pa>bestByMeld[me]) bestByMeld[me]=pa; });
+    return Object.keys(bestByMeld).map(me=>[+me,bestByMeld[me]]);
+  }
+  const fm=frontier(m), fp=frontier(p), fs=frontier(s);
+
+  // 雀頭の有無を測る土台：手牌に対子（count≥2）が一枚も無ければ、雀頭は即座には作れない。
+  // 塔子だけで4ブロックを埋めても、雀頭を仕立てるのに一手余計にかかる。
+  let noPairInHand = true;
+  [m,p,s].forEach(cc=>{ for(let k=1;k<=9;k++) if(cc[k]>=2) noPairInHand=false; });
+  Object.values(hon).forEach(c=>{ if(c>=2) noPairInHand=false; });
+
+  let minSt=8;
+  for(const [m1,p1] of fm) for(const [m2,p2] of fp) for(const [m3,p3] of fs){
+    let melds = m1+m2+m3+honMelds;
+    let partials = p1+p2+p3+honPartial;
+    // 面子＋塔子は最大4ブロック＋雀頭1
+    let block = melds + partials;
+    if(block > 5) partials -= (block - 5);
+    if(partials < 0) partials = 0;
+    // 標準シャンテン式
+    let st = 8 - 2*melds - partials;
+    // 雀頭補正：面子4つに満たないのに4ブロックを塔子で埋め切り、雀頭になる対子が無いと、一手余計にかかる。
+    if(noPairInHand && melds < 4 && (melds + partials) >= 5) st += 1;
+    // 完成形（4面子1雀頭）は -1（和了）
+    if(melds >= 4 && partials >= 1 && (melds+partials)>=5) st = -1;
+    if(st < minSt) minSt = st;
+  }
+  // 七対子・国士無双の向聴も測り、標準形と合わせた3役の最小を返す。
+  // 良形カウントを総当たりに直したのに合わせ、受け入れの土台もここで揃える。
+  const allCnt={};
+  tiles.forEach(c=> allCnt[c]=(allCnt[c]||0)+1);
+  // 七対子：6 -（対子の種類）＋ 不足する種類ぶんの補正
+  let kinds=0, pairs=0;
+  Object.values(allCnt).forEach(c=>{ kinds++; if(c>=2) pairs++; });
+  const chiitoiSt = 6 - pairs + Math.max(0, 7 - kinds);
+  // 国士無双：13 -（么九字牌の種類）-（対子が1つでもあれば1）
+  const yao=['m1','m9','p1','p9','s1','s9','E','S','W','N','P','F','C'];
+  let koKinds=0, koPair=0;
+  yao.forEach(t=>{ const c=allCnt[t]||0; if(c>=1) koKinds++; if(c>=2) koPair=1; });
+  const kokushiSt = 13 - koKinds - koPair;
+  // mode='std' のときは標準形のみの向聴を返す。
+  // 七対子に向かう手か（七対子向聴 ≤ 標準向聴か）を判定するために使う。
+  if(mode==='std') return minSt;
+  return Math.min(minSt, chiitoiSt, kokushiSt);
+    }
+
+  function pickCutTile(a, tiles){
+    if(!a || a.tooMany) return null;
+    if(!tiles || tiles.length !== 13) return null;   // 13枚のときだけ言う
+    const codes = tiles.map(t => (t.suit==='honor') ? t.code : (t.suit[0] + t.num));
+    if(codes.some(c => !c || c === 'cat0' || c.indexOf('cat') === 0)) return null;  // 猫牌が混じる手は言わない
+    const HONOR = ['E','S','W','N','P','F','C'];
+    // 孤立の順：字牌0 → 19牌1 → 28牌2 → それ以外3（小さいほど先に切る）
+    function lonelyRank(code, all){
+      if(HONOR.indexOf(code) >= 0) return 0;
+      const n = +code[1];
+      const su = code[0];
+      const near = all.some(o => o !== code && o[0] === su && Math.abs((+o[1]) - n) <= 2);
+      const same = all.filter(o => o === code).length;
+      if(same >= 2 || near) return 3;                 // 組に入っている牌は最後
+      if(n === 1 || n === 9) return 1;
+      if(n === 2 || n === 8) return 2;
+      return 3;
+    }
+    // 打点の種（ドラ・赤・役牌の対子）に関わる牌か
+    function valueTile(code, t){
+      if(t && t.red) return true;
+      if(window._doraCode && code === window._doraCode) return true;
+      if(HONOR.indexOf(code) >= 0){
+        const same = codes.filter(o => o === code).length;
+        if(same >= 2) return true;                     // 役牌かどうかは a 側が見ている。対子は残す
+      }
+      return false;
+    }
+    // 受け入れの種類数（その手から向聴が減る牌の種類）
+    const ALL = [];
+    for(const su of ['m','p','s']) for(let n=1;n<=9;n++) ALL.push(su+n);
+    HONOR.forEach(h=>ALL.push(h));
+    function acceptTypes(left){
+      const base = cutShanten(left.concat(['E']).slice(0,13));
+      let k = 0;
+      ALL.forEach(code=>{
+        if(left.filter(c=>c===code).length >= 4) return;
+        const st = cutShanten(left.concat([code]));
+        if(st < base) k++;
+      });
+      return k;
+    }
+    let best = null;
+    for(let i=0;i<codes.length;i++){
+      const left = codes.slice(0,i).concat(codes.slice(i+1));   // 12枚
+      const st = cutShanten(left.concat(['E']));                 // 13枚相当（孤立字牌で埋める）
+      const rank = lonelyRank(codes[i], codes);
+      const keepsValue = valueTile(codes[i], tiles[i]) ? 1 : 0;  // 1＝打点の種。切ると減る
+      const acc = acceptTypes(left);
+      const key = [st, rank, keepsValue, -acc, i];
+      if(!best || cmp(key, best.key) < 0){ best = { key: key, idx: i, code: codes[i], st: st, rank: rank, value: keepsValue, acc: acc }; }
+    }
+    return best;
+  }
+
+  function cmp(a, b){
+    for(let i=0;i<a.length;i++){ if(a[i] !== b[i]) return a[i] < b[i] ? -1 : 1; }
+    return 0;
+  }
+module.exports = { pickCutTile, cutShanten, window: global.window };
