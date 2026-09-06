@@ -353,6 +353,11 @@
   }
   /* 切り候補（切り候補-1）。人柄の金枠とは別物なので、道具側と同じ outline ＋ ぼかしで、
      色は琥珀（#e0b25a）。人柄や道具の切り替えに関わらず、判定のあいだ出しっぱなし。 */
+  /* 切るなら の字は、見立て行の中に置く（新しい行を作らない）。
+     2026-09-06 の21視野で、行を一つ足したら judged 800x381 の二択が 391>381 で
+     10px はみ出した。高さを足さない形へ直した。 */
+  .cut-note { color: #e0b25a; }
+  .cut-note .dr-tile { vertical-align: middle; }
   .judged-hand .tile.cut-mark {
     outline: 2px solid #e0b25a;
     outline-offset: 1px;
@@ -8864,8 +8869,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ${window._catSwitchNote ? `<div class="cat-switch-note" style="font-size:10px !important; color:#d4af37; margin-top:4px; letter-spacing:.04em;">${sayHTML('cat', window._catSwitchNote)}</div>` : ''}
         ${window._edamameNote ? `<div class="edamame-note" style="font-size:10px !important; color:#8fbf5f; margin-top:4px; letter-spacing:.04em;">${sayHTML('eda', window._edamameNote)}</div>` : ''}
         ${window._shinshiNote ? `<div class="shinshi-note" style="font-size:10px !important; color:#a9b8c9; margin-top:4px; letter-spacing:.04em;">${sayHTML('ai', window._shinshiNote)}</div>` : ''}
-        <div class="tone-angle" style="font-size:10px !important; color:rgba(243,236,224,0.7); margin-top:4px; letter-spacing:.04em;${toneAngleLine(a) ? '' : ' display:none;'}">${sayHTML(currentTone, toneAngleLine(a))}</div>
-          ${_CUT ? `<div class="cut-note" style="font-size:10px !important; color:#e0b25a; margin-top:4px;">切るなら ${tileChip(_CUT.code)}</div>` : ''}
+        <div class="tone-angle" style="font-size:10px !important; color:rgba(243,236,224,0.7); margin-top:4px; letter-spacing:.04em;${toneAngleLine(a) ? '' : ' display:none;'}">${sayHTML(currentTone, toneAngleLine(a))}${_CUT ? `<span class="cut-note">　切るなら ${tileChip(_CUT.code)}</span>` : ''}</div>
         <div class="tone-row">
           <button type="button" class="tone-btn${currentTone==='butler'?' active':''}" data-tone="butler" onclick="window.setTone('butler')">執事</button>
           <button type="button" class="tone-btn${currentTone==='strategist'?' active':''}" data-tone="strategist" onclick="window.setTone('strategist')">軍師</button>
