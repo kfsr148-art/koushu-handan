@@ -1817,6 +1817,66 @@ section('㉑', '猫牌の裁定数の一本化', () => {
   if (decl === 1) ok('BASE_CURVE の定義は一箇所');
   else ng('BASE_CURVE の定義が ' + decl + '箇所');
 });
+/* ---- ⑱ 切り候補の写しが本体とずれていないか（2026-09-06・切り候補-1）----
+     ＊analyze() は変更禁止（作法5）なので、向聴の物差しを後段から呼べない。
+       cutShanten は analyze() の中の shanten の**字面の写し**で、
+       七対子・国士の式も cutShantenMin へ写してある。**片方だけ直さないこと。**
+     ＊⑭（bestShapeOneSuit と toneBlocksOneSuit）と同じ形の見張り。
+     ＊正規表現は使わず、字面をそのまま探す（書き出しで escape が落ちる事故を避ける）。 */
+head('⑱ 切り候補の写しが本体と同じか');
+{
+  const grab = (name) => {
+    const i = src.indexOf('function ' + name + '(');
+    if (i < 0) { return null; }
+    let d = 0, started = false;
+    for (let k = i; k < src.length; k++) {
+      if (src[k] === '{') { d++; started = true; }
+      else if (src[k] === '}') { d--; if (started && d === 0) { return src.slice(i, k + 1); } }
+    }
+    return null;
+  };
+  const squash = (t) => {
+    let out = '';
+    let prevSpace = false;
+    for (const ch of t) {
+      const isSpace = (ch === ' ' || ch === String.fromCharCode(9) || ch === String.fromCharCode(10) || ch === String.fromCharCode(13));
+      if (isSpace) { if (!prevSpace) { out += ' '; } prevSpace = true; }
+      else { out += ch; prevSpace = false; }
+    }
+    return out.trim();
+  };
+  const body = grab('shanten'), copy = grab('cutShanten');
+  if (!body || !copy) { ng('shanten か cutShanten が見つからない'); }
+  else {
+    const b2 = squash(body).replace('function shanten(', 'function X(');
+    const c2 = squash(copy).replace('function cutShanten(', 'function X(');
+    if (b2 === c2) { ok('向聴の写しが本体と一字も違わない'); }
+    else {
+      ng('向聴の写しが本体とずれている（片方だけ直した恐れ）');
+      note('  本体 ' + b2.length + '字 ／ 写し ' + c2.length + '字');
+    }
+  }
+  const pair = [
+    ['七対子', 'const chiitoiSt = 6 - pairs + Math.max(0, 7 - kinds);'],
+    ['国士',   'const kokushiSt = 13 - koKinds - koPair;'],
+  ];
+  for (const row of pair) {
+    const n = src.split(row[1]).length - 1;
+    if (n >= 2) { ok(row[0] + 'の式が本体と写しの二箇所にある'); }
+    else { ng(row[0] + 'の式が ' + n + '箇所しかない（写しが無いか、字面がずれた）'); }
+  }
+  const wired = [
+    ['候補を選ぶ手',     'function pickCutTile('],
+    ['後段で呼ぶ',       'const _CUT = pickCutTile(a, judgedTiles);'],
+    ['牌に印を付ける',   "? ' cut-mark' : ''"],
+    ['印の見た目',       '.judged-hand .tile.cut-mark {'],
+    ['見立ての下の一行', 'class="cut-note"'],
+    ['ドラを外へ出す',   'window._doraCode = doraCode;'],
+  ];
+  for (const row of wired) {
+    if (src.indexOf(row[1]) >= 0) { ok(row[0]); } else { ng(row[0] + ' … 見つからない'); }
+  }
+}
 
 /* ---- まとめ ---- */
 console.log('');
