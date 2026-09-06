@@ -1817,13 +1817,13 @@ section('㉑', '猫牌の裁定数の一本化', () => {
   if (decl === 1) ok('BASE_CURVE の定義は一箇所');
   else ng('BASE_CURVE の定義が ' + decl + '箇所');
 });
-/* ---- ⑱ 切り候補の写しが本体とずれていないか（2026-09-06・切り候補-1）----
+/* ---- ㉒ 切り候補の写しが本体とずれていないか（2026-09-06・切り候補-1）----
      ＊analyze() は変更禁止（作法5）なので、向聴の物差しを後段から呼べない。
        cutShanten は analyze() の中の shanten の**字面の写し**で、
        七対子・国士の式も cutShantenMin へ写してある。**片方だけ直さないこと。**
-     ＊⑭（bestShapeOneSuit と toneBlocksOneSuit）と同じ形の見張り。
+     ＊⑭（bestShapeOneSuit と toneBlocksOneSuit）と同じ形の見張り。番号は㉑の次。
      ＊正規表現は使わず、字面をそのまま探す（書き出しで escape が落ちる事故を避ける）。 */
-head('⑱ 切り候補の写しが本体と同じか');
+head('㉒', '切り候補の写しが本体と同じか');
 {
   const grab = (name) => {
     const i = src.indexOf('function ' + name + '(');
@@ -1870,7 +1870,7 @@ head('⑱ 切り候補の写しが本体と同じか');
     ['後段で呼ぶ',       'const _CUT = pickCutTile(a, judgedTiles);'],
     ['牌に印を付ける',   "? ' cut-mark' : ''"],
     ['印の見た目',       '.judged-hand .tile.cut-mark {'],
-    ['見立ての下の一行', 'class="cut-note"'],
+    ['見立て行の中の字', 'class=\"cut-note\"'],
     ['ドラを外へ出す',   'window._doraCode = doraCode;'],
   ];
   for (const row of wired) {
