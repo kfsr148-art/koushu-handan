@@ -844,7 +844,24 @@ section('⑦', '狭い画面での溢れ', () => {
       lines.slice(0, 8).forEach(l => note('  ' + l));
     };
 
-    VIEWS.forEach(([vw, vh]) => { SCREENS.forEach(screen => run(vw, vh, screen)); });
+    /* ---- 進みを一行だけ外へ置く（2026-09-07・帯の中の黙り-1）----
+       ＊21視野は機械が重い日に3時間を超える。走っている間、外から
+         「どこまで済んだか」を知る手が無かった。
+       ＊判定には一切関わらない。**数を書くだけ。**書けなくても検査は進む。 */
+    const PROG = 'C:/Users/user/.claude/check-progress.txt';
+    let doneViews = 0;
+    const putProgress = () => {
+      try {
+        fs.writeFileSync(PROG, doneViews + '/' + VIEWS.length + '	' +
+          new Date().toISOString().slice(0, 19).replace('T', ' '), 'utf8');
+      } catch (e) { /* 書けなくても検査は進む */ }
+    };
+    putProgress();
+    VIEWS.forEach(([vw, vh]) => {
+      SCREENS.forEach(screen => run(vw, vh, screen));
+      doneViews++;
+      putProgress();
+    });
     /* 速い版でも、見立て行の折り返しだけは 844x390 でも見る。
        568x320 は一行に切り詰める指定（nowrap＋「…」）が効いていて折り返しようがなく、
        折り返しが出るのは切り詰めの外れる 844x390——しかも二択の余白がいちばん薄い視野だから。 */
