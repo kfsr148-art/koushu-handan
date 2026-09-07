@@ -1869,8 +1869,10 @@ head('㉒', '切り候補の写しが本体と同じか');
     ['候補を選ぶ手',     'function pickCutTile('],
     ['後段で呼ぶ',       'const _CUT = pickCutTile(a, judgedTiles);'],
     ['牌に印を付ける',   "? ' cut-mark' : ''"],
-    ['印の見た目',       '.judged-hand .tile.cut-mark {'],
-    ['見立て行の中の字', 'class=\"cut-note\"'],
+    ['印の見た目',       'body.tool-usagi .judged-hand .tile.cut-mark {'],
+    ['四つの目の釦',     'class=\"eye-btn'],
+    ['押す口',           'window.toolTap = function(key, e){'],
+    ['一行を作る手',     'window.toolEyeSay = function(key){'],
     ['ドラを外へ出す',   'window._doraCode = doraCode;'],
   ];
   for (const row of wired) {
