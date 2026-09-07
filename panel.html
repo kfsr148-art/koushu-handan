@@ -349,7 +349,7 @@
 
 <div id="main" class="hide">
   <header>
-    <h1>返事パネル<img id="runcat" src="cat-sleep.png" alt="" width="56" height="36"></h1>
+    <h1>返事パネル<img id="runcat" src="cat-sleep.png" alt="" width="56" height="36" style="object-fit:contain"></h1>
     <div class="state idle" id="state">
       <span class="w" id="stWord">…</span>
       <span class="c">
@@ -465,7 +465,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v120（9月6日）</p>
+  <p class="ver" id="verTag">panel v121（9月7日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -490,7 +490,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '120';
+  var PANEL_VER = '121';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1536,16 +1536,25 @@
   var catI = 0;
   var catAwake = false;
   (function () {   /* 先読み。読めなくても画面は壊れない（img が出ないだけ） */
-    catFrames.concat(['cat-sleep.png']).forEach(function (n) { var im = new Image(); im.src = n; });
+    catFrames.concat(['cat-sleep.png', 'panel-icon-black.png']).forEach(function (n) { var im = new Image(); im.src = n; });
   })();
   function runCatTick() {
     var el = $('runcat');
     if (!el) { return; }
+      /* ヨシを返してほしい回は、寝ずに待つ姿にする（2026-09-07・黒猫の待機-1）。
+         ウィジェットの白猫と同じ絵（現場猫の影絵）を、黒に塗った物を使う。
+         ＊「ヨシは現場猫の言葉」（作法11）なので、待つ姿も現場猫で揃える。
+         ＊次の指示待ち・連絡なしは、今までどおり寝姿のまま。 */
+      if (lastStat === 'ヨシ待ち') {
+        catAwake = false;
+        if (el.src.indexOf('panel-icon-black') < 0) { el.src = 'panel-icon-black.png'; }
+        return;
+      }
     if (lastStat === '作業中') {
       catAwake = true;
       catI = (catI + 1) % catFrames.length;
       el.src = catFrames[catI];
-    } else if (catAwake || el.src.indexOf('cat-sleep') < 0) {
+    } else if (catAwake || el.src.indexOf('cat-sleep') < 0) {   /* 走り・待機のどちらからでも寝姿へ戻る */
       catAwake = false;
       el.src = 'cat-sleep.png';
     }
