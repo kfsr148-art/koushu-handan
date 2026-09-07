@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1436">
+<html lang="ja" data-ver="1437">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -353,7 +353,18 @@
   }
   /* 切り候補（切り候補-1）。人柄の金枠とは別物なので、道具側と同じ outline ＋ ぼかしで、
      色は琥珀（#e0b25a）。人柄や道具の切り替えに関わらず、判定のあいだ出しっぱなし。 */
-  .judged-hand .tile.cut-mark {
+  /* 四つの目の釦（選択釦-1）。外箱＝当たり判定44px、中身＝四角の絵（作法10の入れ子）。
+     四つとも同じ大きさ・同じ形。人柄チップとは別物なので data-tone を持たない。 */
+  .eye-btn { width: 44px; height: 44px; min-width: 44px; padding: 0; border: 0;
+    background: transparent; display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; flex: none; }
+  .eye-btn .eye-ic { width: 26px; height: 26px; display: inline-flex; align-items: center;
+    justify-content: center; border-radius: 5px; overflow: hidden;
+    border: 1px solid rgba(243,236,224,0.35); background: rgba(0,0,0,0.25); }
+  .eye-btn .eye-ic .say-icon { width: 100%; height: 100%; border-radius: 0; border: 0; }
+  .eye-btn.active .eye-ic { border-color: #e0b25a; box-shadow: 0 0 6px rgba(224,178,90,0.55); }
+  .eye-btn:active { transform: translateY(1px); }
+  body.tool-usagi .judged-hand .tile.cut-mark {
     outline: 2px solid #e0b25a;
     outline-offset: 1px;
     box-shadow: 0 0 6px rgba(224,178,90,0.55);
@@ -1367,7 +1378,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1436</div>
+  <div id="verTag">v1437</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -4773,6 +4784,10 @@ document.addEventListener('DOMContentLoaded', function () {
       return '<span class="say-icon"><img src="' + CAT_TILE_GENBA + '" alt=""></span>';
     }
     // 獣は判定ごとに姿が変わる（攻＝虎ほか／守＝羊・鼠）。台詞行の印も同じ絵に合わせる。
+      // 兎は投票欄と同じ絵を、同じ箱（.say-icon）へ収める（2026-09-07・選択釦-1 ④）。
+      if(key === 'usagi' && typeof USAGI_IMG !== 'undefined'){
+        return '<span class="say-icon"><img src="' + USAGI_IMG + '" alt=""></span>';
+      }
     const glyph = { eda: '🫛', ai: '🎩', mascot: (window._mascotGlyph || '') }[key];
     if(glyph) return '<span class="say-icon">' + glyph + '</span>';
     return '';
@@ -4848,6 +4863,38 @@ document.addEventListener('DOMContentLoaded', function () {
   // 人柄のある七人は人柄そのものを切り替えるので、下の人柄ボタンの選択も一緒に動く。
   // 猫・枝豆・AIは人柄を持たないので、tenLeans が添えた一行をそのまま助言欄へ置く。
   // 攻側・守側の区別はしない。箱に出ている判定者は、どちらの側でも押せる。
+  /* ---- 四つの目（2026-09-07・選択釦-1）----
+     判定画面の「ランダム」の右に並ぶ四つ。押した時だけ、見立て行の場所に
+     その目の助言を一行だけ入れ替えで出す（行は足さない）。もう一度押せば元の見立てへ戻る。
+     ＊開閉は道具と同じ toolMark 一本に乗せる。点くのは常に一つだけ。
+     ＊枝豆・AI・現場猫は、判定のときに作ってある文をそのまま使う（作り直さない）。
+     ＊兎は切り候補の四段で選んだ牌を入れて言う。13枚でない手・猫牌の混じる手では何も言わない。
+     ＊判定の土台・人柄の一覧・ランダムの作りには触っていない。 */
+  window.toolEyeSay = function(key){
+    if(key === 'eda')   return window._edamameNote   || '';
+    if(key === 'ai')    return window._shinshiNote   || '';
+    if(key === 'cat')   return window._catSwitchNote || '';
+    if(key === 'usagi'){
+      const c = window._lastCut;
+      if(!c || !c.code) return '';
+      return tileChip(c.code) + 'が浮いている。切りだ。';
+    }
+    return '';
+  };
+  window.toolTap = function(key, e){
+    stopEv(e);
+    const say = window.toolEyeSay(key);
+    if(!say){ return; }                    // 言うことが無い目は、押しても何も起きない
+    mascotTalking = false;                 // 目が喋るなら虎は口を閉じる
+    toolMark = (toolMark === key) ? '' : key;
+    applyToneMark();
+    if(toolMark === key){ saySet(key, say); }
+    else { saySet(currentTone, toneAngleLine(window._lastA)); }   // 消したら元の見立てへ戻す
+    document.querySelectorAll('.eye-btn').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-eye') === toolMark);
+    });
+  };
+
   window.vzTap = function(key, e){
     stopEv(e);
     if(TONE_WORDS[key]){
@@ -8861,11 +8908,7 @@ document.addEventListener('DOMContentLoaded', function () {
         <!-- 台詞は行の外。列に入れると幅が狭まって余計に折れ、カードが縦に太る -->
         <div class="verdict-word${(a.borderline||a.yakumanReach||(a.kokushiSeen&&!a.yakumanReach))?' long':''}" style="font-size:13px !important;">${pickVerdictWord(attack)}</div>
         ${retreatLine ? `<div class="retreat-line" style="font-size:10px !important; color:#c9b98a; margin-top:6px; letter-spacing:.04em;">${retreatLine}</div>` : ''}
-        ${window._catSwitchNote ? `<div class="cat-switch-note" style="font-size:10px !important; color:#d4af37; margin-top:4px; letter-spacing:.04em;">${sayHTML('cat', window._catSwitchNote)}</div>` : ''}
-        ${window._edamameNote ? `<div class="edamame-note" style="font-size:10px !important; color:#8fbf5f; margin-top:4px; letter-spacing:.04em;">${sayHTML('eda', window._edamameNote)}</div>` : ''}
-        ${window._shinshiNote ? `<div class="shinshi-note" style="font-size:10px !important; color:#a9b8c9; margin-top:4px; letter-spacing:.04em;">${sayHTML('ai', window._shinshiNote)}</div>` : ''}
         <div class="tone-angle" style="font-size:10px !important; color:rgba(243,236,224,0.7); margin-top:4px; letter-spacing:.04em;${toneAngleLine(a) ? '' : ' display:none;'}">${sayHTML(currentTone, toneAngleLine(a))}</div>
-          ${_CUT ? `<div class="cut-note" style="font-size:10px !important; color:#e0b25a; margin-top:4px;">切るなら ${tileChip(_CUT.code)}</div>` : ''}
         <div class="tone-row">
           <button type="button" class="tone-btn${currentTone==='butler'?' active':''}" data-tone="butler" onclick="window.setTone('butler')">執事</button>
           <button type="button" class="tone-btn${currentTone==='strategist'?' active':''}" data-tone="strategist" onclick="window.setTone('strategist')">軍師</button>
@@ -8875,6 +8918,14 @@ document.addEventListener('DOMContentLoaded', function () {
           <button type="button" class="tone-btn${currentTone==='ichihime'?' active':''}" data-tone="ichihime" onclick="window.setTone('ichihime')">一姫</button>
           <button type="button" class="tone-btn${currentTone==='sensei'?' active':''}" data-tone="sensei" onclick="window.setTone('sensei')">先生</button>
           <button type="button" class="tone-btn${advRandToneOn()?' active':''}" onclick="window.toggleRandTone(event)">ランダム</button>
+            <!-- 四つの目（2026-09-07・選択釦-1）。人柄ではないので data-tone を持たない。
+                 外箱＝当たり判定44px、中身＝四角の絵（作法10の入れ子）。
+                 押すと見立て行の場所に、その目の助言が一行だけ入れ替えで出る。 -->
+            ${['eda','ai','cat','usagi'].map(function(k){
+              return '<button type="button" class="eye-btn' + (toolMark === k ? ' active' : '') + '"'
+                   + ' data-eye="' + k + '" onclick="window.toolTap(\'' + k + '\', event)">'
+                   + '<span class="eye-ic">' + sayIconHTML(k) + '</span></button>';
+            }).join('')}
         </div>
         <div class="dialect-row">
           <button type="button" class="dialect-btn${currentDialect==='miyazaki'?' active':''}" data-dialect="miyazaki" onclick="window.setDialect('miyazaki')">宮崎</button>
