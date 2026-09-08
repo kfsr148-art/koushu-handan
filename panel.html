@@ -465,7 +465,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v122（9月8日）</p>
+  <p class="ver" id="verTag">panel v123（9月8日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -490,7 +490,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '122';
+  var PANEL_VER = '123';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -778,7 +778,9 @@
   /* 最後に終わった仕事（v115）。控えの札から、いちばん新しい「終わり／調べた」を採る。
      ＊名は一行目の括弧より前だけ（「読みの道-3（…）」→「読みの道-3」）。
      ＊写した札も含めて見る（写したら消える、では「何を終えたか」が分からなくなる）。 */
-  function lastDone() {
+  /* 札を選ぶ所は一本にする（v123・猫の矛盾-1）。名を出す lastDone() と、
+     刻だけ要る lastDoneAt() が別々に絞ると、片方だけ直したときに静かにずれる。 */
+  function lastDonePick() {
     var best = null;
     (allRows || []).forEach(function (d) {
       var t = String(d.title || '');
@@ -786,14 +788,40 @@
       if (/写せます（/.test(String(d.message || ''))) { return; }   /* 数だけの札は仕事ではない */
       if (!best || (d.time || 0) > (best.time || 0)) { best = d; }
     });
+    return best;
+  }
+  function lastDone() {
+    var best = lastDonePick();
     if (!best) { return null; }
     var nm = plain(headOf(best)).split(/[（(＝=]/)[0].replace(/s+$/, '');
     if (!nm) { return null; }
     return { name: nm, at: hhmm(best.time) };
   }
+  /* 最後に終わった札の刻。無ければ 0。 */
+  function lastDoneAt() {
+    var best = lastDonePick();
+    return best ? (best.time || 0) : 0;
+  }
+
+  /* 動いているか（v123・猫の矛盾-1）。state.json の stat 一本に頼らない。
+     ＊stat は「状態行が10分より古ければ手待ちへ落とす」作りなので、十分以上ひと続きで
+       働くと、走り出しの控えが新しいままでも「手待ち」に戻る（2026-09-08 の 10:07:28 が
+       これ。09:35 に作業中へ入り、09:53:55 のフックが14分前になった回で idle へ落ちた）。
+     ＊そこで**走り出しの控えが、最後の終わりの札より新しいか**も見る。材料は二つとも
+       パネルが既に読んでいる値（state.json の startedAt ／ notices.json の札）で、
+       新しい取得口は増やしていない。
+     ＊寝姿へ戻すのは、終わりの札が走り出しより新しいときだけ。 */
+  function isRunning() {
+    if (lastStat === '作業中') { return true; }
+    return lastStartedAt > 0 && lastStartedAt > lastDoneAt();
+  }
 
   function stateLineText() {
-    if (lastStat === '作業中') {
+    /* ヨシ待ちは先に見る（v123・猫の矛盾-1）。isRunning() は「走り出しが最後の終わりより
+       新しい」だけでも真になるので、後ろに置くとヨシ待ちの回まで「作業中」で潰れる。
+       ＊猫の側は runCatTick がヨシ待ちの枝で先に返すので、こちらだけ順を直せばよい。 */
+    if (lastStat === 'ヨシ待ち') { return 'ヨシを返してください'; }
+    if (isRunning()) {
       /* 添えの括弧（v98）。上の札から移してきた三つ。
          ＊開始と指示は pullState が控えた字をそのまま使う。
          ＊経過は**ここで数え直す**。塗るたびに新しくなる（15秒ごとの取得で進む）。
@@ -825,7 +853,7 @@
       }
       return '次の指示待ち';
     }
-    if (lastStat === 'ヨシ待ち') { return 'ヨシを返してください'; }
+    /* ＊ヨシ待ちの枝は、v123 でこの関数の頭へ移した（ここに残すと届かない）。 */
     return '';
   }
 
@@ -1554,7 +1582,9 @@
         if (el.src.indexOf('panel-icon-white') < 0) { el.src = 'panel-icon-white.png'; }
         return;
       }
-    if (lastStat === '作業中') {
+    /* v123（猫の矛盾-1）… stat 一本ではなく isRunning() で見る。
+       走り出しの控えが最後の終わりの札より新しいあいだは、stat が手待ちへ落ちても走らせる。 */
+    if (isRunning()) {
       catAwake = true;
       catI = (catI + 1) % catFrames.length;
       el.src = catFrames[catI];
