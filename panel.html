@@ -465,7 +465,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v123（9月8日）</p>
+  <p class="ver" id="verTag">panel v124（9月8日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -490,7 +490,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '123';
+  var PANEL_VER = '124';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -543,6 +543,15 @@
        v81 まで札の題から数え直していたので、ヨシ待ちの札が立っていても
        題から読めない札が一枚あれば「作業中」と出ていた。**状態は状態から読む**。 */
   var lastStat = '', lastStartedAt = 0, lastSubj = '';
+  /* 生存が途切れているか（v124・止まりの見分け-1）。state.json の at と now の差が
+     STALE_SEC を超えた回に立つ。**判定の順は ヨシ待ち → 連絡なし → 作業中。**
+     ＊v123 まで、連絡なしは paintState（上の札）にしか伝わっていなかった。
+       lastStat は連絡なしの早戻りより**前**に置かれるので、猫と黄色の行は
+       凍った「作業中」を見続けた（2026-09-08、公開側の at が 11:21 で止まったまま
+       6時間37分、猫が走り続けて経過だけが伸びた）。 */
+  var lastLost = false;
+  /* 控えの見込み（分）。読めない回・「不明」の回は 0。走らせる上限に使う。 */
+  var lastMikomiMin = 0;
   /* 過去の実測（estimates.json）。見込みが無いときの終了予定を、ここから当てる。 */
   var EST_URL = 'https://kfsr148-art.github.io/koushu-handan/estimates.json';
   var est = null;
@@ -712,10 +721,29 @@
     var nowSec = Math.floor(Date.now() / 1000);
     /* 遠すぎる刻は当てにしない（v107）。上の黄色の行と同じ見張り。 */
     if (endSec > 0 && (endSec - nowSec) > FAR_SEC) { endSec = 0; gm = 0; }
+    /* 過ぎ方が大きすぎる刻は、そもそも当てにしない（v124・止まりの見分け-1）。
+       ＊仕事が替わってから work-started.txt が書き換わるまでの十数秒に読むと、
+         **前の仕事の開始 ＋ 新しい見込み**で足した刻が出る（v107 で捕まえた形）。
+         その刻は「少し超過している」のではなく**材料が古い**ので、数字にしない。
+       ＊物差しは走らせる上限（見込みの3倍／無ければ6時間）と同じ。超過は見せ、
+         材料の古さは伏せる、の線がここで分かれる。panel-check ⑦ の二つが両側を見張る。 */
+    if (endSec > 0 && (nowSec - endSec) > runCapSec()) { endSec = 0; gm = 0; }
     if (endSec > 0 && endSec <= nowSec) {
       var step = (gm > 0 ? gm : 10) * 60;   /* 延ばす幅。当てが無ければ10分刻み */
-      var guard = 0;
-      while (endSec <= nowSec && guard < 200) { endSec += step; guard++; }
+      /* 延ばすのは**一幅まで**（v124・止まりの見分け-1）。
+         ＊v123 までは guard 200 で回していたが、10分刻みなら33時間先まで延びる。
+           上限として働いておらず、止まった回の刻がいつまでも「これから終わる」顔で出ていた。
+         ＊一幅を超えて過ぎていたら、延ばすのをやめて「過ぎています」と言う。 */
+      if ((nowSec - endSec) > step) {
+        /* 延ばすのをやめる。**過ぎた刻はそのまま出す**——「超過して走っている回の終了予定は
+           過去になるのが正しく、経過の分と並べて読むためにここに要る」（v107 の決め。
+           panel-check ⑦ がこれを見張っている）。消すのではなく、過ぎたと言い切る。 */
+        /* ＊開始と経過の括弧は**呼ぶ側が足す**（黄色の行）。ここで足すと二重になる。 */
+        var e0 = new Date(endSec * 1000);
+        return W + '、' + e0.getHours() + '時' + ('0' + e0.getMinutes()).slice(-2)
+             + '分終了予定を過ぎています';
+      }
+      endSec += step;
     }
     if (endSec > 0) {
       var e = new Date(endSec * 1000);
@@ -811,7 +839,20 @@
        パネルが既に読んでいる値（state.json の startedAt ／ notices.json の札）で、
        新しい取得口は増やしていない。
      ＊寝姿へ戻すのは、終わりの札が走り出しより新しいときだけ。 */
+  /* 走らせ続けてよい長さの上限（v124・止まりの見分け-1）。
+     ＊見込みがあれば**その3倍**まで。無ければ6時間まで。
+     ＊v123 は上限が無かったので、終わりの札が一枚も書かれない間（終わりの札-1）は
+       走り出しが永久に「最後の終わり」より新しく、猫が走り続けた。 */
+  var RUN_MAX_MULT = 3;
+  var RUN_MAX_SEC = 6 * 3600;
+  function runCapSec() {
+    return lastMikomiMin > 0 ? lastMikomiMin * 60 * RUN_MAX_MULT : RUN_MAX_SEC;
+  }
   function isRunning() {
+    /* 生存が途切れていたら、状態がどうであれ走らせない（連絡なしが先）。 */
+    if (lastLost) { return false; }
+    /* 上限は state.json の stat より強い。凍った「作業中」でも、開き過ぎたら倒す。 */
+    if (lastStartedAt > 0 && (Math.floor(Date.now() / 1000) - lastStartedAt) > runCapSec()) { return false; }
     if (lastStat === '作業中') { return true; }
     return lastStartedAt > 0 && lastStartedAt > lastDoneAt();
   }
@@ -821,6 +862,9 @@
        新しい」だけでも真になるので、後ろに置くとヨシ待ちの回まで「作業中」で潰れる。
        ＊猫の側は runCatTick がヨシ待ちの枝で先に返すので、こちらだけ順を直せばよい。 */
     if (lastStat === 'ヨシ待ち') { return 'ヨシを返してください'; }
+    /* 連絡なしは作業中より先（v124・止まりの見分け-1）。
+       生存が STALE_SEC より古い間は、凍った「作業中」を出さない。 */
+    if (lastLost) { return '連絡なし'; }
     if (isRunning()) {
       /* 添えの括弧（v98）。上の札から移してきた三つ。
          ＊開始と指示は pullState が控えた字をそのまま使う。
@@ -845,6 +889,18 @@
        ＊形は「<題> が終わりました・次の指示待ち」。題を**先**に置く。
        ＊題は最後に終わった札の一行目から、括弧より前だけを採る（長い件名で行が溢れないため）。
        ＊刻は小さく添える。終わった札が見つからない回は、今までどおり「次の指示待ち」だけ。 */
+    /* 走らせる上限を超えて開いている回（v124・止まりの見分け-1）。
+       猫は寝かせるが、行は「次の指示待ち」ではない——終わりの札が来ていないだけなので、
+       過ぎたことをそのまま言う。 */
+    if (lastStartedAt > 0 && (lastStat === '作業中' || lastStartedAt > lastDoneAt())) {
+      var over = Math.max(0, Math.floor((Date.now() / 1000 - lastStartedAt) / 60));
+      var ob = '（開始' + pad2s(lastStartedAt) + '・経過' + over + '分）';
+      /* 刻が取れた回は、その刻ごと出す（v107 の決め。panel-check ⑦ が見張っている）。
+         取れない回だけ、言葉だけで言う。 */
+      var ot = endPredText('作業中');
+      if (ot.indexOf('終了予定を過ぎています') >= 0) { return ot + ob; }
+      return '終了予定を過ぎています' + ob;
+    }
     if (lastStat === '手待ち') {
       var fin = lastDone();
       if (fin) {
@@ -1582,6 +1638,13 @@
         if (el.src.indexOf('panel-icon-white') < 0) { el.src = 'panel-icon-white.png'; }
         return;
       }
+    /* 判定の順は ヨシ待ち → 連絡なし → 作業中（v124・止まりの見分け-1）。
+       生存が途切れている間は、凍った「作業中」で走らせない。 */
+    if (lastLost) {
+      catAwake = false;
+      if (el.src.indexOf('cat-sleep') < 0) { el.src = 'cat-sleep.png'; }
+      return;
+    }
     /* v123（猫の矛盾-1）… stat 一本ではなく isRunning() で見る。
        走り出しの控えが最後の終わりの札より新しいあいだは、stat が手待ちへ落ちても走らせる。 */
     if (isRunning()) {
@@ -2636,6 +2699,11 @@
         var subj = String(d.subj || '');
         /* 釦の字が見る三つ（v82）。状態・着手の刻・件名。 */
         lastStat = w; lastStartedAt = (d.startedAt || 0); lastSubj = subj;
+        /* 生存の途切れと見込みを、ここで一度だけ控える（v124・止まりの見分け-1）。
+           ＊下の「連絡なし」の早戻りより前に置く。早戻りの後では猫と黄色の行へ届かない。 */
+        lastLost = (sec > STALE_SEC);
+        var mkm = String(d.mikomi || '').match(/(\d+)/);
+        lastMikomiMin = mkm ? parseInt(mkm[1], 10) : 0;
 
         paintBar();
 
