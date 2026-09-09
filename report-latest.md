@@ -1,79 +1,107 @@
-# 黒猫の待機-3 — ヨシ待ちの猫を白から黒へ戻す
+# 猫を全部白へ-1 — 頭の猫が地に沈む件（全状態）
 
-**戻した。差し替えたのは名の一つだけ。**panel-check 全てPASS、公開側でも黒版が入っている。
+**六枚とも白へ焼き直し、比が 1.3 → 16.17 になった。**元の六枚は消していない。
+判定の枝（`isRunning` の物差し・順番）には触っていない。
 
-## ① 枝を黒版へ戻した
+## ① 白版六枚を焼いた
 
-```js
-if (lastStat === 'ヨシ待ち') {
-  catAwake = false;
-  if (el.src.indexOf('panel-icon-black') < 0) { el.src = 'panel-icon-black.png'; }
-  return;
-}
+道具を新しく置いた … **`cat-frames-white.js`**。
+元の六枚から**色だけ白へ**塗り替える（透明の度合いはそのまま、形も余白も一画素も変えない）。
+
+```
+焼いた : cat0-w.png      56x36  1,361バイト
+焼いた : cat1-w.png      56x36  1,289バイト
+焼いた : cat2-w.png      56x36  1,291バイト
+焼いた : cat3-w.png      56x36  1,173バイト
+焼いた : cat4-w.png      56x36  1,271バイト
+焼いた : cat-sleep-w.png 56x36  1,589バイト
 ```
 
-`indexOf` の側も `src` の側も黒版へ向けた。
+**元の六枚（`cat0.png`〜`cat4.png`・`cat-sleep.png`）は残してある。**
+ウィジェットの猫（`*-white.png`）にも触っていない。
 
-**先読みの一覧には黒版が入ったまま。**白版も残してある（枠のとおり）。
+### コントラスト比
 
-```js
-catFrames.concat(['cat-sleep.png', 'panel-icon-black.png', 'panel-icon-white.png'])
-```
+地は `--bg #14241c`（RGB 20,36,28）、WCAG式。**墨（a=255）の比**で見る。
 
-**触っていない枝**
+| | 墨の比 | a≥128 の画素のうち比3.0以上 |
+|---|---|---|
+| `cat0.png`（**焼く前**） | **1.3** | **0/624（0%）** |
+| `cat0-w.png` | **16.17** | 624/624（100%） |
+| `cat1-w.png` | **16.17** | 623/623（100%） |
+| `cat2-w.png` | **16.17** | 566/566（100%） |
+| `cat3-w.png` | **16.17** | 564/564（100%） |
+| `cat4-w.png` | **16.17** | 547/547（100%） |
+| `cat-sleep-w.png` | **16.17** | 820/820（100%） |
+| `panel-icon-white.png` | 16.17 | 8642/8642（100%） |
 
-| 枝 | 実測 |
+**3.0 を下回るものは無い。**焼き方を直す必要は出なかった。
+
+＊縁の薄い画素（`a=1`）だけを取ると比は 1.01 になるが、それは**地とほぼ同じ色に重なる画素**で、
+　読み手が見る濃さではない。**墨（a=255）の比**で判じた。
+
+## ② runCatTick を白版へ揃えた
+
+| 枝 | 差し替え先 |
 |---|---|
-| 作業中のコマ送り | `catI = (catI + 1) % catFrames.length` … **変わらず** |
-| 寝姿 | `cat-sleep.png` … **3箇所とも変わらず** |
+| 作業中のコマ送り | `cat0-w.png` 〜 `cat4-w.png` |
+| ヨシ待ち | `panel-icon-white.png`（**9月8日に焼いた分。焼き直していない**） |
+| 次の指示待ち・連絡なし | `cat-sleep-w.png`（三箇所とも） |
+| 先読みの一覧 | `catFrames.concat(['cat-sleep-w.png', 'panel-icon-white.png'])` |
 
-＊註には、一度白版にした経緯（黒版 `#1b1b1b` と頁の地 `--bg:#14241c` のコントラスト比 **1.07**、
-　白版 **16.17** という実測）と、**その裁定を戻す指示があった**ことを残した。
-＊形・余白・透過は白版と一画素も違わない（164x152・alpha の食い違い 0）ので、
-　差し替えは名の一つで足りる。絵を焼き直していない。
+**判定の枝そのものは変えていない**——`isRunning()` の物差しも、
+**ヨシ待ち → 連絡なし → 作業中**の順もそのまま。
 
-## ② 版と panel-check
+＊**最初に描く一枚**（`<img id="runcat" src=…>`）も `cat-sleep-w.png` にした。
+　ここが黒のままだと、頁を開いた最初の一描画だけ沈んで見えるため。
+
+## ③ 版と panel-check
 
 | 場所 | 値 |
 |---|---|
-| `PANEL_VER` | `'125'` |
-| `verTag` の字 | `panel v125（9月9日）` |
-| `panel-ver.txt` | `125` |
+| `PANEL_VER` | `'126'` |
+| `verTag` の字 | `panel v126（9月9日）` |
+| `panel-ver.txt` | `126` |
 
-**panel-check … 全てPASS（✓51 ／ ✗0）。**猫まわりの項目も全部通った——
-`黒猫の絵` ／ `ヨシ待ちで待機の姿` ／ `指示待ちで寝姿` ／ `絵の形を潰さない` ／ `版が三箇所とも v125`。
+**panel-check … 全てPASS（✓52 ／ ✗0）。**
 
-## ③ 検収
+⑰は猫の字面を見る作りなので、白版に合わせて直した。
+
+| 前 | 後 |
+|---|---|
+| `['黒猫の絵', 'panel-icon-black.png', …]` | `['ヨシ待ちの絵', 'panel-icon-white.png', …]` |
+| （無し） | `['コマ送りは白版', "'cat0-w.png'", …]` ← **足した** |
+| `['指示待ちで寝姿', "el.src = 'cat-sleep.png'", …]` | `['指示待ちで寝姿', "el.src = 'cat-sleep-w.png'", …]` |
+
+## ④ 検収
 
 ### 作り値（偽の送り手。本物の ntfy・push・commit は叩いていない）
 
-写しに probe を差し、`fetch` と `XMLHttpRequest` を偽物へ差し替えて回した。
-
 | 場合 | 猫の絵 |
 |---|---|
-| **ヨシ待ち** | **`panel-icon-black.png`** |
-| 作業中（見込み内） | `cat2.png`（コマ送り） |
-| 上限を超えた回 | `cat-sleep.png` |
-| 連絡なし | `cat-sleep.png` |
-| 終わりが走り出しより新しい | `cat-sleep.png` |
+| **(a) 作業中** | **`cat1-w.png`**（コマ送り） |
+| **(b) 次の指示待ち** | **`cat-sleep-w.png`** |
+| **(c) ヨシ待ち** | **`panel-icon-white.png`** |
+| （上限超・連絡なし） | `cat-sleep-w.png` |
 
 写しの中で拾った画面の誤り … **無し**。
 
 ### 公開側の実読み
 
 ```
-HTTP 200 / 122,361バイト
-panel-icon-black.png の出現 : 2   （先読みの一覧＋ヨシ待ちの枝）
-panel-icon-white.png の出現 : 1   （先読みの一覧だけ）
-ヨシ待ちの枝が見る名        : black
-先読みの一覧 : catFrames.concat(['cat-sleep.png', 'panel-icon-black.png', 'panel-icon-white.png']
-コマ送りの枝 : 変わらず
-寝姿の枝     : 3箇所
-PANEL_VER 125 ／ verTag v125 ／ panel-ver.txt 125
+HTTP 200 / 122,569バイト
+catFrames    : var catFrames = ['cat0-w.png','cat1-w.png','cat2-w.png','cat3-w.png','cat4-w.png']
+先読みの一覧 : catFrames.concat(['cat-sleep-w.png', 'panel-icon-white.png']
+ヨシ待ちの枝 : white
+cat-sleep-w の出現 : 6（最初の img ＋枝）
+古い cat-sleep.png の残り : 0
+PANEL_VER 126 ／ verTag v126 ／ panel-ver.txt 126
+
+公開側 cat0-w.png      : HTTP 200 / 1,361バイト
+公開側 cat-sleep-w.png : HTTP 200 / 1,589バイト
 ```
 
-**版は三箇所とも 125 で一致。**黒版と白版の出現数が v122 のときと入れ替わっている
-（あのときは white×2・black×1）。
+**版は三箇所とも 126 で一致。素材も公開側に届いている。**
 
 ---
 
@@ -82,11 +110,12 @@ PANEL_VER 125 ／ verTag v125 ／ panel-ver.txt 125
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **181件**ある。
+　ここに出るのは新しい20件。全部で **182件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`猫を全部白へ-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E7%8C%AB%E3%82%92%E5%85%A8%E9%83%A8%E7%99%BD%E3%81%B8-1.md) | 09-09 11:06 | 猫を全部白へ-1 — 頭の猫が地に沈む件（全状態） |
 | [`黒猫の待機-3.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%BB%92%E7%8C%AB%E3%81%AE%E5%BE%85%E6%A9%9F-3.md) | 09-09 09:54 | 黒猫の待機-3 — ヨシ待ちの猫を白から黒へ戻す |
 | [`土台の直し-1の宣言.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%9C%9F%E5%8F%B0%E3%81%AE%E7%9B%B4%E3%81%97-1%E3%81%AE%E5%AE%A3%E8%A8%80.md) | 09-09 05:55 | 土台の直し-1 — 宣言（ヨシ待ち） |
 | [`serifuの再抽出.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/serifu%E3%81%AE%E5%86%8D%E6%8A%BD%E5%87%BA.md) | 09-09 04:50 | serifu.txt / serifu-adv.txt の再抽出（作法17） |
@@ -106,6 +135,5 @@ PANEL_VER 125 ／ verTag v125 ／ panel-ver.txt 125
 | [`配牌の目安-1の調べ.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E9%85%8D%E7%89%8C%E3%81%AE%E7%9B%AE%E5%AE%89-1%E3%81%AE%E8%AA%BF%E3%81%B9.md) | 09-06 19:18 | 配牌の目安-1 の調べ — 13枚から何を持っているか |
 | [`押し引き表-1の調べ.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E6%8A%BC%E3%81%97%E5%BC%95%E3%81%8D%E8%A1%A8-1%E3%81%AE%E8%AA%BF%E3%81%B9.md) | 09-06 19:15 | 押し引き表-1 の調べ — 判定盤が持っている物・持っていない物 |
 | [`最後に受けた枠の撤去-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E6%9C%80%E5%BE%8C%E3%81%AB%E5%8F%97%E3%81%91%E3%81%9F%E6%9E%A0%E3%81%AE%E6%92%A4%E5%8E%BB-1.md) | 09-06 14:48 | 最後に受けた枠の撤去-1 — パネルからその一行を外した |
-| [`帯の中の走り出し-1-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%B8%AF%E3%81%AE%E4%B8%AD%E3%81%AE%E8%B5%B0%E3%82%8A%E5%87%BA%E3%81%97-1-2.md) | 09-06 13:51 | 帯の中の走り出し-1（実地）— 帯が明けた一回で、一本だけ鳴った |
 
 <!-- 控えの一覧 ここまで -->
