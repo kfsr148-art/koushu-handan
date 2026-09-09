@@ -465,7 +465,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v124（9月8日）</p>
+  <p class="ver" id="verTag">panel v125（9月9日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -490,7 +490,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '124';
+  var PANEL_VER = '125';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1629,13 +1629,14 @@
          ウィジェットの白猫と同じ絵（現場猫の影絵）を使う。
          ＊「ヨシは現場猫の言葉」（作法11）なので、待つ姿も現場猫で揃える。
          ＊次の指示待ち・連絡なしは、今までどおり寝姿のまま。
-         ＊**白版に戻した（2026-09-08・黒猫の待機-2）。** 黒版（#1b1b1b）は頁の地
-           （--bg:#14241c）とのコントラスト比が **1.07** しかなく、地に沈んで見えなかった。
-           同じ影絵の白版は比 **16.17**。形・余白・透過は黒版と一画素も違わない
-           （164x152・alpha の食い違い 0）。 */
+         ＊**黒版へ戻した（2026-09-09・黒猫の待機-3）。** 一度は白版にしていた
+           （黒猫の待機-2。黒版 #1b1b1b と頁の地 --bg:#14241c のコントラスト比が
+           1.07 しかなく、白版は 16.17 という実測による）。**その裁定を戻す指示があった。**
+           形・余白・透過は白版と一画素も違わない（164x152・alpha の食い違い 0）ので、
+           差し替えは名の一つだけで足りる。 */
       if (lastStat === 'ヨシ待ち') {
         catAwake = false;
-        if (el.src.indexOf('panel-icon-white') < 0) { el.src = 'panel-icon-white.png'; }
+        if (el.src.indexOf('panel-icon-black') < 0) { el.src = 'panel-icon-black.png'; }
         return;
       }
     /* 判定の順は ヨシ待ち → 連絡なし → 作業中（v124・止まりの見分け-1）。
