@@ -828,9 +828,10 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     ['過去の札の件数の読む元', 'archive-count.txt',              '件数の読む元が無い'],
     ['過去の札の件数の控え',   'arcCount',                       '件数を控える変数が無い'],
     ['過去の札の件数を先に読む','loadArcCount(head, ul);',        '起動で件数を読んでいない'],
-    ['黒猫の絵',           'panel-icon-black.png',           'ヨシ待ちの絵が無い'],
+    ['ヨシ待ちの絵',       'panel-icon-white.png',           'ヨシ待ちの絵が無い'],
+    ['コマ送りは白版',     "'cat0-w.png'",                    'コマ送りが白版でない'],
     ['ヨシ待ちで待機の姿', "if (lastStat === 'ヨシ待ち') {",  'ヨシ待ちの枝が無い'],
-    ['指示待ちで寝姿',     "el.src = 'cat-sleep.png'",        '寝姿へ戻す枝が無い'],
+    ['指示待ちで寝姿',     "el.src = 'cat-sleep-w.png'",      '寝姿へ戻す枝が無い'],
     ['絵の形を潰さない',   'object-fit:contain',              '題の猫の箱の指定が無い'],
   ];
   for (const [name, needle, msg] of need) {
