@@ -349,7 +349,7 @@
 
 <div id="main" class="hide">
   <header>
-    <h1>返事パネル<img id="runcat" src="cat-sleep.png" alt="" width="56" height="36" style="object-fit:contain"></h1>
+    <h1>返事パネル<img id="runcat" src="cat-sleep-w.png" alt="" width="56" height="36" style="object-fit:contain"></h1>
     <div class="state idle" id="state">
       <span class="w" id="stWord">…</span>
       <span class="c">
@@ -465,7 +465,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v125（9月9日）</p>
+  <p class="ver" id="verTag">panel v126（9月9日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -490,7 +490,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '125';
+  var PANEL_VER = '126';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1616,11 +1616,16 @@
      ＊六枚は最初に一度だけ先読みして持つ。毎コマ src を替えるだけなので、通信は起きない。
      ＊眠りへ入るときに src を一度だけ替え、眠っている間は書き換えない（無駄な描き直しを避ける）。 */
   var catTimer = null;
-  var catFrames = ['cat0.png', 'cat1.png', 'cat2.png', 'cat3.png', 'cat4.png'];
+  /* 頭の猫は**白版で揃える**（2026-09-09・猫を全部白へ-1）。
+     元の六枚（cat0〜cat4・cat-sleep）は黒一色の影絵で、返事パネルの地（--bg #14241c）との
+     コントラスト比が **1.3** しかなく地に沈んでいた。色だけ白へ塗り替えた *-w.png は **16.17**。
+     形・余白・透過は一画素も変えていない（56x36・alpha そのまま。焼くのは cat-frames-white.js）。
+     ＊元の六枚は消していない。ウィジェットの猫（*-white.png）にも触っていない。 */
+  var catFrames = ['cat0-w.png', 'cat1-w.png', 'cat2-w.png', 'cat3-w.png', 'cat4-w.png'];
   var catI = 0;
   var catAwake = false;
   (function () {   /* 先読み。読めなくても画面は壊れない（img が出ないだけ） */
-    catFrames.concat(['cat-sleep.png', 'panel-icon-black.png', 'panel-icon-white.png']).forEach(function (n) { var im = new Image(); im.src = n; });
+    catFrames.concat(['cat-sleep-w.png', 'panel-icon-white.png']).forEach(function (n) { var im = new Image(); im.src = n; });
   })();
   function runCatTick() {
     var el = $('runcat');
@@ -1629,21 +1634,19 @@
          ウィジェットの白猫と同じ絵（現場猫の影絵）を使う。
          ＊「ヨシは現場猫の言葉」（作法11）なので、待つ姿も現場猫で揃える。
          ＊次の指示待ち・連絡なしは、今までどおり寝姿のまま。
-         ＊**黒版へ戻した（2026-09-09・黒猫の待機-3）。** 一度は白版にしていた
-           （黒猫の待機-2。黒版 #1b1b1b と頁の地 --bg:#14241c のコントラスト比が
-           1.07 しかなく、白版は 16.17 という実測による）。**その裁定を戻す指示があった。**
-           形・余白・透過は白版と一画素も違わない（164x152・alpha の食い違い 0）ので、
-           差し替えは名の一つだけで足りる。 */
+         ＊**白版で揃えた（2026-09-09・猫を全部白へ-1）。** 頭の猫は六枚とも白にしたので、
+           ヨシ待ちの現場猫もそれに合わせる。黒版（#1b1b1b）は地との比が 1.07、白版は 16.17。
+           形・余白・透過は黒版と一画素も違わない（164x152・alpha の食い違い 0）。 */
       if (lastStat === 'ヨシ待ち') {
         catAwake = false;
-        if (el.src.indexOf('panel-icon-black') < 0) { el.src = 'panel-icon-black.png'; }
+        if (el.src.indexOf('panel-icon-white') < 0) { el.src = 'panel-icon-white.png'; }
         return;
       }
     /* 判定の順は ヨシ待ち → 連絡なし → 作業中（v124・止まりの見分け-1）。
        生存が途切れている間は、凍った「作業中」で走らせない。 */
     if (lastLost) {
       catAwake = false;
-      if (el.src.indexOf('cat-sleep') < 0) { el.src = 'cat-sleep.png'; }
+      if (el.src.indexOf('cat-sleep-w') < 0) { el.src = 'cat-sleep-w.png'; }
       return;
     }
     /* v123（猫の矛盾-1）… stat 一本ではなく isRunning() で見る。
@@ -1652,9 +1655,9 @@
       catAwake = true;
       catI = (catI + 1) % catFrames.length;
       el.src = catFrames[catI];
-    } else if (catAwake || el.src.indexOf('cat-sleep') < 0) {   /* 走り・待機のどちらからでも寝姿へ戻る */
+    } else if (catAwake || el.src.indexOf('cat-sleep-w') < 0) {   /* 走り・待機のどちらからでも寝姿へ戻る */
       catAwake = false;
-      el.src = 'cat-sleep.png';
+      el.src = 'cat-sleep-w.png';
     }
   }
 
