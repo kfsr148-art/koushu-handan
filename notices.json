@@ -1,6 +1,11 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
+        "time":  1789020454,
+        "message":  "写せます（2件）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
         "time":  1789020363,
         "message":  "読むだけの台本（look.js）と、公開の止まりの割り直し\n【一】.claude/look.js（246行・node --check 通過）を置き、.claude/settings.json の allow へ二項足した（18→20件）。\n読むだけの八つの役（ls / read / tail / find / stat / git / get / json）を一本に寄せ、書く手・重い検査・押しは寄せていない。\n【二】公開の止まりを実読みで割り直した。押しの経路も書く側も動いており、手元と公開の差は0秒。\n【三】直した直後に立っていた pub-read の訴えは、curl | Out-String が CP932 で受けて JSON が化けていたのが元。控えへ落として UTF8 で読み直す形に直し、15:00:19 に ok が入った。\nファイル: .claude/look.js（新規）／.claude/settings.json（allow 二項・写し .bak-20260910 有）／~/.claude/pipe-check.ps1（写し .bak-20260910a）\n実測: pipe-check.ps1 を直した後＝err=0・545行・BOM有。pipe-warn.log に 2026-09-10 15:00:19 ok 訴えは無くなった\n未検収: 押しの錠の名の食い違い（git-push.ps1:150 だけ LocalClaudeGitPushGate）／押しの黙り-1／土台の直し-1（y0909-2 の保留）"
     },
@@ -23,11 +28,6 @@
         "title":  "🕒 延びています",
         "time":  1789004823,
         "message":  "Claude Code が落ちたので開き直した。\n終了予定10:45を過ぎています（経過41分）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789003088,
-        "message":  "写せます（2件）"
     },
     {
         "title":  "✅ 終わりました（返事不要）",
