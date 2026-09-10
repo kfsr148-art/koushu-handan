@@ -20,7 +20,11 @@
       "Bash(git push *)",
       "Bash(node --check *)",
       "Bash(node .claude/look.js)",
-      "Bash(node .claude/look.js *)"
+      "Bash(node .claude/look.js *)",
+      "Bash(tail *)",
+      "Read(~/.claude/**)",
+      "Read(//c/Users/user/.claude/**)",
+      "Read(//c/Users/user/AppData/Local/Temp/**)"
     ],
     "ask": [],
     "defaultMode": "acceptEdits"
