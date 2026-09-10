@@ -1,6 +1,11 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
+        "time":  1789055859,
+        "message":  "写せます（2件）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
         "time":  1789055766,
         "message":  "落ちた後の起こし-1（一・二）と 帯の中の黙り-1（乙）— 三件とも済\n【落ちた後の起こし-1 一】ClaudeCodeAtLogon は既に在った。遊んでいた前の窓（claude 6360）を止めて Ready に戻し、00:42:14 に手で叩いた → claude 5684 が起き、一覧に「koushu-handan-b5 · interactive」と「Claude Code crash recovery · Remote Control · idle」が出た。00:43:55 に増えた窓を止めた（残るのはこの窓だけ・task は Ready）\n【落ちた後の起こし-1 二】.claude/settings.json の allow 20→24件（Bash(tail *)・~/.claude と Temp の Read）。書き換え系は足していない。別の claude -p（default・フック切り）で10の形を走らせ承認0件\n【帯の中の黙り-1（乙）】heavy-on／heavy-off／heavy-life を直し、最初の刻を heavy-first.txt に持たせた。写しに偽の送り手で六通り・本物の heavy-on／off で四通りとも通った\nファイル: koushu-handan/.claude/settings.json／~/.claude/heavy-on.ps1・heavy-off.ps1・heavy-life.ps1（写しは .bak-20260911）／reports/y0911-0047.md／report-latest.md\n実測: 承認0件（permission_denials 空・10件とも一度ずつ）／偽の送り手の六通り PASS／本物の四通り PASS（新しい帯 00:46:26=00:46:26・継ぎ足しで最初そのまま・切れた帯で書き直し・heavy-off で両方消えた）\n未検収: 0x4A の追い込み（「出して」待ち）／v1438 の実機（右下の版の字が v1438・判定の中身は不変）"
     },
@@ -43,11 +48,6 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789040314,
         "message":  "土台の直し-1（実装）\n②本体の工事は済（shanten を analyze の外へ・写し二つ107行を削る・pickCutTile を shanten へ・甲＝戻り値に doraCode・window._doraCode を外す）。node --check 4塊とも通過・shanten の指紋 caee8a3d は移動後も同じ。③ check.js ㉒ を「写しが無いこと＋shanten の指紋」へ置き換え、㉓（16手の第一感を移す前と突き合わせる・フル版だけ）を足した。④ CLAUDE.md 作法5 を「宣言とヨシを取ってから」へ。版は v1438 を三箇所同時。①第一感は移す前／後で16手とも違い0。⑤ serifu 再抽出・adv-check PASS 済み。いまフル版を切り離して回している（pid 1976・19:31:06 起動・帯は25分ごとに継ぎ足し）。20:04 に待ち手（bash の毎分の見回り）が空き物理メモリ不足で落とされた——フル版は生きており（⑦の 800x380 まで・20:04:33 に書いている）、帯は 19:58:09 に継ぎ足し済み。待ち手は Wait-Process の軽い形で起こし直したが、20:06 にそれも空き不足で落とされた。以後は前面で9分ずつ待ち、そのたびに帯を継ぎ足す（20:06:55 時点で⑦の 800x381・二択 bottom 377/381）。フル版・速い版とも通り、一度で commit 93ad99e3（v1438）・push 済（20:35・pre-push も両方PASS・未押し0）。報告は reports/土台の直し-1の実装.md と report-latest.md。重い帯は解いた。台帳の③⑤・未検収の順・見張りの後始末-1④ を済へ\nファイル: koushu-handan.html／check.js／CLAUDE.md／ver.txt／first-sense-base.json（新）／serifu.txt／serifu-adv.txt\n実測: adv-check 全てPASS（①即死罠・②時間切れ）／check.js 構文OK／本体の差分 +97/−206\n⑥の見立て：帯の中の黙り-1 は実地で一度も鳴っていない（heavy-life.log が無い）。heavy-on が -MaxMin を渡さず既定40分で手が終わるため、60分の枝に届かない\n実機: 画面の右下の版の字が v1438。判定の中身（攻守・判定獣・見立て行・光る牌・切り候補）は一つも変わらないのが合格\n未検収: 0x4A の追い込み（「出して」待ち）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789040238,
-        "message":  "写せます（2件）"
     },
     {
         "title":  "🪟 連携に訴えがあります（heavy-skip）",
