@@ -1846,53 +1846,67 @@ section('㉑', '猫牌の裁定数の一本化', () => {
   if (decl === 1) ok('BASE_CURVE の定義は一箇所');
   else ng('BASE_CURVE の定義が ' + decl + '箇所');
 });
-/* ---- ㉒ 切り候補の写しが本体とずれていないか（2026-09-06・切り候補-1）----
-     ＊analyze() は変更禁止（作法5）なので、向聴の物差しを後段から呼べない。
-       cutShanten は analyze() の中の shanten の**字面の写し**で、
-       七対子・国士の式も cutShantenMin へ写してある。**片方だけ直さないこと。**
-     ＊⑭（bestShapeOneSuit と toneBlocksOneSuit）と同じ形の見張り。番号は㉑の次。
-     ＊正規表現は使わず、字面をそのまま探す（書き出しで escape が落ちる事故を避ける）。 */
-head('㉒', '切り候補の写しが本体と同じか');
-{
-  const grab = (name) => {
-    const i = src.indexOf('function ' + name + '(');
-    if (i < 0) { return null; }
-    let d = 0, started = false;
-    for (let k = i; k < src.length; k++) {
-      if (src[k] === '{') { d++; started = true; }
-      else if (src[k] === '}') { d--; if (started && d === 0) { return src.slice(i, k + 1); } }
-    }
-    return null;
-  };
-  const squash = (t) => {
-    let out = '';
-    let prevSpace = false;
-    for (const ch of t) {
-      const isSpace = (ch === ' ' || ch === String.fromCharCode(9) || ch === String.fromCharCode(10) || ch === String.fromCharCode(13));
-      if (isSpace) { if (!prevSpace) { out += ' '; } prevSpace = true; }
-      else { out += ch; prevSpace = false; }
-    }
-    return out.trim();
-  };
-  const body = grab('shanten'), copy = grab('cutShanten');
-  if (!body || !copy) { ng('shanten か cutShanten が見つからない'); }
-  else {
-    const b2 = squash(body).replace('function shanten(', 'function X(');
-    const c2 = squash(copy).replace('function cutShanten(', 'function X(');
-    if (b2 === c2) { ok('向聴の写しが本体と一字も違わない'); }
-    else {
-      ng('向聴の写しが本体とずれている（片方だけ直した恐れ）');
-      note('  本体 ' + b2.length + '字 ／ 写し ' + c2.length + '字');
-    }
+/* ㉒㉓ の共通の道具。関数の字面を丸ごと取り、空白を潰して比べられる形にする。
+     ＊正規表現は使わず、中括弧を数えて切り出す。 */
+function grabFn(text, name) {
+  const i = text.indexOf('function ' + name + '(');
+  if (i < 0) { return null; }
+  let d = 0, started = false;
+  for (let k = i; k < text.length; k++) {
+    if (text[k] === '{') { d++; started = true; }
+    else if (text[k] === '}') { d--; if (started && d === 0) { return text.slice(i, k + 1); } }
   }
-  const pair = [
-    ['七対子', 'const chiitoiSt = 6 - pairs + Math.max(0, 7 - kinds);'],
-    ['国士',   'const kokushiSt = 13 - koKinds - koPair;'],
+  return null;
+}
+function squashSrc(t) {
+  let out = '';
+  let prevSpace = false;
+  for (const ch of t) {
+    const isSpace = (ch === ' ' || ch === String.fromCharCode(9) || ch === String.fromCharCode(10) || ch === String.fromCharCode(13));
+    if (isSpace) { if (!prevSpace) { out += ' '; } prevSpace = true; }
+    else { out += ch; prevSpace = false; }
+  }
+  return out.trim();
+}
+/* ---- ㉒ 切り候補の物差しが一本か（2026-09-10・土台の直し-1）----
+     ＊もとは analyze() の中の shanten を切り候補の側へ字面で写していた（cutShanten／cutShantenMin）。
+       写しは廃し、shanten を analyze() の外へ持ち上げて**一本**にした。
+       この節は「**写しが戻っていないこと**」と「**物差しが一つであること**」を見る。
+     ＊正規表現は使わず、字面をそのまま探す（書き出しで escape が落ちる事故を避ける）。 */
+head('㉒', '切り候補の物差しが一本か');
+{
+  const gone = [
+    ['向聴の写し',     'function cutShanten('],
+    ['三役の取り直し', 'function cutShantenMin('],
   ];
-  for (const row of pair) {
+  for (const row of gone) {
+    if (src.indexOf(row[1]) < 0) { ok(row[0] + ' は無い'); }
+    else { ng(row[0] + ' が戻っている（' + row[1] + '）'); }
+  }
+  const once = [
+    ['向聴の物差し', 'function shanten('],
+    ['七対子の式',   'const chiitoiSt = 6 - pairs + Math.max(0, 7 - kinds);'],
+    ['国士の式',     'const kokushiSt = 13 - koKinds - koPair;'],
+  ];
+  for (const row of once) {
     const n = src.split(row[1]).length - 1;
-    if (n >= 2) { ok(row[0] + 'の式が本体と写しの二箇所にある'); }
-    else { ng(row[0] + 'の式が ' + n + '箇所しかない（写しが無いか、字面がずれた）'); }
+    if (n === 1) { ok(row[0] + 'は一箇所だけ'); }
+    else { ng(row[0] + 'が ' + n + '箇所（一本になっていない）'); }
+  }
+  /* 持ち上げ先の確かめ。analyze() の本文の中に shanten の定義が戻っていたら、
+     切り候補の側からは呼べず、また写しを作ることになる。 */
+  const ai = src.indexOf('function analyze() {');
+  const si = src.indexOf('function shanten(');
+  if (ai < 0 || si < 0) { ng('analyze か shanten が見つからない'); }
+  else if (si < ai) { ok('shanten は analyze() の外に在る'); }
+  else { ng('shanten が analyze() の中に戻っている'); }
+  /* 切り候補は、持ち上げた shanten をそのまま呼ぶ（写しを経由しない）。 */
+  const cutSrc = grabFn(src, 'pickCutTile');
+  if (!cutSrc) { ng('pickCutTile が見つからない'); }
+  else {
+    const calls = cutSrc.split('shanten(').length - 1;
+    if (calls === 3) { ok('切り候補は shanten を三度呼ぶ'); }
+    else { ng('切り候補からの shanten の呼びが ' + calls + '箇所（三箇所のはず）'); }
   }
   const wired = [
     ['候補を選ぶ手',     'function pickCutTile('],
@@ -1906,6 +1920,99 @@ head('㉒', '切り候補の写しが本体と同じか');
   ];
   for (const row of wired) {
     if (src.indexOf(row[1]) >= 0) { ok(row[0]); } else { ng(row[0] + ' … 見つからない'); }
+  }
+}
+
+/* ---- ㉓ 第一感が動いていないか（2026-09-10・土台の直し-1）----
+     ＊持ち上げの前後で**第一感が一つも動かない**ことが、この工事の条件だった。
+       字面（shanten の指紋）と値（向聴と第一打の表）の両方で見る。
+     ＊控えの二つは、**持ち上げる前の版（v1437）の写しの側から取った**。
+       だから一致することが「動いていない」の証しになる。
+     ＊ブラウザは要らない。本体から shanten・pickCutTile・cmp を切り出して回すだけ。 */
+head('㉓', '第一感が動いていないか（向聴と第一打）');
+{
+  /* ① 字面 — 空白を潰した shanten の指紋。v1437 の shanten／cutShanten と同じ値。 */
+  const FINGER = 'caee8a3dfbb2c564be1c18628f914e4994fe22e6a51635fcaada482aae0f7f4c';
+  const FINGER_LEN = 3249;
+  const body = grabFn(src, 'shanten');
+  if (!body) { ng('shanten が見つからない'); }
+  else {
+    const flat = squashSrc(body).replace('function shanten(', 'function X(');
+    const sum = require('crypto').createHash('sha256').update(flat, 'utf8').digest('hex');
+    if (flat.length === FINGER_LEN && sum === FINGER) { ok('shanten の字面が控えと一字も違わない（' + FINGER_LEN + '字）'); }
+    else {
+      ng('shanten の字面が控えと違う（第一感が動いた恐れ）');
+      note('  控え ' + FINGER_LEN + '字 ' + FINGER.slice(0, 16) + ' ／ いま ' + flat.length + '字 ' + sum.slice(0, 16));
+    }
+  }
+
+  /* ② 値 — 決まった24手の「向聴」と「第一打（牌・位置・四段の値）」。 */
+  const TABLE = [
+    ["19m112488p1467s7z",13,4,"C/12/4/0/0/20"],
+    ["46m12379p7s22345z",13,3,"W/10/3/0/0/10"],
+    ["279m123344p5s577z",13,3,"P/10/3/0/0/19"],
+    ["123456789m123p1s",13,0,"s1/12/0/1/0/0"],
+    ["19m19p19s1234567z",13,0,"E/6/0/0/0/0"],
+    ["1122334455667m",13,0,"m1/0/0/3/0/0"],
+    ["1113579m2468p13s",13,2,"m3/3/2/3/0/5"],
+    ["2345678m234p567s",13,0,"m2/0/0/3/0/0"],
+    ["111m222p333s4444z",13,0,"N/9/0/0/1/0"],
+    ["13579m13579p135s",13,4,"m1/0/4/3/0/21"],
+    ["1m1p1s1234567z11m",12,2,null],
+    ["56m56p56s1122z345m",13,2,"E/6/2/0/1/7"],
+    ["111222333m44455p",14,-1,null],
+    ["19m19p19s1122334z",13,2,"E/6/1/0/1/0"],
+    ["345m345p345s11z1m",12,1,null],
+    ["122334m5566p78s9s",13,0,"m1/0/1/3/0/6"],
+    ["1234m1234p1234s1z",13,2,"E/12/2/0/0/18"],
+    ["777m888p999s1122z",13,0,"E/9/1/0/1/2"],
+    ["159m159p159s1234z",13,3,"m5/1/2/3/0/0"],
+    ["2358m2358p2358s1z",13,5,"E/12/5/0/0/27"],
+    ["1112345678999m1m",14,-1,null],
+    ["334455m667788p1s",13,0,"s1/12/0/1/0/0"],
+    ["1199m1199p1199s1z",13,0,"E/12/0/0/0/0"],
+    ["4567m4567p4567s1z",13,2,"E/12/2/0/0/24"],
+  ];
+  const cutBody = grabFn(src, 'pickCutTile'), cmpBody = grabFn(src, 'cmp');
+  if (!body || !cutBody || !cmpBody) { ng('切り出せない（shanten／pickCutTile／cmp）'); }
+  else {
+    const ctx = { window: {} };
+    let fns = null;
+    try {
+      require('vm').runInNewContext(body + '\n' + cutBody + '\n' + cmpBody +
+        '\nresult = { shanten: shanten, pickCutTile: pickCutTile };', ctx);
+      fns = ctx.result;
+    } catch (e) { ng('切り出した手が回らない（' + e.message + '）'); }
+    if (fns) {
+      const Z = ['E', 'S', 'W', 'N', 'P', 'F', 'C'];
+      const toTiles = (str) => {
+        const out = []; let buf = '';
+        for (const ch of str) {
+          if ('0123456789'.indexOf(ch) >= 0) { buf += ch; }
+          else { for (const n of buf) { out.push(ch === 'z' ? Z[+n - 1] : (ch + n)); } buf = ''; }
+        }
+        return out;
+      };
+      let bad = 0, first = null;
+      for (const row of TABLE) {
+        const t = toTiles(row[0]);
+        let got = null;
+        if (t.length === 13) {
+          const tiles = t.map(c => (Z.indexOf(c) >= 0)
+            ? { suit: 'honor', code: c, num: 0 }
+            : { suit: { m: 'man', p: 'pin', s: 'sou' }[c[0]], code: c, num: +c[1] });
+          const r = fns.pickCutTile({}, tiles);
+          got = r ? [r.code, r.idx, r.st, r.rank, r.value, r.acc].join('/') : null;
+        }
+        const st = fns.shanten(t);
+        if (t.length !== row[1] || st !== row[2] || got !== row[3]) {
+          bad++;
+          if (!first) { first = row[0] + '：控え 向聴' + row[2] + ' 第一打' + row[3] + ' ／ いま 向聴' + st + ' 第一打' + got; }
+        }
+      }
+      if (bad === 0) { ok('向聴と第一打が控えと全件同じ（' + TABLE.length + '手）'); }
+      else { ng('第一感が動いた ' + bad + '手 / ' + TABLE.length + '手'); note('  ' + first); }
+    }
   }
 }
 

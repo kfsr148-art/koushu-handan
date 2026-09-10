@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1437">
+<html lang="ja" data-ver="1438">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1378,7 +1378,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1437</div>
+  <div id="verTag">v1438</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -2496,6 +2496,102 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // ============================================================
+  //  向聴の物差し — analyze() と切り候補の双方が読む一本（2026-09-10・土台の直し-1）
+  // ============================================================
+  //   ＊もとは analyze() の中にあり、切り候補の側には字面の写し（cutShanten／cutShantenMin）を
+  //     置いていた。写しを廃し、こちらへ持ち上げて一本にした。**本文は一字も変えていない。**
+  //   ＊check.js が「写しが無いこと」と「第一感が動かないこと」を見張る。
+    // 13枚 → 標準形シャンテン数（七対子・国士は簡略のため通常手のみ）
+    function shanten(tiles, mode){
+      // tiles: array of codes like 'm1','p5','E'
+      const man=[],pin=[],sou=[],hon={};
+      tiles.forEach(c=>{
+        if('mps'.includes(c[0])){
+          const n=+c[1];
+          if(c[0]==='m')man.push(n); else if(c[0]==='p')pin.push(n); else sou.push(n);
+        } else hon[c]=(hon[c]||0)+1;
+      });
+      const cnt=arr=>{const o=[0,0,0,0,0,0,0,0,0,0]; arr.forEach(n=>o[n]++); return o;};
+      const m=cnt(man),p=cnt(pin),s=cnt(sou);
+
+      // 字牌の面子・塔子（対子）
+      let honMelds=0, honPartial=0;
+      Object.values(hon).forEach(c=>{
+        if(c>=3) honMelds++;
+        else if(c===2) honPartial++;
+      });
+
+      // 数牌1スートを (面子, 塔子) の全分解で評価し、
+      // 各 (melds, partials) 候補を集める
+      function decompose(c,i,melds,partials,results){
+        // 末端まで来たら記録
+        if(i>9){ results.push([melds,partials]); return; }
+        if(c[i]===0){ decompose(c,i+1,melds,partials,results); return; }
+        // 暗刻
+        if(c[i]>=3){ c[i]-=3; decompose(c,i,melds+1,partials,results); c[i]+=3; }
+        // 順子
+        if(i<=7&&c[i]>0&&c[i+1]>0&&c[i+2]>0){ c[i]--;c[i+1]--;c[i+2]--; decompose(c,i,melds+1,partials,results); c[i]++;c[i+1]++;c[i+2]++; }
+        // 対子
+        if(c[i]>=2){ c[i]-=2; decompose(c,i,melds,partials+1,results); c[i]+=2; }
+        // 両面・嵌張
+        if(i<=8&&c[i]>0&&c[i+1]>0){ c[i]--;c[i+1]--; decompose(c,i,melds,partials+1,results); c[i]++;c[i+1]++; }
+        if(i<=7&&c[i]>0&&c[i+2]>0){ c[i]--;c[i+2]--; decompose(c,i,melds,partials+1,results); c[i]++;c[i+2]++; }
+        // 浮き牌
+        c[i]--; decompose(c,i,melds,partials,results); c[i]++;
+      }
+
+      // 3スートを合成。全組合せだと重いので、各スートの非劣解だけ残す
+      function frontier(c){
+        const all=[]; decompose(c.slice(),1,0,0,all);
+        // melds最大ごとにpartials最大を残す
+        const bestByMeld={};
+        all.forEach(([me,pa])=>{ if(bestByMeld[me]===undefined||pa>bestByMeld[me]) bestByMeld[me]=pa; });
+        return Object.keys(bestByMeld).map(me=>[+me,bestByMeld[me]]);
+      }
+      const fm=frontier(m), fp=frontier(p), fs=frontier(s);
+
+      // 雀頭の有無を測る土台：手牌に対子（count≥2）が一枚も無ければ、雀頭は即座には作れない。
+      // 塔子だけで4ブロックを埋めても、雀頭を仕立てるのに一手余計にかかる。
+      let noPairInHand = true;
+      [m,p,s].forEach(cc=>{ for(let k=1;k<=9;k++) if(cc[k]>=2) noPairInHand=false; });
+      Object.values(hon).forEach(c=>{ if(c>=2) noPairInHand=false; });
+
+      let minSt=8;
+      for(const [m1,p1] of fm) for(const [m2,p2] of fp) for(const [m3,p3] of fs){
+        let melds = m1+m2+m3+honMelds;
+        let partials = p1+p2+p3+honPartial;
+        // 面子＋塔子は最大4ブロック＋雀頭1
+        let block = melds + partials;
+        if(block > 5) partials -= (block - 5);
+        if(partials < 0) partials = 0;
+        // 標準シャンテン式
+        let st = 8 - 2*melds - partials;
+        // 雀頭補正：面子4つに満たないのに4ブロックを塔子で埋め切り、雀頭になる対子が無いと、一手余計にかかる。
+        if(noPairInHand && melds < 4 && (melds + partials) >= 5) st += 1;
+        // 完成形（4面子1雀頭）は -1（和了）
+        if(melds >= 4 && partials >= 1 && (melds+partials)>=5) st = -1;
+        if(st < minSt) minSt = st;
+      }
+      // 七対子・国士無双の向聴も測り、標準形と合わせた3役の最小を返す。
+      // 良形カウントを総当たりに直したのに合わせ、受け入れの土台もここで揃える。
+      const allCnt={};
+      tiles.forEach(c=> allCnt[c]=(allCnt[c]||0)+1);
+      // 七対子：6 -（対子の種類）＋ 不足する種類ぶんの補正
+      let kinds=0, pairs=0;
+      Object.values(allCnt).forEach(c=>{ kinds++; if(c>=2) pairs++; });
+      const chiitoiSt = 6 - pairs + Math.max(0, 7 - kinds);
+      // 国士無双：13 -（么九字牌の種類）-（対子が1つでもあれば1）
+      const yao=['m1','m9','p1','p9','s1','s9','E','S','W','N','P','F','C'];
+      let koKinds=0, koPair=0;
+      yao.forEach(t=>{ const c=allCnt[t]||0; if(c>=1) koKinds++; if(c>=2) koPair=1; });
+      const kokushiSt = 13 - koKinds - koPair;
+      // mode='std' のときは標準形のみの向聴を返す。
+      // 七対子に向かう手か（七対子向聴 ≤ 標準向聴か）を判定するために使う。
+      if(mode==='std') return minSt;
+      return Math.min(minSt, chiitoiSt, kokushiSt);
+    }
+
+  // ============================================================
   //  JUDGEMENT  —  配牌の第一感を攻守二択で固定（点棒・役・巡目は度外視）
   // ============================================================
   function analyze() {
@@ -2685,95 +2781,6 @@ document.addEventListener('DOMContentLoaded', function () {
         else a.push(t.suit[0]+t.num);
       });
       return a;
-    }
-    // 13枚 → 標準形シャンテン数（七対子・国士は簡略のため通常手のみ）
-    function shanten(tiles, mode){
-      // tiles: array of codes like 'm1','p5','E'
-      const man=[],pin=[],sou=[],hon={};
-      tiles.forEach(c=>{
-        if('mps'.includes(c[0])){
-          const n=+c[1];
-          if(c[0]==='m')man.push(n); else if(c[0]==='p')pin.push(n); else sou.push(n);
-        } else hon[c]=(hon[c]||0)+1;
-      });
-      const cnt=arr=>{const o=[0,0,0,0,0,0,0,0,0,0]; arr.forEach(n=>o[n]++); return o;};
-      const m=cnt(man),p=cnt(pin),s=cnt(sou);
-
-      // 字牌の面子・塔子（対子）
-      let honMelds=0, honPartial=0;
-      Object.values(hon).forEach(c=>{
-        if(c>=3) honMelds++;
-        else if(c===2) honPartial++;
-      });
-
-      // 数牌1スートを (面子, 塔子) の全分解で評価し、
-      // 各 (melds, partials) 候補を集める
-      function decompose(c,i,melds,partials,results){
-        // 末端まで来たら記録
-        if(i>9){ results.push([melds,partials]); return; }
-        if(c[i]===0){ decompose(c,i+1,melds,partials,results); return; }
-        // 暗刻
-        if(c[i]>=3){ c[i]-=3; decompose(c,i,melds+1,partials,results); c[i]+=3; }
-        // 順子
-        if(i<=7&&c[i]>0&&c[i+1]>0&&c[i+2]>0){ c[i]--;c[i+1]--;c[i+2]--; decompose(c,i,melds+1,partials,results); c[i]++;c[i+1]++;c[i+2]++; }
-        // 対子
-        if(c[i]>=2){ c[i]-=2; decompose(c,i,melds,partials+1,results); c[i]+=2; }
-        // 両面・嵌張
-        if(i<=8&&c[i]>0&&c[i+1]>0){ c[i]--;c[i+1]--; decompose(c,i,melds,partials+1,results); c[i]++;c[i+1]++; }
-        if(i<=7&&c[i]>0&&c[i+2]>0){ c[i]--;c[i+2]--; decompose(c,i,melds,partials+1,results); c[i]++;c[i+2]++; }
-        // 浮き牌
-        c[i]--; decompose(c,i,melds,partials,results); c[i]++;
-      }
-
-      // 3スートを合成。全組合せだと重いので、各スートの非劣解だけ残す
-      function frontier(c){
-        const all=[]; decompose(c.slice(),1,0,0,all);
-        // melds最大ごとにpartials最大を残す
-        const bestByMeld={};
-        all.forEach(([me,pa])=>{ if(bestByMeld[me]===undefined||pa>bestByMeld[me]) bestByMeld[me]=pa; });
-        return Object.keys(bestByMeld).map(me=>[+me,bestByMeld[me]]);
-      }
-      const fm=frontier(m), fp=frontier(p), fs=frontier(s);
-
-      // 雀頭の有無を測る土台：手牌に対子（count≥2）が一枚も無ければ、雀頭は即座には作れない。
-      // 塔子だけで4ブロックを埋めても、雀頭を仕立てるのに一手余計にかかる。
-      let noPairInHand = true;
-      [m,p,s].forEach(cc=>{ for(let k=1;k<=9;k++) if(cc[k]>=2) noPairInHand=false; });
-      Object.values(hon).forEach(c=>{ if(c>=2) noPairInHand=false; });
-
-      let minSt=8;
-      for(const [m1,p1] of fm) for(const [m2,p2] of fp) for(const [m3,p3] of fs){
-        let melds = m1+m2+m3+honMelds;
-        let partials = p1+p2+p3+honPartial;
-        // 面子＋塔子は最大4ブロック＋雀頭1
-        let block = melds + partials;
-        if(block > 5) partials -= (block - 5);
-        if(partials < 0) partials = 0;
-        // 標準シャンテン式
-        let st = 8 - 2*melds - partials;
-        // 雀頭補正：面子4つに満たないのに4ブロックを塔子で埋め切り、雀頭になる対子が無いと、一手余計にかかる。
-        if(noPairInHand && melds < 4 && (melds + partials) >= 5) st += 1;
-        // 完成形（4面子1雀頭）は -1（和了）
-        if(melds >= 4 && partials >= 1 && (melds+partials)>=5) st = -1;
-        if(st < minSt) minSt = st;
-      }
-      // 七対子・国士無双の向聴も測り、標準形と合わせた3役の最小を返す。
-      // 良形カウントを総当たりに直したのに合わせ、受け入れの土台もここで揃える。
-      const allCnt={};
-      tiles.forEach(c=> allCnt[c]=(allCnt[c]||0)+1);
-      // 七対子：6 -（対子の種類）＋ 不足する種類ぶんの補正
-      let kinds=0, pairs=0;
-      Object.values(allCnt).forEach(c=>{ kinds++; if(c>=2) pairs++; });
-      const chiitoiSt = 6 - pairs + Math.max(0, 7 - kinds);
-      // 国士無双：13 -（么九字牌の種類）-（対子が1つでもあれば1）
-      const yao=['m1','m9','p1','p9','s1','s9','E','S','W','N','P','F','C'];
-      let koKinds=0, koPair=0;
-      yao.forEach(t=>{ const c=allCnt[t]||0; if(c>=1) koKinds++; if(c>=2) koPair=1; });
-      const kokushiSt = 13 - koKinds - koPair;
-      // mode='std' のときは標準形のみの向聴を返す。
-      // 七対子に向かう手か（七対子向聴 ≤ 標準向聴か）を判定するために使う。
-      if(mode==='std') return minSt;
-      return Math.min(minSt, chiitoiSt, kokushiSt);
     }
 
     const baseTiles = tilesArray(rhand);
@@ -4515,118 +4522,11 @@ document.addEventListener('DOMContentLoaded', function () {
   // ============================================================
   //  切り候補 — 13枚から第一打の候補を一枚だけ選ぶ（2026-09-06・切り候補-1）
   // ============================================================
-  //   ＊**analyze() には触っていない。**判定が返した a と、いまの手牌だけを読む。
-  //   ＊向聴の物差しは analyze() の中の shanten() と**同じ字面の写し**（cutShanten）。
-  //     analyze() は変更禁止（作法5）なので、中の関数を外から呼べない。写すしかない。
-  //     **片方だけ直さないこと。**check.js が二つの字面を突き合わせて見張る
-  //     （toneBlocksOneSuit と bestShapeOneSuit の関係と同じ形）。
+  //   ＊**analyze() の判定そのものには触っていない。**判定が返した a と、いまの手牌だけを読む。
+  //   ＊向聴の物差しは analyze() の外へ持ち上げた shanten() を**そのまま呼ぶ**（土台の直し-1）。
+  //     写し（cutShanten／cutShantenMin）は廃した。**二つを別々に直す危険は無くなった。**
   //   ＊人柄の一覧には足さない。印は金枠を使わず、道具側と同じ outline ＋ ぼかし。
-
-    function cutShanten(tiles, mode){
-  // tiles: array of codes like 'm1','p5','E'
-  const man=[],pin=[],sou=[],hon={};
-  tiles.forEach(c=>{
-    if('mps'.includes(c[0])){
-      const n=+c[1];
-      if(c[0]==='m')man.push(n); else if(c[0]==='p')pin.push(n); else sou.push(n);
-    } else hon[c]=(hon[c]||0)+1;
-  });
-  const cnt=arr=>{const o=[0,0,0,0,0,0,0,0,0,0]; arr.forEach(n=>o[n]++); return o;};
-  const m=cnt(man),p=cnt(pin),s=cnt(sou);
-
-  // 字牌の面子・塔子（対子）
-  let honMelds=0, honPartial=0;
-  Object.values(hon).forEach(c=>{
-    if(c>=3) honMelds++;
-    else if(c===2) honPartial++;
-  });
-
-  // 数牌1スートを (面子, 塔子) の全分解で評価し、
-  // 各 (melds, partials) 候補を集める
-  function decompose(c,i,melds,partials,results){
-    // 末端まで来たら記録
-    if(i>9){ results.push([melds,partials]); return; }
-    if(c[i]===0){ decompose(c,i+1,melds,partials,results); return; }
-    // 暗刻
-    if(c[i]>=3){ c[i]-=3; decompose(c,i,melds+1,partials,results); c[i]+=3; }
-    // 順子
-    if(i<=7&&c[i]>0&&c[i+1]>0&&c[i+2]>0){ c[i]--;c[i+1]--;c[i+2]--; decompose(c,i,melds+1,partials,results); c[i]++;c[i+1]++;c[i+2]++; }
-    // 対子
-    if(c[i]>=2){ c[i]-=2; decompose(c,i,melds,partials+1,results); c[i]+=2; }
-    // 両面・嵌張
-    if(i<=8&&c[i]>0&&c[i+1]>0){ c[i]--;c[i+1]--; decompose(c,i,melds,partials+1,results); c[i]++;c[i+1]++; }
-    if(i<=7&&c[i]>0&&c[i+2]>0){ c[i]--;c[i+2]--; decompose(c,i,melds,partials+1,results); c[i]++;c[i+2]++; }
-    // 浮き牌
-    c[i]--; decompose(c,i,melds,partials,results); c[i]++;
-  }
-
-  // 3スートを合成。全組合せだと重いので、各スートの非劣解だけ残す
-  function frontier(c){
-    const all=[]; decompose(c.slice(),1,0,0,all);
-    // melds最大ごとにpartials最大を残す
-    const bestByMeld={};
-    all.forEach(([me,pa])=>{ if(bestByMeld[me]===undefined||pa>bestByMeld[me]) bestByMeld[me]=pa; });
-    return Object.keys(bestByMeld).map(me=>[+me,bestByMeld[me]]);
-  }
-  const fm=frontier(m), fp=frontier(p), fs=frontier(s);
-
-  // 雀頭の有無を測る土台：手牌に対子（count≥2）が一枚も無ければ、雀頭は即座には作れない。
-  // 塔子だけで4ブロックを埋めても、雀頭を仕立てるのに一手余計にかかる。
-  let noPairInHand = true;
-  [m,p,s].forEach(cc=>{ for(let k=1;k<=9;k++) if(cc[k]>=2) noPairInHand=false; });
-  Object.values(hon).forEach(c=>{ if(c>=2) noPairInHand=false; });
-
-  let minSt=8;
-  for(const [m1,p1] of fm) for(const [m2,p2] of fp) for(const [m3,p3] of fs){
-    let melds = m1+m2+m3+honMelds;
-    let partials = p1+p2+p3+honPartial;
-    // 面子＋塔子は最大4ブロック＋雀頭1
-    let block = melds + partials;
-    if(block > 5) partials -= (block - 5);
-    if(partials < 0) partials = 0;
-    // 標準シャンテン式
-    let st = 8 - 2*melds - partials;
-    // 雀頭補正：面子4つに満たないのに4ブロックを塔子で埋め切り、雀頭になる対子が無いと、一手余計にかかる。
-    if(noPairInHand && melds < 4 && (melds + partials) >= 5) st += 1;
-    // 完成形（4面子1雀頭）は -1（和了）
-    if(melds >= 4 && partials >= 1 && (melds+partials)>=5) st = -1;
-    if(st < minSt) minSt = st;
-  }
-  // 七対子・国士無双の向聴も測り、標準形と合わせた3役の最小を返す。
-  // 良形カウントを総当たりに直したのに合わせ、受け入れの土台もここで揃える。
-  const allCnt={};
-  tiles.forEach(c=> allCnt[c]=(allCnt[c]||0)+1);
-  // 七対子：6 -（対子の種類）＋ 不足する種類ぶんの補正
-  let kinds=0, pairs=0;
-  Object.values(allCnt).forEach(c=>{ kinds++; if(c>=2) pairs++; });
-  const chiitoiSt = 6 - pairs + Math.max(0, 7 - kinds);
-  // 国士無双：13 -（么九字牌の種類）-（対子が1つでもあれば1）
-  const yao=['m1','m9','p1','p9','s1','s9','E','S','W','N','P','F','C'];
-  let koKinds=0, koPair=0;
-  yao.forEach(t=>{ const c=allCnt[t]||0; if(c>=1) koKinds++; if(c>=2) koPair=1; });
-  const kokushiSt = 13 - koKinds - koPair;
-  // mode='std' のときは標準形のみの向聴を返す。
-  // 七対子に向かう手か（七対子向聴 ≤ 標準向聴か）を判定するために使う。
-  if(mode==='std') return minSt;
-  return Math.min(minSt, chiitoiSt, kokushiSt);
-    }
-
-  // 標準形だけでなく、七対子・国士も見た最小の向聴（analyze() の中の式と同じ字面の写し）。
-  //   ＊写した cutShanten は**標準形だけ**を測る。七対子向きの手で切り候補を誤らないよう、
-  //     analyze() が使っているのと同じ二つの式をここにも置く。**片方だけ直さないこと。**
-  function cutShantenMin(tiles){
-    const st = cutShanten(tiles);
-    const allCnt = {};
-    tiles.forEach(c => allCnt[c] = (allCnt[c]||0) + 1);
-    let kinds = 0, pairs = 0;
-    Object.values(allCnt).forEach(c => { kinds++; if(c >= 2) pairs++; });
-    const chiitoiSt = 6 - pairs + Math.max(0, 7 - kinds);
-    const yao = ['m1','m9','p1','p9','s1','s9','E','S','W','N','P','F','C'];
-    let koKinds = 0, koPair = 0;
-    yao.forEach(t => { const c = allCnt[t]||0; if(c >= 1) koKinds++; if(c >= 2) koPair = 1; });
-    const kokushiSt = 13 - koKinds - koPair;
-    return Math.min(st, chiitoiSt, kokushiSt);
-  }
+  //   ＊人柄の一覧には足さない。印は金枠を使わず、道具側と同じ outline ＋ ぼかし。
 
   // 13枚から、切る候補を一枚選ぶ。四段で割る。
   //   一段 切った後の向聴が最小
@@ -4669,11 +4569,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function acceptTypes(left){
       // 埋め草は**手に無い字牌**を使う（手にある牌で埋めると対子になって向聴が動く）。
       const filler = HONOR.filter(h => left.indexOf(h) < 0)[0] || 'C';
-      const base = cutShantenMin(left.concat([filler]));
+      const base = shanten(left.concat([filler]));
       let k = 0;
       ALL.forEach(code=>{
         if(left.filter(c=>c===code).length >= 4) return;
-        const st = cutShantenMin(left.concat([code]));
+        const st = shanten(left.concat([code]));
         if(st < base) k++;
       });
       return k;
@@ -4682,7 +4582,7 @@ document.addEventListener('DOMContentLoaded', function () {
     for(let i=0;i<codes.length;i++){
       const left = codes.slice(0,i).concat(codes.slice(i+1));   // 12枚
       const fill = HONOR.filter(h => left.indexOf(h) < 0)[0] || 'C';
-      const st = cutShantenMin(left.concat([fill]));            // 13枚相当（手に無い字牌で埋める）
+      const st = shanten(left.concat([fill]));            // 13枚相当（手に無い字牌で埋める）
       const rank = lonelyRank(codes[i], codes);
       const keepsValue = valueTile(codes[i], tiles[i]) ? 1 : 0;  // 1＝打点の種。切ると減る
       const acc = acceptTypes(left);
