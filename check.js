@@ -1846,14 +1846,13 @@ section('㉑', '猫牌の裁定数の一本化', () => {
   if (decl === 1) ok('BASE_CURVE の定義は一箇所');
   else ng('BASE_CURVE の定義が ' + decl + '箇所');
 });
-/* ---- ㉒ 切り候補の写しが本体とずれていないか（2026-09-06・切り候補-1）----
-     ＊analyze() は変更禁止（作法5）なので、向聴の物差しを後段から呼べない。
-       cutShanten は analyze() の中の shanten の**字面の写し**で、
-       七対子・国士の式も cutShantenMin へ写してある。**片方だけ直さないこと。**
-     ＊⑭（bestShapeOneSuit と toneBlocksOneSuit）と同じ形の見張り。番号は㉑の次。
+/* ---- ㉒ 向聴の写しが無いこと（2026-09-10・土台の直し-1）----
+     ＊v1437 までは、analyze() の中の shanten を切り候補のために cutShanten・cutShantenMin へ写し、
+       ここで二つの字面を突き合わせていた。土台の直し-1 で shanten を analyze() の外へ持ち上げ、
+       写しは廃した。**写しが戻ってこないこと**と、**持ち上げた shanten が一字も変わっていないこと**を見る。
+     ＊ドラの名は window に開けた口（window._doraCode）ではなく、analyze() の戻り値（doraCode）から読む（作法15）。
      ＊正規表現は使わず、字面をそのまま探す（書き出しで escape が落ちる事故を避ける）。 */
-head('㉒', '切り候補の写しが本体と同じか');
-{
+section('㉒', '向聴の写しが無く、持ち上げた shanten が元のままか', () => {
   const grab = (name) => {
     const i = src.indexOf('function ' + name + '(');
     if (i < 0) { return null; }
@@ -1874,40 +1873,186 @@ head('㉒', '切り候補の写しが本体と同じか');
     }
     return out.trim();
   };
-  const body = grab('shanten'), copy = grab('cutShanten');
-  if (!body || !copy) { ng('shanten か cutShanten が見つからない'); }
-  else {
-    const b2 = squash(body).replace('function shanten(', 'function X(');
-    const c2 = squash(copy).replace('function cutShanten(', 'function X(');
-    if (b2 === c2) { ok('向聴の写しが本体と一字も違わない'); }
-    else {
-      ng('向聴の写しが本体とずれている（片方だけ直した恐れ）');
-      note('  本体 ' + b2.length + '字 ／ 写し ' + c2.length + '字');
-    }
-  }
-  const pair = [
-    ['七対子', 'const chiitoiSt = 6 - pairs + Math.max(0, 7 - kinds);'],
-    ['国士',   'const kokushiSt = 13 - koKinds - koPair;'],
+  const cnt = (s) => src.split(s).length - 1;
+
+  /* 写しが無いこと */
+  const gone = [
+    ['cutShanten の定義',     'function cutShanten('],
+    ['cutShantenMin の定義',  'function cutShantenMin('],
+    ['cutShanten の呼び出し', 'cutShanten('],
+    ['window._doraCode',      'window._doraCode'],
   ];
-  for (const row of pair) {
-    const n = src.split(row[1]).length - 1;
-    if (n >= 2) { ok(row[0] + 'の式が本体と写しの二箇所にある'); }
-    else { ng(row[0] + 'の式が ' + n + '箇所しかない（写しが無いか、字面がずれた）'); }
+  for (const row of gone) {
+    const n = cnt(row[1]);
+    if (n === 0) { ok(row[0] + ' … 無い'); } else { ng(row[0] + ' が ' + n + '箇所に戻っている'); }
   }
+
+  /* shanten は一つだけで、analyze() の外（直前）にある */
+  const nSh = cnt('function shanten(');
+  const iSh = src.indexOf('function shanten('), iAn = src.indexOf('function analyze(');
+  if (nSh !== 1) { ng('function shanten( が ' + nSh + '箇所'); }
+  else if (!(iAn > iSh)) { ng('shanten が analyze() より後ろ（中へ戻った恐れ）'); }
+  else { ok('shanten は一つだけで、analyze() の外にある'); }
+
+  /* 持ち上げた shanten の字面が、移す前と一字も違わない。
+     指紋は v1437 の analyze() の中にあった shanten を、名を X に換えて空白を畳んだ字面の sha256。 */
+  const SHANTEN_SHA = 'caee8a3dfbb2c564be1c18628f914e4994fe22e6a51635fcaada482aae0f7f4c';
+  const body = grab('shanten');
+  if (!body) { ng('shanten が見つからない'); }
+  else {
+    const sq = squash(body.replace('function shanten(', 'function X('));
+    const sha = require('crypto').createHash('sha256').update(sq).digest('hex');
+    if (sha === SHANTEN_SHA) { ok('shanten の字面が移す前と一字も違わない（' + sq.length + '字）'); }
+    else { ng('shanten の字面が移す前と違う'); note('  いま ' + sha.slice(0, 16) + '… ／ 移す前 ' + SHANTEN_SHA.slice(0, 16) + '…'); }
+  }
+
   const wired = [
-    ['候補を選ぶ手',     'function pickCutTile('],
-    ['後段で呼ぶ',       'const _CUT = pickCutTile(a, judgedTiles);'],
-    ['牌に印を付ける',   "? ' cut-mark' : ''"],
-    ['印の見た目',       'body.tool-usagi .judged-hand .tile.cut-mark {'],
-    ['四つの目の釦',     'class=\"eye-btn'],
-    ['押す口',           'window.toolTap = function(key, e){'],
-    ['一行を作る手',     'window.toolEyeSay = function(key){'],
-    ['ドラを外へ出す',   'window._doraCode = doraCode;'],
+    ['候補を選ぶ手',       'function pickCutTile('],
+    ['後段で呼ぶ',         'const _CUT = pickCutTile(a, judgedTiles);'],
+    ['向聴は shanten を呼ぶ', 'const st = shanten(left.concat([fill]));'],
+    ['ドラは戻り値から',   'doraCode: doraIndicator ? indicatorToDora(doraIndicator) : null,'],
+    ['三段目が戻り値を読む', 'if(a.doraCode && code === a.doraCode) return true;'],
+    ['牌に印を付ける',     "? ' cut-mark' : ''"],
+    ['印の見た目',         'body.tool-usagi .judged-hand .tile.cut-mark {'],
+    ['四つの目の釦',       'class=\"eye-btn'],
+    ['押す口',             'window.toolTap = function(key, e){'],
+    ['一行を作る手',       'window.toolEyeSay = function(key){'],
   ];
   for (const row of wired) {
     if (src.indexOf(row[1]) >= 0) { ok(row[0]); } else { ng(row[0] + ' … 見つからない'); }
   }
-}
+});
+
+/* ---- ㉓ 第一感が移す前と変わらないか（2026-09-10・土台の直し-1）----
+     ＊決まった16手を写しに流し、**攻／守と判定獣・見立て行・光る牌**（金枠・道具・切り候補）を
+       first-sense-base.json（v1437＝移す前の答え）と突き合わせる。一つでも違えば落ち。
+     ＊裁きの文は乱数で言い回しが替わるので、攻／守と判定獣だけを比べる。
+     ＊作法14：本体には仕掛けを入れない。写しの </body> の前へ一片を差し、手ごとに resetBoard() で盤を戻す。
+     ＊作法35：一度に16手を流さない（3手ずつ）。一回あたり180秒の上限。一時の名は koushu-fs-。
+       Edge の出はけは管ではなくファイルへ落とす（孫が管を握ったまま待ちが返らない穴を塞ぐ）。
+     ＊16手で10分ほどかかるので**フル版だけ**で回す。速い版では SKIP と出す。 */
+let fsSkipped = false;
+section('㉓', '第一感が移す前と変わらないか', () => {
+  if (FAST) { fsSkipped = true; note('速い版のため飛ばす（フル版で回す）'); ok('測定なし'); return; }
+  const basePath = path.join(__dirname, 'first-sense-base.json');
+  if (!fs.existsSync(basePath)) { ng('first-sense-base.json が無い'); return; }
+  const base = JSON.parse(fs.readFileSync(basePath, 'utf8'));
+  const browser = [
+    process.env['ProgramFiles(x86)'] && process.env['ProgramFiles(x86)'] + '\\Microsoft\\Edge\\Application\\msedge.exe',
+    process.env['ProgramFiles'] && process.env['ProgramFiles'] + '\\Microsoft\\Edge\\Application\\msedge.exe',
+    process.env['ProgramFiles(x86)'] && process.env['ProgramFiles(x86)'] + '\\Google\\Chrome\\Application\\chrome.exe',
+    process.env['ProgramFiles'] && process.env['ProgramFiles'] + '\\Google\\Chrome\\Application\\chrome.exe',
+    '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'
+  ].filter(p => p && fs.existsSync(p))[0];
+  if (!browser) { fsSkipped = true; note('ブラウザが見つからないため飛ばす'); ok('測定なし'); return; }
+
+  /* ⑦ の VIEW_FLAGS は ⑦ の段の中にあるので、同じ並びをここにも置く */
+  const FLAGS = ['--no-first-run', '--no-default-browser-check', '--disable-background-networking',
+    '--disable-component-update', '--disable-default-apps', '--disable-sync', '--disable-extensions',
+    '--disable-client-side-phishing-detection', '--metrics-recording-only', '--mute-audio',
+    '--disable-search-engine-choice-screen', '--no-service-autorun', '--password-store=basic'];
+  const LIMIT = 180000, STEP = 3;
+  const sweep = () => {
+    try {
+      if (process.platform === 'win32') {
+        const ps = "Get-CimInstance Win32_Process -Filter \"Name='msedge.exe' or Name='chrome.exe'\" | " +
+                   "Where-Object { $_.CommandLine -match 'koushu-fs-' } | " +
+                   "ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }";
+        spawnSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', ps],
+                  { encoding: 'utf8', windowsHide: true, timeout: 30000 });
+      } else {
+        spawnSync('pkill', ['-f', 'koushu-fs-'], { encoding: 'utf8', timeout: 30000 });
+      }
+    } catch (e) { note('掃除に失敗：' + e.message); }
+  };
+  const probeFor = (hands) => `
+<script>
+window.addEventListener('load', function(){ setTimeout(function(){
+  var HANDS = ${JSON.stringify(hands)};
+  var res = [], k = 0, err = null;
+  try{ window.closeTitleScreen(); }catch(e){}
+  function txt(sel){ var e=document.querySelector(sel); return e ? (e.textContent||'').replace(/\\s+/g,' ').trim() : ''; }
+  function marks(cls){ var a=[]; document.querySelectorAll('.judged-hand .tile').forEach(function(e,i){
+    if(!e.classList.contains(cls)) return;
+    a.push(i+':'+((e.getAttribute('data-code')||e.textContent||'').replace(/\\s+/g,'').slice(0,6))); }); return a.join(','); }
+  function done(){ var d=document.createElement('div');
+    d.textContent='KOUSHU_FS_BEGIN'+btoa(unescape(encodeURIComponent(JSON.stringify({rows:res, err:err}))))+'KOUSHU_FS_END';
+    document.body.appendChild(d); }
+  function one(){
+    if(k >= HANDS.length){ done(); return; }
+    var h = HANDS[k];
+    try{
+      try{ window.resetBoard(); }catch(e){}
+      var f = document.getElementById('qiText');
+      f.value = h; f.dispatchEvent(new Event('input', {bubbles:true}));
+    }catch(e){ err = String(e && e.stack || e); done(); return; }
+    setTimeout(function(){
+      try{ var b = document.getElementById('judgeBtn'); if(b) b.click(); }catch(e){ err = String(e && e.stack || e); }
+      setTimeout(function(){
+        try{
+          /* judged … 判定に入れたか。14枚（多牌）は判定釦が押せず、前の手の画面を読んでしまう */
+          res.push({hand:h, judged:document.body.classList.contains('judged'),
+            verdict:txt('#verdict'), angle:txt('.tone-angle'),
+            multi:marks('multi-mark'), naki:marks('naki-mark'), dup:marks('dup-mark'),
+            safe:marks('safe-mark'), float:marks('float-mark'), edge:marks('edge-mark'), head:marks('head-mark'),
+            cut:marks('cut-mark'), cat:marks('cat-mark'), eda:marks('eda-mark'), om:marks('om-mark')});
+        }catch(e){ err = String(e && e.stack || e); }
+        k++; one();
+      }, 700);
+    }, 300);
+  }
+  one();
+}, 600); });
+</script>
+`;
+  const vkey = (t) => ((t.match(/🐅|🐉|🐦‍🔥|🐑|🐭/) || ['?'])[0]) + ((t.match(/[攻守]/) || ['?'])[0]);
+  const FIELDS = ['angle', 'multi', 'naki', 'dup', 'safe', 'float', 'edge', 'head', 'cut', 'cat', 'eda', 'om'];
+
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'koushu-fs-'));
+  const got = {};
+  try {
+    sweep();
+    for (let s = 0; s < base.length; s += STEP) {
+      const hands = base.slice(s, s + STEP).map(r => r.hand);
+      const probe = path.join(tmpDir, 'probe-' + s + '.html');
+      const dump = path.join(tmpDir, 'dump-' + s + '.html');
+      fs.writeFileSync(probe, src.replace(/<\/body>\s*$/m, () => probeFor(hands) + '</body>'), 'utf8');
+      const fd = fs.openSync(dump, 'w');
+      const r = spawnSync(browser, ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1',
+        '--window-size=900,900', '--user-data-dir=' + path.join(tmpDir, 'prof-' + s)].concat(FLAGS).concat([
+        '--virtual-time-budget=' + (1500 + hands.length * 1200 + 3000), '--dump-dom',
+        'file:///' + probe.replace(/\\/g, '/')]),
+        { stdio: ['ignore', fd, 'ignore'], windowsHide: true, timeout: LIMIT, killSignal: 'SIGKILL' });
+      fs.closeSync(fd);
+      sweep();
+      if ((r.error && r.error.code === 'ETIMEDOUT') || r.signal) {
+        note((s + 1) + '〜' + (s + hands.length) + '手目：' + (LIMIT / 1000) + '秒で返らないため打ち切った');
+        continue;
+      }
+      const m = /KOUSHU_FS_BEGIN([A-Za-z0-9+/=]+)KOUSHU_FS_END/.exec(fs.readFileSync(dump, 'utf8'));
+      if (!m) { note((s + 1) + '〜' + (s + hands.length) + '手目：答えが返らなかった'); continue; }
+      const out = JSON.parse(Buffer.from(m[1], 'base64').toString('utf8'));
+      if (out.err) { note((s + 1) + '〜' + (s + hands.length) + '手目：写しの中で例外 ' + out.err.slice(0, 160)); }
+      out.rows.forEach(row => { got[row.hand] = row; });
+    }
+  } finally {
+    sweep();
+    try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch (e) { note('一時が消せなかった：' + tmpDir); }
+  }
+
+  let same = 0;
+  for (const b of base) {
+    const a = got[b.hand];
+    if (!a) { ng(b.hand + ' … 測れなかった'); continue; }
+    if (!a.judged) { ng(b.hand + ' … 判定に入れなかった（前の手の画面を読んだ恐れ）'); continue; }
+    const bad = [];
+    if (vkey(a.verdict) !== b.vkey) bad.push('裁き ' + b.vkey + '→' + vkey(a.verdict));
+    for (const k of FIELDS) { if (a[k] !== b[k]) bad.push(k + '「' + b[k] + '」→「' + a[k] + '」'); }
+    if (bad.length) { ng(b.hand + ' … ' + bad.join('／')); } else { same++; }
+  }
+  if (same === base.length) ok(base.length + '手とも、裁き・見立て行・光る牌が移す前と同じ');
+  else note('同じだった手 ' + same + '／' + base.length);
+});
 
 /* ---- まとめ ---- */
 console.log('');
@@ -1916,7 +2061,8 @@ sections.forEach(s => {
   /* 測れなかった項目を PASS と並べない。通ったのか、見ていないのかを取り違えないため。 */
   const skipped = (viewSkipped && /狭い画面/.test(s.title)) || (idleSkipped && /待機の向き/.test(s.title))
                   || (jumpSkipped && /跳躍中/.test(s.title))
-                  || (joySkipped && /喜ぶ動き/.test(s.title));
+                  || (joySkipped && /喜ぶ動き/.test(s.title))
+                  || (fsSkipped && /第一感が移す前/.test(s.title));
   const mark = !s.ok ? 'FAIL  ' : (skipped ? 'SKIP  ' : 'PASS  ');
   console.log(mark + s.title);
 });
