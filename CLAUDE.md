@@ -41,6 +41,9 @@
 - `analyze()`
 - `bestShapeOneSuit`
 
+**宣言とヨシが要るのは、土台に触る仕事だけ**——本体（`koushu-handan.html`）・判定・見張りの札の作り。
+**読むだけ・台帳の書き替え・報告は、宣言なしで進める。**（2026-09-12 の指示で絞った）
+
 ＊2026-09-10、土台の直し-1 で「変更禁止」から改めた。`shanten` は `analyze()` の外へ持ち上げ、
 　写し（`cutShanten`・`cutShantenMin`）は廃した。持ち上げた `shanten` の字面は `check.js` ㉒ が指紋で見張る。
 

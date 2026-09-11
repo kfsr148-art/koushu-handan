@@ -23,6 +23,13 @@ const ROOT = __dirname;
    通常の納品と push 前はこちら、台詞やレイアウトを触った回はフル版を回す。 */
 const ARGS = process.argv.slice(2);
 const FAST = ARGS.indexOf('--fast') >= 0;
+/* フル版の関門（2026-09-12・連携の穴-3 ⑩）。check-all.js と同じ決め。
+   空き物理メモリが 2GB を切っている間はフル版を回さない（終了コード3）。フル版は空いてから回す。 */
+if (!FAST && require('os').freemem() < 2 * 1024 * 1024 * 1024) {
+  console.log('フル版は回さない：空き物理メモリ ' + Math.round(require('os').freemem() / 1048576) +
+    'MB（2048MB 未満）。速い版で押し、フル版は空いてから回す');
+  process.exit(3);
+}
 const TARGET = ARGS.filter(a => a.charAt(0) !== '-')[0];
 const HTML_PATH = TARGET ? path.resolve(TARGET) : path.join(ROOT, 'koushu-handan.html');
 const VER_PATH = path.join(ROOT, 'ver.txt');
