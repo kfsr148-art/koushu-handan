@@ -465,11 +465,14 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v126（9月9日）</p>
+  <p class="ver" id="verTag">panel v127（9月11日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
   <p class="usage-when" id="usageWhen" hidden></p>
+  <!-- 遠隔で繋がっている会話の名と pid（v127・落ちた後の起こし-2）。state.json の rcName / rcPid。
+       取れていなければ何も出さない。 -->
+  <p class="usage-when" id="rcTag" hidden></p>
   <!-- ＊使用量の下の断り書き（この機械のローカルの…）は **v71 で消した**。器ごと外している。
        数字の三つと「N分前取得」の行はそのまま。 -->
 </div>
@@ -490,7 +493,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '126';
+  var PANEL_VER = '127';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -2710,6 +2713,18 @@
         lastMikomiMin = mkm ? parseInt(mkm[1], 10) : 0;
 
         paintBar();
+
+        /* 遠隔で繋がっている会話の名と pid（v127・落ちた後の起こし-2）。取れなければ畳む。 */
+        var rcEl = $('rcTag');
+        if (rcEl) {
+          var rcN = String(d.rcName || ''), rcP = (typeof d.rcPid === 'number') ? d.rcPid : 0;
+          if (rcN || rcP) {
+            rcEl.textContent = '遠隔：' + (rcN || '名なし') + (rcP ? '（pid ' + rcP + '）' : '');
+            rcEl.hidden = false;
+          } else {
+            rcEl.textContent = ''; rcEl.hidden = true;
+          }
+        }
 
         /* 時間の段は「作業中」のときだけ。経過はここで数えるので、
            次の書き出しを待たずに 15 秒ごとの取得で伸びていく。
