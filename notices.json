@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 0x4A の三（四度目）終わり（残り0件）",
+        "time":  1789127859,
+        "message":  "0x4A の三（四度目）— 終わり（残り0件）\n0x4A は 08-16〜09-10 に11回。毎回 ntdll の NtDeviceIoControlFile（syscall 0x7）から IRQL=1 のまま戻って落ちる（引数1 の下16ビット d684・引数2=1）\n疑い：無線LAN athw10x.sys（Qualcomm Atheros AR9485・10.0.0.352・2017-06-19）。器の Restart Device が 08-16 22:23・08-19 15:25（どちらも 0x4A の直後）\n決め手（どのドライバの IOCTL か）はダンプが要る\nUAC の理由：ダンプは Administrators と SYSTEM しか読めず、いまの札は Administrators が deny only\n代わりの手1：一度だけ「はい」で SYSTEM の予定の仕事（起動のたびに Minidump を写す）を置けば、以後は人手なし\n代わりの手2：無線LANを切って有線か USB の無線で使い、0x4A が止まるかを数える\n管理者の窓を待つ印 y0911-0627・0701・0956 は落とした"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789127373,
         "message":  "写せます（5件）"
@@ -193,10 +198,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789027271,
         "message":  "錠の名を揃え、落ちの正体を割った\n【一】remoteControlAtStartup は既に true で入っており、足す必要が無かった（写しは取得済み・本体は無変更）。\n【二】git-push.ps1 の錠の名を Local\\ClaudeGitPushGate へ揃えた（写しを取ってから一字）。三つとも同じ字面であることを大小込みで突き合わせた。\n【三】powercfg の三つを字面で出し、スリープ（もともと0）を打ち直し、隠れ設定の蓋を AC/DC とも 0＝何もしないにして帳面で読み直した。\nさらに、機械は眠っていないことが分かった。二度とも BSOD（bugcheck 0x4A）で落ちている。\nファイル: ~/.claude/git-push.ps1（写し .bak-20260910b）／電源設定（帳面の LIDACTION）\n実測: いまの枝は main・未 push 0件。claude/git-push-lock-alignment-lzcte6 は取り込みも参照もしていない\n未検収: 押しの黙り-1／土台の直し-1（実装へ）／0x4A の中身を追うかの裁定"
-    },
-    {
-        "title":  "🪟 連携に訴えがあります（subj-gap）",
-        "time":  1789027243,
-        "message":  "連携の見張りから訴えが出ています。\n\n・subj-gap … 作業中の件名が食い違っている（控え「錠の名を揃え、落ちの正体を割った」／出ている「公開の止まり-1 にヨシ、裁定は直す。承認の足止」）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
     }
 ]
