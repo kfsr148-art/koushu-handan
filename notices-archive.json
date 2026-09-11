@@ -1,5 +1,20 @@
 [
     {
+        "title":  "🙋 ヨシしてください",
+        "time":  1789077722,
+        "message":  "0x4A の三（三度目）— 昇格の問いは四回とも約2分で取り消し。手で走らせてもらう待ち\n印: y0911-0701\n待っているのは：0x4A の三 — VAIO で管理者の PowerShell を開き、powershell -ExecutionPolicy Bypass -File C:\\Users\\user\\.claude\\dumps\\elevated-copy.ps1 を走らせて「済んだ」（そのあとダンプの頭をすぐ読む）\n答え方：「y0911-0701 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）"
+    },
+    {
+        "title":  "🙋 ヨシしてください",
+        "time":  1789075747,
+        "message":  "0x4A の三（二度目）— 昇格の問いは06:25:07に出したが、06:27:11に取り消しで閉じた\n印: y0911-0627\n待っているのは：0x4A の三 — ①画面の鍵が外れていることを確かめて、もう一度「出して」（すぐ出す）か、②管理者の PowerShell で powershell -ExecutionPolicy Bypass -File C:\\Users\\user\\.claude\\dumps\\elevated-copy.ps1 を走らせて「済んだ」\n答え方：「y0911-0627 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789055766,
+        "message":  "落ちた後の起こし-1（一・二）と 帯の中の黙り-1（乙）— 三件とも済\n【落ちた後の起こし-1 一】ClaudeCodeAtLogon は既に在った。遊んでいた前の窓（claude 6360）を止めて Ready に戻し、00:42:14 に手で叩いた → claude 5684 が起き、一覧に「koushu-handan-b5 · interactive」と「Claude Code crash recovery · Remote Control · idle」が出た。00:43:55 に増えた窓を止めた（残るのはこの窓だけ・task は Ready）\n【落ちた後の起こし-1 二】.claude/settings.json の allow 20→24件（Bash(tail *)・~/.claude と Temp の Read）。書き換え系は足していない。別の claude -p（default・フック切り）で10の形を走らせ承認0件\n【帯の中の黙り-1（乙）】heavy-on／heavy-off／heavy-life を直し、最初の刻を heavy-first.txt に持たせた。写しに偽の送り手で六通り・本物の heavy-on／off で四通りとも通った\nファイル: koushu-handan/.claude/settings.json／~/.claude/heavy-on.ps1・heavy-off.ps1・heavy-life.ps1（写しは .bak-20260911）／reports/y0911-0047.md／report-latest.md\n実測: 承認0件（permission_denials 空・10件とも一度ずつ）／偽の送り手の六通り PASS／本物の四通り PASS（新しい帯 00:46:26=00:46:26・継ぎ足しで最初そのまま・切れた帯で書き直し・heavy-off で両方消えた）\n未検収: 0x4A の追い込み（「出して」待ち）／v1438 の実機（右下の版の字が v1438・判定の中身は不変）"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789055162,
         "message":  "落ちた後の起こし-1（ログオン時の claude --continue・読むだけの allow）を先に。帯の中の黙り-1 は試しの手前で一時止め\n見えていた画面が 2 枚から 1 枚になりました。claude のプロセスも 2 本から 1 本へ、同じだけ終わっています。\n閉じられたか、こちらで止めたものです。残っている物は無いので、手は要りません。"

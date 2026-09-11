@@ -1,5 +1,25 @@
 [
     {
+        "title":  "🪟 見張りが止まっていました（04:10〜04:23・14分）",
+        "time":  1789154628,
+        "message":  "見張りの巡回（watch-notify）が前回から 14分空いていました。\n前回の記録 2026-09-12 04:10:11／今回 2026-09-12 04:23:47\n\n＊どの段で止まったかは ~/.claude/watch-step-log.txt の足跡にあります。"
+    },
+    {
+        "title":  "🪟 連携に訴えがあります（done-swept）",
+        "time":  1789154547,
+        "message":  "連携の見張りから訴えが出ています。\n\n・done-swept … 終わりの札が立っていなかったので立て直した（外の見張り-2 — claude.exe が0本なら /fail を打つ・stop 2026-09-12 04:11:15・10分遅れ）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）：外の見張り-2 — claude.exe が0本なら /fail を打つ",
+        "time":  1789154466,
+        "message":  "外の見張り-2 — claude.exe が0本なら /fail を打つ\n同じ枠が三度書かれた一枚として届いた（控えた枠は1行）。一件として受けた\n⑯の差し替えはこの窓に効いていた（03:39:05 の枠を 03:39:16 に frame-work が捌いた）\n仕事名が「ng.com/6537657a-d3fe-4」（URL の切れ端）になっていた。frame-work.ps1 で URL を先に落とし、名は日本語の字を含むものだけにした。台帳の自動の行は外の見張り-1 へ統合\n外の見張り-1＝inbox-watch.ps1 の巡回の末尾に Ping-Outside（前回から55秒以上の回だけ curl.exe -fsS -m 10・失敗しても巡回は続ける・~/.claude/hc-ping.log へ一行・ntfy は通らないので ntfy-count.txt に入らない）。写し .bak-20260912c・構文OK 1073行・常駐 pid 8116 起動03:43:22＞台本03:42:40・1本\n外の見張り-2＝Ping-Outside が claude.exe を数え、1本以上なら元の URL、0本なら末尾に /fail を付けて打つ。hc-ping.log に「claude=本数  先=打った URL」を残す。写し .bak-20260912d・構文OK 1078行・常駐 pid 4308 起動04:08:16＞台本04:07:42・1本"
+    },
+    {
+        "title":  "✅ 外の見張り-2 終わり（残り0件）",
+        "time":  1789153795,
+        "message":  "外の見張り-2 — 終わり（残り0件）\nclaude.exe が1本以上なら元の URL、0本なら /fail を付けて打つ。hc-ping.log に本数と打った先を残す\n本物：04:08:33 claude=1 先=https://hc-ping.com/6537657a-… code=0 OK\n写し：0本→/fail・1本→元の URL・55秒以内は打たない（本物の /fail は打っていない）"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789153173,
         "message":  "写せます（3件）"
@@ -178,25 +198,5 @@
         "title":  "😺 現在も順調にゃ",
         "time":  1789084810,
         "message":  "状態: ヨシ待ち / 0x4A の三（三度目）— 昇格の問いは四回とも約2分で取り消し。手…\n台帳: 残り 4件（黒猫の待機-2・見張りの後始末-1・0x4A の三（二度目）・0x4A の三（三度目））\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 12% / 週全体 29% / 週Fable 20%\n訴え: 1件（pub-late）… pipe-warn.log"
-    },
-    {
-        "title":  "🙋 ヨシしてください",
-        "time":  1789077722,
-        "message":  "0x4A の三（三度目）— 昇格の問いは四回とも約2分で取り消し。手で走らせてもらう待ち\n印: y0911-0701\n待っているのは：0x4A の三 — VAIO で管理者の PowerShell を開き、powershell -ExecutionPolicy Bypass -File C:\\Users\\user\\.claude\\dumps\\elevated-copy.ps1 を走らせて「済んだ」（そのあとダンプの頭をすぐ読む）\n答え方：「y0911-0701 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）"
-    },
-    {
-        "title":  "🙋 ヨシしてください",
-        "time":  1789075747,
-        "message":  "0x4A の三（二度目）— 昇格の問いは06:25:07に出したが、06:27:11に取り消しで閉じた\n印: y0911-0627\n待っているのは：0x4A の三 — ①画面の鍵が外れていることを確かめて、もう一度「出して」（すぐ出す）か、②管理者の PowerShell で powershell -ExecutionPolicy Bypass -File C:\\Users\\user\\.claude\\dumps\\elevated-copy.ps1 を走らせて「済んだ」\n答え方：「y0911-0627 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789055766,
-        "message":  "落ちた後の起こし-1（一・二）と 帯の中の黙り-1（乙）— 三件とも済\n【落ちた後の起こし-1 一】ClaudeCodeAtLogon は既に在った。遊んでいた前の窓（claude 6360）を止めて Ready に戻し、00:42:14 に手で叩いた → claude 5684 が起き、一覧に「koushu-handan-b5 · interactive」と「Claude Code crash recovery · Remote Control · idle」が出た。00:43:55 に増えた窓を止めた（残るのはこの窓だけ・task は Ready）\n【落ちた後の起こし-1 二】.claude/settings.json の allow 20→24件（Bash(tail *)・~/.claude と Temp の Read）。書き換え系は足していない。別の claude -p（default・フック切り）で10の形を走らせ承認0件\n【帯の中の黙り-1（乙）】heavy-on／heavy-off／heavy-life を直し、最初の刻を heavy-first.txt に持たせた。写しに偽の送り手で六通り・本物の heavy-on／off で四通りとも通った\nファイル: koushu-handan/.claude/settings.json／~/.claude/heavy-on.ps1・heavy-off.ps1・heavy-life.ps1（写しは .bak-20260911）／reports/y0911-0047.md／report-latest.md\n実測: 承認0件（permission_denials 空・10件とも一度ずつ）／偽の送り手の六通り PASS／本物の四通り PASS（新しい帯 00:46:26=00:46:26・継ぎ足しで最初そのまま・切れた帯で書き直し・heavy-off で両方消えた）\n未検収: 0x4A の追い込み（「出して」待ち）／v1438 の実機（右下の版の字が v1438・判定の中身は不変）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789055162,
-        "message":  "落ちた後の起こし-1（ログオン時の claude --continue・読むだけの allow）を先に。帯の中の黙り-1 は試しの手前で一時止め\n見えていた画面が 2 枚から 1 枚になりました。claude のプロセスも 2 本から 1 本へ、同じだけ終わっています。\n閉じられたか、こちらで止めたものです。残っている物は無いので、手は要りません。"
     }
 ]
