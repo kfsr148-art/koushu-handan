@@ -18,6 +18,17 @@ const args = process.argv.slice(2);
    通常の納品と push 前はこちら。台詞・レイアウトを触った回と、まとめ報告の前はフル版（約9分）。 */
 const FAST = args.indexOf('--fast') >= 0;
 
+/* ---- フル版の関門（2026-09-12・連携の穴-3 ⑩）----
+   空き物理メモリが 2GB を切っている間は、フル版を回さない（終了コード3で抜ける）。
+   速い版は今までどおり回す（push 前の pre-push は速い版だけ）。フル版は空いてから回す。
+   ＊重いまま回すと、時間を測る節（⑯〜⑱）が重さでこけて FAIL に見える（2026-09-12 01:56 の pre-push）。 */
+const FULL_MIN_FREE = 2 * 1024 * 1024 * 1024;
+if (!FAST && require('os').freemem() < FULL_MIN_FREE) {
+  console.log('フル版は回さない：空き物理メモリ ' + Math.round(require('os').freemem() / 1048576) +
+    'MB（2048MB 未満）。速い版で押し、フル版は空いてから回す');
+  process.exit(3);
+}
+
 const RUNS = [
   { name: 'check    ', file: 'check.js', title: '本体の納品前チェック' },
   { name: 'adv-check', file: 'adv-check.js', title: '探偵編の回帰（即死罠・時間切れ）' }
