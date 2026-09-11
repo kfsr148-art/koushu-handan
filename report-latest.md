@@ -1,49 +1,35 @@
-# 落ちた後の起こし-2 — 窓の起こし直しと🪟・RC 切れの数え・遠隔の会話名
+# 0x4A の三（四度目）— 管理者の窓を開かずに、読める分を片付けた
 
-状態：終わり（残り1件：0x4A の三）　2026-09-11 20:20
+状態：終わり（残り0件）　2026-09-11 21:20
 
 ## 結論
-- 窓を閉じてから **136秒で claude が戻り、151秒で遠隔へ付き直した**（十分以内）。🪟 は一発だけ鳴った。
-- 遠隔の会話の名と pid は state.json（rcName・rcPid）へ入り、panel v127 の下端に出る。
+- 0x4A は **08-16〜09-10 に11回**。どの回も **ntdll の NtDeviceIoControlFile**（ドライバへの IOCTL）から、**IRQL=1（APC_LEVEL）のまま戻って**落ちている。
+- 疑いは無線LANのドライバ **athw10x.sys**（Qualcomm Atheros AR9485WB-EG・10.0.0.352・2017-06-19）。決め手はダンプが要る。
 
-## 一　起こし直し
-- 置いたもの：`~/.claude/revive-claude.ps1`（新・106行・BOM有・構文誤り0）と予定の仕事 **ClaudeRevive**（毎分）
-- 動き：対話の claude.exe（-p／--print を除く）が0本のまま2分続くと ClaudeCodeAtLogon を叩く（koushu-handan で claude --continue）。前に起こしてから10分は再度叩かない
-- 🪟：題「🪟 窓を起こし直しました（今日N回目）」を ntfy-say.ps1 経由で一発
-- 今日の回数：落ちは2回（10:02〜10:16 の14.5分・20:11:59 の試し）。自動の起こし直しは **1回**（20:14:11 の試し）。10:16:49 に戻したのは予定の仕事ではない（ClaudeCodeAtLogon の最終実行は 00:42）
+## 管理者なしで取れたもの（一項目一行）
+- Event 41：0x4A が11回（08-16 22:22／22:49／08-17 02:06／08-19 15:25／21:44／22:52／08-23 23:33／08-28 02:37／09-09 20:03／09-10 09:14／18:08）
+- 引数1：ユーザー側の番地で、下16ビットは毎回 **d684**（上は ASLR で毎回違う）
+- 引数2：毎回 **1**（APC_LEVEL）
+- d684 の正体：ntdll.dll（2025-10-14）の出口表を読み、syscall 命令の直後の RVA の下16ビットが d684 になるのは **NtDeviceIoControlFile（syscall 0x7・RVA 0x9d684）** だけ。win32u.dll は当たり無し
+- setupapi.dev.log：無線LANの器（PCI VEN_168C DEV_0032）の Restart Device が 08-15 18:14・08-16 22:23・08-19 15:25。後の二つは 0x4A の再起動の直後。08-15 は svchost（LocalSystemNetworkRestricted）が器を外して入れ直している
+- 更新：08月の間に入ったのは Defender の定義だけ。09-09 に KB5126256（ESU の準備）——0x4A は 08-16 から出ているので無関係
+- 落ちの直前2分（6008 の刻）に System・WLAN の記録は無し
 
-## 二　Remote Control の切れ（今日）
-遠隔の切れを残す記録は機械に無い（2026-08-25 に記録の仕掛けは見送り）。拾えた分：
+## 読めなかったもの
+- C:\Windows\Minidump … Access denied
+- C:\ProgramData\Microsoft\Windows\WER\ReportArchive\Kernel_4a_*（13束）… 束の中は Access denied
+- いまの札は Medium で、BUILTIN\Administrators は deny only（UAC で絞った札）
 
-| 刻 | 何が | 窓 |
-|---|---|---|
-| 00:38:23 | 遠隔の外れ（cdacbe8f の remote_session_change・url 空） | 生（プロセス2・窓2） |
-| 10:01:16〜10:16:49 | 窓ごと落ち（10:02:22 にプロセス0） | 落 |
-| 11:16:45〜11:18:51 | 窓の入れ替わり（新 7124 が 11:17:10 に付き直し） | 生 |
-| 20:11:59〜20:14:31 | 三の試し（閉じた→7272 が付き直し） | 落 |
+## UAC が要るところ（飛ばした）
+1. 理由：ダンプ（Minidump・MEMORY.DMP・WER の Kernel_4a 束）は Administrators と SYSTEM しか読めない。いまの札では Administrators が deny only なので、読むには昇格が一度要る
+2. 代わりの手1：VAIO の前で一度だけ「はい」を押し、SYSTEM で走る予定の仕事（起動のたびに Minidump を ~/.claude/dumps へ写し、読める権限にする）を置く。以後は人手なしで、落ちるたびに頭まで読める
+3. 代わりの手2：ダンプを読まずに切り分ける。落ちが続く間は無線LANを切って有線（または USB の無線）で使い、0x4A が止まるかを Event 41 で数える
 
-＊プロセスが生きたまま糸だけ切れた回は、記録が無いので数えられない。
-
-- 表示：`inbox-watch.ps1` L515-535・L577-578 で `~/.claude/sessions/<pid>.json` のうち bridgeSessionId があり pid が claude として生きているものから名と pid を読み、state.json の `rcName`・`rcPid` へ（写し .bak-20260911・1010行・誤り0・BOM有・常駐 pid 4804 起動19:58:29＞台本19:56:21・1本）
-- パネル：panel v127（commit 1588ff43）。下端に「遠隔：名（pid N）」。取れなければ畳む
-- 実測：state.json に `"rcName":"koushu-handan-7a","rcPid":7124`（試しの前）
-
-## 三　検収（実測）
-- 20:11:59 窓を閉じた（cmd 6904・claude 7124）
-- 20:12:11 ClaudeRevive が0本を見た
-- 20:14:11 起こし直した（今日1回目）
-- 20:14:15 🪟 を送った（notify-sent.tsv）／claude pid 7272 が戻った（136秒）
-- 20:14:31 会話の札 koushu-handan-66・interactive・pidDomain=win32:vaio・遠隔 session_012Cx…（151秒）
-
-## そのほか
-- `.claude/settings.json` の allow に Bash(Get-*)・Bash(Select-String*)・Bash(Test-Path*)・Bash(Get-Content*) を足した（Read は元から在った）。＊PowerShell の道具で打つ命令には Bash(…) の決まりは掛からない。PowerShell 側も訊かない形にするなら PowerShell(Get-*) などの行が要る
-
-## 実機で見るところ
-- Code タブの一覧で、koushu-handan の行にパソコンの印が付いている
-- 返事パネルの下端が「遠隔：koushu-handan-66（pid 7272）」で、版の字が panel v127
+## 片付けたもの
+- yoshi-open.tsv から、管理者の窓を待っていた y0911-0627・0701・0956 を落とした（写し .bak-20260911-2120）
 
 ## 残り
-1. 0x4A の三 — 管理者の PowerShell で elevated-copy.ps1 を走らせてもらう待ち（y0911-0956）
+残り0件（台帳の 0x4A の三の三行は、この四度目へ統合）
 
 ---
 
@@ -53,7 +39,36 @@
 
 直近に ntfy へ送ったものを、新しい順に五件まで。**要約せず、送った本文をそのまま写しています。**
 
-### 1. ✅ 落ちた後の起こし-2 終わり（残り1件）
+### 1. ✅ 0x4A の三（四度目）終わり（残り0件）
+
+```
+0x4A の三（四度目）— 終わり（残り0件）
+0x4A は 08-16〜09-10 に11回。毎回 ntdll の NtDeviceIoControlFile（syscall 0x7）から IRQL=1 のまま戻って落ちる（引数1 の下16ビット d684・引数2=1）
+疑い：無線LAN athw10x.sys（Qualcomm Atheros AR9485・10.0.0.352・2017-06-19）。器の Restart Device が 08-16 22:23・08-19 15:25（どちらも 0x4A の直後）
+決め手（どのドライバの IOCTL か）はダンプが要る
+UAC の理由：ダンプは Administrators と SYSTEM しか読めず、いまの札は Administrators が deny only
+代わりの手1：一度だけ「はい」で SYSTEM の予定の仕事（起動のたびに Minidump を写す）を置けば、以後は人手なし
+代わりの手2：無線LANを切って有線か USB の無線で使い、0x4A が止まるかを数える
+管理者の窓を待つ印 y0911-0627・0701・0956 は落とした
+```
+
+### 2. ✅ 終わりました（返事不要）
+
+```
+写せます（5件）
+```
+
+### 3. ✅ 終わりました（返事不要）
+
+```
+revive-test.txt を読んで結果を三行で書け。それが済んだら .cl
+三を始める——revive-test.ps1 を WMI から切り離して起こし、20秒後にこの窓（cmd 6904・claude 7124）を止める。戻るまでを ~/.claude/revive-test.txt に一項目一行で残す。起こし直された窓で結果を読み、報告の札を立てる
+ファイル: ~/.claude/revive-claude.ps1（新）／~/.claude/inbox-watch.ps1／panel.html／panel-ver.txt／orders-open.tsv
+実測: state.json … "rcName":"koushu-handan-7a","rcPid":7124
+実機: 返事パネルの一番下（使用量の下）に「遠隔：koushu-handan-7a（pid 7124）」の一行が出て、版の字が panel v127
+```
+
+### 4. ✅ 落ちた後の起こし-2 終わり（残り1件）
 
 ```
 落ちた後の起こし-2 — 終わり（残り1件：0x4A の三）
@@ -68,35 +83,11 @@ settings.json の allow に Bash(Get-*)・Bash(Select-String*)・Bash(Test-Path*
 実機：Code タブの koushu-handan の行にパソコンの印／パネル下端「遠隔：koushu-handan-66（pid 7272）」・panel v127
 ```
 
-### 2. ✅ 終わりました（返事不要）
+### 5. ✅ 終わりました（返事不要）
 
 ```
 落ちた後の起こし-2 — 窓の起こし直しと🪟・RC 切れの数え・遠隔の会話名を state へ
 Claude Code が戻りました。
-```
-
-### 3. 🪟 窓を起こし直しました（今日1回目）
-
-```
-対話の Claude Code が0本になっていたので、claude --continue で起こし直しました。
-落ちを見た刻 20:12:11／起こした刻 20:14:11（0本が2分）
-今日 1回目
-
-＊記録は ~/.claude/revive.log にあります。
-```
-
-### 4. 🪟 異常です（手が要ります）
-
-```
-落ちた後の起こし-2 — 窓の起こし直しと🪟・RC 切れの数え・遠隔の会話名を state へ
-Claude Code が動いていません。落ちたか、閉じられました。
-こちらがすること：端末で Claude Code を開き直してください。
-```
-
-### 5. ✅ 終わりました（返事不要）
-
-```
-写せます（1件）
 ```
 
 <!-- 送った知らせ ここまで -->
@@ -108,11 +99,12 @@ Claude Code が動いていません。落ちたか、閉じられました。
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **203件**ある。
+　ここに出るのは新しい20件。全部で **204件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`0x4A の三（四度目）.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/0x4A%20%E3%81%AE%E4%B8%89%EF%BC%88%E5%9B%9B%E5%BA%A6%E7%9B%AE%EF%BC%89.md) | 09-11 20:57 | 0x4A の三（四度目）— 管理者の窓を開かずに、読める分を片付けた |
 | [`落ちた後の起こし-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E8%90%BD%E3%81%A1%E3%81%9F%E5%BE%8C%E3%81%AE%E8%B5%B7%E3%81%93%E3%81%97-2.md) | 09-11 20:35 | 落ちた後の起こし-2 — 窓の起こし直しと🪟・RC 切れの数え・遠隔の会話名 |
 | [`y0911-0701.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0911-0701.md) | 09-11 07:02 | 0x4A の三（三度目）— 昇格の問いは四回とも約2分で取り消し（印 y0911-0701） |
 | [`y0911-0627.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0911-0627.md) | 09-11 06:29 | 0x4A の三（二度目）— 昇格の問いは出したが、約2分で取り消しになった（印 y0911-0627） |
@@ -132,6 +124,5 @@ Claude Code が動いていません。落ちたか、閉じられました。
 | [`ヨシの猫のマス目.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%83%A8%E3%82%B7%E3%81%AE%E7%8C%AB%E3%81%AE%E3%83%9E%E3%82%B9%E7%9B%AE.md) | 09-09 16:38 | ヨシの猫を差し替え-1 — マス目の割り出しと、箱を上げる案 |
 | [`土台の直し-1の四段.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%9C%9F%E5%8F%B0%E3%81%AE%E7%9B%B4%E3%81%97-1%E3%81%AE%E5%9B%9B%E6%AE%B5.md) | 09-09 13:02 | 土台の直し-1 ① — 四段の材料の出どころ（名指しの一覧） |
 | [`ヨシの猫を差し替え-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%83%A8%E3%82%B7%E3%81%AE%E7%8C%AB%E3%82%92%E5%B7%AE%E3%81%97%E6%9B%BF%E3%81%88-1.md) | 09-09 13:02 | ヨシの猫を差し替え-1 — 素材を測った。**輪郭が潰れるので止まる** |
-| [`巡回の止まり-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%B7%A1%E5%9B%9E%E3%81%AE%E6%AD%A2%E3%81%BE%E3%82%8A-1.md) | 09-09 12:16 | 巡回の止まり-1 — 11:02〜11:45 の43分 |
 
 <!-- 控えの一覧 ここまで -->
