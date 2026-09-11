@@ -1,5 +1,25 @@
 [
     {
+        "title":  "✅ 0x4A の三（四度目）終わり（残り0件）",
+        "time":  1789127859,
+        "message":  "0x4A の三（四度目）— 終わり（残り0件）\n0x4A は 08-16〜09-10 に11回。毎回 ntdll の NtDeviceIoControlFile（syscall 0x7）から IRQL=1 のまま戻って落ちる（引数1 の下16ビット d684・引数2=1）\n疑い：無線LAN athw10x.sys（Qualcomm Atheros AR9485・10.0.0.352・2017-06-19）。器の Restart Device が 08-16 22:23・08-19 15:25（どちらも 0x4A の直後）\n決め手（どのドライバの IOCTL か）はダンプが要る\nUAC の理由：ダンプは Administrators と SYSTEM しか読めず、いまの札は Administrators が deny only\n代わりの手1：一度だけ「はい」で SYSTEM の予定の仕事（起動のたびに Minidump を写す）を置けば、以後は人手なし\n代わりの手2：無線LANを切って有線か USB の無線で使い、0x4A が止まるかを数える\n管理者の窓を待つ印 y0911-0627・0701・0956 は落とした"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789127373,
+        "message":  "写せます（5件）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789127292,
+        "message":  "revive-test.txt を読んで結果を三行で書け。それが済んだら .cl\n三を始める——revive-test.ps1 を WMI から切り離して起こし、20秒後にこの窓（cmd 6904・claude 7124）を止める。戻るまでを ~/.claude/revive-test.txt に一項目一行で残す。起こし直された窓で結果を読み、報告の札を立てる\nファイル: ~/.claude/revive-claude.ps1（新）／~/.claude/inbox-watch.ps1／panel.html／panel-ver.txt／orders-open.tsv\n実測: state.json … \"rcName\":\"koushu-handan-7a\",\"rcPid\":7124\n実機: 返事パネルの一番下（使用量の下）に「遠隔：koushu-handan-7a（pid 7124）」の一行が出て、版の字が panel v127"
+    },
+    {
+        "title":  "✅ 落ちた後の起こし-2 終わり（残り1件）",
+        "time":  1789126582,
+        "message":  "落ちた後の起こし-2 — 終わり（残り1件：0x4A の三）\n一 revive-claude.ps1＋予定の仕事 ClaudeRevive（毎分）。0本2分で claude --continue を起こし🪟を一発。今日の自動の起こし直し 1回（20:14:11）\n二 遠隔の切れ（今日・記録から拾えた分）：00:38:23 遠隔の外れ 窓=生／10:01〜10:16 窓ごと落ち 窓=落／11:16:45〜11:18:51 窓の入れ替わり 窓=生／20:11:59〜20:14:31 試し 窓=落。糸だけ切れた回は記録が無く数えられない\n二 state.json に rcName・rcPid、panel v127 の下端に「遠隔：名（pid N）」\n三 20:11:59 閉じた\n三 20:14:11 起こし直した\n三 20:14:15 claude 7272 が戻った（136秒）・🪟 送信\n三 20:14:31 札 koushu-handan-66・win32:vaio・遠隔に付き直し（151秒）\nsettings.json の allow に Bash(Get-*)・Bash(Select-String*)・Bash(Test-Path*)・Bash(Get-Content*)。PowerShell の道具には掛からない\n実機：Code タブの koushu-handan の行にパソコンの印／パネル下端「遠隔：koushu-handan-66（pid 7272）」・panel v127"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789125421,
         "message":  "落ちた後の起こし-2 — 窓の起こし直しと🪟・RC 切れの数え・遠隔の会話名を state へ\nClaude Code が戻りました。"
@@ -178,25 +198,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789027271,
         "message":  "錠の名を揃え、落ちの正体を割った\n【一】remoteControlAtStartup は既に true で入っており、足す必要が無かった（写しは取得済み・本体は無変更）。\n【二】git-push.ps1 の錠の名を Local\\ClaudeGitPushGate へ揃えた（写しを取ってから一字）。三つとも同じ字面であることを大小込みで突き合わせた。\n【三】powercfg の三つを字面で出し、スリープ（もともと0）を打ち直し、隠れ設定の蓋を AC/DC とも 0＝何もしないにして帳面で読み直した。\nさらに、機械は眠っていないことが分かった。二度とも BSOD（bugcheck 0x4A）で落ちている。\nファイル: ~/.claude/git-push.ps1（写し .bak-20260910b）／電源設定（帳面の LIDACTION）\n実測: いまの枝は main・未 push 0件。claude/git-push-lock-alignment-lzcte6 は取り込みも参照もしていない\n未検収: 押しの黙り-1／土台の直し-1（実装へ）／0x4A の中身を追うかの裁定"
-    },
-    {
-        "title":  "🪟 連携に訴えがあります（subj-gap）",
-        "time":  1789027243,
-        "message":  "連携の見張りから訴えが出ています。\n\n・subj-gap … 作業中の件名が食い違っている（控え「錠の名を揃え、落ちの正体を割った」／出ている「公開の止まり-1 にヨシ、裁定は直す。承認の足止」）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789026546,
-        "message":  "/rc\n【一】押しの錠の名の食い違いを一行で出した（直していない）。公開の止まり-1 は新たな直しを入れていない。\n【二】pub-read を直した。読む字を UTF-8 に釘付けにし、読めない回は訳だけ60字で一行。作り値六通りで確かめ、写しは消した。\n【三】y0910-0052 の甲は既に入っており、常駐も新しい台本で走っている（入れ直し不要）。\n【四】自動モードは窓限りのまま。settings.json に permissions の節は無い。読むだけの台本は look.js で入っている。\n【五(1)】13時間の詰まりの三と四。命令の字面・詰まりの形・過去の同型を出し、上限の値を定め、CLAUDE.md へ作法35 を足した。\nファイル: ~/.claude/pipe-check.ps1（写し .bak-20260910a）／~/.claude/first-sense/first-sense.js／CLAUDE.md（作法35）\n実測: 錠の名＝正しくは Local\\ClaudeGitPushGate（push-mine.ps1:24・heavy-push.ps1:52）／git-push.ps1:150 は LocalClaudeGitPushGate\n未検収: 押しの黙り-1／土台の直し-1（実装へ）／錠の名の裁定／公開の止まり-1 で入れた二つの直しを残すかの裁定"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789021145,
-        "message":  "pub-read の始末と、長く走る命令の上限（作法35）\n【一】押しの錠の名の食い違いを一行で出した（直していない）。公開の止まり-1 は新たな直しを入れていない。\n【二】pub-read を直した。読む字を UTF-8 に釘付けにし、読めない回は訳だけ60字で一行。作り値六通りで確かめ、写しは消した。\n【三】y0910-0052 の甲は既に入っており、常駐も新しい台本で走っている（入れ直し不要）。\n【四】自動モードは窓限りのまま。settings.json に permissions の節は無い。読むだけの台本は look.js で入っている。\n【五(1)】13時間の詰まりの三と四。命令の字面・詰まりの形・過去の同型を出し、上限の値を定め、CLAUDE.md へ作法35 を足した。\nファイル: ~/.claude/pipe-check.ps1（写し .bak-20260910a）／~/.claude/first-sense/first-sense.js／CLAUDE.md（作法35）\n実測: 錠の名＝正しくは Local\\ClaudeGitPushGate（push-mine.ps1:24・heavy-push.ps1:52）／git-push.ps1:150 は LocalClaudeGitPushGate\n未検収: 押しの黙り-1／土台の直し-1（実装へ）／錠の名の裁定／公開の止まり-1 で入れた二つの直しを残すかの裁定"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789020363,
-        "message":  "読むだけの台本（look.js）と、公開の止まりの割り直し\n【一】.claude/look.js（246行・node --check 通過）を置き、.claude/settings.json の allow へ二項足した（18→20件）。\n読むだけの八つの役（ls / read / tail / find / stat / git / get / json）を一本に寄せ、書く手・重い検査・押しは寄せていない。\n【二】公開の止まりを実読みで割り直した。押しの経路も書く側も動いており、手元と公開の差は0秒。\n【三】直した直後に立っていた pub-read の訴えは、curl | Out-String が CP932 で受けて JSON が化けていたのが元。控えへ落として UTF8 で読み直す形に直し、15:00:19 に ok が入った。\nファイル: .claude/look.js（新規）／.claude/settings.json（allow 二項・写し .bak-20260910 有）／~/.claude/pipe-check.ps1（写し .bak-20260910a）\n実測: pipe-check.ps1 を直した後＝err=0・545行・BOM有。pipe-warn.log に 2026-09-10 15:00:19 ok 訴えは無くなった\n未検収: 押しの錠の名の食い違い（git-push.ps1:150 だけ LocalClaudeGitPushGate）／押しの黙り-1／土台の直し-1（y0909-2 の保留）"
     }
 ]
