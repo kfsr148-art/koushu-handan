@@ -26,6 +26,10 @@
       "Bash(Select-String*)",
       "Bash(Test-Path*)",
       "Bash(Get-Content*)",
+      "PowerShell(C:/Users/user/Desktop/mahjong/koushu-handan/.claude/look.ps1 *)",
+      "PowerShell(.claude/look.ps1 *)",
+      "Bash(powershell -NoProfile -ExecutionPolicy Bypass -File C:/Users/user/Desktop/mahjong/koushu-handan/.claude/look.ps1 *)",
+      "Bash(powershell -NoProfile -ExecutionPolicy Bypass -File .claude/look.ps1 *)",
       "Read(~/.claude/**)",
       "Read(//c/Users/user/.claude/**)",
       "Read(//c/Users/user/AppData/Local/Temp/**)"
