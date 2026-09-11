@@ -22,6 +22,10 @@
       "Bash(node .claude/look.js)",
       "Bash(node .claude/look.js *)",
       "Bash(tail *)",
+      "Bash(Get-*)",
+      "Bash(Select-String*)",
+      "Bash(Test-Path*)",
+      "Bash(Get-Content*)",
       "Read(~/.claude/**)",
       "Read(//c/Users/user/.claude/**)",
       "Read(//c/Users/user/AppData/Local/Temp/**)"
