@@ -1,35 +1,36 @@
-# 0x4A の三（四度目）— 管理者の窓を開かずに、読める分を片付けた
+# 0x4A の切り分け-1 — 無線LANを外して有線へ、Event 41 で数える（印 y0912-0200）
 
-状態：終わり（残り0件）　2026-09-11 21:20
+状態：ヨシ待ち（残り1件）　2026-09-12 02:00
 
 ## 結論
-- 0x4A は **08-16〜09-10 に11回**。どの回も **ntdll の NtDeviceIoControlFile**（ドライバへの IOCTL）から、**IRQL=1（APC_LEVEL）のまま戻って**落ちている。
-- 疑いは無線LANのドライバ **athw10x.sys**（Qualcomm Atheros AR9485WB-EG・10.0.0.352・2017-06-19）。決め手はダンプが要る。
+- **いまは Wi-Fi でしか繋がっていない**（有線は線なし・USB の無線も無い）。ここで無線を切ると網から外れ、遠隔も知らせも止まって戻せない。
+- そこで**有線が網へ出られたのを見てから無線の電波を切る**仕掛けを置いた。**VAIO の有線LAN の口へ線を挿せば、あとは自動で切り替わって数えが始まる。**
 
-## 管理者なしで取れたもの（一項目一行）
-- Event 41：0x4A が11回（08-16 22:22／22:49／08-17 02:06／08-19 15:25／21:44／22:52／08-23 23:33／08-28 02:37／09-09 20:03／09-10 09:14／18:08）
-- 引数1：ユーザー側の番地で、下16ビットは毎回 **d684**（上は ASLR で毎回違う）
-- 引数2：毎回 **1**（APC_LEVEL）
-- d684 の正体：ntdll.dll（2025-10-14）の出口表を読み、syscall 命令の直後の RVA の下16ビットが d684 になるのは **NtDeviceIoControlFile（syscall 0x7・RVA 0x9d684）** だけ。win32u.dll は当たり無し
-- setupapi.dev.log：無線LANの器（PCI VEN_168C DEV_0032）の Restart Device が 08-15 18:14・08-16 22:23・08-19 15:25。後の二つは 0x4A の再起動の直後。08-15 は svchost（LocalSystemNetworkRestricted）が器を外して入れ直している
-- 更新：08月の間に入ったのは Defender の定義だけ。09-09 に KB5126256（ESU の準備）——0x4A は 08-16 から出ているので無関係
-- 落ちの直前2分（6008 の刻）に System・WLAN の記録は無し
+## 待っていること
+- VAIO の有線LAN の口（イーサネット・Realtek PCIe GbE）へ線を挿し、ルーターへ繋ぐ。返事は要らない（挿したら「挿した」でもよい）
 
-## 読めなかったもの
-- C:\Windows\Minidump … Access denied
-- C:\ProgramData\Microsoft\Windows\WER\ReportArchive\Kernel_4a_*（13束）… 束の中は Access denied
-- いまの札は Medium で、BUILTIN\Administrators は deny only（UAC で絞った札）
+## いまの網（一項目一行）
+- Wi-Fi：Qualcomm Atheros AR9485WB-EG … Up（auhikari-2e7f4e・Internet・既定の道）
+- イーサネット：Realtek PCIe GbE Family Controller … Disconnected（線なし）
+- Bluetooth PAN … Disconnected
+- USB の無線 … 無し
 
-## UAC が要るところ（飛ばした）
-1. 理由：ダンプ（Minidump・MEMORY.DMP・WER の Kernel_4a 束）は Administrators と SYSTEM しか読めない。いまの札では Administrators が deny only なので、読むには昇格が一度要る
-2. 代わりの手1：VAIO の前で一度だけ「はい」を押し、SYSTEM で走る予定の仕事（起動のたびに Minidump を ~/.claude/dumps へ写し、読める権限にする）を置く。以後は人手なしで、落ちるたびに頭まで読める
-3. 代わりの手2：ダンプを読まずに切り分ける。落ちが続く間は無線LANを切って有線（または USB の無線）で使い、0x4A が止まるかを Event 41 で数える
+## 置いたもの
+- `~/.claude/wifi-swap.ps1`（新・76行・BOM有・構文誤り0）と予定の仕事 **ClaudeWifiSwap**（毎分）
+- 有線が Up かつ Internet に出られるときだけ、無線の電波を切る（Windows.Devices.Radios。管理者は要らない＝RequestAccessAsync が Allowed）
+- 有線が落ちたら無線を戻す（遠隔を失わない側へ倒す）
+- 最初に切った刻を `wifi-swap-start.txt` へ一度だけ。以後の Event 41 の 0x4A を `wifi-swap.log` へ一行ずつ（そのときの無線・有線の状態つき）
+- 試し：いまの状態で一度回して、何も切らずに抜けた（exit 0・Wi-Fi は Up のまま・起点のファイルは作られない）
 
-## 片付けたもの
-- yoshi-open.tsv から、管理者の窓を待っていた y0911-0627・0701・0956 を落とした（写し .bak-20260911-2120）
+## 物差し
+- これまで 0x4A は 08-16〜09-10 の約25日で11回（一日0.44回）
+- 切ってから **7日0回なら偶然の見込み約5%、14日0回なら約0.2%**。そこまで出なければ「止まった」と言える
+
+## 断り
+- 電波を切っても athw10x.sys は読み込まれたまま（器ごと外すのは管理者が要る）。止まれば疑いは強まるが、止まらなくても無実とまでは言えない
 
 ## 残り
-残り0件（台帳の 0x4A の三の三行は、この四度目へ統合）
+1. 0x4A の切り分け-1 — 有線の線を挿す待ち（y0912-0200）
 
 ---
 
@@ -39,55 +40,46 @@
 
 直近に ntfy へ送ったものを、新しい順に五件まで。**要約せず、送った本文をそのまま写しています。**
 
-### 1. ✅ 0x4A の三（四度目）終わり（残り0件）
+### 1. ✅ 終わりました（返事不要）
 
 ```
-0x4A の三（四度目）— 終わり（残り0件）
-0x4A は 08-16〜09-10 に11回。毎回 ntdll の NtDeviceIoControlFile（syscall 0x7）から IRQL=1 のまま戻って落ちる（引数1 の下16ビット d684・引数2=1）
-疑い：無線LAN athw10x.sys（Qualcomm Atheros AR9485・10.0.0.352・2017-06-19）。器の Restart Device が 08-16 22:23・08-19 15:25（どちらも 0x4A の直後）
-決め手（どのドライバの IOCTL か）はダンプが要る
-UAC の理由：ダンプは Administrators と SYSTEM しか読めず、いまの札は Administrators が deny only
-代わりの手1：一度だけ「はい」で SYSTEM の予定の仕事（起動のたびに Minidump を写す）を置けば、以後は人手なし
-代わりの手2：無線LANを切って有線か USB の無線で使い、0x4A が止まるかを数える
-管理者の窓を待つ印 y0911-0627・0701・0956 は落とした
+写せます（2件）
 ```
 
-### 2. ✅ 終わりました（返事不要）
+### 2. 🙋 0x4A の切り分け-1 有線の線を挿してください（y0912-0200）
 
 ```
-写せます（5件）
+0x4A の切り分け-1（印 y0912-0200）— 有線の線を挿す待ち
+いま繋がっているのは Wi-Fi だけ。有線（Realtek）は線なし、USB の無線も無い
+いま無線を切ると網から外れて遠隔・知らせが止まり、戻せない
+そこで有線が網へ出られたら無線の電波を自分で切る仕掛けを置いた（ClaudeWifiSwap・毎分・管理者不要）
+VAIO の有線LAN の口へ線を挿してルーターへ繋いでください。あとは自動で切り替わり、以後の 0x4A を数えます
+物差し：これまで一日0.44回。7日0回で偶然の見込み約5%、14日0回で約0.2%
+断り：電波を切っても athw10x.sys は読み込まれたまま
 ```
 
-### 3. ✅ 終わりました（返事不要）
+### 3. 🙋 ヨシしてください
 
 ```
-revive-test.txt を読んで結果を三行で書け。それが済んだら .cl
-三を始める——revive-test.ps1 を WMI から切り離して起こし、20秒後にこの窓（cmd 6904・claude 7124）を止める。戻るまでを ~/.claude/revive-test.txt に一項目一行で残す。起こし直された窓で結果を読み、報告の札を立てる
-ファイル: ~/.claude/revive-claude.ps1（新）／~/.claude/inbox-watch.ps1／panel.html／panel-ver.txt／orders-open.tsv
-実測: state.json … "rcName":"koushu-handan-7a","rcPid":7124
-実機: 返事パネルの一番下（使用量の下）に「遠隔：koushu-handan-7a（pid 7124）」の一行が出て、版の字が panel v127
+0x4A の切り分け-1 — 無線LANを外して有線へ、Event 41 で数える
+印: y0912-0200
+待っているのは：VAIO の有線LAN の口（イーサネット・Realtek）へ線を挿してルーターへ繋ぐ。挿せば毎分の見張りが網へ出られるのを見て無線の電波を自分で切り、数えが始まる（返事は不要。挿したら「挿した」でもよい）
+答え方：「y0912-0200 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。
 ```
 
-### 4. ✅ 落ちた後の起こし-2 終わり（残り1件）
+### 4. ✅ 終わりました（返事不要）
 
 ```
-落ちた後の起こし-2 — 終わり（残り1件：0x4A の三）
-一 revive-claude.ps1＋予定の仕事 ClaudeRevive（毎分）。0本2分で claude --continue を起こし🪟を一発。今日の自動の起こし直し 1回（20:14:11）
-二 遠隔の切れ（今日・記録から拾えた分）：00:38:23 遠隔の外れ 窓=生／10:01〜10:16 窓ごと落ち 窓=落／11:16:45〜11:18:51 窓の入れ替わり 窓=生／20:11:59〜20:14:31 試し 窓=落。糸だけ切れた回は記録が無く数えられない
-二 state.json に rcName・rcPid、panel v127 の下端に「遠隔：名（pid N）」
-三 20:11:59 閉じた
-三 20:14:11 起こし直した
-三 20:14:15 claude 7272 が戻った（136秒）・🪟 送信
-三 20:14:31 札 koushu-handan-66・win32:vaio・遠隔に付き直し（151秒）
-settings.json の allow に Bash(Get-*)・Bash(Select-String*)・Bash(Test-Path*)・Bash(Get-Content*)。PowerShell の道具には掛からない
-実機：Code タブの koushu-handan の行にパソコンの印／パネル下端「遠隔：koushu-handan-66（pid 7272）」・panel v127
+写せます（3件）
 ```
 
 ### 5. ✅ 終わりました（返事不要）
 
 ```
-落ちた後の起こし-2 — 窓の起こし直しと🪟・RC 切れの数え・遠隔の会話名を state へ
-Claude Code が戻りました。
+0x4A の三（四度目）— 管理者の窓を開かずに済む形へ
+yoshi-open.tsv から y0911-0627・0701・0956 を落とした（管理者の窓を待つ件。写し .bak-20260911-2120）
+ファイル: orders-open.tsv／yoshi-open.tsv／reports/0x4A の三（四度目）.md
+未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）
 ```
 
 <!-- 送った知らせ ここまで -->
@@ -99,11 +91,12 @@ Claude Code が戻りました。
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **204件**ある。
+　ここに出るのは新しい20件。全部で **205件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0912-0200.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0912-0200.md) | 09-12 01:54 | 0x4A の切り分け-1 — 無線LANを外して有線へ、Event 41 で数える（印 y0912-0200） |
 | [`0x4A の三（四度目）.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/0x4A%20%E3%81%AE%E4%B8%89%EF%BC%88%E5%9B%9B%E5%BA%A6%E7%9B%AE%EF%BC%89.md) | 09-11 20:57 | 0x4A の三（四度目）— 管理者の窓を開かずに、読める分を片付けた |
 | [`落ちた後の起こし-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E8%90%BD%E3%81%A1%E3%81%9F%E5%BE%8C%E3%81%AE%E8%B5%B7%E3%81%93%E3%81%97-2.md) | 09-11 20:35 | 落ちた後の起こし-2 — 窓の起こし直しと🪟・RC 切れの数え・遠隔の会話名 |
 | [`y0911-0701.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0911-0701.md) | 09-11 07:02 | 0x4A の三（三度目）— 昇格の問いは四回とも約2分で取り消し（印 y0911-0701） |
@@ -123,6 +116,5 @@ Claude Code が戻りました。
 | [`ヨシの猫の組み直し.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%83%A8%E3%82%B7%E3%81%AE%E7%8C%AB%E3%81%AE%E7%B5%84%E3%81%BF%E7%9B%B4%E3%81%97.md) | 09-09 19:26 | ヨシの猫を差し替え-1 — 組み直しても輪郭が残らなかった。**取り下げる** |
 | [`ヨシの猫のマス目.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%83%A8%E3%82%B7%E3%81%AE%E7%8C%AB%E3%81%AE%E3%83%9E%E3%82%B9%E7%9B%AE.md) | 09-09 16:38 | ヨシの猫を差し替え-1 — マス目の割り出しと、箱を上げる案 |
 | [`土台の直し-1の四段.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%9C%9F%E5%8F%B0%E3%81%AE%E7%9B%B4%E3%81%97-1%E3%81%AE%E5%9B%9B%E6%AE%B5.md) | 09-09 13:02 | 土台の直し-1 ① — 四段の材料の出どころ（名指しの一覧） |
-| [`ヨシの猫を差し替え-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E3%83%A8%E3%82%B7%E3%81%AE%E7%8C%AB%E3%82%92%E5%B7%AE%E3%81%97%E6%9B%BF%E3%81%88-1.md) | 09-09 13:02 | ヨシの猫を差し替え-1 — 素材を測った。**輪郭が潰れるので止まる** |
 
 <!-- 控えの一覧 ここまで -->
