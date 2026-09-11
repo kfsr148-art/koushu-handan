@@ -1,6 +1,11 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
+        "time":  1789021145,
+        "message":  "pub-read の始末と、長く走る命令の上限（作法35）\n【一】押しの錠の名の食い違いを一行で出した（直していない）。公開の止まり-1 は新たな直しを入れていない。\n【二】pub-read を直した。読む字を UTF-8 に釘付けにし、読めない回は訳だけ60字で一行。作り値六通りで確かめ、写しは消した。\n【三】y0910-0052 の甲は既に入っており、常駐も新しい台本で走っている（入れ直し不要）。\n【四】自動モードは窓限りのまま。settings.json に permissions の節は無い。読むだけの台本は look.js で入っている。\n【五(1)】13時間の詰まりの三と四。命令の字面・詰まりの形・過去の同型を出し、上限の値を定め、CLAUDE.md へ作法35 を足した。\nファイル: ~/.claude/pipe-check.ps1（写し .bak-20260910a）／~/.claude/first-sense/first-sense.js／CLAUDE.md（作法35）\n実測: 錠の名＝正しくは Local\\ClaudeGitPushGate（push-mine.ps1:24・heavy-push.ps1:52）／git-push.ps1:150 は LocalClaudeGitPushGate\n未検収: 押しの黙り-1／土台の直し-1（実装へ）／錠の名の裁定／公開の止まり-1 で入れた二つの直しを残すかの裁定"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
         "time":  1789020363,
         "message":  "読むだけの台本（look.js）と、公開の止まりの割り直し\n【一】.claude/look.js（246行・node --check 通過）を置き、.claude/settings.json の allow へ二項足した（18→20件）。\n読むだけの八つの役（ls / read / tail / find / stat / git / get / json）を一本に寄せ、書く手・重い検査・押しは寄せていない。\n【二】公開の止まりを実読みで割り直した。押しの経路も書く側も動いており、手元と公開の差は0秒。\n【三】直した直後に立っていた pub-read の訴えは、curl | Out-String が CP932 で受けて JSON が化けていたのが元。控えへ落として UTF8 で読み直す形に直し、15:00:19 に ok が入った。\nファイル: .claude/look.js（新規）／.claude/settings.json（allow 二項・写し .bak-20260910 有）／~/.claude/pipe-check.ps1（写し .bak-20260910a）\n実測: pipe-check.ps1 を直した後＝err=0・545行・BOM有。pipe-warn.log に 2026-09-10 15:00:19 ok 訴えは無くなった\n未検収: 押しの錠の名の食い違い（git-push.ps1:150 だけ LocalClaudeGitPushGate）／押しの黙り-1／土台の直し-1（y0909-2 の保留）"
     },
