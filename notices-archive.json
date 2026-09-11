@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🕒 延びています",
+        "time":  1789004823,
+        "message":  "Claude Code が落ちたので開き直した。\n終了予定10:45を過ぎています（経過41分）"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789001762,
         "message":  "Capture the before answers が13時間走り続けていたの\nClaude Code が戻りました。"
