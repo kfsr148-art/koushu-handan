@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 外の見張り-2 終わり（残り0件）",
+        "time":  1789153795,
+        "message":  "外の見張り-2 — 終わり（残り0件）\nclaude.exe が1本以上なら元の URL、0本なら /fail を付けて打つ。hc-ping.log に本数と打った先を残す\n本物：04:08:33 claude=1 先=https://hc-ping.com/6537657a-… code=0 OK\n写し：0本→/fail・1本→元の URL・55秒以内は打たない（本物の /fail は打っていない）"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789153173,
         "message":  "写せます（3件）"
@@ -193,10 +198,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789055766,
         "message":  "落ちた後の起こし-1（一・二）と 帯の中の黙り-1（乙）— 三件とも済\n【落ちた後の起こし-1 一】ClaudeCodeAtLogon は既に在った。遊んでいた前の窓（claude 6360）を止めて Ready に戻し、00:42:14 に手で叩いた → claude 5684 が起き、一覧に「koushu-handan-b5 · interactive」と「Claude Code crash recovery · Remote Control · idle」が出た。00:43:55 に増えた窓を止めた（残るのはこの窓だけ・task は Ready）\n【落ちた後の起こし-1 二】.claude/settings.json の allow 20→24件（Bash(tail *)・~/.claude と Temp の Read）。書き換え系は足していない。別の claude -p（default・フック切り）で10の形を走らせ承認0件\n【帯の中の黙り-1（乙）】heavy-on／heavy-off／heavy-life を直し、最初の刻を heavy-first.txt に持たせた。写しに偽の送り手で六通り・本物の heavy-on／off で四通りとも通った\nファイル: koushu-handan/.claude/settings.json／~/.claude/heavy-on.ps1・heavy-off.ps1・heavy-life.ps1（写しは .bak-20260911）／reports/y0911-0047.md／report-latest.md\n実測: 承認0件（permission_denials 空・10件とも一度ずつ）／偽の送り手の六通り PASS／本物の四通り PASS（新しい帯 00:46:26=00:46:26・継ぎ足しで最初そのまま・切れた帯で書き直し・heavy-off で両方消えた）\n未検収: 0x4A の追い込み（「出して」待ち）／v1438 の実機（右下の版の字が v1438・判定の中身は不変）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789055162,
-        "message":  "落ちた後の起こし-1（ログオン時の claude --continue・読むだけの allow）を先に。帯の中の黙り-1 は試しの手前で一時止め\n見えていた画面が 2 枚から 1 枚になりました。claude のプロセスも 2 本から 1 本へ、同じだけ終わっています。\n閉じられたか、こちらで止めたものです。残っている物は無いので、手は要りません。"
     }
 ]
