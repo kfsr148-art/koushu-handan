@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 検査を雲へ-1 終わり（残り0件）",
+        "time":  1789188242,
+        "message":  "検査を雲へ-1 — 終わり（残り0件）\n①検査は GitHub Actions（ubuntu・Chromium）へ。対象が変わった push で 速い版→フル版→widget→panel。毎分の押しでは検査を飛ばす（毎分フル版は回せないため）\n②deploy は check の後段。Pages の出どころを枝から GitHub Actions へ切り替えた。軽い回は直前の落ちを見て配信しない。打ち切りは配信の段だけ（全体に掛けたら毎分の押しがフル版を打ち切っていた）\n③VAIO の pre-push は構文検査だけ（本体の script 4塊＋直下の .js・数秒・NG0件）。headless Edge はもう立てない\n④実測：ver.txt を食い違わせた版は check 失敗・deploy skipped で公開されず、戻した版は check 成功・deploy 成功・公開側の ver.txt は 1438 に戻った\n公開が 10:58 で止まっていたのは、枝からの Pages の組み立てが失敗し続けていたため。いまは直っている\n"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789187466,
         "message":  "検査を雲へ-1 — Actions で検査し、通らなければ配信しない\n④戻し df2706e4＝ver.txt を 1438 へ戻して push。走りの結果と公開側の ver.txt を背後で確かめている\n実測: ④落とす版 afc4df7d＝check は「速い版（node check-all --fast）」で失敗、deploy は skipped（公開側へ出ない）"
