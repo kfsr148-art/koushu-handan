@@ -478,7 +478,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v131（9月12日）</p>
+  <p class="ver" id="verTag">panel v132（9月12日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -506,7 +506,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '131';
+  var PANEL_VER = '132';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1648,33 +1648,18 @@
   var catI = 0;
   var catAwake = false;
   (function () {   /* 先読み。読めなくても画面は壊れない（img が出ないだけ） */
-    catFrames.concat(['cat-sleep-w.png', 'panel-icon-white.png', 'genba-face-40x36.png', 'genba-cat-160.png'])
+    catFrames.concat(['cat-sleep-w.png', 'genba-cat-160.png'])
       .forEach(function (n) { var im = new Image(); im.src = n; });
   })();
   function runCatTick() {
     var el = $('runcat');
     if (!el) { return; }
-      /* ヨシを返してほしい回は、寝ずに待つ姿にする（2026-09-07・黒猫の待機-1）。
-         ウィジェットの白猫と同じ絵（現場猫の影絵）を使う。
-         ＊「ヨシは現場猫の言葉」（作法11）なので、待つ姿も現場猫で揃える。
-         ＊次の指示待ち・連絡なしは、今までどおり寝姿のまま。
-         ＊**白版で揃えた（2026-09-09・猫を全部白へ-1）。** 頭の猫は六枚とも白にしたので、
-           ヨシ待ちの現場猫もそれに合わせる。黒版（#1b1b1b）は地との比が 1.07、白版は 16.17。
-           形・余白・透過は黒版と一画素も違わない（164x152・alpha の食い違い 0）。
-         ＊**2026-09-12・ヨシの猫-6 で元の影絵へ戻した。** 色付きの全身は、下の黄色い札の中に 160px（等倍）。
-         ＊**2026-09-12・ヨシの猫-7 で、ヨシ待ちの頭だけ顔の絵にした。** genba-face-40x36.png を
-           **40x36 の等倍**で出す（伸縮なし）。箱は 56x36 なので横に 16px 余るだけで、高さは同じ。
-           拡大は #runcat の image-rendering:pixelated に任せる。
-           ＊**普段は元の白猫のまま**——作業中はコマ送り、それ以外は寝姿。寸は下の行で戻す。 */
-      if (lastStat === 'ヨシ待ち') {
-        catAwake = false;
-        if (el.src.indexOf('genba-face-40x36') < 0) {
-          el.src = 'genba-face-40x36.png';
-          el.style.width = '40px'; el.style.height = '36px';
-        }
-        return;
-      }
-      if (el.style.width) { el.style.width = ''; el.style.height = ''; }   /* 40x36 から元の 56x36 へ戻す */
+    /* 頭の36pxの枠は、**ヨシ待ちでも白猫のまま**（2026-09-12・ヨシの猫-8）。
+       作業中はコマ送り（cat0〜4-w）、それ以外は寝姿（cat-sleep-w）。専用の枝は持たない。
+       ＊ヨシ待ちの印は、**下の黄色い札の中の全身（genba-cat-160.png・160px）だけ**が受け持つ。
+       ＊2026-09-07 の黒猫の待機-1 から 09-12 のヨシの猫-7 まで、ここには影絵・ドット絵・顔と
+         入れ替わりで現場猫を置いていたが、**どれも使わない**ことにした。
+         panel-check が、この枝に現場猫の絵の名が残っていないかを字面で見張っている。 */
     /* 判定の順は ヨシ待ち → 連絡なし → 作業中（v124・止まりの見分け-1）。
        生存が途切れている間は、凍った「作業中」で走らせない。 */
     if (lastLost) {
