@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🙋 ヨシしてください",
+        "time":  1789241763,
+        "message":  "頭の猫-2（黄色い札の猫を外す・panel v134）の検収\n印: y0913-0430\n待っているのは：黄色い札の中が字だけになり札が低くなったこと、題の右の猫80pxが出ていること\n答え方：「y0913-0430 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。\n実機: いまこの札が立っている間が、その見え方です。返事パネルを開いて、①黄色い札の中が「ヨシを返してください」の字だけで、札が低く・字が上寄り（左端の黄色い縦線は残る）②題「返事パネル」の右に現場猫の全身が80pxで出て、ぼやけず四角いまま③版の字が panel v134。\n未検収: 2026-09-12 21:00 v1439 の実機確認（人手待ち）"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789241556,
         "message":  "写せます（2件）"
@@ -193,10 +198,5 @@
         "title":  "🕒 延びています",
         "time":  1789204623,
         "message":  "--name=\"VAIO koushu-hand\n終了予定18:15を過ぎています（経過21分）"
-    },
-    {
-        "title":  "✅ 遠隔を繋ぎ直しました（VAIO koushu-handan）",
-        "time":  1789203461,
-        "message":  "遠隔の橋が切れていたので、窓を閉じて名を指して起こし直しました。\n新しい rcName ＝ VAIO koushu-handan\nbridgeSessionId ＝ session_012CxZiMh7nS8ddLbGsF8kUL\nclaude pid ＝ 112／閉じた刻 17:57:20\n窓の題 ＝ 麻雀 攻守判断 (Claude Code)  - C:\\Users\\user\\.local\\bin\\claude.exe  --continue --remote-control koushu-handan\n\n＊起こした形：claude --continue --remote-control \nkoushu-handan\n＊記録は ~/.claude/rc-restart.log にあります。"
     }
 ]
