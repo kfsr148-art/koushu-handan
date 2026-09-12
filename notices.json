@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 遠隔を繋ぎ直しました（VAIO koushu-handan）",
+        "time":  1789201687,
+        "message":  "遠隔の橋が切れていたので、窓を閉じて名を指して起こし直しました。\n新しい rcName ＝ VAIO koushu-handan\nbridgeSessionId ＝ session_012CxZiMh7nS8ddLbGsF8kUL\nclaude pid ＝ 2028／閉じた刻 17:27:44\n窓の題 ＝ 麻雀 攻守判断 (Claude Code)  - C:\\Users\\user\\.local\\bin\\claude.exe  --continue --remote-control --name=\"VAIO koushu-handan\"\n\n＊起こした形：claude --continue --remote-control \nVAIO koushu-handan\n＊記録は ~/.claude/rc-restart.log にあります。"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789199440,
         "message":  "写せます（2件）"
@@ -193,10 +198,5 @@
         "title":  "🕒 延びています",
         "time":  1789174023,
         "message":  "遠隔の橋-1 — 窓を閉じて名を指して起こし直す\n終了予定09:45を過ぎています（経過21分）"
-    },
-    {
-        "title":  "✅ 遠隔を繋ぎ直しました（koushu-handan-0a）",
-        "time":  1789172686,
-        "message":  "遠隔の橋が切れていたので、窓を閉じて名を指して起こし直しました。\n新しい rcName ＝ koushu-handan-0a\nbridgeSessionId ＝ session_012CxZiMh7nS8ddLbGsF8kUL\nclaude pid ＝ 2972／閉じた刻 09:23:56\n\n＊起こした形：claude --continue --remote-control \nkoushu-handan\n＊記録は ~/.claude/rc-restart.log にあります。"
     }
 ]
