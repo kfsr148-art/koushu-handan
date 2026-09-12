@@ -290,16 +290,13 @@
        字が一行の回（次の指示待ち）でも、二行の回（作業中）と同じ位置に見える。 */
   li.why.stline{min-height:79px; display:flex; align-items:center;}
   /* ヨシ待ちの黄色い札に入る現場猫（2026-09-12・ヨシの猫-6）。
-     ＊元絵（IMG_8974.png）の**元のマス目で拾い直した原寸90マス**を、最近傍で2倍にした 180px。
-       平均も色の丸めもしていないので、元絵の色そのまま。
-     ＊マス目は縁の並びの周期から測った——自家相関の山が 5・11・16・21 ＝ **1マス 5.333px**。
-       6・8・10 のどれでもなかった（境目の段差の強さ 横1.26倍・縦1.55倍で、48・60・80マスより強い）。
-     ＊札は猫が入るぶんだけ**伸ばす**（196px＝猫180＋上下8）。伸びるのはヨシ待ちの回だけで、
+     ＊絵は genba-cat-160.png（六色。2026-09-12 にチャット側で作り直した物）。**160px の等倍**で出し、
+       伸縮しない。端末の画面は2〜3倍の細かさなので、拡大はぼかさない指定に任せる（猫の潰れ-1 と同じ）。
+     ＊札は猫が入るぶんだけ**伸ばす**（176px＝猫160＋上下8）。伸びるのはヨシ待ちの回だけで、
        ほかの三通りは今までどおり 79px。**どちらも固定値**なので、字の長さで下の釦が動くことはない。
-     ＊猫は縮ませない（flex:0 0 auto）。右の字が長くても180pxのまま。
-     ＊端末の画面は2〜3倍の細かさなので、ぼかさない指定を掛ける（猫の潰れ-1 と同じ）。 */
-  li.why.stline.hasCat{min-height:196px; gap:10px;}
-  li.why.stline .yoshiCat{width:180px; height:180px; flex:0 0 auto; object-fit:contain;
+     ＊猫は縮ませない（flex:0 0 auto）。右の字が長くても160pxのまま。 */
+  li.why.stline.hasCat{min-height:176px; gap:10px;}
+  li.why.stline .yoshiCat{width:160px; height:160px; flex:0 0 auto; object-fit:contain;
     image-rendering:crisp-edges; image-rendering:pixelated;}
 
   /* 受け取り確認と、写し終えた件は畳んでおく。題の行だけ出し、押すと本文が開く。 */
@@ -1563,7 +1560,7 @@
        ＊絵は元絵を普通に縮めた120px。頭の36pxの枠は影絵のままで、こちらとは別物。
        ＊札に class を足して高さを 136px へ切り替える（下の釦は固定値どうしの切り替え）。 */
     var cat = (lastStat === 'ヨシ待ち')
-      ? '<img class="yoshiCat" src="genba-cat-180.png" alt="" width="180" height="180">' : '';
+      ? '<img class="yoshiCat" src="genba-cat-160.png" alt="" width="160" height="160">' : '';
     el.innerHTML = sh
       ? ('<li class="why stline' + (cat ? ' hasCat' : '') + '">' + cat + '<p class="m">' + sh + '</p></li>')
       : '';
@@ -1651,7 +1648,7 @@
   var catI = 0;
   var catAwake = false;
   (function () {   /* 先読み。読めなくても画面は壊れない（img が出ないだけ） */
-    catFrames.concat(['cat-sleep-w.png', 'panel-icon-white.png', 'genba-cat-180.png'])
+    catFrames.concat(['cat-sleep-w.png', 'panel-icon-white.png', 'genba-cat-160.png'])
       .forEach(function (n) { var im = new Image(); im.src = n; });
   })();
   function runCatTick() {
@@ -1665,7 +1662,7 @@
            ヨシ待ちの現場猫もそれに合わせる。黒版（#1b1b1b）は地との比が 1.07、白版は 16.17。
            形・余白・透過は黒版と一画素も違わない（164x152・alpha の食い違い 0）。
          ＊**2026-09-12・ヨシの猫-6 で元の影絵へ戻した。** 頭の36pxの枠は影絵のまま。
-           色付きの現場猫は、下の黄色い札の中に 180px（原寸90マスの2倍）で出す。 */
+           色付きの現場猫は、下の黄色い札の中に 160px（等倍）で出す。 */
       if (lastStat === 'ヨシ待ち') {
         catAwake = false;
         if (el.src.indexOf('panel-icon-white') < 0) { el.src = 'panel-icon-white.png'; }
