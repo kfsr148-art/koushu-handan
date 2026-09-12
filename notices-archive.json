@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 外の見張り-2 終わり（残り0件）",
+        "time":  1789153795,
+        "message":  "外の見張り-2 — 終わり（残り0件）\nclaude.exe が1本以上なら元の URL、0本なら /fail を付けて打つ。hc-ping.log に本数と打った先を残す\n本物：04:08:33 claude=1 先=https://hc-ping.com/6537657a-… code=0 OK\n写し：0本→/fail・1本→元の URL・55秒以内は打たない（本物の /fail は打っていない）\n"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789153083,
         "message":  "hc-ping.log の頭三行を写して報告しろ\n外の見張り-1＝inbox-watch.ps1 の巡回の末尾に Ping-Outside（前回から55秒以上の回だけ curl.exe -fsS -m 10・失敗しても巡回は続ける・~/.claude/hc-ping.log へ一行・ntfy は通らないので ntfy-count.txt に入らない）。写し .bak-20260912c・構文OK 1073行・常駐 pid 8116 起動03:43:22＞台本03:42:40・1本\nファイル: ~/.claude/inbox-watch.ps1／frame-work.ps1／orders-open.tsv／reports/外の見張り-1.md\n実測: hc-ping.log の頭三行＝2026-09-12 03:43:49 code=0 OK ／ 03:44:57 code=0 OK ／ 03:45:59 code=0 OK\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）"
