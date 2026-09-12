@@ -828,15 +828,26 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     ['過去の札の件数の読む元', 'archive-count.txt',              '件数の読む元が無い'],
     ['過去の札の件数の控え',   'arcCount',                       '件数を控える変数が無い'],
     ['過去の札の件数を先に読む','loadArcCount(head, ul);',        '起動で件数を読んでいない'],
-    ['ヨシ待ちの絵',       'panel-icon-white.png',           'ヨシ待ちの絵が無い'],
     ['コマ送りは白版',     "'cat0-w.png'",                    'コマ送りが白版でない'],
-    ['ヨシ待ちで待機の姿', "if (lastStat === 'ヨシ待ち') {",  'ヨシ待ちの枝が無い'],
     ['指示待ちで寝姿',     "el.src = 'cat-sleep-w.png'",      '寝姿へ戻す枝が無い'],
     ['絵の形を潰さない',   'object-fit:contain',              '題の猫の箱の指定が無い'],
+    ['ヨシ待ちの印は札の全身', 'genba-cat-160.png',           'ヨシ待ちの札の猫が無い'],
   ];
   for (const [name, needle, msg] of need) {
     if (html.indexOf(needle) >= 0) { ok(name); } else { ng(name + ' … ' + msg); }
   }
+  /* 頭の36pxの枠に、ヨシ待ち専用の絵を置かない（2026-09-12・ヨシの猫-8）。
+     ＊2026-09-07 から 09-12 まで、ここには影絵・ドット絵・顔が入れ替わりで置かれていた。
+       ヨシ待ちの印は**黄色い札の中の全身だけ**が受け持つ決めにしたので、字面で見張る。
+     ＊runCatTick の中だけを見る。札の側（paintStateLine）の猫まで数えないため。 */
+  (function () {
+    const i = html.indexOf('function runCatTick()');
+    const body = (i >= 0) ? html.slice(i, i + 2000) : '';
+    const bad = ['genba-face', 'genba-cat-40', 'panel-icon-white'].filter(n => body.indexOf(n) >= 0);
+    if (!i) { ng('頭はヨシ待ちでも白猫 … runCatTick が見つからない'); }
+    else if (bad.length) { ng('頭はヨシ待ちでも白猫 … ' + bad.join('・') + ' が残っている'); }
+    else { ok('頭はヨシ待ちでも白猫'); }
+  })();
   /* 版の三箇所（作法4）。ここも字面で切り出す。 */
   function pick(src, head, tail) {
     const a = src.indexOf(head);
