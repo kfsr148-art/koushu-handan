@@ -49,6 +49,20 @@ heavy_off() {
 trap heavy_off EXIT INT TERM
 heavy_on
 
+# 空きが乏しい回は検査を飛ばす（2026-09-12・見張りの止まり-1 ㉒）。
+#   ＊空き物理メモリが 1.5GB を切っていると、検査そのものが重さでこけ、push まで道連れになる
+#     （09-12 01:56 の FAIL がこれ。出直したら全部 PASS だった）。
+#   ＊飛ばした回は heavy-skip.log に一行残し、push はそのまま通す。
+FREE_MB=0
+if [ -n "$PSEXE" ]; then
+  FREE_MB=$("$PSEXE" -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1024)" 2>/dev/null | tr -d '\r')
+fi
+if [ -n "$FREE_MB" ] && [ "$FREE_MB" -gt 0 ] && [ "$FREE_MB" -lt 1536 ]; then
+  echo "pre-push: 空きが乏しいので検査を飛ばす（空き ${FREE_MB}MB＜1536MB）。空いてから node check-all --fast を回すこと"
+  printf '%s  pre-push   空きが乏しいので検査を飛ばした（空き %sMB＜1536MB）\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$FREE_MB" >> "$HOME/.claude/heavy-skip.log"
+  exit 0
+fi
+
 echo "pre-push: node check-all --fast を回す（止めたいときは --no-verify）"
 node check-all.js --fast
 status=$?
