@@ -1,25 +1,39 @@
 # いまの様子
 
-**手待ち** — pid 2028 の窓の遠隔の橋が本当に繋がって
+**作業中** — Codeタブの「VAIO koushu-hand
 
-未処理 0 件 ／ 2026-09-12 17:45:39 書き出し（VAIOの時計）
+未処理 0 件 ／ 2026-09-12 17:51:57 書き出し（VAIOの時計）
 
 ＊この頁は知らせが出るたびに書き直されます。話題名は載せません。
 ＊押し送り（ntfy）へ出るのはヨシ待ちだけです。ここには押し送っていないものも並びます。
-**押し送りは止めています**（本日 66 件で上限20件に達しました）。
+**押し送りは止めています**（本日 68 件で上限20件に達しました）。
 ヨシ待ちだけなら1日十数件のはずです。この数は、別の経路から漏れている合図です。
 
 ---
 
 ## 送った知らせ（新しい順に二十件まで）
 
-### 1. ✅ 終わりました（返事不要）
+### 1. ✅ 遠隔を繋ぎ直しました（VAIO koushu-handan）
+
+```
+遠隔の橋が切れていたので、窓を閉じて名を指して起こし直しました。
+新しい rcName ＝ VAIO koushu-handan
+bridgeSessionId ＝ session_012CxZiMh7nS8ddLbGsF8kUL
+claude pid ＝ 2388／閉じた刻 17:51:41
+窓の題 ＝ 麻雀 攻守判断 (Claude Code)  - C:\Users\user\.local\bin\claude.exe  --continue --remote-control --name="VAIO koushu-handan"
+
+＊起こした形：claude --continue --remote-control 
+VAIO koushu-handan
+＊記録は ~/.claude/rc-restart.log にあります。
+```
+
+### 2. ✅ 終わりました（返事不要）
 
 ```
 写せます（5件）
 ```
 
-### 2. ✅ 終わりました（返事不要）
+### 3. ✅ 終わりました（返事不要）
 
 ```
 pid 2028 の窓の遠隔の橋が本当に繋がって
@@ -27,7 +41,7 @@ pid 2028 の窓の遠隔の橋が本当に繋がって
 未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）
 ```
 
-### 3. ✅ pid 2028 の橋は繋がっている（bridgeSessionId は会話の番号）
+### 4. ✅ pid 2028 の橋は繋がっている（bridgeSessionId は会話の番号）
 
 ```
 pid 2028 の遠隔の橋 … 繋がっている
@@ -43,7 +57,7 @@ bridgeSessionId が 09:24 と同じ理由 … これは繋ぎ直すたびに変�
 直しは当てていない
 ```
 
-### 4. 🪟 連携に訴えがあります（done-swept）
+### 5. 🪟 連携に訴えがあります（done-swept）
 
 ```
 連携の見張りから訴えが出ています。
@@ -54,7 +68,7 @@ bridgeSessionId が 09:24 と同じ理由 … これは繋ぎ直すたびに変�
 ＊全部の記録は ~/.claude/pipe-warn.log にあります。
 ```
 
-### 5. ✅ 終わりました（返事不要）：⑪受信箱に来た文を全部件名にするな。台帳に開くのは「以上
+### 6. ✅ 終わりました（返事不要）：⑪受信箱に来た文を全部件名にするな。台帳に開くのは「以上
 
 ```
 ⑪受信箱に来た文を全部件名にするな。台帳に開くのは「以上
@@ -62,20 +76,6 @@ settings.json の env に CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1 を足した（Cl
 三つの起こし方を印と同じ命令へ揃えた。cmd.exe /k title 麻雀 攻守判断 (Claude Code) & C:/Users/user/.local/bin/claude.exe --continue --remote-control --name="VAIO koushu-handan"（実物は円記号の道）。デスクトップの印・ClaudeCodeAtLogon・rc-restart.ps1 の三つ
 rc-restart.ps1 に、起きた窓の題を控えて札へ載せる手を足した（構文誤り0・73行）
 今の窓（claude 2972・親 cmd 1740）を閉じて、印と同じ窓で起こし直す
-```
-
-### 6. ✅ 遠隔を繋ぎ直しました（VAIO koushu-handan）
-
-```
-遠隔の橋が切れていたので、窓を閉じて名を指して起こし直しました。
-新しい rcName ＝ VAIO koushu-handan
-bridgeSessionId ＝ session_012CxZiMh7nS8ddLbGsF8kUL
-claude pid ＝ 2028／閉じた刻 17:27:44
-窓の題 ＝ 麻雀 攻守判断 (Claude Code)  - C:\Users\user\.local\bin\claude.exe  --continue --remote-control --name="VAIO koushu-handan"
-
-＊起こした形：claude --continue --remote-control 
-VAIO koushu-handan
-＊記録は ~/.claude/rc-restart.log にあります。
 ```
 
 ### 7. ✅ 終わりました（返事不要）
