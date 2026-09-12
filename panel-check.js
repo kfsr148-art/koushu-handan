@@ -831,7 +831,7 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     ['コマ送りは白版',     "'cat0-w.png'",                    'コマ送りが白版でない'],
     ['指示待ちで寝姿',     "el.src = 'cat-sleep-w.png'",      '寝姿へ戻す枝が無い'],
     ['絵の形を潰さない',   'object-fit:contain',              '題の猫の箱の指定が無い'],
-    ['ヨシ待ちの印は札の全身', 'genba-cat-160.png',           'ヨシ待ちの札の猫が無い'],
+    ['ヨシ待ちは字を上へ寄せる', 'yoshiTop',            'ヨシ待ちの札の寄せが無い'],
   ];
   for (const [name, needle, msg] of need) {
     if (html.indexOf(needle) >= 0) { ok(name); } else { ng(name + ' … ' + msg); }
