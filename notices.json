@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）：過去の札の上限-1 と 窓を見やすく-2",
+        "time":  1789218020,
+        "message":  "過去の札の上限-1 と 窓を見やすく-2\n過去の札を切り詰めた。notices-archive.json は 200件 → 50件（150件を捨てた）。archive-count.txt も 50 に直し、押した（9dab87a7）。\n以後の頭打ちも 50 にした。notify-record.ps1 の「200枚を保つ」を「50枚を保つ」へ替え、押し出しの行を if ($all.Count -gt 50) { $all = @($all[0..49]) } にした（写しは .bak-20260912・構文OK）。並びは刻の新しい順なので、越えた分は古い方から落ちる。\n窓を見やすく-2 … 字を24pxから16pxへ下げた（BIZ UDゴシックのまま・最大化のまま）。HKCU\\Console の項と、デスクトップの印（.lnk）の両方へ入れた。\n.lnk 側は Console の塊（NT_CONSOLE_PROPS・204バイト・目印 0xA0000002）を組んで末尾の並びへ直に足した。WScript.Shell では書けないため。写しは「麻雀 攻守判断 (Claude Code).lnk.bak-20260912」。\nv1439 ヨシを受けて stable を 19664dea（v1439）へ進めた（前は 93ad99e3＝v1438）。"
+    },
+    {
         "title":  "✅ 窓を起こし直しました（0桁x0行・字0px）",
         "time":  1789217531,
         "message":  "窓を見やすく-2 の形（BIZ UDゴシック 16px・最大化）で起こし直しました。起き直した窓の実測です。\n字 … （横0 / 縦0 ピクセル）\n窓 … 0桁 x 0行／枠 1222x784px（最大化）\nclaude pid 4796／閉じた刻 21:51:51／戻るまで 8秒\n\n＊記録は ~/.claude/window-restart.log にあります。"
@@ -193,10 +198,5 @@
         "title":  "✅ デスクトップの印を VAIO koushu-handan の形へ",
         "time":  1789199282,
         "message":  "デスクトップの印「麻雀 攻守判断 (Claude Code).lnk」を揃えた\nTarget    : C:\\Windows\\System32\\cmd.exe\nArguments : /k C:\\Users\\user\\.local\\bin\\claude.exe --continue --remote-control --name=\"VAIO koushu-handan\"\nWorkingDir: C:\\Users\\user\\Desktop\\mahjong\\koushu-handan（そのまま）\n旧 Arguments : /k claude\n＊実行ファイルの道は引用符なしにした。cmd /k は「引用符で始まり引用符で終わる」引数の両端を落とすので、道を囲むと名の引用符まで外れて --name=VAIO と koushu-handan に割れる\n＊確かめ … 同じ渡し方で node へ流すと --name=VAIO koushu-handan が一語のまま届いた\n＊これで、この印から起こした窓も Code タブの一覧で VAIO koushu-handan になる（rc-restart.ps1・ClaudeCodeAtLogon と同じ形）"
-    },
-    {
-        "title":  "✅ ヨシの猫-4 ドット絵を作った（40/80/160・panel v129）",
-        "time":  1789198657,
-        "message":  "ヨシの猫-4 … 現場猫のドット絵を作り直した（panel v129・a52f7fe6 で push 済み）\n作り方 … IMG_8974.png（480x480）を ÷12 の平均で 40x40 へ。色は白・灰・濃灰・黒・黄・桃の六色へ丸め、透けと接する中身のマスを黒にして輪郭を1マスで引き直した\nマスの内訳 … 白155／灰210／濃灰140／黒175／黄3／桃4／透け913（合計1600マス）\n＊目（黄）と舌（桃）は平均だと消えるので、12x12 の中にはっきり在る回だけ優先して残した（最初の焼きは黄1・桃0だった）\n絵 … genba-cat-40.png（40x40・原寸）／genba-cat-80.png（2倍）／genba-cat-160.png（4倍）\n写しの道 … https://kfsr148-art.github.io/koushu-handan/genba-cat-160.png （40は …/genba-cat-40.png）\nパネル … ヨシ待ちのときだけ 40マスを等倍（1マス＝1css px）で出す。箱は 56x36 なので上下へ2pxはみ出す。拡大は image-rendering:pixelated に任せる\nウィジェット … ヨシ待ちだけ genba-cat-80.png（2倍）。ふだんは元の白猫のまま\nntfy … ヨシ待ちの押し送りの Icon: を genba-cat-160.png（4倍）へ。ほかの題には付けない"
     }
 ]
