@@ -161,7 +161,7 @@ const URL_IMG     = 'https://kfsr148-art.github.io/koushu-handan/';
 const CAT_OF = {
   '作業中':   'cat2-white.png',        /* 走るコマの一枚 */
   '手待ち':   'cat-sleep-white.png',   /* 眠り */
-  'ヨシ待ち': 'panel-icon-white.png',  /* 現場猫の白い影絵（ヨシは現場猫の言葉） */
+  'ヨシ待ち': 'panel-icon-w3.png',     /* 現場猫（2026-09-12・猫の潰れ-1 で3倍の絵へ。パネルと共用をやめた） */
   '異常':     'cat4-white.png'         /* ふだんと違う姿 */
 };
 

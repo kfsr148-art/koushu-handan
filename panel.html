@@ -49,7 +49,11 @@
      ＊絵の切り替えは script 側（runCatTick）。作業中＝cat0〜4 のコマ送り、
        それ以外＝cat-sleep の静止絵。 */
   #runcat{width:56px; height:36px; flex:0 0 auto;
-    background:transparent; image-rendering:auto;
+    background:transparent;
+    /* 絵をぼかさない（2026-09-12・猫の潰れ-1）。端末の画面は2〜3倍の細かさなので、
+       等倍（56x36）の絵をそのまま置くとブラウザが滑らかに引き伸ばして潰れる。
+       ＊crisp-edges を先に、pixelated を後に書く（読める方が後ろで勝つ）。 */
+    image-rendering:crisp-edges; image-rendering:pixelated;
     /* 猫の36pxは h1 の行（約30px）より高い。そのまま置くとヘッダーが 65.4→71px に
        5.6px 伸びる（実測）。縦の余白を負に取り、**箱の上では30pxぶん**として数えさせる。
        絵は等倍のまま、上下へ3pxずつはみ出して描かれる（header の余白の中なので切れない）。 */
@@ -465,7 +469,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v127（9月11日）</p>
+  <p class="ver" id="verTag">panel v128（9月12日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -493,7 +497,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '127';
+  var PANEL_VER = '128';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
