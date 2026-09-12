@@ -1,5 +1,25 @@
 [
     {
+        "title":  "✅ pid 2028 の橋は繋がっている（bridgeSessionId は会話の番号）",
+        "time":  1789202610,
+        "message":  "pid 2028 の遠隔の橋 … 繋がっている\nsessions/2028.json … pid=2028／name=\"VAIO koushu-handan\"／nameSource=user／kind=interactive／version=2.1.269／cwd=…\\koushu-handan／pidDomain=win32:vaio／status=busy／bridgeSessionId=session_012CxZiMh7nS8ddLbGsF8kUL\n画面の遠隔の状態 … 画面そのものは私からは読めない。代わりに三つで裏づけた\n  ①雲側の一覧（ListAgents）が、この窓を「VAIO koushu-handan [0d407a]」として名指しで返す＝雲から見えている\n  ②同じ一覧に、別の機械の遠隔（koushu-handan [1cca97] ほか4件）と雲の会話（遠隔の再接続 [7c7069]・idle）が並ぶ＝口座側と繋がっている\n  ③claude.exe（pid 2028）が 443 へ6本の確立した繋ぎを持つ（160.79.104.10 と 2607:6bc0::10 ほか）\nbridgeSessionId が 09:24 と同じ理由 … これは繋ぎ直すたびに変わる番号ではなく、この会話に紐づく雲側の会話の番号\n  （claude.ai/code/session_012CxZiMh7nS8ddLbGsF8kUL）。--continue で同じ会話を継いでいるので同じで正しい。\n  窓ごとに変わるのは pid と name の側で、今回は 2972→2028・koushu-handan-0a→VAIO koushu-handan と変わっている\nしたがって「橋が張り直されていない」証拠にはならない。繋がっていない徴候は見つからなかった\n直しは当てていない"
+    },
+    {
+        "title":  "🪟 連携に訴えがあります（done-swept）",
+        "time":  1789202435,
+        "message":  "連携の見張りから訴えが出ています。\n\n・done-swept … 終わりの札が立っていなかったので立て直した（前の仕事の取り残し・⑪受信箱に来た文を全部件名にするな。台帳に開くのは「以上・stop 2026-09-12 17:27:38・13分遅れ）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）：⑪受信箱に来た文を全部件名にするな。台帳に開くのは「以上",
+        "time":  1789202421,
+        "message":  "⑪受信箱に来た文を全部件名にするな。台帳に開くのは「以上\nsettings.json の env に CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1 を足した（Claude Code が窓の題を会話の要約で書き替えるのを止める。写し settings.json.bak-20260912b）\n三つの起こし方を印と同じ命令へ揃えた。cmd.exe /k title 麻雀 攻守判断 (Claude Code) \u0026 C:/Users/user/.local/bin/claude.exe --continue --remote-control --name=\"VAIO koushu-handan\"（実物は円記号の道）。デスクトップの印・ClaudeCodeAtLogon・rc-restart.ps1 の三つ\nrc-restart.ps1 に、起きた窓の題を控えて札へ載せる手を足した（構文誤り0・73行）\n今の窓（claude 2972・親 cmd 1740）を閉じて、印と同じ窓で起こし直す"
+    },
+    {
+        "title":  "✅ 遠隔を繋ぎ直しました（VAIO koushu-handan）",
+        "time":  1789201687,
+        "message":  "遠隔の橋が切れていたので、窓を閉じて名を指して起こし直しました。\n新しい rcName ＝ VAIO koushu-handan\nbridgeSessionId ＝ session_012CxZiMh7nS8ddLbGsF8kUL\nclaude pid ＝ 2028／閉じた刻 17:27:44\n窓の題 ＝ 麻雀 攻守判断 (Claude Code)  - C:\\Users\\user\\.local\\bin\\claude.exe  --continue --remote-control --name=\"VAIO koushu-handan\"\n\n＊起こした形：claude --continue --remote-control \nVAIO koushu-handan\n＊記録は ~/.claude/rc-restart.log にあります。"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789199440,
         "message":  "写せます（2件）"
@@ -38,11 +58,6 @@
         "title":  "✅ 猫の潰れ-1 直した（panel v128・表示56x36/素56x36・猫30px）",
         "time":  1789197749,
         "message":  "猫の潰れ-1 … 直した（panel v128）\nパネルの表示 … 56x36 CSS px（#runcat の箱と img の width/height が同じ）。絵も 56x36 で、その中の猫は 30px。つまり表示は素の1倍で、枠での伸縮はしていない\n潰れていた因 … 端末の画面が2〜3倍の細かさなので、等倍の絵をブラウザが滑らかに引き伸ばしていた\n①image-rendering … #runcat に crisp-edges と pixelated を併記（読める方が勝つ）。これで2倍でも3倍でも角が立つ\n②整数倍 … 56x36 の絵を 56x36 で出す＝1倍のまま。object-fit:contain も効いているが、寸が同じなので伸縮しない\nウィジェット … Scriptable に image-rendering が無いので、絵の側を端末の画素に合わせた。imageSize は 26x17 pt のまま、絵は 78x51（3倍）・猫48px\nヨシ待ちの絵 … パネルと共用をやめ panel-icon-w3.png（78x51）へ向け直した\n素のマス目 … 元絵 IMG_8974.png は 480x480 のぼかし絵で、一マス＝1画素。縮小は 480 の約数だけ（30px＝÷16／48px＝÷10）"
-    },
-    {
-        "title":  "🪟 連携に訴えがあります（pub-read）",
-        "time":  1789194626,
-        "message":  "連携の見張りから訴えが出ています。\n\n・pub-read … 公開側の notices.json が読めなかった：無効な JSON プリミティブです: 。\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
     },
     {
         "title":  "✅ 終わりました（返事不要）",
@@ -175,11 +190,6 @@
         "message":  "見張りの巡回（watch-notify）が前回から 31分空いていました。\n前回の記録 2026-09-12 09:55:04／今回 2026-09-12 10:26:17\n\n＊どの段で止まったかは ~/.claude/watch-step-log.txt の足跡にあります。"
     },
     {
-        "title":  "🪟 連携に訴えがあります（done-swept）",
-        "time":  1789175441,
-        "message":  "連携の見張りから訴えが出ています。\n\n・done-swept … 終わりの札が立っていなかったので立て直した（札の本文-1 — 終わりの札が前の仕事の文で出る・stop 2026-09-12 09:58:14・12分遅れ）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
-    },
-    {
         "title":  "✅ 終わりました（返事不要）：札の本文-1 — 終わりの札が前の仕事の文で出る",
         "time":  1789175421,
         "message":  "札の本文-1 — 終わりの札が前の仕事の文で出る\n遠隔の橋-1 は 09:24 に済んでいた（rcName koushu-handan-0a・pid 2972）。台帳 797行を済にし、欄を壊した置換は写しから組み直した\n札の本文-1 の原因＝札の本文は控えの 完了/実測/ファイル/実機 の行から組まれるが、件名だけ枠ごとに機械が書き替えていたので、本文が前の仕事のまま残った（04:52・09:04・09:12・09:24 の四回とも 外の見張り-2 の文）\n直し＝frame-work.ps1 が新しい仕事の件名を書く回に、前の仕事の本文の行（完了・実測・ファイル・実機・種類・そのまま）を控えから外し、work-note-prev.txt へ退ける\n報告 eaffba03 は origin/main に載った（手押しは空きメモリ不足で止められたが、見張りの押しが先に運んでいた）"
@@ -188,15 +198,5 @@
         "title":  "✅ 札の本文-1 終わり（残り0件）",
         "time":  1789174522,
         "message":  "札の本文-1 — 終わり（残り0件）\n遠隔の橋-1 は 09:24 に済んでいた（rcName koushu-handan-0a・pid 2972）。台帳 797行を済にした\n札の本文の食い違いの因＝本文は控えの 完了/実測/ファイル/実機 の行から組むが、件名だけ枠ごとに機械が書き替えるので、本文が前の仕事のまま残っていた（04:52・09:04・09:12・09:24 の四回とも 外の見張り-2 の文）\n直し＝frame-work.ps1 が新しい件名を書く回に前の本文を work-note-prev.txt へ退ける。残すのは 開始・件名・見込み・待ち・未検収\n写しでの検収＝件名が新しい仕事名に替わり、前の本文三行は退き、未検収は残った"
-    },
-    {
-        "title":  "🕒 延びています",
-        "time":  1789174023,
-        "message":  "遠隔の橋-1 — 窓を閉じて名を指して起こし直す\n終了予定09:45を過ぎています（経過21分）"
-    },
-    {
-        "title":  "✅ 遠隔を繋ぎ直しました（koushu-handan-0a）",
-        "time":  1789172686,
-        "message":  "遠隔の橋が切れていたので、窓を閉じて名を指して起こし直しました。\n新しい rcName ＝ koushu-handan-0a\nbridgeSessionId ＝ session_012CxZiMh7nS8ddLbGsF8kUL\nclaude pid ＝ 2972／閉じた刻 09:23:56\n\n＊起こした形：claude --continue --remote-control \nkoushu-handan\n＊記録は ~/.claude/rc-restart.log にあります。"
     }
 ]
