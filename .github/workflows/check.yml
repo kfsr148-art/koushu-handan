@@ -20,14 +20,11 @@ permissions:
   pages: write
   id-token: write
 
-# 新しい push が来たら古い走りは打ち切る。最後の一本が配信する。
-concurrency:
-  group: pages
-  cancel-in-progress: true
-
 jobs:
   check:
     runs-on: ubuntu-latest
+    # ＊検査の段には打ち切りを掛けない。掛けると毎分の state.json の押しが
+    #   走っているフル版を毎回打ち切る（2026-09-12 13:08 の cancelled がこれ）。
     timeout-minutes: 30
     outputs:
       heavy: ${{ steps.pick.outputs.heavy }}
@@ -50,6 +47,22 @@ jobs:
             echo "heavy=1" >> "$GITHUB_OUTPUT"; echo "→ 検査を回す"
           else
             echo "heavy=0" >> "$GITHUB_OUTPUT"; echo "→ 検査は飛ばす（配信だけ）"
+          fi
+
+      # 軽い回（state.json などの押し）は検査を飛ばすが、**直前の走りが落ちていたら配信しない**。
+      #   ＊落ちた版のまま、あとの軽い押しが配信してしまうのを止めるため。
+      #   ＊直った版が通れば、次の軽い回から配信が戻る（ひとりでに戻る）。
+      - name: 直前の走りが落ちていないかを見る
+        if: steps.pick.outputs.heavy == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LAST=$(gh run list -R "$GITHUB_REPOSITORY" -w "自動検査と配信" -b "$GITHUB_REF_NAME" -L 8 \
+                  --json status,conclusion --jq '[.[] | select(.status=="completed" and (.conclusion=="success" or .conclusion=="failure"))][0].conclusion')
+          echo "直前の走り: ${LAST:-なし}"
+          if [ "$LAST" = "failure" ]; then
+            echo "直前の検査が落ちている。配信しない（直った版が通れば戻る）"
+            exit 1
           fi
 
       - name: ブラウザ（Chromium）を用意する
@@ -96,6 +109,10 @@ jobs:
   # 配信。**検査が通った回だけ**走る（落ちた版は公開されない）。
   deploy:
     needs: check
+    # 配信だけ打ち切りを掛ける。最後の一本が配信する。
+    concurrency:
+      group: pages
+      cancel-in-progress: true
     if: needs.check.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 10
