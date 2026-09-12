@@ -1,5 +1,20 @@
 [
     {
+        "title":  "✅ IMG_8974.png は未使用（使い先の一覧）",
+        "time":  1789192133,
+        "message":  "IMG_8974.png の使い先 … 未使用\nリポジトリ直下に在る（103,673バイト・git は 45e1e775 の一件だけ）\nパネルのヨシ待ちの札 … 未使用（使っているのは panel-icon-white.png と cat0-w〜cat4-w.png・cat-sleep-w.png）\nパネルのホーム画面の絵 … 未使用（panel-icon.png を使う）\nntfy の icon … 未使用（Icon: の頭は送っていない。題と本文だけ）\n本体 koushu-handan.html・ウィジェット … 未使用\n名が出るのは文章だけ … reports/ヨシの猫を差し替え-1.md／ヨシの猫のマス目.md／notices-archive.json／state.json／~/.claude の台帳と控え\n経緯 … ヨシの猫を差し替え-1 は 2026-09-09 に取り下げ（480x480 を36pxへ縮めると輪郭が潰れ、比1.3で3.0に届かず）。panel-icon-white.png のまま据え置き"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789191755,
+        "message":  "写せます（1件）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789191664,
+        "message":  "IMG_8974.png（現場猫の絵）はどこで使\n何をしたかの控えがありません（止まる側の書き忘れです）。\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789189986,
         "message":  "😽の題を「終わったにゃ、写して」だけに戻せ\n何をしたかの控えがありません（止まる側の書き忘れです）。\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）"
@@ -43,11 +58,6 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789187466,
         "message":  "検査を雲へ-1 — Actions で検査し、通らなければ配信しない\n④戻し df2706e4＝ver.txt を 1438 へ戻して push。走りの結果と公開側の ver.txt を背後で確かめている\n実測: ④落とす版 afc4df7d＝check は「速い版（node check-all --fast）」で失敗、deploy は skipped（公開側へ出ない）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789187375,
-        "message":  "写せます（1件）"
     },
     {
         "title":  "✅ 終わりました（返事不要）",
@@ -188,15 +198,5 @@
         "title":  "✅ 終わりました（返事不要）：外の見張り-2 — claude.exe が0本なら /fail を打つ",
         "time":  1789154466,
         "message":  "外の見張り-2 — claude.exe が0本なら /fail を打つ\n同じ枠が三度書かれた一枚として届いた（控えた枠は1行）。一件として受けた\n⑯の差し替えはこの窓に効いていた（03:39:05 の枠を 03:39:16 に frame-work が捌いた）\n仕事名が「ng.com/6537657a-d3fe-4」（URL の切れ端）になっていた。frame-work.ps1 で URL を先に落とし、名は日本語の字を含むものだけにした。台帳の自動の行は外の見張り-1 へ統合\n外の見張り-1＝inbox-watch.ps1 の巡回の末尾に Ping-Outside（前回から55秒以上の回だけ curl.exe -fsS -m 10・失敗しても巡回は続ける・~/.claude/hc-ping.log へ一行・ntfy は通らないので ntfy-count.txt に入らない）。写し .bak-20260912c・構文OK 1073行・常駐 pid 8116 起動03:43:22＞台本03:42:40・1本\n外の見張り-2＝Ping-Outside が claude.exe を数え、1本以上なら元の URL、0本なら末尾に /fail を付けて打つ。hc-ping.log に「claude=本数  先=打った URL」を残す。写し .bak-20260912d・構文OK 1078行・常駐 pid 4308 起動04:08:16＞台本04:07:42・1本"
-    },
-    {
-        "title":  "✅ 外の見張り-2 終わり（残り0件）",
-        "time":  1789153795,
-        "message":  "外の見張り-2 — 終わり（残り0件）\nclaude.exe が1本以上なら元の URL、0本なら /fail を付けて打つ。hc-ping.log に本数と打った先を残す\n本物：04:08:33 claude=1 先=https://hc-ping.com/6537657a-… code=0 OK\n写し：0本→/fail・1本→元の URL・55秒以内は打たない（本物の /fail は打っていない）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789153083,
-        "message":  "hc-ping.log の頭三行を写して報告しろ\n外の見張り-1＝inbox-watch.ps1 の巡回の末尾に Ping-Outside（前回から55秒以上の回だけ curl.exe -fsS -m 10・失敗しても巡回は続ける・~/.claude/hc-ping.log へ一行・ntfy は通らないので ntfy-count.txt に入らない）。写し .bak-20260912c・構文OK 1073行・常駐 pid 8116 起動03:43:22＞台本03:42:40・1本\nファイル: ~/.claude/inbox-watch.ps1／frame-work.ps1／orders-open.tsv／reports/外の見張り-1.md\n実測: hc-ping.log の頭三行＝2026-09-12 03:43:49 code=0 OK ／ 03:44:57 code=0 OK ／ 03:45:59 code=0 OK\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）"
     }
 ]
