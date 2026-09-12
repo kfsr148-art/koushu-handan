@@ -1,6 +1,11 @@
 [
     {
         "title":  "✅ 遠隔を繋ぎ直しました（VAIO koushu-handan）",
+        "time":  1789203461,
+        "message":  "遠隔の橋が切れていたので、窓を閉じて名を指して起こし直しました。\n新しい rcName ＝ VAIO koushu-handan\nbridgeSessionId ＝ session_012CxZiMh7nS8ddLbGsF8kUL\nclaude pid ＝ 112／閉じた刻 17:57:20\n窓の題 ＝ 麻雀 攻守判断 (Claude Code)  - C:\\Users\\user\\.local\\bin\\claude.exe  --continue --remote-control koushu-handan\n\n＊起こした形：claude --continue --remote-control \nkoushu-handan\n＊記録は ~/.claude/rc-restart.log にあります。"
+    },
+    {
+        "title":  "✅ 遠隔を繋ぎ直しました（VAIO koushu-handan）",
         "time":  1789203117,
         "message":  "遠隔の橋が切れていたので、窓を閉じて名を指して起こし直しました。\n新しい rcName ＝ VAIO koushu-handan\nbridgeSessionId ＝ session_012CxZiMh7nS8ddLbGsF8kUL\nclaude pid ＝ 2388／閉じた刻 17:51:41\n窓の題 ＝ 麻雀 攻守判断 (Claude Code)  - C:\\Users\\user\\.local\\bin\\claude.exe  --continue --remote-control --name=\"VAIO koushu-handan\"\n\n＊起こした形：claude --continue --remote-control \nVAIO koushu-handan\n＊記録は ~/.claude/rc-restart.log にあります。"
     },
@@ -193,10 +198,5 @@
         "title":  "🪟 見張りが止まっていました（09:55〜10:26・31分）",
         "time":  1789176379,
         "message":  "見張りの巡回（watch-notify）が前回から 31分空いていました。\n前回の記録 2026-09-12 09:55:04／今回 2026-09-12 10:26:17\n\n＊どの段で止まったかは ~/.claude/watch-step-log.txt の足跡にあります。"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）：札の本文-1 — 終わりの札が前の仕事の文で出る",
-        "time":  1789175421,
-        "message":  "札の本文-1 — 終わりの札が前の仕事の文で出る\n遠隔の橋-1 は 09:24 に済んでいた（rcName koushu-handan-0a・pid 2972）。台帳 797行を済にし、欄を壊した置換は写しから組み直した\n札の本文-1 の原因＝札の本文は控えの 完了/実測/ファイル/実機 の行から組まれるが、件名だけ枠ごとに機械が書き替えていたので、本文が前の仕事のまま残った（04:52・09:04・09:12・09:24 の四回とも 外の見張り-2 の文）\n直し＝frame-work.ps1 が新しい仕事の件名を書く回に、前の仕事の本文の行（完了・実測・ファイル・実機・種類・そのまま）を控えから外し、work-note-prev.txt へ退ける\n報告 eaffba03 は origin/main に載った（手押しは空きメモリ不足で止められたが、見張りの押しが先に運んでいた）"
     }
 ]
