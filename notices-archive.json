@@ -1,6 +1,11 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
+        "time":  1789171924,
+        "message":  "台帳の掃除-1\n外の見張り-2＝Ping-Outside が claude.exe を数え、1本以上なら元の URL、0本なら末尾に /fail を付けて打つ。hc-ping.log に「claude=本数  先=打った URL」を残す。写し .bak-20260912d・構文OK 1078行・常駐 pid 4308 起動04:08:16＞台本04:07:42・1本\nファイル: ~/.claude/inbox-watch.ps1／frame-work.ps1／orders-open.tsv／reports/外の見張り-1.md\n実測: 写し（打つ先は届かない手元の番地へ差し替え）＝0本→…/fail・1本→元の URL・55秒以内は打たない\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
         "time":  1789171446,
         "message":  "遠隔の会話名と題の問い（答えは札にも立てた）\n外の見張り-2＝Ping-Outside が claude.exe を数え、1本以上なら元の URL、0本なら末尾に /fail を付けて打つ。hc-ping.log に「claude=本数  先=打った URL」を残す。写し .bak-20260912d・構文OK 1078行・常駐 pid 4308 起動04:08:16＞台本04:07:42・1本\nファイル: ~/.claude/inbox-watch.ps1／frame-work.ps1／orders-open.tsv／reports/外の見張り-1.md\n実測: 写し（打つ先は届かない手元の番地へ差し替え）＝0本→…/fail・1本→元の URL・55秒以内は打たない\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）"
     },
