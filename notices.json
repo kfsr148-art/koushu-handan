@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789230606,
+        "message":  "頭の猫-1（題の右の枠をヨシ待ちだけ80pxへ）\n版を三箇所そろえて panel v133（PANEL_VER・verTag・panel-ver.txt）。押した（14241667）。\nファイル: panel.html（v133）／panel-ver.txt／panel-check.js\n実測: つまり題字の位置と大きさは二通りで一字も動かず、ヘッダーだけが 65.4px → 115px（+49.6px）に伸びる。伸びるのはヨシ待ちの回だけ。\n実機: 返事パネルをヨシ待ちで開き、題「返事パネル」の右に現場猫の全身が80pxで出て、ぼやけず四角いまま。題字は今までと同じ位置。ヨシ待ちが解けたら白猫（56x36）に戻り、ヘッダーの高さも元へ戻ること。\n未検収: 2026-09-12 21:00 v1439 の実機確認（人手待ち）"
+    },
+    {
         "title":  "🪟 連携に訴えがあります（subj-gap）",
         "time":  1789229451,
         "message":  "連携の見張りから訴えが出ています。\n\n・subj-gap … 作業中の件名が食い違っている（控え「頭の猫-1」／出ている「y0913-0100 にヨシ。 次の仕事＝頭の猫」）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
@@ -193,10 +198,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789202647,
         "message":  "pid 2028 の窓の遠隔の橋が本当に繋がって\n何をしたかの控えがありません（止まる側の書き忘れです）。\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）"
-    },
-    {
-        "title":  "✅ pid 2028 の橋は繋がっている（bridgeSessionId は会話の番号）",
-        "time":  1789202610,
-        "message":  "pid 2028 の遠隔の橋 … 繋がっている\nsessions/2028.json … pid=2028／name=\"VAIO koushu-handan\"／nameSource=user／kind=interactive／version=2.1.269／cwd=…\\koushu-handan／pidDomain=win32:vaio／status=busy／bridgeSessionId=session_012CxZiMh7nS8ddLbGsF8kUL\n画面の遠隔の状態 … 画面そのものは私からは読めない。代わりに三つで裏づけた\n  ①雲側の一覧（ListAgents）が、この窓を「VAIO koushu-handan [0d407a]」として名指しで返す＝雲から見えている\n  ②同じ一覧に、別の機械の遠隔（koushu-handan [1cca97] ほか4件）と雲の会話（遠隔の再接続 [7c7069]・idle）が並ぶ＝口座側と繋がっている\n  ③claude.exe（pid 2028）が 443 へ6本の確立した繋ぎを持つ（160.79.104.10 と 2607:6bc0::10 ほか）\nbridgeSessionId が 09:24 と同じ理由 … これは繋ぎ直すたびに変わる番号ではなく、この会話に紐づく雲側の会話の番号\n  （claude.ai/code/session_012CxZiMh7nS8ddLbGsF8kUL）。--continue で同じ会話を継いでいるので同じで正しい。\n  窓ごとに変わるのは pid と name の側で、今回は 2972→2028・koushu-handan-0a→VAIO koushu-handan と変わっている\nしたがって「橋が張り直されていない」証拠にはならない。繋がっていない徴候は見つからなかった\n直しは当てていない"
     }
 ]
