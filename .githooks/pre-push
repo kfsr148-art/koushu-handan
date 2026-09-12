@@ -1,75 +1,56 @@
 #!/bin/sh
-# push の前に速い版の検査を回す。落ちたら push を止める。
-# 使う前に一度だけ：git config core.hooksPath .githooks
+# push の前は**構文検査だけ**（2026-09-12・検査を雲へ-1 ③）。
 #
-# 速い版は ⑦ の実測を 568x320 のひと視野に絞る（画面は9つとも回る）。目安2〜3分。
-# 台詞やレイアウトを触った回は、push の前に自分で `node check-all`（フル版）も回すこと。
+#   ＊画面の実測（check.js ⑦⑯⑰⑱・adv-check・panel-check）は **GitHub Actions へ移した**。
+#     VAIO は総物理メモリ 4GB で、headless の Edge を立てると検査そのものが重さでこける
+#     （09-12 01:56 の FAIL がそれ。出直したら全部 PASS だった）。
+#   ＊**VAIO で headless の Edge／Chrome は二度と立てない。**
+#   ＊ここで見るのは、壊れた字を押し出さないための最低限——
+#     本体の <script> と、リポジトリ直下の .js の構文。数秒で終わる。
+#   ＊通らない版を押し出しても、雲側の検査が落ちれば **Pages の配信は止まる**（deploy は check の後段）。
 
 cd "$(dirname "$0")/.." || exit 1
 
 if ! command -v node >/dev/null 2>&1; then
-  echo "pre-push: node が見つからないので検査を飛ばす" >&2
+  echo "pre-push: node が見つからないので構文検査を飛ばす" >&2
   exit 0
 fi
 
-# 重い帯 … 検査の間だけ、見張りの起こしを間引かせる（2026-09-05・帯の漏れ-1）。
-#   ＊手で heavy-on を打つ手順に頼らない。**入口で自動に書き、出口で必ず消す**。
-#     18:34〜18:46 の穴は、検査が帯の外で走ったために起きた（帯は 18:33 に出ていた）。
-#   ＊既に誰かが帯を出していたら、こちらは書かないし消さない（**書いた者だけが消す**）。
-#   ＊帯が作れなくても push は止めない。検査そのものには関わらないため。
-PSEXE=$(command -v powershell.exe 2>/dev/null || command -v powershell 2>/dev/null || true)
-# ＊git が hook を呼ぶときの PATH には powershell.exe が無いことがある（2026-09-05 に踏んだ）。
-#   手で `bash .githooks/pre-push` と打つと帯が出るのに、`git push` 経由では出なかった。
-#   PATH だけに頼らず、決まった場所も当たる。
-if [ -z "$PSEXE" ] && [ -x "/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe" ]; then PSEXE="/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"; fi
-if [ -z "$PSEXE" ] && [ -n "$SYSTEMROOT" ] && [ -x "$SYSTEMROOT/System32/WindowsPowerShell/v1.0/powershell.exe" ]; then PSEXE="$SYSTEMROOT/System32/WindowsPowerShell/v1.0/powershell.exe"; fi
-CLAUDE_WIN=$(cygpath -w "$HOME/.claude" 2>/dev/null || echo 'C:\Users\user\.claude')
-HEAVY_FILE="$HOME/.claude/heavy.txt"
-HEAVY_MINE=0
-
-heavy_on() {
-  if [ -z "$PSEXE" ]; then
-    echo "pre-push: powershell が見つからないので重い帯は作らない（検査はこのまま回す）"
-    return 0
-  fi
-  [ -e "$HEAVY_FILE" ] && return 0
-  if "$PSEXE" -NoProfile -ExecutionPolicy Bypass -File "$CLAUDE_WIN\heavy-on.ps1" -Why 'pre-push の検査' >/dev/null 2>&1; then
-    HEAVY_MINE=1
-    echo "pre-push: 重い帯に入った（検査の間だけ見張りの起こしを間引く）"
-  fi
-}
-
-heavy_off() {
-  [ "$HEAVY_MINE" = "1" ] || return 0
-  HEAVY_MINE=0
-  "$PSEXE" -NoProfile -ExecutionPolicy Bypass -File "$CLAUDE_WIN\heavy-off.ps1" >/dev/null 2>&1
-}
-
-# 通っても落ちても、途中で止められても消す。
-trap heavy_off EXIT INT TERM
-heavy_on
-
-# 空きが乏しい回は検査を飛ばす（2026-09-12・見張りの止まり-1 ㉒）。
-#   ＊空き物理メモリが 1.5GB を切っていると、検査そのものが重さでこけ、push まで道連れになる
-#     （09-12 01:56 の FAIL がこれ。出直したら全部 PASS だった）。
-#   ＊飛ばした回は heavy-skip.log に一行残し、push はそのまま通す。
-FREE_MB=0
-if [ -n "$PSEXE" ]; then
-  FREE_MB=$("$PSEXE" -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1024)" 2>/dev/null | tr -d '\r')
-fi
-if [ -n "$FREE_MB" ] && [ "$FREE_MB" -gt 0 ] && [ "$FREE_MB" -lt 1536 ]; then
-  echo "pre-push: 空きが乏しいので検査を飛ばす（空き ${FREE_MB}MB＜1536MB）。空いてから node check-all --fast を回すこと"
-  printf '%s  pre-push   空きが乏しいので検査を飛ばした（空き %sMB＜1536MB）\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$FREE_MB" >> "$HOME/.claude/heavy-skip.log"
-  exit 0
-fi
-
-echo "pre-push: node check-all --fast を回す（止めたいときは --no-verify）"
-node check-all.js --fast
+node -e '
+const fs = require("fs"), os = require("os"), path = require("path"), cp = require("child_process");
+let bad = 0;
+// 本体の <script> を切り出して node --check
+const html = fs.readFileSync("koushu-handan.html", "utf8");
+const blocks = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+blocks.forEach((m, i) => {
+  const f = path.join(os.tmpdir(), "koushu-prepush-" + i + ".js");
+  fs.writeFileSync(f, m[1]);
+  const r = cp.spawnSync(process.execPath, ["--check", f], { encoding: "utf8" });
+  if (r.status !== 0) { bad++; console.error("NG 本体の <script> #" + (i + 1) + "\n" + (r.stderr || "")); }
+  try { fs.unlinkSync(f); } catch (e) {}
+});
+// リポジトリ直下の .js
+//   ＊頭の階層に await があるもの（Scriptable の usage-widget-loader.js）は CommonJS では落ちる。
+//     そのときだけ .mjs として見直す。両方で落ちたときだけ NG。
+fs.readdirSync(".").filter(n => n.endsWith(".js")).forEach(n => {
+  let r = cp.spawnSync(process.execPath, ["--check", n], { encoding: "utf8" });
+  if (r.status !== 0) {
+    const f = path.join(os.tmpdir(), "koushu-prepush-" + n + ".mjs");
+    fs.writeFileSync(f, fs.readFileSync(n));
+    const m = cp.spawnSync(process.execPath, ["--check", f], { encoding: "utf8" });
+    try { fs.unlinkSync(f); } catch (e) {}
+    if (m.status === 0) { console.log("  " + n + " … モジュールとして通った"); return; }
+  }
+  if (r.status !== 0) { bad++; console.error("NG " + n + "\n" + (r.stderr || "")); }
+});
+console.log("pre-push: 構文検査 … 本体の <script> " + blocks.length + "塊 ＋ 直下の .js。NG " + bad + "件");
+process.exit(bad ? 1 : 0);
+'
 status=$?
 
 if [ $status -ne 0 ]; then
   echo "" >&2
-  echo "pre-push: 検査が落ちたので push を止めた。直してから push すること。" >&2
+  echo "pre-push: 構文が壊れているので push を止めた。直してから push すること。" >&2
   echo "          どうしても通したいときは git push --no-verify" >&2
 fi
 
