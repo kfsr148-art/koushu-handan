@@ -843,10 +843,14 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
   (function () {
     const i = html.indexOf('function runCatTick()');
     const body = (i >= 0) ? html.slice(i, i + 2000) : '';
+    // 2026-09-13・頭の猫-1 で、ヨシ待ちの回だけ全身の原寸80px を出す形にした。
+    //   置いては外してきた三枚（影絵・ドット絵・顔）が残っていないかだけを見る。
     const bad = ['genba-face', 'genba-cat-40', 'panel-icon-white'].filter(n => body.indexOf(n) >= 0);
-    if (!i) { ng('頭はヨシ待ちでも白猫 … runCatTick が見つからない'); }
-    else if (bad.length) { ng('頭はヨシ待ちでも白猫 … ' + bad.join('・') + ' が残っている'); }
-    else { ok('頭はヨシ待ちでも白猫'); }
+    const need80 = body.indexOf('genba-cat-80.png') >= 0;
+    if (!i) { ng('頭の猫 … runCatTick が見つからない'); }
+    else if (bad.length) { ng('頭の猫 … 外したはずの ' + bad.join('・') + ' が残っている'); }
+    else if (!need80) { ng('頭の猫 … ヨシ待ちの原寸80px（genba-cat-80.png）が無い'); }
+    else { ok('頭の猫はヨシ待ちだけ80px'); }
   })();
   /* 版の三箇所（作法4）。ここも字面で切り出す。 */
   function pick(src, head, tail) {
