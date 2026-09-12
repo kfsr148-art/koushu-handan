@@ -469,7 +469,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v128（9月12日）</p>
+  <p class="ver" id="verTag">panel v129（9月12日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -497,7 +497,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '128';
+  var PANEL_VER = '129';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1632,7 +1632,7 @@
   var catI = 0;
   var catAwake = false;
   (function () {   /* 先読み。読めなくても画面は壊れない（img が出ないだけ） */
-    catFrames.concat(['cat-sleep-w.png', 'panel-icon-white.png']).forEach(function (n) { var im = new Image(); im.src = n; });
+    catFrames.concat(['cat-sleep-w.png', 'genba-cat-40.png']).forEach(function (n) { var im = new Image(); im.src = n; });
   })();
   function runCatTick() {
     var el = $('runcat');
@@ -1646,9 +1646,16 @@
            形・余白・透過は黒版と一画素も違わない（164x152・alpha の食い違い 0）。 */
       if (lastStat === 'ヨシ待ち') {
         catAwake = false;
-        if (el.src.indexOf('panel-icon-white') < 0) { el.src = 'panel-icon-white.png'; }
+        /* 現場猫のドット絵（2026-09-12・ヨシの猫-4）。40マスを**等倍**（1マス＝1css px）で出し、
+           拡大は image-rendering:pixelated に任せる。箱は 56x36 なので上下へ2pxずつはみ出す
+           （header の余白の中なので切れない）。ほかの状態へ移るときに寸を戻す。 */
+        if (el.src.indexOf('genba-cat-40') < 0) {
+          el.src = 'genba-cat-40.png';
+          el.style.width = '40px'; el.style.height = '40px';
+        }
         return;
       }
+      if (el.style.width) { el.style.width = ''; el.style.height = ''; }   /* 40px から元の 56x36 へ戻す */
     /* 判定の順は ヨシ待ち → 連絡なし → 作業中（v124・止まりの見分け-1）。
        生存が途切れている間は、凍った「作業中」で走らせない。 */
     if (lastLost) {
