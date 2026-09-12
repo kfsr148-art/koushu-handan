@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ Code タブの名を VAIO koushu-handan に固定（--name= が効いた）",
+        "time":  1789194424,
+        "message":  "Code タブの名を固定できた。旗は --name=\n効いた形 … claude --continue --remote-control --name=\"VAIO koushu-handan\" → name=VAIO koushu-handan・nameSource=user・橋も接続（実測 pid 10732）\n効かなかった形 … --remote-control \"VAIO koushu-handan\"（name=koushu-handan-23・derived）／--remote-control-session-name-prefix も同じ（koushu-handan-95・derived）。この版 2.1.268 では場所の名から自動で決まる\n直した先 … ログオン時の仕事 ClaudeCodeAtLogon の起こし方（revive-claude.ps1 はこの仕事を叩くので同時に直る）と rc-restart.ps1（既定の名も VAIO koushu-handan）\n確かな見分け方（名が変わった時の備え）… 返事パネルの下端の「遠隔：\u003c名\u003e（pid N）」と、state.json の rcName・rcPid を突き合わせる。手元では ~/.claude/sessions/\u003cpid\u003e.json の name と bridgeSessionId が正\n次に橋を張り直した回から、一覧の行は VAIO koushu-handan になる\n"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789194302,
         "message":  "橋を張り直すたびにCodeタブの一覧に新しい行が\n見えていた画面が 2 枚から 1 枚になりました。claude のプロセスも 2 本から 1 本へ、同じだけ終わっています。\n閉じられたか、こちらで止めたものです。残っている物は無いので、手は要りません。"

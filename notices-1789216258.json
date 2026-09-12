@@ -1,5 +1,25 @@
 [
     {
+        "title":  "🪟 異常です（連携に訴え：pub-late）",
+        "time":  1789216254,
+        "message":  "連携の見張りから訴えが出ています。\n\n・pub-late … 公開側が 23分 遅れている（手元のいちばん新しい札より古い）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789215874,
+        "message":  "写せます（4件）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789215784,
+        "message":  "選択釦-1（v1439）\n判定の中身（攻守・判定獣・第一感の見立て・光る牌）には一字も触っていない。\nファイル: koushu-handan.html（L4771）／ver.txt／serifu.txt／serifu-adv.txt\n実測: フル版（21視野）は空き物理メモリ 1145MB で関門（2048MB）に掛かり、回せていない。空いた回に回す。\n実機: 判定画面で兎の釦を押すと、見立て行の場所に「切るなら〈牌〉」が一行だけ出て、その牌が琥珀の枠で光ること。もう一度押すと元の見立てへ戻ること。版の字が v1439。\n未検収: 2026-09-12 21:00 フル版（21視野）の実測（空き2GB待ち）"
+    },
+    {
+        "title":  "🕒 延びています",
+        "time":  1789215604,
+        "message":  "選択釦-1（v1439）の工事の続きをやれ。どこ\n終了予定21:18を過ぎています（経過21分）"
+    },
+    {
         "title":  "🪟 連携に訴えがあります（subj-gap）",
         "time":  1789214505,
         "message":  "連携の見張りから訴えが出ています。\n\n・subj-gap … 作業中の件名が食い違っている（控え「選択釦-1」／出ている「選択釦-1（v1439）の工事の続きをやれ。どこ」）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
@@ -178,25 +198,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789194485,
         "message":  "橋の名-1 — Code タブの名を VAIO koushu-handan で固定\nヨシの猫-2（前の回）＝絵の差し替えは 7aa227f1 で push 済み、前後の写しは端末へ送った\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）"
-    },
-    {
-        "title":  "✅ Code タブの名を VAIO koushu-handan に固定（--name= が効いた）",
-        "time":  1789194424,
-        "message":  "Code タブの名を固定できた。旗は --name=\n効いた形 … claude --continue --remote-control --name=\"VAIO koushu-handan\" → name=VAIO koushu-handan・nameSource=user・橋も接続（実測 pid 10732）\n効かなかった形 … --remote-control \"VAIO koushu-handan\"（name=koushu-handan-23・derived）／--remote-control-session-name-prefix も同じ（koushu-handan-95・derived）。この版 2.1.268 では場所の名から自動で決まる\n直した先 … ログオン時の仕事 ClaudeCodeAtLogon の起こし方（revive-claude.ps1 はこの仕事を叩くので同時に直る）と rc-restart.ps1（既定の名も VAIO koushu-handan）\n確かな見分け方（名が変わった時の備え）… 返事パネルの下端の「遠隔：\u003c名\u003e（pid N）」と、state.json の rcName・rcPid を突き合わせる。手元では ~/.claude/sessions/\u003cpid\u003e.json の name と bridgeSessionId が正\n次に橋を張り直した回から、一覧の行は VAIO koushu-handan になる"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789194302,
-        "message":  "橋を張り直すたびにCodeタブの一覧に新しい行が\n見えていた画面が 2 枚から 1 枚になりました。claude のプロセスも 2 本から 1 本へ、同じだけ終わっています。\n閉じられたか、こちらで止めたものです。残っている物は無いので、手は要りません。"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789192205,
-        "message":  "前の問いの答えが札に無い\n何をしたかの控えがありません（止まる側の書き忘れです）。\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）"
-    },
-    {
-        "title":  "✅ IMG_8974.png は未使用（使い先の一覧）",
-        "time":  1789192133,
-        "message":  "IMG_8974.png の使い先 … 未使用\nリポジトリ直下に在る（103,673バイト・git は 45e1e775 の一件だけ）\nパネルのヨシ待ちの札 … 未使用（使っているのは panel-icon-white.png と cat0-w〜cat4-w.png・cat-sleep-w.png）\nパネルのホーム画面の絵 … 未使用（panel-icon.png を使う）\nntfy の icon … 未使用（Icon: の頭は送っていない。題と本文だけ）\n本体 koushu-handan.html・ウィジェット … 未使用\n名が出るのは文章だけ … reports/ヨシの猫を差し替え-1.md／ヨシの猫のマス目.md／notices-archive.json／state.json／~/.claude の台帳と控え\n経緯 … ヨシの猫を差し替え-1 は 2026-09-09 に取り下げ（480x480 を36pxへ縮めると輪郭が潰れ、比1.3で3.0に届かず）。panel-icon-white.png のまま据え置き"
     }
 ]
