@@ -1,23 +1,36 @@
-# 外の見張り-2 — claude.exe が0本なら /fail を打つ
+# 札の本文-1 — 終わりの札が前の仕事の文で出る／遠隔の橋-1 を閉じた
 
-状態：終わり（残り0件）　2026-09-12 04:10
+状態：終わり（残り0件）　2026-09-12 09:56
 
-## 直したもの
-- `~/.claude/inbox-watch.ps1` の `Ping-Outside` … 合図を打つ前に claude.exe を数える
-  - 1本以上 … `https://hc-ping.com/6537657a-…`（今までどおり）
-  - 0本 … 同じ URL の末尾に `/fail`（向こうはその場で「落ちた」と知らせる）
-- `hc-ping.log` の一行に「claude=本数」と「先=打った URL」を足した
-- 数えるのは claude.exe の全部（-p の働き手も含む）
-- 一分に一発・`curl.exe -fsS -m 10`・失敗しても巡回は止めない、は前のまま
-- 写し `inbox-watch.ps1.bak-20260912d`・構文誤り0（1078行・BOM 有り）・常駐を起こし直した（pid 4308・起動 04:08:16 ＞ 台本 04:07:42・1本）
+## 遠隔の橋-1
+- 09:24 に済んでいた（rcName **koushu-handan-0a**・pid 2972・`claude --continue --remote-control koushu-handan`）。台帳 797行を「済」にした
+- 置換で項目の欄を一度壊したので、写し（`orders-open.tsv.bak-20260912e`）から組み直した
 
-## 実測
-- 本物 … `2026-09-12 04:08:33  claude=1  先=https://hc-ping.com/6537657a-d3fe-4c08-a08e-00475365ce89  code=0  OK`
-- 写し（作法14：打つ先は届かない手元の番地 127.0.0.1:9 へ差し替え、`Get-Process` を偽物にした）
-  - 0本 … `先=http://127.0.0.1:9/fake-hc/fail`
-  - 1本 … `先=http://127.0.0.1:9/fake-hc`
-  - 55秒以内の三度目 … 打たない
-- 本物の `/fail` は打っていない（打つと向こうから本物の「落ちた」が届くため）
+## 札の本文-1（原因）
+- 終わりの札の**本文**は、控え（`work-note.txt`）の `完了:` `実測:` `ファイル:` `実機:` の行から組まれる（`watch-notify.ps1` L1837-1866）
+- **件名**は枠が届くたびに機械（`frame-work.ps1`）が書き替える
+- 控えの本文の行は**前の仕事のまま積み上がる**ので、「新しい題＋前の仕事の本文」になっていた。04:52・09:04・09:12・09:24 の四回とも 外の見張り-2 の文が出ていた
+
+## 直し
+- `frame-work.ps1` … 新しい仕事の件名を書く回に、前の仕事の本文の行（**完了・実測・ファイル・実機・種類・そのまま**）を控えから外し、`~/.claude/work-note-prev.txt` へ退ける（黙って消さない）
+- 残すのは **開始・件名・見込み・待ち・未検収**。印は今までどおり外す
+- 構文誤り0（202行・BOM 有り）。捌き手は一回ごとに別に呼ばれるので、常駐の起こし直しは要らない
+
+## 検収（写しで・作法14）
+前の仕事の本文が載った控えに、新しい仕事の枠を流した。
+```
+=== 控え
+  開始: 2026-09-12 09:00:00
+  件名: 札の本文-9        ← 新しい仕事名に替わった
+  見込み: 20分
+  待ち: なし
+  未検収: 残すべき行      ← 残る
+=== 退けた控え（work-note-prev.txt）
+  ---- 2026-09-12 09:54:30  前の件名: 前の仕事-9
+  完了: 前の仕事の本文
+  実測: 前の仕事の数値
+  ファイル: 前の仕事のファイル
+```
 
 ## 残り
 残り0件
@@ -29,11 +42,12 @@
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **209件**ある。
+　ここに出るのは新しい20件。全部で **210件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`札の本文-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E6%9C%AD%E3%81%AE%E6%9C%AC%E6%96%87-1.md) | 09-12 09:54 | 札の本文-1 — 終わりの札が前の仕事の文で出る／遠隔の橋-1 を閉じた |
 | [`外の見張り-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%A4%96%E3%81%AE%E8%A6%8B%E5%BC%B5%E3%82%8A-2.md) | 09-12 04:09 | 外の見張り-2 — claude.exe が0本なら /fail を打つ |
 | [`外の見張り-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E5%A4%96%E3%81%AE%E8%A6%8B%E5%BC%B5%E3%82%8A-1.md) | 09-12 03:46 | 外の見張り-1 — 巡回の末尾で hc-ping.com へ一分に一発 |
 | [`読むだけの台本-1.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E8%AA%AD%E3%82%80%E3%81%A0%E3%81%91%E3%81%AE%E5%8F%B0%E6%9C%AC-1.md) | 09-12 03:26 | 読むだけの台本-1 ／ 鉤の軽量化-1 ／ 巡回の空き-1 ／ 人手待ち-1 ／ 知らせの割り当て-1 ／ 重複の枠-1 |
@@ -53,6 +67,5 @@
 | [`y0910-1305-3.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0910-1305-3.md) | 09-10 15:16 | pub-read の始末と、長く走る命令の上限（印 y0910-1305-3） |
 | [`y0910-1305-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0910-1305-2.md) | 09-10 15:04 | 読むだけの台本と、公開の止まりの割り直し（印 y0910-1305-2） |
 | [`y0910-1330.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0910-1330.md) | 09-10 13:36 | 公開の止まり-1（印 y0910-1330） |
-| [`y0910-1305.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0910-1305.md) | 09-10 13:09 | 承認の足止めと自動モードの戻し道（印 y0910-1305） |
 
 <!-- 控えの一覧 ここまで -->
