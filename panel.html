@@ -67,6 +67,16 @@
        h1 の min-height を 80px にして、題字は今までどおり縦の中ほどで並ぶ。 */
   #runcat.big{width:80px; height:80px; margin:0;}
   h1.bigcat{min-height:80px;}
+  /* 題の行の三つ目（2026-09-13・頭の猫-4）。ヨシ待ちの回だけ出す「ヨシを返してください」。
+     ＊**黄色い札で使っていた色と大きさのまま**——`.m` の 17px と `li.why.stline .m` の --ask。
+       h1 の 19px・太字・字送り .05em は引き継がせない（札の字と同じ見え方にするため）。
+     ＊横並びの**三つ目として後ろに足すだけ**なので、題字と猫の位置は動かない。
+     ＊幅が足りなければ折り返す（切らない）。80px の行の中で二行まで収まる。
+     ＊字が無いときは `:empty` で行ごと消える。塗る側は textContent を空にするだけでよい。 */
+  #headWait{flex:1 1 auto; min-width:0; font-size:17px; font-weight:400;
+    color:var(--ask); letter-spacing:normal; line-height:1.35;
+    white-space:normal; overflow-wrap:anywhere;}
+  #headWait:empty{display:none;}
 
   /* いまの状態の一行。ヨシの釦より上に置く。
      リモートデスクトップを開かずに、動いているか止まっているかを見るため。 */
@@ -298,13 +308,9 @@
      ＊中の一行を上へ寄せるのではなく、箱の中で**縦の中ほど**に置く。
        字が一行の回（次の指示待ち）でも、二行の回（作業中）と同じ位置に見える。 */
   li.why.stline{min-height:79px; display:flex; align-items:center;}
-  /* ヨシ待ちの回だけ、字を札の上のほうへ寄せる（2026-09-13・頭の猫-2）。
-     ＊この札に入れていた現場猫160pxは**外した**。残すのは「ヨシを返してください」の字だけで、
-       絵が抜けたぶん札は 176px から**元の79px へ戻る**（下の釦の位置は固定値のまま動かない）。
-     ＊左端の黄色い縦線は li.why の border-left-color がそのまま持つので、ここでは触らない。
-     ＊寄せを変えるのはヨシ待ちの回だけ。ほかの三通り（作業中・次の指示待ち・異常）は
-       今までどおり縦の中ほどに置く。 */
-  li.why.stline.yoshiTop{align-items:flex-start;}
+  /* ＊ヨシ待ちの札そのものを出さなくなったので（2026-09-13・頭の猫-4）、
+     頭の猫-2 で入れた寄せ（yoshiTop）は役目を終えて外した。 */
+
 
   /* 受け取り確認と、写し終えた件は畳んでおく。題の行だけ出し、押すと本文が開く。 */
   li.ack .m{display:none;}
@@ -369,7 +375,7 @@
 
 <div id="main" class="hide">
   <header>
-    <h1>返事パネル<img id="runcat" src="cat-sleep-w.png" alt="" width="56" height="36" style="object-fit:contain"></h1>
+    <h1>返事パネル<img id="runcat" src="cat-sleep-w.png" alt="" width="56" height="36" style="object-fit:contain"><span id="headWait"></span></h1>
     <div class="state idle" id="state">
       <span class="w" id="stWord">…</span>
       <span class="c">
@@ -485,7 +491,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v134（9月13日）</p>
+  <p class="ver" id="verTag">panel v135（9月13日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -513,7 +519,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '134';
+  var PANEL_VER = '135';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1563,12 +1569,19 @@
          刻の色分け（v108）は作業中の行だけなので、包む相手も作業中のときだけ。 */
     var hasTag = (sl.indexOf('<span') >= 0);
     var sh = sl ? (hasTag ? sl : esc(sl).replace(/([0-9]+時[0-9]+分終了予定)/, '<span class="pred">$1</span>')) : '';
-    /* ヨシ待ちの回は、札の中に入れていた現場猫160pxを**外した**（2026-09-13・頭の猫-2）。
-       残すのは「ヨシを返してください」の字だけ。絵が抜けたぶん札は元の79pxへ戻り、
-       字は札の上のほうへ寄せる（class yoshiTop）。題の右の80pxの猫はそのまま。 */
-    var top = (lastStat === 'ヨシ待ち') ? ' yoshiTop' : '';
+    /* ヨシ待ちの回は、字を**題の行へ移した**（2026-09-13・頭の猫-4）。
+       ＊「ヨシを返してください」は題の行の三つ目（#headWait）に出す。
+       ＊字を失った黄色い札は、ヨシ待ちの回は**出さない**（器を空にすれば縦線ごと消える）。
+       ＊ヨシ待ちでない回は今までどおり——黄色い札に字を出し、題の右には何も出さない。 */
+    var hw = $('headWait');
+    if (lastStat === 'ヨシ待ち') {
+      if (hw) { hw.textContent = String(sl || '').replace(/<[^>]*>/g, ''); }
+      el.innerHTML = '';
+      return;
+    }
+    if (hw) { hw.textContent = ''; }
     el.innerHTML = sh
-      ? ('<li class="why stline' + top + '"><p class="m">' + sh + '</p></li>')
+      ? ('<li class="why stline"><p class="m">' + sh + '</p></li>')
       : '';
   }
 
