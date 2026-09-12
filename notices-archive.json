@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ デスクトップの印を VAIO koushu-handan の形へ",
+        "time":  1789199282,
+        "message":  "デスクトップの印「麻雀 攻守判断 (Claude Code).lnk」を揃えた\nTarget    : C:\\Windows\\System32\\cmd.exe\nArguments : /k C:\\Users\\user\\.local\\bin\\claude.exe --continue --remote-control --name=\"VAIO koushu-handan\"\nWorkingDir: C:\\Users\\user\\Desktop\\mahjong\\koushu-handan（そのまま）\n旧 Arguments : /k claude\n＊実行ファイルの道は引用符なしにした。cmd /k は「引用符で始まり引用符で終わる」引数の両端を落とすので、道を囲むと名の引用符まで外れて --name=VAIO と koushu-handan に割れる\n＊確かめ … 同じ渡し方で node へ流すと --name=VAIO koushu-handan が一語のまま届いた\n＊これで、この印から起こした窓も Code タブの一覧で VAIO koushu-handan になる（rc-restart.ps1・ClaudeCodeAtLogon と同じ形）\n"
+    },
+    {
         "title":  "✅ ヨシの猫-4 ドット絵を作った（40/80/160・panel v129）",
         "time":  1789198657,
         "message":  "ヨシの猫-4 … 現場猫のドット絵を作り直した（panel v129・a52f7fe6 で push 済み）\n作り方 … IMG_8974.png（480x480）を ÷12 の平均で 40x40 へ。色は白・灰・濃灰・黒・黄・桃の六色へ丸め、透けと接する中身のマスを黒にして輪郭を1マスで引き直した\nマスの内訳 … 白155／灰210／濃灰140／黒175／黄3／桃4／透け913（合計1600マス）\n＊目（黄）と舌（桃）は平均だと消えるので、12x12 の中にはっきり在る回だけ優先して残した（最初の焼きは黄1・桃0だった）\n絵 … genba-cat-40.png（40x40・原寸）／genba-cat-80.png（2倍）／genba-cat-160.png（4倍）\n写しの道 … https://kfsr148-art.github.io/koushu-handan/genba-cat-160.png （40は …/genba-cat-40.png）\nパネル … ヨシ待ちのときだけ 40マスを等倍（1マス＝1css px）で出す。箱は 56x36 なので上下へ2pxはみ出す。拡大は image-rendering:pixelated に任せる\nウィジェット … ヨシ待ちだけ genba-cat-80.png（2倍）。ふだんは元の白猫のまま\nntfy … ヨシ待ちの押し送りの Icon: を genba-cat-160.png（4倍）へ。ほかの題には付けない\n"
@@ -243,10 +248,5 @@
         "title":  "🪟 連携に訴えがあります（done-stale-note・subj-gap）",
         "time":  1789152095,
         "message":  "連携の見張りから訴えが出ています。\n\n・subj-gap … 作業中の件名が食い違っている（控え「ng.com/6537657a-d3fe-4」／出ている「外の見張りを置け。毎分の見張り（inbox-wa」）\n・done-stale-note … 前の仕事の終わりの札を立て直せない（止まった時点の控えの写しが無い／stop と合わない・stop 2026-09-12 03:29:33）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。\n"
-    },
-    {
-        "title":  "✅ 読むだけの台本-1 ほか五件 終わり（残り0件）",
-        "time":  1789151206,
-        "message":  "読むだけの台本-1 ほか五件 — 終わり（残り0件）\n乙：.claude/look.ps1 に読むだけの命令をまとめ allow へ。別の claude -p で許可の問い0（直に呼ぶ形・Bash から呼ぶ形とも）。powershell -File の形は道具が入れ子として弾くので使えない\n⑯：UserPromptSubmit の鉤は「枠を一行足すだけ」に。件名・台帳・ヨシの畳みは見張り側。時間切れは hook-timeout.log。鉤の中 1.0〜1.5秒\n⑰：02:30 の回が知らせの判定で固まり10分で切られた。5分以上の空きで「🪟 見張りが止まっていました」の札を一度だけ\n⑱：人手待ちはヨシ待ちにせず未検収へ（CLAUDE.md 作法29）\n⑲：異常と延びは一日8件まで・同じ件名の延びは一日一回（札は立てたまま）\n⑳：10分以内の同じ全文の枠は捨て、台帳に「重複・捨てた」の一行だけ\n未検収：鉤の差し替えは次の枠で効きを見る／巡回の空きの札は次の空きで見る\n"
     }
 ]
