@@ -1,6 +1,11 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
+        "time":  1789199440,
+        "message":  "写せます（2件）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
         "time":  1789199346,
         "message":  "デスクトップの「麻雀 攻守判断 (Claude\n何をしたかの控えがありません（止まる側の書き忘れです）。\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）"
     },
@@ -8,11 +13,6 @@
         "title":  "✅ デスクトップの印を VAIO koushu-handan の形へ",
         "time":  1789199282,
         "message":  "デスクトップの印「麻雀 攻守判断 (Claude Code).lnk」を揃えた\nTarget    : C:\\Windows\\System32\\cmd.exe\nArguments : /k C:\\Users\\user\\.local\\bin\\claude.exe --continue --remote-control --name=\"VAIO koushu-handan\"\nWorkingDir: C:\\Users\\user\\Desktop\\mahjong\\koushu-handan（そのまま）\n旧 Arguments : /k claude\n＊実行ファイルの道は引用符なしにした。cmd /k は「引用符で始まり引用符で終わる」引数の両端を落とすので、道を囲むと名の引用符まで外れて --name=VAIO と koushu-handan に割れる\n＊確かめ … 同じ渡し方で node へ流すと --name=VAIO koushu-handan が一語のまま届いた\n＊これで、この印から起こした窓も Code タブの一覧で VAIO koushu-handan になる（rc-restart.ps1・ClaudeCodeAtLogon と同じ形）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789198744,
-        "message":  "写せます（2件）"
     },
     {
         "title":  "✅ ヨシの猫-4 ドット絵を作った（40/80/160・panel v129）",
