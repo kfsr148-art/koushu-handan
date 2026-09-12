@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 猫の潰れ-1 直した（panel v128・表示56x36/素56x36・猫30px）",
+        "time":  1789197749,
+        "message":  "猫の潰れ-1 … 直した（panel v128）\nパネルの表示 … 56x36 CSS px（#runcat の箱と img の width/height が同じ）。絵も 56x36 で、その中の猫は 30px。つまり表示は素の1倍で、枠での伸縮はしていない\n潰れていた因 … 端末の画面が2〜3倍の細かさなので、等倍の絵をブラウザが滑らかに引き伸ばしていた\n①image-rendering … #runcat に crisp-edges と pixelated を併記（読める方が勝つ）。これで2倍でも3倍でも角が立つ\n②整数倍 … 56x36 の絵を 56x36 で出す＝1倍のまま。object-fit:contain も効いているが、寸が同じなので伸縮しない\nウィジェット … Scriptable に image-rendering が無いので、絵の側を端末の画素に合わせた。imageSize は 26x17 pt のまま、絵は 78x51（3倍）・猫48px\nヨシ待ちの絵 … パネルと共用をやめ panel-icon-w3.png（78x51）へ向け直した\n素のマス目 … 元絵 IMG_8974.png は 480x480 のぼかし絵で、一マス＝1画素。縮小は 480 の約数だけ（30px＝÷16／48px＝÷10）"
+    },
+    {
         "title":  "🪟 連携に訴えがあります（pub-read）",
         "time":  1789194626,
         "message":  "連携の見張りから訴えが出ています。\n\n・pub-read … 公開側の notices.json が読めなかった：無効な JSON プリミティブです: 。\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
@@ -193,10 +198,5 @@
         "title":  "😺 現在も順調にゃ",
         "time":  1789171226,
         "message":  "状態: 手待ち / 遠隔の会話名と題の問い\n台帳: 残り 3件（黒猫の待機-2・連携の穴-2・UAC・線を挿す・実機で見るなど、人手が要る待ち）\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 0% / 週全体 42% / 週Fable 40%\n訴え: 3件（subj-gap・done-stale-note・done-swept）… pipe-warn.log"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789156328,
-        "message":  "遠隔の会話名と題の問い\n外の見張り-2＝Ping-Outside が claude.exe を数え、1本以上なら元の URL、0本なら末尾に /fail を付けて打つ。hc-ping.log に「claude=本数  先=打った URL」を残す。写し .bak-20260912d・構文OK 1078行・常駐 pid 4308 起動04:08:16＞台本04:07:42・1本\nファイル: ~/.claude/inbox-watch.ps1／frame-work.ps1／orders-open.tsv／reports/外の見張り-1.md\n実測: 写し（打つ先は届かない手元の番地へ差し替え）＝0本→…/fail・1本→元の URL・55秒以内は打たない\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）"
     }
 ]
