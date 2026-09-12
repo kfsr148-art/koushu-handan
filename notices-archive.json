@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 遠隔の会話名 koushu-handan-66／題は分からない",
+        "time":  1789171321,
+        "message":  "rcName ＝ koushu-handan-66（pid 7272）\nCode タブの一覧の題は分からない（機械に控えが無い）\n窓の題は「◐ Remote Control 接続管理とウィンドウ監視」（hook.log 04:50:37）\n遠隔の繋がり＝session_012Cx…（sessions/7272.json の bridgeSessionId）\n"
+    },
+    {
         "title":  "😺 現在も順調にゃ",
         "time":  1789171226,
         "message":  "状態: 手待ち / 遠隔の会話名と題の問い\n台帳: 残り 3件（黒猫の待機-2・連携の穴-2・UAC・線を挿す・実機で見るなど、人手が要る待ち）\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 0% / 週全体 42% / 週Fable 40%\n訴え: 3件（subj-gap・done-stale-note・done-swept）… pipe-warn.log"
