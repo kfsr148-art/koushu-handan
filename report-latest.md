@@ -1,42 +1,59 @@
-# 選択釦-1 — v1439（印 y0912-2100）
+# 配信の切り分け-1（印 y0913-0015）
 
-**終わり（残り1件）** — 2026-09-12 21:0x（VAIO）。押し済み（`19664dea`）。公開側 `ver.txt` は押してから **126秒**で 1439 になった。
+**終わり** — 2026-09-13 00:4x（VAIO）。押し済み（`39425058`）。走りは **scope・check・deploy とも success**。
 
-## 直したのは一行だけ
+## 21:30 以降の Actions（40本）
 
-```
-- return tileChip(c.code) + 'が浮いている。切りだ。';
-+ return '切るなら' + tileChip(c.code);
-```
-
-`koushu-handan.html` L4771、`window.toolEyeSay('usagi')` の戻り。版は三箇所そろえ（`data-ver`・`verTag`・`ver.txt`）、`serifu.txt` / `serifu-adv.txt` を再抽出して `--check` で本体との一致を確かめた（合計7593行・口調の混入0件）。
-
-## 指示の五点と、本体の実際
-
-| 指示 | 本体 |
+| 段 | 数 |
 |---|---|
-| 判定画面の枝豆・AI・現場猫の**常設の行を撤去** | **v1437（09-07）で撤去済み**。`div` は無く、CSS の三つの規則が字だけ残る |
-| 人柄の「ランダム」の横に**四角の釦を四つ** | **設置済み**（L8816・`.eye-btn` 44px の入れ子＝作法10） |
-| 押した時だけ**見立て行の場所に一行、入れ替えで** | **実装済み**（`toolTap` → `saySet`。`toolMark` 一本で点くのは常に一つ） |
-| 切り候補-1 で足した**見立て行の下の一行を撤去** | **本体に無い**（既に撤去済み） |
-| 兎は**「切るなら〈牌〉」と候補の牌の光り** | **文言を今回替えた。**光りは `body.tool-usagi .tile.cut-mark`（琥珀の outline）で元から点く |
+| **check** | **success 40本**（落ちた回は無い） |
+| **deploy** | success 25本／cancelled 11本／**failure 1本** |
 
-**判定の中身（攻守・判定獣・第一感の見立て・光る牌）には一字も触っていない。**
+**止まっている段は無い。** 控えの押し（state・notices・board・usage・status・pipe-warn）は毎回 check:success → deploy:success で通っていた。
+cancelled 11本は `concurrency: pages` の打ち切り＝同じ刻に重なった押しの後発が勝つ形で、こちらは異常ではない。
 
-## 検査
+落ちた1本は **21:49 の `19664dea`（v1439）** … `check:success ／ deploy:failure`。
 
-- `check.js` 速い版 … **問題なし**（①〜㉒ 全てPASS。㉓「第一感が移す前と変わらないか」は速い版なので SKIP）
-- `adv-check.js` … **全てPASS**
-- **フル版（21視野）は未了** — 空き物理メモリ **1145MB** で関門（2048MB）に掛かった。宣言では「21視野で溢れ0」まで含めていたので、**空いた回に回して追って報告する**。
-  直したのは台詞の一行（`が浮いている。切りだ。` 12字 → `切るなら` 4字）で、**見立て行は短くなる**ため溢れが増える向きではない
+## 117分の訴えの正体
 
-## 実機で見るところ
+**止まりではなく、測りの当たり方。** 22:03 から 00:00 まで**新しい札が立たなかった**ので、公開側の `notices.json` は 22:03 のままだった。
+00:00 に札が立った瞬間、「公開側の札が手元のいちばん新しい札より117分古い」と出た。押しと配信が追いつく **00:10:27 に ok で消えている**（`pipe-warn.log`）。
 
-判定画面で**兎の釦**を押すと、見立て行の場所に「**切るなら〈牌〉**」が一行だけ出て、その牌が**琥珀の枠**で光ること。もう一度押すと元の見立てへ戻ること。版の字が **v1439**。
+いま公開側は追いついている … `state.json` の `at`＝**00:12:55**／`ver.txt`＝**1439**／`panel-ver.txt`＝**132**。
+
+## ただし本物の穴が二つあった
+
+1. **`stable` の付け替えでも走りが立ち、その deploy は必ず落ちる。**
+   `github-pages` の環境は **main の枝からしか配信できない**ので、tag の ref から回った deploy は毎回 failure。21:49 の failure がこれ。
+2. **その failure が「直前の走りが落ちていないかを見る」関門を濁す。**
+   関門は落ちていたら `exit 1` で配信を止めていたが、**止めた回自身も failure になる**ので、次の回の関門がまた落ちを見る——連鎖しうる形だった。
+
+## 直した形（指示どおり分けた）
+
+段を三つに分けた。
+
+| 段 | いつ走る | 配信の掛かり方 |
+|---|---|---|
+| **scope** | 毎回（数秒） | 何が変わった push かを見るだけ |
+| **check** | **本体の回だけ**（`koushu-handan.html`・`ver.txt`・`panel.html`・検査の台本など） | — |
+| **deploy** | 毎回 | **控えの回は検査に掛けずそのまま配信**／**本体の回は check が success の回だけ** |
+
+あわせて二つ直した。
+
+- **枝を main に絞った**（`on: push: branches: [main]`）。`stable` の付け替えで走りが立たなくなり、穴①が消える
+- **関門を「落とす」から「飛ばす」へ**。走りを failure にせず、その回の配信だけ見送る（穴②が消える）
+
+＊控えの回でも「直前の本体の検査が落ちたまま」なら配信は見送る——落ちた版を、あとの控えの押しが公開してしまうのを止めるため。直った版が通れば次の控えの回から**ひとりでに戻る**。
+
+## 実測
+
+- 分けた後の控えの回 … `d2573bf0`「usage: 更新」で **scope:success ／ check:skipped ／ deploy:success**。検査を通らずに配信された
+- 分けた後の本体の回 … `39425058`（この工事そのもの）で **scope:success ／ check:success ／ deploy:success**
+- 21:49 の `19664dea` … `check:success ／ deploy:failure`。同じ sha の **21:18 の走り（枝の push）は check・deploy とも success** で、v1439 はそちらで配信済み
 
 ## 残り
 
-1. **過去の札の上限-1** — `notices-archive.json` を新しい50件だけ残し、以後も50件を上限に古い方から落とす（この工事の後、という指示どおり次に着手）
+残り0件。
 
 ---
 
@@ -45,11 +62,12 @@
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **218件**ある。
+　ここに出るのは新しい20件。全部で **219件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0913-0015.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0913-0015.md) | 09-13 00:34 | 配信の切り分け-1（印 y0913-0015） |
 | [`y0912-2100.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0912-2100.md) | 09-12 21:21 | 選択釦-1 — v1439（印 y0912-2100） |
 | [`y0912-2015.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0912-2015.md) | 09-12 20:16 | ヨシの猫-7 — ヨシ待ちの頭を現場猫の顔へ（印 y0912-2015） |
 | [`y0912-1940.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0912-1940.md) | 09-12 19:44 | ヨシの猫-6 — 現場猫の置き場を三つへ（印 y0912-1940） |
@@ -69,6 +87,5 @@
 | [`落ちた後の起こし-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/%E8%90%BD%E3%81%A1%E3%81%9F%E5%BE%8C%E3%81%AE%E8%B5%B7%E3%81%93%E3%81%97-2.md) | 09-11 20:35 | 落ちた後の起こし-2 — 窓の起こし直しと🪟・RC 切れの数え・遠隔の会話名 |
 | [`y0911-0701.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0911-0701.md) | 09-11 07:02 | 0x4A の三（三度目）— 昇格の問いは四回とも約2分で取り消し（印 y0911-0701） |
 | [`y0911-0627.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0911-0627.md) | 09-11 06:29 | 0x4A の三（二度目）— 昇格の問いは出したが、約2分で取り消しになった（印 y0911-0627） |
-| [`y0911-0047.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0911-0047.md) | 09-11 00:47 | 落ちた後の起こし-1 と 帯の中の黙り-1（乙）— 三件とも済 |
 
 <!-- 控えの一覧 ここまで -->
