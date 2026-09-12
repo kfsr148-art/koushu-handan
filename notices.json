@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）：⑪受信箱に来た文を全部件名にするな。台帳に開くのは「以上",
+        "time":  1789202421,
+        "message":  "⑪受信箱に来た文を全部件名にするな。台帳に開くのは「以上\nsettings.json の env に CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1 を足した（Claude Code が窓の題を会話の要約で書き替えるのを止める。写し settings.json.bak-20260912b）\n三つの起こし方を印と同じ命令へ揃えた。cmd.exe /k title 麻雀 攻守判断 (Claude Code) \u0026 C:/Users/user/.local/bin/claude.exe --continue --remote-control --name=\"VAIO koushu-handan\"（実物は円記号の道）。デスクトップの印・ClaudeCodeAtLogon・rc-restart.ps1 の三つ\nrc-restart.ps1 に、起きた窓の題を控えて札へ載せる手を足した（構文誤り0・73行）\n今の窓（claude 2972・親 cmd 1740）を閉じて、印と同じ窓で起こし直す"
+    },
+    {
         "title":  "✅ 遠隔を繋ぎ直しました（VAIO koushu-handan）",
         "time":  1789201687,
         "message":  "遠隔の橋が切れていたので、窓を閉じて名を指して起こし直しました。\n新しい rcName ＝ VAIO koushu-handan\nbridgeSessionId ＝ session_012CxZiMh7nS8ddLbGsF8kUL\nclaude pid ＝ 2028／閉じた刻 17:27:44\n窓の題 ＝ 麻雀 攻守判断 (Claude Code)  - C:\\Users\\user\\.local\\bin\\claude.exe  --continue --remote-control --name=\"VAIO koushu-handan\"\n\n＊起こした形：claude --continue --remote-control \nVAIO koushu-handan\n＊記録は ~/.claude/rc-restart.log にあります。"
@@ -193,10 +198,5 @@
         "title":  "✅ 札の本文-1 終わり（残り0件）",
         "time":  1789174522,
         "message":  "札の本文-1 — 終わり（残り0件）\n遠隔の橋-1 は 09:24 に済んでいた（rcName koushu-handan-0a・pid 2972）。台帳 797行を済にした\n札の本文の食い違いの因＝本文は控えの 完了/実測/ファイル/実機 の行から組むが、件名だけ枠ごとに機械が書き替えるので、本文が前の仕事のまま残っていた（04:52・09:04・09:12・09:24 の四回とも 外の見張り-2 の文）\n直し＝frame-work.ps1 が新しい件名を書く回に前の本文を work-note-prev.txt へ退ける。残すのは 開始・件名・見込み・待ち・未検収\n写しでの検収＝件名が新しい仕事名に替わり、前の本文三行は退き、未検収は残った"
-    },
-    {
-        "title":  "🕒 延びています",
-        "time":  1789174023,
-        "message":  "遠隔の橋-1 — 窓を閉じて名を指して起こし直す\n終了予定09:45を過ぎています（経過21分）"
     }
 ]
