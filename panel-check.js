@@ -174,6 +174,11 @@ function probeSource(scene) {
     o.ntfyClip = CAP.clip;
     o.ntfyBtn2 = bn ? txt(bn) : null;
     o.stH = st ? Math.round(st.getBoundingClientRect().height * 10) / 10 : null;
+    /* 題の行の三つ目（2026-09-13・頭の猫-4）。ヨシ待ちの字はここへ移った。 */
+    var hw = document.getElementById('headWait');
+    o.headWait = hw ? String(hw.textContent || '').trim() : null;
+    o.headWaitColor = hw ? getComputedStyle(hw).color : null;
+    o.headWaitSize = hw ? getComputedStyle(hw).fontSize : null;
     /* 使用量の三行と、その足元の一行 */
     o.uText = txt(document.getElementById('usageTag'));
     o.uShown = vis(document.getElementById('usageTag'));
@@ -339,7 +344,7 @@ try {
   const WANT = {
     '作業中':   /^作業中/,
     '手待ち':   /次の指示待ち/,
-    'ヨシ待ち': /ヨシを返してください/,
+    'ヨシ待ち': null,   /* 2026-09-13・頭の猫-4 で題の行へ移した。黄色の行には出ない */
     '異常':     null   /* 黄色の行は出ない決め。異常は札で出る */
   };
   /* ＊異常のときは**黄色の行には出ない**決め（状態の一行は三通りだけ）。異常は**札**で出るので、
@@ -353,6 +358,12 @@ try {
     if (WANT[k]) {
       if (WANT[k].test(r.stText)) { ok(k + '：黄色の行「' + r.stText.slice(0, 34) + '」'); }
       else { ng(k + '：黄色の行が違う「' + r.stText.slice(0, 40) + '」'); }
+    } else if (k === 'ヨシ待ち') {
+      /* 字は題の行の三つ目（#headWait）へ移した（2026-09-13・頭の猫-4）。
+         黄色い札そのものは、ヨシ待ちの回は縦線ごと出さない決め。 */
+      if (!/ヨシを返してください/.test(r.headWait || '')) { ng('ヨシ待ち：題の行に字が無い「' + String(r.headWait) + '」'); }
+      else if (r.stText) { ng('ヨシ待ち：黄色い札が出ている「' + String(r.stText).slice(0, 30) + '」'); }
+      else { ok('ヨシ待ち：題の行「' + r.headWait + '」／黄色い札は出ない'); }
     } else {
       const card = (r.cards || []).find(c => /異常/.test(c));
       if (r.stText && /作業中|次の指示待ち|ヨシを返して/.test(r.stText)) {
@@ -589,7 +600,7 @@ try {
         else { ok('作業中：刻「' + r.predText + '」が水色（比 ' + c1.toFixed(2) + '）／外は黄色（比 ' + c2.toFixed(2) + '）'); }
       }
     }
-    for (const nm of ['手待ち', 'ヨシ待ち']) {
+    for (const nm of ['手待ち']) {
       const r2 = run(tmp, { state: ST[nm], notices: MIX, settle: 1200 }, 390, 844);
       if (!r2) { ng(nm + '：測れない'); }
       else if (r2.predColor) { ng(nm + '：刻が無いのに包まれている（' + r2.predText + '）'); }
@@ -831,7 +842,7 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     ['コマ送りは白版',     "'cat0-w.png'",                    'コマ送りが白版でない'],
     ['指示待ちで寝姿',     "el.src = 'cat-sleep-w.png'",      '寝姿へ戻す枝が無い'],
     ['絵の形を潰さない',   'object-fit:contain',              '題の猫の箱の指定が無い'],
-    ['ヨシ待ちは字を上へ寄せる', 'yoshiTop',            'ヨシ待ちの札の寄せが無い'],
+    ['ヨシ待ちの字は題の行へ', 'headWait',              '題の行の三つ目が無い'],
   ];
   for (const [name, needle, msg] of need) {
     if (html.indexOf(needle) >= 0) { ok(name); } else { ng(name + ' … ' + msg); }
