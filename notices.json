@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789241466,
+        "message":  "頭の猫-2（黄色い札の猫を外す）\n版を三箇所そろえて panel v134。押した（a905a7a1）。y0913-0400（頭の猫-1 の検収）はヨシを受けて閉じた。\nファイル: panel.html（v134）／panel-ver.txt／panel-check.js\n実測: 比べ … 前は 176px（猫160＋上下8）。ヨシ待ちでない回の札は今までどおり 464x79px・寄せ center で、字は上端から 25.9px（中ほど）。下の釦の位置は 79px の固定値のまま動かない。\n実機: 返事パネルをヨシ待ちで開き、黄色い札の中が「ヨシを返してください」の字だけになり、札が低くなって字が上のほうに寄っていること。左端の黄色い縦線は残る。題の右の猫（80px）はそのまま。\n未検収: 2026-09-12 21:00 v1439 の実機確認（人手待ち）"
+    },
+    {
         "title":  "🪟 連携に訴えがあります（subj-gap）",
         "time":  1789240261,
         "message":  "連携の見張りから訴えが出ています。\n\n・subj-gap … 作業中の件名が食い違っている（控え「頭の猫-2」／出ている「頭の猫-2。黄色い札の中の現場猫160pxを消す」）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
@@ -193,10 +198,5 @@
         "title":  "✅ 遠隔を繋ぎ直しました（VAIO koushu-handan）",
         "time":  1789203461,
         "message":  "遠隔の橋が切れていたので、窓を閉じて名を指して起こし直しました。\n新しい rcName ＝ VAIO koushu-handan\nbridgeSessionId ＝ session_012CxZiMh7nS8ddLbGsF8kUL\nclaude pid ＝ 112／閉じた刻 17:57:20\n窓の題 ＝ 麻雀 攻守判断 (Claude Code)  - C:\\Users\\user\\.local\\bin\\claude.exe  --continue --remote-control koushu-handan\n\n＊起こした形：claude --continue --remote-control \nkoushu-handan\n＊記録は ~/.claude/rc-restart.log にあります。"
-    },
-    {
-        "title":  "✅ 遠隔を繋ぎ直しました（VAIO koushu-handan）",
-        "time":  1789203117,
-        "message":  "遠隔の橋が切れていたので、窓を閉じて名を指して起こし直しました。\n新しい rcName ＝ VAIO koushu-handan\nbridgeSessionId ＝ session_012CxZiMh7nS8ddLbGsF8kUL\nclaude pid ＝ 2388／閉じた刻 17:51:41\n窓の題 ＝ 麻雀 攻守判断 (Claude Code)  - C:\\Users\\user\\.local\\bin\\claude.exe  --continue --remote-control --name=\"VAIO koushu-handan\"\n\n＊起こした形：claude --continue --remote-control \nVAIO koushu-handan\n＊記録は ~/.claude/rc-restart.log にあります。"
     }
 ]
