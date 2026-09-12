@@ -1,18 +1,28 @@
-# 自動検査と配信（2026-09-12・検査を雲へ-1）
+# 自動検査と配信（2026-09-12・検査を雲へ-1／2026-09-13・配信の切り分け-1）
 #
 #   ＊検査は**雲側だけ**で回す。VAIO の pre-push は構文検査（node --check）だけに減らし、
 #     headless の Edge は VAIO で二度と立てない（機械が4GBで、検査そのものが重さでこけるため）。
-#   ＊配信（Pages）は **check の後段**に置く。検査が落ちた版は公開されない。
-#     ＊これに伴い Pages の出どころを「main の枝」から「GitHub Actions」へ切り替えてある。
 #   ＊ブラウザは Edge ではなく Chromium。runner に在る google-chrome／chromium を使い、
 #     無い回だけ playwright の chromium を入れる。
-#   ＊検査を回すのは**中身が変わった push だけ**。state.json や notices.json のような
-#     毎分の押しでは検査を飛ばして配信だけ行う（毎分フル版は回せないため）。
-#     飛ばした回も deploy は通る＝公開は止めない。
+#
+#   ＊**2026-09-13・配信の切り分け-1**で、段を三つに分けた。
+#       一段 scope  … 何が変わった push かを見るだけ（数秒）
+#       二段 check  … **本体の回だけ**回す（koushu-handan.html・ver.txt など）
+#       三段 deploy … 配信
+#     配信の掛かり方が、回の種類で変わる——
+#       ・控えの回（state.json・notices.json・board.json・usage.json・status.md・pipe-warn.json など）
+#         … **検査に掛けない。**そのまま配信する。毎分の押しが検査の成否に縛られない。
+#       ・本体の回（koushu-handan.html・ver.txt・検査の台本そのもの）
+#         … 今までどおり **check が通った回だけ**配信する。落ちた版は公開されない。
+#
+#   ＊**枝を main に絞った**（2026-09-13）。絞る前は `stable` の付け替えでも走りが立ち、
+#     その走りの deploy が必ず落ちていた（github-pages の環境は main の枝からしか配信できない）。
+#     2026-09-12 21:49 の failure がこれ。落ちた走りは「直前の走り」の関門も濁す。
 name: 自動検査と配信
 
 on:
   push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -21,52 +31,41 @@ permissions:
   id-token: write
 
 jobs:
-  check:
+  # ---- 一段：何が変わった push かを見るだけ ----
+  scope:
     runs-on: ubuntu-latest
-    # ＊検査の段には打ち切りを掛けない。掛けると毎分の state.json の押しが
-    #   走っているフル版を毎回打ち切る（2026-09-12 13:08 の cancelled がこれ）。
-    timeout-minutes: 30
+    timeout-minutes: 5
     outputs:
       heavy: ${{ steps.pick.outputs.heavy }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-
-      # 検査が要る push かを見る。要らなければ配信だけ。
       - name: 検査が要る回かを見る
         id: pick
         run: |
           FILES=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" 2>/dev/null || echo ALL)
           echo "変わったもの: $FILES"
           if echo "$FILES" | grep -qE '^(koushu-handan\.html|check\.js|adv-check\.js|check-all\.js|ver\.txt|panel\.html|panel-check\.js|widget-check\.js|usage-widget(-loader)?\.js|\.github/workflows/check\.yml)$' || [ "$FILES" = "ALL" ]; then
-            echo "heavy=1" >> "$GITHUB_OUTPUT"; echo "→ 検査を回す"
+            echo "heavy=1" >> "$GITHUB_OUTPUT"; echo "→ 本体の回。検査を回し、通った回だけ配信する"
           else
-            echo "heavy=0" >> "$GITHUB_OUTPUT"; echo "→ 検査は飛ばす（配信だけ）"
+            echo "heavy=0" >> "$GITHUB_OUTPUT"; echo "→ 控えの回。検査に掛けず、そのまま配信する"
           fi
 
-      # 軽い回（state.json などの押し）は検査を飛ばすが、**直前の走りが落ちていたら配信しない**。
-      #   ＊落ちた版のまま、あとの軽い押しが配信してしまうのを止めるため。
-      #   ＊直った版が通れば、次の軽い回から配信が戻る（ひとりでに戻る）。
-      - name: 直前の走りが落ちていないかを見る
-        if: steps.pick.outputs.heavy == '0'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          LAST=$(gh run list -R "$GITHUB_REPOSITORY" -w "自動検査と配信" -b "$GITHUB_REF_NAME" -L 8 \
-                  --json status,conclusion --jq '[.[] | select(.status=="completed" and (.conclusion=="success" or .conclusion=="failure"))][0].conclusion')
-          echo "直前の走り: ${LAST:-なし}"
-          if [ "$LAST" = "failure" ]; then
-            echo "直前の検査が落ちている。配信しない（直った版が通れば戻る）"
-            exit 1
-          fi
+  # ---- 二段：検査（本体の回だけ）----
+  check:
+    needs: scope
+    if: needs.scope.outputs.heavy == '1'
+    runs-on: ubuntu-latest
+    # ＊検査の段には打ち切りを掛けない。掛けると毎分の押しが走っているフル版を毎回打ち切る。
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
 
       - name: ブラウザ（Chromium）を用意する
-        if: steps.pick.outputs.heavy == '1'
         run: |
           if [ -x /usr/bin/google-chrome ] || [ -x /usr/bin/chromium ] || [ -x /usr/bin/chromium-browser ]; then
             echo "ブラウザあり: $(command -v google-chrome chromium chromium-browser 2>/dev/null | head -1)"
@@ -78,19 +77,15 @@ jobs:
           fi
 
       - name: 速い版（node check-all --fast）
-        if: steps.pick.outputs.heavy == '1'
         run: node check-all --fast
 
       - name: フル版（node check-all）
-        if: steps.pick.outputs.heavy == '1'
         run: node check-all
 
       - name: ウィジェットの検査（widget-check.js）
-        if: steps.pick.outputs.heavy == '1'
         run: node widget-check.js
 
       - name: 返事パネルの検査（panel-check.js）
-        if: steps.pick.outputs.heavy == '1'
         run: node panel-check.js
 
       # 落ちたときだけ知らせる。題は「🚨 自動検査が落ちました（commit短縮）」。
@@ -106,24 +101,50 @@ jobs:
             --data-binary @- \
             "https://ntfy.sh/${{ secrets.NTFY_TOPIC }}" > /dev/null || true
 
-  # 配信。**検査が通った回だけ**走る（落ちた版は公開されない）。
+  # ---- 三段：配信 ----
+  #   ＊控えの回（heavy=0）… check は走らないので skipped。その回はそのまま配信する。
+  #   ＊本体の回（heavy=1）… check が success の回だけ配信する。
   deploy:
-    needs: check
+    needs: [scope, check]
+    if: always() && needs.scope.result == 'success' && (needs.scope.outputs.heavy == '0' || needs.check.result == 'success')
     # 配信だけ打ち切りを掛ける。最後の一本が配信する。
     concurrency:
       group: pages
       cancel-in-progress: true
-    if: needs.check.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # 控えの回でも、**直前の本体の検査が落ちたまま**なら配信しない。
+      #   ＊落ちた版のまま、あとの控えの押しが公開してしまうのを止めるため。
+      #   ＊ここは**落とさずに飛ばす**（exit 1 にすると走りが failure になり、
+      #     次の回の関門をこちらが濁す。2026-09-12 21:49 の failure で踏んだ形）。
+      #   ＊直った版が通れば、次の控えの回から配信が戻る（ひとりでに戻る）。
+      - name: 直前の検査が落ちていないかを見る
+        id: guard
+        if: needs.scope.outputs.heavy == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LAST=$(gh run list -R "$GITHUB_REPOSITORY" -w "自動検査と配信" -b main -L 12 \
+                  --json conclusion,status --jq '[.[] | select(.status=="completed" and (.conclusion=="success" or .conclusion=="failure"))][0].conclusion')
+          echo "直前の走り: ${LAST:-なし}"
+          if [ "$LAST" = "failure" ]; then
+            echo "skip=1" >> "$GITHUB_OUTPUT"
+            echo "直前の検査が落ちている。この回は配信を飛ばす（直った版が通れば戻る）"
+          else
+            echo "skip=0" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/checkout@v4
+        if: steps.guard.outputs.skip != '1'
       - uses: actions/configure-pages@v5
+        if: steps.guard.outputs.skip != '1'
       - uses: actions/upload-pages-artifact@v3
+        if: steps.guard.outputs.skip != '1'
         with:
           path: '.'
       - id: deployment
+        if: steps.guard.outputs.skip != '1'
         uses: actions/deploy-pages@v4
