@@ -1,6 +1,26 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
+        "time":  1789227367,
+        "message":  "配信の切り分け-1（後始末）\n配信の切り分け-1 は押し済み（39425058・報告 y0913-0015）。台帳の行も閉じた。開いている仕事は無い。\n実測: 分けた後の控えの回 d2573bf0「usage: 更新」… scope:success ／ check:skipped ／ deploy:success。本体の回 39425058 … 三段とも success。\n未検収: 2026-09-12 21:00 v1439 の実機確認（人手待ち）"
+    },
+    {
+        "title":  "🕒 延びています",
+        "time":  1789226945,
+        "message":  "公開側が117分遅れている（pub-late・0\n終了予定00:27を過ぎています（経過16分）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789225295,
+        "message":  "写せます（8件）"
+    },
+    {
+        "title":  "🪟 異常です（連携に訴え：pub-late）",
+        "time":  1789225231,
+        "message":  "連携の見張りから訴えが出ています。\n\n・pub-late … 公開側が 117分 遅れている（手元のいちばん新しい札より古い）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
         "time":  1789225209,
         "message":  "台帳の閉じ忘れ-1\n起こし直しの測りが 0x0 で落ちていた穴も直した。CONOUT$ を書き込みだけ（0x40000000）で開いていたうえ、PowerShell は 0xC0000000 を符号付きとして読んで型の変換で落ちる。3221225472 を直に渡す形にした。\nファイル: ~/.claude/ledger-close.ps1（新）／rc-restart.ps1／window-restart.ps1／revive-claude.ps1／orders-open.tsv（写し .bak-20260912f）\n実測: ledger-close の試し … 件名「過去の札の上限-1」で、台帳の2行（21:49:48・23:54:37）だけを閉じた。ほかの行には触っていない。\n実機: 次に窓を閉じて起こし直したとき、その仕事の台帳の行が開いたまま残らないこと。記録は ~/.claude/ledger-close.log。\n未検収: 2026-09-12 21:00 v1439 の実機確認（人手待ち）"
     },
@@ -178,20 +198,5 @@
         "title":  "🪟 連携に訴えがあります（done-swept）",
         "time":  1789202435,
         "message":  "連携の見張りから訴えが出ています。\n\n・done-swept … 終わりの札が立っていなかったので立て直した（前の仕事の取り残し・⑪受信箱に来た文を全部件名にするな。台帳に開くのは「以上・stop 2026-09-12 17:27:38・13分遅れ）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）：⑪受信箱に来た文を全部件名にするな。台帳に開くのは「以上",
-        "time":  1789202421,
-        "message":  "⑪受信箱に来た文を全部件名にするな。台帳に開くのは「以上\nsettings.json の env に CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1 を足した（Claude Code が窓の題を会話の要約で書き替えるのを止める。写し settings.json.bak-20260912b）\n三つの起こし方を印と同じ命令へ揃えた。cmd.exe /k title 麻雀 攻守判断 (Claude Code) \u0026 C:/Users/user/.local/bin/claude.exe --continue --remote-control --name=\"VAIO koushu-handan\"（実物は円記号の道）。デスクトップの印・ClaudeCodeAtLogon・rc-restart.ps1 の三つ\nrc-restart.ps1 に、起きた窓の題を控えて札へ載せる手を足した（構文誤り0・73行）\n今の窓（claude 2972・親 cmd 1740）を閉じて、印と同じ窓で起こし直す"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789199346,
-        "message":  "デスクトップの「麻雀 攻守判断 (Claude\n何をしたかの控えがありません（止まる側の書き忘れです）。\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）"
-    },
-    {
-        "title":  "✅ デスクトップの印を VAIO koushu-handan の形へ",
-        "time":  1789199282,
-        "message":  "デスクトップの印「麻雀 攻守判断 (Claude Code).lnk」を揃えた\nTarget    : C:\\Windows\\System32\\cmd.exe\nArguments : /k C:\\Users\\user\\.local\\bin\\claude.exe --continue --remote-control --name=\"VAIO koushu-handan\"\nWorkingDir: C:\\Users\\user\\Desktop\\mahjong\\koushu-handan（そのまま）\n旧 Arguments : /k claude\n＊実行ファイルの道は引用符なしにした。cmd /k は「引用符で始まり引用符で終わる」引数の両端を落とすので、道を囲むと名の引用符まで外れて --name=VAIO と koushu-handan に割れる\n＊確かめ … 同じ渡し方で node へ流すと --name=VAIO koushu-handan が一語のまま届いた\n＊これで、この印から起こした窓も Code タブの一覧で VAIO koushu-handan になる（rc-restart.ps1・ClaudeCodeAtLogon と同じ形）"
     }
 ]
