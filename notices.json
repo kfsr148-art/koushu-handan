@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 連携に訴えがあります（subj-gap）",
+        "time":  1789212694,
+        "message":  "連携の見張りから訴えが出ています。\n\n・subj-gap … 作業中の件名が食い違っている（控え「ヨシの猫-8」／出ている「ヨシの猫-8。返事パネルの頭の36pxの枠はヨシ」）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789212142,
         "message":  "写せます（1件）"
@@ -38,11 +43,6 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789209904,
         "message":  "ヨシの猫-6（現場猫の置き場を三つへ）\n元絵のマス目を測った。6・8・10 のどれでもなく、1マス 5.333px（＝90マス）だった。\nファイル: panel.html（v130）／panel-ver.txt／usage-widget.js／~/.claude/watch-notify.ps1／genba-cat-40.png（消した）\n実測: 公開側 … genba-cat-80／160／240.png と panel-icon-white.png はいずれも 200。genba-cat-40.png は次の配信まで 200 のまま残る。\n実機: 返事パネルをヨシ待ちで開き、黄色い札の左に色付きの現場猫が160pxで入っていること（頭の36pxの枠は白い影絵のまま）。下の緑の「ヨシ」釦は、ほかの状態と同じ幅・同じ高さで、札の下に続いていること。ウィジェットのヨシ待ちは色付きの猫が80pxで出ること。ntfy の「🙋 ヨシしてください」の丸い絵が色付きの現場猫になること。\n未検収: 2026-09-12 19:00 選択釦-1（v1439）の工事のヨシ（印 y0912-1900・生きている）\nそのまま: 元のマス目の実測 … 1マス 5.333px ＝ 90マス（6・8・10 のどれでもない）\n原寸（ウィジェットに出る絵）https://kfsr148-art.github.io/koushu-handan/genba-cat-80.png\n札の中（160px）        https://kfsr148-art.github.io/koushu-handan/genba-cat-160.png\nntfy の Icon（240px）  https://kfsr148-art.github.io/koushu-handan/genba-cat-240.png"
-    },
-    {
-        "title":  "🪟 連携に訴えがあります（subj-gap）",
-        "time":  1789209026,
-        "message":  "連携の見張りから訴えが出ています。\n\n・subj-gap … 作業中の件名が食い違っている（控え「ヨシの猫-6」／出ている「ヨシの猫-6（最後）。IMG_8974.pngの」）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
     },
     {
         "title":  "✅ 終わりました（返事不要）",
