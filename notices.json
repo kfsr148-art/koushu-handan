@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🕒 延びています",
+        "time":  1789226945,
+        "message":  "公開側が117分遅れている（pub-late・0\n終了予定00:27を過ぎています（経過16分）"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789225295,
         "message":  "写せます（8件）"
@@ -193,10 +198,5 @@
         "title":  "✅ 終わりました（返事不要）：⑪受信箱に来た文を全部件名にするな。台帳に開くのは「以上",
         "time":  1789202421,
         "message":  "⑪受信箱に来た文を全部件名にするな。台帳に開くのは「以上\nsettings.json の env に CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1 を足した（Claude Code が窓の題を会話の要約で書き替えるのを止める。写し settings.json.bak-20260912b）\n三つの起こし方を印と同じ命令へ揃えた。cmd.exe /k title 麻雀 攻守判断 (Claude Code) \u0026 C:/Users/user/.local/bin/claude.exe --continue --remote-control --name=\"VAIO koushu-handan\"（実物は円記号の道）。デスクトップの印・ClaudeCodeAtLogon・rc-restart.ps1 の三つ\nrc-restart.ps1 に、起きた窓の題を控えて札へ載せる手を足した（構文誤り0・73行）\n今の窓（claude 2972・親 cmd 1740）を閉じて、印と同じ窓で起こし直す"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789199346,
-        "message":  "デスクトップの「麻雀 攻守判断 (Claude\n何をしたかの控えがありません（止まる側の書き忘れです）。\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）"
     }
 ]
