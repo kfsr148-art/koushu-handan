@@ -58,6 +58,15 @@
        5.6px 伸びる（実測）。縦の余白を負に取り、**箱の上では30pxぶん**として数えさせる。
        絵は等倍のまま、上下へ3pxずつはみ出して描かれる（header の余白の中なので切れない）。 */
     margin:-3px 0;}
+  /* ヨシ待ちの回だけ、頭の枠を現場猫の原寸80pxへ広げる（2026-09-13・頭の猫-1）。
+     ＊出す条件は**黄色い札に160pxの全身を出すのと同じ**（lastStat === 'ヨシ待ち'）。
+       その条件でないときは今までどおり白い走り猫と眠り猫のまま。
+     ＊80px の原寸で置き、伸縮しない。拡大は上の image-rendering に任せる。
+     ＊題の行の高さも合わせる。36px のときの負の余白（-3px）は**戻す**——
+       戻さないと 80px の絵が上下 3px ずつ食い込み、題字とぶつかる。
+       h1 の min-height を 80px にして、題字は今までどおり縦の中ほどで並ぶ。 */
+  #runcat.big{width:80px; height:80px; margin:0;}
+  h1.bigcat{min-height:80px;}
 
   /* いまの状態の一行。ヨシの釦より上に置く。
      リモートデスクトップを開かずに、動いているか止まっているかを見るため。 */
@@ -478,7 +487,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v132（9月12日）</p>
+  <p class="ver" id="verTag">panel v133（9月13日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -506,7 +515,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '132';
+  var PANEL_VER = '133';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1648,18 +1657,29 @@
   var catI = 0;
   var catAwake = false;
   (function () {   /* 先読み。読めなくても画面は壊れない（img が出ないだけ） */
-    catFrames.concat(['cat-sleep-w.png', 'genba-cat-160.png'])
+    catFrames.concat(['cat-sleep-w.png', 'genba-cat-80.png', 'genba-cat-160.png'])
       .forEach(function (n) { var im = new Image(); im.src = n; });
   })();
   function runCatTick() {
     var el = $('runcat');
     if (!el) { return; }
-    /* 頭の36pxの枠は、**ヨシ待ちでも白猫のまま**（2026-09-12・ヨシの猫-8）。
-       作業中はコマ送り（cat0〜4-w）、それ以外は寝姿（cat-sleep-w）。専用の枝は持たない。
-       ＊ヨシ待ちの印は、**下の黄色い札の中の全身（genba-cat-160.png・160px）だけ**が受け持つ。
-       ＊2026-09-07 の黒猫の待機-1 から 09-12 のヨシの猫-7 まで、ここには影絵・ドット絵・顔と
-         入れ替わりで現場猫を置いていたが、**どれも使わない**ことにした。
-         panel-check が、この枝に現場猫の絵の名が残っていないかを字面で見張っている。 */
+    /* 頭の枠の猫（2026-09-13・頭の猫-1）。
+       ＊**ヨシ待ちの回だけ**、現場猫の原寸80px（genba-cat-80.png）へ替え、枠を80pxへ広げる。
+         出す条件は**下の黄色い札に160pxの全身を出すのと同じ**（lastStat === 'ヨシ待ち'）。
+       ＊その条件でないときは今までどおり——作業中はコマ送り（cat0〜4-w）、
+         それ以外は寝姿（cat-sleep-w）。寸は 56x36 へ戻す。
+       ＊2026-09-07 の黒猫の待機-1 から 09-12 のヨシの猫-8 まで、ここには影絵・ドット絵・顔を
+         置いては外してきた。今回は**全身の原寸**で、下の札と同じ絵柄に揃えている。 */
+    var h1 = document.querySelector('header h1');
+    if (lastStat === 'ヨシ待ち') {
+      catAwake = false;
+      if (el.src.indexOf('genba-cat-80') < 0) { el.src = 'genba-cat-80.png'; }
+      el.classList.add('big');
+      if (h1) { h1.classList.add('bigcat'); }
+      return;
+    }
+    el.classList.remove('big');
+    if (h1) { h1.classList.remove('bigcat'); }
     /* 判定の順は ヨシ待ち → 連絡なし → 作業中（v124・止まりの見分け-1）。
        生存が途切れている間は、凍った「作業中」で走らせない。 */
     if (lastLost) {
