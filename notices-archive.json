@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🕒 延びています",
+        "time":  1789204623,
+        "message":  "--name=\"VAIO koushu-hand\n終了予定18:15を過ぎています（経過21分）"
+    },
+    {
         "title":  "✅ 遠隔を繋ぎ直しました（VAIO koushu-handan）",
         "time":  1789203461,
         "message":  "遠隔の橋が切れていたので、窓を閉じて名を指して起こし直しました。\n新しい rcName ＝ VAIO koushu-handan\nbridgeSessionId ＝ session_012CxZiMh7nS8ddLbGsF8kUL\nclaude pid ＝ 112／閉じた刻 17:57:20\n窓の題 ＝ 麻雀 攻守判断 (Claude Code)  - C:\\Users\\user\\.local\\bin\\claude.exe  --continue --remote-control koushu-handan\n\n＊起こした形：claude --continue --remote-control \nkoushu-handan\n＊記録は ~/.claude/rc-restart.log にあります。\n"
@@ -243,10 +248,5 @@
         "title":  "🪟 連携に訴えがあります（done-swept）",
         "time":  1789154547,
         "message":  "連携の見張りから訴えが出ています。\n\n・done-swept … 終わりの札が立っていなかったので立て直した（外の見張り-2 — claude.exe が0本なら /fail を打つ・stop 2026-09-12 04:11:15・10分遅れ）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。\n"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）：外の見張り-2 — claude.exe が0本なら /fail を打つ",
-        "time":  1789154466,
-        "message":  "外の見張り-2 — claude.exe が0本なら /fail を打つ\n同じ枠が三度書かれた一枚として届いた（控えた枠は1行）。一件として受けた\n⑯の差し替えはこの窓に効いていた（03:39:05 の枠を 03:39:16 に frame-work が捌いた）\n仕事名が「ng.com/6537657a-d3fe-4」（URL の切れ端）になっていた。frame-work.ps1 で URL を先に落とし、名は日本語の字を含むものだけにした。台帳の自動の行は外の見張り-1 へ統合\n外の見張り-1＝inbox-watch.ps1 の巡回の末尾に Ping-Outside（前回から55秒以上の回だけ curl.exe -fsS -m 10・失敗しても巡回は続ける・~/.claude/hc-ping.log へ一行・ntfy は通らないので ntfy-count.txt に入らない）。写し .bak-20260912c・構文OK 1073行・常駐 pid 8116 起動03:43:22＞台本03:42:40・1本\n外の見張り-2＝Ping-Outside が claude.exe を数え、1本以上なら元の URL、0本なら末尾に /fail を付けて打つ。hc-ping.log に「claude=本数  先=打った URL」を残す。写し .bak-20260912d・構文OK 1078行・常駐 pid 4308 起動04:08:16＞台本04:07:42・1本\n"
     }
 ]
