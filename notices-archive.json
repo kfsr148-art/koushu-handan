@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789192205,
+        "message":  "前の問いの答えが札に無い\n何をしたかの控えがありません（止まる側の書き忘れです）。\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）"
+    },
+    {
         "title":  "✅ IMG_8974.png は未使用（使い先の一覧）",
         "time":  1789192133,
         "message":  "IMG_8974.png の使い先 … 未使用\nリポジトリ直下に在る（103,673バイト・git は 45e1e775 の一件だけ）\nパネルのヨシ待ちの札 … 未使用（使っているのは panel-icon-white.png と cat0-w〜cat4-w.png・cat-sleep-w.png）\nパネルのホーム画面の絵 … 未使用（panel-icon.png を使う）\nntfy の icon … 未使用（Icon: の頭は送っていない。題と本文だけ）\n本体 koushu-handan.html・ウィジェット … 未使用\n名が出るのは文章だけ … reports/ヨシの猫を差し替え-1.md／ヨシの猫のマス目.md／notices-archive.json／state.json／~/.claude の台帳と控え\n経緯 … ヨシの猫を差し替え-1 は 2026-09-09 に取り下げ（480x480 を36pxへ縮めると輪郭が潰れ、比1.3で3.0に届かず）。panel-icon-white.png のまま据え置き\n"
