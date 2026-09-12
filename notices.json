@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789192205,
+        "message":  "前の問いの答えが札に無い\n何をしたかの控えがありません（止まる側の書き忘れです）。\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）"
+    },
+    {
         "title":  "✅ IMG_8974.png は未使用（使い先の一覧）",
         "time":  1789192133,
         "message":  "IMG_8974.png の使い先 … 未使用\nリポジトリ直下に在る（103,673バイト・git は 45e1e775 の一件だけ）\nパネルのヨシ待ちの札 … 未使用（使っているのは panel-icon-white.png と cat0-w〜cat4-w.png・cat-sleep-w.png）\nパネルのホーム画面の絵 … 未使用（panel-icon.png を使う）\nntfy の icon … 未使用（Icon: の頭は送っていない。題と本文だけ）\n本体 koushu-handan.html・ウィジェット … 未使用\n名が出るのは文章だけ … reports/ヨシの猫を差し替え-1.md／ヨシの猫のマス目.md／notices-archive.json／state.json／~/.claude の台帳と控え\n経緯 … ヨシの猫を差し替え-1 は 2026-09-09 に取り下げ（480x480 を36pxへ縮めると輪郭が潰れ、比1.3で3.0に届かず）。panel-icon-white.png のまま据え置き"
@@ -193,10 +198,5 @@
         "title":  "🪟 連携に訴えがあります（done-swept）",
         "time":  1789154547,
         "message":  "連携の見張りから訴えが出ています。\n\n・done-swept … 終わりの札が立っていなかったので立て直した（外の見張り-2 — claude.exe が0本なら /fail を打つ・stop 2026-09-12 04:11:15・10分遅れ）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）：外の見張り-2 — claude.exe が0本なら /fail を打つ",
-        "time":  1789154466,
-        "message":  "外の見張り-2 — claude.exe が0本なら /fail を打つ\n同じ枠が三度書かれた一枚として届いた（控えた枠は1行）。一件として受けた\n⑯の差し替えはこの窓に効いていた（03:39:05 の枠を 03:39:16 に frame-work が捌いた）\n仕事名が「ng.com/6537657a-d3fe-4」（URL の切れ端）になっていた。frame-work.ps1 で URL を先に落とし、名は日本語の字を含むものだけにした。台帳の自動の行は外の見張り-1 へ統合\n外の見張り-1＝inbox-watch.ps1 の巡回の末尾に Ping-Outside（前回から55秒以上の回だけ curl.exe -fsS -m 10・失敗しても巡回は続ける・~/.claude/hc-ping.log へ一行・ntfy は通らないので ntfy-count.txt に入らない）。写し .bak-20260912c・構文OK 1073行・常駐 pid 8116 起動03:43:22＞台本03:42:40・1本\n外の見張り-2＝Ping-Outside が claude.exe を数え、1本以上なら元の URL、0本なら末尾に /fail を付けて打つ。hc-ping.log に「claude=本数  先=打った URL」を残す。写し .bak-20260912d・構文OK 1078行・常駐 pid 4308 起動04:08:16＞台本04:07:42・1本"
     }
 ]
