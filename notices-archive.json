@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789206364,
+        "message":  "v1438 ヨシ\nv1438 の検収ヨシを受け、stable を 2f8788dc（panel v37・8/26）から 93ad99e3（v1438）へ進めて push した（--no-verify・遠隔側も 93ad99e3 を指す）"
+    },
+    {
         "title":  "✅ stable を v1438（93ad99e3）へ進めた",
         "time":  1789206305,
         "message":  "v1438 の検収ヨシを受け、stable を進めた\n新しい stable … 93ad99e3（v1438・2026-09-10 20:28）「土台の直し-1 — shanten を analyze() の外へ／写し二つを廃止／ドラは戻り値から／check.js ㉒㉓／作法5 を改めた」\n前の stable … 2f8788dc（panel v37・2026-08-26 20:21）\n押し出し … git push -f --no-verify origin stable。遠隔側の refs/tags/stable も 93ad99e3 を指す（ls-remote で確認）\nver.txt … 93ad99e3 の中身は 1438 で一致\n控えの未検収から v1438 を落とし、申し送りの記憶も新しい stable へ直した\n"
@@ -243,10 +248,5 @@
         "title":  "😺 現在も順調にゃ",
         "time":  1789171226,
         "message":  "状態: 手待ち / 遠隔の会話名と題の問い\n台帳: 残り 3件（黒猫の待機-2・連携の穴-2・UAC・線を挿す・実機で見るなど、人手が要る待ち）\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 0% / 週全体 42% / 週Fable 40%\n訴え: 3件（subj-gap・done-stale-note・done-swept）… pipe-warn.log"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789156328,
-        "message":  "遠隔の会話名と題の問い\n外の見張り-2＝Ping-Outside が claude.exe を数え、1本以上なら元の URL、0本なら末尾に /fail を付けて打つ。hc-ping.log に「claude=本数  先=打った URL」を残す。写し .bak-20260912d・構文OK 1078行・常駐 pid 4308 起動04:08:16＞台本04:07:42・1本\nファイル: ~/.claude/inbox-watch.ps1／frame-work.ps1／orders-open.tsv／reports/外の見張り-1.md\n実測: 写し（打つ先は届かない手元の番地へ差し替え）＝0本→…/fail・1本→元の URL・55秒以内は打たない\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）"
     }
 ]
