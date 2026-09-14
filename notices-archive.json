@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🙋 ヨシしてください",
+        "time":  1789266964,
+        "message":  "点検-1 の乙（白猫を80px角へ・panel v137）の検収\n印: y0913-1120\n待っているのは：白猫が枠いっぱいに出て現場猫と同じ大きさに見えること、走りで足が跳ねないこと\n答え方：「y0913-1120 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。\n実機: いまこの札が立っている間は現場猫（80px）が出ています。ヨシを返して札が畳まれたら白猫に入れ替わります。①白猫が枠いっぱいに出て、現場猫と同じくらいの大きさに見えること②走っている間、足が地面から浮いたり沈んだりしないこと③絵が潰れず四角いまま。版の字は panel v137。\n未検収: 2026-09-12 21:00 v1439 の実機確認（人手待ち）"
+    },
+    {
         "title":  "😺 現在も順調にゃ",
         "time":  1789257625,
         "message":  "状態: ヨシ待ち / 点検-1（白猫の実寸と空き）\n台帳: 残り 7件（黒猫の待機-2・公開側が117分遅れている（pub-late・0・猫の検収用にヨシ待ちを一つ立てろ・頭の猫-4・件名の拾い方-2・y0913-0500 にヨシ）\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 6% / 週全体 55% / 週Fable 56%\n訴え: 4件（subj-gap・pub-late・step-slow・done-swept）… pipe-warn.log"
@@ -243,10 +248,5 @@
         "title":  "✅ デスクトップの印を VAIO koushu-handan の形へ",
         "time":  1789199282,
         "message":  "デスクトップの印「麻雀 攻守判断 (Claude Code).lnk」を揃えた\nTarget    : C:\\Windows\\System32\\cmd.exe\nArguments : /k C:\\Users\\user\\.local\\bin\\claude.exe --continue --remote-control --name=\"VAIO koushu-handan\"\nWorkingDir: C:\\Users\\user\\Desktop\\mahjong\\koushu-handan（そのまま）\n旧 Arguments : /k claude\n＊実行ファイルの道は引用符なしにした。cmd /k は「引用符で始まり引用符で終わる」引数の両端を落とすので、道を囲むと名の引用符まで外れて --name=VAIO と koushu-handan に割れる\n＊確かめ … 同じ渡し方で node へ流すと --name=VAIO koushu-handan が一語のまま届いた\n＊これで、この印から起こした窓も Code タブの一覧で VAIO koushu-handan になる（rc-restart.ps1・ClaudeCodeAtLogon と同じ形）\n"
-    },
-    {
-        "title":  "✅ ヨシの猫-4 ドット絵を作った（40/80/160・panel v129）",
-        "time":  1789198657,
-        "message":  "ヨシの猫-4 … 現場猫のドット絵を作り直した（panel v129・a52f7fe6 で push 済み）\n作り方 … IMG_8974.png（480x480）を ÷12 の平均で 40x40 へ。色は白・灰・濃灰・黒・黄・桃の六色へ丸め、透けと接する中身のマスを黒にして輪郭を1マスで引き直した\nマスの内訳 … 白155／灰210／濃灰140／黒175／黄3／桃4／透け913（合計1600マス）\n＊目（黄）と舌（桃）は平均だと消えるので、12x12 の中にはっきり在る回だけ優先して残した（最初の焼きは黄1・桃0だった）\n絵 … genba-cat-40.png（40x40・原寸）／genba-cat-80.png（2倍）／genba-cat-160.png（4倍）\n写しの道 … https://kfsr148-art.github.io/koushu-handan/genba-cat-160.png （40は …/genba-cat-40.png）\nパネル … ヨシ待ちのときだけ 40マスを等倍（1マス＝1css px）で出す。箱は 56x36 なので上下へ2pxはみ出す。拡大は image-rendering:pixelated に任せる\nウィジェット … ヨシ待ちだけ genba-cat-80.png（2倍）。ふだんは元の白猫のまま\nntfy … ヨシ待ちの押し送りの Icon: を genba-cat-160.png（4倍）へ。ほかの題には付けない\n"
     }
 ]
