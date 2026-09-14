@@ -27,6 +27,12 @@ const TAIL = '  }';                      // 同じ字下げで閉じる行
 
 /* analyze() が外の見晴らしから読む定数。これも写さず、本体から字面で抜く。 */
 const DECLS = ['  const YAKUHAI = ', '  const honorData = '];
+/* analyze() の**外**に在って、中から呼ばれる関数（2026-09-14・較正-2 の穴埋め）。
+   ＊v1438（土台の直し-1）で shanten が analyze() の外へ持ち上がり、
+     切り出した字面から呼べなくなっていた（shanten is not defined）。
+   ＊宣言（DECLS）は末尾の「;」で閉じを見分けるが、関数は「}」で閉じる。
+     そのため読み手を分けてある（readFunc）。 */
+const FUNCS = ['    function shanten('];
 
 /* 名前で始まる宣言を、括弧の釣り合いが取れて「;」で閉じる行まで抜く。 */
 function readDecl(lines, head) {
@@ -46,6 +52,24 @@ function readDecl(lines, head) {
   return out.join('\n');
 }
 
+/* 括弧の釣り合いだけで関数を抜く（末尾が「;」で閉じないため）。 */
+function readFunc(lines, head) {
+  const i = lines.findIndex(l => l.startsWith(head));
+  if (i < 0) { throw new Error('関数が見つかりません: ' + head.trim()); }
+  let depth = 0, started = false;
+  const out = [];
+  for (let j = i; j < lines.length; j++) {
+    const l = lines[j];
+    out.push(l);
+    for (const ch of l) {
+      if (ch === '{') { depth++; started = true; }
+      else if (ch === '}') { depth--; }
+    }
+    if (started && depth <= 0) { break; }
+  }
+  return out.join('\n');
+}
+
 /* 本体から analyze() の字面をそのまま切り出す。行番号は決め打ちにしない。 */
 function readAnalyzeSource(file) {
   const lines = fs.readFileSync(file || BODY, 'utf8').split(/\r?\n/);
@@ -55,7 +79,8 @@ function readAnalyzeSource(file) {
   let b = -1;
   for (let i = a + 1; i < lines.length; i++) { if (lines[i] === TAIL) { b = i; break; } }
   if (b < 0) { throw new Error('analyze() の尾が見つかりません'); }
-  const deps = DECLS.map(d => readDecl(lines, d)).join('\n');
+  const deps = DECLS.map(d => readDecl(lines, d))
+    .concat(FUNCS.map(f => readFunc(lines, f))).join('\n');
   return { src: lines.slice(a, b + 1).join('\n'), deps, from: a + 1, to: b + 1 };
 }
 
@@ -63,10 +88,13 @@ function readAnalyzeSource(file) {
    ＊この四つが analyze() の外にある値のすべて（本体 1750〜1755行の見晴らし）。 */
 function makeAnalyze(file) {
   const got = readAnalyzeSource(file);
-  const fn = new Function('hand', 'seatWind', 'roundWind', 'doraCount',
+  // doraIndicator … v1438 で analyze() が読むようになった外の変数（2026-09-14・較正-2 の穴埋め）。
+  //   ＊読まれるのは doraCount が 1 のときだけ（L2921）と、戻り値の doraCode（L3128）。
+  //     この台は doraCount を 0 で回すので、null を渡せば判定には効かない。
+  const fn = new Function('hand', 'seatWind', 'roundWind', 'doraCount', 'doraIndicator',
                           got.deps + '\n' + got.src + '\nreturn analyze();');
   const call = (hand, seatWind, roundWind, doraCount) =>
-    fn(hand, seatWind || null, roundWind || null, doraCount || 0);
+    fn(hand, seatWind || null, roundWind || null, doraCount || 0, null);
   call.from = got.from;
   call.to = got.to;
   call.lines = got.to - got.from + 1;
