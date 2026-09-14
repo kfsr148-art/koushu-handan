@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789349947,
+        "message":  "黒猫の待機-2 の後片付け（乙）\npanel-check.js L864 にも panel-icon-white の名が出るが、これは「runCatTick にこの名が残っていないか」を見張る一覧で、ファイルを読む所ではない。\nファイル: panel-icon-black.png（消した）／panel-icon-w3.png（消した）\n実測: 台帳の残りは1件（2026-09-13 00:12:31「公開側が117分遅れている（pub-late）」）。\n未検収: 2026-09-12 21:00 v1439 の実機確認（人手待ち）"
+    },
+    {
         "title":  "🙋 ヨシしてください",
         "time":  1789349346,
         "message":  "黒猫の待機-2 の中身写し\n印: y0914-1040\n待っているのは：黒猫の待機-2 の扱いの裁定。甲＝このまま閉じておく／乙＝使わなくなった三枚の絵を消す／丙＝別に直す所を指す\n答え方：「y0914-1040 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。\n未検収: 2026-09-12 21:00 v1439 の実機確認（人手待ち）"
@@ -243,10 +248,5 @@
         "title":  "✅ 遠隔を繋ぎ直しました（VAIO koushu-handan）",
         "time":  1789203461,
         "message":  "遠隔の橋が切れていたので、窓を閉じて名を指して起こし直しました。\n新しい rcName ＝ VAIO koushu-handan\nbridgeSessionId ＝ session_012CxZiMh7nS8ddLbGsF8kUL\nclaude pid ＝ 112／閉じた刻 17:57:20\n窓の題 ＝ 麻雀 攻守判断 (Claude Code)  - C:\\Users\\user\\.local\\bin\\claude.exe  --continue --remote-control koushu-handan\n\n＊起こした形：claude --continue --remote-control \nkoushu-handan\n＊記録は ~/.claude/rc-restart.log にあります。\n"
-    },
-    {
-        "title":  "✅ 遠隔を繋ぎ直しました（VAIO koushu-handan）",
-        "time":  1789203117,
-        "message":  "遠隔の橋が切れていたので、窓を閉じて名を指して起こし直しました。\n新しい rcName ＝ VAIO koushu-handan\nbridgeSessionId ＝ session_012CxZiMh7nS8ddLbGsF8kUL\nclaude pid ＝ 2388／閉じた刻 17:51:41\n窓の題 ＝ 麻雀 攻守判断 (Claude Code)  - C:\\Users\\user\\.local\\bin\\claude.exe  --continue --remote-control --name=\"VAIO koushu-handan\"\n\n＊起こした形：claude --continue --remote-control \nVAIO koushu-handan\n＊記録は ~/.claude/rc-restart.log にあります。\n"
     }
 ]
