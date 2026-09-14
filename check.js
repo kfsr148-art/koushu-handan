@@ -1035,7 +1035,13 @@ section('⑩', 'ミニゲームの定数と八方位・親補正の写し', () =
      ここでは analyze() 側の字面と、虎（mascotDealerNudged）が持つ写しを突き合わせる。
      どちらかを直したときに、もう一方が取り残されるのを捕まえるのが狙い。
      幅の関門は向聴の層ごと（較正-1・2026-08-29）なので、層の数値と親の甘さも併せて見る。 */
-  const GATE_RE = /baseShanten\s*>=\s*4\s*\?\s*Infinity\s*:\s*\(\s*(?:a\.)?baseShanten\s*>=\s*3\s*\?\s*(\d+)\s*:\s*(\d+)\s*\)/;
+  /* 2026-09-14・較正-2（v1440）で、analyze 側の向聴3が親子で分かれた——
+     (isDealer ? 60 : Infinity)。子は関門なし、親は60枚のまま。
+     虎の写し（mascotDealerNudged）は**親専用**（!a.isDealer で返す）なので 60 : 25 のまま正しい。
+     そこで両方の形を読めるようにし、突き合わせるのは**親の値**にする。 */
+  const GATE_RE = /baseShanten\s*>=\s*4\s*\?\s*Infinity\s*:\s*\(\s*(?:a\.)?baseShanten\s*>=\s*3\s*\?\s*(?:\(\s*isDealer\s*\?\s*(\d+)\s*:\s*Infinity\s*\)|(\d+))\s*:\s*(\d+)\s*\)/;
+  /* 向聴3の親の値と、向聴2以下の値を取り出す（分かれた形でも、分かれていない形でも同じ位置に揃える）。 */
+  const gateNums = m => (m && m.length) ? [Number(m[1] !== undefined ? m[1] : m[2]), Number(m[3])] : null;
   /* 同じ字面が analyze 側と写し側の両方にあるので、写しの関数の手前で切り分けて読む。 */
   const cpAt = src.indexOf('function mascotDealerNudged');
   const anaSrc = cpAt < 0 ? src : src.slice(0, cpAt);
@@ -1051,12 +1057,14 @@ section('⑩', 'ミニゲームの定数と八方位・親補正の写し', () =
     ng('境目の数値を読み取れない（analyze 側または写し側の書き方が変わった）');
     bad++;
   } else {
-    const a = [Number(nd[1]), Number(nd[2]), Number(wg[1]), Number(wg[2]), Number(wa[1])];
-    const b = [Number(cn[1]), Number(cn[2]), Number(cg[1]), Number(cg[2]), Number(cw[1])];
+    const wgN = gateNums(wg), cgN = gateNums(cg);
+    const a = [Number(nd[1]), Number(nd[2]), wgN[0], wgN[1], Number(wa[1])];
+    const b = [Number(cn[1]), Number(cn[2]), cgN[0], cgN[1], Number(cw[1])];
     note('analyze の境目 : 狭い側 親' + a[0] + '/子' + a[1]
-       + '・幅の関門 向聴3=' + a[2] + '/向聴2以下=' + a[3] + '（向聴4以上は関門なし）・親は' + a[4] + '枚甘く');
+       + '・幅の関門 向聴3の親=' + a[2] + '/向聴2以下=' + a[3]
+       + '（向聴3の子と向聴4以上は関門なし）・親は' + a[4] + '枚甘く');
     note('虎が持つ写し   : 狭い側 ' + b[0] + '〜' + b[1] + '枚'
-       + '・幅の関門 向聴3=' + b[2] + '/向聴2以下=' + b[3] + '（向聴4以上は無言）・親は' + b[4] + '枚甘く');
+       + '・幅の関門 向聴3の親=' + b[2] + '/向聴2以下=' + b[3] + '（向聴4以上は無言）・親は' + b[4] + '枚甘く');
     if (a.some((v, i) => v !== b[i])) {
       ng('写しが analyze の境目とずれている');
       bad++;
