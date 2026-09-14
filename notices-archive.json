@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🙋 ヨシしてください",
+        "time":  1789349346,
+        "message":  "黒猫の待機-2 の中身写し\n印: y0914-1040\n待っているのは：黒猫の待機-2 の扱いの裁定。甲＝このまま閉じておく／乙＝使わなくなった三枚の絵を消す／丙＝別に直す所を指す\n答え方：「y0914-1040 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。\n未検収: 2026-09-12 21:00 v1439 の実機確認（人手待ち）"
+    },
+    {
         "title":  "😺 現在も順調にゃ",
         "time":  1789344021,
         "message":  "状態: ヨシ待ち / 白猫が80px角で出ている見え方（panel v137）の検収\n台帳: 残り 2件（黒猫の待機-2・公開側が117分遅れている（pub-late））\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: 読めません\n訴え: 2件（step-slow・subj-gap）… pipe-warn.log"
@@ -243,10 +248,5 @@
         "title":  "✅ 遠隔を繋ぎ直しました（VAIO koushu-handan）",
         "time":  1789203117,
         "message":  "遠隔の橋が切れていたので、窓を閉じて名を指して起こし直しました。\n新しい rcName ＝ VAIO koushu-handan\nbridgeSessionId ＝ session_012CxZiMh7nS8ddLbGsF8kUL\nclaude pid ＝ 2388／閉じた刻 17:51:41\n窓の題 ＝ 麻雀 攻守判断 (Claude Code)  - C:\\Users\\user\\.local\\bin\\claude.exe  --continue --remote-control --name=\"VAIO koushu-handan\"\n\n＊起こした形：claude --continue --remote-control \nVAIO koushu-handan\n＊記録は ~/.claude/rc-restart.log にあります。\n"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789202738,
-        "message":  "写せます（5件）"
     }
 ]
