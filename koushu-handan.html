@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1440">
+<html lang="ja" data-ver="1442">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -302,6 +302,16 @@
   /* 顔は丸く縁取る。overflow:hidden は付けない（object-fit:contain で収まるため要らない）。 */
   .verdict-zones .vz-face { border-radius: 50%;
     border: 1px solid rgba(138,127,92,0.6); background: rgba(0,0,0,0.35); }
+  /* 現場猫と兎だけは四角い枠（2026-09-14・現場猫の角-1／兎の角-1）。
+     角を丸めるのをやめるだけで、枠の大きさ（見た目40px・当たり判定44px）は触らない。
+     ＊絵は等比のまま。現場猫 CAT_TILE_GENBA は 480x480 で 40px へちょうど 1/12、
+       兎 USAGI_IMG は 178x400 で同じ比のまま縮む。下の .vz-face img が持つ
+       image-rendering:pixelated が効くので、角を落としてもにじまない。
+     ＊object-fit:none（字義どおりの等倍）は採らない——40pxの枠に中央の40x40画素だけが
+       出て、猫も兎も顔が写らなくなる。
+     ＊人柄の釦の列（.eye-btn）と見立て行の頭（.say-icon）は別の指定なので、今のまま。 */
+  .verdict-zones .vz-chip[data-who="cat"] .vz-face,
+  .verdict-zones .vz-chip[data-who="usagi"] .vz-face { border-radius: 0; }
   /* 台詞行：行頭に話者の箱を置き、本文はその後ろ。箱の寸法は絵文字でも画像でも同じ。
      ⚠などの記号は本文の側に置く（行頭は話者の印だけが座る）。 */
   .tone-angle, .cat-switch-note, .edamame-note, .shinshi-note {
@@ -1378,7 +1388,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1440</div>
+  <div id="verTag">v1442</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -4765,14 +4775,43 @@ document.addEventListener('DOMContentLoaded', function () {
      ＊枝豆・AI・現場猫は、判定のときに作ってある文をそのまま使う（作り直さない）。
      ＊兎は切り候補の四段で選んだ牌を入れて言う。13枚でない手・猫牌の混じる手では何も言わない。
      ＊判定の土台・人柄の一覧・ランダムの作りには触っていない。 */
+  /* 2026-09-14・釦の押せ-1／-2。四つとも必ず押せるようにする。
+     ＊押せなかった訳 … ここが _edamameNote／_shinshiNote だけを見ていた。この二つは
+       「特別ルームのスイッチがON」かつ「口を開く帯」かつ「本判定と食い違わない」の
+       三つが揃った回にしか立たない（食い違う回は _vzMiss へ回るので空のまま）。
+     ＊控えが空なら、投票欄が持つ一行（_vzSay）へ落ちる。あちらは tenLeans が
+       票を出さない回も含めて十一人ぶん必ず作っている。
+     ＊ただし黙る帯の _vzSay は「猫牌3枚、指差し確認——逃げヨシ！」のように言い切る。
+       そのまま出すと黙る帯で守りを断じることになるので、黙る帯だけは
+       数えた枚数の一行（_toolCount）へ差し替える。文頭に絵文字は付けない
+       （話者の印は見立て行の行頭アイコンが持つ）。 */
   window.toolEyeSay = function(key){
-    if(key === 'eda')   return window._edamameNote   || '';
-    if(key === 'ai')    return window._shinshiNote   || '';
-    if(key === 'cat')   return window._catSwitchNote || '';
+    const vz = window._vzSay || {};
+    const n  = window._toolCount || {};
+    if(key === 'eda'){
+      // 枝豆は口を開く帯しか持たない（edaVoteLean は必ず攻守どちらかを返す）ので、落ちるだけで足りる。
+      return window._edamameNote || vz.eda || '';
+    }
+    if(key === 'ai'){
+      if(window._shinshiNote) return window._shinshiNote;
+      const om = n.ai;
+      // 黙る帯＝一枚きりの字牌が1〜2枚。地の攻め率と変わらないので言い切らない。
+      if(om >= 1 && om <= 2) return '一枚きりの字牌' + om + '枚——この帯は判定に回す';
+      return vz.ai || '';
+    }
+    if(key === 'cat'){
+      if(window._catSwitchNote) return window._catSwitchNote;
+      const c = n.cat;
+      // 黙る帯＝猫牌1〜3枚。ここが迷いの帯なので、数えた枚数だけを言って判定へ回す。
+      if(c >= 1 && c <= 3) return '猫牌' + c + '枚——この帯は判定に回す';
+      return vz.cat || '';
+    }
     if(key === 'usagi'){
       const c = window._lastCut;
-      if(!c || !c.code) return '';
-      return '切るなら' + tileChip(c.code);
+      if(c && c.code) return '切るなら' + tileChip(c.code);
+      // 切る候補が引けない手（13枚でない・猫牌の混じる手）は、残り枠の数だけを言う。
+      if(typeof n.usagi === 'number') return '弱い余り' + n.usagi + '——この帯は判定に回す';
+      return '';
     }
     return '';
   };
@@ -8603,6 +8642,16 @@ document.addEventListener('DOMContentLoaded', function () {
     playVerdict(attack);   // 判定を声で告げる（盤面から目を上げずに結果を受け取れる）
     lastAttack = attack;
     window._lastA = a;   // 人柄を切り替えたときに材料の一行を引き直すため
+    /* 四つの目が「黙る帯」でも枚数を言えるように、数えた値だけ控える（2026-09-14・釦の押せ-2）。
+       物差しの言い分そのものは作らない——黙る帯で攻守を断じないための控えなので、
+       出すのは数だけ。判定には一切触れない。 */
+    window._toolCount = (function(){
+      const rt = hand.filter(function(t){ return t.suit !== 'cat'; });
+      const hc = {};
+      rt.forEach(function(t){ if(t.suit === 'honor'){ hc[t.code] = (hc[t.code] || 0) + 1; } });
+      const om = rt.filter(function(t){ return t.suit === 'honor' && hc[t.code] === 1; }).length;
+      return { cat: effectiveCatN, ai: om, usagi: a.fillWeak };
+    })();
     mascotTalking = false;   // 新しい判定は、いつも人柄の台詞から始める
     // 台詞行の行頭に出す獣の絵。判定ごとに姿が変わるので、描くときに控えておく。
     window._mascotGlyph = (a.verdict === 'attack')
