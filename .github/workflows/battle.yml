@@ -11,6 +11,12 @@
 name: 較正の対局
 
 on:
+  # ---- 毎晩の自動起動（2026-09-15・夜の較正-1）----
+  #   ＊日本時間の 02:00（UTC の 17:00）。2本×5000局＝10000局・40000手を雲で回す。
+  #   ＊手で起こした回は今までどおり一本だけ。夜の回だけ matrix で二本に分かれる。
+  #   ＊機械（VAIO）の空きは一切使わない。走るのは GitHub の側。
+  schedule:
+    - cron: '0 17 * * *'
   workflow_dispatch:
     inputs:
       games:
@@ -27,6 +33,11 @@ permissions:
 
 jobs:
   battle:
+    # 夜の回は二本（seed 1・2）に分かれる。手で起こした回は一本だけ。
+    strategy:
+      fail-fast: false
+      matrix:
+        n: ${{ fromJSON(github.event_name == 'schedule' && '[1,2]' || '[1]') }}
     runs-on: ubuntu-latest
     timeout-minutes: 350        # 6時間の上限より少し手前で自分から切る
     steps:
@@ -48,8 +59,9 @@ jobs:
       - name: 対局を回す
         id: run
         env:
-          GAMES: ${{ github.event.inputs.games }}
-          SEED: ${{ github.event.inputs.seed }}
+          # 夜の回は inputs が空なので、既定へ落ちる（5000局・seed は matrix の番号）。
+          GAMES: ${{ github.event.inputs.games || '5000' }}
+          SEED: ${{ github.event_name == 'schedule' && matrix.n || github.event.inputs.seed }}
         run: |
           OUT="battle-${SEED}-${GAMES}.tsv"
           echo "out=$OUT" >> "$GITHUB_OUTPUT"
@@ -79,6 +91,6 @@ jobs:
       - name: 結果を残す
         uses: actions/upload-artifact@v4
         with:
-          name: battle-${{ github.event.inputs.seed }}-${{ github.event.inputs.games }}
+          name: battle-${{ github.event_name == 'schedule' && matrix.n || github.event.inputs.seed }}-${{ github.event.inputs.games || '5000' }}
           path: ${{ steps.run.outputs.out }}
-          retention-days: 14
+          retention-days: 7
