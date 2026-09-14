@@ -1,5 +1,10 @@
 [
     {
+        "title":  "😺 現在も順調にゃ",
+        "time":  1789214460,
+        "message":  "状態: 作業中 / 選択釦-1（v1439）の工事の続きをやれ。どこ\n台帳: 残り 8件（黒猫の待機-2・選択釦-1・ヨシの猫-6・ヨシの猫-6・ヨシの猫-8・選択釦-1）\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 17% / 週全体 51% / 週Fable 51%\n訴え: 6件（done-swept・pub-late・pub-read・done-unwritten・subj-gap・step-slow）… pipe-warn.log\n配分: 全体 あと25%/日 ／ Fable あと25%/日"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789214119,
         "message":  "この間にまとまった知らせ 2本\n\n［✅ 終わりました（返事不要）］\n窓を見やすく-1\n控えは ~/.claude/console-koushu.reg に書き出した。印は外側の cmd を最小化（WindowStyle 7）で開き、ちらつきを出さない。\nファイル: デスクトップの印（.lnk）／ClaudeCodeAtLogon／~/.claude/rc-restart.ps1／~/.claude/revive-claude.ps1／~/.claude/console-koushu.reg\n実測: 字の候補 … BIZ UDゴシック（BIZ UDGothic）有り・Consolas 有り。日本語がそのまま出る BIZ UDゴシックを採った。\n実機: 次の起こし直し（窓を閉じるか、ClaudeCodeAtLogon が走ったとき）から、窓が画面いっぱいで開き、字が大きくなる。今の窓はそのまま。\n未検収: 2026-09-12 19:00 選択釦-1（v1439）の工事（ヨシは 20:4x に受領・工事の途中）\n\n［✅ 終わりました（返事不要）］\n写せます（3件）"
@@ -243,10 +248,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789178855,
         "message":  "この間にまとまった知らせ 2本\n\n［✅ 終わりました（返事不要）］\n見張りの止まり-1 — 段の時間切れ・空きの関門・止まりの知らせ\n報告 c5afcb1c を push 済（04b5a2e3..c5afcb1c）。pre-push は新しい関門で「空きが乏しいので検査を飛ばす（空き 1109MB＜1536MB）」と出て検査を飛ばし、push は通った＝㉒が実地で効いた\nファイル: ~/.claude/watch-notify.ps1／git-push.ps1／inbox-watch.ps1（写しは .bak-20260912f）／.githooks/pre-push／orders-open.tsv\n未検収: v1438 の実機（右下の版の字が v1438・判定の中身は不変）（人手待ち）\n\n［✅ 終わりました（返事不要）］\n写せます（2件）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789178769,
-        "message":  "見張りの止まり-1 — 段の時間切れ・空きの関門・止まりの知らせ\nこの回は控えを書いていません（前の回の控えが残っています。中身は当てになりません）。"
     }
 ]
