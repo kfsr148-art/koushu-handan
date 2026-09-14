@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1443">
+<html lang="ja" data-ver="1444">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1403,7 +1403,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1443</div>
+  <div id="verTag">v1444</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1415,10 +1415,17 @@
         <button type="button" class="engine-help-close" onclick="window.closeEngineHelpToTitle(event)">閉じる ✕</button>
       </div>
       <div class="engine-help-body">
-      <b>どんな時に役立つの？</b><br>
+      <b>一、どんな時に役立つの？</b><br>
       一番の出番は、雀魂で配牌（ハイパイ）をもらった直後。「この手、行っていいの？ 守るべき？」って迷う、あの数秒のため。手牌をポチポチ入れて判定を押せば、攻か守か一言で返ってくる。向聴数（シャンテンスウ）だの受け入れ枚数だのを自分で数えられなくても大丈夫——難しい計算はぜんぶこっちで済ませて、答えだけ渡す。<br><br>
       配牌の良し悪しって、実は初心者が一番判断に困るところ。良い手を降り気味に打って損したり、バラバラの手で突っ張って振り込んだり。そこを最初の一手から間違えないための道具。<br><br>
       もちろん実戦の途中で「今の形って聴牌（テンパイ）に近いの？」を確かめる電卓代わりにも使えるし、牌効率（ハイコウリツ）の勉強——「この形とこの形、どっちが進みやすい？」の答え合わせにも使える。通信いらずでホーム画面からすぐ開くから、対局の合間にさっと引ける。<br><br>
+      ただ、この道具の本当の使い道は、答えをもらうことじゃない。判定のたびに、どの牌が手を支えているかが光る。人柄を押し替えれば、同じ十三枚を八人がそれぞれ別の材料で見て、別の理由を言う。それを何度も見ているうちに、道具を開かなくても「配牌のどこを見るか」が身体に入る。答えより、見る場所を覚えるための道具。<br><br>
+      <b>二、どう使うの？</b><br>
+      牌の入れ方は二通り。盤面の牌を押すか、数字で打つ。m=萬 p=筒 s=索で、数字のあとに種類——18m＝一萬・八萬。字牌はキーボードなら 1z〜7z（東南西北白發中）。赤五は 0（0m＝赤五萬）。例 18m 1357p 3368s 南西。漢字・英字どちらでも通る。十三枚そろったら「判定する」。<br>
+      自分の席を選ぶと、その場風・自風の対子が役牌として打点に乗る。東家〜北家と、東場・南場の組み合わせ。<br>
+      判定カードには、攻か守かと、その理由になった牌が光って出る。人柄を押し替えると、同じ十三枚について別の理由が出る（八人が何を見ているかは「四」で）。<br>
+      人柄の「ランダム」の横に、枝豆・AI・現場猫・兎の四つの釦がある。押した時だけ、見立て行がその物差しの一行に入れ替わる。もう一度押すと元に戻る。兎を押すと「切るなら〈牌〉」が一行出て、その牌が琥珀で光る。どの釦を押しても、判定そのものは一切変わらない。<br><br>
+      <b>三、この判定、信用できるの？</b><br>
       <b>先に答えを——当てずっぽうはゼロ。</b>麻雀のルールと、昔から使われている計算式と、しらみつぶしの検査だけで答えを出している。<br><br>
       <b>その一：ちゃんと答え合わせ済み</b><br>
       紙と鉛筆で正解を確かめられる14種類の手牌——和了形（ホーラケイ）、いろんな形の聴牌（テンパイ）、一向聴（イーシャンテン）、二向聴（リャンシャンテン）、国士無双（コクシムソウ）、七対子（チートイツ）、バラバラ手——を全部通して、14問中14問正解だった。「動いているように見える」のと「答え合わせが済んでいる」のは、実は大違い。テストまで残してある個人ツールは、正直かなり珍しい。<br><br>
@@ -1447,53 +1454,13 @@
         </tbody>
       </table>
       それだけじゃない。<b>受け入れの広さ</b>でも微調整する。形が一つ足りなくても、あと引ける牌がうんと多ければ攻めへ格上げ。逆に形は足りていても、受けが極端に狭くて安いなら、攻めを見送る。それと、親のときはあがれば連荘（レンチャン）になる値打ちが大きいぶん、際どい線だけ少し甘く——前へ寄せて見る。<br><br>
+      ただし、受けの広さで格上げするのは、聴牌が近い手（二向聴まで）と、親の三向聴まで。子の三向聴から遠い手は、受けが広くても格上げしない——形も打点も足りない手は、受けが広くても実りが薄いから。<br>
       ひとつ言葉を足しておくと、ここでの「守」は「降りなさい」という宣告ではない。<b>無理をしない構え</b>——安牌（アンパイ）を意識しつつ、伸びれば拾う、くらいの気持ちで持つ牌、という意味。<br><br>
-      根拠はどこにあるか。配牌はならすと三〜四向聴（シャンテン＝あがりまでの距離）あたりから始まるのが普通で、そこから「速くて高い手は前に、遅くて安い手は控える」というのが、データをもとにした現代の押し引きの土台になっている。この線引きは、その土台と、大手の麻雀ゲームが使う骨組みと、同じ考え方でできている。数字の細かな刻み（どこで一段下げるか）は調整の余地がある設計値だけれど、線そのものの引き方には、ちゃんと裏付けがある。<br><br>
+      根拠はどこにあるか。配牌はならすと三〜四向聴（シャンテン＝あがりまでの距離）あたりから始まるのが普通で、そこから「速くて高い手は前に、遅くて安い手は控える」というのが、データをもとにした現代の押し引きの土台になっている。この線引きは、その土台と、大手の麻雀ゲームが使う骨組みと、同じ考え方でできている。数字の細かな刻み（どこで一段下げるか）は調整の余地がある設計値だけれど、線そのものの引き方には、ちゃんと裏付けがある。<br><br>線の位置は、麻雀プログラム同士に一万局（四万手）を打たせた結果で確かめてある。上の「子の三向聴は格上げしない」も、そこから出た線。
       <b>で、これってどれくらいすごいの？</b><br>
       使っている式ややり方そのものは、大手の麻雀ゲームと同じ考え方。つまり発明ではない。そのかわり、商用エンジンと同じ「正しさの芯」を、通信なしのファイル一枚に、答え合わせのテストつきで収めてある。例えるなら——プロの厨房と同じ火加減を、家庭の台所で、レシピの検算表ごと再現したようなもの。この説明に誇張はひとつもない。それがこの道具のいちばんの取り柄。
-      </div>
-    </div>
-  </div>
-  <div class="engine-help-overlay" id="infoListOverlay">
-    <div class="engine-help-sheet">
-      <div class="engine-help-head" style="position:relative;">
-        <span>◆ 説明欄</span>
-        <button type="button" class="cat-help-btn" id="infoListCatBtn" onclick="window.toggleCatHelp(event)" aria-label="猫牌について" style="position:static; margin-left:auto;"><img id="catCardTileImg" alt="現場猫" style="width:1.4em;height:1.4em;vertical-align:middle;object-fit:contain;display:inline-block"></button>
-        <button type="button" class="engine-help-close" onclick="window.closeInfoList(event)">閉じる ✕</button>
-      </div>
-      <div class="cat-help-pop" id="catHelpPop" style="position:static; margin:8px 14px 0;"><b>猫牌（ネコハイ）</b>　配牌（ハイパイ）を素早く13枚に埋めるための牌です。判定では「数牌（スウハイ）の孤立牌（コリツハイ）1枚」として扱われ、受け入れ（ウケイレ＝手が進む牌の枚数）を平均ぶん加算します。枚数と表示には乗りますが、特定の牌ではありません。<br><br><b>猫牌攻守指数（考察）</b>　猫牌は受け入れ枚数を大きく底上げしますが、実際に向聴（シャンテン＝あがりまでの距離）を縮める力は持ちません。混ぜる枚数が増えるほど、見かけの受けは広がる一方、攻めと判定される割合はむしろ下がっていきます。各枚数1000回の実測は以下の通りです。<br><table style="width:100%; border-collapse:collapse; margin:6px 0; font-size:11px;"><tr style="background:rgba(212,175,55,0.18);"><th style="border:1px solid var(--line); padding:3px 5px;">猫牌</th><th style="border:1px solid var(--line); padding:3px 5px;">攻めの割合</th><th style="border:1px solid var(--line); padding:3px 5px;">形が整う割合</th><th style="border:1px solid var(--line); padding:3px 5px;">平均ドラ価値</th></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">40.8%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">22.8%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.41</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">1枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">39.9%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">14.0%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.37</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">2枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">33.1%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">5.7%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.33</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">3枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">26.7%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">2.9%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.29</td></tr><tr style="background:rgba(212,175,55,0.12);"><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>4枚</b></td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>24.4%</b></td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>0.8%</b></td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.26</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">5枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">19.0%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.2%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.21</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">6枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">17.8%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.19</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">8枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">13.7%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.14</td></tr></table>境目は4枚のあたりにあり、この行で「形が整う割合」が0.8%までほぼ消えます。これを越えると「形の整った面子（メンツ）候補」で攻めに入る道がほぼ失われ、以降はドラなど運の要素だけが攻めを支えます。目安として、猫牌4枚以上は守り寄りの手と見てよいです。<br><br><b>卓上での使い分け</b>　上の表は猫牌を混ぜた場合の実測ですが、実戦で数えるのは本物の孤立牌です。判定カード右上のバッジと同じ数え方（実際の猫牌＋自動判別した孤立牌）で配牌5000回を測ると、攻めの割合は0枚79%／1枚66%／2枚50%／3枚36%／4枚25%／5枚14%／6枚以上10%でした。0〜2枚は攻め寄り、5枚以上は守り寄りで、数えた時点でほぼ決まります。迷うのは3〜4枚——全体のおよそ四割がこの帯に入り、三〜四回に一回は攻めになります。<b>3〜4枚のときだけ判定に回す</b>のが、いちばん手数の少ない使い方です。なお、猫牌が4枚以上あっても攻めと出る手は全体の約1割あります。孤立牌が多くても、役牌（ヤクハイ）の暗刻（アンコウ）や打点（ダテン）で押せる形はあります——枚数だけで断じないでください。<br><br><b>境目の根拠（なぜ4枚か）</b>　判定エンジンは、打点（ドラ等）が薄い手では「良形（リョウケイ）の塊が4つ以上」で形が整っていると認めます。良形の塊は2枚一組が基本ですから、4つ揃えるには最低8枚の本物の牌が要ります。猫牌の分だけ本物の牌が減っていく中で、「必要数4」の条件だけを揃えて実測し直したのが下の表です。<br><table style="width:100%; border-collapse:collapse; margin:6px 0; font-size:11px;"><tr style="background:rgba(212,175,55,0.18);"><th style="border:1px solid var(--line); padding:3px 5px;">猫牌</th><th style="border:1px solid var(--line); padding:3px 5px;">残る本物の牌</th><th style="border:1px solid var(--line); padding:3px 5px;">形が整う割合</th></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">13枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">19.42%</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">1枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">12枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">9.76%</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">2枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">11枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">4.76%</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">3枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">10枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">1.39%</td></tr><tr style="background:rgba(212,175,55,0.12);"><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>4枚</b></td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>9枚</b></td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>0.31%</b></td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">5枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">8枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.05%</td></tr><tr style="background:rgba(212,175,55,0.12);"><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>6枚</b></td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>7枚</b></td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>0.00%</b></td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">8枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">5枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0%</td></tr></table>本物の牌が1枚減るごとに、割合はほぼ半分から数分の一へなだらかに落ち、本物7枚（猫牌6枚）でついに理屈通りの0%（2000回中0）に達しました。8枚に届かない以上、良形4つは作りようがないためです。猫牌4枚のあたりが「実用上ほぼ消える境目」、猫牌6枚のあたりが「理屈の上でも不可能になる境目」——この二段構えが、猫牌攻守指数の裏付けです。<br><br><b>猫牌の秘密（生まれた経緯と数値の裏側）</b>　猫牌は実在する牌ではありません。判定に入る直前に手牌から取り除かれ、字牌のダミーに置き換えられて向聴の計算へ回されます。その代わり、実戦で本物の孤立した数牌を打った場合との受けの差だけを、あとから擬似的に注ぎ込んでいます。孤立した数牌一枚の受けは、端の数字（1・2・8・9）で平均+10枚、中の数字（3〜7）は隣へ繋がる分、平均+16枚。配牌を30万回実測したところ、孤立牌が端に出る割合は60.6%、中に出る割合は39.4%でした。この二つを実際の出現割合で加重平均すると、10×0.606＋16×0.394＝12.364——この「+12.364枚」が、猫牌1枚につき受け入れへ注ぎ込まれる数値の正体です。同時に受け入れ種類も1枚につき+4種類加わります。ただし数値が際限なく膨らまないよう、受け入れ枚数は80枚、種類は34種類で頭打ちにしています。飾りで足された数字ではなく、30万回の実測から逆算した、根拠のある水増しです。<br><br><b>猫牌スイッチ（現場猫アラート）</b>　猫牌を10枚以上並べて判定すると、特別ルームが開きます。そこで見つかる隠しスイッチです。ONにすると、猫牌の枚数から出した猫の見立て（1〜3枚=攻め寄り、4枚以上=守り）と本判定を照合し、判定カードに一行の助言が出ます。判定そのものは一切変えません。照合の結果は三種類——本判定と一致すれば「本判定と一致、ダブルヨシ」、猫が攻め寄りなのに本判定が守りなら「⚠️現場猫アラート：ヨシと言ったが、危ない手」、猫が守りなのに本判定が攻めなら「⚠️現場猫アラート：逃げ腰だが、実は行ける手」。配牌5000回の実測では、一致が約74%、「ヨシと言ったが危ない手」が約20%、「逃げ腰だが実は行ける手」が約6%でした。<br>　このスイッチの当たり外れは、<b>手に猫牌が何枚あるかで大きく変わります</b>。手を丸ごと確定させた配牌（猫牌0枚。この場合は手の中で孤立した1〜9の数牌だけを猫牌として数えます）を20000回、猫牌を1枚から12枚まで混ぜた手をそれぞれ1200回、測り直した結果が下です。<br>　猫牌0枚＝的中37.6%／1枚＝49.4%／2枚＝67.9%／3枚＝87.3%／4枚＝92.4%／5枚＝94.3%／6枚＝95.3%／8枚＝98.5%／10枚＝99.1%／12枚＝100%。<br>　3枚を境に化けます。4枚以上になると見立てが必ず「守り」に固定され、そういう手は実際ほとんど守りですから、ほぼ外れません。逆に猫牌が0〜1枚の手では、猫牌1〜3枚という帯がまるごと全体平均（攻め28.4%）のあたりに沈んでいて、そこで「攻め寄り」と言い切ると外れます。<br>　つまりこのスイッチは、<b>伏せ牌の多い手ほど正しく、手が見えている場面ほど当てになりません</b>。特別ルームが開く猫牌10枚以上の場面ではほぼ間違えない、という設計どおりの性質です。手が全部見えている配牌で助言が欲しいときは、枝豆スイッチかAIスイッチのほうが向いています。<br><br><b>枝豆スイッチ</b>　同じ特別ルームで見つかる、もう一つのスイッチです。手牌の対子・暗刻の総数を数え、4組以上そろった時だけ本判定と照合します。3組以下は何も言いません。一致すれば「🫛4組。揃い」。配牌5000回の実測では、対子・暗刻が4組以上の手は、本判定でも100%攻めでしたので（該当116例）、ここまでは常にダブルヨシが出る計算になりますが、まれに食い違えば「🫛枝豆は攻めと言ったが、本判定は守り──珍しい食い違い」と正直に告げます。境目のはっきりした場面だけを選んで答え合わせをする、猫牌に近い性質のスイッチです。なお、猫牌が3〜4枚の迷いの帯にかぎっては、下側にも口を開きます。この帯を5000回で測ると、対子・暗刻が0組の手は攻めが8%、1組でも20%——守りがほぼ決まります。そこで<b>猫牌3〜4枚かつ0〜1組</b>のときは「🫛枝豆も薄い、守りヨシ」と告げ、本判定が攻めであれば「🫛枝豆は守りと言ったが、本判定は攻め──珍しい食い違い」と正直に返します。2〜3組は攻め率が42%と33%で、どちらとも言えないため沈黙のままです。<br><br><b>AIスイッチ</b>　同じ特別ルームの、三つ目のスイッチです。数えるのは<b>一枚きりの字牌（ジハイ）</b>——手の中に一枚だけ浮いている字牌のこと。同じ字牌が2枚以上あればそれは対子・暗刻ですから、数えません。<b>いざというとき切って身を守れる字牌が、何枚あるか</b>を数えている、と思ってください。<br>　<b>一枚きりの字牌が3枚以上なら「守り」。</b>逃げ道を三本も抱えた手は、本判定でも89.3%が守りでした。<br>　<b>一枚きりの字牌が0枚で、しかも1・9・字牌が2枚以下なら「攻め」。</b>端にも字牌にも寄っていない、真ん中に固まった手です。ここは攻めが70.5%（配牌全体の平均は27.6%）。<br>　<b>それ以外は黙ります。</b>一枚きりの字牌が1〜2枚の手は全体平均とほとんど変わらないので、言えることがありません。国士無双や役満が見えている手も黙ります。この二つは本判定が問答無用で攻めに振れますから、一枚きりの字牌を数えても意味がないのです。<br>　喋るときの言葉は一行だけ。合っていれば「🎩わたしの見立ても本判定と一致」、外していれば「🎩見立ては攻／守でしたが、外れました。本判定は…」（外れの一行は、投票欄の🎩を押したときに出ます）。煽りません。配牌24000回で測ると、口を開くのは三手に一度ほど（33.6%）、そのときの的中は88.2%です。毎回は語りませんが、語るのは外しにくい席だけ、という置き方をしています。<br>　<b>三つのスイッチを比べると、判定と一番よく一致するのはこのAIスイッチです。</b>配牌50000回で測ると、一枚きりの字牌が1枚以下なら攻めという線引きだけで61.5%が判定と一致しました。猫牌57.2%、枝豆58.2%を上回ります。ただし比べた相手はこのツールの判定であって、実際の局の結果ではありません。判定をよく言い当てる、という意味の数字です。</div>
-      <div class="engine-help-body">
-        <button type="button" class="title-btn" onclick="window.openInfoDetail('engine')">🐾 このツール、何がすごいの？</button>
-        <button type="button" class="title-btn" onclick="window.openInfoDetail('koushu')">🀄️配牌攻守判定</button>
-        <button type="button" class="title-btn" onclick="window.openInfoDetail('watch')">⚓ 船長の見張り台</button>
-        <button type="button" class="title-btn" onclick="window.openInfoDetail('adv')">🚢 ミシシッピー現場猫事件</button>
-        <button type="button" class="title-btn" onclick="window.openInfoDetail('tori')">🐦 一索の鳥</button>
-      </div>
-    </div>
-  </div>
-  <div class="engine-help-overlay" id="infoDetailOverlay">
-    <div class="engine-help-sheet">
-      <div class="engine-help-head">
-        <span id="infoDetailTitle">◆ 説明</span>
-        <button type="button" class="engine-help-close" onclick="window.closeInfoDetail(event)">閉じる ✕</button>
-      </div>
-      <div class="engine-help-body" id="infoDetailBody"></div>
-    </div>
-  </div>
-  <div class="watch-guide-overlay" id="watchGuideOverlay">
-    <div class="watch-guide-sheet">
-      <div class="engine-help-head">
-        <span>◆ 見張り台の見かた</span>
-        <button type="button" class="engine-help-close" onclick="window.watchGuideClose(event)">閉じる ✕</button>
-      </div>
-      <div class="watch-guide-body">
-      配牌（ハイパイ）を読む力を鍛える練習場。<b>四つの練習</b>を上の切替で行き来できる。答えると、本物の判定エンジンが正解と、牌ごとの色分けを見せてくれる。<br><br>
-      <b>四つの練習</b><br>
-      ・<b>攻守</b>：13枚を見て「攻」か「守」か。総合力の試し場。<br>
-      ・<b>AI</b>：一枚きりの<ruby>字牌<rt>ジハイ</rt></ruby>の数を答える。答え合わせで、その枚数から出したAIスイッチの見立てが本判定と合っていたかも見せる。物差しがどこで外れるかを知る目。<br>
-      ・<b>猫牌（ネコハイ）</b>：孤立している数牌（スウハイ）の数を答える。守りの合図を見つける目。<br>
-      ・<b>枝豆（エダマメ）</b>：同じ牌（ハイ）が2枚以上そろっている組の数を答える。攻めの芽を見つける目。<br><br>
-      <b>七人はそれぞれ別の材料を見ている</b><br>
+      <br>
+      <div id="helpSec4"><b>四、八人はそれぞれ別の材料を見ている</b><br>
       判定カードの人柄を押し替えると、同じ13枚について別の理由が出る。担当する牌は<b>金の枠</b>で囲まれる。<br>
       ・<b>執事</b>＝掛け持ち点検。盾・雀頭・攻めの種のうち二役以上を兼ねている牌が光る。<br>
       ・<b>軍師</b>＝鳴きの適性。<ruby>役牌<rt>ヤクハイ</rt></ruby>の対子と、染めに寄せる色が光る。<br>
@@ -1502,10 +1469,22 @@
       ・<b>マダム</b>＝浮き牌。どのまとまりにも入らず守りにも使えない牌が光る。攻めている間に、最初に整理する候補。<br>
       ・<b>一姫</b>＝強形。五連形・四連形・中ぶくれが光る。無ければ端にかかるターツと<ruby>字牌<rt>ジハイ</rt></ruby>の対子。<br>
       ・<b>先生</b>＝<ruby>雀頭<rt>ジャントウ</rt></ruby>。雀頭になれる牌が光る。<br>
+      ・<b>兎</b>＝残り枠。塊にならない弱い余りを数え、一つも無ければ攻め、二つ以上なら守り。<br>
+      兎は牌を光らせない——見ているのが牌ではなく、残り枠の埋まり方だから。<br>
       投票欄のスイッチ三者を押すと、その物差しが数えている牌が光る（金枠は使わず、<b>見張り台と同じ色</b>）。<br>
       ・<b>現場猫</b>＝猫牌。青く光る。　・<b>枝豆</b>＝二枚以上ある種類の牌。緑に光る。　・<b>紳士</b>＝一枚きりの<ruby>字牌<rt>ジハイ</rt></ruby>。赤く光る。<br>
       光るのは一度にひとりだけ。同じ印をもう一度押すか、人柄を押せば元へ戻る。<br>
       物差しが割れた手ほど際どい——とは限らない。無作為50000回で測ると、三者が割れた手の紙一重は22.5%、3対0で揃った手は24.7%で、揃った手のほうがむしろ際どい（全体は21.1%）。割れは材料の違いであって、手の際どさの合図ではない。<br><br>
+      </div><br>
+      <div id="helpSec5"><b>五、猫牌・枝豆・AI——三つの物差し</b><br><b>猫牌（ネコハイ）</b>　配牌（ハイパイ）を素早く13枚に埋めるための牌です。判定では「数牌（スウハイ）の孤立牌（コリツハイ）1枚」として扱われ、受け入れ（ウケイレ＝手が進む牌の枚数）を平均ぶん加算します。枚数と表示には乗りますが、特定の牌ではありません。<br><br><b>猫牌攻守指数（考察）</b>　猫牌は受け入れ枚数を大きく底上げしますが、実際に向聴（シャンテン＝あがりまでの距離）を縮める力は持ちません。混ぜる枚数が増えるほど、見かけの受けは広がる一方、攻めと判定される割合はむしろ下がっていきます。各枚数1000回の実測は以下の通りです。<br><table style="width:100%; border-collapse:collapse; margin:6px 0; font-size:11px;"><tr style="background:rgba(212,175,55,0.18);"><th style="border:1px solid var(--line); padding:3px 5px;">猫牌</th><th style="border:1px solid var(--line); padding:3px 5px;">攻めの割合</th><th style="border:1px solid var(--line); padding:3px 5px;">形が整う割合</th><th style="border:1px solid var(--line); padding:3px 5px;">平均ドラ価値</th></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">40.8%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">22.8%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.41</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">1枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">39.9%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">14.0%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.37</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">2枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">33.1%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">5.7%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.33</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">3枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">26.7%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">2.9%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.29</td></tr><tr style="background:rgba(212,175,55,0.12);"><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>4枚</b></td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>24.4%</b></td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>0.8%</b></td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.26</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">5枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">19.0%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.2%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.21</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">6枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">17.8%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.19</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">8枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">13.7%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0%</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.14</td></tr></table>境目は4枚のあたりにあり、この行で「形が整う割合」が0.8%までほぼ消えます。これを越えると「形の整った面子（メンツ）候補」で攻めに入る道がほぼ失われ、以降はドラなど運の要素だけが攻めを支えます。目安として、猫牌4枚以上は守り寄りの手と見てよいです。<br><br><b>卓上での使い分け</b>　上の表は猫牌を混ぜた場合の実測ですが、実戦で数えるのは本物の孤立牌です。判定カード右上のバッジと同じ数え方（実際の猫牌＋自動判別した孤立牌）で配牌5000回を測ると、攻めの割合は0枚79%／1枚66%／2枚50%／3枚36%／4枚25%／5枚14%／6枚以上10%でした。0〜2枚は攻め寄り、5枚以上は守り寄りで、数えた時点でほぼ決まります。迷うのは3〜4枚——全体のおよそ四割がこの帯に入り、三〜四回に一回は攻めになります。<b>3〜4枚のときだけ判定に回す</b>のが、いちばん手数の少ない使い方です。なお、猫牌が4枚以上あっても攻めと出る手は全体の約1割あります。孤立牌が多くても、役牌（ヤクハイ）の暗刻（アンコウ）や打点（ダテン）で押せる形はあります——枚数だけで断じないでください。<br><br><b>境目の根拠（なぜ4枚か）</b>　判定エンジンは、打点（ドラ等）が薄い手では「良形（リョウケイ）の塊が4つ以上」で形が整っていると認めます。良形の塊は2枚一組が基本ですから、4つ揃えるには最低8枚の本物の牌が要ります。猫牌の分だけ本物の牌が減っていく中で、「必要数4」の条件だけを揃えて実測し直したのが下の表です。<br><table style="width:100%; border-collapse:collapse; margin:6px 0; font-size:11px;"><tr style="background:rgba(212,175,55,0.18);"><th style="border:1px solid var(--line); padding:3px 5px;">猫牌</th><th style="border:1px solid var(--line); padding:3px 5px;">残る本物の牌</th><th style="border:1px solid var(--line); padding:3px 5px;">形が整う割合</th></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">13枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">19.42%</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">1枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">12枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">9.76%</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">2枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">11枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">4.76%</td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">3枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">10枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">1.39%</td></tr><tr style="background:rgba(212,175,55,0.12);"><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>4枚</b></td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>9枚</b></td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>0.31%</b></td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">5枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">8枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0.05%</td></tr><tr style="background:rgba(212,175,55,0.12);"><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>6枚</b></td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>7枚</b></td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;"><b>0.00%</b></td></tr><tr><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">8枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">5枚</td><td style="border:1px solid var(--line); padding:3px 5px; text-align:center;">0%</td></tr></table>本物の牌が1枚減るごとに、割合はほぼ半分から数分の一へなだらかに落ち、本物7枚（猫牌6枚）でついに理屈通りの0%（2000回中0）に達しました。8枚に届かない以上、良形4つは作りようがないためです。猫牌4枚のあたりが「実用上ほぼ消える境目」、猫牌6枚のあたりが「理屈の上でも不可能になる境目」——この二段構えが、猫牌攻守指数の裏付けです。<br><br><b>猫牌の秘密（生まれた経緯と数値の裏側）</b>　猫牌は実在する牌ではありません。判定に入る直前に手牌から取り除かれ、字牌のダミーに置き換えられて向聴の計算へ回されます。その代わり、実戦で本物の孤立した数牌を打った場合との受けの差だけを、あとから擬似的に注ぎ込んでいます。孤立した数牌一枚の受けは、端の数字（1・2・8・9）で平均+10枚、中の数字（3〜7）は隣へ繋がる分、平均+16枚。配牌を30万回実測したところ、孤立牌が端に出る割合は60.6%、中に出る割合は39.4%でした。この二つを実際の出現割合で加重平均すると、10×0.606＋16×0.394＝12.364——この「+12.364枚」が、猫牌1枚につき受け入れへ注ぎ込まれる数値の正体です。同時に受け入れ種類も1枚につき+4種類加わります。ただし数値が際限なく膨らまないよう、受け入れ枚数は80枚、種類は34種類で頭打ちにしています。飾りで足された数字ではなく、30万回の実測から逆算した、根拠のある水増しです。<br><br><b>猫牌スイッチ（現場猫アラート）</b>　猫牌を10枚以上並べて判定すると、設定（⚙️）にあるスイッチが開きます。そこで見つかる隠しスイッチです。ONにすると、猫牌の枚数から出した猫の見立て（1〜3枚=攻め寄り、4枚以上=守り）と本判定を照合し、判定カードに一行の助言が出ます。判定そのものは一切変えません。照合の結果は三種類——本判定と一致すれば「本判定と一致、ダブルヨシ」、猫が攻め寄りなのに本判定が守りなら「⚠️現場猫アラート：ヨシと言ったが、危ない手」、猫が守りなのに本判定が攻めなら「⚠️現場猫アラート：逃げ腰だが、実は行ける手」。配牌5000回の実測では、一致が約74%、「ヨシと言ったが危ない手」が約20%、「逃げ腰だが実は行ける手」が約6%でした。<br>　このスイッチの当たり外れは、<b>手に猫牌が何枚あるかで大きく変わります</b>。手を丸ごと確定させた配牌（猫牌0枚。この場合は手の中で孤立した1〜9の数牌だけを猫牌として数えます）を20000回、猫牌を1枚から12枚まで混ぜた手をそれぞれ1200回、測り直した結果が下です。<br>　猫牌0枚＝的中37.6%／1枚＝49.4%／2枚＝67.9%／3枚＝87.3%／4枚＝92.4%／5枚＝94.3%／6枚＝95.3%／8枚＝98.5%／10枚＝99.1%／12枚＝100%。<br>　3枚を境に化けます。4枚以上になると見立てが必ず「守り」に固定され、そういう手は実際ほとんど守りですから、ほぼ外れません。逆に猫牌が0〜1枚の手では、猫牌1〜3枚という帯がまるごと全体平均（攻め28.4%）のあたりに沈んでいて、そこで「攻め寄り」と言い切ると外れます。<br>　つまりこのスイッチは、<b>伏せ牌の多い手ほど正しく、手が見えている場面ほど当てになりません</b>。設定（⚙️）にあるスイッチが開く猫牌10枚以上の場面ではほぼ間違えない、という設計どおりの性質です。手が全部見えている配牌で助言が欲しいときは、枝豆スイッチかAIスイッチのほうが向いています。<br><br><b>枝豆スイッチ</b>　同じ設定（⚙️）にあるスイッチで見つかる、もう一つのスイッチです。手牌の対子・暗刻の総数を数え、4組以上そろった時だけ本判定と照合します。3組以下は何も言いません。一致すれば「🫛4組。揃い」。配牌5000回の実測では、対子・暗刻が4組以上の手は、本判定でも100%攻めでしたので（該当116例）、ここまでは常にダブルヨシが出る計算になりますが、まれに食い違えば「🫛枝豆は攻めと言ったが、本判定は守り──珍しい食い違い」と正直に告げます。境目のはっきりした場面だけを選んで答え合わせをする、猫牌に近い性質のスイッチです。なお、猫牌が3〜4枚の迷いの帯にかぎっては、下側にも口を開きます。この帯を5000回で測ると、対子・暗刻が0組の手は攻めが8%、1組でも20%——守りがほぼ決まります。そこで<b>猫牌3〜4枚かつ0〜1組</b>のときは「🫛枝豆も薄い、守りヨシ」と告げ、本判定が攻めであれば「🫛枝豆は守りと言ったが、本判定は攻め──珍しい食い違い」と正直に返します。2〜3組は攻め率が42%と33%で、どちらとも言えないため沈黙のままです。<br><br><b>AIスイッチ</b>　同じ設定（⚙️）にあるスイッチの、三つ目のスイッチです。数えるのは<b>一枚きりの字牌（ジハイ）</b>——手の中に一枚だけ浮いている字牌のこと。同じ字牌が2枚以上あればそれは対子・暗刻ですから、数えません。<b>いざというとき切って身を守れる字牌が、何枚あるか</b>を数えている、と思ってください。<br>　<b>一枚きりの字牌が3枚以上なら「守り」。</b>逃げ道を三本も抱えた手は、本判定でも89.3%が守りでした。<br>　<b>一枚きりの字牌が0枚で、しかも1・9・字牌が2枚以下なら「攻め」。</b>端にも字牌にも寄っていない、真ん中に固まった手です。ここは攻めが70.5%（配牌全体の平均は27.6%）。<br>　<b>それ以外は黙ります。</b>一枚きりの字牌が1〜2枚の手は全体平均とほとんど変わらないので、言えることがありません。国士無双や役満が見えている手も黙ります。この二つは本判定が問答無用で攻めに振れますから、一枚きりの字牌を数えても意味がないのです。<br>　喋るときの言葉は一行だけ。合っていれば「🎩わたしの見立ても本判定と一致」、外していれば「🎩見立ては攻／守でしたが、外れました。本判定は…」（外れの一行は、投票欄の🎩を押したときに出ます）。煽りません。配牌24000回で測ると、口を開くのは三手に一度ほど（33.6%）、そのときの的中は88.2%です。毎回は語りませんが、語るのは外しにくい席だけ、という置き方をしています。<br>　<b>三つのスイッチを比べると、判定と一番よく一致するのはこのAIスイッチです。</b>配牌50000回で測ると、一枚きりの字牌が1枚以下なら攻めという線引きだけで61.5%が判定と一致しました。猫牌57.2%、枝豆58.2%を上回ります。ただし比べた相手はこのツールの判定であって、実際の局の結果ではありません。判定をよく言い当てる、という意味の数字です。</div><br>
+      <div id="helpSec6"><b>六、船長の見張り台の見かた</b><br>
+      配牌（ハイパイ）を読む力を鍛える練習場。<b>四つの練習</b>を上の切替で行き来できる。答えると、本物の判定エンジンが正解と、牌ごとの色分けを見せてくれる。<br><br>
+      <b>四つの練習</b><br>
+      ・<b>攻守</b>：13枚を見て「攻」か「守」か。総合力の試し場。<br>
+      ・<b>AI</b>：一枚きりの<ruby>字牌<rt>ジハイ</rt></ruby>の数を答える。答え合わせで、その枚数から出したAIスイッチの見立てが本判定と合っていたかも見せる。物差しがどこで外れるかを知る目。<br>
+      ・<b>猫牌（ネコハイ）</b>：孤立している数牌（スウハイ）の数を答える。守りの合図を見つける目。<br>
+      ・<b>枝豆（エダマメ）</b>：同じ牌（ハイ）が2枚以上そろっている組の数を答える。攻めの芽を見つける目。<br><br>
+      八人が何を見ているかと、投票欄の三者の色は「四」に。<br>
       <b>攻守を見抜く手順</b><br>
       判定エンジンが見ているものは決まっている。同じ順に数えれば当たる。<br>
       ① <b>孤立牌（コリツハイ）を数える</b>——0枚なら「攻」、4枚以上なら「守」へ倒す。<br>
@@ -1557,6 +1536,42 @@
       ・<b>打点（ダテン）</b>：あがったときの得点の高さ。<br>
       答え合わせで「七対子の道」「国士の芽」と出たら、その形が近いという知らせ。
       </div>
+      </div>
+    </div>
+  </div>
+  <div class="engine-help-overlay" id="infoListOverlay">
+    <div class="engine-help-sheet">
+      <div class="engine-help-head" style="position:relative;">
+        <span>◆ 説明欄</span>
+        <button type="button" class="cat-help-btn" id="infoListCatBtn" onclick="window.toggleCatHelp(event)" aria-label="猫牌について" style="position:static; margin-left:auto;"><img id="catCardTileImg" alt="現場猫" style="width:1.4em;height:1.4em;vertical-align:middle;object-fit:contain;display:inline-block"></button>
+        <button type="button" class="engine-help-close" onclick="window.closeInfoList(event)">閉じる ✕</button>
+      </div>
+      <div class="cat-help-pop" id="catHelpPop" style="position:static; margin:8px 14px 0;"></div>
+      <div class="engine-help-body">
+        <button type="button" class="title-btn" onclick="window.openInfoDetail('engine')">🐾 このツール、何がすごいの？</button>
+        <button type="button" class="title-btn" onclick="window.openInfoDetail('koushu')">🀄️配牌攻守判定</button>
+        <button type="button" class="title-btn" onclick="window.openInfoDetail('watch')">⚓ 船長の見張り台</button>
+        <button type="button" class="title-btn" onclick="window.openInfoDetail('adv')">🚢 ミシシッピー現場猫事件</button>
+        <button type="button" class="title-btn" onclick="window.openInfoDetail('tori')">🐦 一索の鳥</button>
+      </div>
+    </div>
+  </div>
+  <div class="engine-help-overlay" id="infoDetailOverlay">
+    <div class="engine-help-sheet">
+      <div class="engine-help-head">
+        <span id="infoDetailTitle">◆ 説明</span>
+        <button type="button" class="engine-help-close" onclick="window.closeInfoDetail(event)">閉じる ✕</button>
+      </div>
+      <div class="engine-help-body" id="infoDetailBody"></div>
+    </div>
+  </div>
+  <div class="watch-guide-overlay" id="watchGuideOverlay">
+    <div class="watch-guide-sheet">
+      <div class="engine-help-head">
+        <span>◆ 見張り台の見かた</span>
+        <button type="button" class="engine-help-close" onclick="window.watchGuideClose(event)">閉じる ✕</button>
+      </div>
+      <div class="watch-guide-body" id="watchGuideBody"></div>
     </div>
   </div>
   <div class="watch-overlay" id="watchOverlay">
@@ -4897,6 +4912,16 @@ document.addEventListener('DOMContentLoaded', function () {
     stopEv(e);
     const pop = document.getElementById('catHelpPop');
     if(!pop) return;
+    /* 猫牌の長い説明は、説明欄の「五」から写す（2026-09-15・説明欄の作り替え）。
+       控えは「五」に一つだけ置く。開く時に一度だけ写して、あとは使い回す。 */
+    if(!pop.innerHTML.trim()){
+      const sec = document.getElementById('helpSec5');
+      if(sec){
+        const h = sec.innerHTML;
+        const i = h.indexOf('<br>');
+        pop.innerHTML = (i >= 0) ? h.slice(i + 4) : h;   // 節の見出しの一行だけ落とす
+      }
+    }
     pop.classList.toggle('show');
     if(pop.classList.contains('show')){
       // 高さ制限なし・スクロールなし。全文が折り返して見える
@@ -5551,9 +5576,20 @@ document.addEventListener('DOMContentLoaded', function () {
     if(ov) ov.classList.remove('show');
     window.ssGoTitle();
   };
+  /* 見かたの本文は、説明欄の「六」から写す（2026-09-15・説明欄の作り替え）。
+     ＊六節へ組み替えたとき、見かたの中身はそのまま「六」へ移した。
+       markup の控えは一つだけにして、こちらは開く時に写す——二重に持つと、
+       片方だけ直して静かにずれる（作法20 の「片方だけ直さない」と同じ理由）。 */
   window.watchGuide = function(e){
     stopEv(e);
     const ov = document.getElementById('watchGuideOverlay');
+    const body = document.getElementById('watchGuideBody');
+    const sec = document.getElementById('helpSec6');
+    if(body && sec && !body.innerHTML.trim()){
+      const h = sec.innerHTML;
+      const i = h.indexOf('<br>');
+      body.innerHTML = (i >= 0) ? h.slice(i + 4) : h;   // 節の見出しの一行だけ落とす
+    }
     if(ov) ov.classList.add('show');
   };
   window.watchGuideClose = function(e){
