@@ -1,0 +1,84 @@
+# 較正の対局（2026-09-14・較正-2 の雲の下調べ）
+#
+#   ＊**手で起こすときだけ走る**（workflow_dispatch）。push では走らない。
+#     自動検査と配信（check.yml）には一字も触っていない。
+#   ＊回すのは core-battle.js。条件は較正-1／較正-2 の下調べと同じ——
+#     @kobalab/majiang-core ＋ majiang-ai（package.json に版を固定）、四席とも同じ思考、
+#     一局戦、赤牌は m・p・s に各1枚（既定）、書き出しは25列。
+#   ＊書き出しは **artifact に残すだけ**。リポジトリへは押さない
+#     （core-battle-log.tsv を上書きしないため）。
+#   ＊1本は6時間で切られる。局数を増やすときは、本数で割って同時に立てる。
+name: 較正の対局
+
+on:
+  workflow_dispatch:
+    inputs:
+      games:
+        description: '打ち切る局数（既定 100）'
+        required: false
+        default: '100'
+      seed:
+        description: '通し番号（何本目か。出し先の名に付く）'
+        required: false
+        default: '1'
+
+permissions:
+  contents: read
+
+jobs:
+  battle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350        # 6時間の上限より少し手前で自分から切る
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: 道具を入れる
+        run: npm ci --no-audit --no-fund
+
+      - name: 機械の様子
+        run: |
+          echo "CPU  : $(nproc) 本"
+          echo "メモリ: $(free -m | awk '/^Mem:/{print $2}') MB"
+          node -v
+
+      - name: 対局を回す
+        id: run
+        env:
+          GAMES: ${{ github.event.inputs.games }}
+          SEED: ${{ github.event.inputs.seed }}
+        run: |
+          OUT="battle-${SEED}-${GAMES}.tsv"
+          echo "out=$OUT" >> "$GITHUB_OUTPUT"
+          S=$(date +%s)
+          node core-battle.js "$GAMES" "$OUT"
+          E=$(date +%s)
+          SEC=$((E - S))
+          echo "かかった秒 : $SEC"
+          echo "sec=$SEC" >> "$GITHUB_OUTPUT"
+          # 1局あたりと、1万局の見込みを出す
+          node -e '
+            const sec = Number(process.argv[1]), n = Number(process.argv[2]);
+            const per = sec / n;
+            console.log("── 実測 ───────────────────────────────");
+            console.log("  " + n + "局 … " + sec + "秒（" + (sec / 60).toFixed(1) + "分）");
+            console.log("  1局あたり … " + per.toFixed(3) + "秒");
+            const tot = per * 10000;
+            console.log("  1万局の見込み … " + (tot / 60).toFixed(1) + "分（" + (tot / 3600).toFixed(2) + "時間）");
+            const capped = 5.5 * 3600;                    // 1本あたりに使う上限（6時間の手前）
+            const perJob = Math.floor(capped / per);
+            const jobs = Math.ceil(10000 / perJob);
+            console.log("  6時間に収める割り方 … " + jobs + "本 x " + Math.ceil(10000 / jobs) + "局"
+              + "（1本 " + ((per * Math.ceil(10000 / jobs)) / 3600).toFixed(2) + "時間）");
+          ' "$SEC" "$GAMES"
+          wc -l "$OUT"
+
+      - name: 結果を残す
+        uses: actions/upload-artifact@v4
+        with:
+          name: battle-${{ github.event.inputs.seed }}-${{ github.event.inputs.games }}
+          path: ${{ steps.run.outputs.out }}
+          retention-days: 14
