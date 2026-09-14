@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1439">
+<html lang="ja" data-ver="1440">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1378,7 +1378,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1439</div>
+  <div id="verTag">v1440</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -3112,7 +3112,11 @@ document.addEventListener('DOMContentLoaded', function () {
       //   向聴2 …… 25枚／向聴3 …… 60枚／向聴4以上 …… 幅では救わない（関門を置かない）。
       //   向聴0と1は件数が18件しかないため線を引けず、向聴2の値を流用する。
       //   親子差は件数不足につき据え置き（従来どおり、親は子より4枚甘く見る）。
-      const widthGate = baseShanten >= 4 ? Infinity : (baseShanten >= 3 ? 60 : 25);
+      //   ＊向聴3の**子**は 2026-09-14（較正-2）で関門を外した。10000局40000手の引き直しで、
+      //     赤あり1622件・赤なし878件のどちらも「関門なし」が取り違え最少だった。
+      //     当てると471手（1.18%）が攻→守へ動き、守りが正解だった手が299・攻めが正解だった手が172。
+      //     全体の的中は 67.28%→67.60%（+0.32ポイント）。**親は60枚のまま**（件数が薄いので据え置き）。
+      const widthGate = baseShanten >= 4 ? Infinity : (baseShanten >= 3 ? (isDealer ? 60 : Infinity) : 25);
       const wideAttack = acceptTiles >= (isDealer ? widthGate - 4 : widthGate) && doraValue >= 1;
       verdict = wideAttack ? 'attack' : 'defend';
       if(wideAttack) edgeFlag = true;                          // 形は足りぬが受けの広さで攻へ格上げした紙一重
