@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1444">
+<html lang="ja" data-ver="1445">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1298,6 +1298,24 @@
     body.judged .judged-note { margin-top: 2px !important; }
     body.judged .next-hand-row { margin-top: 2px; }
   }
+  /* ---- 四枚の札の縮め-1（2026-09-15・v1445）----
+     四枚の札（打点・埋まり・伸びしろ・見える手／守る弾）は、題と数字の一行だけを横に並べる。
+     本文は出さず、**題を押した時だけ**上の見立て行へそのまま出す（文は縮めない）。
+     ＊上の三つの帯（L1159 は出す・L1198 と L1256 は消す）より後ろに置いて、どの視野でも消えるようにする。
+       @media は特定度を上げないので、後ろに書いたこの一行が勝つ。
+     ＊出るのは一度に一つ。仕掛けは四つの釦と同じ toolMark 一本に乗せてある（rN の鍵）。 */
+  body.judged .r-detail { display: none; }
+  body.judged .r-title { cursor: pointer; }
+  body.judged .r-title.on { color: var(--gold); }
+  /* 丙（2026-09-15 の裁定）… 題が点いている間だけ、四枚の帯そのものを畳む。
+     ＊見立て行が二行になると +16px（24px→40px）増える。800x381（内寸776x289）では
+       末尾の二択の bottom が 285px・視野 289px で余りが 4.0px しかなく、そのままだと 12px はみ出す。
+     ＊畳むと .reasons の 19px が空くので、差し引き −3px。はみ出しは 12px から 0px になり、
+       余りは 4.0px → 7.0px へ増える（844x390 も 7.2px → 10.2px）。 */
+  body.reason-open .reasons { display: none; }
+  /* 見立て行は二行まで伸ばす。人柄と四つの釦の文は今までどおり一行（この帯は rN の時だけ効く）。 */
+  body.reason-open .say-text { white-space: normal; overflow: hidden; text-overflow: clip;
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
   /* 版番号は常に見えるようにする。z-index 99 のままだと、設定・見張り台・探偵編・ミニゲームの
      どの覆い（300〜100002）の裏にも隠れて、いま触っている版が画面から分からなかった。
      画面内エラー窓（100050）だけは上に残す。 */
@@ -1403,7 +1421,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1444</div>
+  <div id="verTag">v1445</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -4120,6 +4138,13 @@ document.addEventListener('DOMContentLoaded', function () {
     TOOL_MARKS.forEach(function(k){
       document.body.classList.toggle('tool-' + k, !mascotTalking && toolMark === k);
     });
+    /* 四枚の札の縮め-1（2026-09-15）。題を押している間だけ、四枚の帯を畳んで見立て行を二行にする。
+       鍵は 'r' ＋ 札の番号。道具の鍵（cat/eda/ai/usagi）とは頭の字で見分ける。 */
+    var onR = !mascotTalking && typeof toolMark === 'string' && toolMark.charAt(0) === 'r';
+    document.body.classList.toggle('reason-open', onR);
+    document.querySelectorAll('.r-title').forEach(function(t){
+      t.classList.toggle('on', onR && ('r' + t.getAttribute('data-r')) === toolMark);
+    });
   }
   window.applyToneMark = applyToneMark;
   // 十人の見立て。実測50000回で分かれ目のはっきりした値に線を引く。
@@ -4854,6 +4879,27 @@ document.addEventListener('DOMContentLoaded', function () {
     applyToneMark();
     if(toolMark === key){ saySet(key, say); }
     else { saySet(currentTone, toneAngleLine(window._lastA)); }   // 消したら元の見立てへ戻す
+    document.querySelectorAll('.eye-btn').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-eye') === toolMark);
+    });
+  };
+
+  /* ---- 四枚の札の題を押す（2026-09-15・四枚の札の縮め-1）----
+     四枚の札は題と数字の一行だけを出し、本文は押した時に見立て行へそのまま入れ替えで出す。
+     ＊文は縮めない。見立て行は二行まで伸びる（body.reason-open が持つ）。
+     ＊出るのは一度に一つ。開閉は道具と同じ toolMark 一本に乗せるので、
+       人柄や四つの釦を押せば自動で戻る。もう一度同じ題を押しても戻る。
+     ＊判定そのものには触れない。 */
+  window.reasonTap = function(i, e){
+    stopEv(e);
+    const say = (window._reasonSay || [])[i];
+    if(!say){ return; }
+    const key = 'r' + i;
+    mascotTalking = false;
+    toolMark = (toolMark === key) ? '' : key;
+    applyToneMark();
+    if(toolMark === key){ saySet(currentTone, say); }
+    else { saySet(currentTone, toneAngleLine(window._lastA)); }
     document.querySelectorAll('.eye-btn').forEach(function(b){
       b.classList.toggle('active', b.getAttribute('data-eye') === toolMark);
     });
@@ -8935,11 +8981,12 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
         ${seatLine ? `<div class="seat-foot">${seatLine}</div>` : ''}
         <div class="reasons">
-          ${reasons.map(r=>`
+          ${(function(){ window._reasonSay = reasons.map(function(r){ return r.detail; }); return ''; })()}
+          ${reasons.map((r,ri)=>`
             <div class="reason">
               <div class="r-mark ${r.ok?'yes':'no'}">${r.ok?'✓':'×'}</div>
               <div class="r-body">
-                <div class="r-title">${r.title}</div>
+                <div class="r-title" data-r="${ri}" onclick="window.reasonTap(${ri}, event)">${r.title}</div>
                 <div class="r-detail">${r.detail}</div>
               </div>
             </div>`).join('')}
