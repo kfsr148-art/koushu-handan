@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1442">
+<html lang="ja" data-ver="1443">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -365,14 +365,27 @@
      色は琥珀（#e0b25a）。人柄や道具の切り替えに関わらず、判定のあいだ出しっぱなし。 */
   /* 四つの目の釦（選択釦-1）。外箱＝当たり判定44px、中身＝四角の絵（作法10の入れ子）。
      四つとも同じ大きさ・同じ形。人柄チップとは別物なので data-tone を持たない。 */
-  .eye-btn { width: 44px; height: 44px; min-width: 44px; padding: 0; border: 0;
-    background: transparent; display: inline-flex; align-items: center; justify-content: center;
-    cursor: pointer; flex: none; }
-  .eye-btn .eye-ic { width: 26px; height: 26px; display: inline-flex; align-items: center;
-    justify-content: center; border-radius: 5px; overflow: hidden;
-    border: 1px solid rgba(243,236,224,0.35); background: rgba(0,0,0,0.25); }
-  .eye-btn .eye-ic .say-icon { width: 100%; height: 100%; border-radius: 0; border: 0; }
-  .eye-btn.active .eye-ic { border-color: #e0b25a; box-shadow: 0 0 6px rgba(224,178,90,0.55); }
+  /* 2026-09-14・人柄の釦の縮め-1。四つの釦を、下の方言の釦と同じ箱にする。
+     ＊これまで 44x44・余白0・枠なしだったため、flex の列が背の高い方へ引き伸ばし、
+       同じ列の人柄の釦まで 38x44 になっていた（方言は 38x24）。縮めるのはこの一つでよい。
+     ＊字の大きさ・上下左右の余白・角の丸み・枠線の太さは .tone-btn / .dialect-btn と同じ値。
+       判定画面での縮み（10px・3px 8px・11px）は下の body.judged の一行に相乗りする。
+     ＊中の絵は方言の字の高さに合わせる（判定画面の 10px の行が 14px）。
+     ＊選ばれている時は、方言と同じ**付き方**——背景を塗って枠を消す。色は人柄と同じ白のまま
+       （2026-09-14 の裁定。三つの列を色で見分けられるようにするため、金には寄せない）。
+     ＊当たり判定は枠のまま。高さ 24px で作法10 の44pxを割るが、同じ列の人柄の釦も
+       下の方言の釦も既に 24px で割っており、この列だけが44pxを保っていた（裁定済み）。 */
+  .eye-btn { font-family: inherit; font-size: 12px; padding: 5px 12px;
+    border-radius: 14px; border: 1px solid rgba(243,236,224,0.25);
+    background: rgba(243,236,224,0.06); color: rgba(243,236,224,0.7);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; flex: none; transition: all 0.12s ease; }
+  .eye-btn .eye-ic { width: 17px; height: 17px; display: inline-flex; align-items: center;
+    justify-content: center; border-radius: 3px; overflow: hidden; border: 0;
+    background: transparent; }
+  .eye-btn .eye-ic .say-icon { width: 100%; height: 100%; border-radius: 0; border: 0;
+    background: transparent; }
+  .eye-btn.active { background: rgba(243,236,224,0.92); border-color: transparent; }
   .eye-btn:active { transform: translateY(1px); }
   body.tool-usagi .judged-hand .tile.cut-mark {
     outline: 2px solid #e0b25a;
@@ -1139,7 +1152,9 @@
     body.judged .edamame-note, body.judged .shinshi-note { flex: 0 0 auto; }
     body.judged .tone-row { margin-top: 5px; gap: 4px; }
     body.judged .dialect-row { margin-top: 3px; gap: 4px; }
-    body.judged .tone-btn, body.judged .dialect-btn { font-size: 10px; padding: 3px 8px; border-radius: 11px; }
+    body.judged .tone-btn, body.judged .dialect-btn,
+    body.judged .eye-btn { font-size: 10px; padding: 3px 8px; border-radius: 11px; }
+    body.judged .eye-btn .eye-ic { width: 14px; height: 14px; }   /* 方言の10pxの行の高さに合わせる */
     body.judged .seat-foot { font-size: 9px; margin-top: 2px; }
     body.judged .r-detail { display: block; font-size: 9px; line-height: 1.4; margin-top: 1px; color: rgba(243,236,224,0.58); }
     body.judged .verdict-foot { display: none; }
@@ -1388,7 +1403,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1442</div>
+  <div id="verTag">v1443</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
