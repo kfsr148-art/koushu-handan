@@ -1,6 +1,11 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
+        "time":  1789353667,
+        "message":  "作法の切り分け-1\n残した一件 … y0912-0300「連携の穴-1 ⑦承認の足止め-1 ③の裁定」。甲乙の裁定なので切り分けの外、今までどおり残す。ただし中身の甲（推し・これで閉じる）は 09-10 に実施済みで、乙（読むだけの命令をもう一段広く一本の台本へまとめ直す）を採らないなら閉じてよい。\nファイル: CLAUDE.md（作法5）／~/.claude/projects/…/memory/yoshi-wait-protocol.md／MEMORY.md\n実測: 台帳の未了＝0件。ヨシ待ち＝1件（y0912-0300）。\n未検収: 2026-09-12 02:53 連携の穴-1 ⑦の裁定（印 y0912-0300・甲乙の裁定なので残す）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
         "time":  1789349947,
         "message":  "黒猫の待機-2 の後片付け（乙）\npanel-check.js L864 にも panel-icon-white の名が出るが、これは「runCatTick にこの名が残っていないか」を見張る一覧で、ファイルを読む所ではない。\nファイル: panel-icon-black.png（消した）／panel-icon-w3.png（消した）\n実測: 台帳の残りは1件（2026-09-13 00:12:31「公開側が117分遅れている（pub-late）」）。\n未検収: 2026-09-12 21:00 v1439 の実機確認（人手待ち）"
     },
@@ -243,10 +248,5 @@
         "title":  "🕒 延びています",
         "time":  1789204623,
         "message":  "--name=\"VAIO koushu-hand\n終了予定18:15を過ぎています（経過21分）"
-    },
-    {
-        "title":  "✅ 遠隔を繋ぎ直しました（VAIO koushu-handan）",
-        "time":  1789203461,
-        "message":  "遠隔の橋が切れていたので、窓を閉じて名を指して起こし直しました。\n新しい rcName ＝ VAIO koushu-handan\nbridgeSessionId ＝ session_012CxZiMh7nS8ddLbGsF8kUL\nclaude pid ＝ 112／閉じた刻 17:57:20\n窓の題 ＝ 麻雀 攻守判断 (Claude Code)  - C:\\Users\\user\\.local\\bin\\claude.exe  --continue --remote-control koushu-handan\n\n＊起こした形：claude --continue --remote-control \nkoushu-handan\n＊記録は ~/.claude/rc-restart.log にあります。\n"
     }
 ]
