@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）：過去の札の上限-1 と 窓を見やすく-2",
+        "time":  1789218020,
+        "message":  "過去の札の上限-1 と 窓を見やすく-2\n過去の札を切り詰めた。notices-archive.json は 200件 → 50件（150件を捨てた）。archive-count.txt も 50 に直し、押した（9dab87a7）。\n以後の頭打ちも 50 にした。notify-record.ps1 の「200枚を保つ」を「50枚を保つ」へ替え、押し出しの行を if ($all.Count -gt 50) { $all = @($all[0..49]) } にした（写しは .bak-20260912・構文OK）。並びは刻の新しい順なので、越えた分は古い方から落ちる。\n窓を見やすく-2 … 字を24pxから16pxへ下げた（BIZ UDゴシックのまま・最大化のまま）。HKCU\\Console の項と、デスクトップの印（.lnk）の両方へ入れた。\n.lnk 側は Console の塊（NT_CONSOLE_PROPS・204バイト・目印 0xA0000002）を組んで末尾の並びへ直に足した。WScript.Shell では書けないため。写しは「麻雀 攻守判断 (Claude Code).lnk.bak-20260912」。\nv1439 ヨシを受けて stable を 19664dea（v1439）へ進めた（前は 93ad99e3＝v1438）。\n"
+    },
+    {
         "title":  "✅ 窓を起こし直しました（0桁x0行・字0px）",
         "time":  1789217531,
         "message":  "窓を見やすく-2 の形（BIZ UDゴシック 16px・最大化）で起こし直しました。起き直した窓の実測です。\n字 … （横0 / 縦0 ピクセル）\n窓 … 0桁 x 0行／枠 1222x784px（最大化）\nclaude pid 4796／閉じた刻 21:51:51／戻るまで 8秒\n\n＊記録は ~/.claude/window-restart.log にあります。\n"
@@ -243,10 +248,5 @@
         "title":  "✅ 検査を雲へ-1 終わり（残り0件）",
         "time":  1789188242,
         "message":  "検査を雲へ-1 — 終わり（残り0件）\n①検査は GitHub Actions（ubuntu・Chromium）へ。対象が変わった push で 速い版→フル版→widget→panel。毎分の押しでは検査を飛ばす（毎分フル版は回せないため）\n②deploy は check の後段。Pages の出どころを枝から GitHub Actions へ切り替えた。軽い回は直前の落ちを見て配信しない。打ち切りは配信の段だけ（全体に掛けたら毎分の押しがフル版を打ち切っていた）\n③VAIO の pre-push は構文検査だけ（本体の script 4塊＋直下の .js・数秒・NG0件）。headless Edge はもう立てない\n④実測：ver.txt を食い違わせた版は check 失敗・deploy skipped で公開されず、戻した版は check 成功・deploy 成功・公開側の ver.txt は 1438 に戻った\n公開が 10:58 で止まっていたのは、枝からの Pages の組み立てが失敗し続けていたため。いまは直っている\n"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789187466,
-        "message":  "検査を雲へ-1 — Actions で検査し、通らなければ配信しない\n④戻し df2706e4＝ver.txt を 1438 へ戻して push。走りの結果と公開側の ver.txt を背後で確かめている\n実測: ④落とす版 afc4df7d＝check は「速い版（node check-all --fast）」で失敗、deploy は skipped（公開側へ出ない）"
     }
 ]
