@@ -22,7 +22,7 @@ permissions:
 jobs:
   neko:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 150      # 測り直し-2 は 60000手を判じ直すので長めに取る
     steps:
       - uses: actions/checkout@v4
 
@@ -53,9 +53,20 @@ jobs:
           echo "読む綴り : $FILES"
           node neko-rate.js $FILES | tee neko-rate.txt
 
+      # 測り直し-2（2026-09-15）… 枝豆とAIも数え、verdict を今の本体で判じ直す
+      - name: 測る（三本・判じ直し）
+        run: |
+          FILES="core-battle-log-10k.tsv"
+          for t in $(find nights -name '*.tsv' | sort); do FILES="$FILES $t"; done
+          S=$(date +%s)
+          node neko-rate2.js $FILES | tee neko-rate2.txt
+          echo "かかった秒 : $(($(date +%s) - S))"
+
       - name: 結果を残す
         uses: actions/upload-artifact@v4
         with:
           name: neko-rate
-          path: neko-rate.txt
+          path: |
+            neko-rate.txt
+            neko-rate2.txt
           retention-days: 7
