@@ -1,0 +1,61 @@
+# 猫牌率の測り直し（2026-09-15・猫牌率の測り直し-1）
+#
+#   ＊**手で起こすときだけ走る**（workflow_dispatch）。push でも定時でも走らない。
+#   ＊機械（VAIO）の空きは使わない。走るのは GitHub の側。
+#   ＊読むのは core-battle-log-10k.tsv（リポジトリの中）と、較正の対局の走りが残した artifact。
+#     走り番号は入力で受け取る。取り込めなかった走りは黙って飛ばす（記録には残す）。
+#   ＊本体（koushu-handan.html）は読むだけ。書き出しも artifact に残すだけで、押さない。
+name: 猫牌率の測り直し
+
+on:
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: '較正の対局の走り番号（空白区切り。空なら記録だけで測る）'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  neko:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: 道具を入れる
+        run: npm ci --no-audit --no-fund
+
+      - name: 走りの結果を取り込む
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUNS: ${{ github.event.inputs.runs }}
+        run: |
+          mkdir -p nights
+          for r in $RUNS; do
+            echo "── 走り $r を取り込む"
+            gh run download "$r" -D "nights/$r" || echo "  取り込めなかった（飛ばす）"
+          done
+          find nights -name '*.tsv' -print || true
+
+      - name: 測る
+        id: run
+        run: |
+          FILES="core-battle-log-10k.tsv"
+          for t in $(find nights -name '*.tsv' | sort); do FILES="$FILES $t"; done
+          echo "読む綴り : $FILES"
+          node neko-rate.js $FILES | tee neko-rate.txt
+
+      - name: 結果を残す
+        uses: actions/upload-artifact@v4
+        with:
+          name: neko-rate
+          path: neko-rate.txt
+          retention-days: 7
