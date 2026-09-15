@@ -62,6 +62,10 @@ jobs:
           node neko-rate2.js $FILES | tee neko-rate2.txt
           echo "かかった秒 : $(($(date +%s) - S))"
 
+      # 測り直し-2 の割り … 10k の verdict 欄の食い違いを「本体の差」と「風の渡し方の差」に割る
+      - name: 食い違いを割る
+        run: node neko-split.js core-battle-log-10k.tsv | tee neko-split.txt
+
       - name: 結果を残す
         uses: actions/upload-artifact@v4
         with:
@@ -69,4 +73,5 @@ jobs:
           path: |
             neko-rate.txt
             neko-rate2.txt
+            neko-split.txt
           retention-days: 7
