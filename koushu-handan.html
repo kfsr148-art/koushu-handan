@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1446">
+<html lang="ja" data-ver="1447">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1421,7 +1421,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1446</div>
+  <div id="verTag">v1447</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -8073,13 +8073,27 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   // 無作為50000回の実測（赤入り・子・ドラ表示なし）。線グラフの下敷き。
   // 三本とも0〜6以上の7段で揃える（横軸の目盛りと点が一致するように）
+  /* 2026-09-16・猫牌率の下敷きの入れ替え-1（v1447）で三本とも差し替えた。
+     ＊元は無作為50000回（赤入り・子・ドラ表示なし・猫牌を混ぜた手を含む）。
+     ＊いまは対局の記録の子60000手（機械打ち同士の一局戦・core-battle-log-10k.tsv と 09-15 夜の二本）。
+       pct＝出現の割合、atk＝攻めと判定された割合（v1446 で判じ直した値）、
+       ok＝攻めが正解だった割合（その手が点棒を取れた割合）、pt＝点棒の平均。
+       ok と pt は下敷きにだけあり、じぶんの記録には無い（この道具は一手も打たないので結末を持たない）。
+     ＊数え方は本体と同じ … 猫牌は countIsolatedRealTiles、枝豆は二枚以上ある種類の数、AI は一枚きりの字牌の数。
+     ＊測り方は neko-rate2.js（雲の走り 34968020387）。 */
   const BASE_CURVE = {
-    cat: { pct:[8.63,23.90,30.05,22.22,10.55,3.56,1.10],
-           atk:[58.7,49.9,43.7,39.4,36.2,37.1,39.9], color:'#d4af37', name:'猫牌' },
-    eda: { pct:[12.95,37.24,34.69,13.03,1.97,0.12,0.00],
-           atk:[29.5,38.2,51.7,49.0,100.0,93.2,null], color:'#8fbf5f', name:'枝豆' },
-    om:  { pct:[8.19,25.99,33.36,22.31,8.31,1.66,0.17],
-           atk:[68.6,55.1,42.6,33.5,28.5,24.2,28.6], color:'#e08a72', name:'AIスイッチ' }
+    cat: { pct:[8.81,24.01,29.99,21.98,10.60,3.61,1.00],
+           atk:[47.63,36.96,24.98,14.30,8.05,4.94,3.65],
+           ok:[32.96,29.83,26.30,23.31,19.48,16.77,14.45],
+           pt:[466,222,-6,-135,-370,-520,-502], color:'#d4af37', name:'猫牌' },
+    eda: { pct:[12.87,37.19,34.41,13.37,2.04,0.12,0.00],
+           atk:[6.84,14.50,29.47,46.37,100.00,94.52,null],
+           ok:[22.51,24.61,27.04,28.57,33.09,34.25,null],
+           pt:[-45,-50,-17,125,627,663,null], color:'#8fbf5f', name:'枝豆' },
+    om:  { pct:[8.20,25.89,33.34,22.51,8.23,1.64,0.19],
+           atk:[61.40,39.97,21.30,8.57,3.32,3.75,14.04],
+           ok:[35.79,30.69,25.84,21.05,17.16,13.59,12.28],
+           pt:[622,293,-30,-289,-489,-698,-124], color:'#e08a72', name:'AIスイッチ' }
   };
   function haipaiChart(rows){
     const W = 320, H = 190, L = 30, R = 8, T = 12, B = 26;
@@ -8226,15 +8240,20 @@ document.addEventListener('DOMContentLoaded', function () {
     lines.push('判定した手：' + n + ' 件');
     if(n) lines.push('うち攻め ' + (atkN / n * 100).toFixed(1) + '%　物差しが割れた手 ' + split + ' 件');
     lines.push('');
-    lines.push('猫牌　 じぶん 無作為　攻め率 無作為');
+    // 2026-09-16（v1447）… 右に「正解」と「点棒」の二列を足した。どちらも下敷き（BASE_CURVE.cat の ok・pt）の値で、
+    //   じぶんの記録には結末が無いので列を持たない。
+    lines.push('猫牌　 じぶん 無作為　攻め率 無作為　正解　点棒');
     for(let i = 0; i < 7; i++){
       const p = n ? (mine[i] / n * 100) : null;
       const ar = mine[i] ? (mineAtk[i] / mine[i] * 100) : null;
+      const bp = BASE_CURVE.cat.pt[i];
       lines.push(LAB[i].padEnd(4, '　')
         + (p === null ? '     —' : (p.toFixed(1) + '%').padStart(6, ' '))
         + (BASE_CURVE.cat.pct[i].toFixed(1) + '%').padStart(7, ' ')
         + (ar === null ? '      —' : (ar.toFixed(0) + '%').padStart(7, ' '))
-        + (BASE_CURVE.cat.atk[i].toFixed(0) + '%').padStart(6, ' '));
+        + (BASE_CURVE.cat.atk[i].toFixed(0) + '%').padStart(6, ' ')
+        + (BASE_CURVE.cat.ok[i].toFixed(0) + '%').padStart(5, ' ')
+        + ((bp >= 0 ? '+' : '') + bp).padStart(6, ' '));
     }
     lines.push('');
     lines.push('※ 無作為は赤入りの山から50000回配った実測');
