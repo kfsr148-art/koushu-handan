@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1448">
+<html lang="ja" data-ver="1449">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1421,7 +1421,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1448</div>
+  <div id="verTag">v1449</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -8122,7 +8122,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
       mine[k] = g;
     });
-    // 無作為の線（破線）と自分の線（実線）
+    // 記録の線（破線・下敷き）と自分の線（実線）
     keys.forEach(function(k){
       const c = BASE_CURVE[k];
       const n = c.atk.length;
@@ -8186,15 +8186,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const v = g.a / g.n * 100;
         const d = v - base;
         if(Math.abs(d) < 10) return;
-        notes.push(NAME[k] + (i === 6 ? ('6' + UNIT[k] + '以上') : (i + UNIT[k])) + 'の帯は無作為より攻めが'
+        notes.push(NAME[k] + (i === 6 ? ('6' + UNIT[k] + '以上') : (i + UNIT[k])) + 'の帯は記録より攻めが'
           + (d > 0 ? '多い' : '少ない') + '（' + v.toFixed(0) + '%対' + base.toFixed(0) + '%、' + g.n + '件）');
       });
     });
     const mineWord = (firm === 0)
       ? 'じぶんの記録は、50件以上たまった帯がまだ無い。線が出ていても件数が少なすぎて読めない。'
       : (notes.length === 0
-          ? 'じぶんの記録は、50件以上たまった帯では無作為と目立った差がない。'
-          : ('じぶんの記録では、' + notes.join('。') + '。ただし無作為の記録でも、50〜150件なら約76%、500件でも59.2%はこの差が出る。件数が増えるまでは偶然と見ておくこと。'));
+          ? 'じぶんの記録は、50件以上たまった帯では記録と目立った差がない。'
+          : ('じぶんの記録では、' + notes.join('。') + '。ただし下敷きと同じ性質の記録でも、150件なら約15%、500件でも約20%はこの差が出る。件数が増えるまでは偶然と見ておくこと。'));
     say.textContent = fixed + '\n' + mineWord;
     const foot = document.createElement('div');
     foot.style.cssText = 'font-size:9px; color:rgba(232,226,208,0.45); line-height:1.6; margin-top:2px;';
@@ -8214,7 +8214,7 @@ document.addEventListener('DOMContentLoaded', function () {
       box.textContent = '記録がありません。\n「判定する」を押すたびに、自動でここに一件たまります。';
       return;
     }
-    // 無作為の裁定数は BASE_CURVE.cat 一本を読む（折れ線と同じ数字を使うため）。
+    // 記録の裁定数は BASE_CURVE.cat 一本を読む（折れ線と同じ数字を使うため）。
     const LAB = ['0枚', '1枚', '2枚', '3枚', '4枚', '5枚', '6枚以上'];
     const band = function(c){ return c >= 6 ? 6 : c; };
     const mine = new Array(7).fill(0);
@@ -8242,7 +8242,7 @@ document.addEventListener('DOMContentLoaded', function () {
     lines.push('');
     // 2026-09-16（v1447）… 右に「正解」と「点棒」の二列を足した。どちらも下敷き（BASE_CURVE.cat の ok・pt）の値で、
     //   じぶんの記録には結末が無いので列を持たない。
-    lines.push('猫牌　 じぶん 無作為　攻め率 無作為　正解　点棒');
+    lines.push('猫牌　 じぶん 記録　攻め率 記録　正解　点棒');
     for(let i = 0; i < 7; i++){
       const p = n ? (mine[i] / n * 100) : null;
       const ar = mine[i] ? (mineAtk[i] / mine[i] * 100) : null;
@@ -8256,7 +8256,7 @@ document.addEventListener('DOMContentLoaded', function () {
         + ((bp >= 0 ? '+' : '') + bp).padStart(6, ' '));
     }
     lines.push('');
-    lines.push('※ 無作為は対局の記録（子60000手）の実測');
+    lines.push('※ 記録は対局の記録（子60000手）の実測');
     box.textContent = lines.join('\n');
     // ── 三本の物差しを線で重ねる ──
     const chart = haipaiChart(rows);
