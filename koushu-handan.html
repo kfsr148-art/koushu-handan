@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1447">
+<html lang="ja" data-ver="1448">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1421,7 +1421,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1447</div>
+  <div id="verTag">v1448</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -8169,9 +8169,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const say = document.createElement('div');
     say.style.cssText = 'font-size:10px; color:rgba(232,226,208,0.75); line-height:1.9; margin-top:6px; white-space:pre-line;';
     const fixed = 'AIスイッチの線は0枚から6枚以上まで一貫して下がる。'
-      + '猫牌の線は4枚あたりで平らになり、そこから先は数えても攻め率が動かない。'
+      + '猫牌の線は数えるほど下がり続け、4枚から先は一割を切る。'
       + '枝豆だけが逆向きで、組が増えるほど攻め。3組でいったん凹み、4組で跳ね上がる。'
-      + '三本は中央で交わり、枚数の少ない側ではAIスイッチが一番高く、多い側では一番低い。'
+      + '猫牌とAIスイッチは揃って下がり、枝豆だけが逆向きに上がる。三本は2のあたりで交わる。'
       + '同じ配牌を、AIスイッチがいちばん強く振り分けている。';
     const NAME = { cat:'猫牌', eda:'枝豆', om:'AIスイッチ' };
     const UNIT = { cat:'枚', eda:'組', om:'枚' };
@@ -8198,7 +8198,7 @@ document.addEventListener('DOMContentLoaded', function () {
     say.textContent = fixed + '\n' + mineWord;
     const foot = document.createElement('div');
     foot.style.cssText = 'font-size:9px; color:rgba(232,226,208,0.45); line-height:1.6; margin-top:2px;';
-    foot.textContent = '破線＝無作為50000回。判定そのものの性格を示す図です。'
+    foot.textContent = '破線＝対局の記録の子60000手。判定そのものの性格を示す図です。'
       + '実線＝じぶんの記録で、5件以上たまった帯だけ描きます。'
       + '点は大きさが件数、10件に満たない帯は薄く出ます。'
       + 'AIスイッチの線は、AIスイッチが数える一枚きりの字牌の枚数です。';
@@ -8256,7 +8256,7 @@ document.addEventListener('DOMContentLoaded', function () {
         + ((bp >= 0 ? '+' : '') + bp).padStart(6, ' '));
     }
     lines.push('');
-    lines.push('※ 無作為は赤入りの山から50000回配った実測');
+    lines.push('※ 無作為は対局の記録（子60000手）の実測');
     box.textContent = lines.join('\n');
     // ── 三本の物差しを線で重ねる ──
     const chart = haipaiChart(rows);
