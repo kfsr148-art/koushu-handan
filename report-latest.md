@@ -59,6 +59,18 @@ before が写しに無ければ git fetch --deepen=200 で深掘りし、それ�
 ＊この直し自体は `check.yml` を触るので、**この回の押しは正しくフル版が回る**（12分ほど）。
 　次の二件入りの押しから、`変わったもの:` にファイル名が並ぶようになる。
 
+### 確かめ（手元に深さ2の写しを作って、同じ形を当てた）
+
+雲を待たずに確かめられる。本物の走りは立てていない（`git clone --depth 2` の写しの上だけ）。
+
+| 形 | 見立てた押し | 判じ |
+|---|---|---|
+| **直す前**（深さ2のまま diff） | 三件入り | `変わったもの: ALL` → 本体の回（フル版） |
+| **直した形**（深掘りする） | 同じ三件入り | `.github/workflows/check.yml` ほか4件 → **本体の回**（`check.yml` が入っているので正しく重い） |
+| 直した形 | 控えだけの三件入り | `state.json` `usage.json` → **控えの回**（検査に掛けず、そのまま配信） |
+
+三つ目が要。**これまでは控えだけの押しでも二件入れば ALL に落ち、12分のフル版が回っていた。**
+
 ## 落とした後の訴えの件数
 
 **0件**（説明のついていない訴えは残っていない）。
@@ -89,7 +101,7 @@ before が写しに無ければ git fetch --deepen=200 で深掘りし、それ�
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
-| [`y0917-2102.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-2102.md) | 09-17 21:09 | 訴えの棚卸し-1 |
+| [`y0917-2102.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-2102.md) | 09-17 21:14 | 訴えの棚卸し-1 |
 | [`y0917-2050.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-2050.md) | 09-17 20:52 | 古い字の掃除-2 |
 | [`y0917-2009.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-2009.md) | 09-17 20:14 | 古い字の掃除-1 |
 | [`y0917-1944.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-1944.md) | 09-17 19:55 | 押しの詰まり-1 |
