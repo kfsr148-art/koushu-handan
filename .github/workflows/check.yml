@@ -40,11 +40,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 20
       - name: 検査が要る回かを見る
         id: pick
         run: |
-          FILES=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" 2>/dev/null || echo ALL)
+          # ---- 押しに二件以上入っていると、浅い写しに before が無い（2026-09-17・訴えの棚卸し-1）----
+          #   ＊深さ2のころは、二件入った押しで git diff が落ち、FILES=ALL ＝「本体の回」と判じて
+          #     フル版（12分）が回った。配信はその間止まり、公開が20分遅れて pub-late が鳴った
+          #     （09-17 20:14 の走り。押しは「報告 + usage: 更新」の二件だった）。
+          #   ＊深さを 20 にし、それでも足りない回だけ深掘りする。
+          #     取れなければ今までどおり ALL＝検査に掛ける（安全側。本体の直しを素通りさせない）。
+          BEFORE="${{ github.event.before }}"
+          if ! git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
+            git fetch --deepen=200 origin 2>/dev/null || true
+          fi
+          if git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
+            FILES=$(git diff --name-only "$BEFORE" "${{ github.sha }}")
+          else
+            FILES=ALL
+          fi
           echo "変わったもの: $FILES"
           if echo "$FILES" | grep -qE '^(koushu-handan\.html|check\.js|adv-check\.js|check-all\.js|ver\.txt|panel\.html|panel-check\.js|widget-check\.js|usage-widget(-loader)?\.js|\.github/workflows/check\.yml)$' || [ "$FILES" = "ALL" ]; then
             echo "heavy=1" >> "$GITHUB_OUTPUT"; echo "→ 本体の回。検査を回し、通った回だけ配信する"
