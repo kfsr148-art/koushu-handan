@@ -1,6 +1,11 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
+        "time":  1789726128,
+        "message":  "写せます（2件）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
         "time":  1789726032,
         "message":  "起こしの重なり-1（乙・刻をずらす）\nClaudeRevive を :10→:25、ClaudeJamWatch を :28→:45 へずらした。触ったのは予定表の始まりの刻（秒）だけで、繰り返しは三つとも PT1M のまま。ClaudeWatchNotify は :58 のまま触っていない。写しは ~/.claude/task-ClaudeRevive.bak-20260918.xml と task-ClaudeJamWatch.bak-20260918.xml（戻せる形）。\n実測（0.5秒ごと・自分の窓と常駐 inbox-watch は除く）… 前（2分）は山の最高234MB・上位1割98MB・中央0MB。直後（5分・入れ替えの乱れ込み）は212MB・92MB・0MBで、二本以上の重なりは23/600回（3.8%）。落ち着いた後（5分）は177MB・91MB・0MBで、二本以上の重なりは0/600回（0%）。\n立った刻は 18:56:58 heavy-gate／18:57:25 revive／18:57:45 jam-watch …と 19:02:58 まできれいに揃った。直後の5分に3.8%残ったのは、入れ替え直後に heavy-gate が 18:51:29 に追いつきで立った回と、watch-notify が33.2秒かかった回が :25 に届いたため。\n残った山（177MB）の中身は毎分の三本ではない。いちばん高い刻（18:58:09）の顔ぶれは heavy-gate 88MB ／ その他 89MB で、その「その他」を60秒追いかけると kagi-watch.ps1 62MB と push-retry.ps1 52MB だった。どちらも巡回が自分で起こす子の台本（鍵の見回り・押し直し）で、起こし同士の重なりではなく巡回一回ぶんの中身。毎分の三本をこれ以上ずらしても下がらない。\n下がった量は 234MB → 177MB（-57MB・-24%）。中央は前も後も0MB。ただし前は2分間・後は5分間の測りで窓の長さが違うので、下がり幅より「重なりが0%になった」ほうが確かな結果として読むこと。\n触らない所は本体・~/.claude の台本（revive-claude.ps1・jam-watch.ps1・watch-notify.ps1 とも一字も触っていない）・DEAD_MIN 2分・STUCK_SEC 90秒・heavy-gate の -EverySec 300・ClaudeWatchNotify の刻・10分ごとの起こし（board :00／hook :02／pipe-check :15）・敷居（譲り700MB／押し768MB）。\nファイル: 予定表 ClaudeRevive／ClaudeJamWatch の始まりの秒（写しは ~/.claude の task-*.bak-20260918.xml 二枚）／reports/y0918-1846.md（新）／測りの台は scratchpad の sample2.ps1・sample3.ps1\n実測: 刻 :58／:25／:45／二本以上の重なり 0/600回（0%）／山 234MB→177MB（-57MB）・中央0MB／残る山の中身は kagi-watch 62MB と push-retry 52MB／押しは c525d825 で通った"
     },
@@ -118,11 +123,6 @@
         "title":  "😺 現在も順調にゃ",
         "time":  1789646437,
         "message":  "状態: 手待ち / 古い字の掃除-2\n台帳: 残り 0件\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 8% / 週全体 21% / 週Fable 9%\n訴え: 5件（done-stale-note・step-slow・pub-late・pub-defer・push-fail）… pipe-warn.log\n配分: 全体 あと20%/日 ／ Fable あと23%/日"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789646151,
-        "message":  "写せます（2件）"
     },
     {
         "title":  "✅ 終わりました（返事不要）",
