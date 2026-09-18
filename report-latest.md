@@ -1,41 +1,61 @@
-# 再起動-1（前の測り）
+# 再起動-1（後の測り）
 
-**作業中** — 2026-09-18 22:12（VAIO）。**この後 `shutdown /r /t 30` で再起動する。**
-起き上がった後の測りは、次の窓が同じ札の続きに書く。
+**終わり（残り0件）** — 2026-09-19 04:19（VAIO）。**機械は 22:15:38 に起き上がり、6時間走っている。**
+**WSearch と VCService は Stopped のまま**——ここが本当の確かめで、**通った**。
 
-## 再起動の前の様子（22:12:00 の実測）
+## ① 起き上がった後の実測（04:19:51）
 
 | | |
 |---|---|
-| **空き物理メモリ** | **1122MB** ／ 総 3975MB（28.2%） |
-| **claude** | **1本・pid 4796・456MB**・起きたのは **09-12 21:51:56**（**6日** 走り続けている） |
-| WSearch | 起き方=**Disabled**・状態=**Stopped** |
-| VCService | 起き方=**Disabled**・状態=**Stopped** |
+| 起き上がった刻 | **2026-09-18 22:15:38**（それから **364分**＝6時間4分） |
+| **空き物理メモリ** | **1052MB** ／ 総 3975MB（26.5%） |
+| **claude** | **1本・pid 6960・456MB**・起きたのは **09-18 22:33:11**（再起動の18分後） |
+| **WSearch** | 起き方=**Disabled**・状態=**Stopped** ✔ |
+| **VCService** | 起き方=**Disabled**・状態=**Stopped** ✔ |
+| VCAgent ／ SearchIndexer | **どちらも 0本** ✔ |
 
-**上位5本** … claude 457MB ／ MsMpEng 336MB ／ explorer 157MB ／ Memory Compression 99MB ／
-StartMenuExperienceHost 86MB
+**上位6本** … claude 457MB ／ MsMpEng 298MB ／ explorer 257MB ／ msedge 133MB ／
+SearchApp 92MB ／ powershell 88MB
 
-## 押し残しは **0件**
+## ② 再起動の前と並べる
 
-```
-手元 d5050c75  ／  origin/main d5050c75   （一致）
-押し残し（手元にだけ）… 0 件
-push-pending.tsv … 空（見送って溜まった押しも無い）
-```
+| | 前（09-18 22:12） | 後（09-19 04:19） | 差 |
+|---|---|---|---|
+| 空き | **1122MB** | **1052MB** | **-70MB** |
+| claude | **456MB**（6日走った pid 4796） | **456MB**（6時間走った pid 6960） | **±0** |
+| WSearch／VCService | Disabled・Stopped | **Disabled・Stopped（変わらず）** | — |
 
-＊作業場に残る7行は、前から消えている `notices-*.json`（取り置きの古い札）と
-　`.bak` の綴りで、**押す物ではない**。
+**一行で** … **止めた二本は再起動を越えて上がらなかったが、空きは70MB下がり、claude は6時間で前と同じ456MBまで戻った。**
 
-## 起き上がった後に見ること（次の窓へ）
+### 当てが外れた所（正直に）
 
-1. **空き物理メモリ** … 1122MB からどれだけ上がったか
-   （claude が 6日ぶんの 456MB を抱えたまま落ちるので、**+150〜180MB** 戻る見込み）
-2. **claude の使用MB** … 起き直した直後は **270〜360MB** の見込み（空きの内訳-2 の当て）
-3. **WSearch と VCService が Stopped のままか** … `Disabled` にしてあるので、
-   **再起動しても上がらない**はず。ここが本当の確かめ
+**「開き直せば claude は 270〜360MB へ落ちる」（空きの内訳-2 ①）は、6時間後には残っていない。**
+6日走った 456MB と、**6時間走った 456MB が同じ値**だった。
+**claude の使用MBは走った長さでは決まらない**——開き直しで一時的に下がっても、半日で戻る。
 
-＊起こし直しは `ClaudeCodeAtLogon`（ログオン時の予定）が回す。
-＊この札は再起動の前に押してある。続きは次の窓が書く。
+**空きが下がった訳** … 二本が居なくなった190MBぶんより、**新しく立った物のほうが多い**。
+
+| | 前 | 後 |
+|---|---|---|
+| explorer | 157MB | **257MB**（+100） |
+| msedge | 0本 | **5本・133MB**（開き直された） |
+| SearchApp | 居ない | **92MB**（新顔） |
+| MsMpEng | 336MB | 298MB（-38） |
+
+**+287MB ぶんが新しく乗り、-190MB（二本）と -38MB（Defender）を食い切った。**
+
+## ③ 再起動-2（毎週土曜 01:00 の起こし）の枠 … **受け取っていない**
+
+台帳に `再起動-2` の字は一件あるが、**2026-08-26 の別件**（「立ち上がり後、自動で戻った物と
+手動だった物を時刻つきで報告」）。**毎週土曜01:00 の起こしの枠は台帳にも `orders-full.jsonl` にも無い。**
+予定表にも**毎週の起こしは一件も無い**（`Claude*` の予定に Weekly の引き金はゼロ）。
+
+## 触った所と触らない所
+
+**触った所** … 無し（測っただけ）。
+
+**触らない所** … 本体・`~/.claude` の台本・`WSearch`／`VCService` の設定（**Disabled のまま**）・
+Defender・予定表の起こし・`claude` の窓。
 
 ---
 
@@ -44,11 +64,12 @@ push-pending.tsv … 空（見送って溜まった押しも無い）
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **274件**ある。
+　ここに出るのは新しい20件。全部で **275件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0918-2212-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2212-2.md) | 09-19 04:20 | 再起動-1（後の測り） |
 | [`y0918-2212.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2212.md) | 09-18 22:12 | 再起動-1（前の測り） |
 | [`y0918-2155.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2155.md) | 09-18 22:02 | 押しの敷居-2 |
 | [`y0918-2145.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2145.md) | 09-18 21:47 | 空きの片付け-2（後の測り） |
@@ -68,6 +89,5 @@ push-pending.tsv … 空（見送って溜まった押しも無い）
 | [`y0918-0352.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-0352.md) | 09-18 03:56 | 止まりの札の敷居-1 |
 | [`y0917-2140.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-2140.md) | 09-17 21:35 | 呼び名の揃え-1 の下調べ |
 | [`y0917-2122.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-2122.md) | 09-17 21:25 | 問いかけの判じ-1 |
-| [`y0917-2102.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-2102.md) | 09-17 21:14 | 訴えの棚卸し-1 |
 
 <!-- 控えの一覧 ここまで -->
