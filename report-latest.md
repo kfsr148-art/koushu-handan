@@ -1,80 +1,70 @@
-# 空きの片付け-2
+# 空きの片付け-2（後の測り）
 
-**終わり（残り0件）** — 2026-09-18（VAIO）。**二本とも止められなかった。管理者の窓が要る。**
-元の設定の控えは残した。`claude`・Defender・予定表の起こしには触っていない。
+**終わり（残り0件）** — 2026-09-18（VAIO）。**二本とも止まり、次の起動でも上がらない形になった。**
+ただし**その場の空きは増えていない**——同じ間に画面まわりが立ち上がったため。中身は下に。
 
-## 止める前と、いま
-
-| | 刻 | 空き | VCAgent | SearchIndexer |
-|---|---|---|---|---|
-| 止める前 | 21:09:30 | **1097MB** | 113MB | 69MB |
-| いま（止められなかった） | 21:11:50 | **1090MB** | 121MB | 69MB |
-
-**差は -7MB。** 止めていないので、いつもの揺れの幅。
-
-## 止められなかった訳（実測の言い分）
+## 二本の様子（実測）
 
 ```
-VCAgent … ★落とせない … Cannot stop process "VCAgent (6236)" because of the following error: Access is denied
-WSearch … ★止められない … Service 'Windows Search (WSearch)' cannot be stopped due to the following error:
-                          Cannot open WSearch service on computer '.'
+WSearch    起き方=Disabled  状態=Stopped
+VCService  起き方=Disabled  状態=Stopped
+  VCAgent        0本
+  SearchIndexer  0本
 ```
 
-**いまの窓は管理者ではない**（`VAIO\user` ／ 管理者か … **False**）。
+**`Disabled`** なので**次の起動でも上がらない**。止めたのは管理者の窓（`stop-two-services.cmd` を
+`-Verb RunAs` で呼び出し、UAC の「はい」で走った）。この窓からは四行とも `Access is denied（5）`で入れなかった。
 
-- **SearchIndexer** の正体は **`WSearch`（Windows Search）**。`StartMode=Auto`・`Running`・走る人は `LocalSystem`
-- **VCAgent** はサービスそのものではなく、**`VCService`（VAIO Care）の子**。親は `VCService.exe`（pid 5632・09-10 18:45:59 起動）で、
-  こちらも `LocalSystem`。だから**同じ人でない窓からは落とせない**
+## 空き物理メモリ
 
-## 戻せる形（控えを残した）
+| 刻 | 空き | そのとき |
+|---|---|---|
+| 21:09:30 | **1097MB** | 止める前。VCAgent 113MB・SearchIndexer 69MB が居た |
+| 21:19:19 | 929MB | 四行が入らず、まだ二本とも動いていた |
+| 21:45:00 | 799MB | **二本が止まった直後** |
+| 21:45:22 | 801MB | VCAgent 0本・SearchIndexer 0本を確かめた |
+| 21:46〜21:47（5秒ごと13回） | **800〜918MB・中央908MB** | 落ち着き待ち |
 
-`~/.claude/service-before-20260918.txt`
+**二本が使っていた約190MBは確かに戻った**（0本になった）。
+**それでも空きの数字は上がっていない。** 訳は同じ間に別の物が増えたため。
+
+| | 止める前（17:47 の測り） | いま |
+|---|---|---|
+| explorer | 96MB | **156MB**（+60） |
+| StartMenuExperienceHost | （居ない） | **85MB**（+85） |
+| Memory Compression | 85MB | **109MB**（+24） |
+| claude | 483MB | 457〜467MB |
+| MsMpEng | 332MB | 315〜328MB |
+
+**+169MB ぶんが画面まわりで立った。** UAC の窓とスタートメニューを触ったことで立ち上がった物で、
+しばらく使わなければ縮む見込み。**二本を止めた効きと相殺されて見えているだけ**で、
+止めた効き自体は消えていない。
+
+## 本当の効きは、次の「底」で測る
+
+今日いちばん低かったのは **08:23 の 358MB**（押しを見送った刻）。
+**二本が居なくなったぶん、この底が約190MB上がるはず**——それが本当の効き。
+次に押しと検査が重なる時間帯の空きを見れば分かる。
+
+## 戻し方（控えは残してある）
 
 ```
-WSearch    表示名=Windows Search
-   起き方(StartMode)=Auto  状態=Running  走る人=LocalSystem
-   戻す形 … sc.exe config WSearch start= auto   /   sc.exe start WSearch
-
-VCService  表示名=VCService
-   起き方(StartMode)=Manual  状態=Running  走る人=LocalSystem
-   戻す形 … sc.exe config VCService start= demand   /   sc.exe start VCService
-
-VCFw       表示名=VAIO Content Folder Watcher
-   起き方(StartMode)=Manual  状態=Stopped（もともと止まっている）
+~/.claude/restore-two-services.cmd を右クリック →「管理者として実行」
+   sc.exe config WSearch start= auto    / sc.exe start WSearch
+   sc.exe config VCService start= demand / sc.exe start VCService
 ```
 
-## 人手でやる形（黒い窓を**管理者として**開いて打つ）
+元の設定の控えは `~/.claude/service-before-20260918.txt`（`WSearch`=Auto／`VCService`=Manual）。
 
-```
-sc.exe stop WSearch
-sc.exe config WSearch start= disabled
-
-sc.exe stop VCService
-sc.exe config VCService start= disabled
-```
-
-＊`VCAgent` は `VCService` が起こす子なので、**親の `VCService` を止めれば一緒に落ちる**。
-＊戻すときは上の控えのとおり（`WSearch` は `auto`、`VCService` は `demand`）。
-＊止めると落ちる働き … `WSearch` は**探し物の索引**（エクスプローラの検索が遅くなる）、
-　`VCService` は **VAIO Care**（機械の診断・更新の道具）。
-＊戻りの当ては **約160MB**（VCAgent 121MB＋SearchIndexer 69MB＝190MB の、Edge の実測と同じ95%ぶん）。
-
-## 触っていないことの確かめ
-
-| | いま |
-|---|---|
-| `claude` | **1本・455MB**（pid 4796 のまま） |
-| `MsMpEng`（Defender） | **1本・329MB**（除外も触っていない） |
-| 予定表の `Claude*` | **10件**（Ready 8・その瞬間走っていた 2） |
+＊止まったことで落ちる働き … **探し物の索引**（エクスプローラの検索が遅くなる）と
+　**VAIO Care**（機械の診断・更新の道具）。
 
 ## 触った所と触らない所
 
-**触った所** … 無し（**止められなかった**）。残したのは控えの綴り一枚だけ。
+**触った所** … `WSearch` と `VCService` を止め、`Disabled` にした（管理者の窓で）。
 
 **触らない所** … 本体・`~/.claude` の台本・`claude` の窓・Defender と除外の決め・予定表の起こし・
-`WSearch` と `VCService` の設定（**一つも変えていない**）。
-
-**未検収** … WSearch と VCService を止めて `disabled` にすること（**人手待ち**。管理者の窓で上の四行）。
+ほかのサービス（`VCFw` は元から Stopped のまま）。
 
 ---
 
@@ -83,11 +73,12 @@ sc.exe config VCService start= disabled
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **271件**ある。
+　ここに出るのは新しい20件。全部で **272件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0918-2145.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2145.md) | 09-18 21:47 | 空きの片付け-2（後の測り） |
 | [`y0918-2109.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2109.md) | 09-18 21:12 | 空きの片付け-2 |
 | [`y0918-2055.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2055.md) | 09-18 21:01 | 空きの内訳-2 |
 | [`y0918-2049.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2049.md) | 09-18 20:53 | 鍵切れの見張り-1 |
@@ -107,6 +98,5 @@ sc.exe config VCService start= disabled
 | [`y0917-2102.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-2102.md) | 09-17 21:14 | 訴えの棚卸し-1 |
 | [`y0917-2050.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-2050.md) | 09-17 20:52 | 古い字の掃除-2 |
 | [`y0917-2009.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-2009.md) | 09-17 20:14 | 古い字の掃除-1 |
-| [`y0917-1944.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-1944.md) | 09-17 19:55 | 押しの詰まり-1 |
 
 <!-- 控えの一覧 ここまで -->
