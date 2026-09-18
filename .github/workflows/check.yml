@@ -121,10 +121,20 @@ jobs:
   deploy:
     needs: [scope, check]
     if: always() && needs.scope.result == 'success' && (needs.scope.outputs.heavy == '0' || needs.check.result == 'success')
-    # 配信だけ打ち切りを掛ける。最後の一本が配信する。
+    # ---- 打ち切らず、順に通し切る（2026-09-18・配信の譲り-1 乙）----
+    #   ＊前は cancel-in-progress: true で「最後の一本が配信する」形だった。ところが
+    #     **押しが続くかぎり「最後」が来ない**ので、山の間は一本も通らず飢える。
+    #     09-18 18:37〜18:43 は七本続けて打ち切られ、約6分どの配信も通らず、
+    #     公開の遅れが 37分 まで開いた（pub-late）。
+    #   ＊今日の押し179回のうち、間隔が配信の秒（中央31秒）より短い回は **24%** ある。
+    #   ＊順に通し切る形を同じ列へ当てると、遅れは中央31秒・いちばん長い **1.8分**。
+    #     走りの本数も時間も増えない（100本71分 → 98本51分）——打ち切りで捨てていた
+    #     時間（317秒・141秒・134秒の三本を含む）が無くなるため。
+    #   ＊群れの名（group: pages）はそのまま。**同時に配信するのは一本だけ**で、
+    #     後から来た回は打ち切らずに順番を待つ。
     concurrency:
       group: pages
-      cancel-in-progress: true
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment:
