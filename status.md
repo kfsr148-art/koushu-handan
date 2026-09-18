@@ -2,7 +2,7 @@
 
 **手待ち** — 条件の数の棚卸し（mitate-kazoe.txt）
 
-未処理 0 件 ／ 2026-09-19 08:02:05 書き出し（VAIOの時計）
+未処理 0 件 ／ 2026-09-19 08:03:44 書き出し（VAIOの時計）
 
 ＊この頁は知らせが出るたびに書き直されます。話題名は載せません。
 ＊押し送り（ntfy）へ出るのはヨシ待ちだけです。ここには押し送っていないものも並びます。
@@ -12,7 +12,13 @@
 
 ## 送った知らせ（新しい順に二十件まで）
 
-### 1. 🔎 調べました
+### 1. ✅ 終わりました（返事不要）
+
+```
+写せます（1件）
+```
+
+### 2. 🔎 調べました
 
 ```
 条件の数の棚卸し（mitate-kazoe.txt）
@@ -24,12 +30,6 @@
 触った所は mitate-kazoe.txt（新・直下）・mitate-kazoe.js（新）・.github/workflows/mitate-kazoe.yml（新・手で起こす）。触らない所は本体（koushu-handan.html）・mitate.txt・serifu.txt・check.js・ver.txt・stable・~/.claude の台本。
 ファイル: mitate-kazoe.txt（新）／mitate-kazoe.js（新）／.github/workflows/mitate-kazoe.yml（新）／reports/y0919-0800.md（新）
 実測: git ls-tree origin/main mitate-kazoe.txt → 100644 blob 61d09d3e… ／raw HTTP 200／雲の走り 35403631391 success・10手すべて測れた
-```
-
-### 2. ✅ 終わりました（返事不要）
-
-```
-写せます（1件）
 ```
 
 ### 3. ✅ 終わりました（返事不要）
