@@ -2,7 +2,7 @@
 
 **手待ち** — 空きの片付け-2（管理者の窓が要る・打つ形を用意）
 
-未処理 0 件 ／ 2026-09-18 21:21:14 書き出し（VAIOの時計）
+未処理 0 件 ／ 2026-09-18 21:22:52 書き出し（VAIOの時計）
 
 ＊この頁は知らせが出るたびに書き直されます。話題名は載せません。
 ＊押し送り（ntfy）へ出るのはヨシ待ちだけです。ここには押し送っていないものも並びます。
@@ -16,6 +16,12 @@
 ### 1. ✅ 終わりました（返事不要）
 
 ```
+写せます（1件）
+```
+
+### 2. ✅ 終わりました（返事不要）
+
+```
 空きの片付け-2（管理者の窓が要る・打つ形を用意）
 届いた四行をこの窓で当てた。四つとも [SC] OpenService FAILED 5: Access is denied で返った（終了コード5）。いまの窓は管理者ではないので、この窓からは止められない。
 サービスの様子は変わっていない … WSearch は 起き方 Auto・状態 Running、VCService は 起き方 Manual・状態 Running。VCAgent 121MB・SearchIndexer 69MB もそのまま。空きは 929MB（21:19:19）。
@@ -24,12 +30,6 @@
 ファイル: ~/.claude/stop-two-services.cmd（新）／~/.claude/restore-two-services.cmd（新）／控えは service-before-20260918.txt
 実測: 四行とも Access denied（5）／WSearch Auto・Running／VCService Manual・Running／空き 929MB
 未検収: WSearch と VCService を止めて disabled にすること（人手待ち。stop-two-services.cmd を管理者として実行）
-```
-
-### 2. ✅ 終わりました（返事不要）
-
-```
-写せます（1件）
 ```
 
 ### 3. ✅ 終わりました（返事不要）
