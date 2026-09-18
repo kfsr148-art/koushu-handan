@@ -2,7 +2,7 @@
 
 **手待ち** — 空きの片付け-2（後の測り）
 
-未処理 0 件 ／ 2026-09-18 21:49:07 書き出し（VAIOの時計）
+未処理 0 件 ／ 2026-09-18 21:50:38 書き出し（VAIOの時計）
 
 ＊この頁は知らせが出るたびに書き直されます。話題名は載せません。
 ＊押し送り（ntfy）へ出るのはヨシ待ちだけです。ここには押し送っていないものも並びます。
@@ -16,6 +16,12 @@
 ### 1. ✅ 終わりました（返事不要）
 
 ```
+写せます（1件）
+```
+
+### 2. ✅ 終わりました（返事不要）
+
+```
 空きの片付け-2（後の測り）
 二本とも止まり、次の起動でも上がらない形になった。WSearch は 起き方=Disabled・状態=Stopped、VCService も 起き方=Disabled・状態=Stopped。VCAgent 0本・SearchIndexer 0本。
 止め方 … この窓からは四行とも Access is denied（5）で入らなかったので、stop-two-services.cmd を -Verb RunAs で呼び出し、UAC の「はい」で走らせた。
@@ -26,12 +32,6 @@
 触った所は WSearch と VCService を止めて Disabled にしたことだけ。触らない所は本体・~/.claude の台本・claude の窓・Defender と除外の決め・予定表の起こし・ほかのサービス（VCFw は元から Stopped のまま）。
 ファイル: reports/y0918-2145.md（新）／控えは ~/.claude/service-before-20260918.txt・戻しは restore-two-services.cmd
 実測: WSearch Disabled/Stopped・VCService Disabled/Stopped・VCAgent 0本・SearchIndexer 0本／空き 中央908MB（800〜918MB）／画面まわりが +169MB 増えて相殺／押しは 9997d32b で通った
-```
-
-### 2. ✅ 終わりました（返事不要）
-
-```
-写せます（1件）
 ```
 
 ### 3. ✅ 終わりました（返事不要）
