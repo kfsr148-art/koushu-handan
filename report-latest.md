@@ -1,64 +1,59 @@
-# 条件の数の棚卸し（mitate-kazoe.txt）
+# 【宣言】見立て行と釦の助言の文面を差し替える（v1451）
 
-**済** — 2026-09-19（VAIO）。**調べだけ。本体には触っていない。文面も直していない。**
+**ヨシ待ち** — 2026-09-19（VAIO）。**印: y0919-0815**
+本体（`koushu-handan.html`）の工事なので、**ヨシを頂いてから**入れる。まだ一字も触っていない。
 
-## 押した結果
+## 何をどう変えるか
 
-```
-$ git ls-tree origin/main mitate-kazoe.txt
-100644 blob 61d09d3ef911409fcca40e22d81d88e877a29f00	mitate-kazoe.txt
-```
+`mitate-new.txt`（直下・12991バイト・89行）の文面**どおり**に差し替える。**条件・判定・光る牌・`analyze` には触らない。**
 
-raw も **HTTP 200**。**リポジトリ直下**に 14400バイトで置いた。
-
-## 値は全部**実測**
-
-書いた数は目で追った見積もりではなく、**本体の写しに probe を差して雲で13枚を判定させた実測**。
-読んだのは**本体が元から持っている控え**だけ（`window._lastA`／`_lastFacts`／`_toolCount`／`_lastCut`）で、
-診断口は足していない（作法15）。写しは終わったら消す（作法14）。
-台は `mitate-kazoe.js`（新）、走りは **35403631391（success）**。
-
-## 中に書いた物（頼まれた全項目）
-
-| 区分 | 項目 | 定義の行 |
+| 区分 | 差し替える所 | 分岐の数 |
 |---|---|---|
-| 七人 | `F.multi` | L4430-4441 |
-| | `F.naki`（yakuhai／somete／atsumi） | L4446-4471 |
-| | `F.dup`（double／suji） | L4490-4512 |
-| | `weakShapes` | L2671（数え方 L2736-） |
-| | `F.lady` の `plan`・`restTate` | L4513-4528 |
-| | `F.floatIdx`／`floatTop` | L4518-4525 |
-| | `F.ichi`（strong／edge／honor／none） | L4531-4551 |
-| | `F.sensei` | L4553-4566 |
-| 帯 | 枝豆（二枚以上ある種類） | L4170／L5220／L5221-5225 |
-| | AI（一枚きりの字牌） | L4171-4172／L8714-8733 |
-| | 現場猫（猫牌＝孤立した数牌） | L5306-5318／L8598 |
-| | 兎（残り枠） | L4156-4163／L8769／L8787 |
-| 枠 | `fillRemain`／`fillGood`／`fillWeak` | L2765-2814・値は L2816-2818 |
-| 兎の式 | `goodShapes` | L2670／使う所 L4161 |
+| 人柄七人 `toneAngleLine`（L4659-4736） | 執事2・軍師6・ずんだ4・お嬢様3・マダム2・一姫8・先生3 | **28** |
+| 枝豆 | スイッチ2（L8688・L8699）＋投票欄2（L4203-4205）＋食い違い2（L8690・L8701） | **6** |
+| AI | 一致2（L8733）＋黙る1（L4855）＋投票欄2（L4206-4207）＋食い違い2（L8737-8738） | **7** |
+| 現場猫 | アラート2（L8669・L8671）＋一致1（L8673）＋黙る1（L4864）＋投票欄2（L4199-4202） | **6** |
+| 兎 | 釦2（L4868-4869）＋投票欄3（L4221-4224） | **5** |
+| 執事の**役の名** | `roles.push('盾')`／`('雀頭')`／`('攻めの種')`（L4434-4436）を新しい長い名へ | **3** |
+| **〈色〉の名** | 軍師へ差し込む色に読みを付ける（萬子（マンズ）ほか） | **3** |
+| | **合わせて** | **58箇所** |
 
-**それぞれに13枚の実例を一つずつ**（牌の並びと、実際に出た値）。末尾に測った10手の一覧も付けた。
+## 一つだけ、形を変えずに済まない所がある（ここのヨシも頂きたい）
 
-## 実測で分かったこと（三つだけ書き出す）
+**`TONE_SUIT_JP`（L4279）は、文面の差し込みだけでなく〈条件の照合〉にも使われている。**
 
-- **兎の「弱い余りN」は `a.fillWeak` そのもの**（L8769）。別に数えている物ではない
-- **現場猫の猫牌は「孤立した数牌」だけ**で、**字牌は数えない**（L5316）。
-  `19m19p19s1234567z` で猫牌は6枚＝么九の数牌6枚がすべて孤立、字牌7枚は数に入らない
-- **役牌の対子でも `F.naki` が `yakuhai` にならない席がある**。`234m567p234s1122z` は東が2枚だが
-  場風でも自風でもないため `atsumi`（`a.yakuhaiPair` も false）
+```
+L4455  if(!someSuit && d.indexOf(TONE_SUIT_JP[su]) === 0) someSuit = su;   ← 染めの向きを当てる所
+```
 
-## 測っていない枝（正直に）
+ここの値を「萬子（マンズ）」へ書き替えると、`analyze` が返す `directions`（「萬子…」）と
+**当たらなくなり、染め手の判定そのものが変わる**。条件を触らない約束に反する。
 
-`F.naki` の **①yakuhai**（役牌の対子が立つ席）と、`F.dup` の **②suji**（筋かぶり）は、
-この十手では成立しなかった。**条件の字は綴りに書いてあるが、値の実例は無い。**
+**そこで … `TONE_SUIT_JP` は一字も触らず、差し込むときだけ読みを足す**。
+表示用の対応表（例 `TONE_SUIT_YOMI = { 萬子:'萬子（マンズ）', … }`）を新しく足し、
+**`toneAngleLine` の中で色を差し込む所だけ**それを通す。照合（L4455）は今のまま。
 
-## 触った所と触らない所
+＊執事の役の名（`'盾'`／`'雀頭'`／`'攻めの種'`）は `F.multi.roles` に入って**文面へ差し込まれるだけ**で、
+　条件にも印にも使っていない。こちらは値をそのまま新しい名に替える。
 
-**触った所** … `mitate-kazoe.txt`（新・直下）／`mitate-kazoe.js`（新・測りの台）／
-`.github/workflows/mitate-kazoe.yml`（新・手で起こす）。
+## 併せてやること
 
-**触らない所** … 本体（`koushu-handan.html`）・`mitate.txt`・`serifu.txt`・`check.js`・
-`ver.txt`・`stable`・`~/.claude` の台本。
+- **版は v1451 を三箇所同時**（`data-ver`／`verTag`／`ver.txt`。作法4）
+- **`serifu.txt` は再抽出**（`node serifu-extract.js`。台詞に触るので作法17。版を上げてから回す）
+- **検査は雲のフル版**（手元では速い版まで。作法18。押した回に `check.yml` が回す）
+- 終わったら、**差し替えた分岐の数**と**⑦の二択 bottom の最小値**を札に書く
+
+## 触らない所
+
+**判定（`analyze`）・条件（`toneFacts`・`tenLeans` の `lean`・`usagiLean`・スイッチの帯の式）・
+光る牌（`multiIdx`／`nakiIdx`／`dupIdx`／`ladyIdx`／`floatIdx`／`edgeIdx`／`headIdx`／
+`catIdx`／`edaIdx`／`omIdx`）・`TONE_SUIT_JP` の値・`stable`。**
+
+## 見込み
+
+45分（差し替え → 版 → `serifu.txt` 再抽出 → 手元の速い版 → 押し → 雲のフル版の見届け）。
+
+**この札にヨシを頂ければ着手する。**
 
 ---
 
@@ -67,11 +62,12 @@ raw も **HTTP 200**。**リポジトリ直下**に 14400バイトで置いた�
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **279件**ある。
+　ここに出るのは新しい20件。全部で **280件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0919-0815.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0919-0815.md) | 09-19 08:19 | 【宣言】見立て行と釦の助言の文面を差し替える（v1451） |
 | [`y0919-0800.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0919-0800.md) | 09-19 08:00 | 条件の数の棚卸し（mitate-kazoe.txt） |
 | [`y0919-0725.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0919-0725.md) | 09-19 07:43 | 見立て行の尺の縛りを外す |
 | [`y0919-0450.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0919-0450.md) | 09-19 07:04 | 見立て行の棚卸し（mitate.txt） |
@@ -91,6 +87,5 @@ raw も **HTTP 200**。**リポジトリ直下**に 14400バイトで置いた�
 | [`y0918-1757.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-1757.md) | 09-18 17:59 | 空きの片付け-1 |
 | [`y0918-1747.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-1747.md) | 09-18 17:50 | 空きの内訳-1 |
 | [`y0918-1305.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-1305.md) | 09-18 13:06 | 軽い巡回の刻-1 |
-| [`y0918-1221.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-1221.md) | 09-18 12:24 | 止まりの読み-4 |
 
 <!-- 控えの一覧 ここまで -->
