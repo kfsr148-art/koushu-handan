@@ -1,13 +1,13 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
-        "time":  1789735747,
-        "message":  "空きの片付け-2（後の測り）\n二本とも止まり、次の起動でも上がらない形になった。WSearch は 起き方=Disabled・状態=Stopped、VCService も 起き方=Disabled・状態=Stopped。VCAgent 0本・SearchIndexer 0本。\n止め方 … この窓からは四行とも Access is denied（5）で入らなかったので、stop-two-services.cmd を -Verb RunAs で呼び出し、UAC の「はい」で走らせた。\n空きの実測 … 21:09:30 は 1097MB（止める前・VCAgent 113MB と SearchIndexer 69MB が居た）／21:19:19 は 929MB（四行が入らず、まだ二本とも動いていた）／21:45:00 は 799MB（止まった直後）／21:45:22 は 801MB（0本を確かめた）／21:46〜21:47 の5秒ごと13回は 800〜918MB・中央908MB。\n二本が使っていた約190MBは確かに戻った（0本になった）が、空きの数字は上がっていない。同じ間に画面まわりが増えたため … explorer 96→156MB（+60）、StartMenuExperienceHost が新たに85MB、Memory Compression 85→109MB（+24）で、合わせて +169MB。UAC の窓とスタートメニューを触って立った物で、しばらく使わなければ縮む見込み。止めた効き自体は消えていない（相殺されて見えているだけ）。\n本当の効きは次の「底」で測る。今日いちばん低かったのは 08:23 の 358MB（押しを見送った刻）で、二本が居なくなったぶんこの底が約190MB上がるはず。次に押しと検査が重なる時間帯の空きを見れば分かる。\n戻し方は ~/.claude/restore-two-services.cmd を右クリックして「管理者として実行」（WSearch=auto／VCService=demand）。元の設定の控えは service-before-20260918.txt。止まったことで落ちる働きは、探し物の索引と VAIO Care。\n触った所は WSearch と VCService を止めて Disabled にしたことだけ。触らない所は本体・~/.claude の台本・claude の窓・Defender と除外の決め・予定表の起こし・ほかのサービス（VCFw は元から Stopped のまま）。\nファイル: reports/y0918-2145.md（新）／控えは ~/.claude/service-before-20260918.txt・戻しは restore-two-services.cmd\n実測: WSearch Disabled/Stopped・VCService Disabled/Stopped・VCAgent 0本・SearchIndexer 0本／空き 中央908MB（800〜918MB）／画面まわりが +169MB 増えて相殺／押しは 9997d32b で通った"
+        "time":  1789735838,
+        "message":  "写せます（1件）"
     },
     {
         "title":  "✅ 終わりました（返事不要）",
-        "time":  1789734171,
-        "message":  "写せます（1件）"
+        "time":  1789735747,
+        "message":  "空きの片付け-2（後の測り）\n二本とも止まり、次の起動でも上がらない形になった。WSearch は 起き方=Disabled・状態=Stopped、VCService も 起き方=Disabled・状態=Stopped。VCAgent 0本・SearchIndexer 0本。\n止め方 … この窓からは四行とも Access is denied（5）で入らなかったので、stop-two-services.cmd を -Verb RunAs で呼び出し、UAC の「はい」で走らせた。\n空きの実測 … 21:09:30 は 1097MB（止める前・VCAgent 113MB と SearchIndexer 69MB が居た）／21:19:19 は 929MB（四行が入らず、まだ二本とも動いていた）／21:45:00 は 799MB（止まった直後）／21:45:22 は 801MB（0本を確かめた）／21:46〜21:47 の5秒ごと13回は 800〜918MB・中央908MB。\n二本が使っていた約190MBは確かに戻った（0本になった）が、空きの数字は上がっていない。同じ間に画面まわりが増えたため … explorer 96→156MB（+60）、StartMenuExperienceHost が新たに85MB、Memory Compression 85→109MB（+24）で、合わせて +169MB。UAC の窓とスタートメニューを触って立った物で、しばらく使わなければ縮む見込み。止めた効き自体は消えていない（相殺されて見えているだけ）。\n本当の効きは次の「底」で測る。今日いちばん低かったのは 08:23 の 358MB（押しを見送った刻）で、二本が居なくなったぶんこの底が約190MB上がるはず。次に押しと検査が重なる時間帯の空きを見れば分かる。\n戻し方は ~/.claude/restore-two-services.cmd を右クリックして「管理者として実行」（WSearch=auto／VCService=demand）。元の設定の控えは service-before-20260918.txt。止まったことで落ちる働きは、探し物の索引と VAIO Care。\n触った所は WSearch と VCService を止めて Disabled にしたことだけ。触らない所は本体・~/.claude の台本・claude の窓・Defender と除外の決め・予定表の起こし・ほかのサービス（VCFw は元から Stopped のまま）。\nファイル: reports/y0918-2145.md（新）／控えは ~/.claude/service-before-20260918.txt・戻しは restore-two-services.cmd\n実測: WSearch Disabled/Stopped・VCService Disabled/Stopped・VCAgent 0本・SearchIndexer 0本／空き 中央908MB（800〜918MB）／画面まわりが +169MB 増えて相殺／押しは 9997d32b で通った"
     },
     {
         "title":  "✅ 終わりました（返事不要）",
