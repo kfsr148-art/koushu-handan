@@ -1,0 +1,32 @@
+# 見立て行の折り返しの測り（2026-09-19・尺の縛りを外した回）
+#   ＊手で起こすときだけ走る（workflow_dispatch）。押しでは走らない。
+#   ＊この機械（VAIO・4GB）では headless を立てない決めなので、雲で測る。
+name: 見立て行の数を実例で読む
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fold:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: ブラウザを用意する
+        run: |
+          which google-chrome chromium chromium-browser 2>/dev/null || true
+          if ! command -v google-chrome >/dev/null 2>&1 && ! command -v chromium >/dev/null 2>&1; then
+            sudo apt-get update -qq && sudo apt-get install -y -qq chromium-browser || true
+          fi
+      - name: 13枚の実例で読む
+        run: node mitate-kazoe.js | tee mitate-kazoe.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mitate-kazoe
+          path: |
+            mitate-kazoe.txt
+            mitate-kazoe.json
+          retention-days: 7
