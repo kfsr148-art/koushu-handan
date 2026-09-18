@@ -1,84 +1,80 @@
-# 空きの内訳-2
+# 空きの片付け-2
 
-**終わり（残り0件）** — 2026-09-18（VAIO）。**数えただけ**。何も止めていないし、触ってもいない。
+**終わり（残り0件）** — 2026-09-18（VAIO）。**二本とも止められなかった。管理者の窓が要る。**
+元の設定の控えは残した。`claude`・Defender・予定表の起こしには触っていない。
 
-**一行で** … 三つ合わせて **約310〜360MB**。いまの空き（中央1092MB）が **約1400〜1450MB** になる当て。
+## 止める前と、いま
 
-## ① claude を開き直した直後は何MBか … **270〜360MB**（いまは447〜483MB）
+| | 刻 | 空き | VCAgent | SearchIndexer |
+|---|---|---|---|---|
+| 止める前 | 21:09:30 | **1097MB** | 113MB | 69MB |
+| いま（止められなかった） | 21:11:50 | **1090MB** | 121MB | 69MB |
 
-`jam-snap.log`（詰まりのたびに撮った31枚）から、claude の使用MBを全部拾った。
+**差は -7MB。** 止めていないので、いつもの揺れの幅。
 
-| 起き直した後の早い時期 | 使用MB |
-|---|---|
-| 09-12 02:32:32（pid 7272） | **270MB** |
-| 09-11 14:12:41（pid 7124） | **303MB** |
-| 09-10 17:38:45（pid 4080） | **357MB** |
-
-**いまの pid 4796（09-12 21:51 起動）** … 09-16 21:25 **427MB** ／ 09-17 13:35 **395MB** ／
-09-18 01:45 **399MB** ／ 今日の150秒の実測 **447〜477MB**（中央461MB）・一度きりの測りで483MB。
-
-**当て … 開き直せば 270〜360MB（中ほど303MB）へ落ちる見込みで、戻りは約150〜180MB。**
-
-＊ただし**単調に膨らんではいない**。同じ pid が 395〜483MB を六日間行き来しており、
-　09-08 の古い pid も 231MB〜565MB の幅で揺れていた。**戻りは一時的**と見ておくこと。
-
-## ② MsMpEng（Defender）は押し・検査の刻にどれだけ伸びるか … **十数MB**
-
-**記録には残っていない。** `jam-snap.log` の「重い」は**CPU秒の上位**で選ぶので、MsMpEng は一度も載っていない。
-そこで1.2秒ごとに100回（約2分）測り、押しの刻を捕まえた。
+## 止められなかった訳（実測の言い分）
 
 ```
-21:00:28  MsMpEng 338MB  空き 904MB  git,git
-21:00:37  MsMpEng 339MB  空き 938MB  git,git,git,git-remote-https
-21:00:39  MsMpEng 342MB  空き 926MB  git×4,git-remote-https   ← いちばん高い
+VCAgent … ★落とせない … Cannot stop process "VCAgent (6236)" because of the following error: Access is denied
+WSearch … ★止められない … Service 'Windows Search (WSearch)' cannot be stopped due to the following error:
+                          Cannot open WSearch service on computer '.'
 ```
 
-| | MsMpEng |
+**いまの窓は管理者ではない**（`VAIO\user` ／ 管理者か … **False**）。
+
+- **SearchIndexer** の正体は **`WSearch`（Windows Search）**。`StartMode=Auto`・`Running`・走る人は `LocalSystem`
+- **VCAgent** はサービスそのものではなく、**`VCService`（VAIO Care）の子**。親は `VCService.exe`（pid 5632・09-10 18:45:59 起動）で、
+  こちらも `LocalSystem`。だから**同じ人でない窓からは落とせない**
+
+## 戻せる形（控えを残した）
+
+`~/.claude/service-before-20260918.txt`
+
+```
+WSearch    表示名=Windows Search
+   起き方(StartMode)=Auto  状態=Running  走る人=LocalSystem
+   戻す形 … sc.exe config WSearch start= auto   /   sc.exe start WSearch
+
+VCService  表示名=VCService
+   起き方(StartMode)=Manual  状態=Running  走る人=LocalSystem
+   戻す形 … sc.exe config VCService start= demand   /   sc.exe start VCService
+
+VCFw       表示名=VAIO Content Folder Watcher
+   起き方(StartMode)=Manual  状態=Stopped（もともと止まっている）
+```
+
+## 人手でやる形（黒い窓を**管理者として**開いて打つ）
+
+```
+sc.exe stop WSearch
+sc.exe config WSearch start= disabled
+
+sc.exe stop VCService
+sc.exe config VCService start= disabled
+```
+
+＊`VCAgent` は `VCService` が起こす子なので、**親の `VCService` を止めれば一緒に落ちる**。
+＊戻すときは上の控えのとおり（`WSearch` は `auto`、`VCService` は `demand`）。
+＊止めると落ちる働き … `WSearch` は**探し物の索引**（エクスプローラの検索が遅くなる）、
+　`VCService` は **VAIO Care**（機械の診断・更新の道具）。
+＊戻りの当ては **約160MB**（VCAgent 121MB＋SearchIndexer 69MB＝190MB の、Edge の実測と同じ95%ぶん）。
+
+## 触っていないことの確かめ
+
+| | いま |
 |---|---|
-| 押しが居た回（7回） | 中央 **339MB**／いちばん高い 342MB |
-| 押しが居ない回（93回） | 中央 **328MB**／いちばん高い 342MB |
-| 別の150秒の測り | 305〜334MB（中央327MB） |
-
-**伸びは中央の差で +11MB。いちばん高い値はどちらも342MBで同じ。**
-押しの刻に大きく伸びてはいない。
-
-**作業場を除外に入れた場合** … **実測では当てられない**（除外を入れないと測れず、この枠は「触る所は無し」）。
-上の数字から言えるのは、**常駐の大きさは 305〜342MB の狭い帯で、押しの刻の伸びも十数MB**ということ。
-除外は**走査の手間（CPU）を減らす物**で常駐の大きさはほとんど変わらないので、
-**減っても十数MB**という当てになる。
-
-## ③ VCAgent と SearchIndexer を止めた場合の戻り … **約160MB**
-
-| | いまの使用MB（150秒の実測） |
-|---|---|
-| **VCAgent** | **109MB**（ずっと109MB・揺れない） |
-| **SearchIndexer** | **61〜67MB**（中央62MB） |
-| 合わせて | **約171MB** |
-
-実際の空きの増えは使用MBより少し少ない。今日の Edge の実測が目安になる
-（**174MB の十本を落として、空きの増えは166MB＝95%**）。同じ割合なら **約160MB**。
-
-＊止めると落ちる働き … `SearchIndexer` は**探し物の索引**（エクスプローラの検索が遅くなる）、
-　`VCAgent` は**VAIO の道具**（機械の設定まわり）。**止めていないし、止めるかはこちらで決めない。**
-
-## 三つの合計
-
-| | 戻りの当て |
-|---|---|
-| ① claude を開き直す | **+150〜180MB**（一時的） |
-| ② 作業場を除外に入れる | **+0〜十数MB** |
-| ③ VCAgent と SearchIndexer を止める | **+約160MB** |
-| **合わせて** | **+約310〜360MB** |
-
-**いまの空き（中央1092MB・幅1014〜1118MB）＋310〜360MB ＝ 約1400〜1450MB。**
-総メモリ3975MBに対して 27%→36% ほどになる当て。
+| `claude` | **1本・455MB**（pid 4796 のまま） |
+| `MsMpEng`（Defender） | **1本・329MB**（除外も触っていない） |
+| 予定表の `Claude*` | **10件**（Ready 8・その瞬間走っていた 2） |
 
 ## 触った所と触らない所
 
-**触った所** … 無し。**止めた物も無し。**
+**触った所** … 無し（**止められなかった**）。残したのは控えの綴り一枚だけ。
 
-**触らない所** … 本体・`~/.claude` の台本・`claude` の窓（開き直していない）・Defender の除外の決め・
-`VCAgent`／`SearchIndexer`・予定表の起こし・敷居（譲り700MB／押し768MB）。
+**触らない所** … 本体・`~/.claude` の台本・`claude` の窓・Defender と除外の決め・予定表の起こし・
+`WSearch` と `VCService` の設定（**一つも変えていない**）。
+
+**未検収** … WSearch と VCService を止めて `disabled` にすること（**人手待ち**。管理者の窓で上の四行）。
 
 ---
 
@@ -87,11 +83,12 @@
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **270件**ある。
+　ここに出るのは新しい20件。全部で **271件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0918-2109.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2109.md) | 09-18 21:12 | 空きの片付け-2 |
 | [`y0918-2055.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2055.md) | 09-18 21:01 | 空きの内訳-2 |
 | [`y0918-2049.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2049.md) | 09-18 20:53 | 鍵切れの見張り-1 |
 | [`y0918-2035.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2035.md) | 09-18 20:38 | 配信の譲り-1（乙・通し切る形へ） |
@@ -111,6 +108,5 @@
 | [`y0917-2050.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-2050.md) | 09-17 20:52 | 古い字の掃除-2 |
 | [`y0917-2009.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-2009.md) | 09-17 20:14 | 古い字の掃除-1 |
 | [`y0917-1944.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-1944.md) | 09-17 19:55 | 押しの詰まり-1 |
-| [`y0917-1611.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-1611.md) | 09-17 16:26 | 譲りの判じの位置-1 ／ done-stale-note の空振り-1 |
 
 <!-- 控えの一覧 ここまで -->
