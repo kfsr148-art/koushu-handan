@@ -813,9 +813,9 @@ section('⑦', '狭い画面での溢れ', () => {
           const who = TONE_JP[x.tone] || x.tone;
           if (x.err) { lines.push(who + '：人柄を押し替えられない（' + x.err + '）'); return; }
           if (!x.chars) { lines.push(who + '：見立て行が空'); return; }
-          if (x.angH !== null && x.iconH !== null && x.angH > x.iconH + 1) {
-            lines.push(who + '：見立て行が折り返している 行' + x.angH + 'px > 話者の箱' + x.iconH + 'px（' + x.chars + '字）');
-          }
+          /* ＊見立て行の折り返しは 2026-09-19 に**落とす理由から外した**（字数の縛りを外す）。
+             　折り返しそのものは咎めず、**折り返した結果として二択が画面の外へ出たか**だけを見る。
+             　折り返しの有無は下の「溢れなし」の一覧に数字で残す（読めるが、FAIL にはしない）。 */
           if (!x.tailVis) lines.push(who + '：二択が出ていない');
           else if (x.tailBottom > d.h + 1) {
             lines.push(who + '：二択が画面の下へ出ている bottom=' + x.tailBottom + ' > ' + d.h);
