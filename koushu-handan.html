@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1450">
+<html lang="ja" data-ver="1451">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1421,7 +1421,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1450</div>
+  <div id="verTag">v1451</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -4198,13 +4198,13 @@ document.addEventListener('DOMContentLoaded', function () {
       // 文面は誤診記録（mdOpen）の言い回しに合わせる。
       { key:'cat',        mark:'🐱', lean: (catN === 0) ? 'a' : (catN >= 4 ? 'd' : ''),
         say: (catN === 0)
-          ? '猫牌0枚、指差し確認——攻めヨシ！'
-          : ('猫牌' + catN + '枚、指差し確認——逃げヨシ！') },
+          ? '猫牌0枚。どの数牌（シューパイ）もどこかとつながっている、攻めヨシ！'
+          : ('猫牌' + catN + '枚。つながらない数牌（シューパイ）がある、逃げヨシ！') },
       { key:'eda',        mark:'🫛', lean: (edaVoteLean(pairKinds) === 'attack') ? 'a' : 'd',
-        say: pairKinds + '種。'
-          + (edaVoteLean(pairKinds) === 'attack' ? '揃い' : '薄い——守り') },
+        say: '同じ牌が二枚以上ある組が' + pairKinds + '組。'
+          + (edaVoteLean(pairKinds) === 'attack' ? '二組以上あるので攻め' : '一組以下なので守り') },
       { key:'ai',         mark:'🎩', lean: (om >= 3) ? 'd' : ((om === 0 && yaochu <= 2) ? 'a' : ''),
-        say: '一枚きりの字牌' + om + '枚。わたしの見立ては' + (om >= 3 ? '守り' : '攻め') + 'です' },
+        say: '一枚だけの字牌（ジハイ）が' + om + '枚。' + (om >= 3 ? '3枚以上あるので、わたしの見立ては守りです' : '3枚未満なので、わたしの見立ては攻めです') },
       /* 兎＝残り枠の埋まり方。愚形で詰まる枠が一つも無ければ攻め、二つ以上あれば守り。
          v1430 で攻の材料を totalBlocks から fillWeak へ移した（core-battle-log-dora.tsv の4000行）。
          旧③（totalBlocks>=6 で攻）は 50件しか発火せず、その50件は
@@ -4221,8 +4221,8 @@ document.addEventListener('DOMContentLoaded', function () {
          スイッチを切っている端末では票を出さない（設定の usagiSwitch）。 */
       { key:'usagi',      mark:'兎', lean: usagiLean(a),
         say: (usagiLean(a) === 'a')
-          ? 'ブロックが余っている。攻めだ。'
-          : ((a.fillWeak >= 2) ? '残り枠が愚形で詰まる。守りだ。' : '形が足りない。守りだ。') }
+          ? '面子（メンツ）になっていない枠を、嵌張（カンチャン）・辺張（ペンチャン）に頼って埋める所が無い。攻めだ。'
+          : ((a.fillWeak >= 2) ? '面子（メンツ）になっていない枠のうち、嵌張（カンチャン）・辺張（ペンチャン）でしか埋まらない所が2つ以上ある。埋まりにくいので守りだ。' : '残りの枠は両面（リャンメン）などで埋まる見込みだが、手全体の良い形（面子（メンツ）・対子（トイツ）・両面）が3つ以下しかない。形が足りないので守りだ。') }
     ];
   }
   /* ---- 虎（判定エンジンの声）の台詞 ----
@@ -4277,6 +4277,11 @@ document.addEventListener('DOMContentLoaded', function () {
   const TONE_KAN = ['一','二','三','四','五','六','七','八','九'];
   const TONE_SUF = { man:'萬', pin:'筒', sou:'索' };
   const TONE_SUIT_JP = { man:'萬子', pin:'筒子', sou:'索子' };
+  /* 見立て行へ差し込むときだけ読みを足す表（2026-09-19・v1451）。
+     ＊TONE_SUIT_JP そのものは L4455 で analyze の directions と照合する条件に使うので、
+       値を変えると染め手の判定が変わる。**照合は素の名のまま**にして、表示だけこちらを通す。 */
+  const TONE_SUIT_YOMI = { '萬子':'萬子（マンズ）', '筒子':'筒子（ピンズ）', '索子':'索子（ソーズ）' };
+  function toneSuitYomi(name){ return TONE_SUIT_YOMI[name] || name; }
   function toneTileName(t){
     if(t.suit === 'honor') return (honorData[t.code] || {}).label || t.code;
     return (t.red ? '赤' : '') + TONE_KAN[t.num - 1] + TONE_SUF[t.suit];
@@ -4431,9 +4436,9 @@ document.addEventListener('DOMContentLoaded', function () {
     tiles.forEach(function(t, i){
       if(t.suit === 'cat') return;
       const roles = [];
-      if(isYao(t)) roles.push('盾');
-      if(cnt[t.code] >= 2) roles.push('雀頭');
-      if(t.red || t.code === dCode || inShape[i] || yakuHit[i]) roles.push('攻めの種');
+      if(isYao(t)) roles.push('危ないときに安全に切れる牌（1・9・字牌（ジハイ））');
+      if(cnt[t.code] >= 2) roles.push('雀頭（ジャントウ）の候補（同じ牌が二枚）');
+      if(t.red || t.code === dCode || inShape[i] || yakuHit[i]) roles.push('和了（ホーラ）や打点（だてん）に役立つ牌（形の一部やドラ）');
       if(roles.length >= 2){
         F.multiIdx.add(i);
         if(roles.length > bestN){ bestN = roles.length; F.multi = { name: toneTileName(t), roles: roles }; }
@@ -4662,72 +4667,72 @@ document.addEventListener('DOMContentLoaded', function () {
     const F = window._lastFacts || toneFacts(a, hand);
     if(t === 'butler'){
       return F.multi
-        ? (F.multi.name + 'に、' + F.multi.roles[0] + 'と' + F.multi.roles[1] + 'を掛け持ちさせております。人手が足りませぬ。')
-        : '持ち場の重なりはございません。皆、専任でございます。';
+        ? (F.multi.name + 'は一枚で、' + F.multi.roles[0] + 'と' + F.multi.roles[1] + 'を兼ねております。この牌を切ると両方の役目を一度に失いますので、切るのはなるべく後に回してくださいませ。')
+        : '一枚で二つ以上の役目を兼ねる牌はございません。どの牌を切っても、失う役目は一つずつでございます。';
     }
     if(t === 'strategist'){
       // 仕掛けの種が無い手は、門前でどこまで戦えるかで二つに分ける。
       // 800局の実測で、3向聴以内が40.9%・4向聴以上が59.1%と最も半々に近い。
       if(!F.naki){
         return (a.baseShanten <= 3)
-          ? '仕掛けの種は無いが、門前でも十分に速い。このまま進むべし。'
-          : '仕掛けの種が無く、門前では遠い。辛抱の一局になるぞ。';
+          ? '鳴いて役（ヤク）を付けられる材料（役牌（ヤクハイ）や自分・場の風牌（カゼハイ）の対子（トイツ）、染め手（そめて）の形）は無い。だが向聴数（シャンテンすう）は3以下で、鳴かずに進めても十分に速い手だ。このまま鳴かずに進むべし。'
+          : '鳴いて役（ヤク）を付けられる材料（役牌（ヤクハイ）や自分・場の風牌（カゼハイ）の対子（トイツ）、染め手（そめて）の形）は無く、向聴数（シャンテンすう）も4以上で、鳴かずに進めても和了（ホーラ）までは遠い。無理に押さず、我慢の一局になるぞ。';
       }
       if(F.naki.kind === 'atsumi'){
         // 仕掛けの種が無い手。厚い色を名指して、門前の速さで二つに分ける。
         return (a.baseShanten <= 3)
-          ? ('仕掛けの種は無いが、' + F.naki.name + 'が一番厚い。門前でも十分に速い、このまま進むべし。')
-          : ('仕掛けの種が無く、門前では遠い。' + F.naki.name + 'が伸びれば、仕掛けの道も開くなり。');
+          ? ('鳴いて役（ヤク）を付けられる材料は無い。数牌（シューパイ）は' + toneSuitYomi(F.naki.name) + 'が一番多いが、染め手（そめて）と言えるほどではない。向聴数（シャンテンすう）は3以下で、鳴かずに進めても十分に速い。このまま進むべし。')
+          : ('鳴いて役（ヤク）を付けられる材料は無く、向聴数（シャンテンすう）も4以上で、鳴かずに進めても和了（ホーラ）までは遠い。ただ数牌（シューパイ）は' + toneSuitYomi(F.naki.name) + 'が一番多い。この先' + toneSuitYomi(F.naki.name) + 'が集まって染め手（そめて）＝混一色（ホンイツ）の形になれば、鳴いても役が付くので、鳴いて進む道が開くなり。');
       }
       return (F.naki.kind === 'yakuhai')
-        ? (F.naki.name + 'が二枚。鳴けば一気に仕掛かるぞ。門前に縛られるな。')
-        : (F.naki.name + 'に寄せて鳴く道もある。仕掛けは我の領分なり。');
+        ? (F.naki.name + 'が二枚ある。三枚目を誰かが捨てたときに鳴けば、それだけで役（ヤク）が付き、一気に和了（ホーラ）へ近づく。鳴かずに粘る手ではないぞ。')
+        : ('数牌（シューパイ）が' + toneSuitYomi(F.naki.name) + 'に偏っていて、染め手（そめて）＝混一色（ホンイツ）・清一色（チンイツ）を狙える形だ。染め手なら鳴いても役（ヤク）が付くので、' + toneSuitYomi(F.naki.name) + 'の牌が捨てられたら鳴いて早く進む道もあるぞ。');
     }
     if(t === 'blunt'){
       // かぶりが無い手は、細いまとまり（嵌張・辺張）を抱えているかで二つに分ける。
       if(!F.dup){
         return (a.weakShapes > 0)
-          ? ('かぶりは無いのだ。でも細いまとまりが ' + a.weakShapes + ' 個あるのだ。')
-          : 'かぶりも無いし、細いまとまりも無いのだ。素直な手なのだ。';
+          ? ('待ちのかぶりは無いのだ。でも嵌張（カンチャン）＝13のように真ん中を待つ形や、辺張（ペンチャン）＝12や89のように端を待つ形が' + a.weakShapes + '個あるのだ。どれも待てる牌が一種類だけだから、埋まりにくいのだ。')
+          : '待ちのかぶりも、嵌張（カンチャン）・辺張（ペンチャン）みたいな待てる牌が一種類だけの形も無いのだ。素直に進められる手なのだ。';
       }
       return (F.dup.kind === 'double')
-        ? (F.dup.name + 'を二つのまとまりで取り合ってるのだ。損なのだ。')
-        : (F.dup.a + 'と' + F.dup.b + '、待ちが同じ筋にかぶるのだ。もったいないのだ！');
+        ? (F.dup.name + 'を待っている形が二つあるのだ。' + F.dup.name + 'が一枚来ても埋まるのは片方だけで、もう片方はまた別の牌を待つことになるのだ。二つの形が同じ牌を取り合っているぶん、受け（うけ）が狭いのだ。')
+        : (F.dup.a + 'と' + F.dup.b + 'の待ちが、同じ色で数が3つ離れた牌（3と6のような同じ筋（スジ））になっているのだ。その筋の牌が場に出にくい局だと、二つとも埋まりにくくなるのだ。');
     }
     if(t === 'lady'){
-      if(F.lady.kind === 'thin') return '切れる牌が、ほとんどありませんの。窮屈な手ですわ。';
+      if(F.lady.kind === 'thin') return '面子（メンツ）にも搭子（ターツ）にも入っていない牌が、二枚以下しかありませんの。この先は形の一部を崩して切ることになる、窮屈な手ですわ。';
       return (F.lady.kind === 'early')
-        ? 'この手、序盤で盾を使い切る算段ですわ。終盤は丸腰でしてよ。'
-        : '盾は終盤まで残る並びですわ。良い心がけですの。';
+        ? '面子（メンツ）にも搭子（ターツ）にも入っていない牌から切っていくと、1・9・字牌（ジハイ）の安全な牌を序盤で切り終えてしまいますわ。形の中に残る1・9・字牌は一枚以下なので、相手の立直（リーチ）を受けた終盤に、安全に切れる牌がほとんど残りませんの。'
+        : '面子（メンツ）にも搭子（ターツ）にも入っていない牌から切っていっても、1・9・字牌（ジハイ）が形の中に二枚以上残りますわ。相手の立直（リーチ）を受けた終盤にも、安全に切れる牌の当てがございましてよ。';
     }
     if(t === 'french'){
       // 浮き牌が一枚も無い手では、名指す牌そのものが無い。数え方は変えず、名指しだけをやめる。
-      if(F.floatIdx.size === 0) return '整理を急ぐ牌は、ございませんの。よく整った並びですわ。';
-      return '最初に整理するなら' + F.floatTop + 'ですわ。'
-        + 'どのまとまりにも入らず、身を守る役にも立ちませんの。';
+      if(F.floatIdx.size === 0) return '面子（メンツ）にも搭子（ターツ）にも入らない2〜8の数牌（シューパイ）は、ございませんの。どの牌も形に入っているか、1・9・字牌（ジハイ）として守りに使えますわ。';
+      return '最初に切るなら' + F.floatTop + 'ですわ。'
+        + '面子（メンツ）にも搭子（ターツ）にも入っておらず、1・9・字牌（ジハイ）のように守りに使える牌でもありませんの。手に置いておく理由がございませんわ。';
     }
     if(t === 'ichihime'){
       /* 強形が筆頭。無ければ端がかり、字牌の対子、どれも無い、の順。
          言うのは十三枚の中の事実だけで、相手の打ち回しには触れない。 */
       if(F.ichi.kind === 'strong'){
-        if(F.ichi.n >= 2) return '強い形が ' + F.ichi.n + ' 本にゃ。筆頭は' + F.ichi.top + 'からの' + F.ichi.name + 'にゃ、骨は太いにゃ。';
-        if(F.ichi.name === '五連形') return F.ichi.top + 'からの五連形にゃ。面子ひとつと両面がまとめて取れるにゃ、太い骨にゃ。';
-        if(F.ichi.name === '四連形') return F.ichi.top + 'からの四連形にゃ。両面が二つ並んでるにゃ、どっちに伸びても受かるにゃ。';
-        return F.ichi.top + 'からの中ぶくれにゃ。真ん中が重なって、両面が二つ取れる形にゃ。';
+        if(F.ichi.n >= 2) return '受け（うけ）の広い形（五連形（ごれんけい）・四連形（よんれんけい）・中ぶくれ）が' + F.ichi.n + 'つあるにゃ。一番は' + F.ichi.top + 'からの' + F.ichi.name + 'にゃ。待てる牌の種類が多いから、手が進みやすいにゃ。';
+        if(F.ichi.name === '五連形') return F.ichi.top + 'から五枚続いた五連形（ごれんけい）にゃ。面子（メンツ）一つと両面（リャンメン）一つを同時に持っている形で、受け（うけ）がとても広いにゃ。';
+        if(F.ichi.name === '四連形') return F.ichi.top + 'から四枚続いた四連形（よんれんけい）にゃ。両面（リャンメン）が二つ重なっていて、どちらの端に伸びても受かるにゃ。';
+        return F.ichi.top + 'からの中ぶくれにゃ。真ん中の牌が重なった形で、両面（リャンメン）を二つ待てるにゃ。';
       }
       if(F.ichi.kind === 'edge'){
         return (F.ichi.n >= 2)
-          ? ('端の道にターツが ' + F.ichi.n + ' 本かかってるにゃ。待ちが両方とも端寄りにゃ。')
-          : '端の道にターツが一本かかってるにゃ。待ちの片側が端寄りにゃ。';
+          ? ('両面（リャンメン）か嵌張（カンチャン）の搭子（ターツ）で、1・2・8・9の端寄りの牌を使っているものが' + F.ichi.n + '本あるにゃ。端寄りの牌は相手が早めに捨てやすいと、一姫は見てるにゃ。')
+          : '両面（リャンメン）か嵌張（カンチャン）の搭子（ターツ）で、1・2・8・9の端寄りの牌を使っているものが一本あるにゃ。端寄りの牌は相手が早めに捨てやすいと、一姫は見てるにゃ。';
       }
-      if(F.ichi.kind === 'honor') return F.ichi.name + 'の対子にゃ。字牌の重なりは、待ちの当てになるにゃ。';
-      return '端にも字牌にも寄ってないにゃ。この手の待ちは、ど真ん中にゃ。';
+      if(F.ichi.kind === 'honor') return F.ichi.name + 'が二枚あるにゃ。もう一枚来れば面子（メンツ）、来なければ雀頭（ジャントウ）や、二枚ずつの組同士で待つシャンポン待ちに使えるにゃ。';
+      return '受け（うけ）の広い形も、端寄りの搭子（ターツ）も、字牌（ジハイ）の対子（トイツ）も無いにゃ。待ちは真ん中の数牌（シューパイ）で作ることになりそうにゃ。';
     }
     if(t === 'sensei'){
-      if(F.sensei.n === 0) return '雀頭の当てがありません。字牌の重なりを、ひとつ残しなさい。';
+      if(F.sensei.n === 0) return '同じ牌が二枚ある組が一つも無いので、雀頭（ジャントウ）の当てがありません。この先で字牌（ジハイ）が二枚そろったら、それを雀頭として残しなさい。';
       return (F.sensei.n === 1)
-        ? ('雀頭の候補は' + F.sensei.top + 'です。軸を決めて、迷いを減らしなさい。')
-        : ('雀頭は' + F.sensei.n + '種。筆頭は' + F.sensei.top + 'です。');
+        ? ('同じ牌が二枚ある組は' + F.sensei.top + 'だけです。これを雀頭（ジャントウ）と決めて、残りの牌で面子（メンツ）を四つ作りなさい。')
+        : ('同じ牌が二枚ある組が' + F.sensei.n + '種あります。雀頭（ジャントウ）にするなら' + F.sensei.top + 'が一番です。字牌（ジハイ）や端の牌ほど面子（メンツ）にしにくいので、雀頭に回すのが向いています。');
     }
     return '';
   }
@@ -4851,21 +4856,21 @@ document.addEventListener('DOMContentLoaded', function () {
       if(window._shinshiNote) return window._shinshiNote;
       const om = n.ai;
       // 黙る帯＝一枚きりの字牌が1〜2枚。地の攻め率と変わらないので言い切らない。
-      if(om >= 1 && om <= 2) return '一枚きりの字牌' + om + '枚——この帯は判定に回す';
+      if(om >= 1 && om <= 2) return '一枚だけの字牌（ジハイ）が' + om + '枚。1〜2枚では攻めとも守りとも決められないので、本判定に任せます';
       return vz.ai || '';
     }
     if(key === 'cat'){
       if(window._catSwitchNote) return window._catSwitchNote;
       const c = n.cat;
       // 黙る帯＝猫牌1〜3枚。ここが迷いの帯なので、数えた枚数だけを言って判定へ回す。
-      if(c >= 1 && c <= 3) return '猫牌' + c + '枚——この帯は判定に回す';
+      if(c >= 1 && c <= 3) return '猫牌（どの牌ともつながらない数牌（シューパイ））が' + c + '枚。1〜3枚では攻めとも守りとも決められないので、本判定に任せる';
       return vz.cat || '';
     }
     if(key === 'usagi'){
       const c = window._lastCut;
-      if(c && c.code) return '切るなら' + tileChip(c.code);
+      if(c && c.code) return '最初に切るなら' + tileChip(c.code) + 'だ。向聴数（シャンテンすう）を落とさずに切れる牌の中から、字牌（ジハイ）→1・9→2・8の順に選んだ、いちばん形に関わらない牌だ。';
       // 切る候補が引けない手（13枚でない・猫牌の混じる手）は、残り枠の数だけを言う。
-      if(typeof n.usagi === 'number') return '弱い余り' + n.usagi + '——この帯は判定に回す';
+      if(typeof n.usagi === 'number') return '面子（メンツ）になっていない枠のうち、嵌張（カンチャン）・辺張（ペンチャン）でしか埋まらない枠が' + n.usagi + 'つ。この手では切る牌を選べないので、判断は本判定に任せる。';
       return '';
     }
     return '';
@@ -8666,11 +8671,11 @@ document.addEventListener('DOMContentLoaded', function () {
       // 文頭の絵文字は付けない。話者の印は台詞行の行頭アイコンが持つ。
       // 「ヨシ」「ダブルヨシ」は現場猫だけの言葉。外しても謝らず、言い直さない。
       if(catStanceAttack && !mainAttack){
-        window._catSwitchNote = '⚠️現場猫アラート：ヨシと言ったが、危ない手';
+        window._catSwitchNote = '⚠️猫牌（どの牌ともつながらない数牌（シューパイ））が0枚なので攻めと見たが、本判定は守り。見た目より危ない手';
       } else if(!catStanceAttack && mainAttack){
-        window._catSwitchNote = '⚠️現場猫アラート：逃げ腰だが、実は行ける手';
+        window._catSwitchNote = '⚠️猫牌（どの牌ともつながらない数牌（シューパイ））が' + effectiveCatN + '枚あるので守りと見たが、本判定は攻め。見た目より行ける手';
       } else {
-        window._catSwitchNote = '猫牌' + effectiveCatN + '枚、指差し確認——ダブルヨシ！';
+        window._catSwitchNote = '猫牌' + effectiveCatN + '枚。猫の見立てと本判定が同じ向き、ダブルヨシ！';
       }
     }
 
@@ -8685,9 +8690,9 @@ document.addEventListener('DOMContentLoaded', function () {
       const edaLean = edaSwitchLean(pairTripletN, effectiveCatN);
       if(edaLean === 'attack'){
         if(a.verdict === 'attack'){
-          window._edamameNote = pairTripletN + '組。揃い';
+          window._edamameNote = '同じ牌が二枚以上ある組が' + pairTripletN + '組。四組以上あり、対子（トイツ）や暗刻（アンコ）が多いので攻め';
         } else {
-          window._vzMiss.eda = pairTripletN + '組。だが本判定は守——珍しい食い違い';
+          window._vzMiss.eda = pairTripletN + '組で攻めと見たが、本判定は守り。組の数だけでは読めない珍しい手';
         }
       } else if(edaLean === 'defend'){
         // 灰色帯（猫牌3〜4枚）に限り、下側も開く。
@@ -8696,9 +8701,9 @@ document.addEventListener('DOMContentLoaded', function () {
         // 言い切ってよいという分担はそのまま（最終的な正しさは判定エンジンが持つ）。
         // 読み物パネルには、この当たり率を数字で添えてある。
         if(a.verdict === 'defend'){
-          window._edamameNote = pairTripletN + '組。薄い——守り';
+          window._edamameNote = '同じ牌が二枚以上ある組が' + pairTripletN + '組しかなく、どの牌ともつながらない数牌（シューパイ）も3〜4枚ある。重なりが薄いので守り';
         } else {
-          window._vzMiss.eda = pairTripletN + '組。薄いが本判定は攻——珍しい食い違い';
+          window._vzMiss.eda = pairTripletN + '組で守りと見たが、本判定は攻め。組の数だけでは読めない珍しい手';
         }
       }
     }
@@ -8730,12 +8735,15 @@ document.addEventListener('DOMContentLoaded', function () {
       // 紳士は丁寧語で通し、「わたしの見立て」を自分の言葉として使う。外れを認めるのはこの一人だけ。
       if(shinshiLean){
         if(a.verdict === shinshiLean){
-          window._shinshiNote = '一枚きりの字牌' + omamoriN + '枚。わたしの見立ては' + (shinshiLean === 'attack' ? '攻め' : '守り') + '——一致です';
+          window._shinshiNote = (shinshiLean === 'attack')
+            ? '一枚だけの字牌（ジハイ）が0枚で、1・9・字牌も合わせて2枚以下。わたしの見立ては攻めで、本判定とも一致です'
+            : ('一枚だけの字牌（ジハイ）が' + omamoriN + '枚。3枚以上あるので、わたしの見立ては守りで、本判定とも一致です');
         } else {
           // 外れはカードに常設せず、投票欄の紳士を押したときの一言の後ろへ回す。
           // どちらへ見立てて外したのかを先に言う。
-          window._vzMiss.ai = '見立ては' + (shinshiLean === 'attack' ? '攻' : '守') + 'でしたが、外れました。本判定は'
-            + (a.verdict === 'attack' ? '攻' : '守') + 'です';
+          window._vzMiss.ai = (shinshiLean === 'attack')
+            ? 'わたしの見立ては攻めでしたが、本判定は守りでした。一枚だけの字牌（ジハイ）の数では読めない手です'
+            : 'わたしの見立ては守りでしたが、本判定は攻めでした。一枚だけの字牌（ジハイ）の数では読めない手です';
         }
       }
     }
