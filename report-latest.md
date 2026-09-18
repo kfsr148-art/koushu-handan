@@ -1,61 +1,77 @@
-# 再起動-1（後の測り）
+# 再起動-2
 
-**終わり（残り0件）** — 2026-09-19 04:19（VAIO）。**機械は 22:15:38 に起き上がり、6時間走っている。**
-**WSearch と VCService は Stopped のまま**——ここが本当の確かめで、**通った**。
+**終わり（残り0件）** — 2026-09-19 04:3x（VAIO）。本体には触っていない。
+**毎週土曜01:00 の再起動**と**毎日03:00 の掃除**を予定表へ足し、作り値七通りで通した。
 
-## ① 起き上がった後の実測（04:19:51）
+## 足した起こし
 
-| | |
-|---|---|
-| 起き上がった刻 | **2026-09-18 22:15:38**（それから **364分**＝6時間4分） |
-| **空き物理メモリ** | **1052MB** ／ 総 3975MB（26.5%） |
-| **claude** | **1本・pid 6960・456MB**・起きたのは **09-18 22:33:11**（再起動の18分後） |
-| **WSearch** | 起き方=**Disabled**・状態=**Stopped** ✔ |
-| **VCService** | 起き方=**Disabled**・状態=**Stopped** ✔ |
-| VCAgent ／ SearchIndexer | **どちらも 0本** ✔ |
-
-**上位6本** … claude 457MB ／ MsMpEng 298MB ／ explorer 257MB ／ msedge 133MB ／
-SearchApp 92MB ／ powershell 88MB
-
-## ② 再起動の前と並べる
-
-| | 前（09-18 22:12） | 後（09-19 04:19） | 差 |
-|---|---|---|---|
-| 空き | **1122MB** | **1052MB** | **-70MB** |
-| claude | **456MB**（6日走った pid 4796） | **456MB**（6時間走った pid 6960） | **±0** |
-| WSearch／VCService | Disabled・Stopped | **Disabled・Stopped（変わらず）** | — |
-
-**一行で** … **止めた二本は再起動を越えて上がらなかったが、空きは70MB下がり、claude は6時間で前と同じ456MBまで戻った。**
-
-### 当てが外れた所（正直に）
-
-**「開き直せば claude は 270〜360MB へ落ちる」（空きの内訳-2 ①）は、6時間後には残っていない。**
-6日走った 456MB と、**6時間走った 456MB が同じ値**だった。
-**claude の使用MBは走った長さでは決まらない**——開き直しで一時的に下がっても、半日で戻る。
-
-**空きが下がった訳** … 二本が居なくなった190MBぶんより、**新しく立った物のほうが多い**。
-
-| | 前 | 後 |
+| 名 | いつ | 何をするか |
 |---|---|---|
-| explorer | 157MB | **257MB**（+100） |
-| msedge | 0本 | **5本・133MB**（開き直された） |
-| SearchApp | 居ない | **92MB**（新顔） |
-| MsMpEng | 336MB | 298MB（-38） |
+| **ClaudeWeeklyReboot** | **毎週土曜 01:00**（10分ごとに**1時間**繰り返す） | 条件が揃った回だけ再起動。次＝**09-26 01:00** |
+| **ClaudeEdgeSweep** | **毎日 03:00** | `msedge` と `SearchApp` が居れば落とし、本数とMBを記録。次＝**09-20 03:00** |
+| ClaudeRebootAfter（ログオン時） | — | **足せなかった**（`Access is denied`）。代わりに**毎分の巡回から**呼ぶ形にした（下記③） |
 
-**+287MB ぶんが新しく乗り、-190MB（二本）と -38MB（Defender）を食い切った。**
+## ① 条件（揃った回だけ再起動する）
 
-## ③ 再起動-2（毎週土曜 01:00 の起こし）の枠 … **受け取っていない**
+`weekly-reboot.ps1` が三つを見る。**一つでも駄目なら何もせず返る。**
 
-台帳に `再起動-2` の字は一件あるが、**2026-08-26 の別件**（「立ち上がり後、自動で戻った物と
-手動だった物を時刻つきで報告」）。**毎週土曜01:00 の起こしの枠は台帳にも `orders-full.jsonl` にも無い。**
-予定表にも**毎週の起こしは一件も無い**（`Claude*` の予定に Weekly の引き金はゼロ）。
+| 見る物 | 揃っている形 |
+|---|---|
+| 押し残し | `git rev-list --count origin/main..HEAD` が **0件** |
+| 押し直しの印 | `push-pending.tsv` が **0行** |
+| 仕事 | `hook.log` の最後の `resume`／`stop` が **stop**（手待ち） |
+
+**駄目な回は10分後の回が見直す。** 引き金が10分ごとに1時間繰り返すので、
+01:00 に走っていても **02:00 までに手待ちになれば再起動する**。見送った回は `reboot.log` に一行残す。
+
+```
+見送る（押し残し 2件／押し直しの印 0件／仕事は 手待ち）。10分後の回で見直す
+```
+
+## ② 再起動の前に札を出す
+
+条件が揃うと、落ちる前に**空きと claude の使用MB**を札にして押す（`reports/r<MMdd-HHmm>.md`）。
+そのあと `reboot-pending.txt` へ前の測りを書き残し、`shutdown /r /t 30` を打つ。
+
+## ③ 起き上がった後の札
+
+**毎分の巡回が、印（`reboot-pending.txt`）を見つけた最初の回**に `weekly-reboot-after.ps1` を呼び、
+前と後を並べた札（`r<印>-2.md`）を書いて印を消す。
+
+```
+| 空き物理メモリ | 1035MB | **1046MB** | +11MB |
+```
+
+**ふだんの回は `Test-Path` 一回で終わる**（印が無ければ子を起こさない）ので、毎分の重さは増えない。
+
+## 作り値（七通り・本物の再起動も本物の押しも叩いていない）
+
+再起動の手を**偽の綴り**へ、押しを `-NoPush` へ差し替え、記録の置き場も一時の所にした。
+
+| 場合 | 結果 |
+|---|---|
+| イ 押し残し2件 | **再起動しない** ✔（見送りの一行が残る） |
+| ロ 押し直しの印あり | **再起動しない** ✔ |
+| ハ 仕事が走っている（最後が resume） | **再起動しない** ✔ |
+| ニ 全部よい | **再起動した** ✔／前の札1枚・渡す印あり |
+| ホ 起き上がった後 | 後の札1枚・**印は消えた** ✔ |
+| ヘ 印が無い回 | 札は増えない ✔ |
+| ト 掃除の台（落とさず数えるだけ） | `msedge 5本 226MB／SearchApp 1本 88MB＝6本 314MB` ✔ |
+
+＊**ニの直前に一つ直した** … 後の札の台本で、印の道（`$Mark`）と印の名（`$mark`）が
+　**同じ変数だった**（PowerShell は大小を区別しない）。名を `$id` へ変えた。
+　作り値が無ければ、**印が消えず毎分書き続ける**ところだった。
 
 ## 触った所と触らない所
 
-**触った所** … 無し（測っただけ）。
+**触った所**
+- 新しい台本三枚 … `weekly-reboot.ps1`／`weekly-reboot-after.ps1`／`edge-sweep.ps1`（構文検査 OK）
+- `watch-notify.ps1` … 押し直しの段の後ろに**印があるときだけ**後の札を呼ぶ枝（写し `.bak-20260919`・構文検査 OK・実地の巡回 04:31:12 も通った）
+- 予定表 … `ClaudeWeeklyReboot` と `ClaudeEdgeSweep` を新しく足した
 
-**触らない所** … 本体・`~/.claude` の台本・`WSearch`／`VCService` の設定（**Disabled のまま**）・
-Defender・予定表の起こし・`claude` の窓。
+**触らない所** … 本体（`koushu-handan.html`）・`ClaudeWatchNotify`（:58）／`ClaudeRevive`（:25）／
+`ClaudeJamWatch`（:45）の刻と間隔・`ClaudeCodeAtLogon`・`WSearch`／`VCService`（Disabled のまま）・
+Defender・押しの敷居（500／1024MB）・譲りの敷居700MB。
 
 ---
 
@@ -64,11 +80,12 @@ Defender・予定表の起こし・`claude` の窓。
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **275件**ある。
+　ここに出るのは新しい20件。全部で **276件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0919-0427.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0919-0427.md) | 09-19 04:32 | 再起動-2 |
 | [`y0918-2212-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2212-2.md) | 09-19 04:20 | 再起動-1（後の測り） |
 | [`y0918-2212.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2212.md) | 09-18 22:12 | 再起動-1（前の測り） |
 | [`y0918-2155.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2155.md) | 09-18 22:02 | 押しの敷居-2 |
@@ -88,6 +105,5 @@ Defender・予定表の起こし・`claude` の窓。
 | [`y0918-0716.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-0716.md) | 09-18 07:19 | 夜の較正-2 |
 | [`y0918-0352.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-0352.md) | 09-18 03:56 | 止まりの札の敷居-1 |
 | [`y0917-2140.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-2140.md) | 09-17 21:35 | 呼び名の揃え-1 の下調べ |
-| [`y0917-2122.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0917-2122.md) | 09-17 21:25 | 問いかけの判じ-1 |
 
 <!-- 控えの一覧 ここまで -->
