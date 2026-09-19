@@ -1,6 +1,9 @@
-# 【宣言・全文】設定画面に「言葉の一覧」の釦を足す（v1452）
+# 【宣言・全文（再掲）】設定画面に「言葉の一覧」の釦を足す（v1452）
 
-**ヨシ待ち** — 2026-09-19 17:45（VAIO）。**印: y0919-1701**（同じ印の二度目＝全文の写し）。
+**ヨシ待ち** — 2026-09-19 18:23（VAIO）。**印: y0919-1701**（同じ印の三度目＝**全文の再掲**）。
+
+＊同じ枠が **17:45 と 18:21 の二度**届いた。**中身は一字も変えていない**——17:50 に押した
+`reports/y0919-1701-2.md` と同じもので、届いていなかった場合に備えて**もう一度立て直した**。
 **まだ一行も触っていない。** ヨシを取るまで工事に入らない。
 
 ## 何をするか（宣言の中身）
@@ -157,11 +160,12 @@ body.innerHTML = src ? src.innerHTML : '';
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **287件**ある。
+　ここに出るのは新しい20件。全部で **288件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0919-1701-3.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0919-1701-3.md) | 09-19 18:24 | 【宣言・全文（再掲）】設定画面に「言葉の一覧」の釦を足す（v1452） |
 | [`y0919-1701-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0919-1701-2.md) | 09-19 17:46 | 【宣言・全文】設定画面に「言葉の一覧」の釦を足す（v1452） |
 | [`y0919-1701.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0919-1701.md) | 09-19 17:01 | 【宣言】設定画面に「言葉の一覧」の釦を足す（v1452） |
 | [`y0919-1627.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0919-1627.md) | 09-19 16:36 | 用語の突き合わせ（説明欄「たまに出る言葉」と設定画面） |
@@ -181,6 +185,5 @@ body.innerHTML = src ? src.innerHTML : '';
 | [`y0918-2109.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2109.md) | 09-18 21:12 | 空きの片付け-2 |
 | [`y0918-2055.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2055.md) | 09-18 21:01 | 空きの内訳-2 |
 | [`y0918-2049.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2049.md) | 09-18 20:53 | 鍵切れの見張り-1 |
-| [`y0918-2035.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0918-2035.md) | 09-18 20:38 | 配信の譲り-1（乙・通し切る形へ） |
 
 <!-- 控えの一覧 ここまで -->
