@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789827068,
+        "message":  "連携の総点検（予定表・起こし直し・札の道・命令の見張り）\n1. 予定表 Claude* 12件を表にした。0 以外は EdgeSweep・WeeklyReboot の 0x41303（まだ一度も走っていない）と WatchNotify の 0x41301（読んだ瞬間に走行中）で、不備ではない。\n2. 起こし直しを作り値で当てた。今の台本は2.2秒で /End→/Run /TN ClaudeCodeAtLogon まで届く。直す前の台本は、上限を縮めて閉じ手を遅くすると上限で殺され、記録も命令も残らない＝19:41 の再現。起こしの命令の字は札に写した。\n3. 札の道を本物の台本の写しで端から端まで通した（溜め場→まとめ出し→notices.json 書き出し→公開の確かめ→ntfy の直前で偽の HTTP 200）。stale の型（公開側が古い）は30秒粘って ntfy-pending.txt へ預け、ntfy は呼ばない。\n4. 命令の見張りは毎分回っている（足跡の「命令の見張り」）。検査の上限は今日の実走で⑦190.8秒・⑯30.6秒・adv-check 30.5秒で切れ、Edge を外した後は4.6秒。\n5. 直した所 … cmd-watch.ps1（30秒より後に次の命令が始まれば終わった扱い）・tool-mark.ps1（受け取りを UTF-8 で）・settings.json（hook の上限 15→60秒）。今日 49本中16本に終わりの行が欠けていて、長い一区切りで空振りの札が立つ恐れがあった。作り値五通り合格。\n5. 直さない（土台）… stale の回に iPhone が鳴らない（🪟 が名乗りなしで出る）。案を札に書いた。\nファイル: ~/.claude/cmd-watch.ps1・tool-mark.ps1・settings.json（写し .bak-20260919／.bak-20260919b）／reports/y0919-2255.md（新）\n実測: 予定表 0 以外3件（不備なし）／起こし直し 新2.2秒・旧は上限で殺される／札の道 HTTP 200（偽）／stale は預けて ntfy 呼ばず／終わりの行の欠け 16/49 → 直した後は走行中の一本だけ"
+    },
+    {
         "title":  "🪟 連携に訴えがあります（subj-gap）",
         "time":  1789827031,
         "message":  "連携の見張りから訴えが出ています。\n\n・subj-gap … 作業中の件名が食い違っている（控え「連携の総点検（予定表・起こし直し・札の道・命令の見張り）」／出ている「連携の総点検」）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
@@ -193,10 +198,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789735747,
         "message":  "空きの片付け-2（後の測り）\n二本とも止まり、次の起動でも上がらない形になった。WSearch は 起き方=Disabled・状態=Stopped、VCService も 起き方=Disabled・状態=Stopped。VCAgent 0本・SearchIndexer 0本。\n止め方 … この窓からは四行とも Access is denied（5）で入らなかったので、stop-two-services.cmd を -Verb RunAs で呼び出し、UAC の「はい」で走らせた。\n空きの実測 … 21:09:30 は 1097MB（止める前・VCAgent 113MB と SearchIndexer 69MB が居た）／21:19:19 は 929MB（四行が入らず、まだ二本とも動いていた）／21:45:00 は 799MB（止まった直後）／21:45:22 は 801MB（0本を確かめた）／21:46〜21:47 の5秒ごと13回は 800〜918MB・中央908MB。\n二本が使っていた約190MBは確かに戻った（0本になった）が、空きの数字は上がっていない。同じ間に画面まわりが増えたため … explorer 96→156MB（+60）、StartMenuExperienceHost が新たに85MB、Memory Compression 85→109MB（+24）で、合わせて +169MB。UAC の窓とスタートメニューを触って立った物で、しばらく使わなければ縮む見込み。止めた効き自体は消えていない（相殺されて見えているだけ）。\n本当の効きは次の「底」で測る。今日いちばん低かったのは 08:23 の 358MB（押しを見送った刻）で、二本が居なくなったぶんこの底が約190MB上がるはず。次に押しと検査が重なる時間帯の空きを見れば分かる。\n戻し方は ~/.claude/restore-two-services.cmd を右クリックして「管理者として実行」（WSearch=auto／VCService=demand）。元の設定の控えは service-before-20260918.txt。止まったことで落ちる働きは、探し物の索引と VAIO Care。\n触った所は WSearch と VCService を止めて Disabled にしたことだけ。触らない所は本体・~/.claude の台本・claude の窓・Defender と除外の決め・予定表の起こし・ほかのサービス（VCFw は元から Stopped のまま）。\nファイル: reports/y0918-2145.md（新）／控えは ~/.claude/service-before-20260918.txt・戻しは restore-two-services.cmd\n実測: WSearch Disabled/Stopped・VCService Disabled/Stopped・VCAgent 0本・SearchIndexer 0本／空き 中央908MB（800〜918MB）／画面まわりが +169MB 増えて相殺／押しは 9997d32b で通った"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789734074,
-        "message":  "空きの片付け-2（管理者の窓が要る・打つ形を用意）\n届いた四行をこの窓で当てた。四つとも [SC] OpenService FAILED 5: Access is denied で返った（終了コード5）。いまの窓は管理者ではないので、この窓からは止められない。\nサービスの様子は変わっていない … WSearch は 起き方 Auto・状態 Running、VCService は 起き方 Manual・状態 Running。VCAgent 121MB・SearchIndexer 69MB もそのまま。空きは 929MB（21:19:19）。\n管理者の窓で一発で打てる形を二枚用意した … ~/.claude/stop-two-services.cmd（止める側。前と後の状態も出す）と ~/.claude/restore-two-services.cmd（戻す側。控え service-before-20260918.txt のとおり WSearch=auto／VCService=demand へ戻す）。どちらも右クリックして「管理者として実行」で走る。\n何も止めていないし、設定も一つも変えていない。claude・Defender・予定表の起こしにも触っていない。\nファイル: ~/.claude/stop-two-services.cmd（新）／~/.claude/restore-two-services.cmd（新）／控えは service-before-20260918.txt\n実測: 四行とも Access denied（5）／WSearch Auto・Running／VCService Manual・Running／空き 929MB\n未検収: WSearch と VCService を止めて disabled にすること（人手待ち。stop-two-services.cmd を管理者として実行）"
     }
 ]
