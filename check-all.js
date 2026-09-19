@@ -9,8 +9,26 @@
    2本とも argv[2] に本体のパスを取る流儀なので、旧版に当てて効きを確かめる使い方も揃う。 */
 'use strict';
 
+/* ---- 速い版の上限（2026-09-19・今日の止まりの直し ②）----
+   ＊2026-09-19 19:03 に手元で回した速い版が、⑦（狭い画面での溢れ）の中で50分近く這い続けた。
+     空きが700MB台まで落ち、headless の Edge を一枚立てるたびに数分かかった。上限が無いので、
+     止まったのか進んでいるのか外から分からず、その間に窓の起こし直しまで重さで空振りした。
+   ＊物差しは雲（check.yml の「速い版」の段）の直近5回——83・81・114・109・109秒、中央値109秒。
+     段ごとの中央値は、そのうちログが読めた3回から取った（下の表）。
+   ＊上限は中央値の3倍。ただし中央値が1秒に満たない段は3倍が0秒になって即座に切れるので、
+     段の上限には床（FAST_STAGE_FLOOR_SEC）を置く。
+   ＊超えたら、止まった段の名と経過秒を出し、子（孫の Edge ごと）を落として FAIL で抜ける。
+   ＊フル版には掛けない（視野が21で、所要がまるで違う）。 */
+const FAST_TOTAL_MEDIAN_SEC = 109;
+const FAST_TOTAL_LIMIT_SEC = FAST_TOTAL_MEDIAN_SEC * 3;          // 327秒
+const FAST_STAGE_FLOOR_SEC = 30;
+const FAST_STAGE_MEDIAN_SEC = {
+  '⑦': 63.3, '⑯': 5.3, '⑰': 3.8, '⑱': 4.0, 'adv-check': 6.1
+};                                                                 // 載っていない段は中央値1秒未満
+const stageLimitSec = no => Math.max(FAST_STAGE_FLOOR_SEC, Math.ceil((FAST_STAGE_MEDIAN_SEC[no] || 0) * 3));
+
 const path = require('path');
-const { spawnSync } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 
 const ROOT = __dirname;
 const args = process.argv.slice(2);
@@ -34,23 +52,89 @@ const RUNS = [
   { name: 'adv-check', file: 'adv-check.js', title: '探偵編の回帰（即死罠・時間切れ）' }
 ];
 
-const results = [];
-RUNS.forEach(run => {
-  console.log('');
-  console.log('════ ' + run.file + '　' + run.title + ' ' + '═'.repeat(Math.max(0, 30 - run.file.length)));
-  const r = spawnSync(process.execPath, [path.join(ROOT, run.file)].concat(args), { stdio: 'inherit' });
-  /* 検査そのものが起動できなかった場合（status が数字にならない）も落ちた扱いにする。 */
-  results.push({ ...run, ok: r.status === 0, status: r.status });
-});
+/* 段の見出し。check.js の head() が「⑦ 狭い画面での溢れ」の形で一行に出す。 */
+const STAGE_HEAD = /^([①-⑳㉑-㉟])[ ](.*)$/;
+const T0 = Date.now();
+const secSince = t => Math.round((Date.now() - t) / 100) / 10;
 
-console.log('');
-console.log('まとめ（納品前チェック・' + (FAST ? '速い版' : 'フル版') + '）');
-console.log('─'.repeat(52));
-results.forEach(r => {
-  console.log('  ' + (r.ok ? 'PASS' : 'FAIL') + '  ' + r.name + '  ' + r.title +
-    (r.status === null || r.status === undefined ? '（起動できなかった）' : ''));
-});
-const bad = results.filter(r => !r.ok).length;
-console.log('');
-console.log(bad === 0 ? '両方PASS' : 'FAIL ' + bad + '件');
-process.exit(bad === 0 ? 0 : 1);
+/* 子を孫ごと落とす。Windows は taskkill /T、ほかは組ごと SIGKILL。 */
+function killTree(child) {
+  try {
+    if (process.platform === 'win32') {
+      spawnSync('taskkill', ['/PID', String(child.pid), '/T', '/F'], { stdio: 'ignore', windowsHide: true });
+    } else {
+      process.kill(-child.pid, 'SIGKILL');
+    }
+  } catch (e) { try { child.kill('SIGKILL'); } catch (e2) { } }
+}
+
+function runOne(run) {
+  return new Promise(resolve => {
+    const child = spawn(process.execPath, [path.join(ROOT, run.file)].concat(args),
+      { stdio: ['ignore', 'pipe', 'inherit'], detached: process.platform !== 'win32', windowsHide: true });
+    /* adv-check は中の段を数えず、丸ごと一つの段として見る。 */
+    let stage = run.file === 'check.js' ? '（起動）' : 'adv-check';
+    let stageTitle = run.file === 'check.js' ? '（最初の段が出る前）' : run.title;
+    let stageT = Date.now();
+    let cut = null, rest = '';
+    child.stdout.on('data', d => {
+      process.stdout.write(d);
+      if (run.file !== 'check.js') return;
+      const lines = (rest + d.toString('utf8')).split('\n');
+      rest = lines.pop();
+      lines.forEach(l => {
+        const m = l.replace(/\r$/, '').match(STAGE_HEAD);
+        if (m) { stage = m[1]; stageTitle = m[1] + ' ' + m[2]; stageT = Date.now(); }
+      });
+    });
+    const timer = !FAST ? null : setInterval(() => {
+      const st = secSince(stageT), tot = secSince(T0), lim = stageLimitSec(stage);
+      let why = '';
+      if (st > lim) why = '段の上限 ' + lim + '秒';
+      else if (tot > FAST_TOTAL_LIMIT_SEC) why = '全体の上限 ' + FAST_TOTAL_LIMIT_SEC + '秒';
+      if (!why) return;
+      cut = { stage: stageTitle, stageSec: st, totalSec: tot, why };
+      clearInterval(timer);
+      killTree(child);
+    }, 1000);
+    child.on('error', () => { });
+    child.on('close', code => {
+      if (timer) clearInterval(timer);
+      resolve({ ...run, ok: !cut && code === 0, status: cut ? 'cut' : code, cut });
+    });
+  });
+}
+
+(async () => {
+  const results = [];
+  for (const run of RUNS) {
+    console.log('');
+    console.log('════ ' + run.file + '　' + run.title + ' ' + '═'.repeat(Math.max(0, 30 - run.file.length)));
+    const r = await runOne(run);
+    results.push(r);
+    if (r.cut) {
+      console.log('');
+      console.log('✗ 上限で切った：止まった段 ' + r.cut.stage + '・段の経過 ' + r.cut.stageSec + '秒・全体の経過 ' +
+        r.cut.totalSec + '秒（' + r.cut.why + '）');
+      break;                               // 切ったら残りは回さずに抜ける
+    }
+  }
+
+  console.log('');
+  console.log('まとめ（納品前チェック・' + (FAST ? '速い版' : 'フル版') + '）');
+  console.log('─'.repeat(52));
+  RUNS.forEach(run => {
+    const r = results.find(x => x.file === run.file);
+    /* 検査そのものが起動できなかった場合（status が数字にならない）も落ちた扱いにする。 */
+    const tag = !r ? 'FAIL' : (r.ok ? 'PASS' : 'FAIL');
+    const why = !r ? '（上限で切ったので回していない）'
+      : r.cut ? '（上限で切った：' + r.cut.stage + '・' + r.cut.stageSec + '秒）'
+      : (r.status === null || r.status === undefined ? '（起動できなかった）' : '');
+    console.log('  ' + tag + '  ' + run.name + '  ' + run.title + why);
+  });
+  const bad = RUNS.filter(run => { const r = results.find(x => x.file === run.file); return !r || !r.ok; }).length;
+  console.log('');
+  if (FAST) console.log('所要 ' + secSince(T0) + '秒（上限 ' + FAST_TOTAL_LIMIT_SEC + '秒）');
+  console.log(bad === 0 ? '両方PASS' : 'FAIL ' + bad + '件');
+  process.exit(bad === 0 ? 0 : 1);
+})();
