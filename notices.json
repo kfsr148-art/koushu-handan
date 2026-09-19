@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789819180,
+        "message":  "写せます（3件）"
+    },
+    {
         "title":  "🙋 ヨシしてください",
         "time":  1789819092,
         "message":  "手元の速い版（⑦飛ばし）が⑯で上限に当たった\n印: y0919-2057\n待っているのは：Edge を立てる段の扱い（甲 ⑦⑯⑰⑱㉓を全部飛ばす／乙 ⑦⑯⑰⑱を飛ばし㉓は回す／丙 Edge の段だけ床を広げて回し切る）\n答え方：「y0919-2057 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。\n未検収: 2026-09-19 17:01 y0919-1701 設定画面に「言葉の一覧」の釦（v1452）… 工事途中（手元の速い版が⑯で止まり停止）"
@@ -193,10 +198,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789722025,
         "message":  "空きの片付け-1\nEdge の10本だけを落とした。落とす前 17:57:39 は空き 999MB・Edge 10本174MB、落とした直後 17:58:08 は 1135MB・0本、20秒置いた 17:58:40 は 1165MB・0本。増えは +166MB（総3975MBに対して4.2ポイント）。直後から20秒で30MB戻っているのは後片付けが済んだぶん。\n落とした十本 … 4892 親（題「Sign in - Claude」）83MB／1300 utility 22MB／9480 renderer 15MB／1220 utility 13MB／2544 renderer 12MB／5768 gpu-process 7MB／6080 utility 7MB／11720 utility 7MB／7128 utility 6MB／8704 crashpad-handler 2MB。十本とも「落とした」で返った。落とす前に一本ずつ名を確かめ、msedge でなければ触らない形にした。三日居た署名の頁が消えたので、次に使うときは開き直しが要る。\n触っていないことを落とした後に実測した … claude 1本 pid 4796（09-12 21:51 起動のまま）／inbox-watch.ps1 1本 pid 9716（09-15 01:30 起動のまま・起こし直していない）／予定表の起こしは10件とも Ready で間隔も触っていない。\n触った所は Edge の10本を落としただけで、綴りは一つも触っていない。触らない所は本体・~/.claude の台本・予定表の起こしと間隔・claude の窓・inbox-watch の常駐・敷居（譲り700MB／押し768MB）・記録の過去の行。\nファイル: reports/y0918-1757.md（新）\n実測: 空き 999MB → 1165MB（+166MB）／Edge 10本→0本／claude と inbox-watch の pid は変わらず／押しは 5b501462 で通った"
-    },
-    {
-        "title":  "🔎 調べました",
-        "time":  1789721541,
-        "message":  "空きの内訳-1\n①17:47:57 に一度だけ測った。空き物理メモリ 920MB／総 3975MB。上位10本は claude 4796 483MB（09-12 21:51 から6日）／MsMpEng 3912 332MB／VCAgent 6236 101MB／explorer 6648 96MB／powershell 9716 89MB（inbox-watch・09-15 01:30）／Memory Compression 2096 85MB／msedge 4892 83MB（09-15 17:33）／powershell 9884 70MB（この測りの窓）／SearchIndexer 10960 67MB／svchost 3276 64MB。上位10本で約1470MB、うち claude が単独で最大（総メモリの12%）。\n②常駐の数 … claude 1本500MB（要る）／msedge 10本175MB（親1・renderer2・utility5・gpu1・crashpad1、すべて 09-15 17:33〜20:54 起動）／powershell 5本361MB（常駐は inbox-watch.ps1 80MB の1本だけで、残りは毎分の起こし＝revive・watch-notify（heavy-gate 経由）・jam-watch とこの測りの窓で、数秒で消える一時の物）／node 0本／conhost 5〜7本30〜57MB。\n②要らないと判じたのは Edge 10本・175MB。headless の旗つき0本・koushu- の目印つき0本で、古い検査の残りではない（作法14 は守られている）。窓を持つのは親1本だけで題は「Sign in - Claude - プロファイル 1 - Microsoft Edge」。09-15 17:33 に開いた署名の頁が3日そのまま残っている。残る9本はその窓にぶら下がる子。\n③落としていない。名と使用MBを書くだけに留めた。\n空きが低い刻との繋がり（記録から）… 08:14 437MB／08:18 524MB／08:22 549MB／08:23 358MB（押しを見送り）／12:24 425MB。毎分の起こしが三つある（ClaudeRevive・ClaudeWatchNotify・ClaudeJamWatch がいずれも PT1M）。powershell 一本が 70〜128MB 食うので、三本が重なると 200〜380MB が一時に乗る。そこへ押し（git）や claude 自身の伸びが重なった刻が 358〜549MB の帯に当たる。\n触った所は無し・落とした物も無し。触らない所は本体・~/.claude の台本・予定表の起こし（三つの PT1M を含む）・Edge の10本・claude の窓・inbox-watch.ps1 の常駐・敷居（譲り700MB／押し768MB）。\nファイル: reports/y0918-1747.md（新）\n実測: 空き 920MB→960MB／上位10本で約1470MB／claude 483〜500MB・6日／Edge 10本175MB・3日・headless 0本／node 0本／押しは 82f461ff で通った"
     }
 ]
