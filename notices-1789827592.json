@@ -1,5 +1,25 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789827591,
+        "message":  "写せます（1件）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789827490,
+        "message":  "stale の回に iPhone が鳴らない穴を塞ぐ\n元は watch-notify.ps1 L2359 の見分けの取り違え。$badKind は stale と置くのに -like stale:* で見ていて一度も当たらず、🪟 が名乗りなしで出て押し送りに断られ、外れた分が空の二枚目（hold-stuck）を作っていた。20:38:05〜11 の記録そのまま。\n直したのは L2359 の一語だけ（-like stale:* → -eq stale）。札の本文・溜め場・預け・敷居は変えていない。写しは .bak-20260919e、構文検査 OK。\n作り値三通り合格（偽の送り手）… イ stale で 🪟→名乗り bad で HTTP 200（題 🪟 異常です）／ロ ふつうの回→今までどおり 😼 で HTTP 200／ハ 同じ stale が続く→ntfy 0回（一度だけ）。\n20:38 の型の再現 … 直す前の台本は名乗りなしで断られ ntfy 0回、直した台本は押し送りOK（HTTP 200）まで進んだ。\nファイル: ~/.claude/watch-notify.ps1（写し .bak-20260919e）／reports/y0919-2320.md（新）\n実測: イ ntfy 1回・ロ 1回・ハ 0回／20:38 の型 旧0回→新1回"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789827167,
+        "message":  "写せます（3件）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789827068,
+        "message":  "連携の総点検（予定表・起こし直し・札の道・命令の見張り）\n1. 予定表 Claude* 12件を表にした。0 以外は EdgeSweep・WeeklyReboot の 0x41303（まだ一度も走っていない）と WatchNotify の 0x41301（読んだ瞬間に走行中）で、不備ではない。\n2. 起こし直しを作り値で当てた。今の台本は2.2秒で /End→/Run /TN ClaudeCodeAtLogon まで届く。直す前の台本は、上限を縮めて閉じ手を遅くすると上限で殺され、記録も命令も残らない＝19:41 の再現。起こしの命令の字は札に写した。\n3. 札の道を本物の台本の写しで端から端まで通した（溜め場→まとめ出し→notices.json 書き出し→公開の確かめ→ntfy の直前で偽の HTTP 200）。stale の型（公開側が古い）は30秒粘って ntfy-pending.txt へ預け、ntfy は呼ばない。\n4. 命令の見張りは毎分回っている（足跡の「命令の見張り」）。検査の上限は今日の実走で⑦190.8秒・⑯30.6秒・adv-check 30.5秒で切れ、Edge を外した後は4.6秒。\n5. 直した所 … cmd-watch.ps1（30秒より後に次の命令が始まれば終わった扱い）・tool-mark.ps1（受け取りを UTF-8 で）・settings.json（hook の上限 15→60秒）。今日 49本中16本に終わりの行が欠けていて、長い一区切りで空振りの札が立つ恐れがあった。作り値五通り合格。\n5. 直さない（土台）… stale の回に iPhone が鳴らない（🪟 が名乗りなしで出る）。案を札に書いた。\nファイル: ~/.claude/cmd-watch.ps1・tool-mark.ps1・settings.json（写し .bak-20260919／.bak-20260919b）／reports/y0919-2255.md（新）\n実測: 予定表 0 以外3件（不備なし）／起こし直し 新2.2秒・旧は上限で殺される／札の道 HTTP 200（偽）／stale は預けて ntfy 呼ばず／終わりの行の欠け 16/49 → 直した後は走行中の一本だけ"
+    },
+    {
         "title":  "🪟 連携に訴えがあります（subj-gap）",
         "time":  1789827031,
         "message":  "連携の見張りから訴えが出ています。\n\n・subj-gap … 作業中の件名が食い違っている（控え「連携の総点検（予定表・起こし直し・札の道・命令の見張り）」／出ている「連携の総点検」）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
@@ -8,11 +28,6 @@
         "title":  "👀 見てください（返事不要）",
         "time":  1789826179,
         "message":  "panel v138 の納品（雲の検査の結果）\n雲の走り 35445368170 は completed/success。走りの見張りは起こし直さず、一度読みで取りに行った（もう終わっていた）。\nフル版は check PASS・adv-check PASS で両方PASS。返事パネルの検査（panel-check.js）は全てPASS。速い版・ウィジェットの検査・配信も success。公開の panel-ver.txt は 138。panel v138 の納品として閉じた。台帳の残り0件。\nファイル: reports/y0919-2210-2.md（新）／report-latest.md\n実測: 走り 35445368170 … フル版 両方PASS／返事パネルの検査 全てPASS／公開 panel-ver 138\n実機: 返事パネルの下の版の字が panel v138（9月19日）、現況の行が「本体v1452／stable v1452」。次に版が上がったとき、開き直さなくても2分（stable は最大7分）ほどで数が動く。"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789824879,
-        "message":  "写せます（1件）"
     },
     {
         "title":  "👀 見てください（返事不要）",
@@ -58,11 +73,6 @@
         "title":  "🙀 異変発見だにゃ",
         "time":  1789819208,
         "message":  "状態: ヨシ待ち / 手元の速い版（⑦飛ばし）が⑯で上限に当たった\n台帳: 残り 4件（宣言を立てよ・手元で上限つきの速い版を回せ・乙で進めよ・hold-stuck の訴え（別件））\n見張り: 生存○ 見張り×2147946720 片付け○ 受信箱○\n使用量: セッション 53% / 週全体 47% / 週Fable 40%\n訴え: 1件（step-slow）… pipe-warn.log\n配分: 全体 あと27.1%/日 ／ Fable あと30.6%/日"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789819180,
-        "message":  "写せます（3件）"
     },
     {
         "title":  "🙋 ヨシしてください",
@@ -188,15 +198,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789736646,
         "message":  "押しの敷居-2\n①今日の押し179回のうち、空き不足の見送りは3回（01:47:38 空き712MB／08:23:17 空き358MB／18:40:46 空き668MB。どれも軽い側）。敷居500MB なら 712 と 668 は押せて、残るのは358MBの一回だけ＝3回中2回が減る。重い側（1536MB）の見送りは git-push.log の全期間で0件なので、1536→1024 で今日減る回は0。将来の重い押しに備えた余裕を残したまま下げるだけの直し。見送りの数は日で大きく違う（09-12 は75回、09-13 は8回、09-14 は11回）。\n②押し一回の実測 … こちらから空の押しを起こし0.5秒ごとに22回捕まえた。git-remote-https は最大9MB、git は合わせて最大26MB＝一回で乗るのは35MBほど。押しの間の空きの底は998MBで、元の768MBすら割っていなかった。500MB の敷居に対して14倍の余裕があり、768／1536MB は実測の30〜40倍で守る物に見合っていなかった。\n③手元でフル版を起こす枝は台本に一つも無かった。.githooks/pre-push は構文検査だけ（画面の実測は既に雲へ移してある）、git-push.ps1・heavy-on.ps1・inbox-watch.ps1・sweep-checks.ps1 の check-all の字はすべて註で走らせる行は無い。手元で回させていたのは CLAUDE.md の作法18 の決めだったので、そこを直した … 手元で回すのは速い版だけ／フル版は手元で起こさず雲（check.yml の check の段）に任せる／Start-Process で切り離す手は廃止（字は残す）／本体の工事は「速い版が通るまで commit しない」へ。通らない版が世に出ない仕掛けは変えていない（deploy は check の後段）。\n④作り値八通り合格（本物の押しは叩いていない。git-push.ps1 から敷居を決める枝を字面のまま切り出して当てた）。イ 712MB→押す／ロ 668MB→押す／ハ 358MB→見送る／ニ ちょうど500MB→押す／ホ 499MB→見送る／ヘ 重い側1024MB→押す／ト 重い側1023MB→見送る／チ 軽い物に本体が一つ混ざる800MB→重い側で見送る。チが要で、混ざる押しは今までどおり重い側。\n触った所は ~/.claude/git-push.ps1 の敷居の一行と註（写し .bak-20260918・構文検査 OK token 1754）と、CLAUDE.md の作法18 の三箇所。触らない所は本体・check.js・adv-check.js・check-all.js・check.yml・.githooks/pre-push・$SMALL_WHO と $LIGHT_NAMES の名簿・push-pending.tsv の仕掛け・譲りの敷居700MB・見張りの段・記録の過去の行。\nファイル: ~/.claude/git-push.ps1（写し .bak-20260918）／CLAUDE.md（作法18）／reports/y0918-2155.md（新）／作り値の台は scratchpad/gate-test.ps1\n実測: 見送り3回→2回減る／git-remote-https 最大9MB・git 合わせて26MB・押しの間の底998MB／作り値八通り合格／押しは c8f8bee7 で通った"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789735747,
-        "message":  "空きの片付け-2（後の測り）\n二本とも止まり、次の起動でも上がらない形になった。WSearch は 起き方=Disabled・状態=Stopped、VCService も 起き方=Disabled・状態=Stopped。VCAgent 0本・SearchIndexer 0本。\n止め方 … この窓からは四行とも Access is denied（5）で入らなかったので、stop-two-services.cmd を -Verb RunAs で呼び出し、UAC の「はい」で走らせた。\n空きの実測 … 21:09:30 は 1097MB（止める前・VCAgent 113MB と SearchIndexer 69MB が居た）／21:19:19 は 929MB（四行が入らず、まだ二本とも動いていた）／21:45:00 は 799MB（止まった直後）／21:45:22 は 801MB（0本を確かめた）／21:46〜21:47 の5秒ごと13回は 800〜918MB・中央908MB。\n二本が使っていた約190MBは確かに戻った（0本になった）が、空きの数字は上がっていない。同じ間に画面まわりが増えたため … explorer 96→156MB（+60）、StartMenuExperienceHost が新たに85MB、Memory Compression 85→109MB（+24）で、合わせて +169MB。UAC の窓とスタートメニューを触って立った物で、しばらく使わなければ縮む見込み。止めた効き自体は消えていない（相殺されて見えているだけ）。\n本当の効きは次の「底」で測る。今日いちばん低かったのは 08:23 の 358MB（押しを見送った刻）で、二本が居なくなったぶんこの底が約190MB上がるはず。次に押しと検査が重なる時間帯の空きを見れば分かる。\n戻し方は ~/.claude/restore-two-services.cmd を右クリックして「管理者として実行」（WSearch=auto／VCService=demand）。元の設定の控えは service-before-20260918.txt。止まったことで落ちる働きは、探し物の索引と VAIO Care。\n触った所は WSearch と VCService を止めて Disabled にしたことだけ。触らない所は本体・~/.claude の台本・claude の窓・Defender と除外の決め・予定表の起こし・ほかのサービス（VCFw は元から Stopped のまま）。\nファイル: reports/y0918-2145.md（新）／控えは ~/.claude/service-before-20260918.txt・戻しは restore-two-services.cmd\n実測: WSearch Disabled/Stopped・VCService Disabled/Stopped・VCAgent 0本・SearchIndexer 0本／空き 中央908MB（800〜918MB）／画面まわりが +169MB 増えて相殺／押しは 9997d32b で通った"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789734074,
-        "message":  "空きの片付け-2（管理者の窓が要る・打つ形を用意）\n届いた四行をこの窓で当てた。四つとも [SC] OpenService FAILED 5: Access is denied で返った（終了コード5）。いまの窓は管理者ではないので、この窓からは止められない。\nサービスの様子は変わっていない … WSearch は 起き方 Auto・状態 Running、VCService は 起き方 Manual・状態 Running。VCAgent 121MB・SearchIndexer 69MB もそのまま。空きは 929MB（21:19:19）。\n管理者の窓で一発で打てる形を二枚用意した … ~/.claude/stop-two-services.cmd（止める側。前と後の状態も出す）と ~/.claude/restore-two-services.cmd（戻す側。控え service-before-20260918.txt のとおり WSearch=auto／VCService=demand へ戻す）。どちらも右クリックして「管理者として実行」で走る。\n何も止めていないし、設定も一つも変えていない。claude・Defender・予定表の起こしにも触っていない。\nファイル: ~/.claude/stop-two-services.cmd（新）／~/.claude/restore-two-services.cmd（新）／控えは service-before-20260918.txt\n実測: 四行とも Access denied（5）／WSearch Auto・Running／VCService Manual・Running／空き 929MB\n未検収: WSearch と VCService を止めて disabled にすること（人手待ち。stop-two-services.cmd を管理者として実行）"
     }
 ]
