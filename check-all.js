@@ -9,6 +9,9 @@
    2本とも argv[2] に本体のパスを取る流儀なので、旧版に当てて効きを確かめる使い方も揃う。 */
 'use strict';
 
+// この機械（VAIO・4GB）では Edge を立てない決め：headless Edge は一枚で数分かかり空きを食って見張りも起こし直しも止める（2026-09-19 に⑦で48分・⑦190秒・⑯30秒で上限）ので、Edge を立てる段は手元の速い版では飛ばし、雲のフル版で回す。
+const FAST_SKIP_EDGE_STAGES = ['⑦', '⑯', '⑰', '⑱', '㉓', 'adv-check'];   // 空にすれば手元でも回す。雲（CI）では常に全部回す
+
 /* ---- 速い版の上限（2026-09-19・今日の止まりの直し ②）----
    ＊2026-09-19 19:03 に手元で回した速い版が、⑦（狭い画面での溢れ）の中で50分近く這い続けた。
      空きが700MB台まで落ち、headless の Edge を一枚立てるたびに数分かかった。上限が無いので、
@@ -70,7 +73,9 @@ function killTree(child) {
 
 function runOne(run) {
   return new Promise(resolve => {
-    const child = spawn(process.execPath, [path.join(ROOT, run.file)].concat(args),
+    const own = (run.file === 'check.js' && FAST && FAST_SKIP_EDGE_STAGES.length && !process.env.CI)
+      ? ['--skip=' + FAST_SKIP_EDGE_STAGES.join(',')] : [];
+    const child = spawn(process.execPath, [path.join(ROOT, run.file)].concat(args, own),
       { stdio: ['ignore', 'pipe', 'inherit'], detached: process.platform !== 'win32', windowsHide: true });
     /* adv-check は中の段を数えず、丸ごと一つの段として見る。 */
     let stage = run.file === 'check.js' ? '（起動）' : 'adv-check';
@@ -110,6 +115,12 @@ function runOne(run) {
   for (const run of RUNS) {
     console.log('');
     console.log('════ ' + run.file + '　' + run.title + ' ' + '═'.repeat(Math.max(0, 30 - run.file.length)));
+    /* adv-check も Edge で駆動する検査なので、手元の速い版では丸ごと飛ばす（雲では回す）。 */
+    if (run.file === 'adv-check.js' && FAST && FAST_SKIP_EDGE_STAGES.indexOf('adv-check') >= 0 && !process.env.CI) {
+      console.log('    飛ばした（手元の速い版では Edge を立てない）。adv-check は雲のフル版が回す');
+      results.push({ ...run, ok: true, skip: true, status: 0 });
+      continue;
+    }
     const r = await runOne(run);
     results.push(r);
     if (r.cut) {
@@ -126,7 +137,7 @@ function runOne(run) {
   RUNS.forEach(run => {
     const r = results.find(x => x.file === run.file);
     /* 検査そのものが起動できなかった場合（status が数字にならない）も落ちた扱いにする。 */
-    const tag = !r ? 'FAIL' : (r.ok ? 'PASS' : 'FAIL');
+    const tag = !r ? 'FAIL' : (r.skip ? 'SKIP' : (r.ok ? 'PASS' : 'FAIL'));
     const why = !r ? '（上限で切ったので回していない）'
       : r.cut ? '（上限で切った：' + r.cut.stage + '・' + r.cut.stageSec + '秒）'
       : (r.status === null || r.status === undefined ? '（起動できなかった）' : '');
@@ -135,6 +146,7 @@ function runOne(run) {
   const bad = RUNS.filter(run => { const r = results.find(x => x.file === run.file); return !r || !r.ok; }).length;
   console.log('');
   if (FAST) console.log('所要 ' + secSince(T0) + '秒（上限 ' + FAST_TOTAL_LIMIT_SEC + '秒）');
-  console.log(bad === 0 ? '両方PASS' : 'FAIL ' + bad + '件');
+  const skipN = results.filter(r => r.skip).length;
+  console.log(bad > 0 ? 'FAIL ' + bad + '件' : (skipN ? 'PASS（' + skipN + '本は飛ばした）' : '両方PASS'));
   process.exit(bad === 0 ? 0 : 1);
 })();

@@ -23,6 +23,9 @@ const ROOT = __dirname;
    通常の納品と push 前はこちら、台詞やレイアウトを触った回はフル版を回す。 */
 const ARGS = process.argv.slice(2);
 const FAST = ARGS.indexOf('--fast') >= 0;
+/* --skip=⑦,⑯,… は並べた段を回さずに飛ばす。check-all.js が手元の速い版で渡す（2026-09-19・y0919-2057 甲）。
+   飛ばした段はまとめで SKIP と出し、PASS と紛れさせない。飛ばした段は雲のフル版が測る。 */
+const SKIP_STAGES = (ARGS.find(a => a.indexOf('--skip=') === 0) || '').slice(7).split(',').filter(Boolean);
 /* フル版の関門（2026-09-12・連携の穴-3 ⑩）。check-all.js と同じ決め。
    空き物理メモリが 2GB を切っている間はフル版を回さない（終了コード3）。フル版は空いてから回す。 */
 if (!FAST && require('os').freemem() < 2 * 1024 * 1024 * 1024) {
@@ -47,6 +50,11 @@ function ng(msg) { console.log('  ✗ ' + msg); failCount++; }
 function note(msg) { console.log('    ' + msg); }
 function section(no, title, fn) {
   head(no, title);
+  if (SKIP_STAGES.indexOf(no) >= 0) {
+    note('飛ばした（--skip・手元の速い版）。この段は雲のフル版が測る');
+    sections.push({ title: no + ' ' + title, ok: true, skip: true });
+    return;
+  }
   const before = failCount;
   fn();
   sections.push({ title: no + ' ' + title, ok: failCount === before });
@@ -301,6 +309,7 @@ window.addEventListener('load', function(){
       /* タイトルは開いた直後の姿そのもの。閉じずに測る。 */
       else if(screen === 'title'){ /* 何もしない */ }
       else if(screen === 'settings'){ window.closeTitleScreen(); window.catRoomOpen(); }
+      else if(screen === 'glossary'){ window.closeTitleScreen(); window.glossaryOpen(); }
       else if(screen === 'torimenu'){ window.closeTitleScreen(); window.toriOpen(); }
       else if(screen === 'advroom'){ advRoom(); }
       else if(screen === 'toriend'){
@@ -664,7 +673,7 @@ section('⑦', '狭い画面での溢れ', () => {
   /* judged＝判定後のカード。判定前だけを測っていると、根拠欄のように結果側にしか出ない溢れを見逃す。
      title/settings/advroom/torimenu は、指で触る場所があるのに測っていなかった画面。
      toriend は実際に遊びを通して出す結果画面（画面を一面叩いて勝ち抜ける）。 */
-  const SCREENS = ['title', 'board', 'judged', 'settings', 'watch', 'adv', 'advroom', 'torimenu', 'toriend'];
+  const SCREENS = ['title', 'board', 'judged', 'settings', 'glossary', 'watch', 'adv', 'advroom', 'torimenu', 'toriend'];
   /* 横溢れは4pxまで見逃す。.tile.pick::before が当たり判定を牌の外へ4px広げており（押し損じ対策）、
      その意図的なはみ出しが3px計上されるため。これを咎めると当たり判定を痩せさせる方向に効いてしまう。 */
   const SLACK = 4;
@@ -2074,7 +2083,7 @@ console.log('');
 console.log('='.repeat(52));
 sections.forEach(s => {
   /* 測れなかった項目を PASS と並べない。通ったのか、見ていないのかを取り違えないため。 */
-  const skipped = (viewSkipped && /狭い画面/.test(s.title)) || (idleSkipped && /待機の向き/.test(s.title))
+  const skipped = s.skip || (viewSkipped && /狭い画面/.test(s.title)) || (idleSkipped && /待機の向き/.test(s.title))
                   || (jumpSkipped && /跳躍中/.test(s.title))
                   || (joySkipped && /喜ぶ動き/.test(s.title))
                   || (fsSkipped && /第一感が移す前/.test(s.title));
