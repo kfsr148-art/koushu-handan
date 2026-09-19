@@ -488,7 +488,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v137（9月13日）</p>
+  <p class="ver" id="verTag">panel v138（9月19日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -516,7 +516,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '137';
+  var PANEL_VER = '138';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1628,6 +1628,7 @@
   var sinceTimer = null;
   var usageTimer = null;
   var boardTimer = null;
+  var honTimer = null;
   var verTimer = null;
 
   /* 版の見張りを**一度きりにしない**（v42）。
@@ -1722,6 +1723,11 @@
     /* 板は10分ごとにしか書き直されないので、取りに行くのも2分ごとでよい。 */
     if (boardTimer) { clearInterval(boardTimer); }
     boardTimer = setInterval(pullBoard, 120000);
+    /* 本体と stable の版も2分ごとに取り直す（v138）。開いた一度だけだと、開きっぱなしの間に
+       版が上がっても「本体v1451／stable v1451」のまま動かなかった（2026-09-19 の v1452）。
+       stable の ver.txt は raw の手前で5分の預かりが掛かるので、動いてから最大7分ほどで追いつく。 */
+    if (honTimer) { clearInterval(honTimer); }
+    honTimer = setInterval(pullVer, 120000);
     /* 現況行の経過だけは毎秒。取得（15秒）とは別の時計で回す。 */
     if (sinceTimer) { clearInterval(sinceTimer); }
     sinceTimer = setInterval(tickSince, 1000);
