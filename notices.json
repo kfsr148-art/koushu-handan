@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 連携に訴えがあります（subj-gap）",
+        "time":  1789827031,
+        "message":  "連携の見張りから訴えが出ています。\n\n・subj-gap … 作業中の件名が食い違っている（控え「連携の総点検（予定表・起こし直し・札の道・命令の見張り）」／出ている「連携の総点検」）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
+    },
+    {
         "title":  "👀 見てください（返事不要）",
         "time":  1789826179,
         "message":  "panel v138 の納品（雲の検査の結果）\n雲の走り 35445368170 は completed/success。走りの見張りは起こし直さず、一度読みで取りに行った（もう終わっていた）。\nフル版は check PASS・adv-check PASS で両方PASS。返事パネルの検査（panel-check.js）は全てPASS。速い版・ウィジェットの検査・配信も success。公開の panel-ver.txt は 138。panel v138 の納品として閉じた。台帳の残り0件。\nファイル: reports/y0919-2210-2.md（新）／report-latest.md\n実測: 走り 35445368170 … フル版 両方PASS／返事パネルの検査 全てPASS／公開 panel-ver 138\n実機: 返事パネルの下の版の字が panel v138（9月19日）、現況の行が「本体v1452／stable v1452」。次に版が上がったとき、開き直さなくても2分（stable は最大7分）ほどで数が動く。"
@@ -193,10 +198,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789734074,
         "message":  "空きの片付け-2（管理者の窓が要る・打つ形を用意）\n届いた四行をこの窓で当てた。四つとも [SC] OpenService FAILED 5: Access is denied で返った（終了コード5）。いまの窓は管理者ではないので、この窓からは止められない。\nサービスの様子は変わっていない … WSearch は 起き方 Auto・状態 Running、VCService は 起き方 Manual・状態 Running。VCAgent 121MB・SearchIndexer 69MB もそのまま。空きは 929MB（21:19:19）。\n管理者の窓で一発で打てる形を二枚用意した … ~/.claude/stop-two-services.cmd（止める側。前と後の状態も出す）と ~/.claude/restore-two-services.cmd（戻す側。控え service-before-20260918.txt のとおり WSearch=auto／VCService=demand へ戻す）。どちらも右クリックして「管理者として実行」で走る。\n何も止めていないし、設定も一つも変えていない。claude・Defender・予定表の起こしにも触っていない。\nファイル: ~/.claude/stop-two-services.cmd（新）／~/.claude/restore-two-services.cmd（新）／控えは service-before-20260918.txt\n実測: 四行とも Access denied（5）／WSearch Auto・Running／VCService Manual・Running／空き 929MB\n未検収: WSearch と VCService を止めて disabled にすること（人手待ち。stop-two-services.cmd を管理者として実行）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789733651,
-        "message":  "空きの片付け-2\n二本とも止められなかった。いまの窓は管理者ではない（VAIO\\user・管理者か False）。VCAgent は「Cannot stop process VCAgent (6236) … Access is denied」、WSearch は「Cannot open WSearch service on computer .」で返った。\n正体を名指しした … SearchIndexer の正体は WSearch（Windows Search）で StartMode=Auto・Running・走る人 LocalSystem。VCAgent はサービスそのものではなく VCService（VAIO Care）の子で、親は VCService.exe（pid 5632・09-10 18:45:59 起動）、こちらも LocalSystem。だから同じ人でない窓からは落とせない。\n止める前と後の空き … 21:09:30 に 1097MB、21:11:50 に 1090MB。差は -7MB で、止めていないのでいつもの揺れの幅。VCAgent 113→121MB、SearchIndexer 69MB のまま。\n戻せる形の控えを ~/.claude/service-before-20260918.txt に残した。WSearch は起き方 Auto・状態 Running・戻す形は sc.exe config WSearch start= auto／VCService は起き方 Manual・状態 Running・戻す形は sc.exe config VCService start= demand／VCFw は Manual・もともと Stopped。\n人手でやる形を札に書いた … 管理者の黒い窓で sc.exe stop WSearch ／ sc.exe config WSearch start= disabled ／ sc.exe stop VCService ／ sc.exe config VCService start= disabled。VCAgent は VCService の子なので親を止めれば一緒に落ちる。戻りの当ては約160MB（121+69=190MB の95%）。止めると探し物の索引（WSearch）と VAIO Care（VCService）の働きが落ちる。\n触っていないことを確かめた … claude 1本455MB（pid 4796 のまま）／MsMpEng 1本329MB（除外も触っていない）／予定表の Claude* は10件（Ready 8・その瞬間走っていた2）。WSearch と VCService の設定は一つも変えていない。\nファイル: ~/.claude/service-before-20260918.txt（控え・新）／reports/y0918-2109.md（新）\n実測: 空き 1097MB → 1090MB（止められず）／VCAgent 121MB・SearchIndexer 69MB／権限は管理者ではない／押しは 072bf3af で通った\n未検収: WSearch と VCService を止めて disabled にすること（人手待ち。管理者の窓で四行）"
     }
 ]

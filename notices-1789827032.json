@@ -1,8 +1,23 @@
 [
     {
+        "title":  "🪟 連携に訴えがあります（subj-gap）",
+        "time":  1789827031,
+        "message":  "連携の見張りから訴えが出ています。\n\n・subj-gap … 作業中の件名が食い違っている（控え「連携の総点検（予定表・起こし直し・札の道・命令の見張り）」／出ている「連携の総点検」）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
+    },
+    {
+        "title":  "👀 見てください（返事不要）",
+        "time":  1789826179,
+        "message":  "panel v138 の納品（雲の検査の結果）\n雲の走り 35445368170 は completed/success。走りの見張りは起こし直さず、一度読みで取りに行った（もう終わっていた）。\nフル版は check PASS・adv-check PASS で両方PASS。返事パネルの検査（panel-check.js）は全てPASS。速い版・ウィジェットの検査・配信も success。公開の panel-ver.txt は 138。panel v138 の納品として閉じた。台帳の残り0件。\nファイル: reports/y0919-2210-2.md（新）／report-latest.md\n実測: 走り 35445368170 … フル版 両方PASS／返事パネルの検査 全てPASS／公開 panel-ver 138\n実機: 返事パネルの下の版の字が panel v138（9月19日）、現況の行が「本体v1452／stable v1452」。次に版が上がったとき、開き直さなくても2分（stable は最大7分）ほどで数が動く。"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
-        "time":  1789823319,
+        "time":  1789824879,
         "message":  "写せます（1件）"
+    },
+    {
+        "title":  "👀 見てください（返事不要）",
+        "time":  1789824738,
+        "message":  "現況の行が本体v1451／stable v1451 のまま（パネルの版の取り直し）\n① stable のタグは e219d938、stable:ver.txt は 1452。② 公開側の ver.txt は 1452、stable の raw も 1452。③ state.json には版の欄が無く、現況の行は panel.html 自身が公開側と stable の raw の ver.txt を取って組んでいる。\n元は panel.html の pullVer() が開いた一度だけしか呼ばれていなかったこと（開きっぱなしだと 1451 のまま）。panel v138 で2分ごとに取り直す形にした（29c6e5cc）。パネルの版は三箇所同時に 138。構文検査 NG 0。\n雲（35445368170）は一度読みで速い版 success、フル版とパネルの検査は走行中。公開の panel-ver.txt は 138。走りの見張りは空き不足で止められたので起こし直していない。台帳の残り0件。\nファイル: panel.html／panel-ver.txt（29c6e5cc）／reports/y0919-2210.md（新）\n実機: 返事パネルの下の版の字が panel v138（9月19日）になり、現況の行が「本体v1452／stable v1452」になる。次に版が上がったとき、開き直さなくても2分（stable は最大7分）ほどで数が動く。"
     },
     {
         "title":  "✅ 終わりました（返事不要）",
@@ -183,20 +198,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789734074,
         "message":  "空きの片付け-2（管理者の窓が要る・打つ形を用意）\n届いた四行をこの窓で当てた。四つとも [SC] OpenService FAILED 5: Access is denied で返った（終了コード5）。いまの窓は管理者ではないので、この窓からは止められない。\nサービスの様子は変わっていない … WSearch は 起き方 Auto・状態 Running、VCService は 起き方 Manual・状態 Running。VCAgent 121MB・SearchIndexer 69MB もそのまま。空きは 929MB（21:19:19）。\n管理者の窓で一発で打てる形を二枚用意した … ~/.claude/stop-two-services.cmd（止める側。前と後の状態も出す）と ~/.claude/restore-two-services.cmd（戻す側。控え service-before-20260918.txt のとおり WSearch=auto／VCService=demand へ戻す）。どちらも右クリックして「管理者として実行」で走る。\n何も止めていないし、設定も一つも変えていない。claude・Defender・予定表の起こしにも触っていない。\nファイル: ~/.claude/stop-two-services.cmd（新）／~/.claude/restore-two-services.cmd（新）／控えは service-before-20260918.txt\n実測: 四行とも Access denied（5）／WSearch Auto・Running／VCService Manual・Running／空き 929MB\n未検収: WSearch と VCService を止めて disabled にすること（人手待ち。stop-two-services.cmd を管理者として実行）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789733651,
-        "message":  "空きの片付け-2\n二本とも止められなかった。いまの窓は管理者ではない（VAIO\\user・管理者か False）。VCAgent は「Cannot stop process VCAgent (6236) … Access is denied」、WSearch は「Cannot open WSearch service on computer .」で返った。\n正体を名指しした … SearchIndexer の正体は WSearch（Windows Search）で StartMode=Auto・Running・走る人 LocalSystem。VCAgent はサービスそのものではなく VCService（VAIO Care）の子で、親は VCService.exe（pid 5632・09-10 18:45:59 起動）、こちらも LocalSystem。だから同じ人でない窓からは落とせない。\n止める前と後の空き … 21:09:30 に 1097MB、21:11:50 に 1090MB。差は -7MB で、止めていないのでいつもの揺れの幅。VCAgent 113→121MB、SearchIndexer 69MB のまま。\n戻せる形の控えを ~/.claude/service-before-20260918.txt に残した。WSearch は起き方 Auto・状態 Running・戻す形は sc.exe config WSearch start= auto／VCService は起き方 Manual・状態 Running・戻す形は sc.exe config VCService start= demand／VCFw は Manual・もともと Stopped。\n人手でやる形を札に書いた … 管理者の黒い窓で sc.exe stop WSearch ／ sc.exe config WSearch start= disabled ／ sc.exe stop VCService ／ sc.exe config VCService start= disabled。VCAgent は VCService の子なので親を止めれば一緒に落ちる。戻りの当ては約160MB（121+69=190MB の95%）。止めると探し物の索引（WSearch）と VAIO Care（VCService）の働きが落ちる。\n触っていないことを確かめた … claude 1本455MB（pid 4796 のまま）／MsMpEng 1本329MB（除外も触っていない）／予定表の Claude* は10件（Ready 8・その瞬間走っていた2）。WSearch と VCService の設定は一つも変えていない。\nファイル: ~/.claude/service-before-20260918.txt（控え・新）／reports/y0918-2109.md（新）\n実測: 空き 1097MB → 1090MB（止められず）／VCAgent 121MB・SearchIndexer 69MB／権限は管理者ではない／押しは 072bf3af で通った\n未検収: WSearch と VCService を止めて disabled にすること（人手待ち。管理者の窓で四行）"
-    },
-    {
-        "title":  "🔎 調べました",
-        "time":  1789733050,
-        "message":  "鍵切れの見張り-1／空きの内訳-2\n鍵①09-15 18:43〜20:59 の止まりが字として残っていたのは、会話の綴り（projects/…/f7901906-….jsonl）だけ。行12484 が 2026-09-15 18:43:18 の Login expired（isApiErrorMessage:true の札）、行12487 が 20:59:50 の Login successful。hook.log にも watch-notify.log にも pipe-warn.log にも鍵切れの字は無い（watch-notify.log の「鍵」は状態の鍵＝idle/run/done で別物）。止まっている間は止まる側のフックも走らないので、hook 系にはそもそも書かれない。\n鍵②毎分の巡回の段は既に入っていた（09-15 21:13 に作った kagi-watch.ps1 を watch-notify.ps1:443-445 が毎分呼ぶ。Run-Child の20秒の上限つき）。会話の綴りの末尾512KBを共有で開いて読み、Login successful より後ろに切れの札があるときだけ鳴らす。再送防止は kagi-seen.txt で、鍵が戻れば控えを消すので次に切れたらまた一発鳴る。足す工事は無し、今日は一行も触っていない。\n鍵③作り値五通り合格。本物の kagi-watch.ps1 を、送り手（ntfy-say.ps1）と置き場だけ偽物へ差し替えて呼んだ（写しは作らず、台本が引数で受けるため）。イ 切れたまま→鳴る／ロ 同じ切れの二度目→鳴らない／ハ 09-15 と同じ形（切れ→戻り）→鳴らず控えを消す／ニ 戻った後にまた切れた→鳴る／ホ 鍵の字が無い回→鳴らない。\n空き①claude を開き直した直後の当て … jam-snap.log の31枚から拾うと、起き直して早い時期は 270MB（09-12 02:32 pid 7272）・303MB（09-11 14:12 pid 7124）・357MB（09-10 17:38 pid 4080）。いまの pid 4796 は 09-16 427MB／09-17 395MB／09-18 01:45 399MB／今日の150秒で447〜477MB（中央461）。開き直せば 270〜360MB へ落ちる見込みで戻りは約150〜180MB。ただし単調には膨らんでおらず（同じ pid が395〜483MBを行き来）、戻りは一時的と見ておくこと。\n空き②MsMpEng は記録に残っていない（jam-snap の「重い」はCPU秒の上位で選ぶため一度も載っていない）。1.2秒ごとに100回測り押しの刻を捕まえた … 押しが居た回（7回）は中央339MB・最高342MB、居ない回（93回）は中央328MB・最高342MB。別の150秒では305〜334MB（中央327）。伸びは中央の差で +11MB、最高値はどちらも342MBで同じ。作業場の除外は実測では当てられない（除外を入れないと測れず、この枠は触る所は無し）。常駐が305〜342MBの狭い帯で押しの伸びも十数MBなので、除外で減っても十数MBという当て。\n空き③VCAgent は109MB（揺れない）、SearchIndexer は61〜67MB（中央62）で合わせて約171MB。実際の空きの増えは少し少なく、今日の Edge の実測（174MB を落として増えは166MB＝95%）を当てると約160MB。止めると探し物の索引（SearchIndexer）と VAIO の道具（VCAgent）の働きが落ちる。止めていないし、止めるかはこちらで決めない。\n空き 三つの合計は +約310〜360MB。いまの空き（中央1092MB・幅1014〜1118MB）が約1400〜1450MB になる当てで、総3975MBに対して27%→36%ほど。\n触った所は無し・止めた物も無し。触らない所は本体・~/.claude の台本・claude の窓・Defender の除外の決め・VCAgent／SearchIndexer・予定表の起こし・敷居（譲り700MB／押し768MB）・kagi-watch.ps1 と鍵の見回りの段。\nファイル: reports/y0918-2049.md（鍵）／reports/y0918-2055.md（空き）／作り値の台は scratchpad の kagi-test.ps1、測りの台は mem.ps1\n実測: 鍵の字は綴りの行12484（09-15 18:43:18）と行12487（20:59:50）だけ／作り値五通り合格／claude 開き直しの当て 270〜360MB（いま447〜483）／MsMpEng 押しで中央339MB・平時328MB（+11MB）／VCAgent 109MB・SearchIndexer 62MB／合計 +310〜360MB／押しは d7da4030 と b10440a3 で通った"
-    },
-    {
-        "title":  "😺 現在も順調にゃ",
-        "time":  1789732834,
-        "message":  "状態: 作業中 / 空きの内訳-2\n台帳: 残り 2件（鍵切れの見張り-1・空きの内訳-2）\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 7% / 週全体 34% / 週Fable 28%\n訴え: 3件（done-swept・pub-late・step-slow）… pipe-warn.log\n配分: 全体 あと22.3%/日 ／ Fable あと24.3%/日"
     }
 ]
