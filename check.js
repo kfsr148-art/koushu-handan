@@ -1772,9 +1772,9 @@ section('⑲', '素材の寸法の写し', () => {
     airDownR:[177,360], airDownL:[147,365], joyJump:[218,386], joyLand:[238,290],
     breathR:[181,238], breathL:[171,249], runR:[185,246], runL:[190,229],
     hit:[185,228], idleFront:[115,317], idleRight:[135,317], idleLeft:[129,316],
-    airUpFront:[144,333], airSlashFront:[192,333], airDownFront:[170,300], u:[186,387],
-    ur:[328,380], r:[294,262], dr:[259,281], d:[244,268],
-    dl:[279,256], l:[423,388], ul:[235,281], prepare:[179,253],
+    airUpFront:[144,333], airSlashFront:[192,333], airDownFront:[170,300], u:[170,353],
+    ur:[310,359], r:[283,252], dr:[245,266], d:[249,273],
+    dl:[269,247], l:[386,354], ul:[260,311], prepare:[179,253],
     grasp:[144,286], flick:[248,261], flight:[230,266], action:[128,318],
     tama:[32,32],
   };
