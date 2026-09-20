@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789865498,
+        "message":  "写せます（4件）"
+    },
+    {
         "title":  "👀 見てください（返事不要）",
         "time":  1789865410,
         "message":  "v1453 ずんだもん・枝豆・兎の文面の差し替え\nmitate-new-2.txt の字へ15文を差し替えた（ずんだ4・枝豆の釦4・枝豆の投票欄2・兎の釦2・兎の投票欄3）。釦③と票を出さない回は今のまま。版は三箇所 v1453。commit は一度（31effcc1）。\n確かめ … git diff -U0 の塊は宣言どおりの12箇所だけ。差し込み（a.weakShapes・F.dup.name×3・F.dup.a/b・pairTripletN×4・pairKinds×2・tileChip(c.code)・n.usagi）と条件の字面9つはそのまま。serifu 再抽出（7599行・口調の混入0）。手元の速い版は終了コード0・8秒。\n宣言との食い違いが一つ … 行数は増減0行と書いたが、枝豆の投票欄が2行→3行になったので本体は +1行。\n雲（35479038347）は completed/success。フル版 両方PASS・㉓も PASS（控えの angle は執事の行だけなので取り直し不要）・配信 success。公開の ver.txt は 1453。\nファイル: koushu-handan.html／ver.txt／serifu.txt／serifu-adv.txt（31effcc1）／reports/y0920-0912-2.md（新）\n実測: 差し替え15文・差分の塊12箇所・本体 +1行／手元の速い版 8秒 PASS17・SKIP5＋adv-check\n実機: 判定後に、人柄ずんだの見立て行・枝豆の釦・兎の釦・投票欄の枝豆と兎の一言が新しい字になっていること。版の字が v1453。"
@@ -188,11 +193,6 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789760076,
         "message":  "再起動-2\n毎週土曜01:00 の再起動（ClaudeWeeklyReboot・10分ごとに1時間繰り返す・次は 09-26 01:00）と、毎日03:00 の掃除（ClaudeEdgeSweep・次は 09-20 03:00）を予定表へ足した。\n①条件は三つ。押し残しが0件（git rev-list --count origin/main..HEAD）・押し直しの印が0行（push-pending.tsv）・仕事が手待ち（hook.log の最後の resume／stop が stop）。一つでも駄目なら何もせず返り、reboot.log に「見送る（押し残し N件／押し直しの印 N件／仕事は 走っている）。10分後の回で見直す」を残す。引き金が10分ごとに1時間繰り返すので、01:00 に走っていても 02:00 までに手待ちになれば再起動する。\n②条件が揃うと、落ちる前に空きと claude の使用MB を札にして押し（reports/r\u003cMMdd-HHmm\u003e.md と report-latest.md）、reboot-pending.txt へ前の測りを書き残してから shutdown /r /t 30 を打つ。\n③起き上がった後の札は、毎分の巡回が印（reboot-pending.txt）を見つけた最初の回に weekly-reboot-after.ps1 を呼んで書き、印を消す。ふだんの回は Test-Path 一回で終わるので毎分の重さは増えない。ログオン時の起こし（ClaudeRebootAfter）は Access is denied で足せなかったため、この形にした。\n作り値七通り合格（再起動の手を偽の綴りへ、押しを -NoPush へ差し替え、記録の置き場も一時の所）。イ 押し残し2件→再起動しない／ロ 押し直しの印あり→しない／ハ 仕事が走っている→しない／ニ 全部よい→した（前の札1枚・渡す印あり）／ホ 起き上がった後→後の札1枚で印は消えた／ヘ 印が無い回→札は増えない／ト 掃除の台→msedge 5本226MB・SearchApp 1本88MB＝6本314MB を数えた（落とさず）。\n作り値で一つ直した … 後の札の台本で、印の道（$Mark）と印の名（$mark）が同じ変数だった（PowerShell は大小を区別しない）。名を $id へ変えた。作り値が無ければ、印が消えず毎分書き続けるところだった。\n触った所は新しい台本三枚（weekly-reboot.ps1／weekly-reboot-after.ps1／edge-sweep.ps1・いずれも構文検査 OK）と、watch-notify.ps1 の押し直しの段の後ろに足した枝（写し .bak-20260919・構文検査 OK・実地の巡回 04:31:12 も通った）と、予定表の二つ。触らない所は本体・ClaudeWatchNotify（:58）／ClaudeRevive（:25）／ClaudeJamWatch（:45）の刻と間隔・ClaudeCodeAtLogon・WSearch と VCService（Disabled のまま）・Defender・押しの敷居（500／1024MB）・譲りの敷居700MB。\nファイル: ~/.claude/weekly-reboot.ps1・weekly-reboot-after.ps1・edge-sweep.ps1（新）／~/.claude/watch-notify.ps1（写し .bak-20260919）／予定表 ClaudeWeeklyReboot・ClaudeEdgeSweep（新）／reports/y0919-0427.md（新）／作り値の台は scratchpad/reboot-test.ps1\n実測: 作り値七通り合格／ClaudeWeeklyReboot は土曜01:00・PT10M/PT1H・次 09-26 01:00／ClaudeEdgeSweep は毎日03:00・次 09-20 03:00／Claude* の予定は12件／押しは b7fad75d で通った\n未検収: ログオン時の起こし（ClaudeRebootAfter）は管理者の窓でなら足せる（人手待ち。いまは毎分の巡回で代えている）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789759417,
-        "message":  "写せます（4件）"
     },
     {
         "title":  "🔎 調べました",
