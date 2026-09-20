@@ -1,13 +1,13 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
-        "time":  1789882330,
-        "message":  "v1456 の検収と stable の進め\nv1456 にヨシを受けて stable を 3421d17a へ進めた（前は 258f8330・v1454）。origin の refs/tags/stable も 3421d17a、stable:ver.txt は 1456。\nv1455（表を外した回）はヨシを挟まずに v1456 が続いたので、stable は v1454 から v1456 へ一つ飛んだ。v1455 の中身は v1456 に含まれている。台帳の未了は0件。\n実測: stable 258f8330（v1454）→ 3421d17a（v1456）／stable:ver.txt 1456"
+        "time":  1789882419,
+        "message":  "写せます（1件）"
     },
     {
         "title":  "✅ 終わりました（返事不要）",
-        "time":  1789881999,
-        "message":  "写せます（1件）"
+        "time":  1789882330,
+        "message":  "v1456 の検収と stable の進め\nv1456 にヨシを受けて stable を 3421d17a へ進めた（前は 258f8330・v1454）。origin の refs/tags/stable も 3421d17a、stable:ver.txt は 1456。\nv1455（表を外した回）はヨシを挟まずに v1456 が続いたので、stable は v1454 から v1456 へ一つ飛んだ。v1455 の中身は v1456 に含まれている。台帳の未了は0件。\n実測: stable 258f8330（v1454）→ 3421d17a（v1456）／stable:ver.txt 1456"
     },
     {
         "title":  "👀 見てください（返事不要）",
