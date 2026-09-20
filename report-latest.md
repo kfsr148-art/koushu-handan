@@ -1,130 +1,84 @@
-# ①done-swept の元を塞いだ ②ClaudeAfterReboot を作った ④蔵と記録の大きさ ⑤期限の調べ
+# ③ 再起動の稽古 — 手順と、戻らなかったときの戻し方（再起動の直前に書いた）
 
-**終わり（残り1件：③再起動の稽古。この札を押したうえで最後に回す）** — 2026-09-20 23:15（VAIO）。
-`koushu-handan.html`・`stable` には触っていない。
+**この札は再起動の直前に書いている。** 以下の手順で機械を落とし、ログオン時の起こしで戻る。
+**戻らなかった場合は、下の「戻し方」を上から順に人の手で当てる。**
 
-## ① done-swept の元を塞いだ
-
-**元** … 退避（`note-missed.txt`）は「**次の本編の札が出る回**」の中でしか出していなかった。
-本編が出ない回——写しの空振り・前と同じ本文・`run:`／`idle:` の回——が続くと退避は残り、
-`pipe-check.ps1` の掃除が先に立て直して **done-swept** が鳴っていた。
-
-**直し** … 退避を出す手を関数 `Emit-Missed` に括り出し、**Stop の回なら本編の可否に関わらずその場で立てる**。
-続けて今の札を立てる。本編の枝では `$missedSaid` を見て**二度立てない**。
-
-| 作り値 | 立った札 |
-|---|---|
-| **イ 退避あり・Stop の回** | **2枚**（「札にならなかった前の仕事」→「今の仕事の札」の順） |
-| **ロ 退避なし・Stop の回** | **1枚**（今の札だけ・今までどおり） |
-| ハ 退避あり・**本編が出ない** Stop の回 | **1枚**（退避分が立つ。前はここで0枚だった） |
-
-＊写し `watch-notify.ps1.bak-20260920d`。構文NG 0・行数 3453→3470。毎分呼び直される台本なので起こし直しは要らない。
-
-## ② ClaudeAfterReboot を作った
-
-**中身**（`~/.claude/after-reboot.ps1`）… 四つを一枚の札にまとめ、**どれか一つでも欠けていれば
-題を「🪟 異常です」にして押し送る**。
-
-| 見るもの | 良しとする形 |
-|---|---|
-| ① 予定表 `Claude*` | **12件以上**そろい、最終結果が 0／267009（走行中）／267011（まだ走っていない）のどれか |
-| ② 見張りの生存 | `watch-status.log` の最終更新が **5分以内** |
-| ③ ntfy.sh の応答 | **HTTP 200** |
-| ④ 公開側 | `notices.json` のいちばん新しい札の刻と `panel-ver.txt` が**両方読める** |
-
-**作り値**（`-Dry` で札を立てずに回す）
-
-```
-イ ふつう  → 題「✅ 再起動の後の点検（返事不要）」／① 12件・最終結果は全て良い ② 0分前
-             ③ HTTP 200 ④ 09-20 23:02:11／142 ／「四つとも○。戻っている。」終了コード 0
-ロ 一つ欠け → 題「🪟 異常です：再起動の後の点検」／③ HTTP 503
-             ／「欠け 1件：ntfy.sh が HTTP 503」終了コード 1
-```
-
-**予定表に入った（schtasks の写し）**
-
-```
-TaskName:              \ClaudeAfterReboot
-Next Run Time:         2026/09/26 1:10:00
-Task To Run:           powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\.claude\after-reboot.ps1
-Scheduled Task State:  Enabled
-Schedule Type:         Weekly       Start Time: 1:10:00      Days: SAT
-```
-
-＊`ClaudeWeeklyReboot` は **土 01:00**。その **10分後**にあたる。
-
-## ④ 蔵と記録の大きさ
-
-**リポジトリの蔵**
+## いまの状態（落とす直前）
 
 | 見るもの | 値 |
 |---|---|
-| `git count-objects -vH` | 緩い物 **13,289個・222.51 MiB**／詰めた物 16,743個・**157.09 MiB**（詰め 2つ） |
-| GitHub 側 `size` | **163,450 KB ＝ 159.6 MiB**（あちらは詰め直したあとの数） |
-| 蔵の開設 | 2026-06-24（**88日**） |
-| 一日あたりの増え | **約 1.81 MiB/日**（159.6 ÷ 88） |
-| 本体の版 | 全 **365版**・直近30日 **39版**・直近7日 **18版** |
-| 本体一版あたり | **約 0.44〜0.54 MiB**（本体の綴りは一版 10.4 MB だが、差分で詰まるのでこの程度） |
-| 30日の押し | **7,910回**（うち控えの押し＝state/board/notices/usage/status/pipe-warn が7日で2,028回） |
+| 予定表 `Claude*` | **13件**（`ClaudeAfterReboot` を足した直後。最終結果は全て 0／267009／267011） |
+| 常駐 `inbox-watch.ps1` | 1本（pid 2116・22:45:17 起動） |
+| 見張りの生存（`watch-status.log`） | 23:08 台に更新あり |
+| ntfy.sh | HTTP **200** |
+| 公開 `notices.json` | いちばん新しい札 **09-20 23:02:11** |
+| 公開 `panel-ver.txt` | **142**（手元142） |
+| 台帳の未了 | **1件（この稽古そのもの）** |
+| 押し残し | 無し（この札まで push 済み） |
 
-**1GB と 5GB に届く見込み**（1.81 MiB/日のまま伸びるとして）
+## 手順
 
-| 目安 | 残り | 届く日 |
-|---|---|---|
-| **1 GB**（1024 MiB） | 864 MiB ＝ **約 478日** | **2028年1月ごろ** |
-| **5 GB**（5120 MiB） | 4960 MiB ＝ **約 2740日** | **2034年3月ごろ** |
+1. いまの状態を札に一枚立てる（`ntfy-say.ps1`）
+2. **この札を push する**（いま済ませた）
+3. `shutdown /r /t 5` で再起動
+4. ログオンすると **`ClaudeCodeAtLogon`**（予定表・ログオン時）が Claude Code を起こす
+5. 起きた側が **見張りの生存・ntfy の応答・公開側の刻**を確かめ、**「戻りました」の札を押し送る**
+6. 台帳の「再起動の稽古」の行を済にする
 
-＊GitHub の目安は「1リポジトリ 1GB 推奨・5GB で連絡」。**当面は詰まらない。**
-＊**手元だけは別**——緩い物が **222 MiB** 溜まっている。`git gc` を一度回せば詰め直せる
-　（代償＝十数分の CPU と入出力。履歴は変わらない）。
+## 戻らなかったときの戻し方（上から順に）
 
-**`~/.claude` の記録**（実測。**最初に書いた見込みの数字は外れていたので、測った値へ差し替えた**）
+**A 窓が起きない（Claude Code が立ち上がらない）**
 
-| 綴り | 大きさ | 回転・掃除 |
-|---|---|---|
-| `watch-notify.log` | **2.63 MiB**（いちばん大きい） | **無し（増え続ける）** |
-| `hook.log` | **1.59 MiB** | **無し（増え続ける）** |
-| `watch-step-log.txt` ＋ `.old.txt` | 0.04 ＋ **0.90 MiB** | **有り**（二枚回し） |
-| `hc-watch.log` | 0.86 MiB | **無し** |
-| `notify-sent.tsv` | **0.05 MiB** | 無し（小さいので実害なし） |
-| `pipe-warn.log` | 0.07 MiB | 無し（一日数行） |
-| `cmd-watch` の記録 | 綴りは**まだ無い**（`cmd-watch-seen.txt` は印だけ・未生成） | — |
-| `.bak-*` の写し | **18 MiB・243枚**（`~/.claude` の中でいちばん重い） | **無し** |
+```
+wscript "C:\Users\user\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\ClaudeInboxWatch.vbs"
+schtasks /Run /TN ClaudeCodeAtLogon
+```
 
-**増え続ける物と直し方（代償つき）**
+＊`ClaudeCodeAtLogon` は「ログオン時」の予定。手で起こすときは上の `/Run`。
+＊常駐（`inbox-watch.ps1`）は **Startup の vbs** が起こす。二重起動は新しい側が古い側を止めるので、そのまま叩いてよい。
 
-1. **`.bak-*`（18 MiB・243枚）** … いちばん重い。同じ台本の写しは**新しい3枚だけ残す**。
-   **代償**＝古い版へ戻せる幅が狭まる。台本は蔵（git）にも入っているので、履歴から戻せる。
-2. **`watch-notify.log`（2.63 MiB）と `hook.log`（1.59 MiB）** … 二枚回しを入れ、1 MiB を超えたら
-   `.old` へ送る（`watch-step-log` と同じ形）。**代償**＝古い足跡が一世代で消える。
-   読む側は末尾しか見ていない（`hook.log` は末尾40行）ので実害は小さい。
-3. **`hc-watch.log`（0.86 MiB）** … 同じ二枚回しでよい。
-4. **`notify-sent.tsv`** … **触らないほうがよい**。札の本文の唯一の控えで、
-   「二度目の出し直し」（09-20）がここを引く。消すと出し直しができなくなる。
-## ⑤ 期限の調べ（直しはまだしていない）
+**B 知らせが来ない（札は立つが iPhone が鳴らない）**
 
-| 見るもの | 種類 | 期限 |
-|---|---|---|
-| `gh` の認証 | **OAuth の札**（`gho_` で始まる・keyring 保管・scope＝`gist`／`read:org`／`repo`） | **日付の期限は無い**。API の返しに `github-authentication-token-expiration` の行が出ない＝無期限。ただし**1年使わないと失効**する決まりがある |
-| 押し（git） | 同じ `gh` の札を使う（`https://github.com/…`・鍵の埋め込みは無し） | 同上 |
-| Pages の配信 | 走りごとの `GITHUB_TOKEN`＋OIDC（`pages: write`／`id-token: write`） | **走りの中だけ有効**。長く持つ札は無い |
-| ntfy の題 | 無料の題（`ntfy.sh/kh-…`） | **期限は無い**。ただし**本文は12時間で消える**（受け取り損ねると読めない） |
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\.claude\pipe-check.ps1
+type C:\Users\user\.claude\pipe-warn.log     （末尾を見る）
+```
 
-**つまり「切れる日付」を持つ物は一つも無い。** 7日前に鳴らす見張りは、**当てる日付が無いので立てられない**。
+＊`ntfy-down` が立っていれば外の詰まり。`push-fail` なら押しの側。
 
-**代わりに入れるなら**（直しはまだしない）
+**C 予定表が動いていない**
 
-- **週に一度、札が生きているかを叩く**見張り … `gh api user` と `git ls-remote` と ntfy への試し送りを回し、
-  **401／403 が返った回だけ「🪟 異常です」**。代償＝週一で3本の通信が増える（数秒）。
-  日付では鳴らせないが、**失効したその週には気づける**。
-- **`gh` の札の「最後に使った日」を控える** … 1年の無使用失効を避けるための見張り。
-  実際には毎分使っているので**当面は不要**。
+```
+schtasks /Query /FO TABLE /V | findstr Claude
+schtasks /Run /TN ClaudeWatchNotify
+```
 
-## 触った所と触らない所
+＊最終結果 **267011**＝まだ走っていない、**267009**＝走行中、**0**＝成功。それ以外の非ゼロは異常。
 
-**触った所** … `~/.claude/watch-notify.ps1`（写し `.bak-20260920d`）／`~/.claude/after-reboot.ps1`（新）／
-予定表 `ClaudeAfterReboot`（新）。
-**触らない所** … `koushu-handan.html`・`stable`・`panel.html`・記録の綴り（④は読みのみ）・`gh` の設定（⑤は読みのみ）。
+**D 公開が止まっている**
+
+```
+cd C:\Users\user\Desktop\mahjong\koushu-handan
+git status
+powershell -NoProfile -File C:\Users\user\.claude\push-mine.ps1
+gh run list --limit 5
+```
+
+＊配信は `check.yml` の deploy。**先端でない回は配らない**関門を 09-20 に入れてあるので、
+　古い回が飛ばされていても異常ではない（先端の回が配る）。
+
+**E 何も分からないとき**
+
+- `~/.claude/orders-open.tsv` … 何が残っているかはここに全部ある（`/clear` でも再起動でも消えない）
+- `~/.claude/work-note.txt` … いま何をしていたか
+- `reports/` … 直近の報告（この札を含む）
+- `git log --oneline -20` … 直前に何を押したか
+
+## 戻ってからやること
+
+1. 生存・ntfy・公開の刻を確かめる（`after-reboot.ps1` を `-Dry` で回せば四つまとめて見られる）
+2. **「戻りました」の札を押し送る**
+3. 台帳の「再起動の稽古」を済にする
 
 ---
 
@@ -133,11 +87,12 @@ Schedule Type:         Weekly       Start Time: 1:10:00      Days: SAT
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **335件**ある。
+　ここに出るのは新しい20件。全部で **336件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0920-2320-reboot.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-2320-reboot.md) | 09-20 23:17 | ③ 再起動の稽古 — 手順と、戻らなかったときの戻し方（再起動の直前に書いた） |
 | [`y0920-2315.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-2315.md) | 09-20 23:16 | ①done-swept の元を塞いだ ②ClaudeAfterReboot を作った ④蔵と記録の大きさ ⑤期限の調べ |
 | [`y0920-2300.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-2300.md) | 09-20 22:52 | ①古い並びを掴んだら取り直す（panel v142）／②「続けて」「進めて」は合図として扱う |
 | [`y0920-2100.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-2100.md) | 09-20 21:02 | pub-late は ok へ戻った／配信の関門を偽の走りで当てた |
@@ -157,6 +112,5 @@ Schedule Type:         Weekly       Start Time: 1:10:00      Days: SAT
 | [`y0920-1640.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-1640.md) | 09-20 16:59 | 赤い行「知らせの道が落ちています」が消えなかった元と直し（panel v139） |
 | [`y0920-1630.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-1630.md) | 09-20 16:35 | 16:11 の訴え二つ（ntfy-down・pub-read）の今 |
 | [`y0920-1500-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-1500-2.md) | 09-20 15:19 | v1457 剣士の八枚を idleRight 52 に揃えて焼き直した（納品） |
-| [`y0920-1500.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-1500.md) | 09-20 14:48 | 【宣言】剣士の八枚を idleRight 52 に揃えて焼き直す（v1457） |
 
 <!-- 控えの一覧 ここまで -->
