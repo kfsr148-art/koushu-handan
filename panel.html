@@ -488,7 +488,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v141（9月20日）</p>
+  <p class="ver" id="verTag">panel v142（9月20日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -516,7 +516,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '141';
+  var PANEL_VER = '142';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -578,6 +578,8 @@
   var lastLost = false;
   /* 控えの見込み（分）。読めない回・「不明」の回は 0。走らせる上限に使う。 */
   var lastMikomiMin = 0;
+  /* 最後に押した札の刻（v142・古い並びの取り直し-1）。state.json の cardAt をそのまま持つ。 */
+  var lastCardAt = 0;
   /* 過去の実測（estimates.json）。見込みが無いときの終了予定を、ここから当てる。 */
   var EST_URL = 'https://kfsr148-art.github.io/koushu-handan/estimates.json';
   var est = null;
@@ -1804,6 +1806,40 @@
     $('board').innerHTML = '<li class="why"><p class="m">' + esc(msg) + '</p></li>';
   }
 
+  /* ---- 古い並びを掴んだら取り直す（v142・古い並びの取り直し-1）----
+     ＊公開の `notices.json` は**道ごとにキャッシュを持ち**、配信が遅れた回は古い並びが返る
+       （2026-09-20 20:26 の巻き戻しでは、20:19 の並びが 19:23 の並びへ戻った）。
+       読んだ側からは、古いのか「本当に新しい札が無い」のかが見分けられない。
+     ＊そこで `state.json` の `cardAt`（＝書いた側が控えた、いちばん新しい札の刻）と突き合わせる。
+       掴んだ並びの頭がそれより古ければ、`latest-name.txt` の道から**取り直す**。
+       あの綴りは毎回名が変わる道を指すので、**一度も取られていない道＝必ず新しい中身**が来る。
+     ＊取り直しても古ければ、**今までどおり次の巡回を待つ**（掴んだ並びをそのまま使う）。
+     ＊`latest-name.txt` が読めない・道の形が違う回も、今までどおり（掴んだ並びを使う）。 */
+  var LATEST_NAME_URL = 'https://kfsr148-art.github.io/koushu-handan/latest-name.txt';
+  function newestTime(arr) {
+    var t = 0;
+    (arr || []).forEach(function (d) { if ((d.time || 0) > t) { t = d.time || 0; } });
+    return t;
+  }
+  function freshen(arr) {
+    if (!Array.isArray(arr)) { return Promise.resolve(arr); }
+    if (!(lastCardAt > 0)) { return Promise.resolve(arr); }        /* 突き合わせる相手が無い */
+    if (newestTime(arr) >= lastCardAt) { return Promise.resolve(arr); }   /* 新しい → 取り直さない */
+    return fetch(LATEST_NAME_URL + '?_t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) { throw new Error('HTTP ' + r.status); } return r.text(); })
+      .then(function (u) {
+        u = String(u || '').trim();
+        if (u.indexOf('https://') !== 0) { throw new Error('道の形が違います'); }
+        return fetch(u + '?_t=' + Date.now(), { cache: 'no-store' })
+          .then(function (r) { if (!r.ok) { throw new Error('HTTP ' + r.status); } return r.json(); });
+      })
+      .then(function (alt) {
+        if (!Array.isArray(alt)) { return arr; }
+        return (newestTime(alt) > newestTime(arr)) ? alt : arr;
+      })
+      .catch(function () { return arr; });   /* 読めない回は今までどおり */
+  }
+
   function pull() {
     /* ＊「送る側」の話題名は、もう一覧には要らない（v10）。
        押し通知を iPhone で受けるために ntfy の側で購読する名前として残してあるだけ。 */
@@ -1815,6 +1851,7 @@
         if (!r.ok) { throw new Error('HTTP ' + r.status); }
         return r.json();
       })
+      .then(function (arr) { return freshen(arr); })   /* v142：古い並びを掴んだら取り直す */
       .then(function (arr) {
         /* 配列でなければ「読めません」へ落とす（v31）。
            以前は空配列と同じ扱いにしていたので、控えに20件積まれていても
@@ -2753,6 +2790,8 @@
         var subj = String(d.subj || '');
         /* 釦の字が見る三つ（v82）。状態・着手の刻・件名。 */
         lastStat = w; lastStartedAt = (d.startedAt || 0); lastSubj = subj;
+        /* 最後に押した札の刻（v142）。一覧が古いかを見分けるのに使う。下の freshen を見よ。 */
+        lastCardAt = (typeof d.cardAt === 'number') ? d.cardAt : 0;
         /* 生存の途切れと見込みを、ここで一度だけ控える（v124・止まりの見分け-1）。
            ＊下の「連絡なし」の早戻りより前に置く。早戻りの後では猫と黄色の行へ届かない。 */
         lastLost = (sec > STALE_SEC);
