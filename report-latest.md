@@ -78,27 +78,29 @@ Schedule Type:         Weekly       Start Time: 1:10:00      Days: SAT
 ＊**手元だけは別**——緩い物が **222 MiB** 溜まっている。`git gc` を一度回せば詰め直せる
 　（代償＝十数分の CPU と入出力。履歴は変わらない）。
 
-**`~/.claude` の記録**
+**`~/.claude` の記録**（実測。**最初に書いた見込みの数字は外れていたので、測った値へ差し替えた**）
 
 | 綴り | 大きさ | 回転・掃除 |
 |---|---|---|
-| `hook.log` | **6.6 MiB** | **無し（増え続ける）** |
-| `notify-sent.tsv` | 1.5 MiB | **無し**（札の控えそのものなので消しにくい） |
-| `watch-notify.log` | 1.2 MiB | **無し** |
-| `watch-step-log.txt` | 0.4 MiB | **有り**（`.old.txt` へ送る二枚回し） |
-| `pipe-warn.log` | 42 KiB | 無し（一日数行なので実害は無い） |
-| `cmd-watch` の記録 | 4 KiB | 無し（同上） |
-| `.bak-*` の写し | **12 MiB・32枚** | **無し**（日付つきで積み上がる） |
+| `watch-notify.log` | **2.63 MiB**（いちばん大きい） | **無し（増え続ける）** |
+| `hook.log` | **1.59 MiB** | **無し（増え続ける）** |
+| `watch-step-log.txt` ＋ `.old.txt` | 0.04 ＋ **0.90 MiB** | **有り**（二枚回し） |
+| `hc-watch.log` | 0.86 MiB | **無し** |
+| `notify-sent.tsv` | **0.05 MiB** | 無し（小さいので実害なし） |
+| `pipe-warn.log` | 0.07 MiB | 無し（一日数行） |
+| `cmd-watch` の記録 | 綴りは**まだ無い**（`cmd-watch-seen.txt` は印だけ・未生成） | — |
+| `.bak-*` の写し | **18 MiB・243枚**（`~/.claude` の中でいちばん重い） | **無し** |
 
 **増え続ける物と直し方（代償つき）**
 
-1. **`hook.log`（6.6 MiB・最大）** … 二枚回し（`hook.log` → `hook.log.old`）を入れ、1 MiB を超えたら送る。
-   **代償**＝古い足跡が一世代で消える。いま `watch-notify.ps1` が末尾40行しか読まないので実害は小さい。
-2. **`.bak-*`（12 MiB・32枚）** … 同じ台本の写しは**新しい3枚だけ残す**。
-   **代償**＝古い版へ戻せる幅が狭まる。git に入っている台本（`~/.claude` も蔵の中）なら履歴から戻せる。
-3. **`notify-sent.tsv`（1.5 MiB）** … **触らないほうがよい**。札の本文の唯一の控えで、
+1. **`.bak-*`（18 MiB・243枚）** … いちばん重い。同じ台本の写しは**新しい3枚だけ残す**。
+   **代償**＝古い版へ戻せる幅が狭まる。台本は蔵（git）にも入っているので、履歴から戻せる。
+2. **`watch-notify.log`（2.63 MiB）と `hook.log`（1.59 MiB）** … 二枚回しを入れ、1 MiB を超えたら
+   `.old` へ送る（`watch-step-log` と同じ形）。**代償**＝古い足跡が一世代で消える。
+   読む側は末尾しか見ていない（`hook.log` は末尾40行）ので実害は小さい。
+3. **`hc-watch.log`（0.86 MiB）** … 同じ二枚回しでよい。
+4. **`notify-sent.tsv`** … **触らないほうがよい**。札の本文の唯一の控えで、
    「二度目の出し直し」（09-20）がここを引く。消すと出し直しができなくなる。
-
 ## ⑤ 期限の調べ（直しはまだしていない）
 
 | 見るもの | 種類 | 期限 |
@@ -136,7 +138,7 @@ Schedule Type:         Weekly       Start Time: 1:10:00      Days: SAT
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
-| [`y0920-2315.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-2315.md) | 09-20 23:14 | ①done-swept の元を塞いだ ②ClaudeAfterReboot を作った ④蔵と記録の大きさ ⑤期限の調べ |
+| [`y0920-2315.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-2315.md) | 09-20 23:16 | ①done-swept の元を塞いだ ②ClaudeAfterReboot を作った ④蔵と記録の大きさ ⑤期限の調べ |
 | [`y0920-2300.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-2300.md) | 09-20 22:52 | ①古い並びを掴んだら取り直す（panel v142）／②「続けて」「進めて」は合図として扱う |
 | [`y0920-2100.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-2100.md) | 09-20 21:02 | pub-late は ok へ戻った／配信の関門を偽の走りで当てた |
 | [`y0920-2040.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-2040.md) | 09-20 20:39 | pub-late（公開が56分遅れ）の元 — 長い回の配信が、古い版を後から上書きしていた |
