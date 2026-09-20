@@ -1,101 +1,68 @@
-# 再起動で切れた二つを塞いだ／WeeklyReboot と AfterReboot を止めた
+# 電源復帰からログオンまでの17.5分 — 自動ログオンは61秒で通っていた。待っていたのは「プロファイルの読み込み16分40秒」
 
-**終わり（残り0件）** — 2026-09-21 00:50（VAIO）。`koushu-handan.html`・`stable` には触っていない。
+**終わり（残り0件）** — 2026-09-21 01:10（VAIO）。**読みだけ。直しはしていない。**
+`koushu-handan.html`・`stable` には触っていない。
 
-## ① 居座りは「常駐が起動後の間だけ3分で落とす」形にした（乙）
+## 1. 時系列（イベント記録から）
 
-**採った理由（甲を採らなかった訳）** … 09-20 の居座り（pid 6772）は**記録を一行も書いていない**。
-つまり**入口の段へ入る前に詰まっていた**ので、**watch-notify 自身に上限を置く形（甲）は届かない**。
-外から見て落とす常駐の手（乙）なら、どこで詰まっても効く。直しも3行で済む。
-
-**中身** … `inbox-watch.ps1` の居座り落としの敷居を、**起動から20分の間だけ 5分→3分**にした。
-20分を過ぎれば今までどおり5分（重い回＝押し・検査を途中で殺さないため）。
-
-```
-$stuckMin = 5
-try {
-  $upMin = ((Get-Date) - (Get-CimInstance Win32_OperatingSystem -ErrorAction Stop).LastBootUpTime).TotalMinutes
-  if ($upMin -lt 20) { $stuckMin = 3 }
-} catch { }
-```
-
-**作り値**（本物の字を切り出し、起動の刻だけ偽って回した）
-
-| 起動からの経過 | 敷居 |
-|---|---|
-| 2分／6分／19分 | **3分** |
-| 21分／300分 | 5分（今までどおり） |
-
-＊09-20 の回に当てると、居座りは **23:43 台**に落ちる（実際は 23:45:29 だった）。**約2分の短縮**。
-＊写し `inbox-watch.ps1.bak-20260921`・構文NG 0・**常駐は 00:44:14 に起こし直し済み**（台本 00:43:56 より新しい）。
-
-## ② ログオンのたびに点検し、落とし直後なら「戻りました」を出す
-
-**中身** … `after-reboot.ps1` に **`-OnLogon`** を足した。**直前の落とし（システムの記録 id=1074）が
-30分以内のときだけ**四つを点検して札を立て、ふつうのログオンは**黙って返る**（記録に一行だけ残す）。
-四つが全部○なら題は **「✅ 戻りました（再起動から）」**、欠けがあれば今までどおり **「🪟 異常です」**。
-
-**作り値**（本物の台本の写しを、**偽の送り手**に差し替えて回した。本物の ntfy・押しは叩いていない）
-
-| 形 | 札 | 題と中身 |
+| 刻 | 記録 | 出どころ |
 |---|---|---|
-| **イ 落とし直後のログオン（8分前）** | **あり** | **✅ 戻りました（再起動から）**／① 予定 11件・最終結果は全て良い ② 見張りの生存 1分前 ③ ntfy HTTP 200 ④ notices.json 00:35:07・panel-ver 142／「四つとも○。戻っている。」 |
-| **ロ ふつうのログオン（400分前）** | **なし** | 「直前の落としが 400分前なので、札は立てない」（記録に一行だけ） |
-| ハ 落とし直後だが ntfy が 503 | あり | **🪟 異常です：再起動の後の点検** |
+| 23:19:07 | `shutdown.exe` が再起動を始めた | System id=1074 |
+| 23:21:27 | 落ちきった | System id=13 |
+| **23:21:52** | **電源が戻った** | System id=12 |
+| 23:22:26 | 記録の役が開いた（稼働33秒） | System id=6005／6013 |
+| **23:22:53** | **認証が開始 → 停止・結果 0**＝**自動ログオンは通っている**（復帰から**61秒**） | Winlogon/Operational id=1／2 |
+| 23:22:53 | winlogon の通知先 **`<Profiles>` が「ログオン」の処理を開始** | Winlogon/Operational id=811 |
+| 23:22:53 | 「セッション 1 でユーザー ログオン通知を受信」／23:22:54 `ntuser.dat`・`UsrClass.dat` を読み込み | User Profile Service id=1／5 |
+| **23:23:53** | **「`<Profiles>` による通知イベント (Logon) の処理に長い時間がかかっています」** | Application id=6005 |
+| 23:25:08 | Google Update サービスが**30秒の時間切れ**で開始できず | System id=7000／7009 |
+| 23:27:29 | セキュア ブート CA/キーの更新が要る、の報せ | System id=1801 |
+| 23:33:38 | Windows Update が更新を探す（16個見つかった） | WindowsUpdateClient id=26 |
+| **23:33:43** | **更新の当て込み開始 … KB2267602**（Microsoft Defender セキュリティ インテリジェンス・**1.459.304.0**） | System id=43／44 |
+| **23:38:56** | **当て込み成功**（**5分13秒**かかった） | System id=19 |
+| **23:39:33** | **`<Profiles>` の処理が終わった＝ログオンが成立**（23:22:53 から **16分40秒**） | Winlogon id=812／User Profile id=2 |
+| 23:39:37 | `ClaudeCodeAtLogon` が走る（結果 0）。予定表の `id=332`（ログオンしていない）はここで止まる | 予定表 |
+| 23:39:53 | claude.exe が立つ | プロセス |
 
-**走らせ方は Startup の置き場にした。** 予定表の「ログオン時」は**作るのに管理者の許しが要り**
-（`schtasks /SC ONLOGON` が **Access denied**）、常駐（`ClaudeInboxWatch.vbs`）と同じ
-**Startup の vbs** なら許し無しで同じ刻に走る。
+＊**`Setup` の記録はこの間ゼロ**——**積み上げ更新（CU）やサービス スタックは当たっていない**。
+＊自動ログオンの設定は入っている（`AutoAdminLogon = 1`／`DefaultUserName = user`）。
 
-```
-C:\Users\user\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\ClaudeAfterLogon.vbs
-  → 5分待ってから powershell -File after-reboot.ps1 -OnLogon（窓は出さない）
-```
+## 2. つまり何が起きていたか
 
-＊**5分待つ**のは、ログオン直後は機械が混んでいて見張りの生存も公開の刻もまだ動かないため。
-＊**数えるのは有効な予定だけ**に変えた（下の③で二つ止めたので、**11件**が基準）。
-　無効の二つも数に入れると、止めたことに気づけなくなる。
+**更新の当て込みは「あった」。** KB2267602（Defender の定義・1.459.304.0）が **23:33:43〜23:38:56 の5分13秒**。
 
-## ③ WeeklyReboot と AfterReboot を止めた（schtasks の写し）
+**ただし17.5分の主因はそれではない。** 自動ログオンは **23:22:53 に結果0で通って**おり、
+そこから **winlogon の `<Profiles>`（ユーザー プロファイルの読み込み）が16分40秒**かかっている。
+Defender の定義更新は**その中に含まれる5分13秒**で、**残る11.5分はプロファイルの読み込みそのもの**。
 
-```
---- ClaudeWeeklyReboot ---
-TaskName:                             \ClaudeWeeklyReboot
-Next Run Time:                        N/A
-Last Run Time:                        1999/11/30 0:00:00
-Last Result:                          267011
-Task To Run:                          C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile
-                                      -ExecutionPolicy Bypass -WindowStyle Hidden
-                                      -File "C:\Users\user\.claude\weekly-reboot.ps1"
-Scheduled Task State:                 Disabled
-Schedule Type:                        Weekly     Start Time: 1:00:00     Days: SAT
+**内訳の目安**
 
---- ClaudeAfterReboot ---
-TaskName:                             \ClaudeAfterReboot
-Next Run Time:                        N/A
-Last Run Time:                        1999/11/30 0:00:00
-Last Result:                          267011
-Task To Run:                          powershell.exe -NoProfile -ExecutionPolicy Bypass
-                                      -File C:\Users\user\.claude\after-reboot.ps1
-Scheduled Task State:                 Disabled
-Schedule Type:                        Weekly     Start Time: 1:10:00     Days: SAT
-```
+| 区間 | 長さ | 中身 |
+|---|---|---|
+| 23:22:53〜23:33:43 | **10分50秒** | プロファイル読み込みの前半。Defender の設定変更が17件・Google Update の30秒時間切れ・セキュア ブートの報せ。**この機械（4GB）で、起動直後の読み込みが詰まっている** |
+| 23:33:43〜23:38:56 | **5分13秒** | **KB2267602 の当て込み**（Defender 定義） |
+| 23:38:56〜23:39:33 | 37秒 | 後片付けとログオンの成立 |
 
-＊**どちらも `Next Run Time: N/A`**。週の自動再起動はもう起きない。
-＊`after-reboot.ps1` そのものは消していない——**ログオンの枝（②）が同じ台本を使う**ため。
-＊手で通し点検したいときは `powershell -File after-reboot.ps1 -Dry` で四つを見られる。
+＊予定表の `Claude*` は **`Logon Mode: Interactive only`** なので、**この16分40秒はまるごと「走らない時間」**になる。
+　`id=332`（ログオンしていないので起動せず）が56回積まれたのは、ここ。
 
-## 実機で見る所
+## 3. 直し方と代償（**直しはまだしない**）
 
-- 次にログオンしたとき、**落とし直後なら5分後に「✅ 戻りました（再起動から）」**が iPhone に届く。
-- **ふつうのログオン（落としていない回）では何も来ない**。
-- 予定表に **`ClaudeWeeklyReboot` と `ClaudeAfterReboot` が Disabled** で並んでいる。
+**前提**：09-21 に **`ClaudeWeeklyReboot` は無効にした**ので、**土曜の自動再起動はもう起きない**。
+下は「人が再起動したとき」に効く話として書く。
 
-## 触った所と触らない所
+| 案 | 直し方 | 代償 |
+|---|---|---|
+| **甲 再起動の前に更新を当てない** | Windows Update の**アクティブ時間**を落とす時刻に掛けて当て込みを止める／Defender の定義更新の刻を `Set-MpPreference -SignatureScheduleDay/-SignatureScheduleTime` で再起動の時刻から離す | **効くのは5分13秒だけ**（主因の11.5分は残る）。定義が古いまま走る時間が延びる。アクティブ時間は**最大18時間**しか取れず、夜中の再起動とは相性が悪い |
+| **乙 点検の刻を延ばす** | ~~`ClaudeAfterReboot` を10分→25分~~ → **いまは `ClaudeAfterLogon`（Startup・ログオンの5分後）**なので、**そのままで足りる**。Startup の物は**プロファイルが読み終わってから**走るため、16分40秒の中では走らない | 延ばすほど**異常に気づくのが遅れる**。いまの形（ログオン＋5分）は、遅いログオンでも自然に後ろへずれる |
+| **丙 プロファイルの読み込みを速くする**（主因に効く） | ①Defender のリアルタイム検査から `~/.claude` と蔵（`koushu-handan`）を除く ②Startup と自動起動の重い物を減らす（RealPlayer Cloud・Google Update は起動に失敗している）③常駐の起こしを遅らせる | ①**検査の穴になる**（外から来た綴りも素通りする）。②③は**戻りが遅くなる**物が出る。どれも**測り直さないと効き目が分からない**（16分40秒の内訳は記録からは割れない） |
+| **丁 ログオンを待たない** | `Claude*` の予定を**「ログオンしていなくても実行」**へ変える | 画面に触れる仕事（`ClaudeCodeAtLogon`・`send-esc.ps1`）は移せない。パスワード保管か SYSTEM 実行が要る（09-21 00:30 の札に同じ表） |
 
-**触った所** … `~/.claude/inbox-watch.ps1`（写し `.bak-20260921`・常駐起こし直し済み）／
-`~/.claude/after-reboot.ps1`／Startup の `ClaudeAfterLogon.vbs`（新）／予定表の二つを無効化。
-**触らない所** … `koushu-handan.html`・`stable`・`panel.html`・`watch-notify.ps1`・押し送りの道。
+**いちばん筋がよいのは丙①**（主因に当たる唯一の手）だが、**検査の穴**という代償が重い。
+**甲は5分13秒しか縮まない。乙は既に済んでいる**（`ClaudeAfterLogon` がログオンの5分後に走る形）。
+
+＊**今回の形なら、戻りの札は出ていた**——`ClaudeAfterLogon` は 23:44:33 ごろに走り、
+　落とし（23:19:07）から25分なので**30分以内に収まる**。
 
 ---
 
@@ -104,11 +71,12 @@ Schedule Type:                        Weekly     Start Time: 1:10:00     Days: S
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **338件**ある。
+　ここに出るのは新しい20件。全部で **339件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0921-0110.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0110.md) | 09-21 00:55 | 電源復帰からログオンまでの17.5分 — 自動ログオンは61秒で通っていた。待っていたのは「プロファイルの読み込み16分40秒」 |
 | [`y0921-0050.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0050.md) | 09-21 00:48 | 再起動で切れた二つを塞いだ／WeeklyReboot と AfterReboot を止めた |
 | [`y0921-0030.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0030.md) | 09-21 00:33 | 再起動の稽古の戻り — 26分の穴は「ログオンしていない間、予定表が一つも走らない」 |
 | [`y0920-2320-reboot.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-2320-reboot.md) | 09-20 23:17 | ③ 再起動の稽古 — 手順と、戻らなかったときの戻し方（再起動の直前に書いた） |
@@ -128,6 +96,5 @@ Schedule Type:                        Weekly     Start Time: 1:10:00     Days: S
 | [`y0920-1756.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-1756.md) | 09-20 17:58 | 赤い行の件（同じ枠の二度目）— **もう直っていて、公開側も戻っている** |
 | [`y0920-1710-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-1710-2.md) | 09-20 17:23 | v1458 「三」の根拠の段へ一文を足した（納品） |
 | [`y0920-1710.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-1710.md) | 09-20 17:00 | 【宣言】「三」の根拠の段の末尾へ一文を足す（v1458） |
-| [`y0920-1640.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-1640.md) | 09-20 16:59 | 赤い行「知らせの道が落ちています」が消えなかった元と直し（panel v139） |
 
 <!-- 控えの一覧 ここまで -->
