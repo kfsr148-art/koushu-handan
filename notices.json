@@ -1,5 +1,10 @@
 [
     {
+        "title":  "👀 見てください（返事不要）",
+        "time":  1789871358,
+        "message":  "v1454 説明欄の三つの直し\n宣言どおり三つ入れた。①L1495 の末尾へ「八人の票は、当てるための物ではなく…当てるのは本判定です。」②L1490 の末尾へ兎の三つ目の条件。③L1445 の釦②の引き方を v1453 の字へ。版は三箇所 v1454。commit は一度（258f8330）。\n確かめ … git diff -U0 の塊は L2・L1424・L1445・L1490・L1495 の5箇所だけ、行数の増減0行。足した字は指示と一字一句同じ。usagiLean の三つの条件式は字面のまま。serifu 再抽出（7599行・口調の混入0）。手元の速い版は終了コード0・5.3秒。\n雲（35483283453）は completed/success。フル版は⑦も㉓も PASS で両方PASS、返事パネルの検査と配信も success。公開の ver.txt は 1454。\nファイル: koushu-handan.html／ver.txt／serifu.txt／serifu-adv.txt（258f8330）／reports/y0920-1058-2.md（新）\n実測: 差分の塊5箇所・増減0行／手元の速い版 5.3秒／雲 フル版 両方PASS／公開 1454\n実機: 説明欄の「四」の末尾に八人の票の一行、兎の行に三つ目の条件、「二」の兎の釦の説明が v1453 の字。版の字が v1454。"
+    },
+    {
         "title":  "🕒 延びています",
         "time":  1789871167,
         "message":  "説明欄の三つの直し（v1454）の宣言\n終了予定11:24を過ぎています（経過31分）"
@@ -193,10 +198,5 @@
         "title":  "🔎 調べました",
         "time":  1789772525,
         "message":  "条件の数の棚卸し（mitate-kazoe.txt）\n済。mitate-kazoe.txt をリポジトリ直下に置いて押した（14400バイト）。git ls-tree origin/main mitate-kazoe.txt は「100644 blob 61d09d3ef911409fcca40e22d81d88e877a29f00\tmitate-kazoe.txt」で、raw も HTTP 200。\n値は全部実測。本体の写しに probe を差して雲で13枚を判定させ、本体が元から持っている控え（window._lastA／_lastFacts／_toolCount／_lastCut）だけを読んだ（診断口は足していない・作法15／写しは終わったら消す・作法14）。台は mitate-kazoe.js（新）、走りは 35403631391（success）。\n頼まれた全項目を定義の行番号つきで書いた … F.multi（L4430-4441）／F.naki の三種（L4446-4471）／F.dup の二種（L4490-4512）／weakShapes（L2671・数え方 L2736-）／F.lady の plan と restTate（L4513-4528）／F.floatIdx と floatTop（L4518-4525）／F.ichi の四種（L4531-4551）／F.sensei（L4553-4566）／枝豆の帯（L4170・L5220・L5221-5225）／AI の帯（L4171-4172・L8714-8733）／現場猫の帯（L5306-5318・L8598）／兎の帯（L4156-4163・L8769・L8787）／fillRemain・fillGood・fillWeak（L2765-2814、値は L2816-2818）／goodShapes（L2670・使う所 L4161）。それぞれに13枚の実例を一つずつ付け、末尾に測った10手の一覧も置いた。\n実測で分かったこと三つ … ①兎の「弱い余りN」は a.fillWeak そのもの（L8769）で、別に数えている物ではない ②現場猫の猫牌は孤立した数牌だけで字牌は数えない（L5316。19m19p19s1234567z で猫牌6枚＝么九の数牌6枚がすべて孤立、字牌7枚は入らない）③役牌の対子でも F.naki が yakuhai にならない席がある（234m567p234s1122z は東が2枚だが場風でも自風でもないため atsumi。a.yakuhaiPair も false）。\n測っていない枝は正直に書いた … F.naki の①yakuhai（役牌の対子が立つ席）と F.dup の②suji（筋かぶり）は、この十手では成立しなかった。条件の字は綴りにあるが、値の実例は無い。\n触った所は mitate-kazoe.txt（新・直下）・mitate-kazoe.js（新）・.github/workflows/mitate-kazoe.yml（新・手で起こす）。触らない所は本体（koushu-handan.html）・mitate.txt・serifu.txt・check.js・ver.txt・stable・~/.claude の台本。\nファイル: mitate-kazoe.txt（新）／mitate-kazoe.js（新）／.github/workflows/mitate-kazoe.yml（新）／reports/y0919-0800.md（新）\n実測: git ls-tree origin/main mitate-kazoe.txt → 100644 blob 61d09d3e… ／raw HTTP 200／雲の走り 35403631391 success・10手すべて測れた"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789771748,
-        "message":  "見立て行の尺の縛りを外す（雲の検査の確かめ）\ncheck.js を直した回の雲のフル版が通った。走り 35401866850・success・22:30:46Z → 22:46:45Z（15分59秒）。「PASS check 本体の納品前チェック／PASS adv-check 探偵編の回帰／両方PASS」。\n⑦ 狭い画面での溢れ も PASS。折り返しの枝を外しても検査は壊れておらず、二択の検査は生きたまま残っている（judged 844x390 溢れなし（二択 bottom=321.8 / 390））。\n見立て行の状態は数字で出続けている（見立て行 七人とも一行（最長 マダム 41字 / 324px））。FAIL にはせず、読める形で残す狙いどおり。\n前の回の未検収（雲のフル版の確かめ）はこれで解けた。台帳の未了も0件。\nファイル: （この回は確かめだけ。綴りは触っていない）\n実測: 走り 35401866850 success・15分59秒／check と adv-check の両方 PASS／⑦ も PASS（二択 bottom=321.8 / 390）"
     }
 ]
