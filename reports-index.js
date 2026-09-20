@@ -61,13 +61,32 @@ function build() {
     '',
     TAIL, ''
   ].join('\n');
-  return { text, n: rows.length, all: files.length };
+  return { text, n: rows.length, all: files.length, files };
+}
+
+/* ---- 直下の report-latest.md は「いちばん新しい控えの写し」（2026-09-20・札の道の綴り-1）----
+   ＊これまでは呼ぶ側が手で写していた（reports/<印>.md → report-latest.md）。写し忘れれば
+     直下の綴りだけ古いまま残り、札の「ファイル:」の行と中身が食い違う。
+   ＊ここで機械が写す。いちばん新しい控え（reports/ の書き込みの刻が最も新しい物）を
+     そのまま写してから、下で一覧を貼る。既に同じ中身なら触らない。 */
+function copyLatest(files) {
+  if (!files.length) { return null; }
+  const newest = files[0];
+  const src = fs.readFileSync(path.join(DIR, newest), 'utf8');
+  let cur = fs.existsSync(LATEST) ? fs.readFileSync(LATEST, 'utf8') : '';
+  const i = cur.indexOf(HEAD);
+  const curBody = (i >= 0 ? cur.slice(0, i).replace(/\s*---\s*$/, '') : cur).replace(/\s+$/, '');
+  if (curBody === src.replace(/\s+$/, '')) { return { newest, copied: false }; }
+  fs.writeFileSync(LATEST, src, 'utf8');
+  return { newest, copied: true };
 }
 
 const r = build();
 if (process.argv.includes('--print')) {
   console.log(r.text);
 } else {
+  const c = copyLatest(r.files);
+  if (c) { console.log('直下の report-latest.md ← reports/' + c.newest + (c.copied ? '（写した）' : '（同じ中身なので触らない）')); }
   let s = fs.existsSync(LATEST) ? fs.readFileSync(LATEST, 'utf8') : '';
   const i = s.indexOf(HEAD), j = s.indexOf(TAIL);
   if (i >= 0 && j > i) { s = s.slice(0, i) + s.slice(j + TAIL.length); }
