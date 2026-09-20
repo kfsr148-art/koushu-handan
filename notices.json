@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 見張りが止まっています（最後の記録 23:19・26分前）",
+        "time":  1789915533,
+        "message":  "見張り（watch-notify）の記録が 26分 途切れています。\n最後の記録 2026-09-20 23:19:06\n\n＊居座っていた回は落としました。次の分の回から戻るはずです。\n＊どの段で止まったかは ~/.claude/watch-step-log.txt にあります。"
+    },
+    {
         "title":  "🔁 再起動の稽古：いまから落とします",
         "time":  1789913907,
         "message":  "再起動の稽古（落とす直前の状態）\n予定表 Claude* 13件（最終結果は全て良い・ClaudeAfterReboot を追加）\n常駐 inbox-watch 1本（pid 2116・22:45:17 起動）\nntfy.sh HTTP 200 ／ 公開 notices.json 09-20 23:02:11 ／ 公開 panel-ver.txt 142\n台帳の未了 1件（この稽古）・押し残し無し\n手順と戻し方は reports/y0920-2320-reboot.md（push 済み）\nこれから shutdown /r で落とす。ログオン時の起こし（ClaudeCodeAtLogon）で戻る。"
