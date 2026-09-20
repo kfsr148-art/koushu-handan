@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🔁 再起動の稽古：いまから落とします",
+        "time":  1789913907,
+        "message":  "再起動の稽古（落とす直前の状態）\n予定表 Claude* 13件（最終結果は全て良い・ClaudeAfterReboot を追加）\n常駐 inbox-watch 1本（pid 2116・22:45:17 起動）\nntfy.sh HTTP 200 ／ 公開 notices.json 09-20 23:02:11 ／ 公開 panel-ver.txt 142\n台帳の未了 1件（この稽古）・押し残し無し\n手順と戻し方は reports/y0920-2320-reboot.md（push 済み）\nこれから shutdown /r で落とす。ログオン時の起こし（ClaudeCodeAtLogon）で戻る。"
+    },
+    {
         "title":  "👀 見てください（返事不要）",
         "time":  1789912931,
         "message":  "古い並びの取り直し（panel v142）と「続けて」の合図\n①notify-record が並びを書くたび last-card-at.txt へいちばん新しい札の刻を置き、inbox-watch がそれを state.json の cardAt へ載せ、panel v142 が notices.json の頭を cardAt と突き合わせて古ければ latest-name.txt の道から取り直す形にした。取り直しても古ければ掴んだ並びのまま次の巡回を待つ。作り値は六通り合格（古い→取り直す／新しい→取り直さない／latest-name.txt が読めない→今までどおり／道の形違い→今までどおり／cardAt 無し→取り直さない／取り直しても古い→そのまま）。②frame-work.ps1 に枠の種類 next を足し、空白と改行を落として「続けて」「進めて」に丸ごと一致する枠は台帳に行を作らず札も出さず、いまの枠としても控えない形にした。次の枠（受信箱の未チェック＋台帳の未了）が無いときだけ「次の枠は無い」の一行の札を立てる。句点と「以上」は落として見る（実際に届く形が「続けて。以上」のため）。作り値五通り合格。\nファイル: ~/.claude/notify-record.ps1（写し .bak-20260920c）／~/.claude/inbox-watch.ps1（写し .bak-20260920・常駐は 22:45:17 に起こし直し）／~/.claude/frame-work.ps1／panel.html／panel-ver.txt／reports/y0920-2300.md／report-latest.md\n実測: 作り値① イ 取り直して 22:40／ロ 取り直さない／ハ・ニ 今までどおり 19:23／ホ 取り直さない／ヘ 取り直しても古いのでそのまま。作り値② イ next・台帳0・札なし／ロ next・台帳0・札「次の枠は無い」／ハ order・台帳1／ニ next・台帳0／ホ order・台帳1。実地 last-card-at.txt=1789905917・state.json cardAt=21:05:17・公開 panel-ver.txt=142（手元142）。構文NG 0（三本とも）。\n実機: 返事パネルの一覧が配信の遅れた回でも古い並びのまま座らない／下の版の字が panel v142（9月20日）／「続けて。以上」とだけ送った回に台帳へ「続けて」という名の仕事が立たない"
@@ -173,10 +178,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789867999,
         "message":  "v1453 の検収と stable の進め\nv1453 にヨシを受けて stable を 31effcc1 へ進めた（前は e219d938・v1452）。origin の refs/tags/stable も 31effcc1、stable:ver.txt は 1453。\n台帳の未了は0件。\n実測: stable e219d938 → 31effcc1／stable:ver.txt 1453"
-    },
-    {
-        "title":  "👀 見てください（返事不要）",
-        "time":  1789865410,
-        "message":  "v1453 ずんだもん・枝豆・兎の文面の差し替え\nmitate-new-2.txt の字へ15文を差し替えた（ずんだ4・枝豆の釦4・枝豆の投票欄2・兎の釦2・兎の投票欄3）。釦③と票を出さない回は今のまま。版は三箇所 v1453。commit は一度（31effcc1）。\n確かめ … git diff -U0 の塊は宣言どおりの12箇所だけ。差し込み（a.weakShapes・F.dup.name×3・F.dup.a/b・pairTripletN×4・pairKinds×2・tileChip(c.code)・n.usagi）と条件の字面9つはそのまま。serifu 再抽出（7599行・口調の混入0）。手元の速い版は終了コード0・8秒。\n宣言との食い違いが一つ … 行数は増減0行と書いたが、枝豆の投票欄が2行→3行になったので本体は +1行。\n雲（35479038347）は completed/success。フル版 両方PASS・㉓も PASS（控えの angle は執事の行だけなので取り直し不要）・配信 success。公開の ver.txt は 1453。\nファイル: koushu-handan.html／ver.txt／serifu.txt／serifu-adv.txt（31effcc1）／reports/y0920-0912-2.md（新）\n実測: 差し替え15文・差分の塊12箇所・本体 +1行／手元の速い版 8秒 PASS17・SKIP5＋adv-check\n実機: 判定後に、人柄ずんだの見立て行・枝豆の釦・兎の釦・投票欄の枝豆と兎の一言が新しい字になっていること。版の字が v1453。"
     }
 ]
