@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🙋 ヨシしてください",
+        "time":  1789773666,
+        "message":  "見立て行と釦の助言の文面を差し替える（v1451）の宣言\n印: y0919-0815\n待っているのは：この宣言へのヨシ（本体 koushu-handan.html の工事なので、作法1のとおり止まって待つ）\n答え方：「y0919-0815 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。\n未検収: 2026-09-19 08:15 y0919-0815 見立て行と釦の助言の文面の差し替え（v1451）の宣言"
+    },
+    {
         "title":  "🔎 調べました",
         "time":  1789772525,
         "message":  "条件の数の棚卸し（mitate-kazoe.txt）\n済。mitate-kazoe.txt をリポジトリ直下に置いて押した（14400バイト）。git ls-tree origin/main mitate-kazoe.txt は「100644 blob 61d09d3ef911409fcca40e22d81d88e877a29f00\tmitate-kazoe.txt」で、raw も HTTP 200。\n値は全部実測。本体の写しに probe を差して雲で13枚を判定させ、本体が元から持っている控え（window._lastA／_lastFacts／_toolCount／_lastCut）だけを読んだ（診断口は足していない・作法15／写しは終わったら消す・作法14）。台は mitate-kazoe.js（新）、走りは 35403631391（success）。\n頼まれた全項目を定義の行番号つきで書いた … F.multi（L4430-4441）／F.naki の三種（L4446-4471）／F.dup の二種（L4490-4512）／weakShapes（L2671・数え方 L2736-）／F.lady の plan と restTate（L4513-4528）／F.floatIdx と floatTop（L4518-4525）／F.ichi の四種（L4531-4551）／F.sensei（L4553-4566）／枝豆の帯（L4170・L5220・L5221-5225）／AI の帯（L4171-4172・L8714-8733）／現場猫の帯（L5306-5318・L8598）／兎の帯（L4156-4163・L8769・L8787）／fillRemain・fillGood・fillWeak（L2765-2814、値は L2816-2818）／goodShapes（L2670・使う所 L4161）。それぞれに13枚の実例を一つずつ付け、末尾に測った10手の一覧も置いた。\n実測で分かったこと三つ … ①兎の「弱い余りN」は a.fillWeak そのもの（L8769）で、別に数えている物ではない ②現場猫の猫牌は孤立した数牌だけで字牌は数えない（L5316。19m19p19s1234567z で猫牌6枚＝么九の数牌6枚がすべて孤立、字牌7枚は入らない）③役牌の対子でも F.naki が yakuhai にならない席がある（234m567p234s1122z は東が2枚だが場風でも自風でもないため atsumi。a.yakuhaiPair も false）。\n測っていない枝は正直に書いた … F.naki の①yakuhai（役牌の対子が立つ席）と F.dup の②suji（筋かぶり）は、この十手では成立しなかった。条件の字は綴りにあるが、値の実例は無い。\n触った所は mitate-kazoe.txt（新・直下）・mitate-kazoe.js（新）・.github/workflows/mitate-kazoe.yml（新・手で起こす）。触らない所は本体（koushu-handan.html）・mitate.txt・serifu.txt・check.js・ver.txt・stable・~/.claude の台本。\nファイル: mitate-kazoe.txt（新）／mitate-kazoe.js（新）／.github/workflows/mitate-kazoe.yml（新）／reports/y0919-0800.md（新）\n実測: git ls-tree origin/main mitate-kazoe.txt → 100644 blob 61d09d3e… ／raw HTTP 200／雲の走り 35403631391 success・10手すべて測れた"
@@ -243,10 +248,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789624182,
         "message":  "写せます（5件）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789624056,
-        "message":  "stable を v1450 へ\nv1450 ヨシを受けて stable を ed7ce66d へ進めた。前は 7a3d217a（v1449）。push は --no-verify。\n進んだことを字面で確かめた … stable は ed7ce66d（v1450 説明欄の二の字を直した）で、git show stable:ver.txt が 1450。手元の版の字（data-ver・verTag・ver.txt）も三つとも 1450 で揃っている。\n説明欄の作り替えから点検までは、これで一通り終わった。v1444 で六節へ組み替え、v1446 で三に点棒の数字、v1450 で二の字の食い違い三つ（例を13枚・押せる枚数は10〜13枚・兎の落ちの枝）を直した。\n台帳の未了は 0件。\nファイル: （本体には触っていない。stable タグだけを ed7ce66d へ）\n実測: stable 7a3d217a→ed7ce66d／git show stable:ver.txt=1450／手元の data-ver=1450・verTag=v1450・ver.txt=1450"
     }
 ]
