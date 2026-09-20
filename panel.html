@@ -488,7 +488,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v140（9月20日）</p>
+  <p class="ver" id="verTag">panel v141（9月20日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -516,7 +516,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '140';
+  var PANEL_VER = '141';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -839,7 +839,14 @@
     (allRows || []).forEach(function (d) {
       var t = String(d.title || '');
       if (t.indexOf('終わりました') < 0 && t.indexOf('調べました') < 0) { return; }
-      if (/写せます（/.test(String(d.message || ''))) { return; }   /* 数だけの札は仕事ではない */
+      /* 数だけの札は仕事ではない（v141 で**丸ごと一致**へ絞った）。
+         ＊v115 の形は「本文のどこかに 写せます（ が在れば外す」だった。まとめた札は
+           中に「写せます（2件）」を含むことがあり、**中身のある札まで外れていた**。
+           2026-09-20 19:23 の「調べました」がこれで外れ、黄色い行が 19:04 で止まった。
+         ＊外すのは、括弧の前後を落として本文が「写せます（N件）」**だけ**の札。
+           notify-record.ps1 が公開の並びから外すのと同じ見分けにしてある。 */
+      var mOnly = String(d.message || '').replace(/[\r\n]+/g, '').replace(/^[ 　]+|[ 　]+$/g, '');
+      if (/^写せます（[0-9]+件）$/.test(mOnly)) { return; }
       if (!best || (d.time || 0) > (best.time || 0)) { best = d; }
     });
     return best;
