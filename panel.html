@@ -488,7 +488,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v142（9月20日）</p>
+  <p class="ver" id="verTag">panel v143（9月21日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -516,7 +516,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '142';
+  var PANEL_VER = '143';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1274,6 +1274,13 @@
      ＊受け取った指示の一行は **v72 で落とした**。画面から消した行（v70）は写しにも入れない。
      ＊長い本文を貼ると受け取る側が添付へ変えてしまうので、四千字はその上限として置いた値。 */
   var NOTICES_PAGE = 'https://kfsr148-art.github.io/koushu-handan/notices.json';
+  /* ---- 写しの頭に置く道は、**一意の名**にする（v143・写しの道-1）----
+     ＊`notices.json` は**毎回同じ道**なので、受け取る側の読み口は**前に読んだ中身を返す**
+       ことがある（配信網が道ごとに取り置くため）。写しを渡しても古い並びが開く。
+     ＊`latest-name.txt` が指す `notices-<刻>.json` は**一度も取られていない道**なので、
+       必ずその時の中身が来る。
+     ＊読めない回・道の形が違う回は**今までどおり `notices.json`**。 */
+  var copySrcUrl = NOTICES_PAGE;
   /* 本文を全文で入れる上限（v69）。ここに達したら、そこから先の札は一行だけにする。
      ＊四千字は「貼り付けが本文のまま届く上限」としてまず置いた値。
        実地で壊れるようなら下げる。下げるときはこの一行だけを直す。 */
@@ -1404,7 +1411,7 @@
          v70 で画面から消したので、写しにだけ残っているのは筋が通らない。
          画面から消した行は写しにも入れない、で揃える。
        ＊足していたのは push の一行だけなので、抜いても空行は残らない。 */
-    var out = [NOTICES_PAGE, nowLine()];
+    var out = [copySrcUrl, nowLine()];
     /* 作業中の札があるときは、文の頭に一行だけ立てる（v78）。
        ＊「未了 N件：（題）、（題）」の形。題は読点で並べる。
        ＊0件のときは行ごと出さない（空の見出しを残さない）。
@@ -1816,6 +1823,20 @@
      ＊取り直しても古ければ、**今までどおり次の巡回を待つ**（掴んだ並びをそのまま使う）。
      ＊`latest-name.txt` が読めない・道の形が違う回も、今までどおり（掴んだ並びを使う）。 */
   var LATEST_NAME_URL = 'https://kfsr148-art.github.io/koushu-handan/latest-name.txt';
+  /* 一意の名を取り直す（v143）。取れたら写しの頭に置く道を差し替える。
+     ＊取れない回・道の形が違う回は `notices.json` へ戻す（黙って古い名を持ち続けない）。
+     ＊綴りは一行しかないので、毎回の巡回で取っても軽い。 */
+  function refreshCopyUrl() {
+    return fetch(LATEST_NAME_URL + '?_t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) { throw new Error('HTTP ' + r.status); } return r.text(); })
+      .then(function (u) {
+        u = String(u || '').trim();
+        if (u.indexOf('https://') !== 0 || u.indexOf('notices-') < 0) { throw new Error('道の形が違います'); }
+        copySrcUrl = u;
+        return u;
+      })
+      .catch(function () { copySrcUrl = NOTICES_PAGE; return NOTICES_PAGE; });
+  }
   function newestTime(arr) {
     var t = 0;
     (arr || []).forEach(function (d) { if ((d.time || 0) > t) { t = d.time || 0; } });
@@ -1851,7 +1872,7 @@
         if (!r.ok) { throw new Error('HTTP ' + r.status); }
         return r.json();
       })
-      .then(function (arr) { return freshen(arr); })   /* v142：古い並びを掴んだら取り直す */
+      .then(function (arr) { refreshCopyUrl(); return freshen(arr); })   /* v142：古い並びを掴んだら取り直す ／ v143：写しの頭の道も取り直す */
       .then(function (arr) {
         /* 配列でなければ「読めません」へ落とす（v31）。
            以前は空配列と同じ扱いにしていたので、控えに20件積まれていても
@@ -2286,7 +2307,7 @@
      ＊まとめて写しは前から入れていたが、個別の「写す」には入っていなかった。
        受け取る側は写された文だけを見るので、どの札の写しにも読み元を添える。
      ＊「URLを写す」の釦（#btnCopyUrl・L319）はそのまま残す。あちらは道だけを渡す口。 */
-  function withPage(t) { return NOTICES_PAGE + String.fromCharCode(10) + String(t); }
+  function withPage(t) { return copySrcUrl + String.fromCharCode(10) + String(t); }
   function copyBoxed(items, i, btn) {
     var d = (items || [])[i];
     if (!d) { return; }
