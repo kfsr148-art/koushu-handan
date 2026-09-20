@@ -488,7 +488,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v139（9月20日）</p>
+  <p class="ver" id="verTag">panel v140（9月20日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -516,7 +516,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '139';
+  var PANEL_VER = '140';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1158,22 +1158,8 @@
      ＊字を「作業中 — 終わるまで待つ」に変え、disabled にする（見た目は上の CSS）。
      ＊0件に戻れば、そのまま元の「まとめて写す（N件）」へ戻る。
      ＊個別の「写す」釦は触らない。要る札は一枚ずつ取れる。 */
-  /* 直近の「写せます（N件）」の知らせが言っている数を読む（v96）。
-     ＊控えの札（allRows）を新しい順に見て、本文に「写せます（N件）」を含む
-       いちばん新しい一枚から N を取る。
-     ＊まとめ札（「この間にまとまった知らせ 2本」）の中に入っていることもあるので、
-       一行目だけでなく**本文のどこでも**当てる。
-     ＊見つからなければ 0 を返す。呼ぶ側が落とし方を決める。 */
-  function lastReadyCount() {
-    var best = null;
-    (allRows || []).forEach(function (d) {
-      var mm = String(d.message || '').match(/写せます（(\d+)件）/);
-      if (!mm) { return; }
-      var t = d.time || 0;
-      if (!best || t > best.t) { best = { t: t, n: parseInt(mm[1], 10) }; }
-    });
-    return best ? best.n : 0;
-  }
+  /* （v140）抜け殻だった lastReadyCount() は消した——v117 で呼び手が無くなっていた
+     （まとめて写すの分母 M は N と同じ数に統一した。写せますの札は数にも目次にも使わない）。 */
 
   /* 写せる札の目次を塗る（v115・パネルの見え方-1）。
      ＊並びは釦の数と**同じ一回の走査**（mergedTodo）から取る。数と中身がずれない。
