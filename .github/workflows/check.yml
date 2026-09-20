@@ -163,12 +163,36 @@ jobs:
           fi
       - uses: actions/checkout@v4
         if: steps.guard.outputs.skip != '1'
+      # ---- 古い版の後出し上書きを止める（2026-09-20・pub-late の元-1／乙）----
+      #   ＊配信の段は**その走りの commit** を配る（checkout は github.sha を取る）。
+      #     検査に時間のかかった回の配信が、あとから押した新しい回の配信を**上書きして戻す**。
+      #     2026-09-20 20:26:51 がこれ——panel v141 の回（20:09:46 の commit・検査17分）の
+      #     配信が、20:20 と 20:22 の配信のあとに着き、公開の notices.json を
+      #     20:19 の中身から **19:23 の中身へ戻した**。20:30 の巡回が pub-late（56分）を立てた。
+      #   ＊直し … **この回の commit が main の先端でなければ配信しない。** 先端の回が自分で配る。
+      #     押しは必ず走りを起こすので、配る者が居なくなることはない。
+      #   ＊採らなかった案 … 甲＝配信の段で main を checkout する（先端の中身を配る形。ただし
+      #     **検査を通していない先端**を別の回が配ってしまうので、作法18 の関門が抜ける）。
+      #     丙＝そのままにして次の押しを待つ（遅れが最長で検査の尺だけ開く）。
+      - name: この回の commit がまだ先端かを見る
+        id: tip
+        if: steps.guard.outputs.skip != '1'
+        run: |
+          git fetch --quiet --depth=1 origin main
+          TIP=$(git rev-parse FETCH_HEAD)
+          echo "先端 $TIP ／ この回 $GITHUB_SHA"
+          if [ "$TIP" = "$GITHUB_SHA" ]; then
+            echo "stale=0" >> "$GITHUB_OUTPUT"
+          else
+            echo "stale=1" >> "$GITHUB_OUTPUT"
+            echo "先端が進んでいるので、この回は配信を飛ばす（先端の回が配る）"
+          fi
       - uses: actions/configure-pages@v5
-        if: steps.guard.outputs.skip != '1'
+        if: steps.guard.outputs.skip != '1' && steps.tip.outputs.stale != '1'
       - uses: actions/upload-pages-artifact@v3
-        if: steps.guard.outputs.skip != '1'
+        if: steps.guard.outputs.skip != '1' && steps.tip.outputs.stale != '1'
         with:
           path: '.'
       - id: deployment
-        if: steps.guard.outputs.skip != '1'
+        if: steps.guard.outputs.skip != '1' && steps.tip.outputs.stale != '1'
         uses: actions/deploy-pages@v4
