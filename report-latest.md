@@ -1,6 +1,6 @@
 # 公開側 state は戻っている／置き去りの gh・git を常駐が落とす／空き300MB割れで一発
 
-**終わり（残り0件）** — 2026-09-21 07:35（VAIO）。`koushu-handan.html`・`stable` には触っていない。
+**終わり（残り0件）** — 2026-09-21 07:41（VAIO）。`koushu-handan.html`・`stable` には触っていない。
 
 ---
 
@@ -110,7 +110,27 @@ git.exe pid=976・0分・親不在／git.exe pid=7332・0分・落とす物の�
 **同じ回で、本物の置き去り（pid 4204・5分・親不在＝また別の `pull --rebase` の中身）も一緒に落ちた。**
 **親の生きている gh（pid 1812・2分）は落ちていない**——これが乙・丙の実物での裏付けになる。
 
-合計 **PASS=16 FAIL=0**（偽の並び）＋ **PASS**（実物）。
+合計 **PASS=16 FAIL=0**（偽の並び）＋ **PASS**（写しでの実物）。
+
+### 通しの確認（本番の常駐が落とすか）
+
+上の二つは**写し**を駆動した物なので、**本番の巡回に載っているか**を別に見た。
+本物の `git.exe` を親無しで立て、こちらは何もせず、常駐（pid 6604）が落とすのを待った。
+
+```
+07:36:37  立てた: git.exe pid=5600（親 7364）
+07:39:13  常駐が落とした
+          pipe-warn.log … orphan-kill  置き去りの gh／git を 2本 落とした
+                          （git.exe pid=7364・3分・親不在／git.exe pid=5600・3分・落とす物の子）。
+                          空き 440MB → 433MB
+          inbox-watch.log … 置き去りの gh／git を 2本 落とした（空き 440→433MB）
+07:39:18  生死を見て落ちていることを確かめた（立ててから 160秒）
+```
+
+**PASS。** 160秒は「親不在の猶予 90秒 ＋ 2分ごとの巡回」の合わさった値で、決めどおり。
+＊この回の空きは **440 → 433MB と下がっている**。落として返る分より、同じ帯で動いている
+　ほかの仕事が食う分のほうが大きかったためで、**数字は取り繕わずそのまま載せる**。
+　空きが返るのは、07:27 の実物の回（445 → 449MB）のように**置き去りが重い時**。
 
 ---
 
@@ -202,7 +222,7 @@ git.exe pid=976・0分・親不在／git.exe pid=7332・0分・落とす物の�
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
-| [`y0921-0730.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0730.md) | 09-21 07:32 | 公開側 state は戻っている／置き去りの gh・git を常駐が落とす／空き300MB割れで一発 |
+| [`y0921-0730.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0730.md) | 09-21 07:39 | 公開側 state は戻っている／置き去りの gh・git を常駐が落とす／空き300MB割れで一発 |
 | [`y0921-0655.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0655.md) | 09-21 06:52 | 見張りの止まりの元は「空きメモリ」。使用量の読みではない |
 | [`y0921-0245.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0245.md) | 09-21 02:41 | ①使用量の見張りを足した ②控えの押し残し230件を通した ③鍵の作り直し方を置いた |
 | [`y0921-0140.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0140.md) | 09-21 01:36 | ①写しの頭の道を一意の名にした（panel v143） ②使用量の敷居と、~/.claude の写しの調べ |
