@@ -1,1 +1,1 @@
-{"orderAt":"2026-09-21 08:58:24","order":"Get-Process claude | Sort-Object StartTi","statAt":1789948578,"stat":"作業中","subj":"溜まっていた枠の行方と、会話の控えの大きさ","mikomi":"15分","startedAt":1789948578,"todo":0,"mailUnread":0,"rcName":"VAIO koushu-handan","rcPid":3416,"cardAt":1789948531,"at":1789948713}
+{"orderAt":"2026-09-21 08:58:24","order":"Get-Process claude | Sort-Object StartTi","statAt":1789948764,"stat":"手待ち","subj":"溜まっていた枠の行方と、会話の控えの大きさ","mikomi":"15分","startedAt":0,"todo":0,"mailUnread":0,"rcName":"VAIO koushu-handan","rcPid":3416,"cardAt":1789948531,"at":1789948764}
