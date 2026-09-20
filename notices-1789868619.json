@@ -1,5 +1,25 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789868618,
+        "message":  "写せます（2件）"
+    },
+    {
+        "title":  "🔎 調べました",
+        "time":  1789868527,
+        "message":  "訴え三件の元と説明欄の二つの確かめ\n①push-defer（09-19 22:31）は決めどおりの見送り。押し残しの本数を見てから刻を取る間に押しが通り、刻が空で返った回。09-17 に入れた守りが効いた形で鳴ってもいない。直しは要らない。\n②subj-gap（09-19 23:10）は空振り。控え「連携の総点検（…）」と画面「連携の総点検」は同じ仕事だが、頭が一致すれば見送る門が「短い方が8字以上」のときしか効かず、7字の「連携の総点検」が門を外れた。直すなら下限を4字ほどへ下げるか、括弧から後ろを落として比べる。代償は別件を同じ文とみなす恐れ（下限を下げる側）。\n③step-slow（09-20 03:20）は夜の重さ。押し直しの段が64.3秒だが push-retry.log も git-push.log も空で、子を起こして返るまでの時間だけ。03:19:46 に kagi-watch を20秒で切り、03:20:54 の入口が111秒。03:00 の掃除の直後の帯で、Defender の走査は無し。直すなら「入口が重かった回・空きが敷居割れの回」も重い扱いにして訴えない（代償：本当の詰まりを見落とす）か、子を起こす段だけ上限を90秒にする。\n説明欄①「八人の票は当てるための物ではなく見る場所を示す物。当てるのは本判定」の一行は無い。近い字は L1440（答えより見る場所を覚えるための道具）・L1445（どの釦を押しても判定そのものは一切変わらない）・L1495（割れは材料の違い）・節五（判定そのものは一切変えません）の四つ。\n説明欄②兎の式は L1490 に「弱い余りが一つも無ければ攻め、二つ以上なら守り」とあるが、三つ目の条件（fillGood\u003e=3 かつ goodShapes\u003c=3 で守り）はどこにも無い。L1445 の釦②の言い回しは v1453 の字と違っている。\nファイル: reports/y0920-1040.md（新）／report-latest.md\n実測: 三件とも今は消えている（09-19 23:20:20 に ok・pipe-seen は空）／subj-gap の門の下限は8字・当たった件名は7字／step-slow は押し直し64.3秒・上限60秒"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789867999,
+        "message":  "v1453 の検収と stable の進め\nv1453 にヨシを受けて stable を 31effcc1 へ進めた（前は e219d938・v1452）。origin の refs/tags/stable も 31effcc1、stable:ver.txt は 1453。\n台帳の未了は0件。\n実測: stable e219d938 → 31effcc1／stable:ver.txt 1453"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789865498,
+        "message":  "写せます（4件）"
+    },
+    {
         "title":  "👀 見てください（返事不要）",
         "time":  1789865410,
         "message":  "v1453 ずんだもん・枝豆・兎の文面の差し替え\nmitate-new-2.txt の字へ15文を差し替えた（ずんだ4・枝豆の釦4・枝豆の投票欄2・兎の釦2・兎の投票欄3）。釦③と票を出さない回は今のまま。版は三箇所 v1453。commit は一度（31effcc1）。\n確かめ … git diff -U0 の塊は宣言どおりの12箇所だけ。差し込み（a.weakShapes・F.dup.name×3・F.dup.a/b・pairTripletN×4・pairKinds×2・tileChip(c.code)・n.usagi）と条件の字面9つはそのまま。serifu 再抽出（7599行・口調の混入0）。手元の速い版は終了コード0・8秒。\n宣言との食い違いが一つ … 行数は増減0行と書いたが、枝豆の投票欄が2行→3行になったので本体は +1行。\n雲（35479038347）は completed/success。フル版 両方PASS・㉓も PASS（控えの angle は執事の行だけなので取り直し不要）・配信 success。公開の ver.txt は 1453。\nファイル: koushu-handan.html／ver.txt／serifu.txt／serifu-adv.txt（31effcc1）／reports/y0920-0912-2.md（新）\n実測: 差し替え15文・差分の塊12箇所・本体 +1行／手元の速い版 8秒 PASS17・SKIP5＋adv-check\n実機: 判定後に、人柄ずんだの見立て行・枝豆の釦・兎の釦・投票欄の枝豆と兎の一言が新しい字になっていること。版の字が v1453。"
@@ -58,11 +78,6 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789823233,
         "message":  "hold-stuck の直し（空の札を溜め場へ入れない）\nwatch-notify.ps1 の Send-Ntfy の溜め場の入口（Add-Held の直前）で、題と本文がどちらも空の札は溜め場へ入れず、記録に「空の札を断った（stale の回）」と一行残して返す形にした。写しは .bak-20260919d、構文検査 OK。\n作り値三通り合格（偽の溜め場・本物の送り手は偽物に差し替え）… 空→断る（溜め場0行）／題だけ空→入れる／両方あり→入れる。本物の溜め場と送り手には当てていない。\n気になる所（直していない）… 題だけ空の一本は出す側が「読めない」と見て居座る判じのまま。いまそういう札を作る道は見当たらない。\n台帳の hold-stuck の行を済にした。台帳の残りは0件。\nファイル: ~/.claude/watch-notify.ps1（写し .bak-20260919d）／reports/y0919-2205.md（新）\n実測: 作り値 空→溜め場0行・題だけ空→1行・両方あり→2行／台帳の未了0件"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789822839,
-        "message":  "写せます（2件）"
     },
     {
         "title":  "✅ 終わりました（返事不要）",
@@ -183,20 +198,5 @@
         "title":  "🔎 調べました",
         "time":  1789769225,
         "message":  "見立て行の棚卸し（mitate.txt）\n済。mitate.txt をリポジトリ直下に置いて押した（11189バイト）。git ls-tree origin/main mitate.txt は「100644 blob ce304ec9b9db45b79ca1260c4043e56d82047fcf\tmitate.txt」で、raw も HTTP 200。\n前の回に「作り終えていなければ作り終え」とあったが、この回が初回でまだ作っていなかった。置き場所の移動も押し直しも要らず、作って直下へ置き、押した。\n中身は二節。【一】人柄七人の見立て行＝toneAngleLine（L4659-4736）の全分岐で、執事2・軍師6・ずんだ4・お嬢様3・マダム2・一姫8・先生3 の28通り。【二】四つの釦の助言＝toolEyeSay（L4843-4870）の全分岐で、枝豆3＋食い違い2・AI3＋食い違い2・現場猫3・兎3＋投票欄3。\n条件は材料の出どころの行番号つきで書いた（toneFacts L4393-4570／スイッチ三つ L8660-8738／usagiLean L4156）。〈…〉は手によって変わる差し込み。方言は標準語の型だけを載せた（見立て行は方言チップでは変わらず、方言が掛かるのは TONE_WORDS 側の判定の一言）。釦は上から順に見て最初に当たったものを出す形なので、その順のまま並べた（スイッチの一行＞黙る帯の一行＞投票欄の言い分）。\n触った所は mitate.txt を新しく置いただけ。文面は一字も直していない。触らない所は本体（koushu-handan.html）・serifu.txt・ver.txt・stable・~/.claude の台本。\nファイル: mitate.txt（新・リポジトリ直下）／reports/y0919-0450.md（新）\n実測: git ls-tree origin/main mitate.txt → 100644 blob ce304ec9b9db45b79ca1260c4043e56d82047fcf mitate.txt／raw は HTTP 200／押しは 7137885c（綴り）と 4c29f682（札）で通った"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789760076,
-        "message":  "再起動-2\n毎週土曜01:00 の再起動（ClaudeWeeklyReboot・10分ごとに1時間繰り返す・次は 09-26 01:00）と、毎日03:00 の掃除（ClaudeEdgeSweep・次は 09-20 03:00）を予定表へ足した。\n①条件は三つ。押し残しが0件（git rev-list --count origin/main..HEAD）・押し直しの印が0行（push-pending.tsv）・仕事が手待ち（hook.log の最後の resume／stop が stop）。一つでも駄目なら何もせず返り、reboot.log に「見送る（押し残し N件／押し直しの印 N件／仕事は 走っている）。10分後の回で見直す」を残す。引き金が10分ごとに1時間繰り返すので、01:00 に走っていても 02:00 までに手待ちになれば再起動する。\n②条件が揃うと、落ちる前に空きと claude の使用MB を札にして押し（reports/r\u003cMMdd-HHmm\u003e.md と report-latest.md）、reboot-pending.txt へ前の測りを書き残してから shutdown /r /t 30 を打つ。\n③起き上がった後の札は、毎分の巡回が印（reboot-pending.txt）を見つけた最初の回に weekly-reboot-after.ps1 を呼んで書き、印を消す。ふだんの回は Test-Path 一回で終わるので毎分の重さは増えない。ログオン時の起こし（ClaudeRebootAfter）は Access is denied で足せなかったため、この形にした。\n作り値七通り合格（再起動の手を偽の綴りへ、押しを -NoPush へ差し替え、記録の置き場も一時の所）。イ 押し残し2件→再起動しない／ロ 押し直しの印あり→しない／ハ 仕事が走っている→しない／ニ 全部よい→した（前の札1枚・渡す印あり）／ホ 起き上がった後→後の札1枚で印は消えた／ヘ 印が無い回→札は増えない／ト 掃除の台→msedge 5本226MB・SearchApp 1本88MB＝6本314MB を数えた（落とさず）。\n作り値で一つ直した … 後の札の台本で、印の道（$Mark）と印の名（$mark）が同じ変数だった（PowerShell は大小を区別しない）。名を $id へ変えた。作り値が無ければ、印が消えず毎分書き続けるところだった。\n触った所は新しい台本三枚（weekly-reboot.ps1／weekly-reboot-after.ps1／edge-sweep.ps1・いずれも構文検査 OK）と、watch-notify.ps1 の押し直しの段の後ろに足した枝（写し .bak-20260919・構文検査 OK・実地の巡回 04:31:12 も通った）と、予定表の二つ。触らない所は本体・ClaudeWatchNotify（:58）／ClaudeRevive（:25）／ClaudeJamWatch（:45）の刻と間隔・ClaudeCodeAtLogon・WSearch と VCService（Disabled のまま）・Defender・押しの敷居（500／1024MB）・譲りの敷居700MB。\nファイル: ~/.claude/weekly-reboot.ps1・weekly-reboot-after.ps1・edge-sweep.ps1（新）／~/.claude/watch-notify.ps1（写し .bak-20260919）／予定表 ClaudeWeeklyReboot・ClaudeEdgeSweep（新）／reports/y0919-0427.md（新）／作り値の台は scratchpad/reboot-test.ps1\n実測: 作り値七通り合格／ClaudeWeeklyReboot は土曜01:00・PT10M/PT1H・次 09-26 01:00／ClaudeEdgeSweep は毎日03:00・次 09-20 03:00／Claude* の予定は12件／押しは b7fad75d で通った\n未検収: ログオン時の起こし（ClaudeRebootAfter）は管理者の窓でなら足せる（人手待ち。いまは毎分の巡回で代えている）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789759417,
-        "message":  "写せます（4件）"
-    },
-    {
-        "title":  "🔎 調べました",
-        "time":  1789759338,
-        "message":  "再起動-1（後の測り）\n①起き上がった後の実測（04:19:51）… 起き上がった刻は 2026-09-18 22:15:38 で、それから364分（6時間4分）。空き 1052MB／総3975MB。claude は1本 pid 6960・456MB で、起きたのは 09-18 22:33:11（再起動の18分後）。WSearch は 起き方=Disabled・状態=Stopped、VCService も Disabled・Stopped。VCAgent も SearchIndexer も0本。上位6本は claude 457／MsMpEng 298／explorer 257／msedge 133／SearchApp 92／powershell 88MB。\n②前と並べた … 空きは 1122MB → 1052MB で -70MB、claude は 456MB → 456MB で ±0、WSearch と VCService は Disabled・Stopped のまま変わらず。一行で言うと、止めた二本は再起動を越えて上がらなかったが、空きは70MB下がり、claude は6時間で前と同じ456MBまで戻った。\n②当てが外れた所を正直に書いた … 「開き直せば claude は270〜360MBへ落ちる」（空きの内訳-2 ①）は6時間後には残っていない。6日走った456MBと6時間走った456MBが同じ値で、claude の使用MBは走った長さでは決まらない。空きが下がった訳は、二本が居なくなった190MBより新しく立った物のほうが多いため … explorer 157→257MB（+100）、msedge 0本→5本133MB（開き直された）、SearchApp が新顔で92MB、MsMpEng は 336→298MB（-38）。+287MB が新しく乗り、-190MB と -38MB を食い切った。\n③再起動-2（毎週土曜01:00 の起こし）の枠は受け取っていない。台帳の「再起動-2」は 2026-08-26 の別件（立ち上がり後、自動で戻った物と手動だった物を時刻つきで報告）で、毎週土曜の枠は台帳にも orders-full.jsonl にも無い。予定表にも Claude* の毎週の引き金は一件も無い。\n触った所は無し（測っただけ）。触らない所は本体・~/.claude の台本・WSearch／VCService の設定（Disabled のまま）・Defender・予定表の起こし・claude の窓。\nファイル: reports/y0918-2212-2.md（新）\n実測: 起動 22:15:38・6時間4分／空き 1122→1052MB（-70）／claude 456→456MB（±0・pid 6960・22:33:11 起動）／WSearch と VCService は Disabled・Stopped／VCAgent と SearchIndexer は0本／押しは 3c2a237f で通った"
     }
 ]
