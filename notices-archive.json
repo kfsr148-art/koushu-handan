@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🔎 調べました",
+        "time":  1789769225,
+        "message":  "見立て行の棚卸し（mitate.txt）\n済。mitate.txt をリポジトリ直下に置いて押した（11189バイト）。git ls-tree origin/main mitate.txt は「100644 blob ce304ec9b9db45b79ca1260c4043e56d82047fcf\tmitate.txt」で、raw も HTTP 200。\n前の回に「作り終えていなければ作り終え」とあったが、この回が初回でまだ作っていなかった。置き場所の移動も押し直しも要らず、作って直下へ置き、押した。\n中身は二節。【一】人柄七人の見立て行＝toneAngleLine（L4659-4736）の全分岐で、執事2・軍師6・ずんだ4・お嬢様3・マダム2・一姫8・先生3 の28通り。【二】四つの釦の助言＝toolEyeSay（L4843-4870）の全分岐で、枝豆3＋食い違い2・AI3＋食い違い2・現場猫3・兎3＋投票欄3。\n条件は材料の出どころの行番号つきで書いた（toneFacts L4393-4570／スイッチ三つ L8660-8738／usagiLean L4156）。〈…〉は手によって変わる差し込み。方言は標準語の型だけを載せた（見立て行は方言チップでは変わらず、方言が掛かるのは TONE_WORDS 側の判定の一言）。釦は上から順に見て最初に当たったものを出す形なので、その順のまま並べた（スイッチの一行＞黙る帯の一行＞投票欄の言い分）。\n触った所は mitate.txt を新しく置いただけ。文面は一字も直していない。触らない所は本体（koushu-handan.html）・serifu.txt・ver.txt・stable・~/.claude の台本。\nファイル: mitate.txt（新・リポジトリ直下）／reports/y0919-0450.md（新）\n実測: git ls-tree origin/main mitate.txt → 100644 blob ce304ec9b9db45b79ca1260c4043e56d82047fcf mitate.txt／raw は HTTP 200／押しは 7137885c（綴り）と 4c29f682（札）で通った"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789760076,
         "message":  "再起動-2\n毎週土曜01:00 の再起動（ClaudeWeeklyReboot・10分ごとに1時間繰り返す・次は 09-26 01:00）と、毎日03:00 の掃除（ClaudeEdgeSweep・次は 09-20 03:00）を予定表へ足した。\n①条件は三つ。押し残しが0件（git rev-list --count origin/main..HEAD）・押し直しの印が0行（push-pending.tsv）・仕事が手待ち（hook.log の最後の resume／stop が stop）。一つでも駄目なら何もせず返り、reboot.log に「見送る（押し残し N件／押し直しの印 N件／仕事は 走っている）。10分後の回で見直す」を残す。引き金が10分ごとに1時間繰り返すので、01:00 に走っていても 02:00 までに手待ちになれば再起動する。\n②条件が揃うと、落ちる前に空きと claude の使用MB を札にして押し（reports/r\u003cMMdd-HHmm\u003e.md と report-latest.md）、reboot-pending.txt へ前の測りを書き残してから shutdown /r /t 30 を打つ。\n③起き上がった後の札は、毎分の巡回が印（reboot-pending.txt）を見つけた最初の回に weekly-reboot-after.ps1 を呼んで書き、印を消す。ふだんの回は Test-Path 一回で終わるので毎分の重さは増えない。ログオン時の起こし（ClaudeRebootAfter）は Access is denied で足せなかったため、この形にした。\n作り値七通り合格（再起動の手を偽の綴りへ、押しを -NoPush へ差し替え、記録の置き場も一時の所）。イ 押し残し2件→再起動しない／ロ 押し直しの印あり→しない／ハ 仕事が走っている→しない／ニ 全部よい→した（前の札1枚・渡す印あり）／ホ 起き上がった後→後の札1枚で印は消えた／ヘ 印が無い回→札は増えない／ト 掃除の台→msedge 5本226MB・SearchApp 1本88MB＝6本314MB を数えた（落とさず）。\n作り値で一つ直した … 後の札の台本で、印の道（$Mark）と印の名（$mark）が同じ変数だった（PowerShell は大小を区別しない）。名を $id へ変えた。作り値が無ければ、印が消えず毎分書き続けるところだった。\n触った所は新しい台本三枚（weekly-reboot.ps1／weekly-reboot-after.ps1／edge-sweep.ps1・いずれも構文検査 OK）と、watch-notify.ps1 の押し直しの段の後ろに足した枝（写し .bak-20260919・構文検査 OK・実地の巡回 04:31:12 も通った）と、予定表の二つ。触らない所は本体・ClaudeWatchNotify（:58）／ClaudeRevive（:25）／ClaudeJamWatch（:45）の刻と間隔・ClaudeCodeAtLogon・WSearch と VCService（Disabled のまま）・Defender・押しの敷居（500／1024MB）・譲りの敷居700MB。\nファイル: ~/.claude/weekly-reboot.ps1・weekly-reboot-after.ps1・edge-sweep.ps1（新）／~/.claude/watch-notify.ps1（写し .bak-20260919）／予定表 ClaudeWeeklyReboot・ClaudeEdgeSweep（新）／reports/y0919-0427.md（新）／作り値の台は scratchpad/reboot-test.ps1\n実測: 作り値七通り合格／ClaudeWeeklyReboot は土曜01:00・PT10M/PT1H・次 09-26 01:00／ClaudeEdgeSweep は毎日03:00・次 09-20 03:00／Claude* の予定は12件／押しは b7fad75d で通った\n未検収: ログオン時の起こし（ClaudeRebootAfter）は管理者の窓でなら足せる（人手待ち。いまは毎分の巡回で代えている）"
@@ -243,10 +248,5 @@
         "title":  "🪟 見張りが止まっています（最後の記録 13:13・11分前）",
         "time":  1789619139,
         "message":  "見張り（watch-notify）の記録が 11分 途切れています。\n最後の記録 2026-09-17 13:13:25\n\n＊居座っていた回は落としました。次の分の回から戻るはずです。\n＊どの段で止まったかは ~/.claude/watch-step-log.txt にあります。\n"
-    },
-    {
-        "title":  "🙋 ヨシしてください",
-        "time":  1789617437,
-        "message":  "説明欄の直しの候補を綴りへ（setsumei-kouho-0917.json）\n印: y0917-1254\n待っているのは：①②③それぞれ 甲・乙・今のまま のどれにするか。入れるのは選ばれた後。\n答え方：「y0917-1254 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。\n未検収: 説明欄の直し（①②③の裁定待ち）"
     }
 ]
