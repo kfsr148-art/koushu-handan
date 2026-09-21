@@ -1,6 +1,11 @@
 [
     {
         "title":  "👀 見てください（返事不要）",
+        "time":  1790001249,
+        "message":  "三つを一度に当てる綴りへまとめる\n①dumps\\apply-sysmain-pagefile.ps1 に「③ VAIO Care の予定（VCSystemTray を立てる札）の無効化」を足し、管理者の窓で一度走らせれば SysMain・pagefile・VAIO Care の三つが当たる形にした。③では札を task-bak-20260921\\SonyVAIOCare-off.xml へ控えてから無効にし、いま走っている VCSystemTray も落とす。②戻し方を同じ綴りのいちばん下に注として書いた（走らせずに貼る形で、①SysMain を Automatic へ戻す／②AutomaticManagedPagefile を true へ返す／③Enable-ScheduledTask か札ごとの Register-ScheduledTask）。③頭に「管理者か」を出し、管理者でなければその場で断る一行を足した（ふつうの窓で走らせても三つとも拒否されるため）。④中身の全文を札に写した。\nファイル: ~/.claude/dumps/apply-sysmain-pagefile.ps1（5,612バイト・89行・BOM あり・構文0）／reports/y0921-2305.md／report-latest.md\n実測: 綴りは 5,612バイト・89行・BOM True・構文の誤り0。当てる三つの字がそれぞれ1件ずつ入っている（Stop-Service SysMain／Set-Service SysMain／AutomaticManagedPagefile = $false／InitialSize = 4096／Export-ScheduledTask -TaskName \u0027VAIO Care\u0027／Disable-ScheduledTask -TaskName \u0027VAIO Care\u0027）。末尾の戻し方の注も入っている。\n実機: 管理者の PowerShell で走らせたあと、dumps\\apply-result.txt に「① SysMain を止めた」「② pagefile を 4096/4096 にした」「③ VAIO Care の予定を無効にした」が並び、確かめの行が SysMain : Stopped / Disabled と VAIO Care : Disabled になること。pagefile だけは再起動のあとに 初期4096 最大4096 になる。\n未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回）／2026-09-21 23:05 三つを当てる綴りを管理者で走らせる（人手待ち）"
+    },
+    {
+        "title":  "👀 見てください（返事不要）",
         "time":  1789999212,
         "message":  "hook の数え（末尾3000行）と Google の予定\n①hook.log の末尾3000行だけを読んで数えた（24時間ぶんは読んでいない）。刻の幅は 2026-09-20 13:28:04〜2026-09-21 22:56:07 のおよそ33.5時間で、PreToolUse 926回・PostToolUse 876回・合わせて1,802回＝およそ54回/時・0.9回/分。Pre が Post より50回多いのは返っていない命令のぶん。一回の平均秒と私用MBは hook.log が刻と種類しか持たないので出せず、測るなら記録に一行足すのが先だと札に書いた（この回では足していない）。②GoogleUpdateTaskMachineCore／UA はこの機械に無い（当たり0件）。在るのは \\GoogleUserPEH\\RunPlatformExperienceHelper_Daily と _Metrics の二つだけで、どちらも前の回で無効にし控えも取ってある。無い物を切ったとは書けないので、在る二つを切ったと書いて戻し方を添えた。③前の回の引き算（ClaudeSweepChecks を無効・Sweep-Stale の作り値・VAIO Care は Access is denied で切れず VCSystemTray だけ落とした）も、取りこぼさないよう同じ札に一行ずつ写した。hook の減らしと作り値はこの回ではやっていない。\nファイル: reports/y0921-2258.md／report-latest.md（この回は直しを入れていない。前の回の無効化の控えは task-bak-20260921 にある）\n実測: 末尾3000行＝33.5時間ぶん。PreToolUse 926・PostToolUse 876・frame-work 417・resume 239・heartbeat 181・stop 144・inbox-feed 85・stop-guard 70。GoogleUpdateTaskMachine の当たり0件。GoogleUserPEH の二つは Disabled、控えは 1,541／1,515バイト。ClaudeSweepChecks は Disabled。Sweep-Stale の作り値は身代わりの検査 Edge 2本→0本。VAIO Care は切れず（Access is denied）、VCSystemTray pid 9816 は落とした。\n実機: 次のログオンで VCSystemTray がまた立つこと（管理者で VAIO Care の予定を切るまでは戻る）。Google の二つが Disabled のままであること。\n未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:35 SysMain と pagefile（人手待ち・管理者）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回）／2026-09-21 22:58 VAIO Care の予定の無効化（人手待ち・管理者）"
     },
@@ -163,10 +168,5 @@
         "title":  "🔎 調べました：網の切れの一覧と、窓隠しの検収",
         "time":  1789977023,
         "message":  "網の切れの一覧と、窓隠しの検収\n①8001／8003 は System には出ず WLAN-AutoConfig の Operational にあると分かったので、二つの綴りを順に一度ずつ読んだ（同時には走らせていない）。System の Dhcp-Client は12件、どれも落とし／立ち上げの一式で 1003 は0件。Operational の 8000/8001/8002/8003/8011 は10件で、線が勝手に切れたのは 09-20 16:10:50〜16:13:17 の一度だけ。②突き合わせは 16:11 ntfy 000 だけに印が付いた（8003 が10秒前・8002 が9秒前・復帰は2分17秒後）。02:42・10:43・14:11 は前後5分に網のイベントが一件も無い。③網は Wi-Fi 一本で有線なし、省電力モードは AC が最大パフォーマンス・いまは AC 接続、装置の電源を切る許可は読めない（エラー31）。盤は HDD。④窓隠しの実機確認を済にして未検収から外し、台帳では run-hidden.vbs の枠も済にした。"
-    },
-    {
-        "title":  "📮 郵便受けが詰まっています",
-        "time":  1789976759,
-        "message":  "郵便受けを 16 分見に行けていません（取り込む見張りが止まっているか、gh が通っていません）\nこちらがすること：郵便受けへ書いた行はまだ受信箱に入っていません。急ぐなら黒い窓から直に入れてください。"
     }
 ]
