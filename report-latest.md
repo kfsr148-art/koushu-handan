@@ -1,82 +1,90 @@
-﻿# 黒い窓の巻き戻しを 9001行 → 500行 に
+﻿# hook の数え（末尾3000行）と、Google の予定
 
-**終わり（残り0件）** — 2026-09-21 21:40（VAIO）。`koushu-handan.html`・`stable` には触っていない。
+**終わり（残り0件）** — 2026-09-21 22:58（VAIO）。`koushu-handan.html`・`stable` には触っていない。
+**hook の減らしと作り値は、言われたとおりこの回ではやっていない。**
 
 ---
 
-## 1. 変えたもの
+## 1. hook（tool-mark）の数え — **末尾3000行だけ**
 
-**`HKCU\Console\麻雀 攻守判断 (Claude Code)` の `ScreenBufferSize` だけ。**
-
-| | 値 | 生の字 |
-|---|---|---|
-| **前** | 幅 170 / **高さ 9001** | `0x232900AA` |
-| **後** | 幅 170 / **高さ 500** | `0x01F400AA` |
-
-＊`500 × 65536 ＋ 170 ＝ 32,768,170`（高さが上位16ビット・幅が下位16ビット）。**幅は触っていない。**
-
-**同じ項のほかの値は、一つも触っていない。**
+`hook.log` の**末尾3000行**を読んだ（24時間ぶんは読んでいない）。
 
 | | |
 |---|---|
-| `WindowSize` | 幅 170 / 高さ 44（そのまま） |
-| `FaceName` | BIZ UDGothic（そのまま） |
-| `FontSize` | 高さ 16（そのまま） |
-| `FontWeight` | 400（そのまま） |
+| 刻の幅 | **2026-09-20 13:28:04 〜 2026-09-21 22:56:07**（およそ **33.5時間**） |
+| **PreToolUse** | **926回** |
+| **PostToolUse** | **876回** |
+| **tool-mark の合計** | **1,802回** ＝ およそ **54回/時**・**0.9回/分** |
 
-＊**窓44行 ≦ バッファ500行** なので、窓がバッファを超える形にはなっていない（超えると縮められる）。
+参考までに、同じ3000行の中の内訳。
+
+```
+  926 PreToolUse     876 PostToolUse    417 frame-work    239 resume
+  181 heartbeat      144 stop            85 inbox-feed     70 stop-guard
+```
+
+＊`Pre` が `Post` より **50回多い**。**返っていない命令**（切られた・時間切れ・窓が落ちた回）のぶん。
+＊**一回の平均秒と私用MBは、この数えからは出ない。** `hook.log` は刻と種類しか持っておらず、
+　`tool-mark` の一本ごとの秒と大きさを記録している綴りが無い（測るなら別に一行足すのが先）。
+　**この回では足していない。**
 
 ---
 
-## 2. 次に窓が立った回に効く — 起動の設定の写し
+## 2. Google の予定 — **その名の物は無かった**
 
 ```
-Execute : C:\Windows\System32\cmd.exe
-Args    : /c start "麻雀 攻守判断 (Claude Code)" /MAX /D "C:\Users\user\Desktop\mahjong\koushu-handan"
-            cmd.exe /k C:\Users\user\.claude\claude-loop.cmd
+GoogleUpdateTaskMachineCore / UA の当たり : 0件（その名の予定は無い）
 ```
 
-**題が一致するか : True**
+**この機械に在る Google の予定は、次の二つだけ**で、**どちらも既に無効**にしてある
+（前の回で切り、控えも取ってある）。
 
-**なぜ次の回から効くか** … `start "…"` で**題を付けて**コンソールを開くと、Windows は
-**その題と同じ名の `HKCU\Console` の項**を読んで、字・窓・バッファを決める。
-**読むのはコンソールを作る瞬間だけ**なので、**いま開いている窓は 9001行のまま**で、
-**次に立った窓から 500行**になる。
+| 予定 | 状態 | 控え |
+|---|---|---|
+| `\GoogleUserPEH\RunPlatformExperienceHelper_Daily` | **Disabled** | `task-bak-20260921\GoogleUserPEH-Daily-off.xml`（1,541バイト） |
+| `\GoogleUserPEH\RunPlatformExperienceHelper_Metrics` | **Disabled** | `task-bak-20260921\GoogleUserPEH-Metrics-off.xml`（1,515バイト） |
 
-＊立ち上げ直す道は三つとも同じ題を使うので、どれで立っても効く
-　——`ClaudeCodeAtLogon`（ログオン）／`revive-claude.ps1`（`schtasks /Run` で同じ札）／
-　`claude-loop.cmd`（落ちたときの立て直し。**同じ窓の中**で立て直すので、こちらは題を作り直さない）。
+＊`GoogleUpdateTaskMachineCore/UA` は、**Google Update（旧 GoogleUpdate.exe）を入れた機械に出る名**。
+　この機械は新しい `GoogleUpdater` 系で、**その名の札は作られていない**。
+　**無い物を「切った」とは書けない**ので、在る二つを切った、とだけ書く。
 
----
-
-## 3. 戻し方
-
-控えを `.reg` で丸ごと書き出してある（**540バイト**）。
-
-```
-C:\Users\user\.claude\console-koushu.bak-20260921.reg
-  [HKEY_CURRENT_USER\Console\麻雀 攻守判断 (Claude Code)]
-  "ScreenBufferSize"=dword:232900aa      ← 元の 9001行
-  "WindowSize"=dword:002c00aa
-```
+### 戻し方
 
 ```powershell
-reg import "C:\Users\user\.claude\console-koushu.bak-20260921.reg"
+Enable-ScheduledTask -TaskName 'RunPlatformExperienceHelper_Daily'   -TaskPath '\GoogleUserPEH\'
+Enable-ScheduledTask -TaskName 'RunPlatformExperienceHelper_Metrics' -TaskPath '\GoogleUserPEH\'
 ```
 
-＊**取り込んだあとも、効くのは次に立った窓から。**
+＊札ごと戻したいときは控えの `.xml` を `Register-ScheduledTask -Xml` で入れ直す。
+
+---
+
+## 3. 前の回でやった引き算（取りこぼさないように、ここに一行ずつ）
+
+| したこと | 結果 |
+|---|---|
+| **`ClaudeSweepChecks` を無効に** | **Disabled**（控え `ClaudeSweepChecks-off.xml`）。役目は常駐の `Sweep-Stale` と**完全に重なる**——目印 `koushu-`・`--user-data-dir`・**20分**の敷居・msedge だけ、まで同じで、常駐は**2分ごと**に見る（予定は20分ごと） |
+| その作り値 | 身代わりの検査 Edge を `koushu-proof-` の印で2本立て、常駐の `Sweep-Stale` をそのまま読み込んで走らせたら **2本→0本**、記録に `置き去りの検査を 2 本片付けた` |
+| **`\Sony Corporation\VAIO Care\VAIO Care` を無効に** | **切れなかった**（`Access is denied`＝管理者が要る）。ただし**走っていた `VCSystemTray`（pid 9816・私用77MB）は落とした**ので、いまは居ない。**次のログオンで戻る** |
+| Google の二つ | 上記のとおり Disabled |
+
+＊`ClaudeJamWatch`・`ClaudeRevive`・`ClaudeWatchNotify`（毎分の三つ）は、**役目が常駐と重ならない**ので
+　印を付けていない——`jam-watch` は詰まりの**現場を撮る**（常駐は撮らない）、`revive` は**0本の起こし直し**
+　（常駐が見るのは固まりと重さ）、`watch-notify` は**知らせの本体**。**切ると穴が開く。**
+
+### VCSystemTray を本当に外すには（管理者の PowerShell）
+
+```powershell
+Disable-ScheduledTask -TaskName 'VAIO Care' -TaskPath '\Sony Corporation\VAIO Care\'
+# 戻すとき
+Enable-ScheduledTask  -TaskName 'VAIO Care' -TaskPath '\Sony Corporation\VAIO Care\'
+```
 
 ---
 
 ## 4. 残り
 
-**残り0件。** ＊SysMain・pagefile・healthchecks の check 作りは**人手待ち**のまま。
-
-## 5. 実機で見るところ
-
-- **次に窓が立ったとき**、巻き戻しが **500行で止まる**こと
-  （いまの窓のまま確かめても 9001行のままで、変わって見えない）。
-- 字（BIZ UDGothic 16px）と窓の大きさ（170×44）・`/MAX` の効きが**これまでどおり**であること。
+**残り0件。** ＊`VAIO Care`・SysMain・pagefile・healthchecks の check 作りは**人手待ち**のまま。
 
 ---
 
@@ -85,11 +93,12 @@ reg import "C:\Users\user\.claude\console-koushu.bak-20260921.reg"
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **373件**ある。
+　ここに出るのは新しい20件。全部で **374件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0921-2258.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2258.md) | 09-21 22:58 | hook の数え（末尾3000行）と、Google の予定 |
 | [`y0921-2140.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2140.md) | 09-21 21:57 | 黒い窓の巻き戻しを 9001行 → 500行 に |
 | [`y0921-2135.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2135.md) | 09-21 21:50 | 盤の健康・熱・画面バッファの調べ／昇格の問いは閉じられた |
 | [`y0921-2128.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2128.md) | 09-21 21:28 | 足跡の合図と、手待ちの畳み／pagefile は**手が要る** |
@@ -109,6 +118,5 @@ reg import "C:\Users\user\.claude\console-koushu.bak-20260921.reg"
 | [`y0921-1635.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1635.md) | 09-21 16:38 | 網の切れの一覧と、窓隠しの検収 |
 | [`y0921-1625.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1625.md) | 09-21 16:26 | 包みの待ちの確かめ・再起動の内側の上限・押しの詰まりの元 |
 | [`y0921-1600.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1600.md) | 09-21 15:53 | 二件の取り下げと、走りかけの子 125本の片付け |
-| [`y0921-1335.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1335.md) | 09-21 13:31 | 09-20 22:00 からの乱れ一枚と、網／ディスクの突き合わせ |
 
 <!-- 控えの一覧 ここまで -->
