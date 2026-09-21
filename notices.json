@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🔎 調べました：戻しの取り下げは済み",
+        "time":  1790005220,
+        "message":  "戻しの取り下げは済み（同じ指示が二度届いた）\n同じ指示が二度届いた。前の回（00:15・札 y0922-0015）で済ませてあり、触り直していない。確かめ直した結果——①戻しの命令は一度も打っていない（apply-result.txt の末尾は 00:04:22 の「終わり」のままで、戻しの行は無い）。②印 y0922-0010 は取り下げ済みで、ヨシ待ちの一覧にも無い。③当てた三つはそのまま残っている（SysMain Stopped/Disabled、AutomaticManagedPagefile False、pagefile C:\\pagefile.sys 初期4096 最大4096、VAIO Care Disabled、VCSystemTray 0本）。④台帳の未了は0件。二度目の枠の行も済にした。"
+    },
+    {
         "title":  "🪟 異常です：セッションの使用量が 80% を越えました",
         "time":  1790004966,
         "message":  "セッション 94%（敷居 80%）\n窓の切り替え 2026-09-21T17:20:00.027194+00:00"
@@ -163,10 +168,5 @@
         "title":  "🪟 連携に訴えがあります（done-swept）",
         "time":  1789980348,
         "message":  "連携の見張りから訴えが出ています。\n\n・done-swept … 終わりの札が立っていなかったので立て直した（--continue の枠は重複。確かめ直して台帳を整えた・stop 2026-09-21 17:20:02・19分遅れ）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
-    },
-    {
-        "title":  "🔎 調べました：--continue の枠は重複。確かめ直して台帳を整えた",
-        "time":  1789980026,
-        "message":  "--continue の枠は重複。確かめ直して台帳を整えた\n①同じ枠が二度届いたので、触り直さずに字で確かめた——ClaudeCodeAtLogon の引数に --continue は無く164字（題「(Claude Code)」・--remote-control koushu-handan・/MAX はすべて残存）、revive-claude.ps1 に残る2か所は「外した」「付けない」と断る説明の字だけ、daily-reboot.ps1 の L200 に「空きメモリ NMB ／ 全体 NMB」の行がある。写しも両方（revive-claude.ps1.bak-20260921／daily-reboot.ps1.bak-20260921c）残っている。②台帳に済を書き忘れていた行が溜まっていたので、7行まとめて書き替えた。未了は7件→2件になった。"
     }
 ]
