@@ -1,5 +1,20 @@
 [
     {
+        "title":  "🔎 調べました：戻しの取り下げは済み",
+        "time":  1790005220,
+        "message":  "戻しの取り下げは済み（同じ指示が二度届いた）\n同じ指示が二度届いた。前の回（00:15・札 y0922-0015）で済ませてあり、触り直していない。確かめ直した結果——①戻しの命令は一度も打っていない（apply-result.txt の末尾は 00:04:22 の「終わり」のままで、戻しの行は無い）。②印 y0922-0010 は取り下げ済みで、ヨシ待ちの一覧にも無い。③当てた三つはそのまま残っている（SysMain Stopped/Disabled、AutomaticManagedPagefile False、pagefile C:\\pagefile.sys 初期4096 最大4096、VAIO Care Disabled、VCSystemTray 0本）。④台帳の未了は0件。二度目の枠の行も済にした。"
+    },
+    {
+        "title":  "🪟 異常です：セッションの使用量が 80% を越えました",
+        "time":  1790004966,
+        "message":  "セッション 94%（敷居 80%）\n窓の切り替え 2026-09-21T17:20:00.027194+00:00"
+    },
+    {
+        "title":  "👀 見てください（返事不要）",
+        "time":  1790003544,
+        "message":  "この間にまとまった知らせ 2本\n\n［✅ 終わりました（返事不要）］\n三つが当たった。戻しの命令を走らせてよいかの確認\n（札が立たないまま次の仕事へ移っていた分）\n完了: ①頂いた -NoExit 付きの昇格が通り、三つとも当たった。apply-result.txt の 00:04:17〜00:04:22 に、SysMain を止めて無効にした・自動まかせを切って pagefile を 4096/4096 にした・VAIO Care の札を控えて予定を無効にした、の行が並ぶ。確かめは SysMain : Stopped / Disabled、AutomaticManagedPagefile : False、pagefile : C:\\pagefile.sys 初期 4096 最大 4096、VAIO Care : Disabled。②そのあと頂いた命令は、この三つをそのまま元へ戻す内容（SysMain を Automatic にして起動／自動まかせへ返す／VAIO Care を Enable）だった。当てた直後に元へ返す形なので、走らせずに意図をうかがうことにした。③その命令の Enable-ScheduledTask に -TaskPath が無い点を一度は疑ったが、走らせずに確かめたところ -TaskName だけで見つかる（True）ので心配は無かった。取り違えを残さないよう控えに訂正を書いた。\nファイル: ~/.claude/dumps/apply-result.txt（当たった記録）／~/.claude/task-bak-20260921/SonyVAIOCare-off.xml（VAIO Care の札の控え）\n実測: SysMain Stopped/Disabled・AutomaticManagedPagefile False・pagefile 設定 初期4096 最大4096（実際の割り当ては再起動のあと）・VAIO Care Disabled。Enable-ScheduledTask の -TaskPath 抜けは、-TaskName だけで見つかるので問題なし（True）。\n\n［👀 見てください（返事不要）］\n戻しは取り下げ。三つは当てたまま\n①印 y0922-0010 は「ヨシしない」との指示なので、戻しの命令は走らせずに取り下げ、台帳を済にした。戻しの命令は一度も打っていない。②SysMain・pagefile・VAIO Care は当てたまま残し、もう一度確かめた——SysMain Stopped/Disabled、AutomaticManagedPagefile False、pagefile C:\\pagefile.sys 初期4096 最大4096、VAIO Care Disabled、VCSystemTray 0本。③ヨシ待ちの一覧（yoshi-open.tsv）からも y0922-0010 を落とした（9行→8行）。④台帳の未了は0件。\nファイル: ~/.claude/orders-open.tsv（1行を済へ）／~/.claude/yoshi-open.tsv（1行落とした）／reports/y0922-0015.md／report-latest.md\n実測: 台帳の未了 0件。yoshi-open.tsv 9行→8行。SysMain Stopped/Disabled・AutomaticManagedPagefile False・pagefile 初期4096 最大4096・VAIO Care Disabled・VCSystemTray 0本・空き928MB。当たった刻は dumps/apply-result.txt の 2026-09-22 00:04:17〜00:04:22。\n実機: 次の再起動のあと Win32_PageFileUsage の AllocatedBaseSize が 4096 になること。次のログオンで VCSystemTray が立たないこと。SysMain が Stopped/Disabled のままであること。\n未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回）／2026-09-22 00:04 pagefile 4096MB の実際の割り当て（次の再起動のあと）"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1790003224,
         "message":  "三つを一度に当てる綴りへまとめる\n（札が立たないまま次の仕事へ移っていた分）\n完了: ①dumps\\apply-sysmain-pagefile.ps1 に「③ VAIO Care の予定（VCSystemTray を立てる札）の無効化」を足し、管理者の窓で一度走らせれば SysMain・pagefile・VAIO Care の三つが当たる形にした。③では札を task-bak-20260921\\SonyVAIOCare-off.xml へ控えてから無効にし、いま走っている VCSystemTray も落とす。②戻し方を同じ綴りのいちばん下に注として書いた（走らせずに貼る形で、①SysMain を Automatic へ戻す／②AutomaticManagedPagefile を true へ返す／③Enable-ScheduledTask か札ごとの Register-ScheduledTask）。③頭に「管理者か」を出し、管理者でなければその場で断る一行を足した（ふつうの窓で走らせても三つとも拒否されるため）。④中身の全文を札に写した。\nファイル: ~/.claude/dumps/apply-sysmain-pagefile.ps1（5,612バイト・89行・BOM あり・構文0）／reports/y0921-2305.md／report-latest.md\n実測: 綴りは 5,612バイト・89行・BOM True・構文の誤り0。当てる三つの字がそれぞれ1件ずつ入っている（Stop-Service SysMain／Set-Service SysMain／AutomaticManagedPagefile = $false／InitialSize = 4096／Export-ScheduledTask -TaskName \u0027VAIO Care\u0027／Disable-ScheduledTask -TaskName \u0027VAIO Care\u0027）。末尾の戻し方の注も入っている。"
@@ -153,20 +168,5 @@
         "title":  "🪟 連携に訴えがあります（done-swept）",
         "time":  1789980348,
         "message":  "連携の見張りから訴えが出ています。\n\n・done-swept … 終わりの札が立っていなかったので立て直した（--continue の枠は重複。確かめ直して台帳を整えた・stop 2026-09-21 17:20:02・19分遅れ）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
-    },
-    {
-        "title":  "🔎 調べました：--continue の枠は重複。確かめ直して台帳を整えた",
-        "time":  1789980026,
-        "message":  "--continue の枠は重複。確かめ直して台帳を整えた\n①同じ枠が二度届いたので、触り直さずに字で確かめた——ClaudeCodeAtLogon の引数に --continue は無く164字（題「(Claude Code)」・--remote-control koushu-handan・/MAX はすべて残存）、revive-claude.ps1 に残る2か所は「外した」「付けない」と断る説明の字だけ、daily-reboot.ps1 の L200 に「空きメモリ NMB ／ 全体 NMB」の行がある。写しも両方（revive-claude.ps1.bak-20260921／daily-reboot.ps1.bak-20260921c）残っている。②台帳に済を書き忘れていた行が溜まっていたので、7行まとめて書き替えた。未了は7件→2件になった。"
-    },
-    {
-        "title":  "👀 見てください（返事不要）",
-        "time":  1789978372,
-        "message":  "この間にまとまった知らせ 2本\n\n［✅ 終わりました（返事不要）］\n網の切れの一覧と、窓隠しの検収\n（札が立たないまま次の仕事へ移っていた分）\n種類: 調べた\n完了: ①8001／8003 は System には出ず WLAN-AutoConfig の Operational にあると分かったので、二つの綴りを順に一度ずつ読んだ（同時には走らせていない）。System の Dhcp-Client は12件、どれも落とし／立ち上げの一式で 1003 は0件。Operational の 8000/8001/8002/8003/8011 は10件で、線が勝手に切れたのは 09-20 16:10:50〜16:13:17 の一度だけ。②突き合わせは 16:11 ntfy 000 だけに印が付いた（8003 が10秒前・8002 が9秒前・復帰は2分17秒後）。02:42・10:43・14:11 は前後5分に網のイベントが一件も無い。③網は Wi-Fi 一本で有線なし、省電力モードは AC が最大パフォーマンス・いまは AC 接続、装置の電源を切る許可は読めない（エラー31）。盤は HDD。④窓隠しの実機確認を済にして未検収から外し、台帳では run-hidden.vbs の枠も済にした。\nファイル: reports/y0921-1635.md／report-latest.md／~/.claude/orders-open.tsv（1行）／~/.claude/work-note.txt\n実測: 空きは 736→741→722→717→748MB で一度も400MBを割っていない。拾った件数は System 12件・Operational 10件。台帳の未了は 2件→1件（残るのは 13:21:07「機械に乗せている物を測ってから減らせ」の②）。\n\n［👀 見てください（返事不要）］\n立てる数を減らす／外へ出る子を減らす／--continue を外す\n①同じ物差しで3分ずつ測り、毎分立つ子が 22.7本→10.6本（−53%）になった。②見張りの巡回を PT1M→PT2M にした。③郵便受けの読みを3分に一度へ延ばし、gh を立てずに Invoke-RestMethod で読む形へ替えた（token は立ち上がりに一度 gh auth token で取って持つ・401/403 で取り直す）。④公開側 state.json の押しを「前の押しから180秒」かつ「at を除いた中身が変わった時」だけにし、押した回と見送った回で記録の字を分けた。⑤あとから届いた枠で --continue を外した——ClaudeCodeAtLogon の引数が175→164字（差11字＝\" --continue\" ちょうど、題と --remote-control は残存）、revive-claude.ps1 の字も直した。⑥定時の札に「空きメモリ NMB ／ 全体 NMB」の一行を足した。⑦常駐を入れ替えた（pid 7052→10132）。未了は4項目あり、札に番号ごとに書いた。\nファイル: ~/.claude/inbox-watch.ps1（写し .bak-20260921c）／~/.claude/revive-claude.ps1（写し .bak-20260921）／~/.claude/daily-reboot.ps1（写し .bak-20260921c）／予定表 ClaudeWatchNotify の引き金・ClaudeCodeAtLogon の引数／reports/y0921-1700.md\n実測: 毎分立つ子 22.7本（16:47:59-16:50:59・68本）→10.6本（16:55:10-16:58:11・32本）。conhost 11.7→3.3、kagi-watch/board-emit/pipe-check/push-retry は0へ。空きは前 625-909MB・後 354-662MB だが、後の帯はこちらが押しを回していた最中なので比べられない。構文の誤り0（inbox-watch 1314→1356行）。Invoke-RestMethod で郵便受けが6.1秒で読めた。16:54:29 に「状態を書き出して押した」が出て新しい道が生きている。常駐 pid 10132（16:54:17）＞台本の更新 16:53:31。\n実機: 次に窓が落ちて起こし直されたとき、前の会話を継がずに立つこと（--continue を外した狙い）。定時の札（🔁 落とします）に「空きメモリ NMB ／ 全体 NMB」の行が出ること。\n未検収: 2026-09-21 15:00 定時再起動の初回（固まったが内側の上限を入れた）／2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）"
-    },
-    {
-        "title":  "🪟 連携に訴えがあります（done-swept）",
-        "time":  1789978310,
-        "message":  "連携の見張りから訴えが出ています。\n\n・done-swept … 終わりの札が立っていなかったので立て直した（立てる数を減らす／外へ出る子を減らす／--continue を外す・stop 2026-09-21 17:04:04・6分遅れ）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
     }
 ]
