@@ -1,7 +1,8 @@
 {
-    "at":  "2026-09-21 12:21:39",
+    "at":  "2026-09-21 15:51:16",
     "kinds":  [
-
+                  "push-fail",
+                  "state-stale"
               ],
     "ntfyDown":  false,
     "text":  ""
