@@ -1,70 +1,15 @@
-﻿# 「写した刻」を字面で確かめて消した
+﻿# 再起動-2（r0921-1246・後の測り）
 
-**終わり（残り0件）** — 2026-09-21 10:40（VAIO）。`koushu-handan.html`・`stable` には触っていない。
+**終わり** — 2026-09-21 12:46（VAIO）。毎週土曜の起こしで再起動し、起き上がった。
 
----
+| | 前 | 後 | 差 |
+|---|---|---|---|
+| 空き物理メモリ | 1045MB | **1045MB** | +0MB |
+| claude | 523MB | **312MB** | -211MB |
 
-## 1. 字面の確かめ — **ファイルとして参照している箇所は0件**
-
-名を当てて出た箇所は七つ。**どれも「写した刻」という言葉を書いた文であって、
-この名のファイルを開く手ではない。**
-
-| 場所 | 行 | 素性 |
-|---|---|---|
-| `panel.html` | 2283 | `/* 写した刻（秒）を控える。… */` — **注釈** |
-| `panel.html` | 2328 | `copied[keyOf(d)] = …;   /* 写した刻。届いた印の物差し（v32） */` — **行末の注釈** |
-| `panel.html` | 2550・2555 | `/* …写した刻より後に resume が鳴っている… */` — **注釈** |
-| `panel-mach-probe.js` | 23-24 | `/* …「写した刻が resume より前」… */` — **注釈** |
-| `reports/取り残しの検収-1.md` | 23 | 「一行目に写した刻（epoch）を置き」 — **地の文** |
-| `report-latest.md`／`status.md`／`board.json`／`state.json`／`notices*.json` | — | **今回の調べそのものの記録**（機械が書いた写し） |
-
-### 三通りの当て方で、どれも0件
-
-| 当て方 | 結果 |
-|---|---|
-| 道・引用符に接した使い方（`/写した刻`・`\写した刻`・`'写した刻'`・`"写した刻"`） | **0件** |
-| ファイルを開く手の近く（`Get-Content`・`readFile`・`readFileSync`・`Test-Path`・`existsSync`・`open`・`fopen`・`cat`）から60字以内 | **0件** |
-| `git ls-files -- 写した刻`（追跡されているか） | **空＝untracked** |
-
-`~/.claude` の側の当たりも見たが、`orders-open.tsv`・`orders-full.jsonl`・`inbox-watch.log`・
-`last-order.txt`・会話の綴り（`projects/*.jsonl`）といった**控えと記録だけ**で、台本は一つも無い。
-
----
-
-## 2. 消した
-
-```powershell
-Remove-Item -LiteralPath 'C:\Users\user\Desktop\mahjong\koushu-handan\写した刻' -Force
-```
-
-| 見るもの | 消す前 | 消した後 |
-|---|---|---|
-| 大きさ | **0 バイト** | — |
-| 作成／更新／最終アクセス | **2026-09-14 13:32:42**（三つとも同じ） | — |
-| `git ls-files` | 空（untracked） | — |
-| `Test-Path` | 真 | **偽** |
-| `git status` の untracked | **7件** | **6件**（残りは `.bak-*` の控えだけ） |
-
-残った untracked は次の6件で、どれも今回とは関わりがない。
-
-```
-.claude/settings.json.bak-20260910      check-all.js.bak-20260919
-.claude/settings.json.bak-20260911      check.js.bak-20260914
-.claude/settings.local.json.bak-20260910  core-probe.js.bak-20260914
-```
-
-＊`-LiteralPath` を使ったので、名の中の字が当てはめと読まれる心配は無い。
-＊git 管理下ではないので履歴には何も残らない。**作られた刻はこの札と前の札（`y0921-1020`）に写してある。**
-
----
-
-## 3. 残り
-
-**残り0件**（`orders-open.tsv` の未了は0）。
-
-## 4. 実機で見るところ
-
-**この回に画面へ出る直しは無い。** 前の回の「青い窓が出ないこと」の確かめだけが人手待ちのまま。
+起き上がった刻 … 09/21/2026 11:50:42
+claude が起きた刻 … 2026-09-21 12:11:40（1本）
+前の測りの刻 … 2026-09-21 12:45:39
 
 ---
 
@@ -73,11 +18,12 @@ Remove-Item -LiteralPath 'C:\Users\user\Desktop\mahjong\koushu-handan\写した�
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **351件**ある。
+　ここに出るのは新しい20件。全部で **352件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r0921-1246-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0921-1246-2.md) | 09-21 12:46 | 再起動-2（r0921-1246・後の測り） |
 | [`y0921-1040.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1040.md) | 09-21 10:41 | 「写した刻」を字面で確かめて消した |
 | [`y0921-1020.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1020.md) | 09-21 10:23 | 青い窓の出所と、wscript の包みで隠した話／untracked の「写した刻」 |
 | [`y0921-0950.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0950.md) | 09-21 09:49 | 会話の控えの大きさと、畳む支度の点検 |
@@ -97,6 +43,5 @@ Remove-Item -LiteralPath 'C:\Users\user\Desktop\mahjong\koushu-handan\写した�
 | [`y0920-2315.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-2315.md) | 09-20 23:16 | ①done-swept の元を塞いだ ②ClaudeAfterReboot を作った ④蔵と記録の大きさ ⑤期限の調べ |
 | [`y0920-2300.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-2300.md) | 09-20 22:52 | ①古い並びを掴んだら取り直す（panel v142）／②「続けて」「進めて」は合図として扱う |
 | [`y0920-2100.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-2100.md) | 09-20 21:02 | pub-late は ok へ戻った／配信の関門を偽の走りで当てた |
-| [`y0920-2040.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-2040.md) | 09-20 20:39 | pub-late（公開が56分遅れ）の元 — 長い回の配信が、古い版を後から上書きしていた |
 
 <!-- 控えの一覧 ここまで -->
