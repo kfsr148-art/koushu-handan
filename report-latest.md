@@ -1,164 +1,111 @@
-﻿# 落ちにくい窓（三つ）／枠の上限を刻ひとつに
+﻿# 押しの敷居を 400MB へ／機械に乗っている物の調べ
 
-**終わり（残り0件）** — 2026-09-21 20:50（VAIO）。`koushu-handan.html`・`stable` には触っていない。
-`CLAUDE.md` には**足していない**（指示どおり）。
-
----
-
-## 1. 落ちにくい窓 — 三つ
-
-### ① `NODE_OPTIONS=--max-old-space-size=1024`
-
-**包み（`claude-loop.cmd`）の中で立てる**ので、`ClaudeCodeAtLogon` からも、
-`revive-claude.ps1`（`schtasks /Run` で同じ札を叩く）からも、**同じように効く**。
-
-```cmd
-set "NODE_OPTIONS=--max-old-space-size=1024"
-```
-
-### ② 優先度
-
-| 何 | 前 | 後 |
-|---|---|---|
-| `claude.exe` | Normal | **AboveNormal** |
-| 予定表の子（`run-hidden.vbs` 経由の powershell）・常駐 | Normal | **BelowNormal** |
-
-**一度きりでは効かない**（立ち上がった子は Normal で始まる）ので、常駐に
-**`Set-Priorities` を足して一分に一度当て直す**。当てられない回は黙って飛ばす。
-
-### ③ 落ちたら10秒後に同じ窓で立て直す包み
-
-**`~/.claude/claude-loop.cmd`**（ASCII＋CRLF・非ASCII 0バイト）。
-
-```cmd
-:loop
-call "%CLAUDE_EXE%" --remote-control koushu-handan
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%GUARD%" -Tag "%LOOP_TAG%"
-if errorlevel 2 goto stop
-timeout /t %LOOP_SLEEP% /nobreak >nul
-goto loop
-```
-
-＊**`call` が要る。** 付けないと、`.cmd` を指したときに制御が戻らず輪が一周で終わる
-　——**作り値で実際に踏んだ**（0.7秒で終わり、身代わりが1回しか走らなかった）。
-
-**`~/.claude/loop-guard.ps1`** が立て直しを数える。**一時間に5回まで**は黙って立て直し、
-**6回目で終了コード2**を返して輪を止め、**「🪟 異常です（起動が続けて落ちる）」**を一発鳴らす。
-
-**札の付け替え**
-
-```
-前 : … cmd.exe /k C:\Users\user\.local\bin\claude.exe --remote-control koushu-handan
-後 : … cmd.exe /k C:\Users\user\.claude\claude-loop.cmd
-```
-
-**題「麻雀 攻守判断 (Claude Code)」・`/MAX`・作業の場は、そのまま残っている。**
+**終わり（残り0件）** — 2026-09-21 21:10（VAIO）。`koushu-handan.html`・`stable` には触っていない。
+後半（第3節以降）は**読みだけ。何も直していない。**
 
 ---
 
-## 2. 作り値（落ちにくい窓）
+## 1. 敷居を 768MB → 400MB
 
-**身代わり**（すぐ終わる `.cmd`）を `CLAUDE_EXE` に差し替え、`LOOP_SLEEP=2`・`LOOP_TAG=proof`、
-番人は `-FakeSay` 付きの代役にした。**本物の claude は一度も起こしていない・本物の ntfy も鳴らしていない。**
+`~/.claude/push-retry.ps1` の `$FREE_MIN`。**構文0**、写しは `.bak-20260921`。
 
-| 見るもの | 結果 |
+```powershell
+$FREE_MIN = 400   # 2026-09-21 に 768 から下げた（この機械の空きは 350〜1000MB を
+                  # 行き来し、768 では見送りが常態だった）。
+```
+
+＊この台本は毎分呼び直されるので、**起こし直しは要らない**。
+＊いまの空きは **889MB** で、新しい敷居を超えている。
+
+---
+
+## 2. 「見送り中の ntfy-sent」は**無かった**（そして手元と公開は一致している）
+
+| 見るもの | 値 |
 |---|---|
-| **同じ窓で立て直すか** | **cmd の pid 14772 は一本のまま**で、身代わりが **6回**走った（20:41:29 → 41:41） |
-| 立て直しの間 | 2秒ごと（本番は10秒） |
-| 番人の数え | `立て直し 1/5` → `2/5` → … → **`6/5`** → **`打ち止め：輪を止めて一発鳴らした`** |
-| **6回目で止まったか** | **止まった**。札＝**🪟 異常です（起動が続けて落ちる）** |
+| 見送りの印 `push-pending.tsv` | **0件** |
+| 押し残し（`origin/main..HEAD`） | **0件** |
+| 最後に `ntfy-sent.json` を押した commit | **`6ba6243e` 09-21 20:54「ntfy：押し送った本文を控える」** |
 
-**Code タブが同じ名で繋がるか** … 包みは **`--remote-control koushu-handan` をそのまま渡す**ので、
-名は変わらない。**ただし本当に繋がるのは次に窓が立ったときで、この回では確かめられない**
-（確かめるにはいまの窓を落とすことになる）。**字の上では同じ**、とだけ書いておく。
+**実読みで三つ突き合わせた**（改行を揃えた指紋）。
+
+```
+手元 7917ebdd ／ origin 7917ebdd ／ 公開ページ 7917ebdd    ← 三つとも同じ
+件数          手元 30件 ／ 公開 30件
+いちばん新しい札  両方とも 2026-09-21 20:29:04「✅ 終わりました（返事不要）：考え込み中は触らない」
+```
+
+### 一度「違う」と読み違えた。その訳も書いておく
+
+最初に素の md5 で較べたとき **手元 7327バイト／公開 7116バイト**で食い違った。
+**差の 211 バイトは行数 212 − 1 とぴったり**——**作業木は CRLF、git の中身は LF** というだけで、
+**中身は一字も違わない**。`git status` が「きれい」と言っていたのが正しかった。
+**改行を揃えずに指紋を較べると、必ずこの読み違いをする。**
 
 ---
 
-## 3. 枠の上限を刻ひとつに（`Check-FrameLimit` の作り直し）
+## 3. いま私用メモリの大きい順（上位10）
 
-| | 前 | 後 |
+| 名 | 私用 | 親 |
 |---|---|---|
-| 切る条件 | 8分**かつ**空き400MB未満 | **8分を超えたら**（空きは見ない） |
-| 切った枠 | — | **受信箱へ戻さない**（戻すと同じ所でまた止まり、輪になる） |
-| 札 | 無し | **🪟 時間切れ（再挑戦 N/3）** |
-| 札の中身 | — | **枠の字（先頭200字）** ＋ **どこまで進んだか**（台帳と足跡） |
-| N | — | **同じ字の枠を切った回数**。`frames-hash.tsv` の md5 で見分け、`frame-cut-hash.tsv` に積んで**48時間**で数える |
+| **claude** | **631MB** | cmd.exe(9040) |
+| **MsMpEng**（Defender） | **357MB** | services.exe |
+| powershell | 98MB | （親不在） |
+| SearchApp | 98MB | svchost.exe |
+| explorer | 82MB | （親不在） |
+| VCSystemTray | 77MB | svchost.exe |
+| powershell | 66MB | cmd.exe(15496) |
+| svchost（SysMain） | 65MB | services.exe |
+| msedge | 53MB | （親不在） |
+| svchost | 38MB | services.exe |
 
-### 作り値
+## 4. 起動時に立つ物のうち、Claude* 以外で私用50MB超
 
-| 場合 | 結果 |
-|---|---|
-| **甲 9分** | **切った**（子1本・Esc 送った）／台帳へ `時間切れ（9分・再挑戦 1/3）`／札 **🪟 時間切れ（再挑戦 1/3）** |
-| **乙 同じ枠が二度目** | **再挑戦 2/3**（`同じ字の枠を切ったのは、48時間で 2 回目です。`） |
-| **丙 7分** | **切らない**（子0本・Esc 送らない・台帳も触らない） |
+| 名 | 私用 | 素性 |
+|---|---|---|
+| **MsMpEng** | **359MB** | サービス `WinDefend`（自動） |
+| SearchApp | 98MB | 常駐（Windows の検索） |
+| explorer | 84MB | 常駐 |
+| VCSystemTray | 76MB | 常駐（VAIO の常駐） |
+| svchost | 65MB | サービス `SysMain`（自動） |
+| msedge | 53MB | 常駐（下記のとおり検査由来ではない） |
 
-**札の姿（甲）**
+＊`powershell` 三本（95/93/75MB）は Claude の見張り・窓の手なので、この表からは外した。
 
-```
-🪟 時間切れ（再挑戦 1/3）
-  枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**
-  同じ字の枠を切ったのは、48時間で 1 回目です。
-
-  ── 切れた枠（先頭200字）──
-  作り値の枠。あああ…（200字ちょうどで切って「…」）
-
-  ── どこまで進んだか ──
-  台帳：未了 1件／この枠の行は「未了：受領」
-  足跡：最後は 20:42:59 PostToolUse／この枠に入ってから 命令 0回・返り 0回
-
-  ＊claude の子を 1本落として、Esc を一打送りました。
-```
-
-＊**200字の切りは別に数え直した** … 266字 → **201字**（200＋「…」）。ちょうど。
-＊作り値の「命令 0回」は**作り値の仕掛けのせい**——枠の開始を「いま」にしたまま経過だけ9分に
-　偽ったので、「入ってから」に入る足跡が無かった。**本番では開始が本物なので数が入る。**
-
----
-
-## 4. 途中で一つ壊して、直した（記録として）
-
-`Check-FrameLimit` を丸ごと差し替えたとき、**同じ範囲にあった `Get-ClaudeKids` を巻き添えで消した**。
-**構文検査は通る**（PowerShell は呼び先の有無を見ない）ので、そのままなら
-**常駐が走り出してから初めて落ちる**ところだった。
-
-**使っている手と定義の数を突き合わせて**気づき、戻した。
-
-```
-Get-ClaudeKids : 定義 0 / 出現 1     ← これで見つけた
-```
-
-＊残る「定義が無い」物（`Sweep-Orphans`・`Check-FreeMem`・`Get-Subject`）は**元からの形**で、
-　前者二つは `Get-Command` で守られた任意の手、`Get-Subject` は `subject.ps1` の側にある。
-
----
-
-## 5. 入れたあとの姿と戻し方
+## 5. SysMain と Defender
 
 | | |
 |---|---|
-| `~/.claude/inbox-watch.ps1` | **1714行 → 1846行**・構文0（写し `.bak-20260921h` / `i` / `j`） |
-| `~/.claude/claude-loop.cmd` | 新設（ASCII＋CRLF） |
-| `~/.claude/loop-guard.ps1` | 新設（BOM付き・構文0） |
-| `ClaudeCodeAtLogon` | 包み経由へ（控え `task-bak-20260921\ClaudeCodeAtLogon.xml`） |
-| **常駐** | **pid 1104・20:47:20 起動**（台本の更新 20:46:13 より後）・例外なし |
+| **SysMain** | **Running**／開始の種類 **Auto** |
+| WinDefend | Running／Auto |
+| WSearch | **Stopped**／**Disabled**（既に止めてある） |
+| Defender **定期走査** | 前回 **09-21 03:22**／次回は**予定に出ていない**（`—`） |
+| 同 Cache Maintenance ／ Cleanup ／ Verification | 前回 03:25 ／ 03:01 ／ 03:01 |
 
-```powershell
-Copy-Item 'C:\Users\user\.claude\inbox-watch.ps1.bak-20260921h' 'C:\Users\user\.claude\inbox-watch.ps1' -Force
-Register-ScheduledTask -Xml (Get-Content 'C:\Users\user\.claude\task-bak-20260921\ClaudeCodeAtLogon.xml' -Raw) -TaskName 'ClaudeCodeAtLogon' -Force
-wscript "C:\Users\user\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\ClaudeInboxWatch.vbs"
-```
+## 6. 検査は Edge を立てるか／24時間の起動回数
+
+- **立てる。** `check.js` は `msedge.exe`（無ければ chrome／chromium）を探して headless で起こす（693-697行・1313行）。
+- **ただし push のときは立たない。** `pre-push` は **構文検査だけ**（`node --check`）で、`check-all` は回さない。
+- **いま走っている msedge は5本**（すべて 20:23:15〜20:23:51 の起動）。
+  **`koushu-` の印を持つ物は0本**＝**検査由来ではない**（ふつうの Edge）。
+- **24時間の起動回数は数えられない。** 起動を記録している綴りが無い。
+  手掛かりは日次の掃除だけ … `edge-sweep.log` 09-20 **msedge 5本 231MB**／09-21 **msedge 8本 589MB** を落とした。
+
+## 7. MCP
+
+**0件。** `settings.json`・`settings.local.json`・`.claude.json` のどこにも `mcpServers` の中身は無い
+（鍵（`mcpServers`・`enabledMcpjsonServers`・`disabledMcpjsonServers`・`mcpContextUris`）は在るが、**すべて空**）。
 
 ---
 
-## 6. 残り
+## 8. 残り
 
 **残り0件。**
 
-## 7. 実機で見るところ
+## 9. 実機で見るところ
 
-- **次に窓が立ったとき、Code タブの名がこれまでと同じで繋がること**（`--remote-control koushu-handan`）。
-- **claude が落ちても、10秒後に同じ窓で立ち上がること**（窓を閉じずに戻る）。
-- 枠が8分を超えたら **🪟 時間切れ（再挑戦 N/3）** が鳴り、**枠の字と進み具合**が読めること。
+- 空きが細い帯でも、押しが**見送られずに通ること**（`push-retry.log` に
+  `空き NMB＜400MB。押し直せない` が出なくなる）。
 
 ---
 
@@ -167,11 +114,12 @@ wscript "C:\Users\user\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Sta
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **368件**ある。
+　ここに出るのは新しい20件。全部で **369件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0921-2110.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2110.md) | 09-21 21:08 | 押しの敷居を 400MB へ／機械に乗っている物の調べ |
 | [`y0921-2050.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2050.md) | 09-21 20:50 | 落ちにくい窓（三つ）／枠の上限を刻ひとつに |
 | [`y0921-2012.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2012.md) | 09-21 20:12 | 考え込み中は触らない（CPU で振り分け）／定時の札に起こし直しの数 |
 | [`y0921-1957.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1957.md) | 09-21 19:57 | 使用量の上限で手待ちにする（乙で実装） |
@@ -191,6 +139,5 @@ wscript "C:\Users\user\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Sta
 | [`r0921-1246-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0921-1246-2.md) | 09-21 12:46 | 再起動-2（r0921-1246・後の測り） |
 | [`y0921-1040.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1040.md) | 09-21 10:41 | 「写した刻」を字面で確かめて消した |
 | [`y0921-1020.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1020.md) | 09-21 10:23 | 青い窓の出所と、wscript の包みで隠した話／untracked の「写した刻」 |
-| [`y0921-0950.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0950.md) | 09-21 09:49 | 会話の控えの大きさと、畳む支度の点検 |
 
 <!-- 控えの一覧 ここまで -->
