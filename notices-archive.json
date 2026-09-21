@@ -1,6 +1,11 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
+        "time":  1789961432,
+        "message":  "untracked の「写した刻」を字面で確かめてから消す\nClaude Code が戻りました。"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
         "time":  1789961341,
         "message":  "写せます（3件）"
     },
@@ -243,10 +248,5 @@
         "title":  "🔎 調べました",
         "time":  1789889768,
         "message":  "16:11 の訴え二つの今（ntfy-down・pub-read）\n二つとも ok に戻っている。pipe-warn.log の最後の行は「2026-09-20 16:20:20  ok  訴えは無くなった」。いま出ている訴えは0件（pipe-seen は空）、送り直し待ちも無し（ntfy-retry は空）。\nntfy.sh への今の応答は health 200・本体 200。公開側も notices.json 200・ver.txt 200。16:10:58 の訴えは HTTP 000（返事そのものが無い）だった。問い合わせただけで知らせは送っていない。\n16:11 以降に送れず落ちた鈴は無し。16:10〜16:20 は押し送りの試みが一度も無く（札が立っていない）、次の札 16:23:01 は預けられて 16:25:07 に HTTP 200 で出た。今日は押し送りOK 33件・失敗0件（ntfy-daily は 33・ヨシ待ち5・終わり19）。\nファイル: reports/y0920-1630.md（新）／report-latest.md\n実測: pipe-warn の最後 16:20:20 ok／ntfy health 200・本体 200／公開 200・200／今日の押し送り 33件・失敗0"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789888943,
-        "message":  "v1457 の検収と stable の進め\nv1457 にヨシを受けて stable を a76539ee へ進めた（前は 3421d17a・v1456）。origin の refs/tags/stable も a76539ee、stable:ver.txt は 1457。台帳の未了は0件。\n実測: stable 3421d17a → a76539ee／stable:ver.txt 1457"
     }
 ]
