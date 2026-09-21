@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 異常です：週全体の使用量が 80% を越えました",
+        "time":  1789980934,
+        "message":  "週全体 80%（敷居 80%）\n窓の切り替え 2026-09-21T11:00:00.729898+00:00"
+    },
+    {
         "title":  "🔎 調べました：--continue の枠は重複。確かめ直して台帳を整えた",
         "time":  1789980026,
         "message":  "--continue の枠は重複。確かめ直して台帳を整えた\n①同じ枠が二度届いたので、触り直さずに字で確かめた——ClaudeCodeAtLogon の引数に --continue は無く164字（題「(Claude Code)」・--remote-control koushu-handan・/MAX はすべて残存）、revive-claude.ps1 に残る2か所は「外した」「付けない」と断る説明の字だけ、daily-reboot.ps1 の L200 に「空きメモリ NMB ／ 全体 NMB」の行がある。写しも両方（revive-claude.ps1.bak-20260921／daily-reboot.ps1.bak-20260921c）残っている。②台帳に済を書き忘れていた行が溜まっていたので、7行まとめて書き替えた。未了は7件→2件になった。\n"
@@ -243,10 +248,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789905917,
         "message":  "この間にまとまった知らせ 2本\n\n［✅ 終わりました（返事不要）］\npub-late の戻りと、配信の関門の作り値\n①pipe-warn.log の最後の行は「2026-09-20 20:40:27 ok 訴えは無くなった」で、20:30:20 に立った pub-late は10分で落ちている。pipe-seen.txt は空（5バイト＝BOM とCRLF だけ）で、いま立っている訴えは一つも無い。②check.yml に足した「先端でない回は配らない」関門を、本物の字を切り出して凍らせた写しの蔵で当てた。古い commit を指す偽の走りは stale=1 で配信の三段とも飛び、先端を指す走りは stale=0 で今までどおり配る。③実地でも効いており、走り 35508407982 の配信の段は configure-pages・upload-pages-artifact・deploy-pages の三段が skipped で、走り自体は success のまま終わっている。\nファイル: reports/y0920-2100.md／report-latest.md（この回は台本を触っていない）\n実測: pipe-warn.log 末尾＝20:40:27 ok／pipe-seen.txt 5バイト（空）／作り値 イ stale=1・ロ stale=0／実地 35508407982 の配信三段 skipped・走りは success\n\n［✅ 終わりました（返事不要）］\n写せます（1件）"
-    },
-    {
-        "title":  "😺 現在も順調にゃ",
-        "time":  1789905796,
-        "message":  "状態: 作業中 / pub-late の訴えは ok へ戻ったか、pipe-warn.l…\n台帳: 残り 2件（pub-late の戻りと関門の作り値・pub-late の訴えは ok へ戻ったか、pipe-warn.log の最後）\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 3% / 週全体 64% / 週Fable 56%\n訴え: 3件（pub-read・ntfy-down・pub-late）… pipe-warn.log\n配分: 全体 あと37.7%/日 ／ Fable あと46%/日"
     }
 ]
