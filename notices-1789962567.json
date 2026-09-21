@@ -1,5 +1,15 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789961432,
+        "message":  "untracked の「写した刻」を字面で確かめてから消す\nClaude Code が戻りました。"
+    },
+    {
+        "title":  "🪟 異常です（手が要ります）",
+        "time":  1789958306,
+        "message":  "untracked の「写した刻」を字面で確かめてから消す\nClaude Code が動いていません。落ちたか、閉じられました。\nこちらがすること：端末で Claude Code を開き直してください。"
+    },
+    {
         "title":  "🪟 連携に訴えがあります（hook-quiet）",
         "time":  1789958191,
         "message":  "連携の見張りから訴えが出ています。\n\n・hook-quiet … hook.log が 27分 書かれていない。枠を受ける口も生存も、ここを通る\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
@@ -163,20 +173,5 @@
         "title":  "👀 見てください（返事不要）",
         "time":  1789912931,
         "message":  "古い並びの取り直し（panel v142）と「続けて」の合図\n①notify-record が並びを書くたび last-card-at.txt へいちばん新しい札の刻を置き、inbox-watch がそれを state.json の cardAt へ載せ、panel v142 が notices.json の頭を cardAt と突き合わせて古ければ latest-name.txt の道から取り直す形にした。取り直しても古ければ掴んだ並びのまま次の巡回を待つ。作り値は六通り合格（古い→取り直す／新しい→取り直さない／latest-name.txt が読めない→今までどおり／道の形違い→今までどおり／cardAt 無し→取り直さない／取り直しても古い→そのまま）。②frame-work.ps1 に枠の種類 next を足し、空白と改行を落として「続けて」「進めて」に丸ごと一致する枠は台帳に行を作らず札も出さず、いまの枠としても控えない形にした。次の枠（受信箱の未チェック＋台帳の未了）が無いときだけ「次の枠は無い」の一行の札を立てる。句点と「以上」は落として見る（実際に届く形が「続けて。以上」のため）。作り値五通り合格。\nファイル: ~/.claude/notify-record.ps1（写し .bak-20260920c）／~/.claude/inbox-watch.ps1（写し .bak-20260920・常駐は 22:45:17 に起こし直し）／~/.claude/frame-work.ps1／panel.html／panel-ver.txt／reports/y0920-2300.md／report-latest.md\n実測: 作り値① イ 取り直して 22:40／ロ 取り直さない／ハ・ニ 今までどおり 19:23／ホ 取り直さない／ヘ 取り直しても古いのでそのまま。作り値② イ next・台帳0・札なし／ロ next・台帳0・札「次の枠は無い」／ハ order・台帳1／ニ next・台帳0／ホ order・台帳1。実地 last-card-at.txt=1789905917・state.json cardAt=21:05:17・公開 panel-ver.txt=142（手元142）。構文NG 0（三本とも）。\n実機: 返事パネルの一覧が配信の遅れた回でも古い並びのまま座らない／下の版の字が panel v142（9月20日）／「続けて。以上」とだけ送った回に台帳へ「続けて」という名の仕事が立たない"
-    },
-    {
-        "title":  "🪟 連携に訴えがあります（done-swept）",
-        "time":  1789912852,
-        "message":  "連携の見張りから訴えが出ています。\n\n・done-swept … 終わりの札が立っていなかったので立て直した（古い並びの取り直し・stop 2026-09-20 22:53:20・7分遅れ）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789905917,
-        "message":  "この間にまとまった知らせ 2本\n\n［✅ 終わりました（返事不要）］\npub-late の戻りと、配信の関門の作り値\n①pipe-warn.log の最後の行は「2026-09-20 20:40:27 ok 訴えは無くなった」で、20:30:20 に立った pub-late は10分で落ちている。pipe-seen.txt は空（5バイト＝BOM とCRLF だけ）で、いま立っている訴えは一つも無い。②check.yml に足した「先端でない回は配らない」関門を、本物の字を切り出して凍らせた写しの蔵で当てた。古い commit を指す偽の走りは stale=1 で配信の三段とも飛び、先端を指す走りは stale=0 で今までどおり配る。③実地でも効いており、走り 35508407982 の配信の段は configure-pages・upload-pages-artifact・deploy-pages の三段が skipped で、走り自体は success のまま終わっている。\nファイル: reports/y0920-2100.md／report-latest.md（この回は台本を触っていない）\n実測: pipe-warn.log 末尾＝20:40:27 ok／pipe-seen.txt 5バイト（空）／作り値 イ stale=1・ロ stale=0／実地 35508407982 の配信三段 skipped・走りは success\n\n［✅ 終わりました（返事不要）］\n写せます（1件）"
-    },
-    {
-        "title":  "😺 現在も順調にゃ",
-        "time":  1789905796,
-        "message":  "状態: 作業中 / pub-late の訴えは ok へ戻ったか、pipe-warn.l…\n台帳: 残り 2件（pub-late の戻りと関門の作り値・pub-late の訴えは ok へ戻ったか、pipe-warn.log の最後）\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 3% / 週全体 64% / 週Fable 56%\n訴え: 3件（pub-read・ntfy-down・pub-late）… pipe-warn.log\n配分: 全体 あと37.7%/日 ／ Fable あと46%/日"
     }
 ]
