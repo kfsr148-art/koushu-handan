@@ -1,101 +1,89 @@
-﻿# 枠の上限 — 8分を超え、かつ空きが400MBを割ったら仕事を切る
+# 雲へ重い仕事を回す道 — **通った**
 
-**終わり（残り2件）** — 2026-09-21 18:05（VAIO）。`koushu-handan.html`・`stable` には触っていない。
-
----
-
-## 1. 入れた形
-
-`inbox-watch.ps1` に **`Check-FrameLimit`** を足した（1356行 → **1485行**・構文の誤り0）。
-巡回の中で**一分に一度**（15秒の四回に一度）見る。
-
-### 切る条件は**二つ揃ったときだけ**
-
-| | 敷居 |
-|---|---|
-| いまの枠の経過 | **8分を超えている**（`work-started.txt` の `at=` から数える） |
-| 空きメモリ | **400MB を割っている** |
-
-**片方だけでは切らない。** 長いだけの仕事も、空きが細いだけの手待ちも、切る理由にならないため。
-＊**走っている回（鍵が `run:`）だけ**見る。手待ち・ヨシ待ちは切らない。
-
-### 切るときにすること（この順）
-
-1. **`claude` の子を落とす** … `powershell` `node` `git` `gh` のうち、**親をたどって `claude.exe` に行き着く物**だけ。
-   常駐（`inbox-watch`）は `claude` の子ではないので当たらない。
-2. **`claude` へ Esc を一打送る** … 仕事そのものを切る。**窓は落とさない**（`send-esc.ps1` を使う）。
-3. **台帳のいまの行に「時間切れ（NN分・空きNNNMB）」を足す** … 黙って落とさない。
-
-**一つの枠につき一度だけ。** 枠の題と開始の刻を `frame-cut.txt` に控え、同じ枠では二度切らない。
+**終わり（残り2件）** — 2026-09-21 17:55（VAIO）。`koushu-handan.html`・`stable` には触っていない。
 
 ---
 
-## 2. 作り値（三通り＋念のための一つ）
+## 1. 作り値 — **一本通して、結果が `reports/` に戻った**
 
-**写しに切り出して差し替えた**（`$script:Frame*`）。**本物の子は一本も落としていない・Esc も送っていない・
-本物の台帳も書いていない。**
+置いた台本 … `scratchpad/jobs/kumo-tameshi.js`（回る所が VAIO か雲かを、機械の顔つきで見せるだけ）。
+押した → 走りが立った → **成功**（`35580063775`）→ 結果が押し戻された。
 
-| 場合 | 切ったか | 落とす当て | Esc | 台帳へ書く字 |
-|---|---|---|---|---|
-| **甲 9分・350MB** | **切った** | **1本**（pid 12780） | **送った** | **`時間切れ（9分・空き350MB）`** |
-| **乙 9分・600MB** | **切らない** | 0本 | 送っていない | （無し） |
-| **丙 3分・350MB** | **切らない** | 0本 | 送っていない | （無し） |
-
-**念のための一つ … 同じ枠で二度目** — `frame-cut.txt` を消さずに続けて呼ぶと、
-**1度目は切り、2度目は切らない**。一枠一度が効いている。
-
-**台帳の書き込みだけ、本当に書かせて確かめた**（写しの台帳へ）。
+**戻ってきた綴り … `reports/cloud-kumo-tameshi-20260921-085123.md`**
 
 ```
-受領時刻          番号   項目      状態
-2026-09-21 16:00  古い   前の枠    済：これは触ってはいけない        ← 触っていない
-2026-09-21 17:00  作り値 作り値の枠 未了：受領／時間切れ（9分・空き350MB） ← ここだけ足された
+host      : runnervmlun5p
+platform  : linux / 6.17.0-1022-azure
+cpu       : 4個 / AMD EPYC 7763 64-Core Processor
+memory    : 全体 15990MB / 空き 14804MB
+node      : v20.20.2
+
+試しの計算 : 500万回の平方根 = 7453558807（15ms）
 ```
 
-**いちばん新しい「未了」の行だけ**に足り、済んだ行には触らない。
+**終了コード 0。**
+
+| | VAIO | 戻ってきた綴りの中身 |
+|---|---|---|
+| 機械 | Windows 10 | **linux 6.17.0-azure** |
+| CPU | 2個 | **4個・EPYC 7763** |
+| メモリ | **3,975MB** | **15,990MB**（空き14,804MB） |
+
+**数字が別物なので、VAIO では回っていない**——雲で回った、と言い切れる。
 
 ---
 
-## 3. 差し替えの口（作り値のため）
+## 2. 造り
 
-| 名 | 何を差し替えるか |
+### `.github/workflows/job.yml`（新設）
+
+| | |
 |---|---|
-| `$script:FrameFakeMin` | 枠の経過（分）を直に渡す。0以上なら `run:` の検めも飛ばす |
-| `$script:FrameFakeFree` | 空き（MB）を直に渡す |
-| `$script:FrameKilled` | 落とした pid をここへ積む（**本物は落とさない**） |
-| `$script:FrameEsc` | Esc の印をここへ積む（**本物は送らない**） |
-| `$script:FrameLedger` | 台帳へ書く字をここへ積む（**本物は書かない**） |
-| `$script:FrameEvery` | 何巡に一度見るか（既定4＝一分） |
-| `$FRAME_MAX_MIN` / `$FRAME_LOW_MB` | 敷居（既定 8分 / 400MB） |
+| 引き金 | `scratchpad/jobs/*.js` と `*.ps1` が**変わった押し**だけ。＋手起こし（`workflow_dispatch`） |
+| 回る所 | `ubuntu-latest`／node 20／`pwsh` |
+| 一本の上限 | **1500秒**（`timeout`）。越えたら終了コード **124** で切られ、札にそう出る |
+| 走りの上限 | 30分（`timeout-minutes`） |
+| 同時 | `concurrency: koushu-cloud-job`（重ならない・途中で打ち切らない） |
+| 書く先 | **`reports/cloud-<台本の名>-<刻>.md`** |
+| 押し戻し | `github-actions[bot]` が `reports/` だけを commit → `pull --rebase` → push（三度まで） |
+
+**輪にならない。** 引き金は `scratchpad/jobs/` の台本だけ、書き戻す先は `reports/` だけなので、
+**書き戻しがもう一度走りを起こすことはない**。同じ台本を置いたままでも、中身が変わらなければ二度は走らない。
+
+### `scratchpad/jobs/`（新設）
+
+`README.md` に使い方と決まりを置いた。**台本は消さない**（何を回したかを綴りに残すため）。
 
 ---
 
-## 4. 順番について、ひとこと
+## 3. 「雲で：」の決め
 
-**この札を出し終えてから、常駐を入れ替える。**
-いまの枠は既に8分を超えており、空きは 400MB の前後を行き来している。
-**先に常駐を入れ替えると、この報告を書いている最中に自分が切られる**——
-それは仕掛けとしては正しい動きだが、**報告が残らない**。
-入れ替えたら、次の巡回から効き始める。
+**枠の頭に「雲で：」と付いた物は、VAIO では回さない。**
 
-＊つまり**この回の枠は切られない**（古い常駐が回っているあいだに終わる）。
-　効くのは**次の枠から**。
+1. 台本を `scratchpad/jobs/` へ置く
+2. 押す（＝この道へ渡したことになる）
+3. 戻ってきた `reports/cloud-*.md` を読む
+4. **札で結果を返す**
+
+一本だけ回したいときは、Actions の「雲で回す」を手起こしし、`only` に `kumo-tameshi.js` のように名を入れる。
+
+＊この決めは `job.yml` の頭と `scratchpad/jobs/README.md` の両方に書いた。
 
 ---
 
-## 5. 戻し方
+## 4. 押しで一度つまずいた（記録として）
 
-| 直した綴り | 写し |
-|---|---|
-| `~/.claude/inbox-watch.ps1` | **`inbox-watch.ps1.bak-20260921d`** |
+最初の押しが `! [rejected] main -> main (fetch first)` で弾かれた。
+常駐の押しが先に入っていたため。`pull --rebase --autostash` して押し直し、**通った**
+（`961d47d7..312bf724`）。**いまは押し残し0件。**
 
-```powershell
-Copy-Item 'C:\Users\user\.claude\inbox-watch.ps1.bak-20260921d' 'C:\Users\user\.claude\inbox-watch.ps1' -Force
-wscript "C:\Users\user\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\ClaudeInboxWatch.vbs"
-```
+---
 
-**敷居だけ変えたいとき**は、`inbox-watch.ps1` の `$FRAME_MAX_MIN`（既定8）と
-`$FRAME_LOW_MB`（既定400）を書き替えて、常駐を起こし直す。
+## 5. 前の札の刻を訂正
+
+`reports/y0921-1805.md` の頭を「18:05」と書いたが、**実際の機械の刻は 17:45 前後**だった。
+中身（作り値の結果・行数・構文0）は合っている。**刻だけが進んでいる**ので、ここで訂正する。
+＊常駐の入れ替えは **pid 9172・17:49:05**（台本の更新 17:45:00 より後）で、枠の上限は**効いている**。
 
 ---
 
@@ -108,10 +96,8 @@ wscript "C:\Users\user\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Sta
 
 ## 7. 実機で見るところ
 
-- **長引いた枠が、空きの細い時に切られること** … `inbox-watch.log` に
-  `枠の上限：時間切れ（NN分・空きNNNMB）。claude の子を N本落とし、Esc を一打送った` の一行が立ち、
-  台帳のその行の末尾に `／時間切れ（NN分・空きNNNMB）` が付く。
-- **空きが足りていれば切られないこと**（長いだけでは切らない）。
+- `scratchpad/jobs/` へ台本を置いて押すと、数分で **`reports/cloud-<名>-<刻>.md`** が増えること。
+- その綴りの「機械」の行が **ubuntu-latest（雲）** になっていること（VAIO の数字でないこと）。
 
 ---
 
@@ -120,11 +106,13 @@ wscript "C:\Users\user\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Sta
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **359件**ある。
+　ここに出るのは新しい20件。全部で **361件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0921-1755.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1755.md) | 09-21 17:55 | 雲へ重い仕事を回す道 — **通った** |
+| [`cloud-kumo-tameshi-20260921-085123.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-kumo-tameshi-20260921-085123.md) | 09-21 17:53 | 雲で回した：`kumo-tameshi.js` |
 | [`y0921-1805.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1805.md) | 09-21 17:47 | 枠の上限 — 8分を超え、かつ空きが400MBを割ったら仕事を切る |
 | [`y0921-1700.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1700.md) | 09-21 17:02 | 立てる数を減らす — **毎分 22.7本 → 10.6本**／`--continue` を外した |
 | [`y0921-1635.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1635.md) | 09-21 16:38 | 網の切れの一覧と、窓隠しの検収 |
@@ -143,7 +131,57 @@ wscript "C:\Users\user\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Sta
 | [`y0921-0730.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0730.md) | 09-21 07:39 | 公開側 state は戻っている／置き去りの gh・git を常駐が落とす／空き300MB割れで一発 |
 | [`y0921-0655.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0655.md) | 09-21 06:52 | 見張りの止まりの元は「空きメモリ」。使用量の読みではない |
 | [`y0921-0245.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0245.md) | 09-21 02:41 | ①使用量の見張りを足した ②控えの押し残し230件を通した ③鍵の作り直し方を置いた |
-| [`y0921-0140.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0140.md) | 09-21 01:36 | ①写しの頭の道を一意の名にした（panel v143） ②使用量の敷居と、~/.claude の写しの調べ |
-| [`y0921-0115.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0115.md) | 09-21 01:13 | 再起動で切れた二つの直しは**入っている** — 作り値の結果と予定表の写し |
 
 <!-- 控えの一覧 ここまで -->
+
+---
+
+<!-- 送った知らせ ここから -->
+
+## 送った知らせ
+
+直近に ntfy へ送ったものを、新しい順に五件まで。**要約せず、送った本文をそのまま写しています。**
+
+### 1. 🪟 異常です：週全体の使用量が 80% を越えました
+
+```
+週全体 80%（敷居 80%）
+窓の切り替え 2026-09-21T11:00:00.729898+00:00
+```
+
+### 2. 🪟 連携に訴えがあります（subj-gap）
+
+```
+連携の見張りから訴えが出ています。
+
+・subj-gap … 作業中の件名が食い違っている（控え「常駐 inbox-watch に枠の上限を足す」／出ている「雲へ重い仕事を回す道を一本作れ」）
+
+＊同じ種類が続く間は、これ以上鳴らしません。
+＊全部の記録は ~/.claude/pipe-warn.log にあります。
+```
+
+### 3. 🪟 連携に訴えがあります（done-swept）
+
+```
+連携の見張りから訴えが出ています。
+
+・done-swept … 終わりの札が立っていなかったので立て直した（--continue の枠は重複。確かめ直して台帳を整えた・stop 2026-09-21 17:20:02・19分遅れ）
+
+＊同じ種類が続く間は、これ以上鳴らしません。
+＊全部の記録は ~/.claude/pipe-warn.log にあります。
+```
+
+### 4. 🔎 調べました：--continue の枠は重複。確かめ直して台帳を整えた
+
+```
+--continue の枠は重複。確かめ直して台帳を整えた
+①同じ枠が二度届いたので、触り直さずに字で確かめた——ClaudeCodeAtLogon の引数に --continue は無く164字（題「(Claude Code)」・--remote-control koushu-handan・/MAX はすべて残存）、revive-claude.ps1 に残る2か所は「外した」「付けない」と断る説明の字だけ、daily-reboot.ps1 の L200 に「空きメモリ NMB ／ 全体 NMB」の行がある。写しも両方（revive-claude.ps1.bak-20260921／daily-reboot.ps1.bak-20260921c）残っている。②台帳に済を書き忘れていた行が溜まっていたので、7行まとめて書き替えた。未了は7件→2件になった。
+```
+
+### 5. ✅ 終わりました（返事不要）
+
+```
+写せます（5件）
+```
+
+<!-- 送った知らせ ここまで -->
