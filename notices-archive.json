@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789894269,
+        "message":  "v1458 の検収と stable の進め\nv1458 にヨシを受けて stable を 1feb0d8a へ進めた（前は a76539ee・v1457）。origin の refs/tags/stable も 1feb0d8a、stable:ver.txt は 1458。台帳の未了は0件。\n実測: stable a76539ee → 1feb0d8a／stable:ver.txt 1458"
+    },
+    {
         "title":  "👀 見てください（返事不要）",
         "time":  1789892662,
         "message":  "v1458 「三」の根拠の段へ一文を足した\nL1477 の末尾へ指示の字をそのまま足した（539→631字・行数の増減0）。版は三箇所 v1458、commit は一度（1feb0d8a）。\n確かめ … 差分の塊は L2・L1424・L1477 の3箇所だけ。足した字は一箇所で指示と一字一句同じ。段の前の字は先頭から一字も変わっていない（工事の前に控えた539字と突き合わせ）。serifu 再抽出で --check 一致。手元の速い版は終了コード0・5.5秒。\n雲（35498655520）は completed/success。速い版・フル版・配信すべて success。公開の ver.txt は 1458。\nファイル: koushu-handan.html／ver.txt／serifu.txt／serifu-adv.txt（1feb0d8a）／reports/y0920-1710-2.md（新）\n実測: +92字／差分の塊3箇所／手元 5.5秒／雲 success／公開 1458\n実機: 説明欄の三「この判定、信用できるの？」の根拠の段（「根拠はどこにあるか。…」）の最後に、四万手の平均点棒の差の一文が続いていること。版の字が v1458。"
@@ -243,10 +248,5 @@
         "title":  "🔎 調べました",
         "time":  1789793353,
         "message":  "台帳の「黒猫の待機-2」を読む\n①立った日時は 2026-09-08 01:05:28（六行とも同じ刻）。\n②中身の全文は六つ … ①黒版と地(#14241c)のコントラスト比を測る（済：1.07）／②比が3.0未満なら白版 panel-icon-white.png を焼き、比を測る（済：白版は既在・alpha 食い違い0で焼き直し不要・比16.17）／③runCatTick のヨシ待ちの枝と先読みの一覧を白版へ（済）／④panel の版を三箇所同時に上げる（済：v122）／⑤panel-check を回し、公開側の実読み・比の数値・版三箇所の一致を報告（済：全てPASS ✓51／✗0）／⑥比が3.0以上なら焼かず数値だけ報告して止める（該当せず：比1.07で3.0未満）。\n③止まっていない。待ち・未着手・途中のどれでもなく、六行とも閉じている。09-17 の台帳の食い違い-1 で数える側（state-line.js）が「該当せず」を閉じと見ていなかったのを直してあり、いまの様子見が出す残り1件はこの回の枠そのもので黒猫の行ではない。\n④触る先といまの行 … panel.html の runCatTick（L1670・ヨシ待ちの枝の註は L889）／版の三箇所は PANEL_VER L519・verTag L491・panel-ver.txt で、どれも137で一致／panel-icon-white.png（1192バイト）は panel.html から参照0件で、読むのは cat-black.js L22（焼くのは cat-white.js L31）／panel-check.js は L864 が「白版が本文に出ていないこと」を見張る。\n⑤koushu-handan.html に触る仕事ではない。返事パネル側（panel.html・パネルの絵・panel-check.js）の仕事なので、宣言では止まらず、その場で続きを確かめた。\n続きとして残っていた物は無かった。版の三箇所は137で一致、白版の参照は0件（絵は cat-black.js の元絵としてだけ残る）、panel-check は今日の雲の走り 35406645289 でも「全てPASS」。当時の工事は閉じたまま、その後の版上げ（v122→v137）でも壊れていない。\n同名の六行は重複ではなく、①〜⑥の番号ごとに一件ずつ積んだ形（作法31）。閉じ直した行は無い。名の近い別の枠が二つあるが、どちらも別件で閉じ済み（889行「黒猫の待機-2 を進める」＝済：中身を写した／891行「黒猫の待機-2 の後片付け（乙）」＝済：二枚を消して押した 9a951b36、白版は cat-black.js が読むので残した）。\n触った所は無し（読んで確かめただけ）。\nファイル: reports/y0919-1343.md（新）\n実測: 黒猫の待機-2 は六行とも閉じ／版三箇所は137で一致／panel.html の白版の参照0件／panel-check は今日の雲でも全てPASS"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789790289,
-        "message":  "stable を v1451 へ進める\nv1451 のヨシを頂いたので stable を ed7ce66d（v1450）から 89eeb305 へ進めた。押しは --no-verify（作法19）。向こうの refs/tags/stable も 89eeb3057df72643fc1b1960bbd3e52ce1cf215d になっていることを ls-remote で確かめた。\n本体の commit（03d14d2a）ではなく 89eeb305 を指した訳 … 03d14d2a の時点では ㉓ の基準（first-sense-base.json）が古いままで雲のフル版が落ちる形だった。検査が通った形を指すほうが戻り先として使える。本体（koushu-handan.html）はどちらも同じ v1451 で、git show stable:ver.txt も 1451、stable の中の data-ver も 1451。\n手元の版の字も三箇所そろっている（data-ver=\"1451\"／verTag\"\u003ev1451／ver.txt 1451）。公開側の ver.txt も実読みで 1451。雲のフル版は走り 35406645289 が success（12分22秒・check と adv-check の両方 PASS）。\n触ったのは stable タグだけ。本体・ver.txt・serifu.txt・first-sense-base.json・check.js・~/.claude の台本には触っていない。\nファイル: stable タグ（ed7ce66d → 89eeb305）／reports/y0919-1255.md（新）\n実測: stable = 89eeb305（v1451）／向こうの refs/tags/stable も同じ／stable の中の本体は data-ver=\"1451\"・ver.txt 1451／公開の ver.txt も 1451"
     }
 ]
