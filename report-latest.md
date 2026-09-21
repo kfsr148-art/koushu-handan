@@ -1,86 +1,124 @@
-﻿# Edge の置き去りを閉じた（+210MB）／SysMain は**手が要る**
+﻿# 足跡の合図と、手待ちの畳み／pagefile は**手が要る**
 
-**終わり（残り0件）** — 2026-09-21 21:20（VAIO）。`koushu-handan.html`・`stable` には触っていない。
+**終わり（残り0件）** — 2026-09-21 21:28（VAIO）。`koushu-handan.html`・`stable` には触っていない。
+**三つのうち二つは入り、一つ（pagefile）は昇格が要って当てられなかった。**
 
 ---
 
-## 1. SysMain — **止められなかった。人の手が要る**
+## 1. 「claude の足跡」の合図 — **打つ側は入った。check はまだ作れない**
+
+### 入れたもの（打つ側）
+
+常駐の巡回に **`Ping-Ashiato`** を足した。
+
+| | |
+|---|---|
+| いつ打つか | **`hook.log` が書かれるたび**（最終書きが前に打った刻より新しいときだけ） |
+| 合図先 | **`~/.claude/hc-ashiato.txt` の一行目**（`hc-watch.txt` と同じ置き方） |
+| 記録 | `hc-ping.log` に `足跡  hook.log=HH:MM:SS  code=…` の一行 |
+| 貼られていないとき | **黙って飛ばす**（うるさくしない） |
+
+**鍵は台本にも札にも書いていない。** 綴りには**雛形だけ**を置いた（URL の行は空）。
+
+### **check そのものは、こちらでは作れなかった**
+
+healthchecks.io に check を作るには**管理用の API 鍵**が要る。
+`~/.claude` を当たったが、**管理 API の鍵は一つも無い**（`hc-watch.txt` にあるのは打つ先の URL だけ）。
+**鍵が無いので、こちらからは作れない。**
+
+### やってほしいこと
+
+1. healthchecks.io で check を一本作る … **Period 10分／Grace 10分／ntfy を ON**、名は「claude の足跡」
+2. その **Ping URL を `~/.claude/hc-ashiato.txt` に一行**貼る（`#` で始まる説明行はそのままでよい）
+
+**貼れば次の巡回から打ち始める。** こちらは何もしなくてよい。
+
+---
+
+## 2. 手待ちで綴りが太ったら `/clear` を打つ — **入った**
+
+| | |
+|---|---|
+| 打つ条件 | **手待ち**（鍵が `run:` でない・台帳の未了0件・ヨシ待ち0件）**かつ 綴りが15MB超** |
+| 何を打つか | **`/clear`**。道は **`鍵:ESC` と同じ**（コンソールの入力口へ直接。焦点も動かさない） |
+| 鳴らす物 | **「🪟 控えを畳みました（NNMB）」を一度だけ**（敷居を下回るまで黙る・控えは `clear-sent.txt`） |
+| 見るもの | `projects/…` の中で**いちばん新しく書かれた** `.jsonl` |
+
+新しい送り手は **`~/.claude/send-text.ps1`**（`send-esc.ps1` の写し。一行打って Enter）。
+**`send-esc.ps1` には触っていない。**
+
+### 作り値
+
+| 場合 | 打ったか | 鳴らした題 |
+|---|---|---|
+| **甲 手待ち・20MB** | **打った（`/clear`）** | **🪟 控えを畳みました（20MB）** |
+| **乙 走行中・20MB** | 打たない | なし |
+| **丙 手待ち・5MB** | 打たない | なし |
+| 念のため：同じ太さで二度目 | **打たない** | なし |
+
+**本物の窓へは一字も打っていない・本物の ntfy も鳴らしていない。**
+
+＊**いまの綴りは 6.4MB** なので、まだ敷居の下。`clear-sent.txt` も無い。
+
+---
+
+## 3. pagefile 4096MB の固定 — **当てられなかった（昇格が要る）**
 
 ```
-いまの権限 : ふつうの利用者（昇格していない）
-止められない       : Cannot open SysMain service on computer '.'
-自動開始を切れない : Access is denied
-後 : Running / 開始の種類 Auto   ← 変わっていない
+自動まかせ（AutomaticManagedPagefile） : True
+いま : C:\pagefile.sys / 割り当て 7303MB / 使用 274MB / 最大使用 794MB
+自動まかせを切れない : アクセスは拒否されました
 ```
 
-**サービスの停止と開始の種類の変更は、管理者でないとできない。** この窓は昇格していないので、
-**こちらでは当てられない。** 黙って「済」にはしない。
+SysMain と同じで、**この窓はふつうの利用者**なので当てられない。
 
 ### やってほしいこと（管理者の PowerShell で一度だけ）
 
 ```powershell
-Stop-Service -Name SysMain -Force
-Set-Service  -Name SysMain -StartupType Disabled
-Get-Service  -Name SysMain        # Stopped になっていれば済み
+$cs = Get-CimInstance Win32_ComputerSystem
+Set-CimInstance -InputObject $cs -Property @{ AutomaticManagedPagefile = $false }
+$pf = Get-CimInstance Win32_PageFileSetting -Filter "Name='C:\\\\pagefile.sys'"
+Set-CimInstance -InputObject $pf -Property @{ InitialSize = 4096; MaximumSize = 4096 }
+# 再起動してから確かめる
+Get-CimInstance Win32_PageFileUsage | Select-Object Name, AllocatedBaseSize
 ```
 
-＊いまの SysMain は **svchost で私用 65MB**。止めれば、その分と、先読みのディスク仕事が減る。
-＊この機械は**回転盤の HDD** なので、SysMain（SuperFetch）の先読みは効きにくく、
-　詰まったときには足を引っ張る側に回りやすい。
+＊**再起動するまで反映されない。** 定時の再起動（03:00／15:00）で入る。
 
-### 戻し方（元に戻したくなったとき）
+### 戻し方（自動まかせへ返す）
 
 ```powershell
-Set-Service  -Name SysMain -StartupType Automatic
-Start-Service -Name SysMain
+$cs = Get-CimInstance Win32_ComputerSystem
+Set-CimInstance -InputObject $cs -Property @{ AutomaticManagedPagefile = $true }
 ```
 
 ---
 
-## 2. msedge 5本 — **置き去りだった。閉じた**
-
-### 閉じる前の姿（親と命令行）
-
-| pid | 起動 | 私用 | 親 | 命令行の要点 |
-|---|---|---|---|---|
-| **6400** | 20:23:15 | **53MB** | **（親不在）** | `msedge.exe --flag-switches-begin --flag-switches-end **--no-startup-window**` |
-| 12016 | 20:23:33 | 3MB | msedge(6400) | `--type=crashpad-handler` |
-| 9084 | 20:23:48 | 15MB | msedge(6400) | `--type=gpu-process` |
-| 2852 | 20:23:48 | 14MB | msedge(6400) | `--type=utility --utility-sub-type=network.mojom.NetworkService` |
-| 10180 | 20:23:51 | 8MB | msedge(6400) | `--type=utility --utility-sub-type=storage.mojom.StorageService` |
-
-### なぜ「置き去り」と判じたか
-
-| 見たもの | 値 |
-|---|---|
-| 親の 6400 に **`--no-startup-window`** | **窓を持たずに背後で走る形**（Edge の「バックグラウンドで動かす」） |
-| **`--type=renderer` の子** | **0本** ＝ **開いている頁が一つも無い** |
-| `koushu-` の印 | 0本 ＝ 検査（`check.js`）由来でもない |
-| 残り4本 | すべて 6400 の子（crashpad・gpu・network・storage の下働き） |
-
-**頁を描いている子が一本も無い**ので、**遠隔の画面でも人が見ている物でもない**。
-＊もし頁が開いていたら触らない造りにしてある（`--type=renderer` が1本でもあれば閉じずに帰る）。
-＊毎朝 03:00 の `ClaudeEdgeSweep` が同じ物を落としている（09-20 は5本231MB、09-21 は8本589MB）。
-
-### 閉じた結果
+## 4. 入れたあとの姿
 
 | | |
 |---|---|
-| 落としたもの | **親の 6400 を1本**（子4本は道連れで消えた） |
-| msedge | **5本 → 0本** |
-| **空き** | **814MB → 1,024MB（＋210MB）** |
+| `~/.claude/inbox-watch.ps1` | **1846行 → 1959行**・構文0（写し `.bak-20260921k`） |
+| `~/.claude/send-text.ps1` | 新設（`send-esc.ps1` の写し・ASCII 出力） |
+| `~/.claude/hc-ashiato.txt` | 雛形（URL の行は空） |
+| **常駐** | **pid 10540・21:26:01 起動**（台本の更新 21:24:58 より後）・例外なし |
+| 空き | 1,037MB |
+
+＊定義の突き合わせも掛けた。**足した手はすべて定義済み**（残る `Check-FreeMem`・`Get-Subject` は元からの
+　任意の手と `subject.ps1` 側の手）。
 
 ---
 
-## 3. 残り
+## 5. 残り
 
-**残り0件。**（SysMain は**人手待ち**として未検収に積んだ。台帳の未了ではない。）
+**残り0件。** ＊pagefile と healthchecks の check 作りは**人手待ち**として未検収に積んだ。
 
-## 4. 実機で見るところ
+## 6. 実機で見るところ
 
-- **管理者の PowerShell で上の3行**を打って、`Get-Service SysMain` が **Stopped** になること。
-  そのあと空きが 65MB ぶん増えていれば効いている。
-- Edge は閉じてあるが、**使えば普通に立ち上がる**（消したのは背後の居座りだけ）。
+- **`hc-ashiato.txt` に URL を貼ったら**、`hc-ping.log` に `足跡 …` の行が増えること。
+- 手待ちのまま綴りが **15MB** を越えたら、窓に **`/clear`** が入り
+  **「🪟 控えを畳みました（NNMB）」**が鳴ること（いまは 6.4MB）。
+- 管理者で pagefile を当てたあと、**再起動してから** `AllocatedBaseSize` が **4096** になること。
 
 ---
 
@@ -89,11 +127,12 @@ Start-Service -Name SysMain
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **370件**ある。
+　ここに出るのは新しい20件。全部で **371件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0921-2128.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2128.md) | 09-21 21:28 | 足跡の合図と、手待ちの畳み／pagefile は**手が要る** |
 | [`y0921-2120.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2120.md) | 09-21 21:22 | Edge の置き去りを閉じた（+210MB）／SysMain は**手が要る** |
 | [`y0921-2110.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2110.md) | 09-21 21:08 | 押しの敷居を 400MB へ／機械に乗っている物の調べ |
 | [`y0921-2050.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2050.md) | 09-21 20:50 | 落ちにくい窓（三つ）／枠の上限を刻ひとつに |
@@ -113,6 +152,5 @@ Start-Service -Name SysMain
 | [`y0921-1335.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1335.md) | 09-21 13:31 | 09-20 22:00 からの乱れ一枚と、網／ディスクの突き合わせ |
 | [`y0921-1250.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1250.md) | 09-21 12:59 | 起き上がりの道を直して、再起動を一日二回にする |
 | [`r0921-1246-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0921-1246-2.md) | 09-21 12:46 | 再起動-2（r0921-1246・後の測り） |
-| [`y0921-1040.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1040.md) | 09-21 10:41 | 「写した刻」を字面で確かめて消した |
 
 <!-- 控えの一覧 ここまで -->
