@@ -1,124 +1,106 @@
-﻿# 足跡の合図と、手待ちの畳み／pagefile は**手が要る**
+﻿# 盤の健康・熱・画面バッファの調べ／昇格の問いは閉じられた
 
-**終わり（残り0件）** — 2026-09-21 21:28（VAIO）。`koushu-handan.html`・`stable` には触っていない。
-**三つのうち二つは入り、一つ（pagefile）は昇格が要って当てられなかった。**
+**終わり（残り0件）** — 2026-09-21 21:35（VAIO）。**読みだけ。何も直していない。**
+`koushu-handan.html`・`stable` には触っていない。
 
 ---
 
-## 1. 「claude の足跡」の合図 — **打つ側は入った。check はまだ作れない**
+## 0. 先に — **SysMain と pagefile は、まだ当たっていない**
 
-### 入れたもの（打つ側）
+頂いた命令をそのまま綴りにして、**昇格の問いを出した**（`dumps\apply-sysmain-pagefile.ps1`）。
+返ってきたのはこれ。
 
-常駐の巡回に **`Ping-Ashiato`** を足した。
+```
+昇格の問いを出せない : This command cannot be run due to the error: The operation was canceled by the user.
+結果の綴り : まだ何も書かれていない（＝走っていない）
+```
+
+**いまの姿も変わっていない。**
 
 | | |
 |---|---|
-| いつ打つか | **`hook.log` が書かれるたび**（最終書きが前に打った刻より新しいときだけ） |
-| 合図先 | **`~/.claude/hc-ashiato.txt` の一行目**（`hc-watch.txt` と同じ置き方） |
-| 記録 | `hc-ping.log` に `足跡  hook.log=HH:MM:SS  code=…` の一行 |
-| 貼られていないとき | **黙って飛ばす**（うるさくしない） |
+| SysMain | **Running ／ Automatic**（変わらず） |
+| `Win32_PageFileSetting` | **空**（＝まだ自動まかせ） |
+| `AutomaticManagedPagefile` | **True** |
 
-**鍵は台本にも札にも書いていない。** 綴りには**雛形だけ**を置いた（URL の行は空）。
-
-### **check そのものは、こちらでは作れなかった**
-
-healthchecks.io に check を作るには**管理用の API 鍵**が要る。
-`~/.claude` を当たったが、**管理 API の鍵は一つも無い**（`hc-watch.txt` にあるのは打つ先の URL だけ）。
-**鍵が無いので、こちらからは作れない。**
-
-### やってほしいこと
-
-1. healthchecks.io で check を一本作る … **Period 10分／Grace 10分／ntfy を ON**、名は「claude の足跡」
-2. その **Ping URL を `~/.claude/hc-ashiato.txt` に一行**貼る（`#` で始まる説明行はそのままでよい）
-
-**貼れば次の巡回から打ち始める。** こちらは何もしなくてよい。
+＊**この窓からは昇格できない。** 画面に出た「はい」を押してもらうか、
+　**管理者の PowerShell を自分で開いて**、頂いた命令をそのまま貼ってください。
+　（綴りは置いてあるので `powershell -File "C:\Users\user\.claude\dumps\apply-sysmain-pagefile.ps1"` でも同じです。
+　結果は `dumps\apply-result.txt` に残ります。）
 
 ---
 
-## 2. 手待ちで綴りが太ったら `/clear` を打つ — **入った**
+## 1. 盤の健康
+
+| 見るもの | 値 |
+|---|---|
+| 綴り | `Hitachi HTS547575A9E384` ／ **HDD** |
+| **HealthStatus** | **Healthy** |
+| OperationalStatus | **OK** |
+| ReadErrorsTotal ／ Wear ／ Temperature | **読めない** — `Get-StorageReliabilityCounter` が
+`クライアントが CIM リソースへのアクセスを取得できませんでした`（**昇格が要る**） |
+
+**SMART の細かい数は、管理者でないと取れない。** 上の三つは昇格した窓でないと出ない。
+＊健康の見立て（Healthy／OK）だけは、ふつうの利用者でも読めていて、**異常は出ていない**。
+
+### System の 7・51・153（直近7日）
+
+| id | 件数 | 最後 | 中身 |
+|---|---|---|---|
+| **7**（不良ブロック） | **0件** | — | — |
+| **51**（ページングの誤り） | **0件** | — | — |
+| **153**（IO の再試行） | **3件** | 09-21 11:50:42 | **※下記のとおり盤とは無関係だった** |
+
+**153 の三件は、盤の再試行ではない。** 中身を開いたら三件とも
+
+```
+Microsoft-Windows-Kernel-Boot  仮想化ベースのセキュリティ (ポリシー: 0) が disabled。
+  09-18 22:15:39 ／ 09-20 23:21:52 ／ 09-21 11:50:42
+```
+
+**立ち上がりのたびに一度出るお知らせ**で、三つの刻は**三回の起動**とぴったり合う。
+`153` は綴りによって意味が違う（`disk` の 153 が IO 再試行）ので、**番号だけで読むと取り違える。**
+**この機械では、盤の再試行は直近7日で0件。**
+
+## 2. 熱で絞られたか
 
 | | |
 |---|---|
-| 打つ条件 | **手待ち**（鍵が `run:` でない・台帳の未了0件・ヨシ待ち0件）**かつ 綴りが15MB超** |
-| 何を打つか | **`/clear`**。道は **`鍵:ESC` と同じ**（コンソールの入力口へ直接。焦点も動かさない） |
-| 鳴らす物 | **「🪟 控えを畳みました（NNMB）」を一度だけ**（敷居を下回るまで黙る・控えは `clear-sent.txt`） |
-| 見るもの | `projects/…` の中で**いちばん新しく書かれた** `.jsonl` |
+| `Kernel-Processor-Power` の **37番** | **0件**（直近7日） |
 
-新しい送り手は **`~/.claude/send-text.ps1`**（`send-esc.ps1` の写し。一行打って Enter）。
-**`send-esc.ps1` には触っていない。**
+**熱で絞られた跡は無い。** 詰まりの説明を熱に求めるのは、いまのところ当たらない。
 
-### 作り値
+## 3. 黒い窓の画面バッファ
 
-| 場合 | 打ったか | 鳴らした題 |
-|---|---|---|
-| **甲 手待ち・20MB** | **打った（`/clear`）** | **🪟 控えを畳みました（20MB）** |
-| **乙 走行中・20MB** | 打たない | なし |
-| **丙 手待ち・5MB** | 打たない | なし |
-| 念のため：同じ太さで二度目 | **打たない** | なし |
+| どこ | ScreenBufferSize | WindowSize | 字 |
+|---|---|---|---|
+| cmd の**既定**（`HKCU\Console`） | **幅 80 / 高さ 300** | 幅 80 / 高さ 25 | — |
+| **題つきの設定**（`麻雀 攻守判断 (Claude Code)`） | **幅 170 / 高さ 9001** | 幅 170 / 高さ 44 | BIZ UDGothic / 16px |
 
-**本物の窓へは一字も打っていない・本物の ntfy も鳴らしていない。**
+**効いているのは題つきのほう**（`start "麻雀 攻守判断 (Claude Code)"` で題を付けて開くため）。
+**9,001行 × 170桁**の巻き戻しを持っている。
 
-＊**いまの綴りは 6.4MB** なので、まだ敷居の下。`clear-sent.txt` も無い。
+**いまの起動の形**
+
+```
+/c start "麻雀 攻守判断 (Claude Code)" /MAX /D "C:\Users\user\Desktop\mahjong\koushu-handan"
+   cmd.exe /k C:\Users\user\.claude\claude-loop.cmd
+```
+
+＊**起動の側では行数を指定していない。** 行数は**題つきのレジストリの項が決めている**
+（`~/.claude/console-koushu.reg` が控え）。**題を変えるとこの設定ごと効かなくなる。**
 
 ---
 
-## 3. pagefile 4096MB の固定 — **当てられなかった（昇格が要る）**
+## 4. 残り
 
-```
-自動まかせ（AutomaticManagedPagefile） : True
-いま : C:\pagefile.sys / 割り当て 7303MB / 使用 274MB / 最大使用 794MB
-自動まかせを切れない : アクセスは拒否されました
-```
+**残り0件。** ＊SysMain・pagefile・healthchecks の check 作りは**人手待ち**のまま。
 
-SysMain と同じで、**この窓はふつうの利用者**なので当てられない。
+## 5. 実機で見るところ
 
-### やってほしいこと（管理者の PowerShell で一度だけ）
-
-```powershell
-$cs = Get-CimInstance Win32_ComputerSystem
-Set-CimInstance -InputObject $cs -Property @{ AutomaticManagedPagefile = $false }
-$pf = Get-CimInstance Win32_PageFileSetting -Filter "Name='C:\\\\pagefile.sys'"
-Set-CimInstance -InputObject $pf -Property @{ InitialSize = 4096; MaximumSize = 4096 }
-# 再起動してから確かめる
-Get-CimInstance Win32_PageFileUsage | Select-Object Name, AllocatedBaseSize
-```
-
-＊**再起動するまで反映されない。** 定時の再起動（03:00／15:00）で入る。
-
-### 戻し方（自動まかせへ返す）
-
-```powershell
-$cs = Get-CimInstance Win32_ComputerSystem
-Set-CimInstance -InputObject $cs -Property @{ AutomaticManagedPagefile = $true }
-```
-
----
-
-## 4. 入れたあとの姿
-
-| | |
-|---|---|
-| `~/.claude/inbox-watch.ps1` | **1846行 → 1959行**・構文0（写し `.bak-20260921k`） |
-| `~/.claude/send-text.ps1` | 新設（`send-esc.ps1` の写し・ASCII 出力） |
-| `~/.claude/hc-ashiato.txt` | 雛形（URL の行は空） |
-| **常駐** | **pid 10540・21:26:01 起動**（台本の更新 21:24:58 より後）・例外なし |
-| 空き | 1,037MB |
-
-＊定義の突き合わせも掛けた。**足した手はすべて定義済み**（残る `Check-FreeMem`・`Get-Subject` は元からの
-　任意の手と `subject.ps1` 側の手）。
-
----
-
-## 5. 残り
-
-**残り0件。** ＊pagefile と healthchecks の check 作りは**人手待ち**として未検収に積んだ。
-
-## 6. 実機で見るところ
-
-- **`hc-ashiato.txt` に URL を貼ったら**、`hc-ping.log` に `足跡 …` の行が増えること。
-- 手待ちのまま綴りが **15MB** を越えたら、窓に **`/clear`** が入り
-  **「🪟 控えを畳みました（NNMB）」**が鳴ること（いまは 6.4MB）。
-- 管理者で pagefile を当てたあと、**再起動してから** `AllocatedBaseSize` が **4096** になること。
+- 管理者の窓で綴りを走らせたあと、`dumps\apply-result.txt` に
+  `SysMain を止めた` `pagefile を 4096/4096 にした` の行が並ぶこと。
+- SMART の細かい数（ReadErrors・Wear・Temperature）も、**その窓なら読める**。
 
 ---
 
@@ -127,11 +109,12 @@ Set-CimInstance -InputObject $cs -Property @{ AutomaticManagedPagefile = $true }
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **371件**ある。
+　ここに出るのは新しい20件。全部で **372件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0921-2135.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2135.md) | 09-21 21:50 | 盤の健康・熱・画面バッファの調べ／昇格の問いは閉じられた |
 | [`y0921-2128.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2128.md) | 09-21 21:28 | 足跡の合図と、手待ちの畳み／pagefile は**手が要る** |
 | [`y0921-2120.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2120.md) | 09-21 21:22 | Edge の置き去りを閉じた（+210MB）／SysMain は**手が要る** |
 | [`y0921-2110.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2110.md) | 09-21 21:08 | 押しの敷居を 400MB へ／機械に乗っている物の調べ |
@@ -151,6 +134,5 @@ Set-CimInstance -InputObject $cs -Property @{ AutomaticManagedPagefile = $true }
 | [`y0921-1600.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1600.md) | 09-21 15:53 | 二件の取り下げと、走りかけの子 125本の片付け |
 | [`y0921-1335.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1335.md) | 09-21 13:31 | 09-20 22:00 からの乱れ一枚と、網／ディスクの突き合わせ |
 | [`y0921-1250.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1250.md) | 09-21 12:59 | 起き上がりの道を直して、再起動を一日二回にする |
-| [`r0921-1246-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0921-1246-2.md) | 09-21 12:46 | 再起動-2（r0921-1246・後の測り） |
 
 <!-- 控えの一覧 ここまで -->
