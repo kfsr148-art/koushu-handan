@@ -1,0 +1,125 @@
+# 雲で回す（重い仕事を VAIO から逃がす道・2026-09-21・雲へ回す-1）
+#
+#   ＊VAIO は 4GB・回転盤の HDD で、重い台本を回すと空きを食って知らせごと詰まる。
+#     そこで**重い仕事は雲で回し、結果だけを reports/ に書き戻す**道を一本引く。
+#
+#   ＊使い方
+#       ① 回したい台本を `scratchpad/jobs/` へ置く（`*.js` は node、`*.ps1` は pwsh で回る）
+#       ② 押す。その押しがこの走りの引き金になる（`scratchpad/jobs/*.js` と `*.ps1` の変化だけ）
+#       ③ 走りが `reports/cloud-<台本の名>-<刻>.md` を書いて押し戻す
+#       ④ こちらはその綴りを読んで札にする
+#
+#   ＊**枠の頭に「雲で：」と付いた物は、VAIO では回さない。**この道へ渡し、
+#     戻ってきた `reports/cloud-*.md` を読んで札で返す。
+#
+#   ＊輪にならない造り … 引き金は `scratchpad/jobs/` の台本が変わった押しだけ。
+#     書き戻す先は `reports/` なので、**書き戻しがもう一度この走りを起こすことはない**。
+#     同じ台本を置いたままにしても、中身が変わらなければ二度は走らない。
+#
+#   ＊台本はそのまま残す（消さない）。何を回したかが綴りに残るようにするため。
+
+name: 雲で回す
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scratchpad/jobs/*.js'
+      - 'scratchpad/jobs/*.ps1'
+  workflow_dispatch:
+    inputs:
+      only:
+        description: '回す台本の名（例 hello.js）。空なら scratchpad/jobs/ の全部'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: koushu-cloud-job
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 台本を回して reports/ へ書く
+        id: run
+        shell: bash
+        run: |
+          set -u
+          mkdir -p reports scratchpad/jobs
+          shopt -s nullglob
+          only="${{ github.event.inputs.only }}"
+          any=0
+          for f in scratchpad/jobs/*.js scratchpad/jobs/*.ps1; do
+            b="$(basename "$f")"
+            if [ -n "$only" ] && [ "$b" != "$only" ]; then continue; fi
+            any=1
+            stamp="$(date -u '+%Y%m%d-%H%M%S')"
+            name="${b%.*}"
+            out="reports/cloud-${name}-${stamp}.md"
+            {
+              echo "# 雲で回した：\`${b}\`"
+              echo
+              echo "| | |"
+              echo "|---|---|"
+              echo "| 走り | [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) （${{ github.run_number }} 回目） |"
+              echo "| 刻 | $(date -u '+%Y-%m-%d %H:%M:%S') UTC |"
+              echo "| 台本 | \`${f}\` |"
+              echo "| 機械 | ubuntu-latest（雲）。**VAIO では回していない** |"
+              echo
+              echo '## 出たもの'
+              echo
+              echo '```'
+            } > "$out"
+            start=$(date +%s)
+            set +e
+            case "$b" in
+              *.js)  timeout 1500 node "$f"  >> "$out" 2>&1 ;;
+              *.ps1) timeout 1500 pwsh -NoProfile -File "$f" >> "$out" 2>&1 ;;
+            esac
+            rc=$?
+            set -e
+            sec=$(( $(date +%s) - start ))
+            {
+              echo '```'
+              echo
+              echo "**終了コード ${rc}／${sec}秒**"
+              if [ "$rc" = "124" ]; then echo; echo "＊1500秒の上限で切られた。"; fi
+            } >> "$out"
+            echo "書いた: $out（終了コード $rc・${sec}秒）"
+          done
+          if [ "$any" = "0" ]; then
+            echo "回す台本が無かった（scratchpad/jobs/ に *.js も *.ps1 も無い）"
+          fi
+          echo "any=$any" >> "$GITHUB_OUTPUT"
+
+      - name: 結果を押し戻す
+        if: steps.run.outputs.any == '1'
+        shell: bash
+        run: |
+          set -eu
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add reports/
+          if git diff --cached --quiet; then
+            echo '書き戻す物が無い'
+            exit 0
+          fi
+          git commit -m '雲で回した結果を reports/ へ'
+          for i in 1 2 3; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && { echo '押した'; exit 0; }
+            echo "押し直す（$i 回目）"
+            sleep 5
+          done
+          echo '押せなかった'
+          exit 1
