@@ -1,103 +1,164 @@
-﻿# 考え込み中は触らない（CPU で振り分け）／定時の札に起こし直しの数
+﻿# 落ちにくい窓（三つ）／枠の上限を刻ひとつに
 
-**終わり（残り0件）** — 2026-09-21 20:12（VAIO）。`koushu-handan.html`・`stable` には触っていない。
-
----
-
-## 1. 固まりの条件に「CPU 時間」を足した
-
-### なぜ要るか
-
-足跡（`hook.log`）が止まっていても、**長い思案や大きな読み込みは記録を書かずに CPU だけ回す**。
-そこを見ないと、**考え込んでいる最中の窓を巻き添えで落とす**。
-
-### 足した条件
-
-| | 見るもの |
-|---|---|
-| ① | 台帳に走っている枠がある（鍵が `run:` かつ未了1件以上） |
-| ② | `hook.log`（と有れば窓の出し）が **10分**止まっている |
-| **③（新）** | **claude.exe の CPU 時間が10分で増えていない**（1秒でも増えていれば**考え込み中**として触らない） |
-
-**控えは `claude-cpu.txt`**（`刻<TAB>CPU秒`）。**巡回のたび（一分に一度）積み**、
-**10分前の控えと較べる**。古すぎる控え（30分より前）は捨てる。
-
-**較べる控えがまだ無い回は「増えている」側へ倒す**——判じられないなら起こさない。
-
-＊控えは**早戻りより前**に積む。後ろに置くと、静かな回に控えが貯まらず、
-　いざ較べたいときに相手がいない。
-
-### 作り値（どちらも 走行中・足跡は12分止まっている）
-
-| 場合 | 落とす当て | 鳴らした題 | 記録 |
-|---|---|---|---|
-| **甲 CPU が増えている** | **0本** | なし | `足跡は 12分止まっているが、claude の CPU 時間は増えている。考え込み中とみて触らない` |
-| **乙 CPU が増えていない** | **1本** | **🪟 窓を起こし直しました（固まり）** | `固まり（足跡が 12分止まっている）：claude を 1本落として起こし直した` |
-
-**控えの積み方も本物で一度回した** … `1789988991<TAB>1115.6` が積まれ、
-較べる相手がまだ無いので「増えている」（＝起こさない）側へ倒れた。**狙いどおり。**
+**終わり（残り0件）** — 2026-09-21 20:50（VAIO）。`koushu-handan.html`・`stable` には触っていない。
+`CLAUDE.md` には**足していない**（指示どおり）。
 
 ---
 
-## 2. 定時の札に「今日の起こし直し」の一行
+## 1. 落ちにくい窓 — 三つ
 
-`daily-notice.ps1` に一行足した。**実際に出してみた姿**（`-DryRun`）。
+### ① `NODE_OPTIONS=--max-old-space-size=1024`
 
-```
-😺 現在も順調にゃ
-状態: 作業中 / Check-ClaudeFrozen の固まりの条件に「claude…
-台帳: 残り 1件（…）
-見張り: 生存○ 見張り○ 片付け○ 受信箱○
-使用量: セッション 41% / 週全体 0% / 週Fable 0%
-起こし直し: 今日 1回（固まり 0・重さ 0・0本 1） / 最後に落ちた刻 08:55   ← 足した行
-訴え: 8件（…）… pipe-warn.log
-配分: 全体 あと14.3%/日 ／ Fable あと14.3%/日
+**包み（`claude-loop.cmd`）の中で立てる**ので、`ClaudeCodeAtLogon` からも、
+`revive-claude.ps1`（`schtasks /Run` で同じ札を叩く）からも、**同じように効く**。
+
+```cmd
+set "NODE_OPTIONS=--max-old-space-size=1024"
 ```
 
-| 数えるもの | 出どころ |
-|---|---|
-| **固まり** | `inbox-watch.log` の `固まり（…` の行（今日ぶん） |
-| **重さ** | 同じく `重さ（…` の行 |
-| **0本** | `revive.log` の `revive  起こし直した` の行 |
-| **最後に落ちた刻** | 三つのうち**いちばん新しい刻**（`HH:MM`）。今日まだ落ちていなければ **`今日はまだ落ちていない`** |
+### ② 優先度
 
-＊上の `0本 1 / 最後に落ちた刻 08:55` は、今朝 08:53 に0本になって 08:55:27 に起こし直した実際の一件。
-＊行が組めなかった回は**黙って落とす**（空行を足さない）。
+| 何 | 前 | 後 |
+|---|---|---|
+| `claude.exe` | Normal | **AboveNormal** |
+| 予定表の子（`run-hidden.vbs` 経由の powershell）・常駐 | Normal | **BelowNormal** |
+
+**一度きりでは効かない**（立ち上がった子は Normal で始まる）ので、常駐に
+**`Set-Priorities` を足して一分に一度当て直す**。当てられない回は黙って飛ばす。
+
+### ③ 落ちたら10秒後に同じ窓で立て直す包み
+
+**`~/.claude/claude-loop.cmd`**（ASCII＋CRLF・非ASCII 0バイト）。
+
+```cmd
+:loop
+call "%CLAUDE_EXE%" --remote-control koushu-handan
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%GUARD%" -Tag "%LOOP_TAG%"
+if errorlevel 2 goto stop
+timeout /t %LOOP_SLEEP% /nobreak >nul
+goto loop
+```
+
+＊**`call` が要る。** 付けないと、`.cmd` を指したときに制御が戻らず輪が一周で終わる
+　——**作り値で実際に踏んだ**（0.7秒で終わり、身代わりが1回しか走らなかった）。
+
+**`~/.claude/loop-guard.ps1`** が立て直しを数える。**一時間に5回まで**は黙って立て直し、
+**6回目で終了コード2**を返して輪を止め、**「🪟 異常です（起動が続けて落ちる）」**を一発鳴らす。
+
+**札の付け替え**
+
+```
+前 : … cmd.exe /k C:\Users\user\.local\bin\claude.exe --remote-control koushu-handan
+後 : … cmd.exe /k C:\Users\user\.claude\claude-loop.cmd
+```
+
+**題「麻雀 攻守判断 (Claude Code)」・`/MAX`・作業の場は、そのまま残っている。**
 
 ---
 
-## 3. 入れたあとの姿
+## 2. 作り値（落ちにくい窓）
+
+**身代わり**（すぐ終わる `.cmd`）を `CLAUDE_EXE` に差し替え、`LOOP_SLEEP=2`・`LOOP_TAG=proof`、
+番人は `-FakeSay` 付きの代役にした。**本物の claude は一度も起こしていない・本物の ntfy も鳴らしていない。**
+
+| 見るもの | 結果 |
+|---|---|
+| **同じ窓で立て直すか** | **cmd の pid 14772 は一本のまま**で、身代わりが **6回**走った（20:41:29 → 41:41） |
+| 立て直しの間 | 2秒ごと（本番は10秒） |
+| 番人の数え | `立て直し 1/5` → `2/5` → … → **`6/5`** → **`打ち止め：輪を止めて一発鳴らした`** |
+| **6回目で止まったか** | **止まった**。札＝**🪟 異常です（起動が続けて落ちる）** |
+
+**Code タブが同じ名で繋がるか** … 包みは **`--remote-control koushu-handan` をそのまま渡す**ので、
+名は変わらない。**ただし本当に繋がるのは次に窓が立ったときで、この回では確かめられない**
+（確かめるにはいまの窓を落とすことになる）。**字の上では同じ**、とだけ書いておく。
+
+---
+
+## 3. 枠の上限を刻ひとつに（`Check-FrameLimit` の作り直し）
+
+| | 前 | 後 |
+|---|---|---|
+| 切る条件 | 8分**かつ**空き400MB未満 | **8分を超えたら**（空きは見ない） |
+| 切った枠 | — | **受信箱へ戻さない**（戻すと同じ所でまた止まり、輪になる） |
+| 札 | 無し | **🪟 時間切れ（再挑戦 N/3）** |
+| 札の中身 | — | **枠の字（先頭200字）** ＋ **どこまで進んだか**（台帳と足跡） |
+| N | — | **同じ字の枠を切った回数**。`frames-hash.tsv` の md5 で見分け、`frame-cut-hash.tsv` に積んで**48時間**で数える |
+
+### 作り値
+
+| 場合 | 結果 |
+|---|---|
+| **甲 9分** | **切った**（子1本・Esc 送った）／台帳へ `時間切れ（9分・再挑戦 1/3）`／札 **🪟 時間切れ（再挑戦 1/3）** |
+| **乙 同じ枠が二度目** | **再挑戦 2/3**（`同じ字の枠を切ったのは、48時間で 2 回目です。`） |
+| **丙 7分** | **切らない**（子0本・Esc 送らない・台帳も触らない） |
+
+**札の姿（甲）**
+
+```
+🪟 時間切れ（再挑戦 1/3）
+  枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**
+  同じ字の枠を切ったのは、48時間で 1 回目です。
+
+  ── 切れた枠（先頭200字）──
+  作り値の枠。あああ…（200字ちょうどで切って「…」）
+
+  ── どこまで進んだか ──
+  台帳：未了 1件／この枠の行は「未了：受領」
+  足跡：最後は 20:42:59 PostToolUse／この枠に入ってから 命令 0回・返り 0回
+
+  ＊claude の子を 1本落として、Esc を一打送りました。
+```
+
+＊**200字の切りは別に数え直した** … 266字 → **201字**（200＋「…」）。ちょうど。
+＊作り値の「命令 0回」は**作り値の仕掛けのせい**——枠の開始を「いま」にしたまま経過だけ9分に
+　偽ったので、「入ってから」に入る足跡が無かった。**本番では開始が本物なので数が入る。**
+
+---
+
+## 4. 途中で一つ壊して、直した（記録として）
+
+`Check-FrameLimit` を丸ごと差し替えたとき、**同じ範囲にあった `Get-ClaudeKids` を巻き添えで消した**。
+**構文検査は通る**（PowerShell は呼び先の有無を見ない）ので、そのままなら
+**常駐が走り出してから初めて落ちる**ところだった。
+
+**使っている手と定義の数を突き合わせて**気づき、戻した。
+
+```
+Get-ClaudeKids : 定義 0 / 出現 1     ← これで見つけた
+```
+
+＊残る「定義が無い」物（`Sweep-Orphans`・`Check-FreeMem`・`Get-Subject`）は**元からの形**で、
+　前者二つは `Get-Command` で守られた任意の手、`Get-Subject` は `subject.ps1` の側にある。
+
+---
+
+## 5. 入れたあとの姿と戻し方
 
 | | |
 |---|---|
-| `~/.claude/inbox-watch.ps1` | **1672行 → 1714行**・構文0（写し `.bak-20260921g`） |
-| `~/.claude/daily-notice.ps1` | **252行 → 283行**・構文0（写し `.bak-20260921`） |
-| **常駐** | 旧 pid 11632 → **新 pid 11664・20:10:03 起動**（台本の更新 20:08:37 より後） |
-
----
-
-## 4. 戻し方
+| `~/.claude/inbox-watch.ps1` | **1714行 → 1846行**・構文0（写し `.bak-20260921h` / `i` / `j`） |
+| `~/.claude/claude-loop.cmd` | 新設（ASCII＋CRLF） |
+| `~/.claude/loop-guard.ps1` | 新設（BOM付き・構文0） |
+| `ClaudeCodeAtLogon` | 包み経由へ（控え `task-bak-20260921\ClaudeCodeAtLogon.xml`） |
+| **常駐** | **pid 1104・20:47:20 起動**（台本の更新 20:46:13 より後）・例外なし |
 
 ```powershell
-Copy-Item 'C:\Users\user\.claude\inbox-watch.ps1.bak-20260921g'  'C:\Users\user\.claude\inbox-watch.ps1'  -Force
-Copy-Item 'C:\Users\user\.claude\daily-notice.ps1.bak-20260921' 'C:\Users\user\.claude\daily-notice.ps1' -Force
+Copy-Item 'C:\Users\user\.claude\inbox-watch.ps1.bak-20260921h' 'C:\Users\user\.claude\inbox-watch.ps1' -Force
+Register-ScheduledTask -Xml (Get-Content 'C:\Users\user\.claude\task-bak-20260921\ClaudeCodeAtLogon.xml' -Raw) -TaskName 'ClaudeCodeAtLogon' -Force
 wscript "C:\Users\user\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\ClaudeInboxWatch.vbs"
 ```
 
-＊`daily-notice.ps1` は予定表から毎回呼び直されるので、**起こし直しは要らない**。
-
 ---
 
-## 5. 残り
+## 6. 残り
 
 **残り0件。**
 
-## 6. 実機で見るところ
+## 7. 実機で見るところ
 
-- **考え込んでいる最中の窓が落とされないこと。** 足跡が10分止まっても、CPU が回っていれば
-  `inbox-watch.log` に `考え込み中とみて触らない` の一行が立つだけで、窓はそのまま。
-- **定時の札（😺 現在も順調にゃ）に `起こし直し:` の行が出ること。**
-  今日まだ落ちていない日は `今日 0回（固まり 0・重さ 0・0本 0） / 今日はまだ落ちていない` と出る。
+- **次に窓が立ったとき、Code タブの名がこれまでと同じで繋がること**（`--remote-control koushu-handan`）。
+- **claude が落ちても、10秒後に同じ窓で立ち上がること**（窓を閉じずに戻る）。
+- 枠が8分を超えたら **🪟 時間切れ（再挑戦 N/3）** が鳴り、**枠の字と進み具合**が読めること。
 
 ---
 
@@ -106,11 +167,12 @@ wscript "C:\Users\user\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Sta
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **367件**ある。
+　ここに出るのは新しい20件。全部で **368件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0921-2050.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2050.md) | 09-21 20:50 | 落ちにくい窓（三つ）／枠の上限を刻ひとつに |
 | [`y0921-2012.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2012.md) | 09-21 20:12 | 考え込み中は触らない（CPU で振り分け）／定時の札に起こし直しの数 |
 | [`y0921-1957.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1957.md) | 09-21 19:57 | 使用量の上限で手待ちにする（乙で実装） |
 | [`y0921-1936.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1936.md) | 09-21 19:37 | 固まりの判じ方を足跡へ／手待ちで重い窓を立て直す |
@@ -130,6 +192,5 @@ wscript "C:\Users\user\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Sta
 | [`y0921-1040.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1040.md) | 09-21 10:41 | 「写した刻」を字面で確かめて消した |
 | [`y0921-1020.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1020.md) | 09-21 10:23 | 青い窓の出所と、wscript の包みで隠した話／untracked の「写した刻」 |
 | [`y0921-0950.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0950.md) | 09-21 09:49 | 会話の控えの大きさと、畳む支度の点検 |
-| [`y0921-0935.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0935.md) | 09-21 09:35 | 「窓を畳むと0枚と読む」の見立ては、実物では成り立たなかった — 直しは入れていない |
 
 <!-- 控えの一覧 ここまで -->
