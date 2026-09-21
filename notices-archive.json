@@ -1,5 +1,10 @@
 [
     {
+        "title":  "👀 見てください（返事不要）",
+        "time":  1789892662,
+        "message":  "v1458 「三」の根拠の段へ一文を足した\nL1477 の末尾へ指示の字をそのまま足した（539→631字・行数の増減0）。版は三箇所 v1458、commit は一度（1feb0d8a）。\n確かめ … 差分の塊は L2・L1424・L1477 の3箇所だけ。足した字は一箇所で指示と一字一句同じ。段の前の字は先頭から一字も変わっていない（工事の前に控えた539字と突き合わせ）。serifu 再抽出で --check 一致。手元の速い版は終了コード0・5.5秒。\n雲（35498655520）は completed/success。速い版・フル版・配信すべて success。公開の ver.txt は 1458。\nファイル: koushu-handan.html／ver.txt／serifu.txt／serifu-adv.txt（1feb0d8a）／reports/y0920-1710-2.md（新）\n実測: +92字／差分の塊3箇所／手元 5.5秒／雲 success／公開 1458\n実機: 説明欄の三「この判定、信用できるの？」の根拠の段（「根拠はどこにあるか。…」）の最後に、四万手の平均点棒の差の一文が続いていること。版の字が v1458。"
+    },
+    {
         "title":  "🕒 延びています",
         "time":  1789892534,
         "message":  "「三」の根拠の段へ一文を足す（v1458）の宣言\n終了予定17:20を過ぎています（経過21分）"
@@ -243,10 +248,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789790289,
         "message":  "stable を v1451 へ進める\nv1451 のヨシを頂いたので stable を ed7ce66d（v1450）から 89eeb305 へ進めた。押しは --no-verify（作法19）。向こうの refs/tags/stable も 89eeb3057df72643fc1b1960bbd3e52ce1cf215d になっていることを ls-remote で確かめた。\n本体の commit（03d14d2a）ではなく 89eeb305 を指した訳 … 03d14d2a の時点では ㉓ の基準（first-sense-base.json）が古いままで雲のフル版が落ちる形だった。検査が通った形を指すほうが戻り先として使える。本体（koushu-handan.html）はどちらも同じ v1451 で、git show stable:ver.txt も 1451、stable の中の data-ver も 1451。\n手元の版の字も三箇所そろっている（data-ver=\"1451\"／verTag\"\u003ev1451／ver.txt 1451）。公開側の ver.txt も実読みで 1451。雲のフル版は走り 35406645289 が success（12分22秒・check と adv-check の両方 PASS）。\n触ったのは stable タグだけ。本体・ver.txt・serifu.txt・first-sense-base.json・check.js・~/.claude の台本には触っていない。\nファイル: stable タグ（ed7ce66d → 89eeb305）／reports/y0919-1255.md（新）\n実測: stable = 89eeb305（v1451）／向こうの refs/tags/stable も同じ／stable の中の本体は data-ver=\"1451\"・ver.txt 1451／公開の ver.txt も 1451"
-    },
-    {
-        "title":  "😺 現在も順調にゃ",
-        "time":  1789776018,
-        "message":  "状態: 手待ち / v1451 見立て行と釦の助言の文面の差し替え（納品）\n台帳: 残り 0件\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 51% / 週全体 40% / 週Fable 33%\n訴え: 2件（step-slow・done-swept）… pipe-warn.log"
     }
 ]
