@@ -1,94 +1,70 @@
-﻿# 盤の健康・熱・画面バッファの調べ／昇格の問いは閉じられた
+﻿# 黒い窓の巻き戻しを 9001行 → 500行 に
 
-**終わり（残り0件）** — 2026-09-21 21:35（VAIO）。**読みだけ。何も直していない。**
-`koushu-handan.html`・`stable` には触っていない。
-
----
-
-## 0. 先に — **SysMain と pagefile は、まだ当たっていない**
-
-頂いた命令をそのまま綴りにして、**昇格の問いを出した**（`dumps\apply-sysmain-pagefile.ps1`）。
-返ってきたのはこれ。
-
-```
-昇格の問いを出せない : This command cannot be run due to the error: The operation was canceled by the user.
-結果の綴り : まだ何も書かれていない（＝走っていない）
-```
-
-**いまの姿も変わっていない。**
-
-| | |
-|---|---|
-| SysMain | **Running ／ Automatic**（変わらず） |
-| `Win32_PageFileSetting` | **空**（＝まだ自動まかせ） |
-| `AutomaticManagedPagefile` | **True** |
-
-＊**この窓からは昇格できない。** 画面に出た「はい」を押してもらうか、
-　**管理者の PowerShell を自分で開いて**、頂いた命令をそのまま貼ってください。
-　（綴りは置いてあるので `powershell -File "C:\Users\user\.claude\dumps\apply-sysmain-pagefile.ps1"` でも同じです。
-　結果は `dumps\apply-result.txt` に残ります。）
+**終わり（残り0件）** — 2026-09-21 21:40（VAIO）。`koushu-handan.html`・`stable` には触っていない。
 
 ---
 
-## 1. 盤の健康
+## 1. 変えたもの
 
-| 見るもの | 値 |
-|---|---|
-| 綴り | `Hitachi HTS547575A9E384` ／ **HDD** |
-| **HealthStatus** | **Healthy** |
-| OperationalStatus | **OK** |
-| ReadErrorsTotal ／ Wear ／ Temperature | **読めない** — `Get-StorageReliabilityCounter` が
-`クライアントが CIM リソースへのアクセスを取得できませんでした`（**昇格が要る**） |
+**`HKCU\Console\麻雀 攻守判断 (Claude Code)` の `ScreenBufferSize` だけ。**
 
-**SMART の細かい数は、管理者でないと取れない。** 上の三つは昇格した窓でないと出ない。
-＊健康の見立て（Healthy／OK）だけは、ふつうの利用者でも読めていて、**異常は出ていない**。
+| | 値 | 生の字 |
+|---|---|---|
+| **前** | 幅 170 / **高さ 9001** | `0x232900AA` |
+| **後** | 幅 170 / **高さ 500** | `0x01F400AA` |
 
-### System の 7・51・153（直近7日）
+＊`500 × 65536 ＋ 170 ＝ 32,768,170`（高さが上位16ビット・幅が下位16ビット）。**幅は触っていない。**
 
-| id | 件数 | 最後 | 中身 |
-|---|---|---|---|
-| **7**（不良ブロック） | **0件** | — | — |
-| **51**（ページングの誤り） | **0件** | — | — |
-| **153**（IO の再試行） | **3件** | 09-21 11:50:42 | **※下記のとおり盤とは無関係だった** |
-
-**153 の三件は、盤の再試行ではない。** 中身を開いたら三件とも
-
-```
-Microsoft-Windows-Kernel-Boot  仮想化ベースのセキュリティ (ポリシー: 0) が disabled。
-  09-18 22:15:39 ／ 09-20 23:21:52 ／ 09-21 11:50:42
-```
-
-**立ち上がりのたびに一度出るお知らせ**で、三つの刻は**三回の起動**とぴったり合う。
-`153` は綴りによって意味が違う（`disk` の 153 が IO 再試行）ので、**番号だけで読むと取り違える。**
-**この機械では、盤の再試行は直近7日で0件。**
-
-## 2. 熱で絞られたか
+**同じ項のほかの値は、一つも触っていない。**
 
 | | |
 |---|---|
-| `Kernel-Processor-Power` の **37番** | **0件**（直近7日） |
+| `WindowSize` | 幅 170 / 高さ 44（そのまま） |
+| `FaceName` | BIZ UDGothic（そのまま） |
+| `FontSize` | 高さ 16（そのまま） |
+| `FontWeight` | 400（そのまま） |
 
-**熱で絞られた跡は無い。** 詰まりの説明を熱に求めるのは、いまのところ当たらない。
+＊**窓44行 ≦ バッファ500行** なので、窓がバッファを超える形にはなっていない（超えると縮められる）。
 
-## 3. 黒い窓の画面バッファ
+---
 
-| どこ | ScreenBufferSize | WindowSize | 字 |
-|---|---|---|---|
-| cmd の**既定**（`HKCU\Console`） | **幅 80 / 高さ 300** | 幅 80 / 高さ 25 | — |
-| **題つきの設定**（`麻雀 攻守判断 (Claude Code)`） | **幅 170 / 高さ 9001** | 幅 170 / 高さ 44 | BIZ UDGothic / 16px |
-
-**効いているのは題つきのほう**（`start "麻雀 攻守判断 (Claude Code)"` で題を付けて開くため）。
-**9,001行 × 170桁**の巻き戻しを持っている。
-
-**いまの起動の形**
+## 2. 次に窓が立った回に効く — 起動の設定の写し
 
 ```
-/c start "麻雀 攻守判断 (Claude Code)" /MAX /D "C:\Users\user\Desktop\mahjong\koushu-handan"
-   cmd.exe /k C:\Users\user\.claude\claude-loop.cmd
+Execute : C:\Windows\System32\cmd.exe
+Args    : /c start "麻雀 攻守判断 (Claude Code)" /MAX /D "C:\Users\user\Desktop\mahjong\koushu-handan"
+            cmd.exe /k C:\Users\user\.claude\claude-loop.cmd
 ```
 
-＊**起動の側では行数を指定していない。** 行数は**題つきのレジストリの項が決めている**
-（`~/.claude/console-koushu.reg` が控え）。**題を変えるとこの設定ごと効かなくなる。**
+**題が一致するか : True**
+
+**なぜ次の回から効くか** … `start "…"` で**題を付けて**コンソールを開くと、Windows は
+**その題と同じ名の `HKCU\Console` の項**を読んで、字・窓・バッファを決める。
+**読むのはコンソールを作る瞬間だけ**なので、**いま開いている窓は 9001行のまま**で、
+**次に立った窓から 500行**になる。
+
+＊立ち上げ直す道は三つとも同じ題を使うので、どれで立っても効く
+　——`ClaudeCodeAtLogon`（ログオン）／`revive-claude.ps1`（`schtasks /Run` で同じ札）／
+　`claude-loop.cmd`（落ちたときの立て直し。**同じ窓の中**で立て直すので、こちらは題を作り直さない）。
+
+---
+
+## 3. 戻し方
+
+控えを `.reg` で丸ごと書き出してある（**540バイト**）。
+
+```
+C:\Users\user\.claude\console-koushu.bak-20260921.reg
+  [HKEY_CURRENT_USER\Console\麻雀 攻守判断 (Claude Code)]
+  "ScreenBufferSize"=dword:232900aa      ← 元の 9001行
+  "WindowSize"=dword:002c00aa
+```
+
+```powershell
+reg import "C:\Users\user\.claude\console-koushu.bak-20260921.reg"
+```
+
+＊**取り込んだあとも、効くのは次に立った窓から。**
 
 ---
 
@@ -98,9 +74,9 @@ Microsoft-Windows-Kernel-Boot  仮想化ベースのセキュリティ (ポリ�
 
 ## 5. 実機で見るところ
 
-- 管理者の窓で綴りを走らせたあと、`dumps\apply-result.txt` に
-  `SysMain を止めた` `pagefile を 4096/4096 にした` の行が並ぶこと。
-- SMART の細かい数（ReadErrors・Wear・Temperature）も、**その窓なら読める**。
+- **次に窓が立ったとき**、巻き戻しが **500行で止まる**こと
+  （いまの窓のまま確かめても 9001行のままで、変わって見えない）。
+- 字（BIZ UDGothic 16px）と窓の大きさ（170×44）・`/MAX` の効きが**これまでどおり**であること。
 
 ---
 
@@ -109,11 +85,12 @@ Microsoft-Windows-Kernel-Boot  仮想化ベースのセキュリティ (ポリ�
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **372件**ある。
+　ここに出るのは新しい20件。全部で **373件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0921-2140.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2140.md) | 09-21 21:57 | 黒い窓の巻き戻しを 9001行 → 500行 に |
 | [`y0921-2135.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2135.md) | 09-21 21:50 | 盤の健康・熱・画面バッファの調べ／昇格の問いは閉じられた |
 | [`y0921-2128.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2128.md) | 09-21 21:28 | 足跡の合図と、手待ちの畳み／pagefile は**手が要る** |
 | [`y0921-2120.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2120.md) | 09-21 21:22 | Edge の置き去りを閉じた（+210MB）／SysMain は**手が要る** |
@@ -133,6 +110,5 @@ Microsoft-Windows-Kernel-Boot  仮想化ベースのセキュリティ (ポリ�
 | [`y0921-1625.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1625.md) | 09-21 16:26 | 包みの待ちの確かめ・再起動の内側の上限・押しの詰まりの元 |
 | [`y0921-1600.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1600.md) | 09-21 15:53 | 二件の取り下げと、走りかけの子 125本の片付け |
 | [`y0921-1335.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1335.md) | 09-21 13:31 | 09-20 22:00 からの乱れ一枚と、網／ディスクの突き合わせ |
-| [`y0921-1250.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1250.md) | 09-21 12:59 | 起き上がりの道を直して、再起動を一日二回にする |
 
 <!-- 控えの一覧 ここまで -->
