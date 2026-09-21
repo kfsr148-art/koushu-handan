@@ -1,216 +1,125 @@
-﻿# 起き上がりの道を直して、再起動を一日二回にする
+﻿# 二件の取り下げと、走りかけの子 125本の片付け
 
-**終わり（残り0件）** — 2026-09-21 13:00（VAIO）。
-`koushu-handan.html`・`stable` には触っていない。**本物の再起動はしていない**（作り値は偽の shutdown）。
+**終わり（残り1件）** — 2026-09-21 16:05（VAIO）。`koushu-handan.html`・`stable` には触っていない。
+
+> **片付けの途中で、予想していなかった物が出た。**
+> 走りかけの子は「残っていた」どころではなく、**113本たまって機械を食い潰していた**。
+> 空きは 13:20 の **1,038MB** から 15:50 には **391MB** まで落ちていた。
 
 ---
 
-## 枠A（12:31）の三件
+## 1. 取り下げ（指示どおり二件）
 
-### A① ClaudeAfterLogon.vbs の落ち — **「Set の抜け」ではなく、綴りの字**
-
-`Set sh = CreateObject("WScript.Shell")` の行は**最初から在った**（旧ファイルの6行目）。
-落ちていた本当の理由はこれ。
-
-| 見たもの | 値 |
-|---|---|
-| 旧ファイル | 826バイト・**BOM なし UTF-8**・改行は **LF のみ**8本 |
-| **改行を食われている箇所** | **5本**（offset 109 の `0x89`、239・353・500・638 の `0x82`） |
-
-WSH は `.vbs` を**この機械の ANSI（cp932）**として読む。日本語の注釈を UTF-8 で書くと、
-**行末のバイトが cp932 の「先頭バイト」に当たり、次の LF を相方として食う**。
-食われた行は次の行と繋がるので、**5本ぶん行が詰まり**、`Set sh` の行が**一つ上の注釈の中へ入る**。
-`'` の注釈は行末までなので `Set` は実行されず、詰んだ番号で数えた**3行目**＝`sh.Run` が
-`sh` を知らないまま走り、**800A01A8**。
-
-**直し方は ASCII＋CRLF。** 注釈を英字に書き換え、`Option Explicit` と `Dim sh` を足した。
-
-| | 旧 | 新 |
+| 台帳の行 | 前 | 後 |
 |---|---|---|
-| 非ASCII | 有り | **0バイト** |
-| 改行 | LF 8本（うち5本が食われる） | **CRLF 20本・裸のLF 0本** |
-| `Set sh` の行 | 注釈に飲まれる | **18行目で独立** |
+| `2026-09-21 13:14:43` 乱れの時系列 | 未了：受領 | **済（取り下げ）** |
+| `2026-09-21 13:21:13` 網の切れとの突き合わせ | 未了：受領 | **済（取り下げ）** |
 
-**実測（写しに probe・作法14）** — 眠りだけ 300000ms → 500ms に縮めた写しを `wscript` で走らせた。
+＊**札そのものは書き上げてある。** `reports/y0921-1335.md` に、乱れ10件（元／手当て／残る穴）と
+　網の突き合わせ（**Wi-Fi 一本・印が付くのは 09-20 16:11 の一件だけ・ディスクは HDD**）が残っている。
+　取り下げたのは**台帳の行**であって、中身は消していない。
 
-```
-wscript exit = 0  （落ちない）
-after-reboot.log  2026-09-21 12:41:42  ログオンの回：直前の落としが 63分前なので、札は立てない
-```
+---
 
-**`after-reboot.ps1 -OnLogon` に届いている**（届かなければ、この行は立たない）。
-いまは落としから63分なので、仕様どおり黙って返る。**札の中身**は台本自身の作り値の口で見た。
+## 2. 走りかけの子 — **125本落とした**
 
-```
-> after-reboot.ps1 -OnLogon -Dry -FakeShutdownMin 5
-題 ✅ 戻りました（再起動から）
-   ① 予定表 Claude* … 13件・最終結果は全て良い
-   ② 見張りの生存 … 0分前
-   ③ ntfy.sh の応答 … HTTP 200
-   ④ 公開側 … notices.json のいちばん新しい札 09-21 12:30:32／panel-ver.txt 143
-   四つとも○。戻っている。
-```
+### 出てきた姿（15:50 時点）
 
-＊**本物の ntfy へは送っていない**（`-Dry`）。作り値の知らせを本物として届かせないため（作法14）。
-
-### A② 10:43 以降 — **再起動した。ログオンし直しではない**
-
-| 刻 | id | 何が起きたか |
-|---|---|---|
-| **11:39:02** | **1074** | `RuntimeBroker.exe` が **VAIO\user の求めで再起動を始めた**（理由「その他（計画外）」） |
-| 11:49:37 | 6006 | イベントログサービス停止（＝落ち始め） |
-| 11:50:22 | 13 | OS シャットダウン |
-| **11:50:42** | **12** | **OS 起動**（落ちていたのは **20秒**） |
-| 11:51:19 | 6005 | イベントログサービス開始 |
-| 11:51:51 | 7001 | **ログオン** |
-
-- **41（不意の電源断）も 6008（汚い落ち）も、24時間で0件。** きれいな落ちで、**落ちてはいない**。
-  よって「落ちていたなら」の空きメモリ・claude の私用メモリは**該当なし**。
-- 参考までに今の値 … 空き **1062MB**／全体 3975MB、claude 1本 **私用 504MB**。
-- **気になる点が一つ** … **1074 から実際の落ちまで 11分20秒**空いている。
-  何かが終了を引き止めていた。今回は無害だが、定時再起動を入れたので次から見える（下記 B）。
-- claude.exe が立ったのは **12:11:40** で、ログオン（11:51:51）から**20分後**。
-  `ClaudeCodeAtLogon` ではなく `ClaudeRevive` が拾った形。
-
-### A③ 窓が固まったら落として起こし直す — `inbox-watch` に `Check-ClaudeFrozen`
-
-**いちばん大事な実測** — **窓を持っているのは `claude.exe` ではない。**
-
-```
-claude pid 4384 / MainWindowHandle 0 / Responding True / Title ""
-cmd    pid 5816 / hwnd 131298      / Responding True / "★待ち 麻雀 攻守判断 (Claude Code) - …claude.exe --continue"
-```
-
-`claude.exe` の `Responding` は**常に True**（窓が無いので）。これを見ていたら固まりは**一生見つからない**。
-そこで**親をたどり、取っ手を持つ祖先（＝`cmd.exe`）の `Responding`** を見る形にした。
-
-| 決め | 値 |
-|---|---|
-| 敷居 | **応答なしが3分続いたら** |
-| 見る間隔 | 一分に一度（15秒の巡回の四回に一度） |
-| することは | その `claude` を落とす → `schtasks /End` → `/Run ClaudeCodeAtLogon` → **「🪟 窓を起こし直しました（固まり）」** |
-| 触らない回 | 取っ手がどこにも無い（隠れと窓なしを見分けられない）／`-p`・`--print` の claude |
-| 控え | `~/.claude/claude-frozen.txt`（`pid`＋応答なしを見た刻） |
-
-**作り値**（写しに切り出して差し替え。本物の claude は一度も触っていない）
-
-| 場合 | 落とした pid | 鳴らした題 | 控え |
+| 何 | 本数 | 作業域 | いちばん古い |
 |---|---|---|---|
-| **甲 応答なしが5分（敷居3分）** | **9999** | **🪟 窓を起こし直しました（固まり）** | 消えた |
-| **乙 応答なし1分** | なし | なし | `9999` の刻を**持ったまま**（記録「3分まで待つ」） |
-| **丙 応答あり** | なし | なし | 消えた |
+| `jam-watch.ps1` | **54本** | 663MB | 5,690秒（1時間35分） |
+| `revive-claude.ps1` | **19本** | 211MB | 5,093秒 |
+| `watch-notify.ps1`（heavy-gate 経由） | 9本 | 104MB | 5,868秒 |
+| `pipe-check.ps1` | 9本 | 74MB | 5,786秒 |
+| `heavy-beat.ps1` | 7本→15本 | 114MB | 4,690秒 |
+| `board-emit.ps1` | 7本 | 63MB | 4,561秒 |
+| `sweep-checks.ps1` | 4本 | 66MB | 4,422秒 |
+| `daily-reboot.ps1` | 2本 | 10MB | 2,755秒 |
+| `after-reboot.ps1` | 2本 | 9MB | 1,875秒 |
+| **powershell 計** | **113本** | **約1,300MB** | |
+| `conhost.exe`（上の子） | 113本 | 67MB | |
+| `wscript.exe`（包み） | 13〜15本 | | |
 
-```
-1209行 → 1314行（+105）／構文の誤り 0／CRLF 0（元の LF のまま）
-常駐の入れ替え … 旧 pid 5396（12:13:54）→ 新 pid 7052（12:55:38）・1本のみ
-```
+**どれも「親不在」**——包みの `wscript` は先に消えているのに、中の `powershell` だけが残っていた。
 
-＊台本の更新 12:53:58 ＜ 常駐の起動 12:55:38 なので、**直しが効いている**（作法29 ⑤）。
-＊入れ替え後の `inbox-watch.log` に例外の行は無く、`claude-frozen.txt` も立っていない
-　（＝いまの窓は応答あり＝丙が実地でも通っている）。
+### 落とした結果
 
----
-
-## 枠B（12:35）の四件 — 再起動を一日二回に
-
-### B① 予定表
-
-`ClaudeWeeklyReboot`（土 01:00）を**消し**、**`ClaudeDailyReboot`** を作った。
-`ClaudeAfterReboot` も作り直して**有効**にした。どちらも青い窓を出さない包み（`run-hidden.vbs`）経由。
-
-**schtasks の写し**
-
-```
-TaskName:              \ClaudeDailyReboot
-Next Run Time:         2026/09/21 15:00:00
-Status:                Ready          Scheduled Task State: Enabled
-Task To Run:           C:\Windows\System32\wscript.exe //B //Nologo
-                       "C:\Users\user\.claude\run-hidden.vbs"
-                       "…\powershell.exe" -NoProfile -ExecutionPolicy Bypass
-                       -File "C:\Users\user\.claude\daily-reboot.ps1"
-Schedule Type:         Daily     Start Time: 3:00:00   Days: Every 1 day(s)
-Repeat: Every:         0 Hour(s), 30 Minute(s)
-Repeat: Until: Duration: 1 Hour(s), 30 Minute(s)
-  ── 同じ札にもう一つ ──
-Schedule Type:         Daily     Start Time: 15:00:00  （繰り返しも同じ）
-
-TaskName:              \ClaudeAfterReboot
-Next Run Time:         2026/09/21 15:10:00
-Status:                Ready          Scheduled Task State: Enabled
-Task To Run:           （同じ包み経由）-File "C:\Users\user\.claude\after-reboot.ps1"
-Schedule Type:         Daily     Start Time: 3:10:00 ／ 15:10:00
-```
-
-**30分ごと・1時間30分の繰り返し**は、見送りの三度と噛み合わせてある
-（03:00 → 03:30 → 04:00 → **04:30 は残っていても落とす**）。
-
-＊有効な `Claude*` が 11件 → **13件**になったので、`after-reboot.ps1` の `$WANT_TASKS` も
-　11 → **13** へ直した。直さないと、戻った直後の点検が毎回「予定が足りない」と鳴る。
-
-### B② 落とす直前の点検 — `daily-reboot.ps1`（新設）
-
-**四つを見て、一つでも残っていれば落とさない。**
-
-| 見るもの | 出どころ |
+| | 空き |
 |---|---|
-| ① 台帳の未了 | `orders-open.tsv` の状態が `未了…` の行 |
-| ② ヨシ待ち | `yoshi-open.tsv` の行 |
-| ③ 走っている道具 | `node`（check-all／check.js／adv-check）・`koushu-` の Edge・`hook.log` の最後が `resume` |
-| ④ 押し残し | `git rev-list origin/main..HEAD` と `push-pending.tsv` |
+| 一度目の掃き出し前（15:50） | **504MB**（この少し前は 391MB） |
+| 一度目で120本 → 落ち着くまで | **1,021MB** |
+| 二度目（取りこぼし5本＋置き去りの conhost 1本） | **1,015MB** |
+| **いま（16:05）** | **862MB**（波がある） |
 
-残っていれば **30分後へ見送り（三度まで）**、`reboot.log` に**一行残す**。
-四回目は残っていても落とす。落とす直前に **「🔁 落とします（定時）」** を押し送り、
-**`shutdown /r /t 60`**。
+落としたのは **125本**（powershell・wscript 125／置き去りの conhost 1）。
+**常駐 `inbox-watch`（pid 7052）と claude（pid 13120）には触っていない。**
+残りは `powershell 2本 / wscript 0本 / conhost 3本` で、ふつうの姿に戻っている。
 
-### B③ 戻りの道
+### 気づいたこと（直していない）
 
-`Startup\ClaudeAfterLogon.vbs` → `after-reboot.ps1 -OnLogon` → **「✅ 戻りました（再起動から）」**。
-**A① で直して、`wscript` で手動に走らせて確かめた**（終了0・`after-reboot.log` に到達の一行）。
+- **`IgnoreNew` が効いていない。** `ClaudeRevive`・`ClaudeWatchNotify`・`ClaudePipeCheck`・
+  `ClaudeBoard`・`ClaudeSweepChecks` は「前の回が走っていたら次を起こさない」設定なのに、
+  **19本・9本・9本・7本・4本とたまっていた**。予定表から見ると**札は終わったことになっている**
+  ——つまり**包み（`wscript`）が先に返り、中の `powershell` だけが残る**形になっている。
+  今日 10:15 に入れた `run-hidden.vbs` の `Run(cmd, 0, True)`（＝終わるまで待つ）が、
+  **意図どおりに待っていない**疑いが濃い。
+- **15:00 の定時再起動は動いたが、一行も書かずに止まった。** `reboot.log` に 14〜15時台の行は無く、
+  `daily-reboot.ps1` の走りかけが2本残っていた（15:05 ごろ始まり・46分）。
+  **落ちもせず、見送りの札も立てないまま固まった**——`git rev-list` か `Get-CimInstance` で
+  返らなくなった形で、**内側に上限を置いていない**（作法35 を踏んでいない）。
+- **今日入れた「固まりの起こし直し」は一度も鳴っていない。** `inbox-watch.log` に `固まり` の行は無い。
+  窓は応答を返し続けていたので、**この形の詰まりは拾えない**。
+- claude の pid が **4384 → 13120** に変わっている。`revive.log` には何も残っていないので、
+  **誰が起こし直したのかは辿れない**。
 
-### B④ 作り値 — 三通りとも合格。**本物の shutdown は打っていない**
-
-| 場合 | shutdown を呼んだか | 押し送り |
-|---|---|---|
-| **甲 未了0・ヨシ待ち0・道具なし・押し残し0** | **はい**（偽物） | **🔁 落とします（定時）**／「台帳の未了0・ヨシ待ち0・走っている道具なし・押し残し0」 |
-| **乙 未了2件** | **いいえ** | 出さない。`reboot.log` に `見送り 1/3（枠 …）：台帳の未了 2件。30分後の回で見直す` |
-| **丙 未了2件・すでに三度見送った** | **はい**（偽物） | **🔁 落とします（定時）**／「残っているが打ち止めで落とす：台帳の未了 2件」 |
-
-```
-2026-09-21 12:45:38  見送り 1/3（枠 TEST-tsukuri）：台帳の未了 2件。30分後の回で見直す
-2026-09-21 12:45:39  見送りは 3回で打ち止め（枠 TEST-tsukuri）。残っていても落とす：台帳の未了 2件
-2026-09-21 12:45:40  shutdown /r /t 60 を打つ（空き 1045MB・claude 523MB）
-```
-
-＊`-RebootCmd` に偽の綴りを渡し、`-FakeSay` で押し送りも綴りへ逃がした。
-　**本物の ntfy も本物の shutdown も一度も走っていない**（作法14）。
+＊**直しはしていない。** 元に戻すなら `~/.claude/task-bak-20260921/*.xml` を
+　`Register-ScheduledTask -Xml` で入れ直すだけで、10:15 より前の呼び方へ戻る。
 
 ---
 
-## 回る段の突き合わせ（作法36）
+## 3. 参考 — 積の大きい順（枠13:21 の①ぶん・24時間の実測）
 
-| 段 | どこで | 直しの前後 |
-|---|---|---|
-| `ClaudeDailyReboot`（03:00／15:00・30分×4） | 手元・予定表 | **新設**。`ClaudeWeeklyReboot`（土01:00）は消した |
-| `ClaudeAfterReboot`（03:10／15:10） | 手元・予定表 | **止まっていたのを有効へ**。中の手は `$WANT_TASKS` だけ 11→13 |
-| `ClaudeAfterLogon.vbs`（Startup・ログオン時） | 手元・Startup | 綴りの字だけ直した。**呼ぶ先も眠りも同じ** |
-| `inbox-watch.ps1`（15秒の巡回） | 手元・常駐 | `Check-ClaudeFrozen` を一分に一度。**他の段は触っていない** |
-| `ClaudeRevive`（毎分・0本の起こし） | 手元・予定表 | **触っていない**。固まりは inbox-watch、0本は revive と分かれたまま |
-| `check.yml` の check／deploy | 雲 | **触っていない**（予定表とは繋がっていない） |
+予定表は `Microsoft-Windows-TaskScheduler/Operational` の 100／102 から、
+私用MBは 13:39:47〜13:46:17 の390秒の実測から。
 
-**雲の側に、再起動や固まりに関わる段は無い。**
+| 何 | 回数/24h | 平均秒 | 私用MB | **積** |
+|---|---|---|---|---|
+| **hook `tool-mark`**（Pre 706＋Post 670） | **1,376** | 短い | **57** | **78,432** |
+| **`ClaudeJamWatch`** | **995** | 7.6 | **60** | **59,700** |
+| `ClaudeRevive` | 859 | 18.1 | 64 | 54,976 |
+| `ClaudeWatchNotify` | 643 | 54.8 | 79 | 50,797 |
+| `ClaudeBoard` | 100 | 81.5 | 76 | 7,600 |
+| `ClaudePipeCheck` | 99 | 68.4 | 69 | 6,831 |
+| `ClaudeHookHeartbeat` | 100 | 54.8 | （測れず） | — |
+| `ClaudeSweepChecks` | 50 | 67.0 | （測れず） | — |
+| `ClaudeCodeAtLogon` | 4 | 15.3 | — | — |
+| `ClaudeDailyNotice` | 2 | 121.0 | — | — |
+| `ClaudeHomeBackup` | 1 | 425.8 | — | — |
+| `ClaudeEdgeSweep` | 1 | 3.9 | — | — |
+| `ClaudeDailyReboot`／`ClaudeAfterReboot` | 0 | — | — | 今日作ったばかり |
+| 常駐 `inbox-watch` | 常時1本 | — | 75 | — |
+| 常駐 `cmd-watch`／`kagi-watch`／`push-retry` | 常時 | — | 67／61／44 | — |
+
+**上二つは `tool-mark`（hook）と `ClaudeJamWatch`。** ただし**②の「止めるか延ばすか」には入っていない**
+——15:43 の指示で片付けへ切り替えたため。台帳の行は**取り下げの指示を受けていないので残してある**。
 
 ---
 
-## 残り
+## 4. 残り
 
-**残り0件**（`orders-open.tsv` の未了は0）。
+**残り1件。**
 
-## 実機で見るところ
+1. `2026-09-21 13:21:07` **機械に乗せている物を測ってから減らせ** — ①の測りは済み（上の表）。
+   **②の「上二つを止めるか延ばすか」と③の前後の空きが未了。**
 
-- **15:00 の枠** … 残っている物が無ければ「🔁 落とします（定時）」が鳴り、**60秒後**に落ちる。
-  戻ってから**5分後**に「✅ 戻りました（再起動から）」が出る。
-- 残っていれば落ちず、`~/.claude/reboot.log` に `見送り 1/3` の行が立つ（30分後にやり直す）。
-- 窓が固まったときは「🪟 窓を起こし直しました（固まり）」。**3分は待つ**ので、すぐには鳴らない。
+＊指示は「取り下げ後の未了0件」でしたが、**名指しされた二件を落としても、この一件が残ります**。
+　黙って落とすのは台帳の決め（作法31）に反するので、残したうえでここに書きます。
+　取り下げてよければ、その一言で落とします。
+
+## 5. いまの空き
+
+**862MB ／ 全体 3,975MB**（16:05 時点。掃き出し直後は 1,015MB、波がある）。
+claude 1本・私用 508MB／常駐 `inbox-watch` 1本／`powershell` 2本・`wscript` 0本・`conhost` 3本。
 
 ---
 
@@ -219,11 +128,13 @@ Schedule Type:         Daily     Start Time: 3:10:00 ／ 15:10:00
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **353件**ある。
+　ここに出るのは新しい20件。全部で **355件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0921-1600.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1600.md) | 09-21 15:51 | 二件の取り下げと、走りかけの子 125本の片付け |
+| [`y0921-1335.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1335.md) | 09-21 13:31 | 09-20 22:00 からの乱れ一枚と、網／ディスクの突き合わせ |
 | [`y0921-1250.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1250.md) | 09-21 12:59 | 起き上がりの道を直して、再起動を一日二回にする |
 | [`r0921-1246-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0921-1246-2.md) | 09-21 12:46 | 再起動-2（r0921-1246・後の測り） |
 | [`y0921-1040.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1040.md) | 09-21 10:41 | 「写した刻」を字面で確かめて消した |
@@ -242,7 +153,5 @@ Schedule Type:         Daily     Start Time: 3:10:00 ／ 15:10:00
 | [`y0921-0050.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0050.md) | 09-21 00:48 | 再起動で切れた二つを塞いだ／WeeklyReboot と AfterReboot を止めた |
 | [`y0921-0030.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-0030.md) | 09-21 00:33 | 再起動の稽古の戻り — 26分の穴は「ログオンしていない間、予定表が一つも走らない」 |
 | [`y0920-2320-reboot.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-2320-reboot.md) | 09-20 23:17 | ③ 再起動の稽古 — 手順と、戻らなかったときの戻し方（再起動の直前に書いた） |
-| [`y0920-2315.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-2315.md) | 09-20 23:16 | ①done-swept の元を塞いだ ②ClaudeAfterReboot を作った ④蔵と記録の大きさ ⑤期限の調べ |
-| [`y0920-2300.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0920-2300.md) | 09-20 22:52 | ①古い並びを掴んだら取り直す（panel v142）／②「続けて」「進めて」は合図として扱う |
 
 <!-- 控えの一覧 ここまで -->
