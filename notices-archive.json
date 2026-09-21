@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1789961341,
+        "message":  "写せます（3件）"
+    },
+    {
         "title":  "🪟 異常です（手が要ります）",
         "time":  1789958306,
         "message":  "untracked の「写した刻」を字面で確かめてから消す\nClaude Code が動いていません。落ちたか、閉じられました。\nこちらがすること：端末で Claude Code を開き直してください。"
@@ -243,10 +248,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789888943,
         "message":  "v1457 の検収と stable の進め\nv1457 にヨシを受けて stable を a76539ee へ進めた（前は 3421d17a・v1456）。origin の refs/tags/stable も a76539ee、stable:ver.txt は 1457。台帳の未了は0件。\n実測: stable 3421d17a → a76539ee／stable:ver.txt 1457"
-    },
-    {
-        "title":  "🪟 連携に訴えがあります（ntfy-down・pub-read）",
-        "time":  1789888287,
-        "message":  "連携の見張りから訴えが出ています。\n\n・pub-read … 公開側の notices.json が読めなかった：控えが落ちてこない\n・ntfy-down … ntfy.sh が返さない（HTTP 000）。押し送りは黙って届かない\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。\n"
     }
 ]
