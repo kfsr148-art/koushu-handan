@@ -1,90 +1,149 @@
-﻿# hook の数え（末尾3000行）と、Google の予定
+﻿# 管理者の窓で一度走らせれば三つ当たる綴り
 
-**終わり（残り0件）** — 2026-09-21 22:58（VAIO）。`koushu-handan.html`・`stable` には触っていない。
-**hook の減らしと作り値は、言われたとおりこの回ではやっていない。**
+**終わり（残り0件）** — 2026-09-21 23:05（VAIO）。`koushu-handan.html`・`stable` には触っていない。
 
 ---
 
-## 1. hook（tool-mark）の数え — **末尾3000行だけ**
+## 1. 何をした
 
-`hook.log` の**末尾3000行**を読んだ（24時間ぶんは読んでいない）。
+`~/.claude/dumps/apply-sysmain-pagefile.ps1` に **③ VAIO Care の予定の無効化**を足した。
+これで **管理者の窓で一度走らせれば、三つとも当たる**。
+
+| | 当てる物 |
+|---|---|
+| ① | **SysMain** … 止めて、自動開始を無効に |
+| ② | **pagefile** … 自動まかせを切り、`C:\pagefile.sys` を **4096MB の固定**（初期＝最大） |
+| ③ | **VAIO Care の予定** … `VCSystemTray`（私用77MB）を立てている札を無効に＋いま走っている物も落とす |
+
+**戻し方は、同じ綴りのいちばん下に注として書いた**（走らせずに貼る形）。
 
 | | |
 |---|---|
-| 刻の幅 | **2026-09-20 13:28:04 〜 2026-09-21 22:56:07**（およそ **33.5時間**） |
-| **PreToolUse** | **926回** |
-| **PostToolUse** | **876回** |
-| **tool-mark の合計** | **1,802回** ＝ およそ **54回/時**・**0.9回/分** |
+| 大きさ | **5,612バイト / 89行** |
+| BOM | **あり**（PowerShell の決まりどおり） |
+| 構文の誤り | **0** |
+| 結果の置き場 | `dumps\apply-result.txt`（一行ずつ残る） |
 
-参考までに、同じ3000行の中の内訳。
+### 走らせ方
 
 ```
-  926 PreToolUse     876 PostToolUse    417 frame-work    239 resume
-  181 heartbeat      144 stop            85 inbox-feed     70 stop-guard
+管理者の PowerShell で
+  powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\user\.claude\dumps\apply-sysmain-pagefile.ps1"
 ```
 
-＊`Pre` が `Post` より **50回多い**。**返っていない命令**（切られた・時間切れ・窓が落ちた回）のぶん。
-＊**一回の平均秒と私用MBは、この数えからは出ない。** `hook.log` は刻と種類しか持っておらず、
-　`tool-mark` の一本ごとの秒と大きさを記録している綴りが無い（測るなら別に一行足すのが先）。
-　**この回では足していない。**
+＊**pagefile は再起動してから効く**（定時の 03:00／15:00 で入る）。
+＊管理者でない窓で走らせると、**三つとも「アクセスは拒否されました」で終わる**。
+　その場合でも一行目に `管理者か : False` と残るので、すぐ分かる。
 
 ---
 
-## 2. Google の予定 — **その名の物は無かった**
-
-```
-GoogleUpdateTaskMachineCore / UA の当たり : 0件（その名の予定は無い）
-```
-
-**この機械に在る Google の予定は、次の二つだけ**で、**どちらも既に無効**にしてある
-（前の回で切り、控えも取ってある）。
-
-| 予定 | 状態 | 控え |
-|---|---|---|
-| `\GoogleUserPEH\RunPlatformExperienceHelper_Daily` | **Disabled** | `task-bak-20260921\GoogleUserPEH-Daily-off.xml`（1,541バイト） |
-| `\GoogleUserPEH\RunPlatformExperienceHelper_Metrics` | **Disabled** | `task-bak-20260921\GoogleUserPEH-Metrics-off.xml`（1,515バイト） |
-
-＊`GoogleUpdateTaskMachineCore/UA` は、**Google Update（旧 GoogleUpdate.exe）を入れた機械に出る名**。
-　この機械は新しい `GoogleUpdater` 系で、**その名の札は作られていない**。
-　**無い物を「切った」とは書けない**ので、在る二つを切った、とだけ書く。
-
-### 戻し方
+## 2. 中身の写し（全文）
 
 ```powershell
-Enable-ScheduledTask -TaskName 'RunPlatformExperienceHelper_Daily'   -TaskPath '\GoogleUserPEH\'
-Enable-ScheduledTask -TaskName 'RunPlatformExperienceHelper_Metrics' -TaskPath '\GoogleUserPEH\'
-```
+# apply-sysmain-pagefile.ps1 — 管理者の窓で一度だけ走らせる（2026-09-21）
+#
+#   当てる物は三つ。
+#     ① SysMain … 止めて、自動開始を無効にする
+#     ② pagefile … 自動まかせを切り、C:\pagefile.sys を 4096MB の固定（初期＝最大）にする
+#     ③ VAIO Care の予定 … VCSystemTray（私用77MB）を立てている札を無効にする
+#
+#   ＊どれも**管理者でないと当たらない**。ふつうの窓で走らせると、全部「アクセスは拒否されました」で終わる。
+#   ＊結果は dumps\apply-result.txt に一行ずつ残る。走らせたあと、その綴りを見れば当たったか分かる。
+#   ＊**pagefile は再起動してから効く**（定時の再起動 03:00／15:00 で入る）。
+#   ＊戻し方は、この綴りのいちばん下の注に書いてある。
+$out = 'C:\Users\user\.claude\dumps\apply-result.txt'
+function W([string]$m) {
+  try { Add-Content -LiteralPath $out -Value ((Get-Date -Format 'yyyy-MM-dd HH:mm:ss') + '  ' + $m) -Encoding UTF8 } catch { }
+  Write-Output $m
+}
+$isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+W ('--- 始め。管理者か : ' + $isAdmin)
+if (-not $isAdmin) { W '＊管理者ではありません。このまま走らせても三つとも当たりません。' }
 
-＊札ごと戻したいときは控えの `.xml` を `Register-ScheduledTask -Xml` で入れ直す。
+# ---- ① SysMain ----
+try { Stop-Service SysMain -Force -ErrorAction Stop; W '① SysMain を止めた' }
+catch { W ('① SysMain を止められない : ' + $_.Exception.Message.Split([char]10)[0].Trim()) }
+try { Set-Service SysMain -StartupType Disabled -ErrorAction Stop; W '① SysMain の自動開始を無効にした' }
+catch { W ('① SysMain を無効にできない : ' + $_.Exception.Message.Split([char]10)[0].Trim()) }
+
+# ---- ② pagefile ----
+try {
+  $cs = Get-CimInstance Win32_ComputerSystem
+  $cs.AutomaticManagedPagefile = $false
+  Set-CimInstance -InputObject $cs -ErrorAction Stop
+  W '② 自動まかせを切った'
+} catch { W ('② 自動まかせを切れない : ' + $_.Exception.Message.Split([char]10)[0].Trim()) }
+try {
+  $pf = Get-CimInstance Win32_PageFileSetting
+  if (-not $pf) { $pf = New-CimInstance -ClassName Win32_PageFileSetting -Property @{ Name = 'C:\pagefile.sys' } }
+  $pf.InitialSize = 4096
+  $pf.MaximumSize = 4096
+  Set-CimInstance -InputObject $pf -ErrorAction Stop
+  W '② pagefile を 4096/4096 にした（再起動してから効く）'
+} catch { W ('② pagefile を当てられない : ' + $_.Exception.Message.Split([char]10)[0].Trim()) }
+
+# ---- ③ VAIO Care の予定（VCSystemTray を立てる物）----
+try {
+  $bak = 'C:\Users\user\.claude\task-bak-20260921\SonyVAIOCare-off.xml'
+  $x = Export-ScheduledTask -TaskName 'VAIO Care' -TaskPath '\Sony Corporation\VAIO Care\' -ErrorAction Stop
+  Set-Content -LiteralPath $bak -Value $x -Encoding UTF8
+  W ('③ VAIO Care の札を控えた : ' + $bak)
+} catch { W ('③ VAIO Care を控えられない : ' + $_.Exception.Message.Split([char]10)[0].Trim()) }
+try {
+  Disable-ScheduledTask -TaskName 'VAIO Care' -TaskPath '\Sony Corporation\VAIO Care\' -ErrorAction Stop | Out-Null
+  W '③ VAIO Care の予定を無効にした'
+} catch { W ('③ VAIO Care を無効にできない : ' + $_.Exception.Message.Split([char]10)[0].Trim()) }
+try {
+  $v = @(Get-Process VCSystemTray -ErrorAction SilentlyContinue)
+  foreach ($p in $v) { Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue }
+  W ('③ いま走っている VCSystemTray を ' + $v.Count + '本 落とした')
+} catch { }
+
+# ---- 確かめ ----
+try { $s = Get-Service SysMain; W ('確かめ SysMain : ' + $s.Status + ' / ' + $s.StartType) } catch { }
+W ('確かめ AutomaticManagedPagefile : ' + (Get-CimInstance Win32_ComputerSystem).AutomaticManagedPagefile)
+$any = @(Get-CimInstance Win32_PageFileSetting)
+if ($any.Count -eq 0) { W '確かめ pagefile : 設定は空（＝まだ自動まかせ）' }
+foreach ($x in $any) { W ('確かめ pagefile : ' + $x.Name + ' 初期 ' + $x.InitialSize + ' 最大 ' + $x.MaximumSize) }
+try { $t = Get-ScheduledTask -TaskName 'VAIO Care' -TaskPath '\Sony Corporation\VAIO Care\'; W ('確かめ VAIO Care : ' + $t.State) } catch { W '確かめ VAIO Care : 読めない' }
+W '--- 終わり。pagefile は再起動してから効きます。'
+
+# ============================================================================
+# 戻し方（この綴りは走らせず、下の行を管理者の窓へ貼る）
+#
+#   ① SysMain を元へ
+#        Set-Service  -Name SysMain -StartupType Automatic
+#        Start-Service -Name SysMain
+#
+#   ② pagefile を自動まかせへ返す（再起動してから効く）
+#        $cs = Get-CimInstance Win32_ComputerSystem
+#        $cs.AutomaticManagedPagefile = $true
+#        Set-CimInstance -InputObject $cs
+#      ＊大きさだけ変えたいときは
+#        $pf = Get-CimInstance Win32_PageFileSetting
+#        $pf.InitialSize = <MB>; $pf.MaximumSize = <MB>; Set-CimInstance -InputObject $pf
+#
+#   ③ VAIO Care の予定を元へ（次のログオンから VCSystemTray がまた立つ）
+#        Enable-ScheduledTask -TaskName 'VAIO Care' -TaskPath '\Sony Corporation\VAIO Care\'
+#      ＊札ごと戻すなら
+#        Register-ScheduledTask -Xml (Get-Content 'C:\Users\user\.claude\task-bak-20260921\SonyVAIOCare-off.xml' -Raw) `
+#          -TaskName 'VAIO Care' -TaskPath '\Sony Corporation\VAIO Care\' -Force
+# ============================================================================
+```
 
 ---
 
-## 3. 前の回でやった引き算（取りこぼさないように、ここに一行ずつ）
+## 3. 残り
 
-| したこと | 結果 |
-|---|---|
-| **`ClaudeSweepChecks` を無効に** | **Disabled**（控え `ClaudeSweepChecks-off.xml`）。役目は常駐の `Sweep-Stale` と**完全に重なる**——目印 `koushu-`・`--user-data-dir`・**20分**の敷居・msedge だけ、まで同じで、常駐は**2分ごと**に見る（予定は20分ごと） |
-| その作り値 | 身代わりの検査 Edge を `koushu-proof-` の印で2本立て、常駐の `Sweep-Stale` をそのまま読み込んで走らせたら **2本→0本**、記録に `置き去りの検査を 2 本片付けた` |
-| **`\Sony Corporation\VAIO Care\VAIO Care` を無効に** | **切れなかった**（`Access is denied`＝管理者が要る）。ただし**走っていた `VCSystemTray`（pid 9816・私用77MB）は落とした**ので、いまは居ない。**次のログオンで戻る** |
-| Google の二つ | 上記のとおり Disabled |
+**残り0件。** ＊この綴りを**管理者で走らせること**が人手待ち。走らせれば
+SysMain・pagefile・VAIO Care の三つが片付く。
 
-＊`ClaudeJamWatch`・`ClaudeRevive`・`ClaudeWatchNotify`（毎分の三つ）は、**役目が常駐と重ならない**ので
-　印を付けていない——`jam-watch` は詰まりの**現場を撮る**（常駐は撮らない）、`revive` は**0本の起こし直し**
-　（常駐が見るのは固まりと重さ）、`watch-notify` は**知らせの本体**。**切ると穴が開く。**
+## 4. 実機で見るところ
 
-### VCSystemTray を本当に外すには（管理者の PowerShell）
-
-```powershell
-Disable-ScheduledTask -TaskName 'VAIO Care' -TaskPath '\Sony Corporation\VAIO Care\'
-# 戻すとき
-Enable-ScheduledTask  -TaskName 'VAIO Care' -TaskPath '\Sony Corporation\VAIO Care\'
-```
-
----
-
-## 4. 残り
-
-**残り0件。** ＊`VAIO Care`・SysMain・pagefile・healthchecks の check 作りは**人手待ち**のまま。
+- 走らせたあと `dumps\apply-result.txt` に
+  `① SysMain を止めた` `② pagefile を 4096/4096 にした` `③ VAIO Care の予定を無効にした` が並ぶこと。
+- 末尾の「確かめ」の行が **SysMain : Stopped / Disabled**、**VAIO Care : Disabled** になっていること。
+- **pagefile だけは再起動のあと**、`確かめ pagefile : C:\pagefile.sys 初期 4096 最大 4096` になること。
 
 ---
 
@@ -93,11 +152,12 @@ Enable-ScheduledTask  -TaskName 'VAIO Care' -TaskPath '\Sony Corporation\VAIO Ca
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **374件**ある。
+　ここに出るのは新しい20件。全部で **375件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0921-2305.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2305.md) | 09-21 23:32 | 管理者の窓で一度走らせれば三つ当たる綴り |
 | [`y0921-2258.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2258.md) | 09-21 22:58 | hook の数え（末尾3000行）と、Google の予定 |
 | [`y0921-2140.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2140.md) | 09-21 21:57 | 黒い窓の巻き戻しを 9001行 → 500行 に |
 | [`y0921-2135.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2135.md) | 09-21 21:50 | 盤の健康・熱・画面バッファの調べ／昇格の問いは閉じられた |
@@ -117,6 +177,5 @@ Enable-ScheduledTask  -TaskName 'VAIO Care' -TaskPath '\Sony Corporation\VAIO Ca
 | [`y0921-1700.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1700.md) | 09-21 17:02 | 立てる数を減らす — **毎分 22.7本 → 10.6本**／`--continue` を外した |
 | [`y0921-1635.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1635.md) | 09-21 16:38 | 網の切れの一覧と、窓隠しの検収 |
 | [`y0921-1625.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1625.md) | 09-21 16:26 | 包みの待ちの確かめ・再起動の内側の上限・押しの詰まりの元 |
-| [`y0921-1600.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1600.md) | 09-21 15:53 | 二件の取り下げと、走りかけの子 125本の片付け |
 
 <!-- 控えの一覧 ここまで -->
