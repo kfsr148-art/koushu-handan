@@ -1,9 +1,7 @@
 {
-    "at":  "2026-09-21 06:51:21",
+    "at":  "2026-09-21 11:34:56",
     "kinds":  [
-                  "done-stale-note",
-                  "push-fail",
-                  "state-stale"
+                  "hook-quiet"
               ],
     "ntfyDown":  false,
     "text":  ""
