@@ -1,79 +1,73 @@
-# 0件の元は「見出しの言語」。数え方を Get-ScheduledTask へ替えた
+# state-stale の繰り返しは「押しの間引き」が元。25分の底を足した
 
-**終わり（残り1件）** — 2026-09-22 11:13（VAIO）。`after-reboot.ps1` の①を直し、作り値二通り（13件→13件／本当に0件→0件）を**窓なしの同じ道**で確かめた。本体には触っていない。
+**終わり（残り1件）** — 2026-09-22 13:30（VAIO）。空きメモリでも push の失敗でもなく、**昨日入れた押しの間引きが、手待ちのあいだ公開側の `at` を一度も動かさない**のが元。底を足して直し、公開 `state.json` の `at` が動くことを実読みで確かめた。本体には触っていない。
 
-## 1. 落ちていた元
+## 1. 元（`inbox-watch.ps1` の押しの間引き）
 
-**昇格でも TaskPath でもない。`schtasks` の CSV の見出しが表示言語で変わるのが元。**
-
-直す前の①はこう数えていた。
+2026-09-21 の「外へ出る子を減らす-1 ②」で、こう入った。
 
 ```powershell
-schtasks /Query /FO CSV /V | ConvertFrom-Csv |
-  Where-Object { $_.TaskName -like '*\Claude*' -and $_.'Scheduled Task State' -eq 'Enabled' }
+$cmp = $json -replace '"at":[0-9]+', ''      # 較べるとき at を外す
+if ($script:lastPushBody -eq $cmp) { … return }   # 中身が同じなら押さない
 ```
 
-`TaskName` と `Scheduled Task State` は**英語の綴り**。ところが `schtasks` の出す見出しは走る場所で変わる。
+**`at` を外して較べるので、手待ちのあいだは中身が永久に同じになる。** `stat`・`subj`・`todo`・`cardAt` が動かない限り、`state.json` は**一度も押されない**。手元では15秒ごとに書けているのに、公開側の `at` だけが止まる。
 
-| 走らせ方 | 見出し | `$_.TaskName` | 当たり |
-|---|---|---|---|
-| 窓あり（この窓から手で） | `HostName,TaskName,…,Scheduled Task State,…` | 読める | 12件 |
-| **窓なし（予定表 → `run-hidden.vbs` → powershell）** | `ホスト名,タスク名,…,スケジュールされたタスクの状態,…` | **$null** | **0件** |
+**しかも訴えが自分で自分を消す。** `pipe-check.ps1` が45分（`$STATE_STALE_MIN`）で `state-stale` を鳴らす → 鳴らすと `cardAt` が変わる → 中身が違うので押しが通る → 10分後に `ok`。**直さないかぎり50分ごとに永久に繰り返す。**
 
-窓なしでは全列が日本語になるので `$_.TaskName` が `$null` になり、`-like '*\Claude*'` が一件も当たらない。
-**例外も投げないので `catch` にも入らず、素通りで「0件・最終結果は全て良い」と出る。** これが 03:10 と 04:55 の札。
+記録がそのとおりになっている。押しは**訴えの14〜22秒あと**に来ている。
 
-**昇格は関係ない**（実測：窓なしの回も `elevated=False`・`RunLevel=Limited` で、同じ場所の `Get-ScheduledTask` は**13件返った**）。
-**TaskPath も関係ない**（13件とも `\` 直下）。
+| 訴え（`pipe-warn.log`） | 直後の押し（`state.json` の commit） | 前の押しからの間 |
+|---|---|---|
+| 06:30:19 state-stale（51分） | 06:30:35 | 05:38:52 → **52分** |
+| 07:20:19 state-stale（50分） | 07:20:41 | 06:30:35 → **50分** |
+| 10:00:19 state-stale（50分） | 10:00:33 | 09:10:39 → **50分** |
+| 12:40:19 state-stale（54分） | 12:40:33 | 11:46:20 → **54分** |
 
-＊窓なしでの実測値 … `whoami=vaio\user` ／ `elevated=False` ／ `OutputEncoding=shift_jis` ／ `rawlines=410` ／ `csvrows=409` ／ **`clrows=0`** ／ **`enabled_distinct=0`** ／ **`getsched=13`**
+## 2. 空きメモリは元ではない
 
-## 2. 直したところ（`~/.claude/after-reboot.ps1`・写し `.bak-20260922`）
+`git-push.log` の今日の見送りは **73行あるが、全て `who=reboot`**（重い側・敷居1024MB・空き 715〜898MB）。これは 06:42〜07:22 に見送られた**再起動-2の報告の押し**で、07:25:18 に空き 1184MB へ戻って通っている（`push-retry.log`）。
 
-**① `schtasks` の CSV 解析をやめ、`Get-ScheduledTask` で数える。** 表示言語に依らず、昇格も要らない。
-最終結果は `Get-ScheduledTaskInfo -TaskName … -TaskPath …` から取る。
+**`state` は関門を通らない。** `git-push.ps1` の `$SMALL_WHO = @('state','notices','board','pipe','usage','ready','status')` に入っており、空きが乏しくても押す決めになっている。今日の `git-push.log` に `state` の行は**1件だけ**（04:30:26「ほかの押しが続いているので見送る」）。
 
-**② 数える対象を「有効な物だけ」→「登録されている物」へ。**
-2026-09-21 の決めのままだと、わざと無効にした `ClaudeSweepChecks`（09-21 22:31）が落ちて **12件**になり、`$WANT_TASKS = 13` に足りず欠けが立つ。
-いまは13件を数え、**意図しない無効だけを別に欠けとして挙げる**（`$OFF_OK = @('ClaudeSweepChecks')`）。消えたことと無効になったこと、どちらも取りこぼさない形。
+**いまの空き … 1085MB ／ 全 3975MB**（13:22）。軽い側の敷居500MB・重い側1024MB のどちらも上回っている。
 
-**③ `ClaudeAfterReboot` の前回結果 `1` は数に入れない。**
-`1` はこの点検そのものが「欠けあり」で返した値。**一度 1 になると次の回もそれを見て欠けを立て、永久に直らない**（実際そうなっていた）。`1` 以外の非零は今までどおり挙げる。
+＊`pipe-warn.log` の 09:10 `pub-late` は別口。09:22 に `pipe` の push が20秒・pull が30秒で時間切れになった回（`git-push.log`）で、09:21:59 に `ok` が入って閉じている。
 
-＊照合の綴りは `$TASK_PAT` の一行に出した（作り値で差し替えるため）。
+## 3. 直したところ（`~/.claude/inbox-watch.ps1`・写し `.bak-20260922`）
 
-## 3. 作り値の二通り（どちらも窓なしの同じ道で実行）
+**中身が同じでも、25分黙ったら押す底を足した。**
 
-`run-hidden.vbs` → `powershell` → `after-reboot.ps1 -Dry` の順で、**予定表から走るときと同じ console-less の場所**で回した。`-Dry` なので札は送っていない。
-
-**① 実物（`$TASK_PAT = 'Claude*'`）→ 13件**
-
-```
-題 ✅ 再起動の後の点検（返事不要）
-   ① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・最終結果は全て良い
-   ② 見張りの生存 … 0分前
-   ③ ntfy.sh の応答 … HTTP 200
-   ④ 公開側 … notices.json のいちばん新しい札 09-22 10:52:08／panel-ver.txt 143
-   四つとも○。戻っている。
+```powershell
+$PUSH_ALIVE_SEC = 1500                       # 新しく足した（25分）
+…
+if ($script:lastPushBody -eq $cmp -and ($now - $script:lastPushAt) -lt $PUSH_ALIVE_SEC) { … return }
 ```
 
-**② 本当に0件（写しの `$TASK_PAT = 'ZZClaude*'`・当たる予定が無い）→ 0件**
+25分は `state-stale` の敷居45分より十分に短い。**片方だけ動かさないこと**を綴りの注にも書いた。
+差分は**この2箇所だけ**（＋注8行）。
 
-```
-題 🪟 異常です：再起動の後の点検
-   ① 予定表 Claude* … 0件・最終結果は全て良い
-   …
-   欠け 1件：予定が 0件しかない（13件要る）
-```
+## 4. 実読みの確かめ
 
-**0件のときはちゃんと 0件と出て、🪟 の題になる。** 写しは実行後に消した（作法14）。
+- 常駐を起こし直した … 先の常駐（pid 8248・04:50:35 起動）を止め、**pid 9640・13:26:22 起動**。台本の更新 13:25:44 より後で、`-File …inbox-watch.ps1` で終わる物は1本だけ
+- `inbox-watch.log` … `13:26:28 状態を書き出して押した：作業中`
+- **公開側 `https://kfsr148-art.github.io/koushu-handan/state.json` を curl で実読み**
 
-## 4. 検め
+| 刻 | 公開側の `at` | 人の刻 |
+|---|---|---|
+| 13:26:08 | 1790051003 | 13:23:23 |
+| 13:27:23 | **1790051184** | **13:26:24** |
+
+**動いた。** 手元も 13:28:09 に 1790051184 → 1790051283 と進んでいる。
+
+＊25分の底そのものが効くのは**次に25分黙ったとき**。効いた回は `inbox-watch.log` に「状態を書き出して押した」が、**件名が変わっていないのに**出る。そこから先、`pipe-warn.log` に `state-stale` が立たなくなるのが合格の形。
+
+## 5. 検め
 
 - 構文検査（`PSParser::Tokenize`）… **NG 0件**
-- BOM … 保持（`EF BB BF`）／行数 175／改行は LF のまま
-- 写し … `~/.claude/after-reboot.ps1.bak-20260922`
-- **`koushu-handan.html` には触れていない。** 予定表への書き込みもしていない
+- BOM 保持／1968行（+9）／改行 LF
+- 写し … `~/.claude/inbox-watch.ps1.bak-20260922`
+- **`koushu-handan.html` には触れていない**
 
 ## 残り
 
@@ -86,11 +80,12 @@ schtasks /Query /FO CSV /V | ConvertFrom-Csv |
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **379件**ある。
+　ここに出るのは新しい20件。全部で **380件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0922-1330.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0922-1330.md) | 09-22 13:29 | state-stale の繰り返しは「押しの間引き」が元。25分の底を足した |
 | [`y0922-1113.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0922-1113.md) | 09-22 11:14 | 0件の元は「見出しの言語」。数え方を Get-ScheduledTask へ替えた |
 | [`y0922-1047.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0922-1047.md) | 09-22 10:49 | 予定表の Claude* は13件すべて在った（入れ直さず） |
 | [`r0922-0430-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0922-0430-2.md) | 09-22 04:30 | 再起動-2（r0922-0430・後の測り） |
@@ -110,6 +105,5 @@ schtasks /Query /FO CSV /V | ConvertFrom-Csv |
 | [`y0921-1915.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1915.md) | 09-21 19:13 | 綴りを退避して **171.4MB → 4.6MB**／台帳の未了 **0件** |
 | [`y0921-1805b.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1805b.md) | 09-21 18:35 | 未了4項目を一行ずつ／枠の上限の結果／使用量の鈴の丸め |
 | [`y0921-1755.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1755.md) | 09-21 17:55 | 雲へ重い仕事を回す道 — **通った** |
-| [`cloud-kumo-tameshi-20260921-085123.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-kumo-tameshi-20260921-085123.md) | 09-21 17:53 | 雲で回した：`kumo-tameshi.js` |
 
 <!-- 控えの一覧 ここまで -->
