@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 見張りが止まっています（最後の記録 04:30・25分前）",
+        "time":  1790106918,
+        "message":  "見張り（watch-notify）の記録が 25分 途切れています。\n最後の記録 2026-09-23 04:30:28\n\n＊居座っていた回は落としました。次の分の回から戻るはずです。\n＊どの段で止まったかは ~/.claude/watch-step-log.txt にあります。"
+    },
+    {
         "title":  "🔁 落とします（定時）",
         "time":  1790105410,
         "message":  "定時の再起動（枠 2026-09-23 03・09-23 04:30）\n空き 752MB ／ claude 3本・私用 934MB\n空きメモリ 752MB ／ 全体 3975MB\n見送り 3/3回\n残っているが打ち止めで落とす：台帳の未了 3件／ヨシ待ち 8件／走っている道具：仕事が走っている（hook.log の最後が resume）／押し残し 数えられず\n60秒後に落ちる。戻りは「✅ 戻りました（再起動から）」で知らせる。"
@@ -163,10 +168,5 @@
         "title":  "🪟 異常です：セッションの使用量が 80% を越えました",
         "time":  1790004966,
         "message":  "セッション 94%（敷居 80%）\n窓の切り替え 2026-09-21T17:20:00.027194+00:00"
-    },
-    {
-        "title":  "👀 見てください（返事不要）",
-        "time":  1790003544,
-        "message":  "この間にまとまった知らせ 2本\n\n［✅ 終わりました（返事不要）］\n三つが当たった。戻しの命令を走らせてよいかの確認\n（札が立たないまま次の仕事へ移っていた分）\n完了: ①頂いた -NoExit 付きの昇格が通り、三つとも当たった。apply-result.txt の 00:04:17〜00:04:22 に、SysMain を止めて無効にした・自動まかせを切って pagefile を 4096/4096 にした・VAIO Care の札を控えて予定を無効にした、の行が並ぶ。確かめは SysMain : Stopped / Disabled、AutomaticManagedPagefile : False、pagefile : C:\\pagefile.sys 初期 4096 最大 4096、VAIO Care : Disabled。②そのあと頂いた命令は、この三つをそのまま元へ戻す内容（SysMain を Automatic にして起動／自動まかせへ返す／VAIO Care を Enable）だった。当てた直後に元へ返す形なので、走らせずに意図をうかがうことにした。③その命令の Enable-ScheduledTask に -TaskPath が無い点を一度は疑ったが、走らせずに確かめたところ -TaskName だけで見つかる（True）ので心配は無かった。取り違えを残さないよう控えに訂正を書いた。\nファイル: ~/.claude/dumps/apply-result.txt（当たった記録）／~/.claude/task-bak-20260921/SonyVAIOCare-off.xml（VAIO Care の札の控え）\n実測: SysMain Stopped/Disabled・AutomaticManagedPagefile False・pagefile 設定 初期4096 最大4096（実際の割り当ては再起動のあと）・VAIO Care Disabled。Enable-ScheduledTask の -TaskPath 抜けは、-TaskName だけで見つかるので問題なし（True）。\n\n［👀 見てください（返事不要）］\n戻しは取り下げ。三つは当てたまま\n①印 y0922-0010 は「ヨシしない」との指示なので、戻しの命令は走らせずに取り下げ、台帳を済にした。戻しの命令は一度も打っていない。②SysMain・pagefile・VAIO Care は当てたまま残し、もう一度確かめた——SysMain Stopped/Disabled、AutomaticManagedPagefile False、pagefile C:\\pagefile.sys 初期4096 最大4096、VAIO Care Disabled、VCSystemTray 0本。③ヨシ待ちの一覧（yoshi-open.tsv）からも y0922-0010 を落とした（9行→8行）。④台帳の未了は0件。\nファイル: ~/.claude/orders-open.tsv（1行を済へ）／~/.claude/yoshi-open.tsv（1行落とした）／reports/y0922-0015.md／report-latest.md\n実測: 台帳の未了 0件。yoshi-open.tsv 9行→8行。SysMain Stopped/Disabled・AutomaticManagedPagefile False・pagefile 初期4096 最大4096・VAIO Care Disabled・VCSystemTray 0本・空き928MB。当たった刻は dumps/apply-result.txt の 2026-09-22 00:04:17〜00:04:22。\n実機: 次の再起動のあと Win32_PageFileUsage の AllocatedBaseSize が 4096 になること。次のログオンで VCSystemTray が立たないこと。SysMain が Stopped/Disabled のままであること。\n未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回）／2026-09-22 00:04 pagefile 4096MB の実際の割り当て（次の再起動のあと）"
     }
 ]

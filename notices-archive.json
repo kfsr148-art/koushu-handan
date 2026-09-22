@@ -1,5 +1,10 @@
 [
     {
+        "title":  "👀 見てください（返事不要）",
+        "time":  1790003544,
+        "message":  "この間にまとまった知らせ 2本\n\n［✅ 終わりました（返事不要）］\n三つが当たった。戻しの命令を走らせてよいかの確認\n（札が立たないまま次の仕事へ移っていた分）\n完了: ①頂いた -NoExit 付きの昇格が通り、三つとも当たった。apply-result.txt の 00:04:17〜00:04:22 に、SysMain を止めて無効にした・自動まかせを切って pagefile を 4096/4096 にした・VAIO Care の札を控えて予定を無効にした、の行が並ぶ。確かめは SysMain : Stopped / Disabled、AutomaticManagedPagefile : False、pagefile : C:\\pagefile.sys 初期 4096 最大 4096、VAIO Care : Disabled。②そのあと頂いた命令は、この三つをそのまま元へ戻す内容（SysMain を Automatic にして起動／自動まかせへ返す／VAIO Care を Enable）だった。当てた直後に元へ返す形なので、走らせずに意図をうかがうことにした。③その命令の Enable-ScheduledTask に -TaskPath が無い点を一度は疑ったが、走らせずに確かめたところ -TaskName だけで見つかる（True）ので心配は無かった。取り違えを残さないよう控えに訂正を書いた。\nファイル: ~/.claude/dumps/apply-result.txt（当たった記録）／~/.claude/task-bak-20260921/SonyVAIOCare-off.xml（VAIO Care の札の控え）\n実測: SysMain Stopped/Disabled・AutomaticManagedPagefile False・pagefile 設定 初期4096 最大4096（実際の割り当ては再起動のあと）・VAIO Care Disabled。Enable-ScheduledTask の -TaskPath 抜けは、-TaskName だけで見つかるので問題なし（True）。\n\n［👀 見てください（返事不要）］\n戻しは取り下げ。三つは当てたまま\n①印 y0922-0010 は「ヨシしない」との指示なので、戻しの命令は走らせずに取り下げ、台帳を済にした。戻しの命令は一度も打っていない。②SysMain・pagefile・VAIO Care は当てたまま残し、もう一度確かめた——SysMain Stopped/Disabled、AutomaticManagedPagefile False、pagefile C:\\pagefile.sys 初期4096 最大4096、VAIO Care Disabled、VCSystemTray 0本。③ヨシ待ちの一覧（yoshi-open.tsv）からも y0922-0010 を落とした（9行→8行）。④台帳の未了は0件。\nファイル: ~/.claude/orders-open.tsv（1行を済へ）／~/.claude/yoshi-open.tsv（1行落とした）／reports/y0922-0015.md／report-latest.md\n実測: 台帳の未了 0件。yoshi-open.tsv 9行→8行。SysMain Stopped/Disabled・AutomaticManagedPagefile False・pagefile 初期4096 最大4096・VAIO Care Disabled・VCSystemTray 0本・空き928MB。当たった刻は dumps/apply-result.txt の 2026-09-22 00:04:17〜00:04:22。\n実機: 次の再起動のあと Win32_PageFileUsage の AllocatedBaseSize が 4096 になること。次のログオンで VCSystemTray が立たないこと。SysMain が Stopped/Disabled のままであること。\n未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回）／2026-09-22 00:04 pagefile 4096MB の実際の割り当て（次の再起動のあと）"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1790003224,
         "message":  "三つを一度に当てる綴りへまとめる\n（札が立たないまま次の仕事へ移っていた分）\n完了: ①dumps\\apply-sysmain-pagefile.ps1 に「③ VAIO Care の予定（VCSystemTray を立てる札）の無効化」を足し、管理者の窓で一度走らせれば SysMain・pagefile・VAIO Care の三つが当たる形にした。③では札を task-bak-20260921\\SonyVAIOCare-off.xml へ控えてから無効にし、いま走っている VCSystemTray も落とす。②戻し方を同じ綴りのいちばん下に注として書いた（走らせずに貼る形で、①SysMain を Automatic へ戻す／②AutomaticManagedPagefile を true へ返す／③Enable-ScheduledTask か札ごとの Register-ScheduledTask）。③頭に「管理者か」を出し、管理者でなければその場で断る一行を足した（ふつうの窓で走らせても三つとも拒否されるため）。④中身の全文を札に写した。\nファイル: ~/.claude/dumps/apply-sysmain-pagefile.ps1（5,612バイト・89行・BOM あり・構文0）／reports/y0921-2305.md／report-latest.md\n実測: 綴りは 5,612バイト・89行・BOM True・構文の誤り0。当てる三つの字がそれぞれ1件ずつ入っている（Stop-Service SysMain／Set-Service SysMain／AutomaticManagedPagefile = $false／InitialSize = 4096／Export-ScheduledTask -TaskName \u0027VAIO Care\u0027／Disable-ScheduledTask -TaskName \u0027VAIO Care\u0027）。末尾の戻し方の注も入っている。"
@@ -243,10 +248,5 @@
         "title":  "🕒 延びています",
         "time":  1789953342,
         "message":  "青い PowerShell の窓が数十秒ごとに出ては消える\n終了予定10:13を過ぎています（経過11分）"
-    },
-    {
-        "title":  "🔎 調べました",
-        "time":  1789951881,
-        "message":  "会話の控えの大きさと、畳む支度の点検\n①会話の控えは綴り全体 60.7MB・27,346行で、直近200行だけで 449,302字（おおよそ204,000 token）。claude.exe は一本（pid 3416・08:55:30 起動・私用590MB・作業域352MB）、空き793MB／全体3,975MB。46万字のままなので /clear が要る。②畳む支度は三つ済み・一つ崩れていた——台帳の未了はこの枠そのものの1件（この回の終わりで閉じるので実質0件）、押し残し0件、公開 state.json の at は 09:47:39 で動いている。崩れていたのは report-latest.md で、6.3KB・62行・更新09:38:45 の中身が「送った知らせ」の節だけになり、09:35 に写した y0921-0935 の本文と控えの一覧の印が消えていた。控えの側（reports/ の綴り）は無事。③札を書いたあと node reports-index.js を一度回して組み直し、いまは本文（この札）＋控えの一覧20件で84行に戻っている。\nファイル: reports/y0921-0950.md／report-latest.md\n実測: 直近200行 449,302字・約204,000 token／claude 一本 私用590MB／空き793MB／台帳の未了1件（この枠）・押し残し0件・公開 at 09:47:39／report-latest.md 崩れ 62行→組み直し後84行。"
     }
 ]
