@@ -1,5 +1,25 @@
 [
     {
+        "title":  "🪟 異常です（連携に訴え：pub-late）",
+        "time":  1790086901,
+        "message":  "連携の見張りから訴えが出ています。\n\n・pub-late … 公開側が 27分 遅れている（押しが済んだ札より古い）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
+    },
+    {
+        "title":  "🪟 窓を起こし直しました（固まり）",
+        "time":  1790086780,
+        "message":  "台帳に走っている枠があるのに、足跡が 10分ぶん増えていません。\n見たもの … hook.log（と、有れば窓の出しの記録）の最終書き\n敷居 10分／いま 10分\n\n落として ClaudeCodeAtLogon で起こし直しました。記録は ~/.claude/inbox-watch.log。"
+    },
+    {
+        "title":  "🕒 延びています",
+        "time":  1790085164,
+        "message":  "予定四件（ClaudeBoard・ClaudePipeCheck・ClaudeR\n終了予定22:32を過ぎています（経過65分）"
+    },
+    {
+        "title":  "🪟 時間切れ（再挑戦 1/3）",
+        "time":  1790081759,
+        "message":  "枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**\n同じ字の枠を切ったのは、48時間で 1 回目です。\n\n── 切れた枠（先頭200字）──\n予定四件（ClaudeBoard・ClaudePipeCheck・ClaudeRevive の 267014、ClaudeWatchNotify の -1）の今の状態と直近の走りを札に書け。走り直せば消えるだけなら「消えるだけ」と書け。直しはこの回ではするな。本体には触るな。以上\n\n── どこまで進んだか ──\n台帳：未了 3件／この枠の行は「未了：受領」\n足跡：最後は 21:55:50 PostToolUse／この枠に入ってから 命令 19回・返り 21回\n\n＊claude の子を 0本落として、Esc を一打送りました。\n＊記録は ~/.claude/inbox-watch.log。"
+    },
+    {
         "title":  "🙀 異変発見だにゃ",
         "time":  1790078418,
         "message":  "状態: 手待ち / 16:30 の定時再起動の後、予定四件（ClaudeBoard・Cl…\n台帳: 残り 2件（ヨシ待ちを「ヨシしない・取り下げ」で閉じた回に、終わりの札が立たず鈴も鳴らなかっ・16:30 の定時再起動の後、予定四件（ClaudeBoard・ClaudePi）\n見張り: 生存○ 見張り○ 片付け×止 受信箱○\n使用量: セッション 15% / 週全体 14% / 週Fable 13%\n起こし直し: 今日 2回（固まり 0・重さ 0・0本 2） / 最後に落ちた刻 08:24\n訴え: 3件（pub-late・state-stale・hook-quiet）… pipe-warn.log\n配分: 全体 あと14.4%/日 ／ Fable あと14.6%/日"
@@ -148,20 +168,5 @@
         "title":  "🙋 ヨシしてください",
         "time":  1790003179,
         "message":  "三つが当たった。戻しの命令を走らせてよいかの確認\n印: y0922-0010\n待っているのは：いま当たったばかりの三つ（SysMain・pagefile・VAIO Care）を、頂いた命令でそのまま元へ戻してよいか\n答え方：「y0922-0010 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。\n未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回）／2026-09-22 00:04 pagefile 4096MB の実際の割り当て（次の再起動のあと）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1790002089,
-        "message":  "三つを一度に当てる綴りへまとめる\n①dumps\\apply-sysmain-pagefile.ps1 に「③ VAIO Care の予定（VCSystemTray を立てる札）の無効化」を足し、管理者の窓で一度走らせれば SysMain・pagefile・VAIO Care の三つが当たる形にした。③では札を task-bak-20260921\\SonyVAIOCare-off.xml へ控えてから無効にし、いま走っている VCSystemTray も落とす。②戻し方を同じ綴りのいちばん下に注として書いた（走らせずに貼る形で、①SysMain を Automatic へ戻す／②AutomaticManagedPagefile を true へ返す／③Enable-ScheduledTask か札ごとの Register-ScheduledTask）。③頭に「管理者か」を出し、管理者でなければその場で断る一行を足した（ふつうの窓で走らせても三つとも拒否されるため）。④中身の全文を札に写した。\nファイル: ~/.claude/dumps/apply-sysmain-pagefile.ps1（5,612バイト・89行・BOM あり・構文0）／reports/y0921-2305.md／report-latest.md\n実測: 綴りは 5,612バイト・89行・BOM True・構文の誤り0。当てる三つの字がそれぞれ1件ずつ入っている（Stop-Service SysMain／Set-Service SysMain／AutomaticManagedPagefile = $false／InitialSize = 4096／Export-ScheduledTask -TaskName \u0027VAIO Care\u0027／Disable-ScheduledTask -TaskName \u0027VAIO Care\u0027）。末尾の戻し方の注も入っている。\n完了（追記 23:12）: 頂いた命令のとおり綴りをふつうの窓で走らせたところ、頭の断りどおり「管理者か : False」で三つとも拒否された（SysMain は Cannot open／Access is denied、pagefile は アクセスは拒否されました、VAIO Care は Access is denied）。副えて VAIO Care の札の控えだけは取れた（SonyVAIOCare-off.xml）。続けて昇格の問いをもう一度出したが、前と同じく即座に「The operation was canceled by the user」で通らなかった（待ちの時間を置かずに返るので、画面に問いが出ていない見込みもある）。いまの姿は SysMain Running/Automatic・AutomaticManagedPagefile True・pagefile の設定は空・VAIO Care Ready で、何も当たっていない。手で管理者の PowerShell を開いて一行走らせてもらうのが確実。実機: 管理者の PowerShell で走らせたあと、dumps\\apply-result.txt に「① SysMain を止めた」「② pagefile を 4096/4096 にした」「③ VAIO Care の予定を無効にした」が並び、確かめの行が SysMain : Stopped / Disabled と VAIO Care : Disabled になること。pagefile だけは再起動のあとに 初期4096 最大4096 になる。\n未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回）／2026-09-21 23:05 三つを当てる綴りを管理者で走らせる（人手待ち）"
-    },
-    {
-        "title":  "👀 見てください（返事不要）",
-        "time":  1789999212,
-        "message":  "hook の数え（末尾3000行）と Google の予定\n①hook.log の末尾3000行だけを読んで数えた（24時間ぶんは読んでいない）。刻の幅は 2026-09-20 13:28:04〜2026-09-21 22:56:07 のおよそ33.5時間で、PreToolUse 926回・PostToolUse 876回・合わせて1,802回＝およそ54回/時・0.9回/分。Pre が Post より50回多いのは返っていない命令のぶん。一回の平均秒と私用MBは hook.log が刻と種類しか持たないので出せず、測るなら記録に一行足すのが先だと札に書いた（この回では足していない）。②GoogleUpdateTaskMachineCore／UA はこの機械に無い（当たり0件）。在るのは \\GoogleUserPEH\\RunPlatformExperienceHelper_Daily と _Metrics の二つだけで、どちらも前の回で無効にし控えも取ってある。無い物を切ったとは書けないので、在る二つを切ったと書いて戻し方を添えた。③前の回の引き算（ClaudeSweepChecks を無効・Sweep-Stale の作り値・VAIO Care は Access is denied で切れず VCSystemTray だけ落とした）も、取りこぼさないよう同じ札に一行ずつ写した。hook の減らしと作り値はこの回ではやっていない。\nファイル: reports/y0921-2258.md／report-latest.md（この回は直しを入れていない。前の回の無効化の控えは task-bak-20260921 にある）\n実測: 末尾3000行＝33.5時間ぶん。PreToolUse 926・PostToolUse 876・frame-work 417・resume 239・heartbeat 181・stop 144・inbox-feed 85・stop-guard 70。GoogleUpdateTaskMachine の当たり0件。GoogleUserPEH の二つは Disabled、控えは 1,541／1,515バイト。ClaudeSweepChecks は Disabled。Sweep-Stale の作り値は身代わりの検査 Edge 2本→0本。VAIO Care は切れず（Access is denied）、VCSystemTray pid 9816 は落とした。\n実機: 次のログオンで VCSystemTray がまた立つこと（管理者で VAIO Care の予定を切るまでは戻る）。Google の二つが Disabled のままであること。\n未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:35 SysMain と pagefile（人手待ち・管理者）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回）／2026-09-21 22:58 VAIO Care の予定の無効化（人手待ち・管理者）"
-    },
-    {
-        "title":  "⏳ 命令が長く回っています（10分）",
-        "time":  1789998844,
-        "message":  "命令：PowerShell「\u0026 \"C:\\Users\\user\\AppData\\Local\\Temp\\claude\\C--Users-user-Des…」\n始まり 22:43:08／経過 10分（上限 10分＝直近50回の Bash の中央値 4秒の3倍、下限10分）\n\n命令は切っていません。止まっているようなら窓を見てください。"
     }
 ]
