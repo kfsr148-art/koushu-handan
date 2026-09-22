@@ -1,5 +1,10 @@
 [
     {
+        "title":  "⏳ 命令が長く回っています（10分）",
+        "time":  1789998844,
+        "message":  "命令：PowerShell「\u0026 \"C:\\Users\\user\\AppData\\Local\\Temp\\claude\\C--Users-user-Des…」\n始まり 22:43:08／経過 10分（上限 10分＝直近50回の Bash の中央値 4秒の3倍、下限10分）\n\n命令は切っていません。止まっているようなら窓を見てください。\n"
+    },
+    {
         "title":  "🕒 延びています",
         "time":  1789998489,
         "message":  "引き算の続き\n終了予定22:46を過ぎています（経過12分）"
@@ -243,10 +248,5 @@
         "title":  "🙋 ヨシしてください",
         "time":  1789948900,
         "message":  "claude を落とす命令の宛先を確かめた\n印: y0921-0900\n待っているのは：この窓（pid 3416）を落としてよいかの裁定\n答え方：「y0921-0900 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。"
-    },
-    {
-        "title":  "😺 現在も順調にゃ",
-        "time":  1789948824,
-        "message":  "状態: 手待ち / claude を落とす命令の宛先を確かめた\n台帳: 残り 0件\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 26% / 週全体 72% / 週Fable 67%\n訴え: 7件（done-swept・state-stale・done-stale-note・push-fail・step-slow・orphan-kill・mem-low）… pipe-warn.log"
     }
 ]
