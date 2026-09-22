@@ -1,13 +1,23 @@
 [
     {
-        "title":  "🕒 延びています",
-        "time":  1790067367,
-        "message":  "state-stale の繰り返しを止める\n終了予定17:53を過ぎています（経過47分）"
+        "title":  "🪟 時間切れ（再挑戦 1/3）",
+        "time":  1790081759,
+        "message":  "枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**\n同じ字の枠を切ったのは、48時間で 1 回目です。\n\n── 切れた枠（先頭200字）──\n予定四件（ClaudeBoard・ClaudePipeCheck・ClaudeRevive の 267014、ClaudeWatchNotify の -1）の今の状態と直近の走りを札に書け。走り直せば消えるだけなら「消えるだけ」と書け。直しはこの回ではするな。本体には触るな。以上\n\n── どこまで進んだか ──\n台帳：未了 3件／この枠の行は「未了：受領」\n足跡：最後は 21:55:50 PostToolUse／この枠に入ってから 命令 19回・返り 21回\n\n＊claude の子を 0本落として、Esc を一打送りました。\n＊記録は ~/.claude/inbox-watch.log。"
+    },
+    {
+        "title":  "🙀 異変発見だにゃ",
+        "time":  1790078418,
+        "message":  "状態: 手待ち / 16:30 の定時再起動の後、予定四件（ClaudeBoard・Cl…\n台帳: 残り 2件（ヨシ待ちを「ヨシしない・取り下げ」で閉じた回に、終わりの札が立たず鈴も鳴らなかっ・16:30 の定時再起動の後、予定四件（ClaudeBoard・ClaudePi）\n見張り: 生存○ 見張り○ 片付け×止 受信箱○\n使用量: セッション 15% / 週全体 14% / 週Fable 13%\n起こし直し: 今日 2回（固まり 0・重さ 0・0本 2） / 最後に落ちた刻 08:24\n訴え: 3件（pub-late・state-stale・hook-quiet）… pipe-warn.log\n配分: 全体 あと14.4%/日 ／ Fable あと14.6%/日"
     },
     {
         "title":  "🪟 時間切れ（再挑戦 1/3）",
-        "time":  1790065056,
-        "message":  "枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**\n同じ字の枠を切ったのは、48時間で 1 回目です。\n\n── 切れた枠（先頭200字）──\nstate-stale が 06:30・07:20・10:00・12:40 と繰り返している。公開側 state.json の押しが通らない元を、git-push.log・push-retry.log・pipe-warn.log の末尾と今の空きメモリから突き止めて札に書け。直せるなら直し、直した後に at が動くことを実読みで確かめよ。本体には触るな。以上\n\n── どこまで進んだか ──\n台帳：未了 1件／この枠の行は「未了：受領／時間切れ（9分・再挑戦 1/3）」\n足跡：最後は 17:08:21 heartbeat／この枠に入ってから 命令 0回・返り 0回\n\n＊claude の子を 0本落として、Esc を一打送りました。\n＊記録は ~/.claude/inbox-watch.log。"
+        "time":  1790073580,
+        "message":  "枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**\n同じ字の枠を切ったのは、48時間で 1 回目です。\n\n── 切れた枠（先頭200字）──\n1. 16:30 の定時再起動の後、予定四件（ClaudeBoard・ClaudePipeCheck・ClaudeRevive の 267014、ClaudeWatchNotify の -1）が悪い結果を残している。いまの状態と直近の走りを見て、走り直せば消えるだけの物か、直す所があるかを札に書け。直す所があれば直せ。2. 定時再起動が三度見送って打ち止めで落ちる形は、走っている見張りを途中で切る…\n\n── どこまで進んだか ──\n台帳：未了 2件／この枠の行は「未了：受領」\n足跡：最後は 19:38:03 heartbeat／この枠に入ってから 命令 0回・返り 0回\n\n＊claude の子を 0本落として、Esc を一打送りました。\n＊記録は ~/.claude/inbox-watch.log。"
+    },
+    {
+        "title":  "🕒 延びています",
+        "time":  1790067367,
+        "message":  "state-stale の繰り返しを止める\n終了予定17:53を過ぎています（経過47分）"
     },
     {
         "title":  "🪟 連携に訴えがあります（hook-quiet）",
@@ -153,20 +163,5 @@
         "title":  "👀 見てください（返事不要）",
         "time":  1789999212,
         "message":  "hook の数え（末尾3000行）と Google の予定\n①hook.log の末尾3000行だけを読んで数えた（24時間ぶんは読んでいない）。刻の幅は 2026-09-20 13:28:04〜2026-09-21 22:56:07 のおよそ33.5時間で、PreToolUse 926回・PostToolUse 876回・合わせて1,802回＝およそ54回/時・0.9回/分。Pre が Post より50回多いのは返っていない命令のぶん。一回の平均秒と私用MBは hook.log が刻と種類しか持たないので出せず、測るなら記録に一行足すのが先だと札に書いた（この回では足していない）。②GoogleUpdateTaskMachineCore／UA はこの機械に無い（当たり0件）。在るのは \\GoogleUserPEH\\RunPlatformExperienceHelper_Daily と _Metrics の二つだけで、どちらも前の回で無効にし控えも取ってある。無い物を切ったとは書けないので、在る二つを切ったと書いて戻し方を添えた。③前の回の引き算（ClaudeSweepChecks を無効・Sweep-Stale の作り値・VAIO Care は Access is denied で切れず VCSystemTray だけ落とした）も、取りこぼさないよう同じ札に一行ずつ写した。hook の減らしと作り値はこの回ではやっていない。\nファイル: reports/y0921-2258.md／report-latest.md（この回は直しを入れていない。前の回の無効化の控えは task-bak-20260921 にある）\n実測: 末尾3000行＝33.5時間ぶん。PreToolUse 926・PostToolUse 876・frame-work 417・resume 239・heartbeat 181・stop 144・inbox-feed 85・stop-guard 70。GoogleUpdateTaskMachine の当たり0件。GoogleUserPEH の二つは Disabled、控えは 1,541／1,515バイト。ClaudeSweepChecks は Disabled。Sweep-Stale の作り値は身代わりの検査 Edge 2本→0本。VAIO Care は切れず（Access is denied）、VCSystemTray pid 9816 は落とした。\n実機: 次のログオンで VCSystemTray がまた立つこと（管理者で VAIO Care の予定を切るまでは戻る）。Google の二つが Disabled のままであること。\n未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:35 SysMain と pagefile（人手待ち・管理者）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回）／2026-09-21 22:58 VAIO Care の予定の無効化（人手待ち・管理者）"
-    },
-    {
-        "title":  "⏳ 命令が長く回っています（10分）",
-        "time":  1789998844,
-        "message":  "命令：PowerShell「\u0026 \"C:\\Users\\user\\AppData\\Local\\Temp\\claude\\C--Users-user-Des…」\n始まり 22:43:08／経過 10分（上限 10分＝直近50回の Bash の中央値 4秒の3倍、下限10分）\n\n命令は切っていません。止まっているようなら窓を見てください。"
-    },
-    {
-        "title":  "🕒 延びています",
-        "time":  1789998489,
-        "message":  "引き算の続き\n終了予定22:46を過ぎています（経過12分）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789995658,
-        "message":  "この間にまとまった知らせ 2本\n\n［👀 見てください（返事不要）］\n黒い窓の巻き戻しを 9001行→500行 に\n①HKCU\\Console\\麻雀 攻守判断 (Claude Code) の ScreenBufferSize を 0x232900AA（幅170・高さ9001）から 0x01F400AA（幅170・高さ500）へ変えた。幅は触っていない。②同じ項のほかの値（WindowSize 170x44・FaceName BIZ UDGothic・FontSize 16・FontWeight 400）は一つも触っていない。窓44行 ≦ バッファ500行なので、窓がバッファを超える形にもなっていない。③変える前に reg export で項を丸ごと控えた（console-koushu.bak-20260921.reg・540バイト・中に dword:232900aa が入っているので戻せる）。④起動の設定を写して題の一致を確かめた——Args の start \"麻雀 攻守判断 (Claude Code)\" と項の名が一致（True）。Windows はコンソールを作る瞬間だけこの項を読むので、いま開いている窓は9001行のままで、次に立った窓から500行になる。立ち上げ直す道（ClaudeCodeAtLogon・revive-claude・claude-loop.cmd）はどれも同じ題を使う。\nファイル: HKCU\\Console\\麻雀 攻守判断 (Claude Code) の ScreenBufferSize／~/.claude/console-koushu.bak-20260921.reg（控え・新）／reports/y0921-2140.md／report-latest.md\n実測: 前 0x232900AA（幅170/高さ9001）→ 後 0x01F400AA（幅170/高さ500）。32,768,170 ＝ 500×65536＋170 で狙いどおり（True）。控えは540バイトで dword:232900aa を含む。起動の Args と項の題は一致（True）。窓44行・バッファ500行。\n実機: 次に窓が立ったとき巻き戻しが500行で止まること（いまの窓のままでは9001行のままで変わって見えない）。字（BIZ UDGothic 16px）と窓の大きさ（170x44）・/MAX の効きがこれまでどおりであること。\n未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:35 SysMain と pagefile（人手待ち・昇格が閉じられた）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回に見る）\n\n［✅ 終わりました（返事不要）］\n写せます（1件）"
     }
 ]
