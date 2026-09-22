@@ -1,63 +1,83 @@
-# 予定表の Claude* は13件すべて在った（入れ直さず）
+# 0件の元は「見出しの言語」。数え方を Get-ScheduledTask へ替えた
 
-**終わり（残り1件）** — 2026-09-22 10:47（VAIO）。控えの xml からの入れ直しは**行っていない**。予定表の Claude* は13件すべて登録されたまま生きており、入れ直すと現状を壊す側になるため。
+**終わり（残り1件）** — 2026-09-22 11:13（VAIO）。`after-reboot.ps1` の①を直し、作り値二通り（13件→13件／本当に0件→0件）を**窓なしの同じ道**で確かめた。本体には触っていない。
 
-## 1. 入っている件数と各件の状態
+## 1. 落ちていた元
 
-**13件**（`Get-ScheduledTask -TaskName 'Claude*'`）。
+**昇格でも TaskPath でもない。`schtasks` の CSV の見出しが表示言語で変わるのが元。**
 
-| 予定 | 状態 | 直近の走り | 次の走り | 結果 |
-|---|---|---|---|---|
-| ClaudeAfterReboot | Ready | 09-22 03:10:10 | 09-22 15:10:10 | **1** |
-| ClaudeBoard | Ready | 09-22 10:40:40 | 09-22 10:50:50 | 0 |
-| ClaudeCodeAtLogon | Ready | 09-22 08:24:24 | （サインイン時） | 0 |
-| ClaudeDailyNotice | Ready | 09-22 09:00:00 | 09-22 21:00:00 | 0 |
-| ClaudeDailyReboot | Ready | 09-22 04:30:30 | 09-22 15:00:00 | 0 |
-| ClaudeEdgeSweep | Ready | 09-22 03:00:00 | 09-23 03:00:00 | 0 |
-| ClaudeHomeBackup | Ready | 09-22 03:30:30 | 09-23 03:30:30 | 0 |
-| ClaudeHookHeartbeat | Ready | 09-22 10:38:38 | 09-22 10:48:48 | 0 |
-| ClaudeJamWatch | Ready | 09-22 10:46:46 | 09-22 10:47:47 | 0 |
-| ClaudePipeCheck | Ready | 09-22 10:40:40 | 09-22 10:50:50 | 0 |
-| ClaudeRevive | **Running** | 09-22 10:46:46 | 09-22 10:47:47 | 0 |
-| ClaudeSweepChecks | **Disabled** | 09-21 22:31:31 | 09-22 10:51:51 | 0 |
-| ClaudeWatchNotify | Ready | 09-22 10:45:45 | 09-22 10:47:47 | 0 |
+直す前の①はこう数えていた。
 
-Ready 11・Running 1・Disabled 1。`ClaudeRevive` の Running は毎分の走りの最中で、正常。
-`ClaudeSweepChecks` の Disabled は **2026-09-21 22:31 に引き算の回で意図して無効にした物**で、直すところではない。
-`ClaudeAfterReboot` だけ結果 1 だが、これは再起動直後に走って「起こす物が無い」で返る形。
+```powershell
+schtasks /Query /FO CSV /V | ConvertFrom-Csv |
+  Where-Object { $_.TaskName -like '*\Claude*' -and $_.'Scheduled Task State' -eq 'Enabled' }
+```
 
-## 2. なぜ入れ直さなかったか
+`TaskName` と `Scheduled Task State` は**英語の綴り**。ところが `schtasks` の出す見出しは走る場所で変わる。
 
-**① 13件とも生きていて、入れ直す先が無い。**
+| 走らせ方 | 見出し | `$_.TaskName` | 当たり |
+|---|---|---|---|
+| 窓あり（この窓から手で） | `HostName,TaskName,…,Scheduled Task State,…` | 読める | 12件 |
+| **窓なし（予定表 → `run-hidden.vbs` → powershell）** | `ホスト名,タスク名,…,スケジュールされたタスクの状態,…` | **$null** | **0件** |
 
-**② 入れ直すと現状を二箇所壊す。**
-- `ClaudeSweepChecks.xml` から入れ直すと、昨夜わざと無効にした物が**有効に戻る**
-- 控えにあるのは `ClaudeWeeklyReboot.xml`。生きている側は `ClaudeDailyReboot` で、名が違う。入れ直せば**使われていない予定が1件増える**（控えの13件と生きている13件の違いはこの1件だけ）
+窓なしでは全列が日本語になるので `$_.TaskName` が `$null` になり、`-like '*\Claude*'` が一件も当たらない。
+**例外も投げないので `catch` にも入らず、素通りで「0件・最終結果は全て良い」と出る。** これが 03:10 と 04:55 の札。
 
-**③ 走りの記録が消える。** `Register-ScheduledTask` で入れ直すと `LastRunTime` が落ちる。いまは登録が途切れていない証拠として使えている（下記）。
+**昇格は関係ない**（実測：窓なしの回も `elevated=False`・`RunLevel=Limited` で、同じ場所の `Get-ScheduledTask` は**13件返った**）。
+**TaskPath も関係ない**（13件とも `\` 直下）。
 
-## 3. 0件は一時の読み取り失敗（一行）
+＊窓なしでの実測値 … `whoami=vaio\user` ／ `elevated=False` ／ `OutputEncoding=shift_jis` ／ `rawlines=410` ／ `csvrows=409` ／ **`clrows=0`** ／ **`enabled_distinct=0`** ／ **`getsched=13`**
 
-**予定は一度も消えていない。** `ClaudeEdgeSweep` 03:00:00／`ClaudeHomeBackup` 03:30:30／`ClaudeAfterReboot` 03:10:10 の走りが**そのまま残っている**——登録が消えていれば、この刻も一緒に消える。04:30 の再起動より前の刻が残っているので、消えたのは登録ではなく**その時の問い合わせの答え**だった。
-＊原因の掘り下げは指示どおり行っていない。
+## 2. 直したところ（`~/.claude/after-reboot.ps1`・写し `.bak-20260922`）
 
-## 4. 見張りと公開側が動いていることの実測
+**① `schtasks` の CSV 解析をやめ、`Get-ScheduledTask` で数える。** 表示言語に依らず、昇格も要らない。
+最終結果は `Get-ScheduledTaskInfo -TaskName … -TaskPath …` から取る。
 
-- 公開側 `state.json` … 10:46:18 更新・`at=1790041576`
-- `watch-step.txt` … 10:46:20 更新
-- 毎分の三つ（`ClaudeJamWatch`／`ClaudeRevive`／`ClaudeWatchNotify`）が 10:45〜10:46 に走っている
+**② 数える対象を「有効な物だけ」→「登録されている物」へ。**
+2026-09-21 の決めのままだと、わざと無効にした `ClaudeSweepChecks`（09-21 22:31）が落ちて **12件**になり、`$WANT_TASKS = 13` に足りず欠けが立つ。
+いまは13件を数え、**意図しない無効だけを別に欠けとして挙げる**（`$OFF_OK = @('ClaudeSweepChecks')`）。消えたことと無効になったこと、どちらも取りこぼさない形。
 
-いずれも問い合わせの1分以内。**見張りは止まっていない。**
+**③ `ClaudeAfterReboot` の前回結果 `1` は数に入れない。**
+`1` はこの点検そのものが「欠けあり」で返した値。**一度 1 になると次の回もそれを見て欠けを立て、永久に直らない**（実際そうなっていた）。`1` 以外の非零は今までどおり挙げる。
 
-## 5. 選ばなかった案
+＊照合の綴りは `$TASK_PAT` の一行に出した（作り値で差し替えるため）。
 
-**控えの xml から強いて入れ直す。** やるなら `ClaudeSweepChecks.xml` を除き、`ClaudeWeeklyReboot.xml` も入れずに11件だけを当てる形になる。いまは要らないと判じたので当てていない。要るなら言ってください。
+## 3. 作り値の二通り（どちらも窓なしの同じ道で実行）
+
+`run-hidden.vbs` → `powershell` → `after-reboot.ps1 -Dry` の順で、**予定表から走るときと同じ console-less の場所**で回した。`-Dry` なので札は送っていない。
+
+**① 実物（`$TASK_PAT = 'Claude*'`）→ 13件**
+
+```
+題 ✅ 再起動の後の点検（返事不要）
+   ① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・最終結果は全て良い
+   ② 見張りの生存 … 0分前
+   ③ ntfy.sh の応答 … HTTP 200
+   ④ 公開側 … notices.json のいちばん新しい札 09-22 10:52:08／panel-ver.txt 143
+   四つとも○。戻っている。
+```
+
+**② 本当に0件（写しの `$TASK_PAT = 'ZZClaude*'`・当たる予定が無い）→ 0件**
+
+```
+題 🪟 異常です：再起動の後の点検
+   ① 予定表 Claude* … 0件・最終結果は全て良い
+   …
+   欠け 1件：予定が 0件しかない（13件要る）
+```
+
+**0件のときはちゃんと 0件と出て、🪟 の題になる。** 写しは実行後に消した（作法14）。
+
+## 4. 検め
+
+- 構文検査（`PSParser::Tokenize`）… **NG 0件**
+- BOM … 保持（`EF BB BF`）／行数 175／改行は LF のまま
+- 写し … `~/.claude/after-reboot.ps1.bak-20260922`
+- **`koushu-handan.html` には触れていない。** 予定表への書き込みもしていない
 
 ## 残り
 
 1. `2026-09-22 00:40:39` ヨシ待ちを「ヨシしない・取り下げ」で閉じた回に、終わりの札が立たず鈴も鳴らなかった件（未了：受領／時間切れ）
-
-**本体（`koushu-handan.html`）には触っていない。** 予定表にも書き込みをしていない。
 
 ---
 
@@ -66,11 +86,12 @@ Ready 11・Running 1・Disabled 1。`ClaudeRevive` の Running は毎分の走�
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **378件**ある。
+　ここに出るのは新しい20件。全部で **379件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0922-1113.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0922-1113.md) | 09-22 11:14 | 0件の元は「見出しの言語」。数え方を Get-ScheduledTask へ替えた |
 | [`y0922-1047.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0922-1047.md) | 09-22 10:49 | 予定表の Claude* は13件すべて在った（入れ直さず） |
 | [`r0922-0430-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0922-0430-2.md) | 09-22 04:30 | 再起動-2（r0922-0430・後の測り） |
 | [`y0922-0015.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0922-0015.md) | 09-22 00:09 | 戻しは取り下げ。三つは当てたまま |
@@ -90,6 +111,5 @@ Ready 11・Running 1・Disabled 1。`ClaudeRevive` の Running は毎分の走�
 | [`y0921-1805b.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1805b.md) | 09-21 18:35 | 未了4項目を一行ずつ／枠の上限の結果／使用量の鈴の丸め |
 | [`y0921-1755.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1755.md) | 09-21 17:55 | 雲へ重い仕事を回す道 — **通った** |
 | [`cloud-kumo-tameshi-20260921-085123.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-kumo-tameshi-20260921-085123.md) | 09-21 17:53 | 雲で回した：`kumo-tameshi.js` |
-| [`y0921-1805.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1805.md) | 09-21 17:47 | 枠の上限 — 8分を超え、かつ空きが400MBを割ったら仕事を切る |
 
 <!-- 控えの一覧 ここまで -->
