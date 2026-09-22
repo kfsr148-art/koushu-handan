@@ -1,5 +1,10 @@
 [
     {
+        "title":  "👀 見てください（返事不要）",
+        "time":  1789999212,
+        "message":  "hook の数え（末尾3000行）と Google の予定\n①hook.log の末尾3000行だけを読んで数えた（24時間ぶんは読んでいない）。刻の幅は 2026-09-20 13:28:04〜2026-09-21 22:56:07 のおよそ33.5時間で、PreToolUse 926回・PostToolUse 876回・合わせて1,802回＝およそ54回/時・0.9回/分。Pre が Post より50回多いのは返っていない命令のぶん。一回の平均秒と私用MBは hook.log が刻と種類しか持たないので出せず、測るなら記録に一行足すのが先だと札に書いた（この回では足していない）。②GoogleUpdateTaskMachineCore／UA はこの機械に無い（当たり0件）。在るのは \\GoogleUserPEH\\RunPlatformExperienceHelper_Daily と _Metrics の二つだけで、どちらも前の回で無効にし控えも取ってある。無い物を切ったとは書けないので、在る二つを切ったと書いて戻し方を添えた。③前の回の引き算（ClaudeSweepChecks を無効・Sweep-Stale の作り値・VAIO Care は Access is denied で切れず VCSystemTray だけ落とした）も、取りこぼさないよう同じ札に一行ずつ写した。hook の減らしと作り値はこの回ではやっていない。\nファイル: reports/y0921-2258.md／report-latest.md（この回は直しを入れていない。前の回の無効化の控えは task-bak-20260921 にある）\n実測: 末尾3000行＝33.5時間ぶん。PreToolUse 926・PostToolUse 876・frame-work 417・resume 239・heartbeat 181・stop 144・inbox-feed 85・stop-guard 70。GoogleUpdateTaskMachine の当たり0件。GoogleUserPEH の二つは Disabled、控えは 1,541／1,515バイト。ClaudeSweepChecks は Disabled。Sweep-Stale の作り値は身代わりの検査 Edge 2本→0本。VAIO Care は切れず（Access is denied）、VCSystemTray pid 9816 は落とした。\n実機: 次のログオンで VCSystemTray がまた立つこと（管理者で VAIO Care の予定を切るまでは戻る）。Google の二つが Disabled のままであること。\n未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:35 SysMain と pagefile（人手待ち・管理者）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回）／2026-09-21 22:58 VAIO Care の予定の無効化（人手待ち・管理者）"
+    },
+    {
         "title":  "⏳ 命令が長く回っています（10分）",
         "time":  1789998844,
         "message":  "命令：PowerShell「\u0026 \"C:\\Users\\user\\AppData\\Local\\Temp\\claude\\C--Users-user-Des…」\n始まり 22:43:08／経過 10分（上限 10分＝直近50回の Bash の中央値 4秒の3倍、下限10分）\n\n命令は切っていません。止まっているようなら窓を見てください。\n"
@@ -243,10 +248,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1789948938,
         "message":  "写せます（8件）"
-    },
-    {
-        "title":  "🙋 ヨシしてください",
-        "time":  1789948900,
-        "message":  "claude を落とす命令の宛先を確かめた\n印: y0921-0900\n待っているのは：この窓（pid 3416）を落としてよいかの裁定\n答え方：「y0921-0900 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。"
     }
 ]
