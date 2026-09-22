@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🔎 調べました：戻しの取り下げは済み",
+        "time":  1790005220,
+        "message":  "戻しの取り下げは済み（同じ指示が二度届いた）\n同じ指示が二度届いた。前の回（00:15・札 y0922-0015）で済ませてあり、触り直していない。確かめ直した結果——①戻しの命令は一度も打っていない（apply-result.txt の末尾は 00:04:22 の「終わり」のままで、戻しの行は無い）。②印 y0922-0010 は取り下げ済みで、ヨシ待ちの一覧にも無い。③当てた三つはそのまま残っている（SysMain Stopped/Disabled、AutomaticManagedPagefile False、pagefile C:\\pagefile.sys 初期4096 最大4096、VAIO Care Disabled、VCSystemTray 0本）。④台帳の未了は0件。二度目の枠の行も済にした。\n"
+    },
+    {
         "title":  "🪟 異常です：セッションの使用量が 80% を越えました",
         "time":  1790004966,
         "message":  "セッション 94%（敷居 80%）\n窓の切り替え 2026-09-21T17:20:00.027194+00:00"
@@ -243,10 +248,5 @@
         "title":  "🪟 異常です（手が要ります）",
         "time":  1789958306,
         "message":  "untracked の「写した刻」を字面で確かめてから消す\nClaude Code が動いていません。落ちたか、閉じられました。\nこちらがすること：端末で Claude Code を開き直してください。"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789954987,
-        "message":  "untracked の「写した刻」を字面で確かめてから消す\n①字面で参照を当て直した——panel.html L2283/2328/2550/2555 と panel-mach-probe.js L23-24 は /* */ の中の説明、reports/取り残しの検収-1.md L23 は地の文。道や引用符に接した使い方は0件、開く手（Get-Content・readFile・Test-Path・existsSync）の近くも0件。git ls-files も空。②参照が無いので消した。0バイト・作成 2026-09-14 13:32:42 を控えてから Remove-Item -LiteralPath で落とし、untracked は6件（.bak だけ）に戻った。本体には触っていない。\nファイル: 消した＝リポジトリ直下の「写した刻」／控え＝orders-open.tsv・work-note.txt・reports/y0921-1040.md・report-latest.md\n実測: 参照の当たり＝説明文6箇所（panel.html 4・panel-mach-probe.js 2）＋地の文1（reports/取り残しの検収-1.md）＋今回の報告と機械の記録。ファイルとして開く箇所 0件。消す前 0バイト・作成/更新/最終アクセスとも 2026-09-14 13:32:42。消した後 Test-Path 偽・untracked 7件→6件。\n未検収: 2026-09-21 10:20 窓隠しの実機確認（人手待ち）"
     }
 ]
