@@ -1,8 +1,8 @@
 [
     {
-        "title":  "🪟 異常です（連携に訴え：pub-late）",
-        "time":  1790035825,
-        "message":  "連携の見張りから訴えが出ています。\n\n・pub-late … 公開側が 32分 遅れている（押しが済んだ札より古い）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
+        "title":  "🪟 連携に訴えがあります（state-stale）",
+        "time":  1790038826,
+        "message":  "連携の見張りから訴えが出ています。\n\n・state-stale … 公開側の生存が 50分 書かれていない（state.json の at）。パネルは凍った状態を出し続ける\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
     },
     {
         "title":  "🙀 異変発見だにゃ",
@@ -28,11 +28,6 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1790029576,
         "message":  "この間にまとまった知らせ 2本\n\n［✅ 終わりました（返事不要）］\n戻しの取り下げは済み（同じ指示が二度届いた）\n（札が立たないまま次の仕事へ移っていた分）\n種類: 調べた\n完了: 同じ指示が二度届いた。前の回（00:15・札 y0922-0015）で済ませてあり、触り直していない。確かめ直した結果——①戻しの命令は一度も打っていない（apply-result.txt の末尾は 00:04:22 の「終わり」のままで、戻しの行は無い）。②印 y0922-0010 は取り下げ済みで、ヨシ待ちの一覧にも無い。③当てた三つはそのまま残っている（SysMain Stopped/Disabled、AutomaticManagedPagefile False、pagefile C:\\pagefile.sys 初期4096 最大4096、VAIO Care Disabled、VCSystemTray 0本）。④台帳の未了は0件。二度目の枠の行も済にした。\nファイル: ~/.claude/orders-open.tsv（1行を済へ）／~/.claude/work-note.txt\n実測: SysMain Stopped/Disabled・AutomaticManagedPagefile False・pagefile 初期4096 最大4096・VAIO Care Disabled・VCSystemTray 0本。apply-result.txt の末尾は 2026-09-22 00:04:22。yoshi-open.tsv に y0922-0010 は無い。台帳の未了0件。\n実機: 次の再起動のあと Win32_PageFileUsage の AllocatedBaseSize が 4096 になること。次のログオンで VCSystemTray が立たないこと。SysMain が Stopped/Disabled のままであること。\n\n［✅ 終わりました（返事不要）］\n写せます（6件）"
-    },
-    {
-        "title":  "🪟 連携に訴えがあります（state-stale）",
-        "time":  1790029227,
-        "message":  "連携の見張りから訴えが出ています。\n\n・state-stale … 公開側の生存が 50分 書かれていない（state.json の at）。パネルは凍った状態を出し続ける\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
     },
     {
         "title":  "🪟 異常です：再起動の後の点検",
