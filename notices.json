@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 窓を起こし直しました（固まり）",
+        "time":  1790107686,
+        "message":  "台帳に走っている枠があるのに、足跡が 10分ぶん増えていません。\n見たもの … hook.log（と、有れば窓の出しの記録）の最終書き\n敷居 10分／いま 10分\n\n落として ClaudeCodeAtLogon で起こし直しました。記録は ~/.claude/inbox-watch.log。"
+    },
+    {
         "title":  "🪟 異常です：再起動の後の点検",
         "time":  1790107006,
         "message":  "再起動から戻った（落としは 26分前・09-23 04:56）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・悪い結果 ClaudeBoard=267014／ClaudePipeCheck=267014／ClaudeWatchNotify=-1\n② 見張りの生存 … 26分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-23 04:30:10／panel-ver.txt 143\n欠け 2件：予定の最終結果が悪い：ClaudeBoard=267014／ClaudePipeCheck=267014／ClaudeWatchNotify=-1／見張りの生存が 26分前で古い"
@@ -23,11 +28,6 @@
         "title":  "✅ 再起動の後の点検（返事不要）",
         "time":  1790100628,
         "message":  "再起動の10分後の通し点検（09-23 03:10）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・最終結果は全て良い\n② 見張りの生存 … 0分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-22 23:29:21／panel-ver.txt 143\n四つとも○。戻っている。"
-    },
-    {
-        "title":  "🪟 窓を起こし直しました（固まり）",
-        "time":  1790087361,
-        "message":  "台帳に走っている枠があるのに、足跡が 10分ぶん増えていません。\n見たもの … hook.log（と、有れば窓の出しの記録）の最終書き\n敷居 10分／いま 10分\n\n落として ClaudeCodeAtLogon で起こし直しました。記録は ~/.claude/inbox-watch.log。"
     },
     {
         "title":  "🪟 異常です（連携に訴え：pub-late）",
