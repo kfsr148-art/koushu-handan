@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 窓を起こし直しました（固まり）",
+        "time":  1790086780,
+        "message":  "台帳に走っている枠があるのに、足跡が 10分ぶん増えていません。\n見たもの … hook.log（と、有れば窓の出しの記録）の最終書き\n敷居 10分／いま 10分\n\n落として ClaudeCodeAtLogon で起こし直しました。記録は ~/.claude/inbox-watch.log。"
+    },
+    {
         "title":  "🕒 延びています",
         "time":  1790085164,
         "message":  "予定四件（ClaudeBoard・ClaudePipeCheck・ClaudeR\n終了予定22:32を過ぎています（経過65分）"
