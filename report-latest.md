@@ -1,73 +1,44 @@
-# state-stale の繰り返しは「押しの間引き」が元。25分の底を足した
+# 追報：25分の底が効いた（14:04:30・中身が同じまま押した）
 
-**終わり（残り1件）** — 2026-09-22 13:30（VAIO）。空きメモリでも push の失敗でもなく、**昨日入れた押しの間引きが、手待ちのあいだ公開側の `at` を一度も動かさない**のが元。底を足して直し、公開 `state.json` の `at` が動くことを実読みで確かめた。本体には触っていない。
+**終わり（残り1件）** — 2026-09-22 14:08（VAIO）。前報（[`y0922-1330.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0922-1330.md)）で入れた底が、**実際に効く回を捉えた**。
 
-## 1. 元（`inbox-watch.ps1` の押しの間引き）
+## 1. 捉えた形
 
-2026-09-21 の「外へ出る子を減らす-1 ②」で、こう入った。
+`inbox-watch.log` の状態の行は、13:34 から14:05 のあいだ**二行しかない**。
 
-```powershell
-$cmp = $json -replace '"at":[0-9]+', ''      # 較べるとき at を外す
-if ($script:lastPushBody -eq $cmp) { … return }   # 中身が同じなら押さない
+```
+13:34:20  状態を書き出した（前の押しから 162秒。3分あけるので押さない）：手待ち / state-stale の繰り返しを止める
+14:04:30  状態を書き出して押した：手待ち / state-stale の繰り返しを止める
 ```
 
-**`at` を外して較べるので、手待ちのあいだは中身が永久に同じになる。** `stat`・`subj`・`todo`・`cardAt` が動かない限り、`state.json` は**一度も押されない**。手元では15秒ごとに書けているのに、公開側の `at` だけが止まる。
+**この二行の間が 30分10秒 空いているのが、そのまま証しになっている。**
 
-**しかも訴えが自分で自分を消す。** `pipe-check.ps1` が45分（`$STATE_STALE_MIN`）で `state-stale` を鳴らす → 鳴らすと `cardAt` が変わる → 中身が違うので押しが通る → 10分後に `ok`。**直さないかぎり50分ごとに永久に繰り返す。**
-
-記録がそのとおりになっている。押しは**訴えの14〜22秒あと**に来ている。
-
-| 訴え（`pipe-warn.log`） | 直後の押し（`state.json` の commit） | 前の押しからの間 |
-|---|---|---|
-| 06:30:19 state-stale（51分） | 06:30:35 | 05:38:52 → **52分** |
-| 07:20:19 state-stale（50分） | 07:20:41 | 06:30:35 → **50分** |
-| 10:00:19 state-stale（50分） | 10:00:33 | 09:10:39 → **50分** |
-| 12:40:19 state-stale（54分） | 12:40:33 | 11:46:20 → **54分** |
-
-## 2. 空きメモリは元ではない
-
-`git-push.log` の今日の見送りは **73行あるが、全て `who=reboot`**（重い側・敷居1024MB・空き 715〜898MB）。これは 06:42〜07:22 に見送られた**再起動-2の報告の押し**で、07:25:18 に空き 1184MB へ戻って通っている（`push-retry.log`）。
-
-**`state` は関門を通らない。** `git-push.ps1` の `$SMALL_WHO = @('state','notices','board','pipe','usage','ready','status')` に入っており、空きが乏しくても押す決めになっている。今日の `git-push.log` に `state` の行は**1件だけ**（04:30:26「ほかの押しが続いているので見送る」）。
-
-**いまの空き … 1085MB ／ 全 3975MB**（13:22）。軽い側の敷居500MB・重い側1024MB のどちらも上回っている。
-
-＊`pipe-warn.log` の 09:10 `pub-late` は別口。09:22 に `pipe` の push が20秒・pull が30秒で時間切れになった回（`git-push.log`）で、09:21:59 に `ok` が入って閉じている。
-
-## 3. 直したところ（`~/.claude/inbox-watch.ps1`・写し `.bak-20260922`）
-
-**中身が同じでも、25分黙ったら押す底を足した。**
+`inbox-watch.ps1` の状態書き出しは、頭に**もう一段の関門**がある。
 
 ```powershell
-$PUSH_ALIVE_SEC = 1500                       # 新しく足した（25分）
-…
-if ($script:lastPushBody -eq $cmp -and ($now - $script:lastPushAt) -lt $PUSH_ALIVE_SEC) { … return }
+if ($line -eq $script:lastStat -and ($now - $script:lastStatAt) -lt $PULSE_SEC) { return }   # $PULSE_SEC = 1800（30分）
 ```
 
-25分は `state-stale` の敷居45分より十分に短い。**片方だけ動かさないこと**を綴りの注にも書いた。
-差分は**この2箇所だけ**（＋注8行）。
+**中身が変わらない限り、30分に一度しか中へ入らない。** 13:34:20 の次が 14:04:30 ちょうどだったということは、**その30分のあいだ `$line` が一度も変わっていない**＝14:04:30 に入った回も**中身は前と同じ**だったということ。
 
-## 4. 実読みの確かめ
+その回が「**状態を書き出して押した**」で終わっている。**古い綴りなら、ここは必ず「中身が前と同じなので押さない」だった。**
+押したのは新しい底（前の押し 13:31:41 から 1969秒 ≧ 1500秒）が通したから。
 
-- 常駐を起こし直した … 先の常駐（pid 8248・04:50:35 起動）を止め、**pid 9640・13:26:22 起動**。台本の更新 13:25:44 より後で、`-File …inbox-watch.ps1` で終わる物は1本だけ
-- `inbox-watch.log` … `13:26:28 状態を書き出して押した：作業中`
-- **公開側 `https://kfsr148-art.github.io/koushu-handan/state.json` を curl で実読み**
+## 2. 公開側の実読み
 
 | 刻 | 公開側の `at` | 人の刻 |
 |---|---|---|
 | 13:26:08 | 1790051003 | 13:23:23 |
-| 13:27:23 | **1790051184** | **13:26:24** |
+| 13:27:23 | 1790051184 | 13:26:24 |
+| **14:07:46** | **1790053467** | **14:04:27** |
 
-**動いた。** 手元も 13:28:09 に 1790051184 → 1790051283 と進んでいる。
+commit も `14:04:27 ad51504d` で残っている。**`13:30 以降、`pipe-warn.log` に `state-stale` は一度も立っていない。**
 
-＊25分の底そのものが効くのは**次に25分黙ったとき**。効いた回は `inbox-watch.log` に「状態を書き出して押した」が、**件名が変わっていないのに**出る。そこから先、`pipe-warn.log` に `state-stale` が立たなくなるのが合格の形。
+## 3. これから先の見え方
 
-## 5. 検め
+手待ちが続くと、押しは**30分ごと**（上の `$PULSE_SEC`）に落ち着く。`at` の古さは最大でも31分ほどで、`state-stale` の敷居45分（`pipe-check.ps1` の `$STATE_STALE_MIN`）に届かない。**06:30・07:20・10:00・12:40 のような繰り返しは、これで出なくなる。**
 
-- 構文検査（`PSParser::Tokenize`）… **NG 0件**
-- BOM 保持／1968行（+9）／改行 LF
-- 写し … `~/.claude/inbox-watch.ps1.bak-20260922`
-- **`koushu-handan.html` には触れていない**
+＊三つの値は**対で決まる**。`$PULSE_SEC`（30分）＜ `$PUSH_ALIVE_SEC`（25分）は底として機能し、その両方が `$STATE_STALE_MIN`（45分）より短い。**どれか一つだけを動かさないこと。**
 
 ## 残り
 
@@ -80,11 +51,12 @@ if ($script:lastPushBody -eq $cmp -and ($now - $script:lastPushAt) -lt $PUSH_ALI
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **380件**ある。
+　ここに出るのは新しい20件。全部で **381件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y0922-1330-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0922-1330-2.md) | 09-22 14:08 | 追報：25分の底が効いた（14:04:30・中身が同じまま押した） |
 | [`y0922-1330.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0922-1330.md) | 09-22 13:29 | state-stale の繰り返しは「押しの間引き」が元。25分の底を足した |
 | [`y0922-1113.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0922-1113.md) | 09-22 11:14 | 0件の元は「見出しの言語」。数え方を Get-ScheduledTask へ替えた |
 | [`y0922-1047.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0922-1047.md) | 09-22 10:49 | 予定表の Claude* は13件すべて在った（入れ直さず） |
@@ -104,6 +76,5 @@ if ($script:lastPushBody -eq $cmp -and ($now - $script:lastPushAt) -lt $PUSH_ALI
 | [`y0921-1925.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1925.md) | 09-21 19:23 | 使用量の鈴の鍵を **10分の桁**へ（最も近い側へ丸める） |
 | [`y0921-1915.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1915.md) | 09-21 19:13 | 綴りを退避して **171.4MB → 4.6MB**／台帳の未了 **0件** |
 | [`y0921-1805b.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1805b.md) | 09-21 18:35 | 未了4項目を一行ずつ／枠の上限の結果／使用量の鈴の丸め |
-| [`y0921-1755.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-1755.md) | 09-21 17:55 | 雲へ重い仕事を回す道 — **通った** |
 
 <!-- 控えの一覧 ここまで -->
