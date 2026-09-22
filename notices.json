@@ -1,13 +1,13 @@
 [
     {
+        "title":  "🪟 連携に訴えがあります（hook-quiet）",
+        "time":  1790063796,
+        "message":  "連携の見張りから訴えが出ています。\n\n・hook-quiet … hook.log が 28分 書かれていない。枠を受ける口も生存も、ここを通る\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
+    },
+    {
         "title":  "🪟 異常です：再起動の後の点検",
         "time":  1790063735,
         "message":  "再起動から戻った（落としは 25分前・09-22 16:55）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・悪い結果 ClaudeBoard=267014／ClaudePipeCheck=267014／ClaudeRevive=267014／ClaudeWatchNotify=-1\n② 見張りの生存 … 25分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-22 16:30:40／panel-ver.txt 143\n欠け 2件：予定の最終結果が悪い：ClaudeBoard=267014／ClaudePipeCheck=267014／ClaudeRevive=267014／ClaudeWatchNotify=-1／見張りの生存が 25分前で古い"
-    },
-    {
-        "title":  "🪟 異常です（連携に訴え：pub-late）",
-        "time":  1790062240,
-        "message":  "連携の見張りから訴えが出ています。\n\n・pub-late … 公開側が 80分 遅れている（押しが済んだ札より古い）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
     },
     {
         "title":  "🔁 落とします（定時）",
