@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 再起動の後の点検（返事不要）",
+        "time":  1790187029,
+        "message":  "再起動の10分後の通し点検（09-24 03:10）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・最終結果は全て良い\n② 見張りの生存 … 0分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-24 00:11:31／panel-ver.txt 144\n四つとも○。戻っている。"
+    },
+    {
         "title":  "🔗 新しい線",
         "time":  1790176291,
         "message":  "https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n\nCode タブ：引き継ぎは試していない（claude-loop は新しい会話で立てた。pick-resume.log を見る）\n\n窓の claude（pid 8652）の remote-control の宛先です。\n＊記録は ~/.claude/inbox-watch.log。"
@@ -158,10 +163,5 @@
         "title":  "🙀 異変発見だにゃ",
         "time":  1790078418,
         "message":  "状態: 手待ち / 16:30 の定時再起動の後、予定四件（ClaudeBoard・Cl…\n台帳: 残り 2件（ヨシ待ちを「ヨシしない・取り下げ」で閉じた回に、終わりの札が立たず鈴も鳴らなかっ・16:30 の定時再起動の後、予定四件（ClaudeBoard・ClaudePi）\n見張り: 生存○ 見張り○ 片付け×止 受信箱○\n使用量: セッション 15% / 週全体 14% / 週Fable 13%\n起こし直し: 今日 2回（固まり 0・重さ 0・0本 2） / 最後に落ちた刻 08:24\n訴え: 3件（pub-late・state-stale・hook-quiet）… pipe-warn.log\n配分: 全体 あと14.4%/日 ／ Fable あと14.6%/日"
-    },
-    {
-        "title":  "🕒 延びています",
-        "time":  1790067367,
-        "message":  "state-stale の繰り返しを止める\n終了予定17:53を過ぎています（経過47分）"
     }
 ]
