@@ -14,6 +14,15 @@
 ＊一本だけ回したいときは、Actions の「雲で回す」を `workflow_dispatch` で起こし、
 　`only` に `kumo-tameshi.js` のように台本の名を入れる。
 
+## 返事パネルの検査（panel-check）は雲で回す（2026-09-23）
+
+**`panel-check` は VAIO で回さない。** `panel.html` か `panel-check.js` を押せば、
+`job.yml` がここの `panel-check.js`（直下の panel-check.js を呼ぶだけ）を回し、
+**`reports/cloud-panel-check-<刻>.md`** に結果を返す。手で回したいときは
+`workflow_dispatch` の `only` に `panel-check.js`。
+
+＊押しで回るのは**その押しで変わった台本だけ**（＋パネルが変わっていれば panel-check.js）。
+
 ## 「雲で：」の決め
 
 **枠の頭に「雲で：」と付いた物は、VAIO では回さない。** ここへ台本を置いて押し、

@@ -17,6 +17,13 @@
 #     同じ台本を置いたままにしても、中身が変わらなければ二度は走らない。
 #
 #   ＊台本はそのまま残す（消さない）。何を回したかが綴りに残るようにするため。
+#
+#   ＊返事パネルの検査（panel-check）も、この道で回す（2026-09-23・panel-check は雲で-1）。
+#     Edge を立てる検査を VAIO で回すと空きが 405MB まで落ち、常駐の見張りが止まった（09-23 22:45〜23:06）。
+#     panel.html か panel-check.js が変わった押しで `scratchpad/jobs/panel-check.js` を回し、
+#     結果を `reports/cloud-panel-check-<刻>.md` へ返す。**VAIO では panel-check を回さない。**
+#   ＊押しで回るのは、**その押しで変わった台本だけ**（＋パネルが変わっていれば panel-check.js）。
+#     変わった物が読めない回（浅い写しに前の刻が無い）は、今までどおり全部を回す。
 
 name: 雲で回す
 
@@ -26,6 +33,8 @@ on:
     paths:
       - 'scratchpad/jobs/*.js'
       - 'scratchpad/jobs/*.ps1'
+      - 'panel.html'
+      - 'panel-check.js'
   workflow_dispatch:
     inputs:
       only:
@@ -46,10 +55,45 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 20
 
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      # panel-check は Edge／Chrome を立てる。check.yml と同じ用意（2026-09-23・panel-check は雲で-1）
+      - name: ブラウザ（Chromium）を用意する
+        run: |
+          if [ -x /usr/bin/google-chrome ] || [ -x /usr/bin/chromium ] || [ -x /usr/bin/chromium-browser ]; then
+            echo "ブラウザあり: $(command -v google-chrome chromium chromium-browser 2>/dev/null | head -1)"
+          else
+            npx --yes playwright@1.47.0 install --with-deps chromium
+            BIN=$(find "$HOME/.cache/ms-playwright" -name 'chrome' -type f | head -1)
+            sudo ln -sf "$BIN" /usr/bin/chromium
+            echo "playwright の chromium を /usr/bin/chromium へ"
+          fi
+
+      # 押しで回す台本を選ぶ。変わった台本だけ＋パネルが変わっていれば panel-check.js。
+      # 変わった物が読めなければ ALL（今までどおり全部）。
+      - name: 回す台本を選ぶ
+        id: pick
+        shell: bash
+        run: |
+          set -u
+          if [ "${{ github.event_name }}" != "push" ]; then echo "pick=ALL" >> "$GITHUB_OUTPUT"; exit 0; fi
+          BEFORE="${{ github.event.before }}"
+          if ! git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then git fetch --deepen=200 origin 2>/dev/null || true; fi
+          if ! git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then echo "pick=ALL" >> "$GITHUB_OUTPUT"; echo "前の刻が読めない → 全部"; exit 0; fi
+          FILES=$(git diff --name-only "$BEFORE" "${{ github.sha }}")
+          P=""
+          for f in $(echo "$FILES" | grep -E '^scratchpad/jobs/[^/]+\.(js|ps1)$' || true); do [ -f "$f" ] && P="$P $(basename "$f")"; done
+          if echo "$FILES" | grep -qE '^(panel\.html|panel-check\.js)$'; then
+            case " $P " in *" panel-check.js "*) ;; *) P="$P panel-check.js" ;; esac
+          fi
+          echo "変わったもの: $(echo $FILES)"
+          echo "回す台本: ${P:-（無し）}"
+          echo "pick=${P# }" >> "$GITHUB_OUTPUT"
 
       - name: 台本を回して reports/ へ書く
         id: run
@@ -59,10 +103,14 @@ jobs:
           mkdir -p reports scratchpad/jobs
           shopt -s nullglob
           only="${{ github.event.inputs.only }}"
+          pick="${{ steps.pick.outputs.pick }}"
           any=0
           for f in scratchpad/jobs/*.js scratchpad/jobs/*.ps1; do
             b="$(basename "$f")"
             if [ -n "$only" ] && [ "$b" != "$only" ]; then continue; fi
+            if [ -z "$only" ] && [ "$pick" != "ALL" ]; then
+              case " $pick " in *" $b "*) ;; *) continue ;; esac
+            fi
             any=1
             stamp="$(date -u '+%Y%m%d-%H%M%S')"
             name="${b%.*}"
