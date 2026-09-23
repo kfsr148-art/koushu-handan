@@ -163,10 +163,5 @@
         "title":  "🪟 異常です：再起動の後の点検",
         "time":  1790063735,
         "message":  "再起動から戻った（落としは 25分前・09-22 16:55）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・悪い結果 ClaudeBoard=267014／ClaudePipeCheck=267014／ClaudeRevive=267014／ClaudeWatchNotify=-1\n② 見張りの生存 … 25分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-22 16:30:40／panel-ver.txt 143\n欠け 2件：予定の最終結果が悪い：ClaudeBoard=267014／ClaudePipeCheck=267014／ClaudeRevive=267014／ClaudeWatchNotify=-1／見張りの生存が 25分前で古い"
-    },
-    {
-        "title":  "🔁 落とします（定時）",
-        "time":  1790062207,
-        "message":  "定時の再起動（枠 2026-09-22 15・09-22 16:30）\n空き 1002MB ／ claude 1本・私用 427MB\n空きメモリ 1002MB ／ 全体 3975MB\n見送り 3/3回\n残っているが打ち止めで落とす：台帳の未了 1件／ヨシ待ち 8件／押し残し 数えられず\n60秒後に落ちる。戻りは「✅ 戻りました（再起動から）」で知らせる。"
     }
 ]
