@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🔎 調べました",
+        "time":  1790041928,
+        "message":  "予定表の Claude* の入れ直し\n予定表の Claude* は13件すべて在り、入れ直しは行わなかった。Ready 11・Running→Ready 1（ClaudeRevive）・Disabled 1（ClaudeSweepChecks・2026-09-21 22:31 に意図して無効化した物）。控えの xml から入れ直すと、この無効を取り消し、いまは無い ClaudeWeeklyReboot を足すことになるため見送った。\nファイル: （本体・予定表とも変更なし）\n実測: Get-ScheduledTask \u0027Claude*\u0027 = 13件。直近の走り＝ClaudeJamWatch/ClaudeRevive 10:46:46・ClaudeWatchNotify 10:45:45・ClaudeBoard/ClaudePipeCheck 10:40:40・ClaudeHookHeartbeat 10:38:38。ClaudeEdgeSweep 03:00:00／ClaudeHomeBackup 03:30:30／ClaudeAfterReboot 03:10:10 は 04:30 の再起動より前の走りが残っており、登録は途切れていない（入れ直せば LastRunTime は消える）。公開側 state.json は 10:46:18 更新・at=1790041576、watch-step.txt は 10:46:20 更新。LastTaskResult は ClaudeAfterReboot だけ 1、他12件は 0。\n未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回）／2026-09-22 00:04 pagefile 4096MB の実際の割り当て（次の再起動のあと）"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1790040249,
         "message":  "写せます（7件）"
@@ -243,10 +248,5 @@
         "title":  "🔎 調べました：--continue の枠は重複。確かめ直して台帳を整えた",
         "time":  1789980026,
         "message":  "--continue の枠は重複。確かめ直して台帳を整えた\n①同じ枠が二度届いたので、触り直さずに字で確かめた——ClaudeCodeAtLogon の引数に --continue は無く164字（題「(Claude Code)」・--remote-control koushu-handan・/MAX はすべて残存）、revive-claude.ps1 に残る2か所は「外した」「付けない」と断る説明の字だけ、daily-reboot.ps1 の L200 に「空きメモリ NMB ／ 全体 NMB」の行がある。写しも両方（revive-claude.ps1.bak-20260921／daily-reboot.ps1.bak-20260921c）残っている。②台帳に済を書き忘れていた行が溜まっていたので、7行まとめて書き替えた。未了は7件→2件になった。\n"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1789978715,
-        "message":  "写せます（5件）"
     }
 ]
