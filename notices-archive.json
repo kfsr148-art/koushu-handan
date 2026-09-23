@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1790043369,
+        "message":  "after-reboot.ps1 の予定数え直し\n①の数え方を schtasks の CSV から Get-ScheduledTask へ替えた。落ちていた原因は昇格でも TaskPath でもなく**見出しの言語**——schtasks /Query /FO CSV /V の列名は表示言語で変わり、予定表から wscript で窓なしに走る回は「タスク名」「スケジュールされたタスクの状態」になるため、英語の綴りで当てていた条件が一件も当たらず0件になっていた。併せて、数える対象を「有効な物だけ」から「登録されている物」へ改め（わざと無効にした ClaudeSweepChecks が落ちて12件になっていた）、意図しない無効は別に欠けとして挙げる形にした。ClaudeAfterReboot の前回結果 1 は自分が「欠けあり」で返した値なので数から外した（外さないと一度1になると永久に直らない）。\nファイル: ~/.claude/after-reboot.ps1（写し .bak-20260922）\n実測: 窓なし（run-hidden.vbs 経由・Limited・非昇格）で再現。直す前＝clrows 0／enabled_distinct 0／列名は日本語、同じ場所で Get-ScheduledTask は13件。直した後の作り値二通り、いずれも窓なしの同じ道で実行——①実物 Claude* → 「① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・最終結果は全て良い」「四つとも○。戻っている。」題は ✅。②写しの当たらない綴り ZZClaude* → 「① 予定表 Claude* … 0件」「欠け 1件：予定が 0件しかない（13件要る）」題は 🪟 異常です。写しは実行後に消した。構文検査 NG 0件・BOM 保持・175行。\n未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回）／2026-09-22 00:04 pagefile 4096MB の実際の割り当て（次の再起動のあと）"
+    },
+    {
         "title":  "🔎 調べました",
         "time":  1790041928,
         "message":  "予定表の Claude* の入れ直し\n予定表の Claude* は13件すべて在り、入れ直しは行わなかった。Ready 11・Running→Ready 1（ClaudeRevive）・Disabled 1（ClaudeSweepChecks・2026-09-21 22:31 に意図して無効化した物）。控えの xml から入れ直すと、この無効を取り消し、いまは無い ClaudeWeeklyReboot を足すことになるため見送った。\nファイル: （本体・予定表とも変更なし）\n実測: Get-ScheduledTask \u0027Claude*\u0027 = 13件。直近の走り＝ClaudeJamWatch/ClaudeRevive 10:46:46・ClaudeWatchNotify 10:45:45・ClaudeBoard/ClaudePipeCheck 10:40:40・ClaudeHookHeartbeat 10:38:38。ClaudeEdgeSweep 03:00:00／ClaudeHomeBackup 03:30:30／ClaudeAfterReboot 03:10:10 は 04:30 の再起動より前の走りが残っており、登録は途切れていない（入れ直せば LastRunTime は消える）。公開側 state.json は 10:46:18 更新・at=1790041576、watch-step.txt は 10:46:20 更新。LastTaskResult は ClaudeAfterReboot だけ 1、他12件は 0。\n未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回）／2026-09-22 00:04 pagefile 4096MB の実際の割り当て（次の再起動のあと）"
@@ -243,10 +248,5 @@
         "title":  "🪟 異常です：週全体の使用量が 80% を越えました",
         "time":  1789980934,
         "message":  "週全体 80%（敷居 80%）\n窓の切り替え 2026-09-21T11:00:00.729898+00:00"
-    },
-    {
-        "title":  "🔎 調べました：--continue の枠は重複。確かめ直して台帳を整えた",
-        "time":  1789980026,
-        "message":  "--continue の枠は重複。確かめ直して台帳を整えた\n①同じ枠が二度届いたので、触り直さずに字で確かめた——ClaudeCodeAtLogon の引数に --continue は無く164字（題「(Claude Code)」・--remote-control koushu-handan・/MAX はすべて残存）、revive-claude.ps1 に残る2か所は「外した」「付けない」と断る説明の字だけ、daily-reboot.ps1 の L200 に「空きメモリ NMB ／ 全体 NMB」の行がある。写しも両方（revive-claude.ps1.bak-20260921／daily-reboot.ps1.bak-20260921c）残っている。②台帳に済を書き忘れていた行が溜まっていたので、7行まとめて書き替えた。未了は7件→2件になった。\n"
     }
 ]
