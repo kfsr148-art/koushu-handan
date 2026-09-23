@@ -1,22 +1,24 @@
-# 定時再起動の見送り3/3は落とさず次の定時へ（r0923-1335）
+# 窓を auto で立てる・0本の回の終わり方（r0923-1401）
 
 **終わり（残り0件）** — 2026-09-23（VAIO）。本体には触っていない。
 
-**入ったか** — 入っていなかったので、この回に入れた。`~/.claude/daily-reboot.ps1` は、見送りが3/3の打ち止めに達しても残りがある回は**落とさず `exit 0`** で終わり、次の定時（03:00／15:00）へ回す。次の枠は `$Slot` が変わるので、見送りは0から数え直しになる。前は「残っていても落とす」形だった。
+① **auto で立てる** — Shift+Tab の auto に当たる値は `"auto"`（`claude --help` の `--permission-mode` の選択肢は acceptEdits／auto／bypassPermissions／manual…）。
 
-| 作り値 | 落とす命令 | 知らせ | 記録 |
-|---|---|---|---|
-| 見送り3/3・未了1件 | **呼ばれない** | 無し | 見送りは 3回で打ち止め。落とさず次の定時へ回す：台帳の未了 1件 |
-| 見送り3/3・未了0件 | **呼ばれた** | 🔁 落とします（定時） | 四つとも空。落とす |
+| 試し（新しく立てた claude の記録の先頭 `permissionMode`） | 結果 |
+|---|---|
+| 直す前（今日の窓の記録） | default |
+| リポジトリの `.claude/settings.json`・`settings.local.json` を auto に | **default**（効かない） |
+| 起動の引数 `--permission-mode auto` | auto |
+| **`~/.claude/settings.json` に `permissions.defaultMode = "auto"`** | **auto** |
 
-＊落とす命令は偽の台本に、知らせは偽の綴りに差し替え、置き場は一時ディレクトリ（`koushu-rb-…`）にした。本物の shutdown と ntfy は叩いていない。
+- リポジトリ側の既定の形（`acceptEdits`／`bypassPermissions`）は、もともと効いていなかった。直しは `~/.claude/settings.json` に入れ、リポジトリ側は元に戻した
+- 起こし直した窓の確かめは、切り離した `~/.claude/mode-check.ps1` が受け持つ。60秒後に対話の claude を落とし、`claude-loop` が同じ窓で起こし直す。新しい会話の記録の先頭を読み、`~/.claude/mode-check.txt` と ntfy「🪟 窓の許可の形を確かめました」に出す。**記録は最初の入力で立つ**ので、窓に一言入れると確かめが進む（30分まで待つ）
 
-- 構文 NG 0・BOM 保持・222→225行・写し `daily-reboot.ps1.bak-20260923`
-- 台帳の `2026-09-22 19:30:40` を済にした（1 は y0922-2155 で答え済み、2 がこの直し）
+② **0本の回の終わり方** — `claude-loop.log`・`claude-loop-koushu.txt` の末尾50行に、メモリ上限の印（heap／out of memory／FATAL／Allocation failed）は **0件**。最後の行は 05:08:24 で、**07:26・08:15 の行そのものが無い**。この二つは立て直しの回数を数えるだけで、claude が落ちるときの出力は残らない。印が無いので `NODE_OPTIONS`（1024）は触っていない。
 
 **台帳の未了 = 0件**
 
-**回る段（作法36）** — 手元：予定 `ClaudeDailyReboot` が呼ぶ `daily-reboot.ps1` だけが変わる。雲：`check.yml`・`check-all` は触らず変化なし。
+**回る段（作法36）** — 手元：claude の起動の既定の形だけが変わる。雲：`check.yml`・`check-all` は変化なし。
 
 ---
 
@@ -27,11 +29,12 @@
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **387件**ある。
+　ここに出るのは新しい20件。全部で **388件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r0923-1401.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0923-1401.md) | 09-23 14:19 | 窓を auto で立てる・0本の回の終わり方（r0923-1401） |
 | [`r0923-1335.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0923-1335.md) | 09-23 13:39 | 定時再起動の見送り3/3は落とさず次の定時へ（r0923-1335） |
 | [`r0923-1033.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0923-1033.md) | 09-23 10:44 | 台帳の寄せ・取り下げの札・片付け×止の元（r0923-1033） |
 | [`r0923-0646.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0923-0646.md) | 09-23 06:52 | 再起動直後の固まり誤鳴りを止めた（r0923-0646） |
@@ -51,6 +54,5 @@
 | [`y0921-2128.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2128.md) | 09-21 21:28 | 足跡の合図と、手待ちの畳み／pagefile は**手が要る** |
 | [`y0921-2120.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2120.md) | 09-21 21:22 | Edge の置き去りを閉じた（+210MB）／SysMain は**手が要る** |
 | [`y0921-2110.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2110.md) | 09-21 21:08 | 押しの敷居を 400MB へ／機械に乗っている物の調べ |
-| [`y0921-2050.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2050.md) | 09-21 20:50 | 落ちにくい窓（三つ）／枠の上限を刻ひとつに |
 
 <!-- 控えの一覧 ここまで -->
