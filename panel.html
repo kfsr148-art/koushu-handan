@@ -177,6 +177,9 @@
     font-size:16px; font-weight:700; color:var(--fg); background:var(--card);
     border:1px solid var(--line); border-radius:10px;}
   .cpall:active{filter:brightness(1.4);}
+  /* いまの線（v144）。a で作るので、字を箱の真ん中へ寄せる。的は .cpall の48px。 */
+  a.cpall.rc{display:flex; align-items:center; justify-content:center; text-decoration:none; box-sizing:border-box;}
+  a.cpall.rc.hide{display:none;}
   .cpall.ok{color:var(--done); border-color:var(--done);}
   /* 写す物が無いとき（v38）。押せなくしたことが見て分かるように色を落とす。
      ＊箱の寸法は変えない。押せない状態でも 48px のまま置いておく（作法10）。
@@ -387,6 +390,10 @@
       <!-- ＊右端の「N分前」（.a / #stAgo）は **v73 で消した**。器ごと外している。
            経過は二段目の「開始HH:MM・終了予定…・経過N分」が持っている。 -->
     </div>
+    <!-- いまの線（v144・いまの線-1）。いまの窓の remote-control の宛先。押せばその会話が開く。
+         読む元は state.json の rcUrl（inbox-watch.ps1 が sessions/<pid>.json の bridgeSessionId から組む）。
+         取れていなければ行ごと畳む。 -->
+    <a class="cpall rc hide" id="rcLink" href="#" target="_blank" rel="noopener">🔗 いまの線</a>
     <!-- ＊「受け取った指示 HH:MM「…」」の一行（v61）は **v70 で画面から消した**。
          器ごと外している。値を書く側（inbox-feed.ps1 → last-order.txt → state.json）は
          そのまま動いており、まとめて写しの中には今までどおり入る。
@@ -488,7 +495,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v143（9月21日）</p>
+  <p class="ver" id="verTag">panel v144（9月23日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -516,7 +523,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '143';
+  var PANEL_VER = '144';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -2830,6 +2837,18 @@
             rcEl.hidden = false;
           } else {
             rcEl.textContent = ''; rcEl.hidden = true;
+          }
+        }
+        /* いまの線（v144）。宛先が claude.ai/code の形のときだけ押せる形で出す。 */
+        var rcA = $('rcLink');
+        if (rcA) {
+          var rcU = String(d.rcUrl || '');
+          if (/^https:\/\/claude\.ai\/code\/session_[A-Za-z0-9_]+$/.test(rcU)) {
+            rcA.href = rcU;
+            rcA.textContent = '🔗 いまの線' + (d.rcName ? '（' + String(d.rcName) + '）' : '');
+            rcA.classList.remove('hide');
+          } else {
+            rcA.removeAttribute('href'); rcA.classList.add('hide');
           }
         }
 

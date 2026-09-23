@@ -1,41 +1,51 @@
-# 重いときは /clear だけ・起こす手は一つ・🔗 新しい線・繋ぎ直しの手（r0923-2222）
+# いまの線を送る・パネルと定時の札に宛先・引き継ぎの確かめ・22:50 の切れの調べ（r0923-2305）
 
-**終わり（残り0件）** — 2026-09-23 22:26ごろ（VAIO）。本体には触っていない。
+**終わり（残り0件）** — 2026-09-23 23:13ごろ（VAIO）。本体には触っていない。窓は落としていない（claude 1本・pid 8652 のまま）。
 
-一. **重い窓は立て直さず、/clear を打つだけにした。**
-- **mode-check.ps1**：前の枠（r0923-2212）で書き替え済み。窓を落とさず、claude も起こさない。次に自然に立った窓の記録を読むだけ
-- **inbox-watch.ps1 の Check-ClaudeHeavy**：手待ちで claude の私用メモリが 900MB を超えたとき、`Restart-Window`（落として立て直す）を呼ぶのをやめた。代わりに send-text.ps1 の道で窓へ `/clear` を打ち、「🪟 控えを畳みました（重さ NNNMB）」を一通送る。一度打ったら 900MB を下回るまで黙る（控えは claude-heavy.txt、今までどおり）
-- 作り値（偽の打ち手・偽の送り手）で5通り試し、**5通りとも合った**：950MB 手待ち→/clear 1回・1通／同じ重さで二度目→何もしない／800MB に下がる→何もしない／950MB 走行中→何もしない／下がった後にまた 950MB→/clear 1回・1通。**窓の立て直しは5通りとも0回**
-- ＊窓を落とす手（Restart-Window）が残っているのは**固まり**のときだけ。0本のときは revive の仕事で、ここは変えていない
+### 22:39:50 いまの線
+- **「🔗 いまの線」を ntfy へ一通送った**（HTTP 200）。単独で出し、押すとこの会話（`https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy`）が開く（Click 付き）
+  - ＊届くまでに三度かかった。①60秒の束ねに当たり「🔔 まとめて 2件」の中の一行として出た（押しても開かない）②単独にしたら ntfy が 502 ③三度目で通った。ntfy の health は healthy だった
+  - ＊札（返事パネル）は同じ本文で3枚、試しに -NoPush で1枚、合わせて4枚立った。中身はどれも同じ
+- **ntfy-say.ps1**：`-Click <宛先>` を足した（束ねた回には付けない）。🔗 で始まる題は束ねずに単独で出す
+- **返事パネル v144**：頭（状態の一行のすぐ下）に「**🔗 いまの線（koushu-handan-5e）**」の釦を置いた。押せば、いまの窓の会話が開く。宛先が取れない回は畳む。版は三か所（PANEL_VER・verTag・panel-ver.txt）とも 144
+  - 読む元は state.json の `rcUrl`。常駐（inbox-watch.ps1）が sessions/<pid>.json の bridgeSessionId から組んで入れる（rcName・rcPid と同じ出どころ）
+- **定時の札（😺 現在も順調にゃ）**：本文の一行目に「🔗 いまの線: <宛先>」を入れ、ntfy の知らせに「Open session」の釦を足した（押せばその会話）。札を押したときに開くのは今までどおりパネル。偽の受け手（127.0.0.1）に送って見出しを確かめた：`Actions: view, Open session, https://claude.ai/code/session_01HbNf…`
+  - ＊偽の受け手で試したとき、本物の daily-notice.log に「控えへ入れた／押し送りOK」の2行が書かれた（札も知らせも出ていない）。その2行は消した
+- **言葉の候補**（選んでいない。今の形のまま）：パネルの釦「🔗 いまの線（名）」／「🔗 この会話を開く」／「🔗 Code タブで開く」。ntfy の釦「Open session」／「いまの線」（日本語にすると見出しの運び方を変える要がある）
 
-二. **起こす手は claude-loop の一つ。r0923-2141 で入れた形のまま効いている。**
-- revive-claude.ps1：輪の cmd が生きていれば `loopok` を記録して起こさない。作り値で二通りを試し直し、合った（輪あり→loopok／輪も claude も無し→起こす）
-- mode-check.ps1：もう起こさない（一のとおり）。inbox-watch の Restart-Window も、輪が居れば ClaudeCodeAtLogon を叩かない
-- **いま**：claude.exe **1本**（pid 8652・21:59:54 起動・`--permission-mode auto --remote-control koushu-handan`・親は輪の cmd 7976）・輪の窓 **1つ**。**2本以上ではなかったので、閉じた物は無い**。空き **624MB／全体 3975MB**
+### 22:54:58 引き継ぎの指定と 03:00 の確かめ
+- claude-loop.cmd には**既に入っている**（r0923-2212）：`claude --resume <会話の番号> --permission-mode auto --remote-control koushu-handan`。番号は pick-resume.ps1 が、繋ぎ直しの記録を持つ一番新しい会話から選ぶ（20MB 超は新しく立てる）。`--help` にある `-r, --resume [value]` の形
+- **確かめを常駐へ入れた**（Check-NewLine ＋ Judge-Resume）。窓の pid が替わった回（03:00 の立ち直り）に「🔗 新しい線」を一通。本文に次のどれか一行を書く：
+  - 「Code タブ：**同じ会話が続いた**（宛先が立ち直る前と同じ・一覧に新しい行は立っていない）」
+  - 「Code タブ：**新しい行が立った**（宛先が … から替わった）。引き継ぎの指定（%RESUME%）を claude-loop.cmd から外して元へ戻した」← **続かなければ自分で戻す**（写しは claude-loop.cmd.bak-resume-<刻>、印は resume-reverted.txt）
+  - 「Code タブ：引き継ぎは試していない（…）」← pick-resume が新しく立てた回
+- 宛先は **sessions/<pid>.json の bridgeSessionId だけ**から取るように替えた。立ち直った直後、会話の記録（jsonl）には前の宛先が残っているので、そちらを読むと「続いた」と取り違えるため。宛先がまだ書かれていない回は、次の巡回まで待つ
+- 作り値（偽の宛先・偽の pick-resume.log・claude-loop.cmd の写し）で7通り試し、**7通りとも合った**：控えなし→書くだけ／同じ窓→何もしない／立ち直り・引き継ぎあり・同じ宛先→「続いた」・loop はそのまま／立ち直り直後で宛先まだ→待つ／引き継ぎ試さず→「試していない」／引き継ぎあり・宛先替わる→「新しい行」・**写しの loop から %RESUME% が外れ、元の一行と一字違わず**／本物の sessions→いまの宛先
+- 常駐は 23:11:55 に起こし直した（台本 23:10:48 より後）
 
-三. **窓が新しく立つたびに「🔗 新しい線」を送るようにした**（inbox-watch.ps1 の Check-NewLine・巡回ごと）。
-- 拾い方：会話の綴り（jsonl）の `"subtype":"bridge_status"` の行にある url（https://claude.ai/code/session_…）。行を持つ綴りのうち一番新しく書かれたものの、最後の行を使う
-- 対話の claude の pid か宛先が替わったら、宛先を本文の一行目に載せて **一通だけ**送る。控えは newline-sent.txt。控えが無い初回は鍵を書くだけで送らない（常駐を起こし直しただけで鳴らさないため）
-- 作り値で6通り試し、**6通りとも合った**：控えなし→書くだけ／同じ窓→何もしない／窓が立ち直る（pid が替わり、宛先は同じ）→1通／宛先が替わる→1通／宛先の行なし→何もしない／本物の綴りを見るだけ→`session_01HbNfoUB7otX295K6cw68vy`（いまの窓）を拾った
-- 常駐を 22:24:58 に起こし直した（台本 22:24:25 より後）。常駐は1本。控えには `8652|https://claude.ai/code/session_01HbNf…` が入った（送ってはいない）
+### 23:05:15 Check-RcDrop の誤読の直し
+- **打っていなかった**。inbox-watch.log に「遠隔の線が切れていた／/remote-control を打った」の行は一度も無い。「打っていれば直せ」の条件に当たらないので、**直していない**
 
-四. **ある**（読むだけ。この件では直していない）。
-- 公式（code.claude.com/docs/en/remote-control）：「`claude --remote-control` か `/remote-control` で始めた会話は、`claude --continue` か `claude --resume` で戻せる。繋ぎ直すかどうか・どの遠隔の会話へかは、その会話の繋ぎ直しの記録で決まる」
-- **書き方**：`claude --resume <会話の番号> --remote-control koushu-handan`（または `claude --continue --remote-control koushu-handan`）。会話の番号は、綴りのファイル名（`<番号>.jsonl`）
-- 記録が残るのは停止から約4時間まで（`claude remote-control` の待ち受けの形についての記述）
-- **説明に無いこと**：Code タブの一覧に同じ項目が出るのか、新しい項目が立つのか
-- ＊前の枠（r0923-2212 の②「あれば入れよ」）で、この形は既に claude-loop に入れてある（pick-resume.ps1・20MB 超は新しく立てる）。四の「直しはするな」を受けて、今回は戻してもいない。**戻すなら** `~/.claude/claude-loop.cmd.bak-20260923c` を claude-loop.cmd へ写すだけ
+### 23:05:17 読むだけ（22:30〜23:00）
+1. **Check-RcDrop は /remote-control を打っていない**（0回）。しかも**常駐そのものが 22:45:06〜23:06:22 止まっていた**（記録が途切れ、プロセスも無かった）。23:06:21 に起こし直した
+2. **Wi-Fi の切れ（8003）・繋ぎ（8001）は0件**（この日いちばん新しいのは 04:33:58 の 8001）。ntfy の失敗は 22:4x に「🔗 いまの線」の 502 が一度。郵便受けは「📮 郵便受けが詰まっています」が **22:40:50** と **22:54:16**（どちらも押し送りなし）。鉤が遅い（14.5秒）のが 22:54:33
+3. **1と2のどちらも合わない。刻が合うのは、こちらが回した panel-check の Edge（22:49〜22:53・空きが 405MB まで下がり、描き手が落ちた）と、同じ頃に常駐が止まっていたこと**
+
+### 検査
+- panel-check.js（v144）：2項目が ✗「作業中／手待ち：測れない（目印が出ない）」。同じ回に Edge の描き手が落ちていた（Abnormal renderer termination）。空きが少なかったための見込みが高いが、前の版との突き合わせは途中の出力を見落として取れていない。**空きがあるときに回し直す**
+- 構文：inbox-watch・ntfy-say・daily-notice とも NG 0・BOM 保持／panel の <script> は node --check 通過
 
 ### 実機で見る所
-- 手待ちで重くなったとき、窓に `/clear` が打たれて会話が畳まれ、窓は開いたままで Code タブも繋がったままであること（ntfy「🪟 控えを畳みました（重さ NNNMB）」）
-- 次に窓が立ち直ったとき、ntfy に「🔗 新しい線」が一通だけ届き、本文の一行目の宛先を押すと、その窓の会話が開くこと
+- 返事パネルを開き直すと版の字が **panel v144**、頭の状態の一行のすぐ下に「🔗 いまの線（koushu-handan-5e）」の釦があり、押すとこの会話が Code タブで開くこと
+- 次の定時の札（09:00）の本文一行目に「🔗 いまの線: https://claude.ai/code/session_…」、ntfy の知らせに「Open session」の釦があり、押すとこの会話が開くこと
+- 03:00 の立ち直りのあと「🔗 新しい線」が一通届き、本文に「同じ会話が続いた」か「新しい行が立った…元へ戻した」のどちらかが書いてあること
 
 ### 手元で回る段・雲で回る段（作法36）
-- 手元：inbox-watch（常駐・毎分）… Check-ClaudeHeavy（4巡に一度）・Check-RcDrop・**Check-NewLine（新・毎巡）**・Check-ClearNote ほか／revive-claude（予定・毎分）／claude-loop（窓）… pick-resume／mode-check … 呼ばれたときだけ（予定に無い）
-- 雲：check.yml は本体の押しだけ。今回は ~/.claude だけなので、雲では何も回らない
+- 手元：inbox-watch（常駐・毎分）… Check-NewLine（毎巡・Judge-Resume を含む）・状態の書き出し（rcUrl を足した）ほか／daily-notice（09:00・21:00）／claude-loop（窓）… pick-resume
+- 雲：check.yml は本体の押しだけ。panel.html・panel-ver.txt の押しは検査に掛からない
 
 ### 触った物
-~/.claude/inbox-watch.ps1（写し .bak-20260923d）・orders-open.tsv（写し .bak-20260923d。手で重ねて積んだ行を消し、常駐が積んだ行へ寄せた）・work-note.txt
+~/.claude/inbox-watch.ps1（写し .bak-20260923e・f）・ntfy-say.ps1（.bak-20260923）・daily-notice.ps1（.bak-20260923）・daily-notice.log（偽の2行を消した）・orders-open.tsv（.bak-20260923e）・work-note.txt／panel.html・panel-ver.txt／reports/r0923-2305.md・report-latest.md
 
 ### 残り
 残り0件
@@ -47,11 +57,12 @@
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **391件**ある。
+　ここに出るのは新しい20件。全部で **392件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r0923-2305.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0923-2305.md) | 09-23 23:13 | いまの線を送る・パネルと定時の札に宛先・引き継ぎの確かめ・22:50 の切れの調べ（r0923-2305） |
 | [`r0923-2222.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0923-2222.md) | 09-23 22:26 | 重いときは /clear だけ・起こす手は一つ・🔗 新しい線・繋ぎ直しの手（r0923-2222） |
 | [`r0923-2212.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0923-2212.md) | 09-23 22:21 | mode-check を見るだけに・窓を立て直しても同じ遠隔の会話へ（r0923-2212） |
 | [`r0923-2141.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0923-2141.md) | 09-23 21:57 | claude の本数整理・起こす手を一本に・遠隔の繋ぎ直し・auto 起動（r0923-2141） |
@@ -71,6 +82,5 @@
 | [`y0921-2305.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2305.md) | 09-21 23:32 | 管理者の窓で一度走らせれば三つ当たる綴り |
 | [`y0921-2258.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2258.md) | 09-21 22:58 | hook の数え（末尾3000行）と、Google の予定 |
 | [`y0921-2140.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2140.md) | 09-21 21:57 | 黒い窓の巻き戻しを 9001行 → 500行 に |
-| [`y0921-2135.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0921-2135.md) | 09-21 21:50 | 盤の健康・熱・画面バッファの調べ／昇格の問いは閉じられた |
 
 <!-- 控えの一覧 ここまで -->
