@@ -1,5 +1,25 @@
 [
     {
+        "title":  "✅ 再起動の後の点検（返事不要）",
+        "time":  1790143817,
+        "message":  "再起動の10分後の通し点検（09-23 15:10）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・最終結果は全て良い\n② 見張りの生存 … 0分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-23 14:30:44／panel-ver.txt 143\n四つとも○。戻っている。"
+    },
+    {
+        "title":  "🪟 連携に訴えがあります（done-swept）",
+        "time":  1790141444,
+        "message":  "連携の見張りから訴えが出ています。\n\n・done-swept … 終わりの札が立っていなかったので立て直した（前の仕事の取り残し・定時再起動の見送り3/3は落とさず次の定時へ・stop 2026-09-23 14:21:08・9分遅れ）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）：定時再起動の見送り3/3は落とさず次の定時へ",
+        "time":  1790141424,
+        "message":  "定時再起動の見送り3/3は落とさず次の定時へ\n① Shift+Tab の auto に当たる値は \"auto\"（claude --help の --permission-mode の選択肢）。リポジトリの .claude/settings.json（acceptEdits）と settings.local.json（bypassPermissions）の defaultMode は新しい claude に効いておらず、auto に替えても記録の先頭は default のままだった。~/.claude/settings.json に permissions.defaultMode=\"auto\" を入れると auto で立った。リポジトリ側は元へ戻した。起こし直しは切り離した mode-check.ps1 が60秒後に対話の claude を落とし、claude-loop が同じ窓で起こし直す。新しい記録の先頭を読んで mode-check.txt と ntfy に出す。② claude-loop.log・claude-loop-koushu.txt の末尾50行にメモリ上限の印は0件。最後の行は 05:08:24 で、07:26・08:15 の行そのものが無い（この二つは立て直しの回数だけを記録し、claude の出力は残らない）。NODE_OPTIONS（1024）は触っていない。台帳の未了0件。回る段：手元＝claude の起動の既定だけが変わる／雲＝check.yml・check-all は変化なし"
+    },
+    {
+        "title":  "🪟 窓の許可の形を確かめました",
+        "time":  1790140936,
+        "message":  "起こし直した窓の先頭 permissionMode=default（3cff27e5-1040-4d1b-8d12-d0211e4c0f4a.jsonl）\n対話の claude 3本\n記録は ~/.claude/mode-check.txt"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1790140655,
         "message":  "窓を auto で立てる・0本の回の終わり方\nこの回は控えを書いていません（前の回の控えが残っています。中身は当てになりません）。"
@@ -75,11 +95,6 @@
         "message":  "再起動の10分後の通し点検（09-23 03:10）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・最終結果は全て良い\n② 見張りの生存 … 0分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-22 23:29:21／panel-ver.txt 143\n四つとも○。戻っている。"
     },
     {
-        "title":  "🪟 異常です（連携に訴え：pub-late）",
-        "time":  1790086901,
-        "message":  "連携の見張りから訴えが出ています。\n\n・pub-late … 公開側が 27分 遅れている（押しが済んだ札より古い）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
-    },
-    {
         "title":  "🕒 延びています",
         "time":  1790085164,
         "message":  "予定四件（ClaudeBoard・ClaudePipeCheck・ClaudeR\n終了予定22:32を過ぎています（経過65分）"
@@ -93,11 +108,6 @@
         "title":  "🕒 延びています",
         "time":  1790067367,
         "message":  "state-stale の繰り返しを止める\n終了予定17:53を過ぎています（経過47分）"
-    },
-    {
-        "title":  "🪟 連携に訴えがあります（hook-quiet）",
-        "time":  1790063796,
-        "message":  "連携の見張りから訴えが出ています。\n\n・hook-quiet … hook.log が 28分 書かれていない。枠を受ける口も生存も、ここを通る\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
     },
     {
         "title":  "🪟 異常です：再起動の後の点検",
@@ -123,11 +133,6 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1790051648,
         "message":  "state-stale の繰り返しを止める\n元は空きメモリでも押しの失敗でもなく、2026-09-21 に入れた押しの間引き（inbox-watch.ps1「中身が前と同じなので押さない」）。較べるとき at を外すので、手待ちのあいだは中身が永久に同じになり、公開側の at が一度も動かない。pipe-check が45分で state-stale を鳴らすと cardAt が変わって押しが通り、10分後に ok が入る——訴えが自分で自分を消すので50分ごとに繰り返す。底（PUSH_ALIVE_SEC = 1500秒＝25分）を足し、中身が同じでも25分黙ったら押す形にした。state-stale の敷居45分より十分に短い。常駐は起こし直した。底そのものが効く回（中身が同じまま押す回）を待つ見張りを背後に立て直した。\nファイル: ~/.claude/inbox-watch.ps1（+9行／写し .bak-20260922）／reports/y0922-1330.md（新）\n実測: 公開側 state.json の at の間隔＝05:38:52→06:30:35（52分）／06:30:35→07:20:41（50分）／09:10:39→10:00:33（50分）／11:46:20→12:40:33（54分）。訴えの刻はいずれもその押しの14〜22秒前（06:30:19／07:20:19／10:00:19／12:40:19）で、押しが訴えを追いかけている。git-push.log の今日の見送り73行は全て who=reboot（重い側・敷居1024MB・空き715〜898MB）で、state は SMALL_WHO に入っており関門を通らない＝空き不足は state の元ではない。いまの空き 1085MB／全 3975MB（13:22）。直した後：常駐 pid 9640・起動 13:26:22（台本 13:25:44 より後・1本だけ）、公開 state.json の at を curl の実読みで 1790051003（13:23:23）→1790051184（13:26:24）と動くのを確認、手元も 13:28:09 に 1790051184→1790051283 と進み、次の押しが 13:31:38（間5分）に通った。13:30 以降 pipe-warn に state-stale は立っていない。構文検査 NG 0件・BOM 保持・1968行。\n未検収: 2026-09-22 13:32 25分の底が実際に効く回（中身が同じまま押す回）の確認（背後の見張りが見ている）／2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回）／2026-09-22 00:04 pagefile 4096MB の実際の割り当て（次の再起動のあと）"
-    },
-    {
-        "title":  "🪟 連携に訴えがあります（state-stale）",
-        "time":  1790048426,
-        "message":  "連携の見張りから訴えが出ています。\n\n・state-stale … 公開側の生存が 54分 書かれていない（state.json の at）。パネルは凍った状態を出し続ける\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
     },
     {
         "title":  "✅ 終わりました（返事不要）",
@@ -158,15 +163,5 @@
         "title":  "🪟 窓を起こし直しました（今日2回目）",
         "time":  1790033068,
         "message":  "対話の Claude Code が0本になっていたので、claude で起こし直しました（--continue は付けない）。\n落ちを見た刻 08:15:25／起こした刻 08:24:25（0本が9分）\n今日 2回目\n\n＊記録は ~/.claude/revive.log にあります。"
-    },
-    {
-        "title":  "🪟 異常です（手が要ります）",
-        "time":  1790032573,
-        "message":  "ヨシ待ちを「ヨシしない・取り下げ」で閉じた回に、終わりの札が立たず鈴も鳴らなかっ\nClaude Code が動いていません。落ちたか、閉じられました。\nこちらがすること：端末で Claude Code を開き直してください。"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1790029576,
-        "message":  "この間にまとまった知らせ 2本\n\n［✅ 終わりました（返事不要）］\n戻しの取り下げは済み（同じ指示が二度届いた）\n（札が立たないまま次の仕事へ移っていた分）\n種類: 調べた\n完了: 同じ指示が二度届いた。前の回（00:15・札 y0922-0015）で済ませてあり、触り直していない。確かめ直した結果——①戻しの命令は一度も打っていない（apply-result.txt の末尾は 00:04:22 の「終わり」のままで、戻しの行は無い）。②印 y0922-0010 は取り下げ済みで、ヨシ待ちの一覧にも無い。③当てた三つはそのまま残っている（SysMain Stopped/Disabled、AutomaticManagedPagefile False、pagefile C:\\pagefile.sys 初期4096 最大4096、VAIO Care Disabled、VCSystemTray 0本）。④台帳の未了は0件。二度目の枠の行も済にした。\nファイル: ~/.claude/orders-open.tsv（1行を済へ）／~/.claude/work-note.txt\n実測: SysMain Stopped/Disabled・AutomaticManagedPagefile False・pagefile 初期4096 最大4096・VAIO Care Disabled・VCSystemTray 0本。apply-result.txt の末尾は 2026-09-22 00:04:22。yoshi-open.tsv に y0922-0010 は無い。台帳の未了0件。\n実機: 次の再起動のあと Win32_PageFileUsage の AllocatedBaseSize が 4096 になること。次のログオンで VCSystemTray が立たないこと。SysMain が Stopped/Disabled のままであること。\n\n［✅ 終わりました（返事不要）］\n写せます（6件）"
     }
 ]
