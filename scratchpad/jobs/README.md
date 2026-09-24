@@ -21,7 +21,13 @@
 **`reports/cloud-panel-check-<刻>.md`** に結果を返す。手で回したいときは
 `workflow_dispatch` の `only` に `panel-check.js`。
 
-＊押しで回るのは**その押しで変わった台本だけ**（＋パネルが変わっていれば panel-check.js）。
+## 本体の速い版の検査（check-all --fast）も雲で回す（2026-09-24）
+
+**`check-all` は VAIO で回さない。** `koushu-handan.html`・`check.js`・`adv-check.js`・`check-all.js` を押せば、
+`job.yml` がここの `check-fast.js`（直下の check-all.js を --fast で呼ぶだけ）を回し、
+**`reports/cloud-check-fast-<刻>.md`** に結果を返す。配信の関門は今までどおり check.yml。
+
+＊押しで回るのは**その押しで変わった台本だけ**（＋パネルが変わっていれば panel-check.js・本体が変わっていれば check-fast.js）。
 
 ## 「雲で：」の決め
 

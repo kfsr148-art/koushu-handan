@@ -237,8 +237,12 @@ commit される。2026-09-08 に v1437 で踏んだ——本体が +58/−7 行
 | 速い版 | `node check-all --fast` | 9画面 × **568x320 のひと視野** | 2〜3分 |
 | フル版 | `node check-all` | 9画面 × **21視野** | 30分〜（機械が重いと3時間を超える） |
 
-- **手元で回すのは速い版だけ（2026-09-18・押しの敷居-2 ③）。** いちばん狭い視野は溢れが
-  いちばん出やすいので、画面の取りこぼしを作らずに時間だけ縮む。
+- **速い版も手元では回さない（2026-09-24・手元の検査を雲へ-1）。** 本体（`koushu-handan.html`・
+  `check.js`・`adv-check.js`・`check-all.js`）を押せば、雲の `job.yml` が `scratchpad/jobs/check-fast.js`
+  （＝ `node check-all --fast`）を回し、**`reports/cloud-check-fast-<刻>.md`** に結果を返す。それを読んで納品する。
+  headless の Edge を VAIO で立てると空きを食い、常駐の見張りまで止まる（2026-09-23 22:45〜23:06）。
+  ＊手で起こすなら `gh workflow run job.yml -f only=check-fast.js`。
+  ＊前の決め（2026-09-18・押しの敷居-2 ③「手元で回すのは速い版だけ」）はこれで置き換えた。
 - **フル版は手元で起こさない。雲（`check.yml` の check の段）に任せる。**
   視野ごとに効く指定（`@media` の分岐）が絡むので**フル版そのものは要る**が、
   この機械（4GB）で12分回すと空きを食い、押しも巡回も詰まる。雲なら押した回に勝手に回り、
@@ -262,9 +266,11 @@ Start-Process -FilePath (Get-Command node).Source -ArgumentList check.js `
 
 起こしたら出し先のファイルを見て進み具合を確かめる。`adv-check.js` は30秒ほどなので前面でよい。
 
-**本体の工事は、速い版が通るまで commit しない。**検査が通ってから**一度で** commit する。
-＊フル版は押した後に雲が回す。**落ちれば配信が止まる**ので、通らない版が公開へ出ることはない
-　（`check.yml` の deploy は check の後段）。落ちたら戻さず前へ直して、改めて一度で commit する。
+**本体の工事は、構文検査（`node --check`）が通ってから一度で commit し、押す。**速い版とフル版は
+押した後に雲が回す（2026-09-24 に改めた。前は「速い版が手元で通るまで commit しない」）。
+＊**落ちれば配信が止まる**ので、通らない版が公開へ出ることはない（`check.yml` の deploy は check の後段）。
+　下の v1436 の事故は、この関門が入る前のもの。落ちたら戻さず前へ直して、改めて一度で commit する。
+＊**納品の報告は `reports/cloud-check-fast-*.md` の結果を読んでから書く。**
 
 見張りの自動押しは、commit を**そのまま公開へ運ぶ**。検査の前に commit すると、
 **検査を通していない版が先に世に出る**（2026-09-06、v1436 がそうなった。
@@ -274,7 +280,8 @@ Start-Process -FilePath (Get-Command node).Source -ArgumentList check.js `
 ＊`~/.claude` の見張り台本・報告・作法の直しは、この決めの外（本体ではない）。
 ＊検査が落ちたら、**戻さず前へ直して**から改めて一度で commit する。
 
-push の前は `.githooks/pre-push` が速い版を自動で回す。使うには一度だけこれを設定する。
+push の前は `.githooks/pre-push` が**構文検査だけ**を回す（2026-09-12 から。Edge は立てない）。
+使うには一度だけこれを設定する。
 
 ```
 git config core.hooksPath .githooks
