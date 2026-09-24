@@ -1,44 +1,65 @@
-# 常駐を AboveNormal で立てる・枠の鉤の timeout 60秒・いまのメモリ上位10本（r0924-1149）
+# claude の自動更新を止めて落とす直前に更新・電源と容量と鍵の読み（r0924-1234）
 
-**終わり（残り0件）** — 2026-09-24 11:54ごろ（VAIO）。本体には触っていない。窓は落としていない（claude 8652 のまま）。
+**終わり（残り0件）** — 2026-09-24 13:23ごろ（VAIO）。本体には触っていない。窓は落としていない。六は読むだけで、何も直していない。
 
-## 三. 優先度と timeout
-- **inbox-watch.ps1・watch-notify.ps1**：頭で自分の優先度を **AboveNormal** にしてから立つ形にした（`(Get-Process -Id $PID).PriorityClass = 'AboveNormal'`）。watch-notify は heavy-gate.ps1 から `&` で呼ばれるので、$PID は走っている heavy-gate の powershell そのもの
-- **Set-Priorities**（常駐が一分ごとに当て直す）：前は **inbox-watch と watch-notify も BelowNormal へ落としていた**（見張りの台本を一まとめに下げる形だったため）。この二つだけ **AboveNormal へ上げる**ように替えた。ほかの見張り（revive・pipe-check・board-emit など）は今までどおり BelowNormal
-- **settings.json**：UserPromptSubmit の「枠を控える」（frame-in.ps1）の timeout を **15 → 60** にした。変わったのはその一行だけ（git の差分で1行）
-- 起こし直したのは常駐（inbox-watch）だけ。watch-notify は予定表が毎分起こすので、次の走りから効く
+## 五. 自動更新を止め、落とす直前に一度だけ更新する
 
-**実読み**
-| もの | 読んだ値 |
+### claude-loop.cmd（足した3行・ASCII＋CRLF のまま）
+```bat
+set "NODE_OPTIONS=--max-old-space-size=1024"
+rem   * DISABLE_AUTOUPDATER (2026-09-24): claude does not update itself while the window runs.
+rem     daily-reboot.ps1 runs "claude update" once, right before it reboots the machine.
+set "DISABLE_AUTOUPDATER=1"
+if not defined GUARD set "GUARD=C:\Users\user\.claude\loop-guard.ps1"
+```
+＊`:loop` より前なので、輪が claude を起こすたびに毎回効く。**いまの窓（8652）は前の環境のまま走っている**ので、効くのは次に立ち直った窓から。
+
+### daily-reboot.ps1（足した所）
+- 頭の注釈に `-UpdateCmd <道> … 空なら本物の「claude update」。作り値では偽の綴り（.ps1）を渡す`、param に `[string]$UpdateCmd = ''`
+- 「前の測り」の後・「🔁 落とします（定時）」の知らせの前に、次の段を入れた：
+```powershell
+# ---- claude の更新を一度だけ回す（2026-09-24・自動更新の止め-1）----
+$UPD_SEC = 180
+$updLine = ''
+try {
+  …（出し先の一時綴りを作る）
+  if ($UpdateCmd) { $up = Start-Process powershell.exe … -File $UpdateCmd }
+  else { $up = Start-Process 'C:\Users\user\.local\bin\claude.exe' … -ArgumentList @('update') }
+  $null = $up.Handle
+  if ($up.WaitForExit($UPD_SEC * 1000)) { $updLine = 'claude update：終了コード ' + $up.ExitCode + '・' + <出力の最後の行> }
+  else { try { $up.Kill() } catch { }; $updLine = 'claude update：180秒の上限で切った' }
+} catch { $updLine = 'claude update：起こせなかった（…）' }
+Note ($updLine …)
+```
+- 「🔁 落とします（定時）」の本文に `$updLine` の一行を足した
+- 落とすと決めた回だけ走る（見送り・打ち止めの回は、この段まで来ない）。更新が落ちても、再起動は止めない
+
+### 作り値（偽の shutdown・偽の update・偽の送り手。本物の reboot.log・claude には触れていない）
+| 例 | 呼ばれた物 |
 |---|---|
-| inbox-watch（pid 4280・11:51:14 起こし直し・台本 11:50:37 より後） | **AboveNormal** |
-| watch-notify の走り（11:52:00・pid 6548） | **AboveNormal** |
-| watch-notify の走り（11:54:00・pid 1212） | **AboveNormal** |
-| settings.json UserPromptSubmit frame-in.ps1 | **timeout=60**（隣の hook-notice resume は 45 のまま） |
-＊鉤の timeout は設定の綴りから読んだ値。走っている Claude Code が設定を読み直すまでは前の値で動く見込み（次に窓が立ち直れば確実に60）
+| **落とす回**（三つとも空） | **12:36:19.062 UPDATE → 12:36:19.789 SHUTDOWN**（更新が先）。記録に「claude update：終了コード 0・Claude Code is up to date (fake)（作り値）」、知らせの本文にも同じ一行 |
+| **見送る回**（押し残し1） | **何も呼ばれない**（update も shutdown も） |
 
-## 四. いま（手待ち）のメモリ上位10本（読むだけ・止めていない）
-**空き 799MB／全体 3975MB**（11:54:19）。並びは使用（作業セット）の多い順。
+＊settings.json の `"autoUpdatesChannel": "latest"` はそのまま（更新の出どころの指定で、自動で走るかどうかは DISABLE_AUTOUPDATER が決める）
 
-| # | 名 | pid | 使用MB | 私用MB | 何の物か | 印 |
-|---|---|---|---|---|---|---|
-| 1 | claude | 8652 | 595 | 650 | いまの窓の Claude Code（--remote-control koushu-handan・親は claude-loop の cmd） | |
-| 2 | MsMpEng | 3864 | 370 | 359 | Windows Defender のウイルス対策 | |
-| 3 | explorer | 6732 | 152 | 67 | Windows のデスクトップ・タスクバー | |
-| 4 | powershell | 4280 | 108 | 95 | 常駐の見張り inbox-watch.ps1 | |
-| 5 | Registry | 92 | 105 | 8 | Windows のレジストリ（OS の中身） | |
-| 6 | SearchApp | 10144 | 90 | 100 | Windows の検索（Cortana の画面） | **◇止めてよさそう**（使っていない。03:00 の edge-sweep も落とす対象） |
-| 7 | iCloudServices | 7852 | 81 | 54 | Apple の iCloud の常駐（explorer から立っている） | **◇止めてよさそう**（この仕事には要らない。iCloud を使っていれば別） |
-| 8 | powershell | 10164 | 77 | 67 | この一覧を取った、こちらの手の PowerShell そのもの（測り終われば消える） | |
-| 9 | StartMenuExperienceHost | 7148 | 69 | 27 | Windows のスタートメニュー | |
-| 10 | dwm | 1204 | 56 | 32 | Windows の画面の合成（止めると画面が出ない） | |
+## 六. 読むだけ（直していない）
+
+| # | 項 | 読んだ値 | 直す要否 |
+|---|---|---|---|
+| 1 | 電源（AC・バランス） | 眠り **0秒**・休止 **0秒**・画面の消灯 **0秒**（どれも「しない」）。hiberfil.sys なし | **要なし** |
+| 2 | 無線の口（Qualcomm Atheros AR9485WB-EG） | 「**電力の節約のために、コンピューターでこのデバイスの電源をオフにできるようにする**」が**有効**（MSPower_DeviceEnable Enable=True・PnPCapabilities=16）。電源計画の無線アダプターの省電力モード（AC）は 0＝最大パフォーマンス | **◆要**（電源の管理で無線が切られうる） |
+| 3 | Windows Update | アクティブ時間 **11時〜4時**（自動調整あり＝SmartActiveHoursState 1）。保留の再起動：WU RebootRequired **なし**・CBS RebootPending **なし**・PendingFileRenameOperations は Office の一時綴り3行だけ。最後の起動 09-23 04:33・最後に入った更新 KB5126256（09-09） | **要なし**（03:00 の定時はアクティブ時間の中なので、WU が勝手に落とすこともない） |
+| 4 | C: と大きさ | C: 空き **544GB**／670GB。**~/.claude 587MB**（file-history 323MB・transcript-bak 167MB・projects 24MB・.git 8.9MB）。**リポジトリ 508MB**（.git 443MB・reports 3.0MB）。**notices-*.json は直下に5個・git の管理では18個**（13個は消えたが、消したことが commit されていない） | **○小さな要**（容量は十分。notices の消し残し13個の commit と、file-history／transcript-bak の古い物の整理は、いずれ） |
+| 5 | gh の鍵 | 鍵は **OAuth（gho_）**。GitHub の返事に期限の見出し（github-authentication-token-expiration）が**無い**＝**期限なし**。scopes は gist・read:org・repo | **要なし**（＊`gh auth status` は60秒で返らなかった。`gh api` と push は通る） |
+
+＊読んでいる途中の注意：Git Bash は `gh api /user` の `/user` を道に書き換える（`C:/Program Files/Git/user`）。`gh api user` と書けば通る。
 
 ## 手元で回る段・雲で回る段（作法36）
-- 手元：inbox-watch（常駐・AboveNormal）／watch-notify（予定表・毎分・AboveNormal）／ほかの見張りは BelowNormal のまま
+- 手元：claude-loop（窓・DISABLE_AUTOUPDATER=1）／daily-reboot（03:00・15:00。落とす回だけ claude update を一度）
 - 雲：変わりなし
 
 ## 触った物
-~/.claude/inbox-watch.ps1（写し .bak-20260924b）・watch-notify.ps1（.bak-20260924）・settings.json（.bak-20260924）・orders-open.tsv・work-note.txt／reports/r0924-1149.md・report-latest.md
+~/.claude/claude-loop.cmd（写し .bak-20260924）・daily-reboot.ps1（.bak-20260924b）・orders-open.tsv・work-note.txt／reports/r0924-1234.md・report-latest.md
 
 ## 残り
 残り0件
@@ -50,11 +71,12 @@
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **402件**ある。
+　ここに出るのは新しい20件。全部で **403件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r0924-1234.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0924-1234.md) | 09-24 13:23 | claude の自動更新を止めて落とす直前に更新・電源と容量と鍵の読み（r0924-1234） |
 | [`r0924-1149.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0924-1149.md) | 09-24 11:54 | 常駐を AboveNormal で立てる・枠の鉤の timeout 60秒・いまのメモリ上位10本（r0924-1149） |
 | [`r0924-1117.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0924-1117.md) | 09-24 11:23 | Check-RcDrop の「切れ」を会話の記録で判じる（r0924-1117） |
 | [`r0924-1054.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0924-1054.md) | 09-24 11:02 | VAIO に残る Edge・node の確かめを洗って雲へ（r0924-1054） |
@@ -74,6 +96,5 @@
 | [`r0923-1033.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0923-1033.md) | 09-23 10:44 | 台帳の寄せ・取り下げの札・片付け×止の元（r0923-1033） |
 | [`r0923-0646.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0923-0646.md) | 09-23 06:52 | 再起動直後の固まり誤鳴りを止めた（r0923-0646） |
 | [`r0923-0430-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0923-0430-2.md) | 09-23 04:30 | 再起動-2（r0923-0430・後の測り） |
-| [`y0922-2155.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0922-2155.md) | 09-22 21:55 | 予定四件の悪い結果は「消えるだけ」（y0922-2155） |
 
 <!-- 控えの一覧 ここまで -->
