@@ -1,6 +1,11 @@
 [
     {
         "title":  "🔗 新しい線",
+        "time":  1790220931,
+        "message":  "https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n\nCode タブ：引き継ぎは試していない（claude-loop は新しい会話で立てた。pick-resume.log を見る）\n\n窓の claude（pid 8652）の remote-control の宛先です。\n＊記録は ~/.claude/inbox-watch.log。"
+    },
+    {
+        "title":  "🔗 新しい線",
         "time":  1790220893,
         "message":  "https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n\nCode タブ：引き継ぎは試していない（claude-loop は新しい会話で立てた。pick-resume.log を見る）\n\n窓の claude（pid 8580,8652）の remote-control の宛先です。\n＊記録は ~/.claude/inbox-watch.log。"
     },
