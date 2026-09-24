@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 異常です（連携に訴え：hook-quiet・pub-late）",
+        "time":  1790231513,
+        "message":  "連携の見張りから訴えが出ています。\n\n・pub-late … 公開側が 28分 遅れている（押しが済んだ札より古い）\n・hook-quiet … hook.log が 30分 書かれていない。枠を受ける口も生存も、ここを通る\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
+    },
+    {
         "title":  "🪟 異常です：再起動の後の点検",
         "time":  1790231438,
         "message":  "再起動から戻った（落としは 27分前・09-24 15:30）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・悪い結果 ClaudeWatchNotify=-1\n② 見張りの生存 … 28分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-24 15:02:56／panel-ver.txt 144\n欠け 2件：予定の最終結果が悪い：ClaudeWatchNotify=-1／見張りの生存が 28分前で古い"
@@ -173,10 +178,5 @@
         "title":  "✅ 終わりました（返事不要）：定時再起動の見送り3/3は落とさず次の定時へ",
         "time":  1790141424,
         "message":  "定時再起動の見送り3/3は落とさず次の定時へ\n① Shift+Tab の auto に当たる値は \"auto\"（claude --help の --permission-mode の選択肢）。リポジトリの .claude/settings.json（acceptEdits）と settings.local.json（bypassPermissions）の defaultMode は新しい claude に効いておらず、auto に替えても記録の先頭は default のままだった。~/.claude/settings.json に permissions.defaultMode=\"auto\" を入れると auto で立った。リポジトリ側は元へ戻した。起こし直しは切り離した mode-check.ps1 が60秒後に対話の claude を落とし、claude-loop が同じ窓で起こし直す。新しい記録の先頭を読んで mode-check.txt と ntfy に出す。② claude-loop.log・claude-loop-koushu.txt の末尾50行にメモリ上限の印は0件。最後の行は 05:08:24 で、07:26・08:15 の行そのものが無い（この二つは立て直しの回数だけを記録し、claude の出力は残らない）。NODE_OPTIONS（1024）は触っていない。台帳の未了0件。回る段：手元＝claude の起動の既定だけが変わる／雲＝check.yml・check-all は変化なし"
-    },
-    {
-        "title":  "🪟 窓の許可の形を確かめました",
-        "time":  1790140936,
-        "message":  "起こし直した窓の先頭 permissionMode=default（3cff27e5-1040-4d1b-8d12-d0211e4c0f4a.jsonl）\n対話の claude 3本\n記録は ~/.claude/mode-check.txt"
     }
 ]
