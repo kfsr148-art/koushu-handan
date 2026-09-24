@@ -2,7 +2,7 @@
 
 **手待ち** — 常駐を AboveNormal で立てる・枠の鉤の timeout 60秒・メモリ上位10本
 
-未処理 0 件 ／ 2026-09-24 11:56:29 書き出し（VAIOの時計）
+未処理 0 件 ／ 2026-09-24 11:58:39 書き出し（VAIOの時計）
 
 ＊この頁は知らせが出るたびに書き直されます。話題名は載せません。
 ＊押し送り（ntfy）へ出るのはヨシ待ちだけです。ここには押し送っていないものも並びます。
@@ -15,17 +15,17 @@
 ### 1. ✅ 終わりました（返事不要）
 
 ```
-常駐を AboveNormal で立てる・枠の鉤の timeout 60秒・メモリ上位10本
-三 inbox-watch・watch-notify は頭で自分を AboveNormal にしてから立つ形にし、Set-Priorities もこの二つを AboveNormal へ上げる形にした（前は BelowNormal へ落としていた）。settings.json の frame-in の timeout 15→60。常駐だけ起こし直した。実読み：inbox-watch 4280 AboveNormal・watch-notify 11:52／11:54 の走り AboveNormal・frame-in timeout=60／四 空き 799MB／全体 3975MB。上位10本は claude 8652 595MB・MsMpEng 370・explorer 152・inbox-watch 108・Registry 105・SearchApp 90・iCloudServices 81・測りの PowerShell 77・StartMenuExperienceHost 69・dwm 56。止めてよさそうな印は SearchApp と iCloudServices（止めていない）
-ファイル: ~/.claude/inbox-watch.ps1・watch-notify.ps1・settings.json・orders-open.tsv・work-note.txt／reports/r0924-1149.md・report-latest.md
-実測: 構文NG 0（inbox-watch・watch-notify）・BOM 保持・settings.json の差分は1行
-未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回）／2026-09-22 00:04 pagefile 4096MB の実際の割り当て（次の再起動のあと）／2026-09-23 次の再起動の後15分のあいだ固まりの知らせが鳴らないこと（人手待ち）／2026-09-23 次に取り下げで閉じた回に ✅ の札が印つきで立って鳴ること（人手待ち）／2026-09-23 次に遠隔の線が切れた回に「🪟 遠隔を繋ぎ直しました」が鳴り Code タブへ戻ること（人手待ち）／2026-09-23 22:20 窓が立ち直った後も Code タブの同じ会話が続くこと（人手待ち・次に自然に立ち直った回）／2026-09-23 22:26 次に窓が立ち直った回に「🔗 新しい線」が一通だけ届くこと（人手待ち）／2026-09-23 22:26 手待ちで 900MB を超えた回に窓が残ったまま /clear で畳まれること（人手待ち）／2026-09-23 23:15 03:00 の立ち直りの「🔗 新しい線」の判じ（人手待ち）／2026-09-24 05:10 15:00 の定時で daily-reboot が落とすこと（人手待ち・落ちれば引き継ぎの初回の確かめ）
+写せます（1件）
 ```
 
 ### 2. ✅ 終わりました（返事不要）
 
 ```
-写せます（1件）
+常駐を AboveNormal で立てる・枠の鉤の timeout 60秒・メモリ上位10本
+三 inbox-watch・watch-notify は頭で自分を AboveNormal にしてから立つ形にし、Set-Priorities もこの二つを AboveNormal へ上げる形にした（前は BelowNormal へ落としていた）。settings.json の frame-in の timeout 15→60。常駐だけ起こし直した。実読み：inbox-watch 4280 AboveNormal・watch-notify 11:52／11:54 の走り AboveNormal・frame-in timeout=60／四 空き 799MB／全体 3975MB。上位10本は claude 8652 595MB・MsMpEng 370・explorer 152・inbox-watch 108・Registry 105・SearchApp 90・iCloudServices 81・測りの PowerShell 77・StartMenuExperienceHost 69・dwm 56。止めてよさそうな印は SearchApp と iCloudServices（止めていない）
+ファイル: ~/.claude/inbox-watch.ps1・watch-notify.ps1・settings.json・orders-open.tsv・work-note.txt／reports/r0924-1149.md・report-latest.md
+実測: 構文NG 0（inbox-watch・watch-notify）・BOM 保持・settings.json の差分は1行
+未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回）／2026-09-22 00:04 pagefile 4096MB の実際の割り当て（次の再起動のあと）／2026-09-23 次の再起動の後15分のあいだ固まりの知らせが鳴らないこと（人手待ち）／2026-09-23 次に取り下げで閉じた回に ✅ の札が印つきで立って鳴ること（人手待ち）／2026-09-23 次に遠隔の線が切れた回に「🪟 遠隔を繋ぎ直しました」が鳴り Code タブへ戻ること（人手待ち）／2026-09-23 22:20 窓が立ち直った後も Code タブの同じ会話が続くこと（人手待ち・次に自然に立ち直った回）／2026-09-23 22:26 次に窓が立ち直った回に「🔗 新しい線」が一通だけ届くこと（人手待ち）／2026-09-23 22:26 手待ちで 900MB を超えた回に窓が残ったまま /clear で畳まれること（人手待ち）／2026-09-23 23:15 03:00 の立ち直りの「🔗 新しい線」の判じ（人手待ち）／2026-09-24 05:10 15:00 の定時で daily-reboot が落とすこと（人手待ち・落ちれば引き継ぎの初回の確かめ）
 ```
 
 ### 3. ✅ 終わりました（返事不要）
