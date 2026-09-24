@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🙀 異変発見だにゃ",
+        "time":  1790121626,
+        "message":  "状態: 手待ち / 再起動直後の固まり誤鳴りを止めた\n台帳: 残り 3件（ヨシ待ちを「ヨシしない・取り下げ」で閉じた回に、終わりの札が立たず鈴も鳴らなかっ・16:30 の定時再起動の後、予定四件（ClaudeBoard・ClaudePi・予定四件（ClaudeBoard・ClaudePipeCheck・ClaudeR）\n見張り: 生存○ 見張り○ 片付け×止 受信箱○\n使用量: セッション 14% / 週全体 16% / 週Fable 13%\n起こし直し: 今日 2回（固まり 2・重さ 0・0本 0） / 最後に落ちた刻 05:08\n訴え: 2件（step-slow・pub-late）… pipe-warn.log"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1790114674,
         "message":  "写せます（11件）"
@@ -243,10 +248,5 @@
         "title":  "👀 見てください（返事不要）",
         "time":  1789992729,
         "message":  "押しの敷居を400MBへ／機械に乗っている物の調べ\n①push-retry.ps1 の $FREE_MIN を 768→400 に下げた（構文0・写し .bak-20260921・毎分呼び直されるので起こし直しは不要）。②「見送り中の ntfy-sent」は無かった——push-pending.tsv 0件・押し残し0件で、最後の押しは 6ba6243e（09-21 20:54）。実読みで手元・origin・公開ページの三つを突き合わせ、改行を揃えた指紋が三つとも 7917ebdd、件数30件、いちばん新しい札も同じだった。③最初に素の md5 で較べて「違う」と読み違えた。差の211バイトは行数212−1で、作業木がCRLF・git の中身がLFというだけ。改行を揃えずに較べると必ずこの読み違いをする。④読みだけの五件を調べた——私用の上位は claude 631MB・MsMpEng 357MB。Claude 以外で50MB超は MsMpEng・SearchApp・explorer・VCSystemTray・svchost(SysMain)・msedge。SysMain は Running/Auto、WSearch は Stopped/Disabled、Defender の定期走査は前回 09-21 03:22 で次回は予定に出ていない。check.js は Edge を立てるが pre-push は構文検査だけで立てず、いまの msedge 5本に koushu- の印は0本。24時間の起動回数は記録が無いので数えられない。MCP は0件。\nファイル: ~/.claude/push-retry.ps1（写し .bak-20260921）／reports/y0921-2110.md／report-latest.md\n実測: 敷居 768→400・構文0・いまの空き889MB。ntfy-sent.json は 手元＝origin＝公開 が 7917ebdd（改行を揃えた指紋）・30件・最新 2026-09-21 20:29:04。素の大きさは手元7327／公開7116で差211＝212行−1（CRLFとLFの差）。私用上位10・自動開始50MB超・SysMain/Defender・Edge・MCP0件は札の表のとおり。\n実機: 空きが細い帯でも押しが見送られずに通ること（push-retry.log に「空き NMB＜400MB。押し直せない」が出なくなる）。\n未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち・Code タブの繋がりは次の起動で）"
-    },
-    {
-        "title":  "😺 現在も順調にゃ",
-        "time":  1789992013,
-        "message":  "状態: 手待ち / 落ちにくい窓（三つ）と、枠の上限を刻ひとつに\n台帳: 残り 0件\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 62% / 週全体 3% / 週Fable 3%\n起こし直し: 今日 1回（固まり 0・重さ 0・0本 1） / 最後に落ちた刻 08:55\n訴え: 8件（step-slow・orphan-kill・hook-quiet・mem-low・state-stale・push-fail・subj-gap・done-swept）… pipe-warn.log\n配分: 全体 あと13.9%/日 ／ Fable あと13.9%/日"
     }
 ]
