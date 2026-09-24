@@ -1,33 +1,17 @@
-# ヨシ待ちの納品済み7件を済へ・残る1件（r0924-1009）
+# 残る y0921-0900 を済へ・ヨシ待ち0件（r0924-1033）
 
-**終わり（残り0件）** — 2026-09-24 10:14ごろ（VAIO）。本体には触っていない。stable にも触っていない。
+**終わり（残り0件）** — 2026-09-24 10:35ごろ（VAIO）。本体には触っていない。
 
-### 済へ移した7件
-yoshi-open.tsv から外し、**yoshi-closed.tsv**（新）へ移した。各行の末尾に「済：2026-09-24 10:14:31 納品済み（v1451〜v1458・stable は v1458 で全て通っている）として閉じた」を添えてある。写しは yoshi-open.tsv.bak-20260924。
-
-| 印 | 立った刻 | 件名 |
-|---|---|---|
-| y0919-0815 | 09-19 08:21 | 見立て行と釦の助言の文面を差し替える（v1451）の宣言 |
-| y0920-0912 | 09-20 09:20 | ずんだもん・枝豆・兎の文面の差し替え（v1453）の宣言 |
-| y0920-1058 | 09-20 10:55 | 説明欄の三つの直し（v1454）の宣言 |
-| y0920-1330 | 09-20 13:30 | 節五の猫牌の表の二つ目を外す（v1455）の宣言 |
-| y0920-1406 | 09-20 14:07 | A の末尾の一文を数入りの字へ（v1456）の宣言 |
-| y0920-1500 | 09-20 14:51 | 剣士の八枚を idleRight 52 に揃える（v1457）の宣言 |
-| y0920-1710 | 09-20 17:01 | 「三」の根拠の段へ一文を足す（v1458）の宣言 |
-
-＊常駐の数え方（Count-OpenYoshi）で、ヨシ待ちは **8件 → 1件**。
-
-### 残る1件（閉じていない）
-| 印 | 件名 | 立った日 | 何を待っているか |
-|---|---|---|---|
-| **y0921-0900** | claude を落とす命令の宛先を確かめた | 2026-09-21 09:01:39 | **この窓（pid 3416）を落としてよいかの裁定**（yoshi-open.tsv の4欄目の字のまま） |
-
-- 立った時の件名は「窓を落として立ち上げ直す」。落とす先の pid を確かめたうえで、落としてよいかのヨシを待つ札だった
-- 4分後の **09-21 09:05:45** に「**y0921-0900 はヨシしない。この窓（pid 3416）は落とすな**」の枠が届き、窓は落とされていない。ただ、ヨシしないという答えでは一覧から落ちないので、**印は開いたまま**残っている
-- ＊pid 3416 の窓は今はもう無い（いまの claude は 8652 の一本）
+- **y0921-0900 を yoshi-closed.tsv へ移した。**
+  - 印 y0921-0900／立った刻 2026-09-21 09:01:39／件名「claude を落とす命令の宛先を確かめた」
+  - 添えた訳は「**済：2026-09-24 10:34:43 09-21 09:05 に否の答え済み・pid 3416 は既に無い**」
+  - 写しは yoshi-open.tsv.bak-20260924b・yoshi-closed.tsv.bak-20260924
+- **ヨシ待ちは0件になった。** yoshi-open.tsv は空（BOM の3バイトだけ）。常駐と同じ数え方を二通り回した：Count-OpenYoshi の形も Read-OpenMarks の形も **0件**
+- yoshi-closed.tsv は見出しの1行＋閉じた8件（今朝の7件＋今回の1件）
+- ＊定時の再起動は、前の直しでヨシ待ちを見送りの訳から外してあるので、0件になっても判じ方は変わらない。パネルの「ヨシを返してください」や見張りのヨシ待ちの扱いは、一覧が空なので立たない
 
 ### 触った物
-~/.claude/yoshi-open.tsv（写し .bak-20260924）・yoshi-closed.tsv（新）・orders-open.tsv・work-note.txt／reports/r0924-1009.md・report-latest.md
+~/.claude/yoshi-open.tsv・yoshi-closed.tsv・orders-open.tsv・work-note.txt／reports/r0924-1033.md・report-latest.md
 
 ### 残り
 残り0件
@@ -39,11 +23,12 @@ yoshi-open.tsv から外し、**yoshi-closed.tsv**（新）へ移した。各行
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **397件**ある。
+　ここに出るのは新しい20件。全部で **398件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r0924-1033.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0924-1033.md) | 09-24 10:35 | 残る y0921-0900 を済へ・ヨシ待ち0件（r0924-1033） |
 | [`r0924-1009.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0924-1009.md) | 09-24 10:14 | ヨシ待ちの納品済み7件を済へ・残る1件（r0924-1009） |
 | [`r0924-0506.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0924-0506.md) | 09-24 05:09 | 04:30 の定時・見送りの訳からヨシ待ちを外す・押し残しの数えられず・ヨシ待ち8件（r0924-0506） |
 | [`r0924-0421.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0924-0421.md) | 09-24 04:25 | 00:10 の claude（4412）・いまの本数・03:00 の定時（r0924-0421・読むだけ） |
@@ -63,6 +48,5 @@ yoshi-open.tsv から外し、**yoshi-closed.tsv**（新）へ移した。各行
 | [`y0922-1330-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0922-1330-2.md) | 09-22 14:08 | 追報：25分の底が効いた（14:04:30・中身が同じまま押した） |
 | [`y0922-1330.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0922-1330.md) | 09-22 13:29 | state-stale の繰り返しは「押しの間引き」が元。25分の底を足した |
 | [`y0922-1113.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0922-1113.md) | 09-22 11:14 | 0件の元は「見出しの言語」。数え方を Get-ScheduledTask へ替えた |
-| [`y0922-1047.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y0922-1047.md) | 09-22 10:49 | 予定表の Claude* は13件すべて在った（入れ直さず） |
 
 <!-- 控えの一覧 ここまで -->
