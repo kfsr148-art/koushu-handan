@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🔁 落とします（定時）",
+        "time":  1790229746,
+        "message":  "定時の再起動（枠 2026-09-24 15・09-24 15:02）\n空き 646MB ／ claude 1本・私用 644MB\n空きメモリ 646MB ／ 全体 3975MB\n見送り 0/3回\nclaude update：終了コード 0・Claude Code is up to date (2.1.281)\n台帳の未了0・走っている道具なし・押し残し0\n60秒後に落ちる。戻りは「✅ 戻りました（再起動から）」で知らせる。"
+    },
+    {
         "title":  "🔗 新しい線",
         "time":  1790229647,
         "message":  "https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n\nCode タブ：引き継ぎは試していない（claude-loop は新しい会話で立てた。pick-resume.log を見る）\n\n窓の claude（pid 8260,8652）の remote-control の宛先です。\n＊記録は ~/.claude/inbox-watch.log。"
