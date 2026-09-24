@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 異常です：再起動の後の点検",
+        "time":  1790107006,
+        "message":  "再起動から戻った（落としは 26分前・09-23 04:56）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・悪い結果 ClaudeBoard=267014／ClaudePipeCheck=267014／ClaudeWatchNotify=-1\n② 見張りの生存 … 26分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-23 04:30:10／panel-ver.txt 143\n欠け 2件：予定の最終結果が悪い：ClaudeBoard=267014／ClaudePipeCheck=267014／ClaudeWatchNotify=-1／見張りの生存が 26分前で古い\n"
+    },
+    {
         "title":  "🪟 窓を起こし直しました（固まり）",
         "time":  1790106940,
         "message":  "台帳に走っている枠があるのに、足跡が 28分ぶん増えていません。\n見たもの … hook.log（と、有れば窓の出しの記録）の最終書き\n敷居 10分／いま 28分\n\n落として ClaudeCodeAtLogon で起こし直しました。記録は ~/.claude/inbox-watch.log。\n"
@@ -243,10 +248,5 @@
         "title":  "🪟 異常です（押し直しが三回続けて空きを待てません：ntfy-sent）",
         "time":  1789991527,
         "message":  "空き不足で見送った押しが、三回続けて押し直せませんでした。\n待っている押し手 … ntfy-sent（1件）\nいまの空き … 665MB（敷居 768MB）\n\nこのあいだ、公開側のその控えだけが古いまま止まります。\n重いものを閉じて空きを作るか、敷居の見直しをご検討ください。\n＊記録は ~/.claude/push-retry.log にあります。\n"
-    },
-    {
-        "title":  "🕒 延びています",
-        "time":  1789990942,
-        "message":  "考え込み中は触らない（CPUで振り分け）／定時の札に起こし直しの数\n終了予定20:32を過ぎています（経過30分）"
     }
 ]
