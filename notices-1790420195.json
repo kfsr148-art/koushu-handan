@@ -1,6 +1,26 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
+        "time":  1790420190,
+        "message":  "iCloud の起動を外して止めた\nHKCU の Run「iCloudServices」の値を ~/.claude/icloud-run-bak.txt に写してから消した。iCloudServices（8668）と APSDaemon（10204）を止め、19:41:18 にどちらも0本（戻っていない）。AppleMobileDeviceProcess（4952）は触らず生きている。空き 559MB→663MB（約104MB）。戻す一行は New-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\u0027 -Name \u0027iCloudServices\u0027 -PropertyType String -Value \u0027\"C:\\Program Files (x86)\\Common Files\\Apple\\Internet Services\\iCloudServices.exe\"\u0027 -Force\nファイル: ~/.claude/icloud-run-bak.txt（新）・orders-open.tsv・work-note.txt／reports/r0926-1940.md・report-latest.md\n実測: 空き 559→663MB・iCloudServices 0本・APSDaemon 0本・AppleMobileDeviceProcess 1本\n未検収: 2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-23 次に取り下げで閉じた回に ✅ の札が印つきで立って鳴ること（人手待ち）／2026-09-23 次に遠隔の線が切れた回に「🪟 遠隔を繋ぎ直しました」が鳴り Code タブへ戻ること（人手待ち）／2026-09-23 22:26 次に窓が立ち直った回に「🔗 新しい線」が一通だけ届くこと（人手待ち）／2026-09-23 22:26 手待ちで 900MB を超えた回に窓が残ったまま /clear で畳まれること（人手待ち）／2026-09-23 23:15 03:00 の立ち直りの「🔗 新しい線」の判じ（人手待ち）"
+    },
+    {
+        "title":  "🪟 時間切れ（再挑戦 1/3）",
+        "time":  1790419956,
+        "message":  "枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**\n同じ字の枠を切ったのは、48時間で 1 回目です。\n\n── 切れた枠（先頭200字）──\n読むだけで札に書け。1. VAIO の型番、記憶の差し口の数・埋まっている数・一枚ごとの容量と規格、載せられる最大の容量（Win32_PhysicalMemoryArray 等）。2. Windows の検索の索引の手（SearchIndexer・SearchApp）の MB と、索引の大きさ。3. Windows の守りの除外に今入っている場所と、~/.claude とリポジトリで一時間に書き替…\n\n── どこまで進んだか ──\n台帳：未了 1件／この枠の行は「未了：受領」\n足跡：最後は 19:51:16 stop／この枠に入ってから 命令 5回・返り 5回\n\n＊claude の子を 0本落として、Esc を一打送りました。\n＊記録は ~/.claude/inbox-watch.log。"
+    },
+    {
+        "title":  "🪟 連携に訴えがあります（done-stale-note・subj-gap）",
+        "time":  1790419895,
+        "message":  "連携の見張りから訴えが出ています。\n\n・subj-gap … 作業中の件名が食い違っている（控え「iCloud の起動を外して止めた」／出ている「読むだけで札に書け」）\n・done-stale-note … 前の仕事の終わりの札を立て直せない（止まった時点の控えの写しが無い／stop と合わない・stop 2026-09-26 19:42:29）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
+    },
+    {
+        "title":  "🔎 調べました",
+        "time":  1790419104,
+        "message":  "この間にまとまった知らせ 2本\n\n［✅ 終わりました（返事不要）］\n「🔗 新しい線」は宛先が替わった時だけ鳴らす\n（札が立たないまま次の仕事へ移っていた分）\n完了: Check-NewLine は、pid の組が替わっても宛先が前と同じなら鳴らさない形にした（控えの鍵は書き替え、判じは inbox-watch.log にだけ残す）。宛先が替わった時だけ「🔗 新しい線」を一通送る。作り値：pid だけ替わる（二通り）→0通／宛先が替わる→1通。常駐 19:16:17 起こし直し\nファイル: ~/.claude/inbox-watch.ps1・orders-open.tsv・work-note.txt／reports/r0926-1911.md・report-latest.md\n実測: 構文NG 0・BOM 保持・常駐1本 19:16:17 ＞ 台本 19:15:15\n\n［🔎 調べました］\nVAIO の iCloud の読み\n①iCloud の手3本：iCloudServices 私用76MB・APSDaemon 5MB・AppleMobileDeviceProcess 3MB（計84MB）。CPU は直近10秒でどれも0.00%、起動からの累計は3秒・1秒・7秒 ②写真の置き場 ~/Pictures/iCloud Photos は Downloads・Uploads とも空で 2021-01-24 から書かれていない。手元の控え（CloudKit・iCloudPhotoLibrary）も 2021-01-24 が最後。iCloud Drive の置き場は無い。Outlook の足し物 Apple.DAV.Addin は登録ありだが Outlook は走っていない。記録4本（09-22〜09-24）に同期の語は無い ③起動は HKCU の Run「iCloudServices」（有効）だけ。予定表・スタートアップの箱・サービスには無し ④止めて失う物：写真と Drive は2021年から動いていないので、止まるのは Outlook の予定・連絡先の連携（使っていれば）と Apple 機器の押し通知の受けくらい。空くのは約84MB\nファイル: reports/r0926-1927.md・report-latest.md\n未検収: 2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-23 次に取り下げで閉じた回に ✅ の札が印つきで立って鳴ること（人手待ち）／2026-09-23 次に遠隔の線が切れた回に「🪟 遠隔を繋ぎ直しました」が鳴り Code タブへ戻ること（人手待ち）／2026-09-23 22:26 次に窓が立ち直った回に「🔗 新しい線」が一通だけ届くこと（人手待ち）／2026-09-23 22:26 手待ちで 900MB を超えた回に窓が残ったまま /clear で畳まれること（人手待ち）／2026-09-23 23:15 03:00 の立ち直りの「🔗 新しい線」の判じ（人手待ち）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
         "time":  1790418053,
         "message":  "「🔗 新しい線」は宛先が替わった時だけ鳴らす\nCheck-NewLine は、pid の組が替わっても宛先が前と同じなら鳴らさない形にした（控えの鍵は書き替え、判じは inbox-watch.log にだけ残す）。宛先が替わった時だけ「🔗 新しい線」を一通送る。作り値：pid だけ替わる（二通り）→0通／宛先が替わる→1通。常駐 19:16:17 起こし直し\nファイル: ~/.claude/inbox-watch.ps1・orders-open.tsv・work-note.txt／reports/r0926-1911.md・report-latest.md\n実測: 構文NG 0・BOM 保持・常駐1本 19:16:17 ＞ 台本 19:15:15\n未検収: 2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-23 次に取り下げで閉じた回に ✅ の札が印つきで立って鳴ること（人手待ち）／2026-09-23 次に遠隔の線が切れた回に「🪟 遠隔を繋ぎ直しました」が鳴り Code タブへ戻ること（人手待ち）／2026-09-23 22:26 次に窓が立ち直った回に「🔗 新しい線」が一通だけ届くこと（人手待ち）／2026-09-23 22:26 手待ちで 900MB を超えた回に窓が残ったまま /clear で畳まれること（人手待ち）／2026-09-23 23:15 03:00 の立ち直りの「🔗 新しい線」の判じ（人手待ち）"
     },
@@ -120,34 +140,14 @@
         "message":  "見張りの巡回（watch-notify）が前回から 16分空いていました。\n前回の記録 2026-09-24 23:10:36／今回 2026-09-24 23:26:47\n\n＊どの段で止まったかは ~/.claude/watch-step-log.txt の足跡にあります。"
     },
     {
-        "title":  "🪟 連携に訴えがあります（hook-quiet）",
-        "time":  1790259968,
-        "message":  "連携の見張りから訴えが出ています。\n\n・hook-quiet … hook.log が 27分 書かれていない。枠を受ける口も生存も、ここを通る\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
-    },
-    {
         "title":  "😺 現在も順調にゃ",
         "time":  1790251228,
         "message":  "🔗 いまの線: https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n状態: 作業中 / 14:30〜14:55 に /remote-control を打った…\n台帳: 残り 0件\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 2% / 週全体 25% / 週Fable 13%\n起こし直し: 今日 0回（固まり 0・重さ 0・0本 0） / 今日はまだ落ちていない\n訴え: 7件（step-slow・done-swept・orphan-kill・pub-late・hook-quiet・usage-read・state-stale）… pipe-warn.log\n配分: 全体 あと18.9%/日 ／ Fable あと22%/日"
     },
     {
-        "title":  "🪟 連携に訴えがあります（state-stale）",
-        "time":  1790234423,
-        "message":  "連携の見張りから訴えが出ています。\n\n・state-stale … 公開側の生存が 50分 書かれていない（state.json の at）。パネルは凍った状態を出し続ける\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
-    },
-    {
-        "title":  "🪟 時間切れ（再挑戦 1/3）",
-        "time":  1790232847,
-        "message":  "枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**\n同じ字の枠を切ったのは、48時間で 1 回目です。\n\n── 切れた枠（先頭200字）──\n読むだけ。14:30〜14:55 に Check-RcDrop（または send-text）が窓へ /remote-control を打ったかを inbox-watch.log で刻つきで確かめ、打っていればその時の Get-RcState の判じ（生存か切れか）と、何を切れと読んだかを札に書け。直すな。本体には触るな。以上\n\n── どこまで進んだか ──\n台帳：未了 0件\n足跡：最後は 15:48:36 heartbeat／この枠に入ってから 命令 0回・返り 0回\n\n＊claude の子を 2本落として、Esc を一打送りました。\n＊記録は ~/.claude/inbox-watch.log。"
-    },
-    {
         "title":  "🕒 延びています",
         "time":  1790232786,
         "message":  "14:30〜14:55 に /remote-control を打ったか（読むだけ）\n終了予定15:50を過ぎています（経過7分）"
-    },
-    {
-        "title":  "🪟 異常です（連携に訴え：hook-quiet・pub-late）",
-        "time":  1790231513,
-        "message":  "連携の見張りから訴えが出ています。\n\n・pub-late … 公開側が 28分 遅れている（押しが済んだ札より古い）\n・hook-quiet … hook.log が 30分 書かれていない。枠を受ける口も生存も、ここを通る\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
     },
     {
         "title":  "🪟 異常です：再起動の後の点検",
@@ -178,10 +178,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1790222709,
         "message":  "この間にまとまった知らせ 2本\n\n［✅ 終わりました（返事不要）］\nclaude の自動更新を止めて落とす直前に更新・電源と容量の読み\nこの回は控えを書いていません（前の回の控えが残っています。中身は当てになりません）。\n\n［✅ 終わりました（返事不要）］\n写せます（8件）"
-    },
-    {
-        "title":  "🪟 連携に訴えがあります（done-swept）",
-        "time":  1790222613,
-        "message":  "連携の見張りから訴えが出ています。\n\n・done-swept … 終わりの札が立っていなかったので立て直した（claude の自動更新を止めて落とす直前に更新・電源と容量の読み・stop 2026-09-24 12:56:23・4分遅れ）\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
     }
 ]

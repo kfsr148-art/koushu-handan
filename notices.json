@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1790420190,
+        "message":  "iCloud の起動を外して止めた\nHKCU の Run「iCloudServices」の値を ~/.claude/icloud-run-bak.txt に写してから消した。iCloudServices（8668）と APSDaemon（10204）を止め、19:41:18 にどちらも0本（戻っていない）。AppleMobileDeviceProcess（4952）は触らず生きている。空き 559MB→663MB（約104MB）。戻す一行は New-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\u0027 -Name \u0027iCloudServices\u0027 -PropertyType String -Value \u0027\"C:\\Program Files (x86)\\Common Files\\Apple\\Internet Services\\iCloudServices.exe\"\u0027 -Force\nファイル: ~/.claude/icloud-run-bak.txt（新）・orders-open.tsv・work-note.txt／reports/r0926-1940.md・report-latest.md\n実測: 空き 559→663MB・iCloudServices 0本・APSDaemon 0本・AppleMobileDeviceProcess 1本\n未検収: 2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-23 次に取り下げで閉じた回に ✅ の札が印つきで立って鳴ること（人手待ち）／2026-09-23 次に遠隔の線が切れた回に「🪟 遠隔を繋ぎ直しました」が鳴り Code タブへ戻ること（人手待ち）／2026-09-23 22:26 次に窓が立ち直った回に「🔗 新しい線」が一通だけ届くこと（人手待ち）／2026-09-23 22:26 手待ちで 900MB を超えた回に窓が残ったまま /clear で畳まれること（人手待ち）／2026-09-23 23:15 03:00 の立ち直りの「🔗 新しい線」の判じ（人手待ち）"
+    },
+    {
         "title":  "🪟 時間切れ（再挑戦 1/3）",
         "time":  1790419956,
         "message":  "枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**\n同じ字の枠を切ったのは、48時間で 1 回目です。\n\n── 切れた枠（先頭200字）──\n読むだけで札に書け。1. VAIO の型番、記憶の差し口の数・埋まっている数・一枚ごとの容量と規格、載せられる最大の容量（Win32_PhysicalMemoryArray 等）。2. Windows の検索の索引の手（SearchIndexer・SearchApp）の MB と、索引の大きさ。3. Windows の守りの除外に今入っている場所と、~/.claude とリポジトリで一時間に書き替…\n\n── どこまで進んだか ──\n台帳：未了 1件／この枠の行は「未了：受領」\n足跡：最後は 19:51:16 stop／この枠に入ってから 命令 5回・返り 5回\n\n＊claude の子を 0本落として、Esc を一打送りました。\n＊記録は ~/.claude/inbox-watch.log。"
