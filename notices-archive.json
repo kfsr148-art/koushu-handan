@@ -1,5 +1,10 @@
 [
     {
+        "title":  "😺 現在も順調にゃ",
+        "time":  1790251228,
+        "message":  "🔗 いまの線: https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n状態: 作業中 / 14:30〜14:55 に /remote-control を打った…\n台帳: 残り 0件\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 2% / 週全体 25% / 週Fable 13%\n起こし直し: 今日 0回（固まり 0・重さ 0・0本 0） / 今日はまだ落ちていない\n訴え: 7件（step-slow・done-swept・orphan-kill・pub-late・hook-quiet・usage-read・state-stale）… pipe-warn.log\n配分: 全体 あと18.9%/日 ／ Fable あと22%/日"
+    },
+    {
         "title":  "🕒 延びています",
         "time":  1790232786,
         "message":  "14:30〜14:55 に /remote-control を打ったか（読むだけ）\n終了予定15:50を過ぎています（経過7分）"
@@ -243,10 +248,5 @@
         "title":  "🔁 落とします（定時）",
         "time":  1790105410,
         "message":  "定時の再起動（枠 2026-09-23 03・09-23 04:30）\n空き 752MB ／ claude 3本・私用 934MB\n空きメモリ 752MB ／ 全体 3975MB\n見送り 3/3回\n残っているが打ち止めで落とす：台帳の未了 3件／ヨシ待ち 8件／走っている道具：仕事が走っている（hook.log の最後が resume）／押し残し 数えられず\n60秒後に落ちる。戻りは「✅ 戻りました（再起動から）」で知らせる。\n"
-    },
-    {
-        "title":  "✅ 再起動の後の点検（返事不要）",
-        "time":  1790100628,
-        "message":  "再起動の10分後の通し点検（09-23 03:10）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・最終結果は全て良い\n② 見張りの生存 … 0分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-22 23:29:21／panel-ver.txt 143\n四つとも○。戻っている。\n"
     }
 ]
