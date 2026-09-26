@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 異常です：再起動の後の点検",
+        "time":  1790231438,
+        "message":  "再起動から戻った（落としは 27分前・09-24 15:30）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・悪い結果 ClaudeWatchNotify=-1\n② 見張りの生存 … 28分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-24 15:02:56／panel-ver.txt 144\n欠け 2件：予定の最終結果が悪い：ClaudeWatchNotify=-1／見張りの生存が 28分前で古い\n"
+    },
+    {
         "title":  "🪟 見張りが止まっています（最後の記録 15:02・27分前）",
         "time":  1790231400,
         "message":  "見張り（watch-notify）の記録が 27分 途切れています。\n最後の記録 2026-09-24 15:02:55\n\n＊居座っていた回は落としました。次の分の回から戻るはずです。\n＊どの段で止まったかは ~/.claude/watch-step-log.txt にあります。\n"
@@ -243,10 +248,5 @@
         "title":  "🕒 延びています",
         "time":  1790085164,
         "message":  "予定四件（ClaudeBoard・ClaudePipeCheck・ClaudeR\n終了予定22:32を過ぎています（経過65分）"
-    },
-    {
-        "title":  "🙀 異変発見だにゃ",
-        "time":  1790078418,
-        "message":  "状態: 手待ち / 16:30 の定時再起動の後、予定四件（ClaudeBoard・Cl…\n台帳: 残り 2件（ヨシ待ちを「ヨシしない・取り下げ」で閉じた回に、終わりの札が立たず鈴も鳴らなかっ・16:30 の定時再起動の後、予定四件（ClaudeBoard・ClaudePi）\n見張り: 生存○ 見張り○ 片付け×止 受信箱○\n使用量: セッション 15% / 週全体 14% / 週Fable 13%\n起こし直し: 今日 2回（固まり 0・重さ 0・0本 2） / 最後に落ちた刻 08:24\n訴え: 3件（pub-late・state-stale・hook-quiet）… pipe-warn.log\n配分: 全体 あと14.4%/日 ／ Fable あと14.6%/日"
     }
 ]
