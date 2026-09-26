@@ -20,7 +20,7 @@
 | **23:06:53** | **23:21:53** | \Microsoft\Windows\DiskCleanup\**SilentCleanup** | 刻の引き金なし（保守の仕事）。**止まりとほぼ重なる** |
 | 23:06:53 | 23:07:11 | Windows Defender Scheduled Scan | 走査は始めてすぐ止めた（下の2） |
 | 23:06:53 | 23:07:58 | Windows Defender Verification／Cleanup | 短い |
-| 23:06:53 | — | WindowsUpdate\AUScheduledInstall | 結果 0x80070005 系（権限なし） |
+| 23:06:53 | — | WindowsUpdate\AUScheduledInstall | 結果 2148007941＝0x80080005（サーバーの実行に失敗） |
 | 23:07:25 | 23:20:08 | **User_Feed_Synchronization**（引き金は 06:05。取りこぼしを後で走らせる形） | 止まりと重なる |
 | 23:16:55 | 23:23:15 | MicrosoftEdgeUpdateTaskMachineUA | 後半に重なる |
 | 23:17:10 | 23:23:03 | GoogleUpdaterTaskSystem | 後半に重なる |
