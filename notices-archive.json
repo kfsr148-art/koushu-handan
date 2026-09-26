@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🕒 延びています",
+        "time":  1790232786,
+        "message":  "14:30〜14:55 に /remote-control を打ったか（読むだけ）\n終了予定15:50を過ぎています（経過7分）"
+    },
+    {
         "title":  "🪟 異常です：再起動の後の点検",
         "time":  1790231438,
         "message":  "再起動から戻った（落としは 27分前・09-24 15:30）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・悪い結果 ClaudeWatchNotify=-1\n② 見張りの生存 … 28分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-24 15:02:56／panel-ver.txt 144\n欠け 2件：予定の最終結果が悪い：ClaudeWatchNotify=-1／見張りの生存が 28分前で古い\n"
@@ -243,10 +248,5 @@
         "title":  "✅ 再起動の後の点検（返事不要）",
         "time":  1790100628,
         "message":  "再起動の10分後の通し点検（09-23 03:10）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・最終結果は全て良い\n② 見張りの生存 … 0分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-22 23:29:21／panel-ver.txt 143\n四つとも○。戻っている。\n"
-    },
-    {
-        "title":  "🕒 延びています",
-        "time":  1790085164,
-        "message":  "予定四件（ClaudeBoard・ClaudePipeCheck・ClaudeR\n終了予定22:32を過ぎています（経過65分）"
     }
 ]
