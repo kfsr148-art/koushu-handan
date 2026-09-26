@@ -1,24 +1,33 @@
-# iCloud の起動を外して止めた（r0926-1940）
+# VAIO の型番と記憶の差し口（r0926-2007・読むだけ）
 
-**終わり（残り0件）** — 2026-09-26 19:41ごろ（VAIO）。本体には触っていない。
+**終わり（残り1件）** — 2026-09-26 20:10ごろ（VAIO）。読むだけ。何も変えていない。本体には触っていない。
 
-- **写し**：HKCU\Software\Microsoft\Windows\CurrentVersion\Run の「iCloudServices」（型 String・値 `"C:\Program Files (x86)\Common Files\Apple\Internet Services\iCloudServices.exe"`）を **~/.claude/icloud-run-bak.txt** へ写した（戻す一行も入れてある）
-- **消した**：Run から「iCloudServices」を消した。消した後に読んで、残っていないことを確かめた
-- **止めた**：**iCloudServices（pid 8668）**と**APSDaemon（pid 10204）**。19:41:18 に見て、**どちらも0本**（自分で立ち直ってはいない）
-- **触っていない**：**AppleMobileDeviceProcess（pid 4952）は生きたまま**
-- **空き**：止める前 **559MB**（19:40:49）→ 止めた後 **663MB**（19:41:18）／全体 3975MB。**約104MB 空いた**
-- ＊次にログオンしても iCloudServices は立たない（起動の設定はこの Run の一つだけだった）
+## 型番
+- **Sony Corporation／SVE15135CJP**（VAIO E 15 の系・型の系 C10G7LB1・BIOS R0200D5）
+- CPU **Intel Pentium 2020M**（2.40GHz・2核2筋）／板の仲立ち **Intel 7 Series Chipset**
 
-**戻すときの一行**（PowerShell。次のログオンから立つ。すぐ立てるなら exe をそのまま起こす）
-```powershell
-New-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'iCloudServices' -PropertyType String -Value '"C:\Program Files (x86)\Common Files\Apple\Internet Services\iCloudServices.exe"' -Force
-```
+## 記憶の差し口（Win32_PhysicalMemoryArray／Win32_PhysicalMemory）
+| 項 | 値 |
+|---|---|
+| 差し口の数 | **2口** |
+| 埋まっている数 | **1枚** |
+| 一枚目 | **SODIMM1（Bank 0）：4096MB・DDR3・SODIMM**（作り手・品番は空。速さの値は 20307 と出て読める値ではない） |
+| 二口目 | **空き** |
+| OS から見える全体 | 3975MB |
+| 載せられる最大 | **板が値を返さない**（MaxCapacity＝0KB、MaxCapacityEx は桁外れの値。どちらも実の上限ではない） |
 
-### 触った物
-HKCU\...\Run の iCloudServices（消した）・iCloudServices と APSDaemon の手（止めた）／~/.claude/icloud-run-bak.txt（新）・orders-open.tsv・work-note.txt／reports/r0926-1940.md・report-latest.md
+**載せられる最大の参考（手元の機械からは読めないので、一般に公表されている値。確かめていない）**
+- CPU（Pentium 2020M）の上限：**16GB**（DDR3 の二口）
+- 機種（VAIO E 15・SVE1513 の系）の公称の上限：**8GB**（4GB×2）
+- ＊空いている一口に DDR3 の SODIMM（4GB）を一枚足せば、公称の範囲で **8GB** になる見込み
+
+## 前の枠（19:43）の途中の分（まだ閉じていない）
+- ②検索：**SearchApp（検索の画面）が私用120MB**。索引の手 SearchIndexer は**走っていない**（索引のサービス WSearch は**停止・無効**）。索引の綴り Windows.edb は、権限が無く大きさを読めなかった
+- ③守り：除外の場所は**管理者でないと読めない**（N/A: Must be an administrator）。常時の見張りは有効（Normal）
+- ③一時間に書き替わる綴り（18:44〜19:44）：**~/.claude 100件**（うち .git 32・projects 1・file-history 1）。**リポジトリは数えている最中**（回転盤で遅く、5分で返らなかった）
 
 ### 残り
-残り0件
+1. 2026-09-26 19:43:16 の枠の③のうち、リポジトリの一時間の書き替えの数（数えている最中）
 
 ---
 
@@ -27,11 +36,12 @@ HKCU\...\Run の iCloudServices（消した）・iCloudServices と APSDaemon �
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **415件**ある。
+　ここに出るのは新しい20件。全部で **416件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r0926-2007.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-2007.md) | 09-26 20:10 | VAIO の型番と記憶の差し口（r0926-2007・読むだけ） |
 | [`r0926-1940.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1940.md) | 09-26 19:41 | iCloud の起動を外して止めた（r0926-1940） |
 | [`r0926-1927.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1927.md) | 09-26 19:32 | VAIO の iCloud の読み（r0926-1927・読むだけ） |
 | [`r0926-1911.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1911.md) | 09-26 19:17 | 「🔗 新しい線」は宛先が替わった時だけ鳴らす（r0926-1911） |
@@ -51,6 +61,5 @@ HKCU\...\Run の iCloudServices（消した）・iCloudServices と APSDaemon �
 | [`cloud-check-fast-20260924-015941.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-check-fast-20260924-015941.md) | 09-24 11:02 | 雲で回した：`check-fast.js` |
 | [`r0924-1033.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0924-1033.md) | 09-24 10:35 | 残る y0921-0900 を済へ・ヨシ待ち0件（r0924-1033） |
 | [`r0924-1009.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0924-1009.md) | 09-24 10:14 | ヨシ待ちの納品済み7件を済へ・残る1件（r0924-1009） |
-| [`r0924-0506.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0924-0506.md) | 09-24 05:09 | 04:30 の定時・見送りの訳からヨシ待ちを外す・押し残しの数えられず・ヨシ待ち8件（r0924-0506） |
 
 <!-- 控えの一覧 ここまで -->
