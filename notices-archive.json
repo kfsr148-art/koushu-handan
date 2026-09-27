@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 見張りが止まっています（最後の記録 01:06・592分前）",
+        "time":  1790474272,
+        "message":  "見張り（watch-notify）の記録が 592分 途切れています。\n最後の記録 2026-09-27 01:06:02\n\n＊居座っていた回は落としました。次の分の回から戻るはずです。\n＊どの段で止まったかは ~/.claude/watch-step-log.txt にあります。\n"
+    },
+    {
         "title":  "🪟 異常です：再起動の後の点検",
         "time":  1790474268,
         "message":  "再起動から戻った（落としは 23分前・09-27 10:57）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・悪い結果 ClaudeBoard=267014／ClaudeDailyNotice=-1／ClaudeDailyReboot=267014／ClaudeEdgeSweep=-1／ClaudeHomeBackup=-1／ClaudeHookHeartbeat=-1／ClaudeJamWatch=-1／ClaudePipeCheck=267014／ClaudeWatchNotify=-1\n② 見張りの生存 … 591分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-27 00:36:08／panel-ver.txt 144\n欠け 2件：予定の最終結果が悪い：ClaudeBoard=267014／ClaudeDailyNotice=-1／ClaudeDailyReboot=267014／ClaudeEdgeSweep=-1／ClaudeHomeBackup=-1／ClaudeHookHeartbeat=-1／ClaudeJamWatch=-1／ClaudePipeCheck=267014／ClaudeWatchNotify=-1／見張りの生存が 591分前で古い\n"
@@ -243,10 +248,5 @@
         "title":  "📮 郵便受けが詰まっています",
         "time":  1790221946,
         "message":  "郵便受けを 9 分見に行けていません（取り込む見張りが止まっているか、gh が通っていません）\nこちらがすること：郵便受けへ書いた行はまだ受信箱に入っていません。急ぐなら黒い窓から直に入れてください。"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1790218588,
-        "message":  "常駐を AboveNormal で立てる・枠の鉤の timeout 60秒・メモリ上位10本\n三 inbox-watch・watch-notify は頭で自分を AboveNormal にしてから立つ形にし、Set-Priorities もこの二つを AboveNormal へ上げる形にした（前は BelowNormal へ落としていた）。settings.json の frame-in の timeout 15→60。常駐だけ起こし直した。実読み：inbox-watch 4280 AboveNormal・watch-notify 11:52／11:54 の走り AboveNormal・frame-in timeout=60／四 空き 799MB／全体 3975MB。上位10本は claude 8652 595MB・MsMpEng 370・explorer 152・inbox-watch 108・Registry 105・SearchApp 90・iCloudServices 81・測りの PowerShell 77・StartMenuExperienceHost 69・dwm 56。止めてよさそうな印は SearchApp と iCloudServices（止めていない）\nファイル: ~/.claude/inbox-watch.ps1・watch-notify.ps1・settings.json・orders-open.tsv・work-note.txt／reports/r0924-1149.md・report-latest.md\n実測: 構文NG 0（inbox-watch・watch-notify）・BOM 保持・settings.json の差分は1行\n未検収: 2026-09-21 17:00 --continue を外した後の起こし直し（人手待ち）／2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-21 20:50 落ちにくい窓の三つと枠の上限-2（人手待ち）／2026-09-21 21:28 healthchecks の check 作りと URL 貼り（人手待ち）／2026-09-21 21:40 画面バッファ500行（人手待ち・次に窓が立った回）／2026-09-22 00:04 pagefile 4096MB の実際の割り当て（次の再起動のあと）／2026-09-23 次の再起動の後15分のあいだ固まりの知らせが鳴らないこと（人手待ち）／2026-09-23 次に取り下げで閉じた回に ✅ の札が印つきで立って鳴ること（人手待ち）／2026-09-23 次に遠隔の線が切れた回に「🪟 遠隔を繋ぎ直しました」が鳴り Code タブへ戻ること（人手待ち）／2026-09-23 22:20 窓が立ち直った後も Code タブの同じ会話が続くこと（人手待ち・次に自然に立ち直った回）／2026-09-23 22:26 次に窓が立ち直った回に「🔗 新しい線」が一通だけ届くこと（人手待ち）／2026-09-23 22:26 手待ちで 900MB を超えた回に窓が残ったまま /clear で畳まれること（人手待ち）／2026-09-23 23:15 03:00 の立ち直りの「🔗 新しい線」の判じ（人手待ち）／2026-09-24 05:10 15:00 の定時で daily-reboot が落とすこと（人手待ち・落ちれば引き継ぎの初回の確かめ）"
     }
 ]
