@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 再起動の後の点検（返事不要）",
+        "time":  1790403033,
+        "message":  "再起動の10分後の通し点検（09-26 15:10）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・最終結果は全て良い\n② 見張りの生存 … 2分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-26 13:56:23／panel-ver.txt 144\n四つとも○。戻っている。\n"
+    },
+    {
         "title":  "🕒 延びています",
         "time":  1790398583,
         "message":  "再挑戦 1/3（軽く）\n終了予定13:53を過ぎています（経過13分）"
@@ -243,10 +248,5 @@
         "title":  "✅ 終わりました（返事不要）：定時再起動の見送り3/3は落とさず次の定時へ",
         "time":  1790141424,
         "message":  "定時再起動の見送り3/3は落とさず次の定時へ\n① Shift+Tab の auto に当たる値は \"auto\"（claude --help の --permission-mode の選択肢）。リポジトリの .claude/settings.json（acceptEdits）と settings.local.json（bypassPermissions）の defaultMode は新しい claude に効いておらず、auto に替えても記録の先頭は default のままだった。~/.claude/settings.json に permissions.defaultMode=\"auto\" を入れると auto で立った。リポジトリ側は元へ戻した。起こし直しは切り離した mode-check.ps1 が60秒後に対話の claude を落とし、claude-loop が同じ窓で起こし直す。新しい記録の先頭を読んで mode-check.txt と ntfy に出す。② claude-loop.log・claude-loop-koushu.txt の末尾50行にメモリ上限の印は0件。最後の行は 05:08:24 で、07:26・08:15 の行そのものが無い（この二つは立て直しの回数だけを記録し、claude の出力は残らない）。NODE_OPTIONS（1024）は触っていない。台帳の未了0件。回る段：手元＝claude の起動の既定だけが変わる／雲＝check.yml・check-all は変化なし\n"
-    },
-    {
-        "title":  "🪟 窓の許可の形を確かめました",
-        "time":  1790140936,
-        "message":  "起こし直した窓の先頭 permissionMode=default（3cff27e5-1040-4d1b-8d12-d0211e4c0f4a.jsonl）\n対話の claude 3本\n記録は ~/.claude/mode-check.txt\n"
     }
 ]
