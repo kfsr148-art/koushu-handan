@@ -1,49 +1,80 @@
-# 記憶 8GB に合わせて締め付けを緩めた（NODE_OPTIONS 2048・/clear の敷居 1500MB）（r0927-2013）
+# 未検収の二行の手入れ（r0927-2027）
 
-**終わり（残り0件）** — 2026-09-27 20:21ごろ（VAIO）。本体には触っていない。いまの窓は落としていない（次に立った窓から効く）。
+**終わり（残り0件）** — 2026-09-27 20:28ごろ（VAIO）。本体には触っていない。
 
-## 1. NODE_OPTIONS の --max-old-space-size 1024 → 2048
-**起こす道の洗い出し**：NODE_OPTIONS を立てているのは **claude-loop.cmd だけ**。窓を起こす道は ClaudeCodeAtLogon（予定表）→ claude-loop.cmd、revive-claude.ps1 → ClaudeCodeAtLogon → claude-loop.cmd で、**どれも claude-loop.cmd を通る**。利用者・機械の環境変数に NODE_OPTIONS は無い。
-＊ほかに claude を直に起こす台本が二つ（rc-restart.ps1・window-restart.ps1）あり、今は呼ばれていない（記録は 09-12 が最後）が、「起こす道すべて」に入れて同じ 2048 を立てた。
+- 未検収の **「2026-09-27 00:30 tasks-to-0320.ps1 を管理者で走らせるか（人手待ち・UAC）」** を **kenshu-closed.tsv** へ移した。訳は「**09-27 20:06 に UAC 通過で走り済み**」
+- **「2026-09-23 22:26 手待ちで 900MB を超えた回に…/clear で畳まれること」** の 900MB を **1500MB** に書き替えた（敷居を 1500MB に上げたのに合わせて）
 
-**~/.claude/claude-loop.cmd**（ASCII＋CRLF のまま・写し .bak-20260927）
-```bat
-rem     2026-09-27: 1024 -> 2048 (the machine now has 8GB).
-set "NODE_OPTIONS=--max-old-space-size=2048"
-```
-（前：`set "NODE_OPTIONS=--max-old-space-size=1024"`）
-
-**~/.claude/rc-restart.ps1**（36行目・写し .bak-20260927）
-```powershell
-$cl = 'cmd.exe /c start "麻雀 攻守判断 (Claude Code)" /MAX /D "C:\Users\user\Desktop\mahjong\koushu-handan" cmd.exe /k "set NODE_OPTIONS=--max-old-space-size=2048& C:\Users\user\.local\bin\claude.exe --continue --remote-control ' + $Name + '"'
-# ＊NODE_OPTIONS は上の一行の中で立てる（2026-09-27・記憶 8GB に合わせ 2048）。Win32_Process Create は呼んだ側の環境を渡さない
-```
-**~/.claude/window-restart.ps1**（66行目・写し .bak-20260927）
-```powershell
-$cl = 'cmd.exe /c start "麻雀 攻守判断 (Claude Code)" /MAX /D "C:\Users\user\Desktop\mahjong\koushu-handan" cmd.exe /k "set NODE_OPTIONS=--max-old-space-size=2048& C:\Users\user\.local\bin\claude.exe --continue --remote-control koushu-handan"'
-# ＊NODE_OPTIONS は上の一行の中で立てる（2026-09-27・記憶 8GB に合わせ 2048）。Win32_Process Create は呼んだ側の環境を渡さない
-```
-＊この二つは Win32_Process の Create で起こすので、呼んだ側の環境変数が子へ渡らない。そこで起こす一行の中で `set NODE_OPTIONS=…` を立てる形にした。**同じ形で node を起こし、子に `--max-old-space-size=2048` が届くことを確かめた**（claude は起こしていない）。
-
-## 2. 手待ちで /clear を打つ重さの敷居 900MB → 1500MB
-**~/.claude/inbox-watch.ps1**（写し .bak-20260927）
-```powershell
-#     claude の私用メモリが **1500MB** を越えていたら、窓へ **`/clear`** を打つ（send-text.ps1 の道）。
-#     （2026-09-27 に 900MB → 1500MB。記憶を 8GB に足したため）
-#   ＊「🪟 控えを畳みました（重さ NNNMB）」を一発。**一度打ったら、敷居（$HEAVY_MB）を下回るまで黙る**
-$HEAVY_MB             = 1500
-    if ($seen) { return }                             # 敷居を下回るまで黙る
-          ('＊' + $HEAVY_MB + 'MB を下回るまで、この知らせは出しません。記録は ~/.claude/inbox-watch.log。'))
-```
-（前：`$HEAVY_MB = 900`、注と知らせの字の「900MB」）
-- 知らせの本文の「＊900MB を下回るまで…」は、敷居の値を読む形（`$HEAVY_MB`）にした
-- daily-notice.ps1 の注の「手待ちで900MB超」も「1500MB超・09-27 までは900MB」に直した（注だけ）
-- 構文 NG 0（inbox-watch・rc-restart・window-restart・daily-notice）・BOM 保持
-- 常駐を **20:20:30** に起こし直した（台本 20:20:06 より後）。敷居 1500MB はいまから効く
-
-### 手元で回る段・雲で回る段（作法36）
-- 手元：常駐 inbox-watch の Check-ClaudeHeavy（敷居 1500MB）／claude-loop（次に窓が立ったとき 2048）
-- 雲：変わりなし
+**いまの未検収（10行）**
+- 2026-09-21 19:57 使用�
+- の上限で手待ち
+- 
+- �人手待ち
+- 
+- �
+- 
+- 
+- 2026-09-23 次に�
+- �り下げで閉じた回に ✅ の札が印つきで立って鳴ること
+- 
+- �人手待ち
+- 
+- �
+- 
+- 
+- 2026-09-23 次に遠隔の線が切れた回に「🪟 遠隔を繋ぎ直しました」が鳴り Code タブへ戻ること
+- 
+- �人手待ち
+- 
+- �
+- 
+- 
+- 2026-09-23 22:26 次に窓が立ち直った回に「🔗 新しい線」が一通だけ届�
+- こと
+- 
+- �人手待ち
+- 
+- �
+- 
+- 
+- 2026-09-23 22:26 手待ちで 1500MB を超えた回に窓が残ったまま /clear で畳まれること
+- 
+- �人手待ち
+- 
+- �
+- 
+- 
+- 2026-09-23 23:15 03:00 の立ち直りの「🔗 新しい線」の判じ
+- 
+- �人手待ち
+- 
+- �
+- 
+- 
+- 2026-09-27 19:40 差し替え後の一週、空き 300MB 割れの鈴が鳴らないこと
+- 
+- �〜10-04・人手待ち
+- 
+- �
+- 
+- 
+- 2026-09-27 20:07 次の再起動の後、仮想メモリが自動管理で効き、03:20 に五つが走って 23時�
+- �
+- 
+- 
+- 01時�
+- �の固まりが出ないこと
+- 
+- �人手待ち
+- 
+- �
+- 
+- 
+- 2026-09-27 20:20 次に窓が立ったら claude が 2048 の上限で立つこと
+- 
+- �人手待ち
+- 
+- �
 
 ### 残り
 残り0件
@@ -55,12 +86,13 @@ $HEAVY_MB             = 1500
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **424件**ある。
+　ここに出るのは新しい20件。全部で **425件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
-| [`r0927-2013.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2013.md) | 09-27 20:21 | 記憶 8GB に合わせて締め付けを緩めた（NODE_OPTIONS 2048・/clear の敷居 1500MB） |
+| [`r0927-2027.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2027.md) | 09-27 20:28 | 未検収の二行の手入れ（r0927-2027） |
+| [`r0927-2013.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2013.md) | 09-27 20:21 | 記憶 8GB に合わせて締め付けを緩めた（NODE_OPTIONS 2048・/clear の敷居 1500MB）（r0927-2013） |
 | [`r0927-2006.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2006.md) | 09-27 20:07 | y0927-2003 にヨシ → tasks-to-0320.ps1 を管理者で走らせた（r0927-2006） |
 | [`r0927-1955.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-1955.md) | 09-27 19:56 | tasks-to-0320.ps1 に二つ足した（断片の整理・仮想メモリの自動管理）（r0927-1955） |
 | [`r0927-1945.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-1945.md) | 09-27 19:49 | 09-27 01:00〜10:40 に VAIO が止まっていた元（r0927-1945・読むだけ） |
@@ -79,6 +111,5 @@ $HEAVY_MB             = 1500
 | [`r0926-1706.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1706.md) | 09-26 17:08 | 古い index.lock を押しの前に外す・引き継ぎの判じを窓の刻で（r0926-1706） |
 | [`r0926-1127.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1127.md) | 09-26 11:36 | 公開側への押しが通らない元（index.lock）を直す・札の全文を ntfy へ（r0926-1127） |
 | [`r0926-1040.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1040.md) | 09-26 10:43 | 公開側の札・09-24 15:00 の再起動と引き継ぎ・無線・いまの様子（r0926-1040・読むだけ） |
-| [`r0924-1502-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0924-1502-2.md) | 09-24 15:02 | 再起動-2（r0924-1502・後の測り） |
 
 <!-- 控えの一覧 ここまで -->
