@@ -1,4 +1,4 @@
-# 定時再起動を 03:00 の一回だけに（r0927-2036）
+# 定時再起動を 03:00 の一回だけに（r0927-2040）
 
 **終わり（残り0件）** — 2026-09-27 20:41ごろ（VAIO）。本体には触っていない。
 
@@ -20,6 +20,8 @@
 
 ---
 
+---
+
 <!-- 控えの一覧 ここから -->
 
 ## 控えの一覧（reports/・新しい順に20件）
@@ -30,7 +32,7 @@
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
-| [`r0927-2036.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2036.md) | 09-27 20:41 | 定時再起動を 03:00 の一回だけに（r0927-2036） |
+| [`r0927-2040.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2040.md) | 09-27 20:41 | 定時再起動を 03:00 の一回だけに（r0927-2040） |
 | [`r0927-2027.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2027.md) | 09-27 20:28 | 未検収の二行の手入れ（r0927-2027） |
 | [`r0927-2013.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2013.md) | 09-27 20:21 | 記憶 8GB に合わせて締め付けを緩めた（NODE_OPTIONS 2048・/clear の敷居 1500MB）（r0927-2013） |
 | [`r0927-2006.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2006.md) | 09-27 20:07 | y0927-2003 にヨシ → tasks-to-0320.ps1 を管理者で走らせた（r0927-2006） |
