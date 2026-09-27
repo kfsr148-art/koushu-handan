@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 時間切れ（再挑戦 1/3）",
+        "time":  1790535576,
+        "message":  "枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**\n同じ字の枠を切ったのは、48時間で 1 回目です。\n\n── 切れた枠（先頭200字）──\n読むだけで札に書け。09-27 23:25〜23:36 に Claude の窓（claude-loop の cmd）が消えた元を、アプリの記録（Application Error 1000・1001、conhost.exe・cmd.exe・claude.exe の落ち）と、同じ帯の UAC・遠隔の画面（Chrome リモート デスクトップ）の動き、inbox-watch.log の窓の本数の行から…\n\n── どこまで進んだか ──\n台帳：未了 0件\n足跡：最後は 03:58:04 heartbeat／この枠に入ってから 命令 0回・返り 0回\n\n＊claude の子を 0本落として、Esc を一打送りました。\n＊記録は ~/.claude/inbox-watch.log。"
+    },
+    {
         "title":  "✅ 戻りました（hook-quiet・5分）",
         "time":  1790535033,
         "message":  "連携の見張りの訴えが消えました。\n\n・hook-quiet・5分\n\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
@@ -33,11 +38,6 @@
         "title":  "🕒 延びています",
         "time":  1790520486,
         "message":  "bcdedit /bootsequence {memdiag} を管理者でもう一度（UAC が通らず）\n終了予定23:46を過ぎています（経過11分）"
-    },
-    {
-        "title":  "🪟 時間切れ（再挑戦 1/3）",
-        "time":  1790520308,
-        "message":  "枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**\n同じ字の枠を切ったのは、48時間で 1 回目です。\n\n── 切れた枠（先頭200字）──\nbcdedit /bootsequence {memdiag} を管理者でもう一度起こせ。UAC の「はい」が通ったかと、次の起動が記憶の診断になっているかを bcdedit の読みで札に書け。本体には触るな。以上\n\n── どこまで進んだか ──\n台帳：未了 2件／この枠の行は「未了：23:12:11 に bcdedit /bootsequence {mem…」\n足跡：最後は 23:38:05 heartbeat／この枠に入ってから 命令 0回・返り 0回\n\n＊claude の子を 0本落として、Esc を一打送りました。\n＊記録は ~/.claude/inbox-watch.log。"
     },
     {
         "title":  "🪟 窓を起こし直しました（今日2回目）",
