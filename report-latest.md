@@ -1,24 +1,19 @@
-# 定時再起動を 03:00 の一回だけに（r0927-2040）
+# 定時再起動を写しから戻し、03:00 と 15:00 の二本立てに（r0927-2046）
 
-**終わり（残り0件）** — 2026-09-27 20:41ごろ（VAIO）。本体には触っていない。
+**終わり（残り0件）** — 2026-09-27 20:47ごろ（VAIO）。本体には触っていない。ClaudeAfterReboot には触っていない（Ready のまま）。
 
-- **写し**：予定表の ClaudeDailyReboot の設定（XML）を **~/.claude/ClaudeDailyReboot.xml.bak-20260927** に取った（4346バイト・引き金2つが入っている）
-- **変えた**：15:00 の引き金を外した（利用者の仕事なので管理者なしで変えられた）
+- 写し **~/.claude/ClaudeDailyReboot.xml.bak-20260927**（引き金2つ入り）を `Register-ScheduledTask -TaskName ClaudeDailyReboot -Xml … -Force` で書き戻した
 
-| | 前 | 後 |
-|---|---|---|
-| 引き金1 | 毎日 **03:00**・30分ごとに1時間30分（03:00／03:30／04:00／04:30） | **そのまま** |
-| 引き金2 | 毎日 **15:00**・30分ごとに1時間30分（15:00／15:30／16:00／16:30） | **外した** |
+**戻した後の引き金（読み直し）**
+| | 刻 | 繰り返し | 有効 |
+|---|---|---|---|
+| 引き金1 | 毎日 **03:00**（始まり 2026-09-21T03:00:00+09:00・間隔1日） | 30分ごとに1時間30分（03:00／03:30／04:00／04:30） | 有効 |
+| 引き金2 | 毎日 **15:00**（始まり 2026-09-21T15:00:00+09:00・間隔1日） | 30分ごとに1時間30分（15:00／15:30／16:00／16:30） | 有効 |
 
-- **後の引き金（読み直し）**：`DailyTrigger 始まり 2026-09-21T03:00:00+09:00・間隔1日・繰り返し PT30M・期間 PT1H30M・有効` の**一つだけ**。次回 **09-28 03:00**
-- 動かす物（wscript.exe → daily-reboot.ps1）と作り主（user）は変わっていない
-- ＊daily-reboot.ps1 の頭の注には「一日二回（03:00 と 15:00）」の字が残っている（台本の動きは引き金まかせで、15時の枠は来なくなるだけ）。今回は触っていない
-- 戻すとき：`Register-ScheduledTask -TaskName ClaudeDailyReboot -Xml (Get-Content 'C:\Users\user\.claude\ClaudeDailyReboot.xml.bak-20260927' -Raw) -Force`
+- 作り主 user・権限 Limited・動かす物 wscript.exe（run-hidden.vbs → daily-reboot.ps1）・状態 Ready は元のまま。次回 **09-28 03:00**
 
 ### 残り
 残り0件
-
----
 
 ---
 
@@ -27,11 +22,12 @@
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **426件**ある。
+　ここに出るのは新しい20件。全部で **427件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r0927-2046.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2046.md) | 09-27 20:47 | 定時再起動を写しから戻し、03:00 と 15:00 の二本立てに（r0927-2046） |
 | [`r0927-2040.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2040.md) | 09-27 20:41 | 定時再起動を 03:00 の一回だけに（r0927-2040） |
 | [`r0927-2027.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2027.md) | 09-27 20:28 | 未検収の二行の手入れ（r0927-2027） |
 | [`r0927-2013.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2013.md) | 09-27 20:21 | 記憶 8GB に合わせて締め付けを緩めた（NODE_OPTIONS 2048・/clear の敷居 1500MB）（r0927-2013） |
@@ -51,6 +47,5 @@
 | [`r0926-1828.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1828.md) | 09-26 18:32 | 未検収の四行を読んで確かめる（r0926-1828） |
 | [`r0926-1717.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1717.md) | 09-26 17:20 | claude の大きさと会話の綴りの推移・未検収の四行を済へ（r0926-1717） |
 | [`r0926-1706.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1706.md) | 09-26 17:08 | 古い index.lock を押しの前に外す・引き継ぎの判じを窓の刻で（r0926-1706） |
-| [`r0926-1127.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1127.md) | 09-26 11:36 | 公開側への押しが通らない元（index.lock）を直す・札の全文を ntfy へ（r0926-1127） |
 
 <!-- 控えの一覧 ここまで -->
