@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🕒 延びています",
+        "time":  1790535727,
+        "message":  "09-27 23:25〜23:36 に Claude の窓が消えた元（読むだけ）\n終了予定04:00を過ぎています（経過11分）"
+    },
+    {
         "title":  "🪟 時間切れ（再挑戦 1/3）",
         "time":  1790535576,
         "message":  "枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**\n同じ字の枠を切ったのは、48時間で 1 回目です。\n\n── 切れた枠（先頭200字）──\n読むだけで札に書け。09-27 23:25〜23:36 に Claude の窓（claude-loop の cmd）が消えた元を、アプリの記録（Application Error 1000・1001、conhost.exe・cmd.exe・claude.exe の落ち）と、同じ帯の UAC・遠隔の画面（Chrome リモート デスクトップ）の動き、inbox-watch.log の窓の本数の行から…\n\n── どこまで進んだか ──\n台帳：未了 0件\n足跡：最後は 03:58:04 heartbeat／この枠に入ってから 命令 0回・返り 0回\n\n＊claude の子を 0本落として、Esc を一打送りました。\n＊記録は ~/.claude/inbox-watch.log。"
@@ -163,10 +168,5 @@
         "title":  "📮 郵便受けが詰まっています",
         "time":  1790505277,
         "message":  "郵便受けを 47 分見に行けていません（取り込む見張りが止まっているか、gh が通っていません）\nこちらがすること：郵便受けへ書いた行はまだ受信箱に入っていません。急ぐなら黒い窓から直に入れてください。"
-    },
-    {
-        "title":  "🪟 異常です：再起動の後の点検",
-        "time":  1790489424,
-        "message":  "再起動の10分後の通し点検（09-27 15:10）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・悪い結果 ClaudeDailyNotice=-1／ClaudeEdgeSweep=-1／ClaudeHomeBackup=-1\n② 見張りの生存 … 0分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-27 11:36:22／panel-ver.txt 144\n欠け 1件：予定の最終結果が悪い：ClaudeDailyNotice=-1／ClaudeEdgeSweep=-1／ClaudeHomeBackup=-1"
     }
 ]

@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 異常です：再起動の後の点検",
+        "time":  1790489424,
+        "message":  "再起動の10分後の通し点検（09-27 15:10）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・悪い結果 ClaudeDailyNotice=-1／ClaudeEdgeSweep=-1／ClaudeHomeBackup=-1\n② 見張りの生存 … 0分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-27 11:36:22／panel-ver.txt 144\n欠け 1件：予定の最終結果が悪い：ClaudeDailyNotice=-1／ClaudeEdgeSweep=-1／ClaudeHomeBackup=-1\n"
+    },
+    {
         "title":  "🪟 時間切れ（再挑戦 1/3）",
         "time":  1790475844,
         "message":  "枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**\n同じ字の枠を切ったのは、48時間で 1 回目です。\n\n── 切れた枠（先頭200字）──\n一つだけ。Defender Cache Maintenance・SilentCleanup・User_Feed_Synchronization・Edge の更新・Google の更新の予定表の起動条件（刻・間隔・遅れて走る設定）を読め。User_Feed_Synchronization は管理者なしで止められるなら止めよ。残りを毎日 03:20 に寄せる管理者の一本（Start-Process p…\n\n── どこまで進んだか ──\n台帳：未了 0件\n足跡：最後は 11:18:43 heartbeat／この枠に入ってから 命令 0回・返り 0回\n\n＊claude の子を 0本落として、Esc を一打送りました。\n＊記録は ~/.claude/inbox-watch.log。\n"
@@ -243,10 +248,5 @@
         "title":  "🪟 時間切れ（再挑戦 2/3）",
         "time":  1790222582,
         "message":  "枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**\n同じ字の枠を切ったのは、48時間で 2 回目です。\n\n── 切れた枠（先頭200字）──\n六。読むだけ。1. 電源の眠り・休止・画面の消灯の時間（AC）。2. 無線の口の省電力（電源の管理で切られる設定）の有無。3. Windows Update のアクティブ時間と、保留の再起動の有無。4. C: の空きと、~/.claude とリポジトリの大きさ・notices-*.json の数。5. gh の鍵の期限。各項に直す要否の印だけ付けて札に書け。直すな。本体には触るな。以上\n\n── どこまで進んだか ──\n台帳：未了 2件／この枠の行は「未了：受領／時間切れ（10分・再挑戦 1/3）」\n足跡：最後は 12:58:12 heartbeat／この枠に入ってから 命令 6回・返り 6回\n\n＊claude の子を 0本落として、Esc を一打送りました。\n＊記録は ~/.claude/inbox-watch.log。\n"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）：claude の自動更新を止めて落とす直前に更新・電源と容量の読み",
-        "time":  1790222426,
-        "message":  "claude の自動更新を止めて落とす直前に更新・電源と容量の読み\n五 claude-loop.cmd に set \"DISABLE_AUTOUPDATER=1\" を足した（claude を起こす前）。daily-reboot は落とすと決めた後・知らせの前に claude update を一度だけ回す（上限180秒・結果は reboot.log と知らせの本文）。作り値：落とす回は update→shutdown の順で呼ばれ、見送る回は update を呼ばない。いまの窓には効かない（次に立ち直った窓から）／六 読んだ分：眠り・休止・画面の消灯（AC）はどれも0秒＝しない。無線 AR9485 は「電力の節約のために電源を切れる」が有効（MSPower Enable=True）。無線の省電力モード（AC）は最大パフォーマンス。アクティブ時間 11時〜4時（自動調整あり）。保留の再起動は WU・CBS とも無し、PendingFileRenameOperations に Office の一時綴り3行。C: 空き 544GB／670GB。大きさと gh の鍵の期限は測っている最中\n"
     }
 ]
