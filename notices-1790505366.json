@@ -1,23 +1,33 @@
 [
     {
+        "title":  "🪟 異常です（手が要ります）",
+        "time":  1790505365,
+        "message":  "夜の保守・更新の仕事の起動条件と 03:20 へ寄せる管理者の一本\nClaude Code が動いていません。落ちたか、閉じられました。\nこちらがすること：端末で Claude Code を開き直してください。"
+    },
+    {
+        "title":  "🪟 見張りが止まっていました（18:48〜19:34・47分）",
+        "time":  1790505288,
+        "message":  "見張りの巡回（watch-notify）が前回から 47分空いていました。\n前回の記録 2026-09-27 18:48:07／今回 2026-09-27 19:34:46\n\n＊どの段で止まったかは ~/.claude/watch-step-log.txt の足跡にあります。"
+    },
+    {
+        "title":  "📮 郵便受けが詰まっています",
+        "time":  1790505277,
+        "message":  "郵便受けを 47 分見に行けていません（取り込む見張りが止まっているか、gh が通っていません）\nこちらがすること：郵便受けへ書いた行はまだ受信箱に入っていません。急ぐなら黒い窓から直に入れてください。"
+    },
+    {
+        "title":  "🪟 連携に訴えがあります（hook-quiet・state-stale）",
+        "time":  1790505119,
+        "message":  "連携の見張りから訴えが出ています。\n\n・state-stale … 公開側の生存が 49分 書かれていない（state.json の at）。パネルは凍った状態を出し続ける\n・hook-quiet … hook.log が 43分 書かれていない。枠を受ける口も生存も、ここを通る\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
+    },
+    {
         "title":  "🪟 異常です：再起動の後の点検",
         "time":  1790489424,
         "message":  "再起動の10分後の通し点検（09-27 15:10）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・悪い結果 ClaudeDailyNotice=-1／ClaudeEdgeSweep=-1／ClaudeHomeBackup=-1\n② 見張りの生存 … 0分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-27 11:36:22／panel-ver.txt 144\n欠け 1件：予定の最終結果が悪い：ClaudeDailyNotice=-1／ClaudeEdgeSweep=-1／ClaudeHomeBackup=-1"
     },
     {
-        "title":  "🕒 延びています",
-        "time":  1790476582,
-        "message":  "夜の保守・更新の仕事の起動条件と 03:20 へ寄せる管理者の一本\n終了予定11:34を過ぎています（経過21分）"
-    },
-    {
         "title":  "🪟 時間切れ（再挑戦 1/3）",
         "time":  1790475844,
         "message":  "枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**\n同じ字の枠を切ったのは、48時間で 1 回目です。\n\n── 切れた枠（先頭200字）──\n一つだけ。Defender Cache Maintenance・SilentCleanup・User_Feed_Synchronization・Edge の更新・Google の更新の予定表の起動条件（刻・間隔・遅れて走る設定）を読め。User_Feed_Synchronization は管理者なしで止められるなら止めよ。残りを毎日 03:20 に寄せる管理者の一本（Start-Process p…\n\n── どこまで進んだか ──\n台帳：未了 0件\n足跡：最後は 11:18:43 heartbeat／この枠に入ってから 命令 0回・返り 0回\n\n＊claude の子を 0本落として、Esc を一打送りました。\n＊記録は ~/.claude/inbox-watch.log。"
-    },
-    {
-        "title":  "🪟 連携に訴えがあります（hook-quiet）",
-        "time":  1790474462,
-        "message":  "連携の見張りから訴えが出ています。\n\n・hook-quiet … hook.log が 603分 書かれていない。枠を受ける口も生存も、ここを通る\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
     },
     {
         "title":  "🪟 見張りが止まっています（最後の記録 01:06・592分前）",
@@ -48,11 +58,6 @@
         "title":  "📮 郵便受けが詰まっています",
         "time":  1790433173,
         "message":  "郵便受けを 28 分見に行けていません（取り込む見張りが止まっているか、gh が通っていません）\nこちらがすること：郵便受けへ書いた行はまだ受信箱に入っていません。急ぐなら黒い窓から直に入れてください。"
-    },
-    {
-        "title":  "🪟 連携に訴えがあります（state-stale）",
-        "time":  1790433068,
-        "message":  "連携の見張りから訴えが出ています。\n\n・state-stale … 公開側の生存が 47分 書かれていない（state.json の at）。パネルは凍った状態を出し続ける\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
     },
     {
         "title":  "🪟 見張りが止まっていました（23:04〜23:29・25分）",
@@ -173,10 +178,5 @@
         "title":  "🔗 新しい線",
         "time":  1790348917,
         "message":  "https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n\nCode タブ：引き継ぎは試していない（claude-loop は新しい会話で立てた。pick-resume.log を見る）\n\n窓の claude（pid 5072）の remote-control の宛先です。\n＊記録は ~/.claude/inbox-watch.log。"
-    },
-    {
-        "title":  "🔗 新しい線",
-        "time":  1790348890,
-        "message":  "https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n\nCode タブ：引き継ぎは試していない（claude-loop は新しい会話で立てた。pick-resume.log を見る）\n\n窓の claude（pid 5072,11044）の remote-control の宛先です。\n＊記録は ~/.claude/inbox-watch.log。"
     }
 ]
