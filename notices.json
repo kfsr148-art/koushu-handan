@@ -1,13 +1,13 @@
 [
     {
+        "title":  "🕒 延びています",
+        "time":  1790520486,
+        "message":  "bcdedit /bootsequence {memdiag} を管理者でもう一度（UAC が通らず）\n終了予定23:46を過ぎています（経過11分）"
+    },
+    {
         "title":  "🪟 時間切れ（再挑戦 1/3）",
         "time":  1790520308,
         "message":  "枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**\n同じ字の枠を切ったのは、48時間で 1 回目です。\n\n── 切れた枠（先頭200字）──\nbcdedit /bootsequence {memdiag} を管理者でもう一度起こせ。UAC の「はい」が通ったかと、次の起動が記憶の診断になっているかを bcdedit の読みで札に書け。本体には触るな。以上\n\n── どこまで進んだか ──\n台帳：未了 2件／この枠の行は「未了：23:12:11 に bcdedit /bootsequence {mem…」\n足跡：最後は 23:38:05 heartbeat／この枠に入ってから 命令 0回・返り 0回\n\n＊claude の子を 0本落として、Esc を一打送りました。\n＊記録は ~/.claude/inbox-watch.log。"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1790519885,
-        "message":  "bcdedit /bootsequence {memdiag} を管理者でもう一度（UAC が通らず）\nClaude Code が戻りました。"
     },
     {
         "title":  "🪟 窓を起こし直しました（今日2回目）",
