@@ -1,21 +1,16 @@
-# bcdedit /bootsequence {memdiag} を管理者でもう一度（また UAC が通らず）（r0927-2311）
+# bcdedit の二件と未検収の一行を済へ（r0928-0009）
 
-**終わり（残り2件）** — 2026-09-27 23:15ごろ（VAIO）。本体には触っていない。
+**終わり（残り0件）** — 2026-09-28 00:10ごろ（VAIO）。本体には触っていない。
 
-- **23:12:11** に管理者の窓を起こした（`bcdedit /bootsequence {memdiag}`・`bcdedit /enum {bootmgr}`・`bcdedit /enum {memdiag}`。読みは ~/.claude/memdiag-bcdedit-20260927.txt へ書く形）
-- **UAC は通らなかった**：**23:14:13** に `This command cannot be run due to the error: The operation was canceled by the user.`。起こしてから**約2分**で取り消されたので、「いいえ」を押したのではなく、**VAIO の画面の UAC に誰も答えないまま時間切れ**になった見込み（22:57 の一回目も同じ形）
-- **bcdedit は走っていない。読みの綴りもできていない。次の起動は記憶の診断になっていない**
-- ＊UAC の答えは VAIO の前でしか出せない（Code タブや遠隔からは押せない）。遠隔から起こしても、画面の前に人が居なければ毎回こうなる
-
-## 走らせる手（VAIO の前で）
-1. 次のどちらかを VAIO の窓で起こし、出てきた UAC に「はい」を押す
-   - この窓（claude）へ「bcdedit を管理者でもう一度」と頼む
-   - 自分で打つ：`Start-Process powershell -Verb RunAs -ArgumentList '-NoExit -Command "bcdedit /bootsequence {memdiag}; bcdedit /enum {bootmgr}; bcdedit /enum {memdiag}"'`
-2. `bcdedit /enum {bootmgr}` の `bootsequence` の行に `{memdiag}` が出ていれば、次の起動が一度だけ記憶の診断になる
+- **台帳（orders-open.tsv）**：bcdedit /bootsequence {memdiag} を管理者で起こし直す二件を**済**へ移した。訳は「**09-28 00:08 に人が管理者の青い窓から直に走らせ、{memdiag} が次の起動に入った**」
+  - 2026-09-27 22:57:12 の枠
+  - 2026-09-27 23:11:56 の枠
+- **未検収**：「2026-09-27 22:58 bcdedit /bootsequence {memdiag} を管理者で走らせ直すこと」を同じ訳で **kenshu-closed.tsv** へ移した
+- **残した未検収**：「2026-09-27 22:58 記憶の診断を走らせた次の起動の後に System の MemoryDiagnostics-Results を読むこと（人手待ち）」
+- **台帳の未了：0件**（この枠も済にした）。未検収は10行
 
 ### 残り
-1. 2026-09-27 22:57:12 の枠：bcdedit /bootsequence {memdiag} を走らせる（UAC が通らず未了）
-2. 2026-09-27 23:11:56 の枠：同じ（23:14 に UAC が時間切れ・未了）
+残り0件
 
 ---
 
@@ -24,11 +19,12 @@
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **431件**ある。
+　ここに出るのは新しい20件。全部で **432件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r0928-0009.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-0009.md) | 09-28 00:10 | bcdedit の二件と未検収の一行を済へ（r0928-0009） |
 | [`r0927-2311.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2311.md) | 09-27 23:15 | bcdedit /bootsequence {memdiag} を管理者でもう一度（また UAC が通らず）（r0927-2311） |
 | [`r0927-2257.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2257.md) | 09-27 23:01 | y0927-2251 にヨシ → 次の起動を記憶の診断に（UAC が取り消され、走っていない）（r0927-2257） |
 | [`r0927-2226.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2226.md) | 09-27 22:30 | pipe-warn の鈴を「続く間も3時間ごと・消えたら戻り」に（r0927-2226） |
@@ -48,6 +44,5 @@
 | [`r0926-1940.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1940.md) | 09-26 19:41 | iCloud の起動を外して止めた（r0926-1940） |
 | [`r0926-1927.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1927.md) | 09-26 19:32 | VAIO の iCloud の読み（r0926-1927・読むだけ） |
 | [`r0926-1911.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1911.md) | 09-26 19:17 | 「🔗 新しい線」は宛先が替わった時だけ鳴らす（r0926-1911） |
-| [`r0926-1903.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1903.md) | 09-26 19:04 | 未検収の healthchecks の check 作りを取り下げで済へ（r0926-1903） |
 
 <!-- 控えの一覧 ここまで -->
