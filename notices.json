@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 窓を起こし直しました（今日1回目）",
+        "time":  1790505509,
+        "message":  "対話の Claude Code が0本になっていたので、claude で起こし直しました（--continue は付けない）。\n落ちを見た刻 19:36:26／起こした刻 19:38:26（0本が2分）\n今日 1回目\n\n＊記録は ~/.claude/revive.log にあります。"
+    },
+    {
         "title":  "🪟 異常です（手が要ります）",
         "time":  1790505365,
         "message":  "夜の保守・更新の仕事の起動条件と 03:20 へ寄せる管理者の一本\nClaude Code が動いていません。落ちたか、閉じられました。\nこちらがすること：端末で Claude Code を開き直してください。"
@@ -173,10 +178,5 @@
         "title":  "✅ 再起動の後の点検（返事不要）",
         "time":  1790359821,
         "message":  "再起動の10分後の通し点検（09-26 03:10）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・最終結果は全て良い\n② 見張りの生存 … 0分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-24 15:31:53／panel-ver.txt 144\n四つとも○。戻っている。"
-    },
-    {
-        "title":  "🔗 新しい線",
-        "time":  1790348917,
-        "message":  "https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n\nCode タブ：引き継ぎは試していない（claude-loop は新しい会話で立てた。pick-resume.log を見る）\n\n窓の claude（pid 5072）の remote-control の宛先です。\n＊記録は ~/.claude/inbox-watch.log。"
     }
 ]
