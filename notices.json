@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 見張りが止まっていました（18:48〜19:34・47分）",
+        "time":  1790505288,
+        "message":  "見張りの巡回（watch-notify）が前回から 47分空いていました。\n前回の記録 2026-09-27 18:48:07／今回 2026-09-27 19:34:46\n\n＊どの段で止まったかは ~/.claude/watch-step-log.txt の足跡にあります。"
+    },
+    {
         "title":  "📮 郵便受けが詰まっています",
         "time":  1790505277,
         "message":  "郵便受けを 47 分見に行けていません（取り込む見張りが止まっているか、gh が通っていません）\nこちらがすること：郵便受けへ書いた行はまだ受信箱に入っていません。急ぐなら黒い窓から直に入れてください。"
@@ -173,10 +178,5 @@
         "title":  "🔗 新しい線",
         "time":  1790348917,
         "message":  "https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n\nCode タブ：引き継ぎは試していない（claude-loop は新しい会話で立てた。pick-resume.log を見る）\n\n窓の claude（pid 5072）の remote-control の宛先です。\n＊記録は ~/.claude/inbox-watch.log。"
-    },
-    {
-        "title":  "🔗 新しい線",
-        "time":  1790348890,
-        "message":  "https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n\nCode タブ：引き継ぎは試していない（claude-loop は新しい会話で立てた。pick-resume.log を見る）\n\n窓の claude（pid 5072,11044）の remote-control の宛先です。\n＊記録は ~/.claude/inbox-watch.log。"
     }
 ]
