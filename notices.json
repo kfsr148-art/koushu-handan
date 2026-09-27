@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 時間切れ（再挑戦 1/3）",
+        "time":  1790475844,
+        "message":  "枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**\n同じ字の枠を切ったのは、48時間で 1 回目です。\n\n── 切れた枠（先頭200字）──\n一つだけ。Defender Cache Maintenance・SilentCleanup・User_Feed_Synchronization・Edge の更新・Google の更新の予定表の起動条件（刻・間隔・遅れて走る設定）を読め。User_Feed_Synchronization は管理者なしで止められるなら止めよ。残りを毎日 03:20 に寄せる管理者の一本（Start-Process p…\n\n── どこまで進んだか ──\n台帳：未了 0件\n足跡：最後は 11:18:43 heartbeat／この枠に入ってから 命令 0回・返り 0回\n\n＊claude の子を 0本落として、Esc を一打送りました。\n＊記録は ~/.claude/inbox-watch.log。"
+    },
+    {
         "title":  "🪟 連携に訴えがあります（hook-quiet）",
         "time":  1790474462,
         "message":  "連携の見張りから訴えが出ています。\n\n・hook-quiet … hook.log が 603分 書かれていない。枠を受ける口も生存も、ここを通る\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
