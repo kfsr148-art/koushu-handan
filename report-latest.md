@@ -1,24 +1,21 @@
-# y0927-2251 にヨシ → 次の起動を記憶の診断に（UAC が取り消され、走っていない）（r0927-2257）
+# bcdedit /bootsequence {memdiag} を管理者でもう一度（また UAC が通らず）（r0927-2311）
 
-**終わり（残り1件）** — 2026-09-27 23:01ごろ（VAIO）。本体には触っていない。
+**終わり（残り2件）** — 2026-09-27 23:15ごろ（VAIO）。本体には触っていない。
 
-- **y0927-2251**（断片の一行：`bcdedit /bootsequence {memdiag}` を管理者で打つ）へのヨシを受け、印を yoshi-closed.tsv へ移した（ヨシ待ちは0件）
-- 22:57:45 に管理者の窓を起こした。形は断片の一行どおり（`bcdedit /bootsequence {memdiag}` と `bcdedit /enum {memdiag}`）で、確かめのために `bcdedit /enum {bootmgr}` の読みを ~/.claude/memdiag-bcdedit-20260927.txt へ書く段を同じ窓に足した
-- **UAC が取り消された**：`Start-Process : This command cannot be run due to the error: The operation was canceled by the user.`（UAC の窓で「いいえ」か、答えが無いまま時間切れ）。**bcdedit は一度も走っていない**。読みの綴りもできていない
-- **次の起動は記憶の診断になっていない**（bootsequence は設定されていない）。bcdedit の読みそのものは管理者でないとできないので、札に載せられる読みは無い
+- **23:12:11** に管理者の窓を起こした（`bcdedit /bootsequence {memdiag}`・`bcdedit /enum {bootmgr}`・`bcdedit /enum {memdiag}`。読みは ~/.claude/memdiag-bcdedit-20260927.txt へ書く形）
+- **UAC は通らなかった**：**23:14:13** に `This command cannot be run due to the error: The operation was canceled by the user.`。起こしてから**約2分**で取り消されたので、「いいえ」を押したのではなく、**VAIO の画面の UAC に誰も答えないまま時間切れ**になった見込み（22:57 の一回目も同じ形）
+- **bcdedit は走っていない。読みの綴りもできていない。次の起動は記憶の診断になっていない**
+- ＊UAC の答えは VAIO の前でしか出せない（Code タブや遠隔からは押せない）。遠隔から起こしても、画面の前に人が居なければ毎回こうなる
 
-## 未検収に足した二行
-- 2026-09-27 22:58 bcdedit /bootsequence {memdiag} を管理者で走らせ直すこと（22:57 は UAC が取り消された・人手待ち）
-- 2026-09-27 22:58 記憶の診断を走らせた次の起動の後に、System の Microsoft-Windows-MemoryDiagnostics-Results（1101／1201 など）を読むこと（人手待ち）
-
-## 走らせ直す一行（同じ形・読みを綴りに残す）
-```powershell
-Start-Process powershell -Verb RunAs -ArgumentList '-NoExit -Command "bcdedit /bootsequence {memdiag}; bcdedit /enum {bootmgr}; bcdedit /enum {memdiag}"'
-```
-＊走ったあと、`bcdedit /enum {bootmgr}` の `bootsequence` の行に `{memdiag}` が出ていれば、次の起動は記憶の診断になる（一度きり）。
+## 走らせる手（VAIO の前で）
+1. 次のどちらかを VAIO の窓で起こし、出てきた UAC に「はい」を押す
+   - この窓（claude）へ「bcdedit を管理者でもう一度」と頼む
+   - 自分で打つ：`Start-Process powershell -Verb RunAs -ArgumentList '-NoExit -Command "bcdedit /bootsequence {memdiag}; bcdedit /enum {bootmgr}; bcdedit /enum {memdiag}"'`
+2. `bcdedit /enum {bootmgr}` の `bootsequence` の行に `{memdiag}` が出ていれば、次の起動が一度だけ記憶の診断になる
 
 ### 残り
-1. 2026-09-27 22:57:12 の枠：bcdedit /bootsequence {memdiag} を走らせる（UAC が取り消され未了）
+1. 2026-09-27 22:57:12 の枠：bcdedit /bootsequence {memdiag} を走らせる（UAC が通らず未了）
+2. 2026-09-27 23:11:56 の枠：同じ（23:14 に UAC が時間切れ・未了）
 
 ---
 
@@ -27,11 +24,12 @@ Start-Process powershell -Verb RunAs -ArgumentList '-NoExit -Command "bcdedit /b
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **430件**ある。
+　ここに出るのは新しい20件。全部で **431件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r0927-2311.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2311.md) | 09-27 23:15 | bcdedit /bootsequence {memdiag} を管理者でもう一度（また UAC が通らず）（r0927-2311） |
 | [`r0927-2257.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2257.md) | 09-27 23:01 | y0927-2251 にヨシ → 次の起動を記憶の診断に（UAC が取り消され、走っていない）（r0927-2257） |
 | [`r0927-2226.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2226.md) | 09-27 22:30 | pipe-warn の鈴を「続く間も3時間ごと・消えたら戻り」に（r0927-2226） |
 | [`r0927-2215.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2215.md) | 09-27 22:17 | healthchecks の down と、押しの止まりの間の pipe-warn の鈴（r0927-2215・読むだけ） |
@@ -51,6 +49,5 @@ Start-Process powershell -Verb RunAs -ArgumentList '-NoExit -Command "bcdedit /b
 | [`r0926-1927.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1927.md) | 09-26 19:32 | VAIO の iCloud の読み（r0926-1927・読むだけ） |
 | [`r0926-1911.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1911.md) | 09-26 19:17 | 「🔗 新しい線」は宛先が替わった時だけ鳴らす（r0926-1911） |
 | [`r0926-1903.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1903.md) | 09-26 19:04 | 未検収の healthchecks の check 作りを取り下げで済へ（r0926-1903） |
-| [`r0926-1852.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-1852.md) | 09-26 18:54 | 未検収の「画面バッファ500行」を済へ（r0926-1852） |
 
 <!-- 控えの一覧 ここまで -->
