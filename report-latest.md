@@ -1,100 +1,22 @@
-# 夜の保守・更新の仕事の起動条件と、03:20 へ寄せる管理者の一本（r0927-0023）
+# 記憶の差し替えの読み（r0927-1940・読むだけ）
 
-**終わり（残り0件）** — 2026-09-27 00:29ごろ（VAIO）。本体には触っていない。止めたのは User_Feed_Synchronization の一つだけ。管理者の一本は**組んだだけで走らせていない**。
+**終わり（残り0件）** — 2026-09-27 19:41ごろ（VAIO）。読むだけ。本体には触っていない。
 
-## 起動条件（読んだ値）
-| 仕事 | 刻・間隔 | 遅れて走る（StartWhenAvailable） | ほか |
-|---|---|---|---|
-| \Microsoft\Windows\Windows Defender\**Windows Defender Cache Maintenance** | **刻の引き金なし**。保守の仕事（Period 1日・Deadline 7日） | **有効** | SYSTEM・最上位・上限72時間 |
-| \Microsoft\Windows\DiskCleanup\**SilentCleanup** | **刻の引き金なし**。保守の仕事（Period 1日・Deadline 1か月） | **有効** | 手待ちの時だけ（RunOnlyIfIdle）・Users・最上位・上限15分。記録では 09-26 に 18:35・19:06・21:06・21:28・23:06 と何度も立っている |
-| \**User_Feed_Synchronization**-{E9B001EE-…} | 毎日 **06:05**（間隔1日） | **有効** | user・限られた権限。06:05 を取りこぼした分が昼・夜に回っていた（09-26 は 10:01・16:40・23:07） |
-| \**MicrosoftEdgeUpdateTaskMachineUA** | 設定は**読めなかった**（管理者の権限が要る） | 読めず | 記録では**毎時 :16**（09-26 06:16〜09-27 00:16 の毎時） |
-| \GoogleSystem\GoogleUpdater\**GoogleUpdaterTaskSystem152.0.7933.0{3F953A55-…}** | 設定は**読めなかった**（同上） | 読めず | 記録では**毎時 :17** |
+| 項 | 値 |
+|---|---|
+| 差し口 | **2口とも埋まり** |
+| SODIMM1（Bank 0） | **4096MB・DDR3** |
+| SODIMM2（Bank 1） | **4096MB・DDR3** |
+| 速さ | 板が読める値を返さない（Speed 20307／ConfiguredClockSpeed 8299 と出る。二枚とも同じ値） |
+| 全体の記憶 | **8071MB**（OS から見える量・実装の合計とも）＝ **8GB として認められている** |
+| 空き | **4431MB**（19:40:33。この読みの仕事の最中で、手待ちそのものではない。claude の私用 497MB） |
+| 起動 | 09-27 19:09（差し替えの後の立ち上げ） |
 
-＊Cache Maintenance と SilentCleanup は、自動保守（03:00 の刻）の枠で走る物。03:00 に走れない日は、遅れて走る設定で手待ちの時間へずれ、毎晩 23:06 ごろに来ている。
-
-## User_Feed_Synchronization を止めた
-- **管理者なしで止められた**：`Disable-ScheduledTask` → **Disabled**（読み直しても Disabled）
-- 戻すとき：`Enable-ScheduledTask -TaskPath '\' -TaskName 'User_Feed_Synchronization-{E9B001EE-3C9A-4BA9-8EFE-1B4C27E7739C}'`
-
-## 残り四つを毎日 03:20 に寄せる管理者の一本（走らせていない）
-
-**起こす一行**（管理者の窓を出す。UAC の「はい」が要る）
-```powershell
-Start-Process powershell -Verb RunAs -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File "C:\Users\user\.claude\tasks-to-0320.ps1"'
-```
-＊先に書き替えた XML だけ見たいときは、`-File` の後ろに ` -DryRun` を足す（予定表には触らない）。
-
-**台本の全文（~/.claude/tasks-to-0320.ps1）**
-```powershell
-# tasks-to-0320.ps1 — 夜 23時台に一斉に立つ保守・更新の仕事を、毎日 03:20 に寄せる（2026-09-27）。
-#   ＊管理者で走らせる（Defender・SilentCleanup・Edge・Google の仕事は管理者でないと書き替えられない）。
-#   ＊変える前に、各仕事の設定（XML）を ~/.claude/tasks-bak-20260927/ へ写す。
-#     戻すときは：schtasks /Create /TN "<道と名>" /XML "<写しの .xml>" /F
-#   ＊変えること：
-#     ① 引き金を「毎日 03:20」の一つにする（Edge・Google の毎時の引き金も、これ一つに置き換わる）
-#     ② 保守の仕事としての起動（MaintenanceSettings）を外す
-#     ③ 取りこぼしを後で走らせる設定（StartWhenAvailable）を切る——切らないと、
-#        03:20 に走れなかった日は、手の空いた夜（23時台）にまた回ってくる
-#   ＊-DryRun を付けると、書き替えた XML を写しの置き場に出すだけで、予定表には触らない。
-param([switch]$DryRun)
-$ErrorActionPreference = 'Stop'
-$bak = 'C:/Users/user/.claude/tasks-bak-20260927'
-New-Item -ItemType Directory -Force $bak | Out-Null
-$log = Join-Path $bak 'result.txt'
-function W([string]$m) { Add-Content -LiteralPath $log -Encoding UTF8 -Value ((Get-Date -Format 'yyyy-MM-dd HH:mm:ss') + '  ' + $m); $m }
-$targets = @(
-  @('\Microsoft\Windows\Windows Defender\', 'Windows Defender Cache Maintenance'),
-  @('\Microsoft\Windows\DiskCleanup\', 'SilentCleanup'),
-  @('\', 'MicrosoftEdgeUpdateTaskMachineUA'),
-  @('\GoogleSystem\GoogleUpdater\', 'GoogleUpdaterTaskSystem152.0.7933.0{3F953A55-30FA-4720-B325-752885319732}')
-)
-$NS = 'http://schemas.microsoft.com/windows/2004/02/mit/task'
-foreach ($t in $targets) {
-  $path = $t[0]; $name = $t[1]
-  $safe = ($name -replace '[^A-Za-z0-9 ._-]', '_')
-  try {
-    $xmlText = Export-ScheduledTask -TaskPath $path -TaskName $name
-    if (-not $DryRun) { [IO.File]::WriteAllText((Join-Path $bak ($safe + '.xml')), $xmlText, [Text.Encoding]::Unicode) }
-    [xml]$x = $xmlText
-    $m = New-Object System.Xml.XmlNamespaceManager($x.NameTable); $m.AddNamespace('t', $NS)
-    $task = $x.SelectSingleNode('/t:Task', $m)
-    # ① 引き金を毎日 03:20 の一つにする
-    $old = $x.SelectSingleNode('/t:Task/t:Triggers', $m); if ($old) { [void]$task.RemoveChild($old) }
-    $trg = $x.CreateElement('Triggers', $NS); $cal = $x.CreateElement('CalendarTrigger', $NS)
-    $sb = $x.CreateElement('StartBoundary', $NS); $sb.InnerText = '2026-09-27T03:20:00'
-    $en = $x.CreateElement('Enabled', $NS); $en.InnerText = 'true'
-    $sd = $x.CreateElement('ScheduleByDay', $NS); $di = $x.CreateElement('DaysInterval', $NS); $di.InnerText = '1'; [void]$sd.AppendChild($di)
-    [void]$cal.AppendChild($sb); [void]$cal.AppendChild($en); [void]$cal.AppendChild($sd); [void]$trg.AppendChild($cal)
-    $reg = $x.SelectSingleNode('/t:Task/t:RegistrationInfo', $m)
-    if ($reg) { [void]$task.InsertAfter($trg, $reg) } else { [void]$task.PrependChild($trg) }
-    $settings = $x.SelectSingleNode('/t:Task/t:Settings', $m)
-    # ② 保守の仕事としての起動を外す
-    $ms = $x.SelectSingleNode('/t:Task/t:Settings/t:MaintenanceSettings', $m); if ($ms) { [void]$settings.RemoveChild($ms) }
-    # ③ 取りこぼしを後で走らせない
-    $swa = $x.SelectSingleNode('/t:Task/t:Settings/t:StartWhenAvailable', $m); if ($swa) { $swa.InnerText = 'false' }
-    $out = Join-Path $bak ($safe + '.new.xml')
-    [IO.File]::WriteAllText($out, $x.OuterXml, [Text.Encoding]::Unicode)
-    if ($DryRun) { W ('（試し）書き替えた XML を出した：' + $out); continue }
-    $r = & schtasks.exe /Create /TN ($path + $name) /XML $out /F 2>&1
-    W ('寄せた：' + $path + $name + '（' + (($r | Out-String).Trim()) + '）')
-  } catch { W ('寄せられなかった：' + $path + $name + '：' + $_.Exception.Message) }
-}
-W '済'
-```
-
-**選んだこと（仕組みの分かれ道）**：取りこぼしを後で走らせる設定（StartWhenAvailable）を**切る**方にした。切らないと、03:20 に機械が落ちている・忙しい日は、また手の空いた夜（23時台）に回ってくるため。
-＊**選ばなかった案**：遅れて走る設定を残す（03:20 に走れなかった日も必ず一度は走るが、夜にずれる日が残る）／Edge・Google の毎時の引き金を残して 03:20 を足す（毎時の読み書きは続く）。
-＊Edge・Google は毎時から**一日一回**になる。更新の取り込みが一日遅れることがある。
-＊03:00〜04:30 は daily-reboot の枠で、落ちる日は 03:20 の前後に再起動が重なる。その日は StartWhenAvailable を切ってあるので、その日の分は飛ぶ。
-
-### 触った物
-予定表の User_Feed_Synchronization（止めた）／~/.claude/tasks-to-0320.ps1（新・走らせていない）・orders-open.tsv・work-note.txt／reports/r0927-0015.md・report-latest.md
+- ＊見張りの記録には、起動の後の手待ちの空きの値がまだ無かった（状態の鍵が 11:13 からの run のまま）。上の空きは、軽い読みだけを走らせている間の値
+- **8GB として認められているので、未検収に「差し替え後の一週、空き 300MB 割れの鈴が鳴らないこと（〜10-04・人手待ち）」を一行足した**
 
 ### 残り
 残り0件
-
----
 
 ---
 
@@ -103,11 +25,12 @@ W '済'
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **419件**ある。
+　ここに出るのは新しい20件。全部で **420件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r0927-1940.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-1940.md) | 09-27 19:41 | 記憶の差し替えの読み（r0927-1940・読むだけ） |
 | [`r0927-0023.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-0023.md) | 09-27 00:29 | 夜の保守・更新の仕事の起動条件と、03:20 へ寄せる管理者の一本（r0927-0023） |
 | [`r0926-2357.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-2357.md) | 09-27 00:08 | 毎晩 23時台に見張りが止まる元（r0926-2357・読むだけ） |
 | [`r0926-2007-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-2007-2.md) | 09-26 20:14 | 前の枠（19:43）の残り：一時間に書き替わる綴りの数（r0926-2007-2） |
@@ -127,6 +50,5 @@ W '済'
 | [`r0924-1234.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0924-1234.md) | 09-24 13:23 | claude の自動更新を止めて落とす直前に更新・電源と容量と鍵の読み（r0924-1234） |
 | [`r0924-1149.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0924-1149.md) | 09-24 11:54 | 常駐を AboveNormal で立てる・枠の鉤の timeout 60秒・いまのメモリ上位10本（r0924-1149） |
 | [`r0924-1117.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0924-1117.md) | 09-24 11:23 | Check-RcDrop の「切れ」を会話の記録で判じる（r0924-1117） |
-| [`r0924-1054.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0924-1054.md) | 09-24 11:02 | VAIO に残る Edge・node の確かめを洗って雲へ（r0924-1054） |
 
 <!-- 控えの一覧 ここまで -->
