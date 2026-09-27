@@ -1,5 +1,20 @@
 [
     {
+        "title":  "🪟 異常です（手が要ります）",
+        "time":  1790505365,
+        "message":  "夜の保守・更新の仕事の起動条件と 03:20 へ寄せる管理者の一本\nClaude Code が動いていません。落ちたか、閉じられました。\nこちらがすること：端末で Claude Code を開き直してください。"
+    },
+    {
+        "title":  "🪟 見張りが止まっていました（18:48〜19:34・47分）",
+        "time":  1790505288,
+        "message":  "見張りの巡回（watch-notify）が前回から 47分空いていました。\n前回の記録 2026-09-27 18:48:07／今回 2026-09-27 19:34:46\n\n＊どの段で止まったかは ~/.claude/watch-step-log.txt の足跡にあります。"
+    },
+    {
+        "title":  "📮 郵便受けが詰まっています",
+        "time":  1790505277,
+        "message":  "郵便受けを 47 分見に行けていません（取り込む見張りが止まっているか、gh が通っていません）\nこちらがすること：郵便受けへ書いた行はまだ受信箱に入っていません。急ぐなら黒い窓から直に入れてください。"
+    },
+    {
         "title":  "🪟 連携に訴えがあります（hook-quiet・state-stale）",
         "time":  1790505119,
         "message":  "連携の見張りから訴えが出ています。\n\n・state-stale … 公開側の生存が 49分 書かれていない（state.json の at）。パネルは凍った状態を出し続ける\n・hook-quiet … hook.log が 43分 書かれていない。枠を受ける口も生存も、ここを通る\n\n＊同じ種類が続く間は、これ以上鳴らしません。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
@@ -8,11 +23,6 @@
         "title":  "🪟 異常です：再起動の後の点検",
         "time":  1790489424,
         "message":  "再起動の10分後の通し点検（09-27 15:10）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・悪い結果 ClaudeDailyNotice=-1／ClaudeEdgeSweep=-1／ClaudeHomeBackup=-1\n② 見張りの生存 … 0分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-27 11:36:22／panel-ver.txt 144\n欠け 1件：予定の最終結果が悪い：ClaudeDailyNotice=-1／ClaudeEdgeSweep=-1／ClaudeHomeBackup=-1"
-    },
-    {
-        "title":  "🕒 延びています",
-        "time":  1790476582,
-        "message":  "夜の保守・更新の仕事の起動条件と 03:20 へ寄せる管理者の一本\n終了予定11:34を過ぎています（経過21分）"
     },
     {
         "title":  "🪟 時間切れ（再挑戦 1/3）",
@@ -168,10 +178,5 @@
         "title":  "🔗 新しい線",
         "time":  1790348917,
         "message":  "https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n\nCode タブ：引き継ぎは試していない（claude-loop は新しい会話で立てた。pick-resume.log を見る）\n\n窓の claude（pid 5072）の remote-control の宛先です。\n＊記録は ~/.claude/inbox-watch.log。"
-    },
-    {
-        "title":  "🔗 新しい線",
-        "time":  1790348890,
-        "message":  "https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n\nCode タブ：引き継ぎは試していない（claude-loop は新しい会話で立てた。pick-resume.log を見る）\n\n窓の claude（pid 5072,11044）の remote-control の宛先です。\n＊記録は ~/.claude/inbox-watch.log。"
     }
 ]
