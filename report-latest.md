@@ -1,15 +1,26 @@
-﻿# 再起動-2（r0928-0348・後の測り）
+# conhost.exe の 0xc0000409 の落ち四回と、Windows Terminal の見込み（r0928-0950-2・読むだけ）
 
-**終わり** — 2026-09-28 03:48（VAIO）。毎週土曜の起こしで再起動し、起き上がった。
+**終わり（残り0件）** — 2026-09-28 09:54ごろ（VAIO）。読むだけ。何も直していない。本体には触っていない。
 
-| | 前 | 後 | 差 |
-|---|---|---|---|
-| 空き物理メモリ | 4793MB | **4331MB** | -462MB |
-| claude | 590MB | **56MB** | -534MB |
+## 落ちの中身（Application Error 1000）
+| 刻 | 落ちた部品（版） | 場所 | 例外・オフセット | 落ちた conhost | 直前の窓 |
+|---|---|---|---|---|---|
+| **09-21 08:51:15**（二件同時） | **conhost.exe（10.0.19041.5198）** | C:\WINDOWS\system32\conhost.exe | 0xc0000409・**0x68eff** | pid 4140（06:36:12 起動）・pid 1688（06:40:39 起動）＝窓二つの conhost | 手待ち（hook.log の最後は 08:47:15 の stop・08:48:05 の生存）。この頃は claude の窓が二本並んでいた |
+| **09-27 04:43:42** | **sechost.dll（10.0.19041.6328）** | C:\WINDOWS\System32\sechost.dll | 0xc0000409・0x5d524 | pid 16088（04:41:58 起動・**起動から1分44秒**） | 仮想メモリの不足（02:30〜09:14）の最中。hook.log は 00:58 から書かれていない＝窓は固まっていた。短い conhost なので、見張りの手の conhost の見込み（Claude の窓ではない） |
+| **09-27 05:21:51** | **ucrtbase.dll（10.0.19041.3636）** | C:\WINDOWS\System32\ucrtbase.dll | 0xc0000409・0x7286e | pid 7092（05:20:15 起動・**起動から1分36秒**） | 同上（仮想メモリの不足の最中） |
+| **09-27 23:31:18** | **conhost.exe（10.0.19041.5198）** | C:\WINDOWS\system32\conhost.exe | 0xc0000409・**0x68eff** | pid 9732（19:38:27 起動）＝Claude の窓の conhost | 手待ち（hook.log は 23:18・23:28 の生存だけ。最後の仕事は 23:20 ごろの報告の押し） |
 
-起き上がった刻 … 09/28/2026 03:18:42
-claude が起きた刻 … 2026-09-28 03:38:58（1本）
-前の測りの刻 … 2026-09-28 03:00:08
+**見立て**
+- **conhost.exe 自身の落ち（09-21 と 09-27 23:31）は三度とも同じ場所（0x68eff）**。どれも数時間立っていた Claude の窓の conhost で、窓は手待ち。同じ版の conhost の同じ所が、長く開いた claude の窓で繰り返し落ちている
+- **09-27 04:43・05:21 は別物**：落ちたのは conhost が読み込む部品（sechost.dll・ucrtbase.dll）で、立って1〜2分の短い conhost。仮想メモリが尽きていた帯なので、確保の失敗から落ちた形（0xc0000409 は「即時の落ち」をまとめた番号）
+
+## Windows の版と Windows Terminal
+- **Windows 10 Home 22H2**（ビルド **19045.6466**・EditionID Core）
+- **Windows Terminal：入っていない**（Microsoft.WindowsTerminal の包みも wt.exe も無い）。**入れられる**（Windows Terminal は 19041 以上が対象で、この機械は 19045。winget も有る）
+- **一行で**：send-text.ps1・read-screen.ps1 は、窓を掴むのではなく「題が合い claude.exe を子に持つ cmd.exe の console」へ AttachConsole で繋いで WriteConsoleInput／ReadConsoleOutputCharacter を使う作りなので、**Windows Terminal の中（ConPTY）でも効く見込み**。ただし **Windows 10 は既定の端末を替えられない**ため、入れただけでは窓は今の conhost のままで、**起こす道（ClaudeCodeAtLogon の `cmd /c start … claude-loop.cmd`）を wt.exe に替える要がある**。題の合わせ方・窓の数え方（watch-notify の「窓=」）が Terminal の窓でも同じに取れるかは、入れて試すまで確かめられない
+
+### 残り
+残り0件
 
 ---
 
@@ -18,11 +29,13 @@ claude が起きた刻 … 2026-09-28 03:38:58（1本）
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **436件**ある。
+　ここに出るのは新しい20件。全部で **438件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r0928-0950-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-0950-2.md) | 09-28 09:54 | conhost.exe の 0xc0000409 の落ち四回と、Windows Terminal の見込み（r0928-0950-2・読むだけ） |
+| [`r0928-0950.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-0950.md) | 09-28 09:54 | 09-28 の再起動の後の点検（記憶の診断・仮想メモリ・03:20・NODE_OPTIONS・引き継ぎ）（r0928-0950・読むだけ） |
 | [`r0928-0348-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-0348-2.md) | 09-28 03:48 | 再起動-2（r0928-0348・後の測り） |
 | [`r0928-0345-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-0345-2.md) | 09-28 03:45 | 再起動-2（r0928-0345・後の測り） |
 | [`r0928-0302-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-0302-2.md) | 09-28 03:02 | 再起動-2（r0928-0302・後の測り） |
@@ -41,7 +54,5 @@ claude が起きた刻 … 2026-09-28 03:38:58（1本）
 | [`r0927-1945.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-1945.md) | 09-27 19:49 | 09-27 01:00〜10:40 に VAIO が止まっていた元（r0927-1945・読むだけ） |
 | [`r0927-1940.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-1940.md) | 09-27 19:41 | 記憶の差し替えの読み（r0927-1940・読むだけ） |
 | [`r0927-0023.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-0023.md) | 09-27 00:29 | 夜の保守・更新の仕事の起動条件と、03:20 へ寄せる管理者の一本（r0927-0023） |
-| [`r0926-2357.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-2357.md) | 09-27 00:08 | 毎晩 23時台に見張りが止まる元（r0926-2357・読むだけ） |
-| [`r0926-2007-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0926-2007-2.md) | 09-26 20:14 | 前の枠（19:43）の残り：一時間に書き替わる綴りの数（r0926-2007-2） |
 
 <!-- 控えの一覧 ここまで -->
