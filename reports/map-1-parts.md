@@ -105,8 +105,8 @@
 | ClaudeCodeAtLogon（予定表） | ログオン時／revive-claude・Restart-Window が叩く | 題「麻雀 攻守判断 (Claude Code)」・/MAX・リポジトリで claude-loop.cmd を開く（題を変えると console-koushu.reg の字が効かない） | — |
 | revive-claude.ps1（ClaudeRevive） | 毎分 | 1節のとおり。輪の cmd が子なし（打ち止め）ならその窓を閉じてから叩く | revive.log・ledger-close.ps1。ntfy 🪟 |
 | daily-reboot.ps1（ClaudeDailyReboot） | 03:00・15:00 から30分ごと4回 | 台帳の未了0・走っている道具なし（node の検査・koushu- の Edge・hook.log の最後が stop）・押し残し0 を見て、揃わなければ見送る（三度まで。四回目も残れば次の定時へ）。落とす前に **`claude update`（上限180秒）** を一度回す | reboot.log（見送りも一行）。ntfy「🔁 落とします（定時）」→ shutdown /r /t 60。戻りは ClaudeAfterLogon.vbs が言う |
-| rc-restart.ps1 | **09-12 から使っていない**（呼ぶ者なし。字の上では ledger-close の注にだけ出る） | 遠隔の橋が切れた窓を閉じ、WMI から起こし直す | rc-restart.log。ntfy 🪟 |
-| window-restart.ps1 | **09-12 から使っていない**（同上） | 窓を閉じ、窓を見やすく-1 の形で起こし直して実測を札へ | window-restart.log |
+| unused/rc-restart.ps1 | **~/.claude/unused/ へ移した（09-28・消していない）**。09-12 から使っていない（呼ぶ者なし） | 遠隔の橋が切れた窓を閉じ、WMI から起こし直す | rc-restart.log。ntfy 🪟 |
+| unused/window-restart.ps1 | **~/.claude/unused/ へ移した（09-28・消していない）**。09-12 から使っていない | 窓を閉じ、窓を見やすく-1 の形で起こし直して実測を札へ | window-restart.log |
 
 ＊revive-test.ps1 も一回きりの試し（09-11）で、呼ぶ者なし。5節に置いた。
 
@@ -149,7 +149,7 @@
 | push-mine.ps1 | 手で（Claude が押すとき。git-push と同じ錠を通す） | 手押しを錠の中で | git-push.log |
 | push-retry.ps1 | watch-notify.ps1・git-push | 空き不足で見送った押しを、空いた回に押し直す | push-retry.log・push-retry-count.log。三回続けて空きを待てなければ ntfy「🪟 異常です（押し直しが三回続けて空きを待てません：…）」 |
 | quick-measure.ps1 | 手で（08-30 の測り・一回きり） | 釦が開いてから押し送りが出るまでを測る | quick-measure.txt |
-| read-screen.ps1 | **呼ぶ者なし**（09-24 まで inbox-watch） | 窓の見えている字を読む（入力はしない） | 書かない |
+| unused/read-screen.ps1 | **~/.claude/unused/ へ移した（09-28・消していない）**。呼ぶ者なし（09-24 まで inbox-watch） | 窓の見えている字を読む（入力はしない） | 書かない |
 | restore-two-services.cmd | 手で・管理者 | WSearch・VCService を 09-18 の控えどおりへ戻す | — |
 | run-hidden.vbs | 予定表の Claude* 12件（CodeAtLogon を除く全部。うち SweepChecks は止まっている） | 窓を出さずに起こし、終わるまで待つ | 書かない |
 | send-esc.ps1 | inbox-watch（鍵:ESC・Check-FrameLimit） | 窓の入力口へ Esc を一つ（前面に出さない） | 書かない |
@@ -161,9 +161,9 @@
 | tasks-to-0320.ps1 | 手で・管理者（09-27 に二度走った） | 夜の保守の仕事を 03:20 に寄せる →1節 | tasks-bak-20260927/ |
 | tool-mark.ps1 | 鉤 PreToolUse／PostToolUse →3節 | 命令の始まりと終わり | hook.log |
 | watch-notify.ps1 | ClaudeWatchNotify（heavy-gate 経由）→1節 | 主の見張り（3668行）。プロセスと窓・hook.log の生存・控えの待ち・終わりの札・ヨシの出し直し（5分おき・上限12回）・見込み超え・使用量の公開（10分ごと）と敷居・claude の版（一日一度）・外の見張り（hc-watch.txt）。呼ぶ子に cmd-watch・kagi-watch・ledger-pickup・push-retry・weekly-reboot-after・heavy-off | watch-state.txt ほか（1節）。ntfy の知らせの大半はここから（map-2） |
-| weekly-reboot.ps1 | **動いていない**（ClaudeWeeklyReboot が予定表に無い） | 土 01:00 の再起動（押し残し0・仕事なしの時だけ） | reboot-pending.txt |
+| unused/weekly-reboot.ps1 | **~/.claude/unused/ へ移した（09-28・消していない）**。ClaudeWeeklyReboot が予定表に無い（weekly-reboot-after.ps1 は使っているので残した） | 土 01:00 の再起動（押し残し0・仕事なしの時だけ） | reboot-pending.txt |
 | weekly-reboot-after.ps1 | watch-notify（reboot-pending.txt がある時だけ） | 起き上がった後の測りを札に書く | 札・印を消す |
-| wifi-swap.ps1 | **動いていない**（ClaudeWifiSwap が予定表に無い） | 有線が繋がれば無線を切る（09-12 の 0x4A の切り分け） | — |
+| unused/wifi-swap.ps1 | **~/.claude/unused/ へ移した（09-28・消していない）**。ClaudeWifiSwap が予定表に無い | 有線が繋がれば無線を切る（09-12 の 0x4A の切り分け） | — |
 | revive-test.ps1 | **呼ぶ者なし**（09-11 の一回きりの試し） | 窓を閉じて十分以内に戻るかを試す | revive-test.txt |
 
 ### リポジトリ側（koushu-handan）
