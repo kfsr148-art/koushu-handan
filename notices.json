@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 戻りました（clock-broken・10分／pub-late・10分）",
+        "time":  1790586026,
+        "message":  "連携の見張りの訴えが消えました。\n\n・clock-broken・10分／pub-late・10分\n\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
+    },
+    {
         "title":  "🪟 異常です（連携に訴え：clock-broken・pub-late）",
         "time":  1790585426,
         "message":  "連携の見張りから訴えが出ています。\n\n・pub-late … 公開側が 51分 遅れている（押しが済んだ札より古い）\n・clock-broken … 開始の時計が壊れている（at **無**／subj **無**）。走り出しも経過も出ない\n\n＊同じ種類が続く間は、3時間ごとに「⏰ まだ続いています」で鳴らし直します。消えたら「✅ 戻りました」を一通送ります。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
@@ -128,11 +133,6 @@
         "title":  "🪟 時間切れ（再挑戦 1/3）",
         "time":  1790535576,
         "message":  "枠が 9分を過ぎたので切りました（上限 8分）。**受信箱へは戻していません。**\n同じ字の枠を切ったのは、48時間で 1 回目です。\n\n── 切れた枠（先頭200字）──\n読むだけで札に書け。09-27 23:25〜23:36 に Claude の窓（claude-loop の cmd）が消えた元を、アプリの記録（Application Error 1000・1001、conhost.exe・cmd.exe・claude.exe の落ち）と、同じ帯の UAC・遠隔の画面（Chrome リモート デスクトップ）の動き、inbox-watch.log の窓の本数の行から…\n\n── どこまで進んだか ──\n台帳：未了 0件\n足跡：最後は 03:58:04 heartbeat／この枠に入ってから 命令 0回・返り 0回\n\n＊claude の子を 0本落として、Esc を一打送りました。\n＊記録は ~/.claude/inbox-watch.log。"
-    },
-    {
-        "title":  "✅ 戻りました（hook-quiet・5分）",
-        "time":  1790535033,
-        "message":  "連携の見張りの訴えが消えました。\n\n・hook-quiet・5分\n\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
     },
     {
         "title":  "🪟 見張りが止まっています（最後の記録 03:00・38分前）",
