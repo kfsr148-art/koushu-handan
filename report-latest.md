@@ -1,52 +1,50 @@
-# 静かな帯（再起動・窓の立ち直りの間は偽の鈴を黙らせる）（r0928-1324）
+# 控えの預け（ClaudeHomeBackup）を 05:00 へ・落ちたら一通（r0928-1349）
 
-**終わり（残り0件）** — 2026-09-28 13:32ごろ（VAIO）。本体には触っていない。窓は落としていない。
+**終わり（残り2件：三つ目と四つ目は続けて着手）** — 2026-09-28 13:50ごろ（VAIO）。本体には触っていない。窓は落としていない。
 
-## 作り
-- **印**：~/.claude/**quiet-band.txt**（start＝入った刻・why＝再起動／窓の立ち直り・alarm＝戻りませんを鳴らしたか・hush＝黙らせた物の名）
-- **手**：~/.claude/**quiet-band.ps1**（新）。各台本が読み込んで使う
-  - `Enter-QuietBand` … 帯に入る（既に帯の中なら、先に入った方の刻と訳を保つ）
-  - `Hush-InBand <名>` … 帯の中なら数えて「出さない」を返す（同じ名は一件）。帯の外なら今まで通り
-  - `Step-QuietBand` … watch-notify が毎回呼ぶ。**明け**＝claude が居て、hook.log の**生存以外の行**（session・resume・stop・notification）が帯の始まりより後に書かれた → **「✅ 戻りました（〈訳〉・〈何分〉・帯の間に黙らせた物 N件）」を一通**して印を消す。**60分**を越えたら一度だけ **「🪟 異常です（戻りません・60分）」を強さ5** で
-- **帯に入る所**
-  - **再起動**：daily-reboot.ps1 が「🔁 落とします」の後・shutdown の前
-  - **窓の立ち直り**：claude が0本を見た所（revive-claude.ps1 の dead の一回目・watch-notify の鍵 dead・inbox-watch の healthchecks の合図）
-- **帯の間に黙らせる物**（出さずに数える。一発の印も立てないので、明けても続いていれば、その時に一度鳴る）
-  | 物 | 台本 |
-  |---|---|
-  | dead・stale の鈴（#12・#13） | watch-notify.ps1 |
-  | 📮 郵便受け silent（#20） | watch-notify.ps1 |
-  | 🪟 見張りが止まっていました（#22） | watch-notify.ps1 |
-  | 🪟 見張りが止まっています（#29） | inbox-watch.ps1（居座った見張りを落とす手はそのまま） |
-  | hook-quiet・state-stale・pub-late・ntfy-down | pipe-check.ps1（pipe-warn.log に「quiet 静かな帯なので鳴らさない」の一行） |
-  | healthchecks への /fail | inbox-watch.ps1 → **帯の間はふつうの合図を打つ** |
-- **割り当て**（異常・延び一日8件）：ntfy-budget.ps1 は**帯の間は数えず止めない**。帯の外の訴えだけを数える
-- **after-reboot.ps1**：ログオンで札を立てる窓を **30分 → 60分**
-- ntfy-say.ps1 に `-Priority`（既定3）を足した（戻りませんの強さ5のため）
+## 元（読んだこと）
+- 予定：毎日 **03:30**・上限10分・遅れて走る＝はい・重なり＝IgnoreNew。包みは run-hidden.vbs → home-backup.ps1
+- 09-27 03:30:30 の結果 **0x800705AA（資源不足）**。git-push.log に home-backup の行が**一つも無い**＝**台本が起きる前に落ちた**
+- 03:30 は **03:00 の再起動（30分おきに 04:30 まで繰り返す）と立ち直り**のただ中。空きが一番細い時刻に重なっていた
+- 09-28 は走った跡なし（予定表の記録の読みは重く、200秒で返らなかったので数えていない）。home-backup-last.txt は **2026-09-26** のまま
+- 台本の中の失敗（拾い・push・鍵の混入）は記録に残すだけで**鳴らない**作りだった
 
-**仕組みの選び**：healthchecks の /fail は、帯の間は「打たない」でなく「**ふつうの合図に替える**」にした。打たずに黙ると、向こうの期限切れ（Period 1分）で結局 DOWN が出るため。本当に戻らない時は帯の60分の強い鈴で知らせる。＊選ばなかった案：帯の間は合図を打たない。
-＊明けの見分けに hook.log の書きの刻を使わないのは、生存（heartbeat）を予定表が claude と関わりなく書くため。
+## したこと
+1. **引き金を毎日 05:00 へ**（元の XML は `~/.claude/tasks-bak-20260927/ClaudeHomeBackup-before-0500.xml`）。上限・遅れて走る・重なりはそのまま。次回 **09-29 05:00**
+2. **落ちたら一通**：`pipe-check.ps1` の末尾に置いた（台本の中に置くと、起きる前に落ちる 0x800705AA を拾えないため）
+   - **05:40 を過ぎて home-backup-last.txt が今日でなければ**「**🪟 異常です（控えの預けが落ちました）**」を一通
+   - 中身の札：最後に押せた日／git-push.log の home-backup の末尾2行（無ければ「台本が起きる前に落ちた見込み」）
+   - **一日一通**（鳴らした日を home-backup-rung.txt に刻む）。拾い・push の失敗・鍵の混入も日付を刻まないので、同じ一通で拾う
+   - 構文検査 0件
 
-## 作り値（帯の印は scratchpad・送り手は偽物）
-| 例 | 結果 |
+**仕組みの選び**：鳴らす所は台本の中でなく外（pipe-check の日付見張り）にした。今回の落ち方は台本が起きないので、中では鳴らせない。＊選ばなかった案：home-backup.ps1 の失敗の枝ごとに鳴らす（起きない回を拾えない）。
+
+## 作り値（控えの置き場は scratchpad・送り手は偽物）
+| 場合 | 鳴った数 |
 |---|---|
-| **再起動が40分で戻る** | 帯の中の dead・hook-quiet・#29 は「出さない」（dead の二度目も）。+10分 claude 無し → 待つ。+40分 claude 有り・hook +39分 → 明け。**送ったのは一通「✅ 戻りました（再起動・40分・帯の間に黙らせた物 3件）」**（強さ3）・印は消えた |
-| **70分戻らない** | +30分 待つ → **+61分「🪟 異常です（戻りません・60分）」を強さ5で一通** → +70分 待つ（二度目は無し） |
-| **帯の外の dead** | 「出さない」＝False（**今まで通り鳴らす**）・Step は none |
-| 割り当ての数え | 帯の外の🪟一件 → 数え1 ／ 帯の中の🪟一件 → 数え1のまま |
-| daily-reboot（作り値の置き場） | 「静かな帯に入った（再起動）」→ 印 why=再起動 |
-| revive（作り値・0本の一回目） | 印 why=窓の立ち直り |
+| A 05:30（まだ見ない刻）・刻みが前日 | 0 |
+| B 05:41・今日押せた | 0 |
+| C 05:41・刻みが前日 | **1**（題・最後に押せた日・記録の末尾） |
+| D 同じ日の 05:51 にもう一度 | 0（一日一通） |
+| E 翌日 06:00 も落ちた | **1** |
+| F 記録に一行も無い | **1**（「台本が起きる前に落ちた見込み」） |
 
-- 構文 NG 0（quiet-band・watch-notify・inbox-watch・pipe-check・daily-reboot・revive-claude・after-reboot・ntfy-say・ntfy-budget）・BOM 保持
-- 常駐を 13:31:37 に起こし直した（台本 13:29:24 より後）。watch-notify・pipe-check・revive・daily-reboot は予定表が次の走りから読む
-- 触った台本はどれも `.bak-20260928` の写しあり
+## 手で一度走らせた（通った）
+- 13:48:48 に予定表から起こした → **結果 0x0**
+- git-push.log：`2026-09-28 13:48:58 home-backup 押した：控え: 2026-09-28（95件の変更）`
+- 控えの蔵 master の先頭 **c2e4b0e**（13:48:53）・origin と一致。home-backup-last.txt は **2026-09-28**
 
-### 手元で回る段・雲で回る段（作法36）
-- 手元：watch-notify（2分ごと・帯を進める／dead・stale・silent・#22 を黙らせる）／inbox-watch（常駐・#29 と /fail）／pipe-check（毎分・四つの訴え）／revive（毎分・帯に入る）／daily-reboot（03:00・15:00・帯に入る）／after-reboot（ログオン・60分）
-- 雲：変わりなし
+## ファイル
+- ~/.claude/pipe-check.ps1（写し .bak-20260928b）
+- 予定表 ClaudeHomeBackup（元 XML は tasks-bak-20260927/）
+- home-backup.ps1 は**変えていない**（写し .bak-20260928 だけ取った）
 
-### 残り
-残り0件
+## 実機
+- 画面に出る物は無し。**明日 09-29 の 05:00 過ぎに git-push.log へ「home-backup 押した」が出て、05:40 以降に 🪟 が鳴らないこと**（人手待ち）
+
+## 残り
+1. 三つ目：使用量の読みの HTTP 401 の元（これから）
+2. 四つ目：notices の押しの pathspec の元（これから）
 
 ---
 
@@ -55,11 +53,12 @@
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **449件**ある。
+　ここに出るのは新しい20件。全部で **450件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r0928-1349.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1349.md) | 09-28 13:49 | 控えの預け（ClaudeHomeBackup）を 05:00 へ・落ちたら一通（r0928-1349） |
 | [`r0928-1324.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1324.md) | 09-28 13:32 | 静かな帯（再起動・窓の立ち直りの間は偽の鈴を黙らせる）（r0928-1324） |
 | [`r0928-1216-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1216-2.md) | 09-28 12:32 | 連携の地図三枚（r0928-1216-2・読むだけ） |
 | [`map-2-alerts.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/map-2-alerts.md) | 09-28 12:31 | 鈴と札の全種類（map-2） |
@@ -79,6 +78,5 @@
 | [`r0928-0138.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-0138.md) | 09-28 01:40 | 09-27 23:25〜23:36 に Claude の窓が消えた元（r0928-0138・読むだけ） |
 | [`r0928-0009.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-0009.md) | 09-28 00:10 | bcdedit の二件と未検収の一行を済へ（r0928-0009） |
 | [`r0927-2311.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2311.md) | 09-27 23:15 | bcdedit /bootsequence {memdiag} を管理者でもう一度（また UAC が通らず）（r0927-2311） |
-| [`r0927-2257.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0927-2257.md) | 09-27 23:01 | y0927-2251 にヨシ → 次の起動を記憶の診断に（UAC が取り消され、走っていない）（r0927-2257） |
 
 <!-- 控えの一覧 ここまで -->
