@@ -1,7 +1,8 @@
 {
-    "at":  "2026-09-28 03:50:23",
+    "at":  "2026-09-28 17:50:20",
     "kinds":  [
-
+                  "clock-broken",
+                  "pub-late"
               ],
     "ntfyDown":  false,
     "text":  ""
