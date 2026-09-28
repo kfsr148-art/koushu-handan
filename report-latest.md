@@ -1,34 +1,13 @@
-# 静かな帯の漏れ二通を塞いだ（r0928-1750）
+# 読むだけ：pathspec の枠・控えの預けの枠・今の予定（r0928-1756）
 
-**終わり（残り0件）** — 2026-09-28 17:50ごろ（VAIO）。本体には触っていない。
+**終わり（残り1件：Check-FrameLimit の切り方に続けて着手）** — 2026-09-28 17:56ごろ（VAIO）。本体には触っていない。読むだけ。
 
-## 漏れた元
-| 刻 | 漏れた 🪟 | 元 |
-|---|---|---|
-| 16:55 | after-reboot -OnLogon の「再起動の後の点検」の欠け | after-reboot.ps1 が帯を見ていなかった |
-| 16:58 | watch-notify の「見張りの生存記録が N 分途切れています」 | 帯で止めていたのは**押し送りだけ**。stale は**本編の札そのもの**が 🪟 なので、Send-Ntfy の「待たせずに出す」から素通りした（16:58:08 に「stale の鈴は出さない」と書いた同じ秒に「待たせずに出す [🪟 異常です（手が要ります）]」） |
-
-## 直し
-1. **after-reboot.ps1**：欠けがあって帯の中なら、🪟 を出さず `Hush-InBand '再起動の後の点検の欠け'` で数え、after-reboot.log に一行残す。欠けが無い回・帯の外は今まで通り。作り値用に `-FakeBandPath` を足した（写し .bak-20260928b）
-2. **watch-notify.ps1**：dead／stale を帯で黙らせた回は、**本編の札も出さない**（`$qbMainHushed`）。帯の外は今まで通り（写し .bak-20260928c）
-- 構文0件ずつ
-
-## 作り値（帯の印は scratchpad・送り手は偽物。本物の quiet-band.txt は作られていない）
-| | 帯の外 | 帯の中（再起動・40分） |
-|---|---|---|
-| watch-notify 本編の 🪟（生存記録） | 出す | **出さない** |
-| watch-notify 押し送り | 出す | **出さない** |
-| after-reboot 点検の欠け（予定12件） | 「🪟 異常です：再起動の後の点検」 | **出さない**（記録に一行） |
-| 明けの ✅ | — | 「✅ 戻りました（再起動・40分・帯の間に黙らせた物 **2件**）」本文に「stale・再起動の後の点検の欠け」 |
-
-## 実機
-- 画面に出る物は無し。**次の再起動で、帯の間に 🪟 が一通も届かず、明けの ✅ の本文に黙らせた物が載ること**（人手待ち）
-
-## ファイル
-- ~/.claude/after-reboot.ps1 ／ ~/.claude/watch-notify.ps1
-
-## 残り
-- 0件
+1. **notices の pathspec の枠は済んだ。** 受信箱 16:06:31 は `[x]`、台帳 16:07:39「notices の pathspec（割り-2）」は済（r0928-1620）。残りは無い。git-push.log の pathspec は 09:00:18 が最後で、直した後は出ていない（次に add が時間切れになった回で効くかは人手待ち）
+2. **05:00 へ移す枠は届いていた。** 台帳 13:41:54「二つ目」（済・r0928-1349）。受信箱には無い（受信箱を通らず直に届いた枠だったため）
+3. **ClaudeHomeBackup の今**
+   - 引き金：**毎日 05:00**（有効）
+   - 前回：**09-28 13:48:48・結果 0x0**（手で一度走らせた回）
+   - 次回：**09-29 05:00:00**
 
 ---
 
@@ -37,11 +16,12 @@
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **456件**ある。
+　ここに出るのは新しい20件。全部で **457件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r0928-1756.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1756.md) | 09-28 18:04 | 読むだけ：pathspec の枠・控えの預けの枠・今の予定（r0928-1756） |
 | [`r0928-1750.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1750.md) | 09-28 17:48 | 静かな帯の漏れ二通を塞いだ（r0928-1750） |
 | [`r0928-1656-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1656-2.md) | 09-28 16:56 | 再起動-2（r0928-1656・後の測り） |
 | [`r0928-1654-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1654-2.md) | 09-28 16:54 | 再起動-2（r0928-1654・後の測り） |
@@ -61,6 +41,5 @@
 | [`r0928-1020.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1020.md) | 09-28 10:16 | 未検収を記録で片付ける（一つ目）（r0928-1020） |
 | [`r0928-1010.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1010.md) | 09-28 10:11 | 未検収の二行を済へ（記憶の診断・2048）（r0928-1010） |
 | [`r0928-0950-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-0950-2.md) | 09-28 09:54 | conhost.exe の 0xc0000409 の落ち四回と、Windows Terminal の見込み（r0928-0950-2・読むだけ） |
-| [`r0928-0950.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-0950.md) | 09-28 09:54 | 09-28 の再起動の後の点検（記憶の診断・仮想メモリ・03:20・NODE_OPTIONS・引き継ぎ）（r0928-0950・読むだけ） |
 
 <!-- 控えの一覧 ここまで -->
