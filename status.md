@@ -2,7 +2,7 @@
 
 **手待ち** — SessionStart の resume を仕事の始まりと読む誤りを直す・連携の地図三枚
 
-未処理 0 件 ／ 2026-09-28 12:20:31 書き出し（VAIOの時計）
+未処理 0 件 ／ 2026-09-28 12:23:11 書き出し（VAIOの時計）
 
 ＊この頁は知らせが出るたびに書き直されます。話題名は載せません。
 ＊押し送り（ntfy）へ出るのはヨシ待ちだけです。ここには押し送っていないものも並びます。
@@ -15,17 +15,17 @@
 ### 1. ✅ 終わりました（返事不要）
 
 ```
-SessionStart の resume を仕事の始まりと読む誤りを直す・連携の地図三枚
-SessionStart の鉤を hook-notice -Kind session に替え、hook-notice に session を足した（hook.log に session と書き、控えの開始も刻まない）。作り値：session だけ→鍵 idle（時計を回さない）／session の後に枠（resume）→鍵 run:枠の刻。地図三枚（map-1-parts・map-2-alerts・map-3-incidents）は三つの手に分けて書かせている最中
-ファイル: ~/.claude/hook-notice.ps1・settings.json（写し .bak-20260928）・orders-open.tsv・work-note.txt／reports/r0928-1216.md・report-latest.md
-実測: hook-notice 構文NG 0・BOM＋CRLF・settings.json 差分1行
-未検収: 2026-09-27 19:40 差し替え後の一週、空き 300MB 割れの鈴が鳴らないこと（〜10-04・人手待ち）／2026-09-28 10:20 23時台・01時台に見張りが止まらないこと（〜10-01 の三夜・人手待ち）
+写せます（1件）
 ```
 
 ### 2. ✅ 終わりました（返事不要）
 
 ```
-写せます（1件）
+SessionStart の resume を仕事の始まりと読む誤りを直す・連携の地図三枚
+SessionStart の鉤を hook-notice -Kind session に替え、hook-notice に session を足した（hook.log に session と書き、控えの開始も刻まない）。作り値：session だけ→鍵 idle（時計を回さない）／session の後に枠（resume）→鍵 run:枠の刻。地図三枚（map-1-parts・map-2-alerts・map-3-incidents）は三つの手に分けて書かせている最中
+ファイル: ~/.claude/hook-notice.ps1・settings.json（写し .bak-20260928）・orders-open.tsv・work-note.txt／reports/r0928-1216.md・report-latest.md
+実測: hook-notice 構文NG 0・BOM＋CRLF・settings.json 差分1行
+未検収: 2026-09-27 19:40 差し替え後の一週、空き 300MB 割れの鈴が鳴らないこと（〜10-04・人手待ち）／2026-09-28 10:20 23時台・01時台に見張りが止まらないこと（〜10-01 の三夜・人手待ち）
 ```
 
 ### 3. 🔎 調べました
