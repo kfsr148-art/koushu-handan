@@ -1,44 +1,40 @@
-# 使用量の HTTP 401 の元と直し（r0928-1611）
+# notices の押しの pathspec の落ちの元と直し（r0928-1620）
 
-**終わり（残り1件：notices の pathspec に続けて着手）** — 2026-09-28 16:11ごろ（VAIO）。本体には触っていない。
+**終わり（残り0件）** — 2026-09-28 16:20ごろ（VAIO）。本体には触っていない。
 
-## 元（鍵の場所・期限）
-- 鍵の場所：`~/.claude/.credentials.json` の `claudeAiOauth`（accessToken・refreshToken・**expiresAt**）。watch-notify.ps1 が accessToken を読んで `api/oauth/usage` を引く
-- 期限：**8時間**（いまの鍵は 11:45:11 に書かれ、切れは 19:45:11）。**更新するのは claude だけ**（claude が使う時に書き替える）
-- 401 が出るのは、夜・再起動で claude が長く黙って**鍵が切れた後、claude が次に動くまでの一回**。最近の3件はどれも次の回で 200
-  | 401 | 次の回 |
-  |---|---|
-  | 09-26 07:48 | 07:58 に 200 |
-  | 09-27 11:08 | 11:20 に 200 |
-  | 09-27 19:34 | 19:46 に 200 |
-- つまり「鍵の入れ替えが要る」という記録の字は誤り。**入れ替えは要らない**
+## 元
+1. 台本の `git.exe` は **`C:\Program Files\Git\cmd\git.exe`＝包み**で、本物の git（mingw64）を子として起こす
+2. Git-Run の時間切れ（`$p.Kill()`）は**包みだけ**を殺す。中の `git add` は走り続け、**commit の後で**新しい写しを索引に積む
+   - 09-28 03:44:51 に add が15秒で切れた。03:44:52 の commit は写し notices-1790534676.json をまだ知らず、pathspec で落ちた
+   - その後 add が積み終え、写しは **HEAD に無く索引にだけ**残った
+3. 04:02 から 09:00 まで知らせが無かったので、その間 notices の commit は無い。09:00 の回で片付け（直近5個を残す）が写しを消し、消した名を道に混ぜる
+4. 「git が知らない道を外す」の判定が **`ls-files`（索引）**で見ていたので、索引にだけある写しを「追跡されている」とみなして残した → `add` が索引から落とし → commit が **`pathspec … did not match any file(s) known to git`**（終了コード1）
+5. 1 は「commit するものが無い」と同じ番号なので、**その回の notices.json は出ないまま成功として数えられていた**
 
-## 直し（機械だけで直せた）
-- watch-notify.ps1 の使用量の段：**鍵の expiresAt を見て、切れていれば（60秒前から）取りに行かない**。「使用量：鍵の期限切れ（MM-dd HH:mm）。claude が次に動けば更新される。取りに行かない」を書き、usage.json は触らない（前の値が残る）。10分後にまた見る。入れたのは 13:51、写し .bak-20260928b、構文0件
-- **こちらで鍵の更新はしない**。更新の鍵は使うたびに替わるので、claude と取り合うと claude の側が締め出されるため。＊選ばなかった案：refresh_token でこちらから更新する
+## 直し（~/.claude/git-push.ps1 の Git-CommitPush）
+- 「追跡されている」を **HEAD にあるか（`ls-tree HEAD`）**で見る。手元にも HEAD にも無い道は外す
+- 外した道が索引にだけ残っていれば **`git rm --cached` で降ろし**、記録に「索引にだけ残っていた道を降ろした」と一行
+- 写し .bak-20260928b・構文0件
 
-## 作り値（本物の鍵・本物の読みは使わない）
-| 鍵の残り | 振る舞い |
-|---|---|
-| 10時間前に切れた | 行かない（切れた刻を記録） |
-| 30分前に切れた | 行かない |
-| あと30秒 | 行かない（60秒の余裕） |
-| あと2分 | 取りに行く |
-| あと2時間 | 取りに行く |
-| expiresAt が読めない | 取りに行く（今まで通り） |
-- 本物：13:51 以降の読みは全部 HTTP 200（16:02 まで）。直しが今の読みを壊していない
+**仕組みの選び**：pathspec の判定を HEAD 基準にした。これは Git-CommitPush の中だけの直しで、他の押し手には響かない。＊選ばなかった案：Git-Run の時間切れで**子まで殺す**（taskkill /T）。こちらが根本だが、全部の git の呼び出しに効き、書きかけで殺すと index.lock が残る回が増える
 
-## 人の手
-- **要らない。**＊ただし「鍵の期限内なのに 401」が記録に出たら、それは本当の締め出しなので、そのときは窓で `/login` を打ち直す
+## 作り値（scratchpad の蔵・送り先も scratchpad の空の蔵）
+| 場合 | 前の台本 | 直した台本 |
+|---|---|---|
+| 索引にだけある写しを消してから押す（09:00 の再現） | **pathspec で落ち**、戻り 0、公開側の status.md は古いまま（a） | 外して降ろし、**押せた**（公開側 b） |
+| HEAD にある写しを消す／新しい写しを足す／知らない名を混ぜる | — | 消したのも足したのも公開側に出た。知らない名は外しただけ |
+
+## 見つけたが直していない物（頼まれていない）
+- 公開の蔵の作業木に **HEAD にあるのに消えている写し（` D notices-1789…json` ほか）が20件**残っている。消した回の commit が落ちたもので、後の回は名を渡さないので永久に commit されない（公開側に古い写しが残る）。片付けるなら一回の commit で済む
 
 ## 実機
-- 画面に出る物は無し。**次に claude が長く黙った後（夜・再起動）、watch-notify.log に「HTTP 401」でなく「鍵の期限切れ」の行が出ること**（人手待ち）
+- 画面に出る物は無し。**次に add が時間切れになった後も、git-push.log に `pathspec … known to git` が出ず、出る時は「索引にだけ残っていた道を降ろした」になること**（人手待ち）
 
 ## ファイル
-- ~/.claude/watch-notify.ps1（写し .bak-20260928b）
+- ~/.claude/git-push.ps1（写し .bak-20260928b）
 
 ## 残り
-1. notices の押しの pathspec の元と直し（割り-2・これから）
+- 0件
 
 ---
 
@@ -47,11 +43,12 @@
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **452件**ある。
+　ここに出るのは新しい20件。全部で **453件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r0928-1620.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1620.md) | 09-28 16:11 | notices の押しの pathspec の落ちの元と直し（r0928-1620） |
 | [`r0928-1611.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1611.md) | 09-28 16:08 | 使用量の HTTP 401 の元と直し（r0928-1611） |
 | [`r0928-1606.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1606.md) | 09-28 16:07 | 台帳の「三つ目と四つ目」を済へ・残りを二枠に割った（r0928-1606） |
 | [`r0928-1349.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1349.md) | 09-28 13:49 | 控えの預け（ClaudeHomeBackup）を 05:00 へ・落ちたら一通（r0928-1349） |
@@ -71,6 +68,5 @@
 | [`r0928-0348-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-0348-2.md) | 09-28 03:48 | 再起動-2（r0928-0348・後の測り） |
 | [`r0928-0345-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-0345-2.md) | 09-28 03:45 | 再起動-2（r0928-0345・後の測り） |
 | [`r0928-0302-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-0302-2.md) | 09-28 03:02 | 再起動-2（r0928-0302・後の測り） |
-| [`r0928-0138.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-0138.md) | 09-28 01:40 | 09-27 23:25〜23:36 に Claude の窓が消えた元（r0928-0138・読むだけ） |
 
 <!-- 控えの一覧 ここまで -->
