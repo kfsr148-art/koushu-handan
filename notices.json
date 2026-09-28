@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1790565631,
+        "message":  "SessionStart の resume を仕事の始まりと読む誤りを直す・連携の地図三枚\nSessionStart の鉤を hook-notice -Kind session に替え、hook-notice に session を足した（hook.log に session と書き、控えの開始も刻まない）。作り値：session だけ→鍵 idle（時計を回さない）／session の後に枠（resume）→鍵 run:枠の刻。地図三枚（map-1-parts・map-2-alerts・map-3-incidents）は三つの手に分けて書かせている最中\nファイル: ~/.claude/hook-notice.ps1・settings.json（写し .bak-20260928）・orders-open.tsv・work-note.txt／reports/r0928-1216.md・report-latest.md\n実測: hook-notice 構文NG 0・BOM＋CRLF・settings.json 差分1行\n未検収: 2026-09-27 19:40 差し替え後の一週、空き 300MB 割れの鈴が鳴らないこと（〜10-04・人手待ち）／2026-09-28 10:20 23時台・01時台に見張りが止まらないこと（〜10-01 の三夜・人手待ち）"
+    },
+    {
         "title":  "🔎 調べました",
         "time":  1790564766,
         "message":  "「命令0回」で切られた三つの枠の元（読むだけ）\n①三つ（09-27 11:24・23:45・09-28 03:59）とも枠の字は窓に届いていない。窓が --resume で立ち直った直後の SessionStart の鉤が hook-notice -Kind resume を打ち、見張りがそれを仕事の始まりと読んで鍵を run にし、控えに残っていた前の件名で枠の時計を回し、9分後に命令0回で切った。会話の記録に利用者の文は無く bridge_status だけ、orders-full にも枠は無く、send-text の打ちも無い ②03:59 の枠は受信箱・郵便受け・台帳のどこからも戻っていない。01:38 の仕事の件名が控えに残り、03:49 の SessionStart の resume で枠の名に使われただけ\nファイル: reports/r0928-1201.md・report-latest.md\n未検収: 2026-09-27 19:40 差し替え後の一週、空き 300MB 割れの鈴が鳴らないこと（〜10-04・人手待ち）／2026-09-28 10:20 23時台・01時台に見張りが止まらないこと（〜10-01 の三夜・人手待ち）"
@@ -163,10 +168,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1790508128,
         "message":  "記憶 8GB に合わせて締め付けを緩めた（NODE_OPTIONS 2048・/clear の敷居 1500MB）\n①NODE_OPTIONS の --max-old-space-size を 1024→2048。立てているのは claude-loop.cmd だけで、起こす道（ClaudeCodeAtLogon・revive）はどれも claude-loop を通る。使われていない rc-restart・window-restart も WMI の起こしの一行の中で 2048 を立てる形にし、子に届くことを node で確かめた。いまの窓は落としていない（次に立った窓から） ②手待ちで /clear を打つ敷居を 900→1500MB（inbox-watch の HEAVY_MB と字・daily-notice の注）。常駐 20:20:30 起こし直し\nファイル: ~/.claude/claude-loop.cmd・rc-restart.ps1・window-restart.ps1・inbox-watch.ps1・daily-notice.ps1（いずれも写し .bak-20260927）・orders-open.tsv・work-note.txt／reports/r0927-2013.md・report-latest.md\n実測: 構文NG 0（四本）・claude-loop は ASCII＋CRLF・常駐 20:20:30 ＞ 台本 20:20:06・WMI の起こしで子の NODE_OPTIONS=--max-old-space-size=2048\n未検収: 2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-23 次に取り下げで閉じた回に ✅ の札が印つきで立って鳴ること（人手待ち）／2026-09-23 次に遠隔の線が切れた回に「🪟 遠隔を繋ぎ直しました」が鳴り Code タブへ戻ること（人手待ち）／2026-09-23 22:26 次に窓が立ち直った回に「🔗 新しい線」が一通だけ届くこと（人手待ち）／2026-09-23 22:26 手待ちで 900MB を超えた回に窓が残ったまま /clear で畳まれること（人手待ち）／2026-09-23 23:15 03:00 の立ち直りの「🔗 新しい線」の判じ（人手待ち）／2026-09-27 00:30 tasks-to-0320.ps1 を管理者で走らせるか（人手待ち・UAC）／2026-09-27 19:40 差し替え後の一週、空き 300MB 割れの鈴が鳴らないこと（〜10-04・人手待ち）／2026-09-27 20:07 次の再起動の後、仮想メモリが自動管理で効き、03:20 に五つが走って 23時台／01時台の固まりが出ないこと（人手待ち）／2026-09-27 20:20 次に窓が立ったら claude が 2048 の上限で立つこと（人手待ち）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1790507415,
-        "message":  "y0927-2003 にヨシ → tasks-to-0320.ps1 を管理者で走らせた\ny0927-2003 へのヨシを受けて印を閉じ、20:06:52 に tasks-to-0320.ps1 を管理者で走らせた（UAC 通過）。五つの仕事（Defender Cache Maintenance・SilentCleanup・Edge の更新・Google の更新・ScheduledDefrag）を毎日 03:20 に寄せ、仮想メモリを自動管理へ戻した（効くのは次の再起動から）。前の四つの写しは 19:45 の元の設定のまま守られた。ScheduledDefrag の読み直しは引き金 03:20・保守なし・遅れて走るなし\nファイル: ~/.claude/yoshi-open.tsv・yoshi-closed.tsv・tasks-bak-20260927/（result.txt・ScheduledDefrag.xml・pagefile-before.txt）・work-note.txt／reports/r0927-2006.md・report-latest.md\n実測: result.txt 五つとも「正しく作成されました」・AutomaticManagedPagefile=True\n未検収: 2026-09-21 19:57 使用量の上限で手待ち（人手待ち）／2026-09-23 次に取り下げで閉じた回に ✅ の札が印つきで立って鳴ること（人手待ち）／2026-09-23 次に遠隔の線が切れた回に「🪟 遠隔を繋ぎ直しました」が鳴り Code タブへ戻ること（人手待ち）／2026-09-23 22:26 次に窓が立ち直った回に「🔗 新しい線」が一通だけ届くこと（人手待ち）／2026-09-23 22:26 手待ちで 900MB を超えた回に窓が残ったまま /clear で畳まれること（人手待ち）／2026-09-23 23:15 03:00 の立ち直りの「🔗 新しい線」の判じ（人手待ち）／2026-09-27 00:30 tasks-to-0320.ps1 を管理者で走らせるか（人手待ち・UAC）／2026-09-27 19:40 差し替え後の一週、空き 300MB 割れの鈴が鳴らないこと（〜10-04・人手待ち）／2026-09-27 20:07 次の再起動の後、仮想メモリが自動管理で効き、03:20 に五つが走って 23時台／01時台の固まりが出ないこと（人手待ち）"
     }
 ]
