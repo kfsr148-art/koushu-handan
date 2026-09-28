@@ -1,40 +1,18 @@
-# 仮置き・未実装の印と、欠けた絵・音の洗い出し（r0928-1945）
+# map-3 の未特定・様子見の五行の元を当て直した（r0928-2005）
 
-**終わり（残り1件：map-3 の元の当て直しに続けて着手）** — 2026-09-28 19:38ごろ（VAIO）。読むだけ。本体には触っていない。
+**終わり（残り0件）** — 2026-09-28 19:42ごろ（VAIO）。読むだけ。直していない。本体には触っていない。
+見た記録：System・Application（イベントログ）・hook.log・revive.log・inbox-watch.log・watch-notify.log・git-push.log。**watch-step-log.txt は 09-28 17:38 からしか無く、どの行にも使えなかった。**予定表（TaskScheduler）の記録も 09-24 まで残っていない。
 
-## 結論
-- **仮置き・未実装・TODO・後で・placeholder・素材待ちの印が付いた「作りかけ」は0件。**当たった字は全部、別の意味だった（下の表）
-- **綴りの無い絵・音は0件。**img の src、ADV の部屋・人物の絵、ミニゲームの勝ち負け絵、猫牌、兎、枝豆の投げ、声の20本、どれも中身がある
+## 結果
+1. **09-21 11:08〜11:39 の固まり … 記録に無い。**分かるのは、11:00 から機械全体が詰まっていたこと（見張りの子が毎回時間切れ・入口 41〜250秒・git-remote-https が18分居座り）と、11:37 に claude 0本・11:39 に人の手で再起動（1074・RuntimeBroker、11:35 に遠隔デスクトップで繋いでいた）まで。何が機械を食っていたか、claude が消えた理由は記録に無い
+2. **09-22 08:11・08:15 の claude 0本 … 記録に無い。**どちらも stop の鉤を書かずに消えた（07:27:53 と 08:13:41 に立ち上がり、それぞれ 08:11:26・08:15:25 に0本）。System・Application に落ちの記録は無い。手掛かりは 07:22 の空き 715MB（4GB の頃・下り坂）だけ
+3. **09-24 15:03 ログオン〜輪が立つまで25分 … 当たり：ログオンのプロファイル読み込みが802秒。**Winlogon 6005（15:07:46「Logon の処理に長い時間」）→ 6006（15:20:09「<Profiles> の Logon 処理に 802 秒」）。残りの 15:20〜15:27（予定が走り出すまで）の7分は記録に無い
+4. **09-26 19:20・21:42 の郵便受けの詰まり**
+   - **19:20 … 当たり：常駐の起こし直しの隙。**19:16:21 に新しい常駐が前の常駐（pid 4700・13:52 起動）を止めた。郵便受けを最後に読めたのは 19:15:02 で、新しい常駐の最初の読みまでに5分を越えた（19:22:38 に解けた）
+   - **21:42 … 半分：常駐の巡回そのものが 21:31:54〜21:43:31 の11分止まっていた**（inbox-watch.log がこの間一行も無い。重い仕事の帯・空き 611MB）。最後に読めたのは 21:36:15。何で止まったかは記録に無い
+5. **09-21 03:00 の見張り38分 … 当たり（重なりから）：Windows の自動保守。**03:01 に Windows Modules Installer が自動起動へ切り替わり、時刻合わせ（03:01:34）・Defender の更新（03:03〜03:25）・BITS（03:31〜03:34）が続いた。03:05:15 に起きた見張りは「開始」の段のまま33分固まり、生存の予定も 02:58〜03:37 は書かず、03:37:36 に三回ぶんをまとめて書いた。09-27 01:06 の自動保守の固まりと同じ形
 
-## 印の字に当たった所（どれも作りかけではない）
-| 行 | 字 | 何か |
-|---|---|---|
-| 488・1757 | placeholder | 牌を打ち込む欄の例文（「例 18m 1357p 3368s 1z5z」）と、その色の指定 |
-| 773・1042・3152・7286・7297・10689 | 後で／あとで | 注の中の「この後で」（処理の順） |
-| 2650 | 後で | 「猫の枚数。後で擬似受け入れを注入する」＝同じ関数の下の方で足している（2924行） |
-| 2763 | 仮置き | 向聴を数える手順の「雀頭を1つ仮置き」 |
-| 1497・2839・2840・2924・2925 | ダミー | 猫牌の代わりに入れる「ダミー字牌」（判定の手順と説明文） |
-| 2002 | 準備中 | 声の読み込みが済むまでの扱いの注 |
-| 3281・3374・3467・3560・3653・3746・3839・3932 | あとで | 一姫の台詞（方言八通り）「あとで「すごいにゃ」って言われ…」 |
-| 5980・6061 | あとで | ずんだの台詞（探偵編）「お礼は、あとでずんだ餅で…」 |
-- serifu-adv.txt・serifu.txt・README.md には当たり無し
-- 画像の中身（data:）の字に偶然当たった行（9・1697・2241 など）は数えていない
-
-## 絵・音の置き場
-| 物 | 置き場（行） | 様子 |
-|---|---|---|
-| img（src 無し）catCardTileImg | 1564 | JS（4957行）が CAT_TILE_GENBA を流し込む。欠けではない |
-| img（src 無し） | 2103 | 猫牌の描き分けの中で CAT_TILE_GENBA を入れる。欠けではない |
-| CAT_TILE_GENBA | 2241 | data 1件 |
-| ADV_ROOM_IMG | 5702〜5704 | 11部屋（captain・office・人柄7・room12・room16）。探偵編が使う部屋はすべてある（欠け0） |
-| ADV_CHAR_IMG | 5705 | 人柄7。captain・office・room12・room16 は別の絵か絵を出さない分岐（6694〜6699行）で、欠けではない |
-| ADV_CAPTAIN・KITTEN・FACE・SHIP・AGROUND・CHART・HALL・BODY | 5706〜5717 | どれも data あり |
-| USAGI_IMG | 5711 | data あり |
-| EDA_NAGE | 9799 | prepare・grasp・flick・flight・action・tama の6枚 |
-| TORI_WIN_IMG／TORI_LOSE_IMG | 9816・9817 | data あり |
-| canvas ssCanvas・ssCutCanvas・ssTplStrip | 9743〜9749 | 写し取りの画面。JS（9143・9306・9398行ほか）が描く |
-| 声 | 1957〜（リポジトリ直下） | 呼ぶ20本（attack・defend・yoshi・dame・0・star・hash・1〜13）がすべて *.wav.wav で在る |
-- 綴りの外への参照（manifest.json・templates.json・ver.txt）も在る
+＊郵便受けの刻（silent:<数>）は PowerShell 5.1 の -UFormat %s が地方時のまま秒にした値。UTC として読むと9時間ずれる。
 
 ---
 
@@ -43,11 +21,12 @@
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **462件**ある。
+　ここに出るのは新しい20件。全部で **463件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r0928-2005.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-2005.md) | 09-28 19:42 | map-3 の未特定・様子見の五行の元を当て直した（r0928-2005） |
 | [`r0928-1945.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1945.md) | 09-28 19:38 | 仮置き・未実装の印と、欠けた絵・音の洗い出し（r0928-1945） |
 | [`r0928-1922.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1922.md) | 09-28 19:17 | map-2 の要確認（三つ目）：heavy-skip・記録の順・My First Check・使わない台本（r0928-1922） |
 | [`map-1-parts.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/map-1-parts.md) | 09-28 19:16 | 連携で動いている物の一覧（map-1） |
@@ -67,6 +46,5 @@
 | [`map-2-alerts.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/map-2-alerts.md) | 09-28 12:31 | 鈴と札の全種類（map-2） |
 | [`map-3-incidents.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/map-3-incidents.md) | 09-28 12:26 | 09-21〜09-28 の出来事（map-3） |
 | [`r0928-1216.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1216.md) | 09-28 12:18 | SessionStart の resume を仕事の始まりと読む誤りを直した（r0928-1216） |
-| [`r0928-1201.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1201.md) | 09-28 12:03 | 「命令0回」で切られた三つの枠の元（r0928-1201・読むだけ） |
 
 <!-- 控えの一覧 ここまで -->
