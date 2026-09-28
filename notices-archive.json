@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🪟 連携に訴えがあります（subj-gap）",
+        "time":  1790515838,
+        "message":  "連携の見張りから訴えが出ています。\n\n・subj-gap … 作業中の件名が食い違っている（控え「pipe-warn の鈴を「続く間も3時間ごと・消えたら戻り」に」／出ている「pipe-warn の訴えが「同じ種類が続く間は鳴らさない」で黙り続ける形を改め」）\n\n＊同じ種類が続く間は、3時間ごとに「⏰ まだ続いています」で鳴らし直します。消えたら「✅ 戻りました」を一通送ります。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。\n"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1790515238,
         "message":  "写せます（5件）"
@@ -243,10 +248,5 @@
         "title":  "✅ 再起動の後の点検（返事不要）",
         "time":  1790359821,
         "message":  "再起動の10分後の通し点検（09-26 03:10）\n① 予定表 Claude* … 13件（無効 ClaudeSweepChecks）・最終結果は全て良い\n② 見張りの生存 … 0分前\n③ ntfy.sh の応答 … HTTP 200\n④ 公開側 … notices.json のいちばん新しい札 09-24 15:31:53／panel-ver.txt 144\n四つとも○。戻っている。\n"
-    },
-    {
-        "title":  "🔗 新しい線",
-        "time":  1790348917,
-        "message":  "https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n\nCode タブ：引き継ぎは試していない（claude-loop は新しい会話で立てた。pick-resume.log を見る）\n\n窓の claude（pid 5072）の remote-control の宛先です。\n＊記録は ~/.claude/inbox-watch.log。\n"
     }
 ]
