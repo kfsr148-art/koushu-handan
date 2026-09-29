@@ -1,43 +1,39 @@
-# claude update を予定表 ClaudeUpdate へ切り離した（r0929-1633）
+# 偽の残り三つを塞いだ（延び・pipe-check・郵便受け）（r0929-1745）
 
-**終わり（残り0件）** — 2026-09-29 16:31ごろ（VAIO）。本体には触っていない。
+**終わり（残り0件）** — 2026-09-29 17:45ごろ（VAIO）。本体には触っていない。
 
-## したこと
-1. **~/.claude/claude-update.ps1（新）**：`claude update` を回し、結果を **~/.claude/update.log** に一行（終了コード・出力の最後の一行・かかった秒）。内側の上限は **570秒**（予定表の上限600秒より短くし、切ったことを必ず一行残すため。作法35）。切れば「570秒の上限で切った（更新は済んでいない見込み）」。三百行で古い行を落とす
-2. **予定表 ClaudeUpdate（新）**：毎日 **02:40・14:40**、上限 **600秒（PT10M）**、重なり IgnoreNew、遅れて走る＝はい。包みは他と同じ run-hidden.vbs。**初回は 09-30 02:40**
-3. **daily-reboot.ps1 は update を呼ばない**：落とす前の180秒の update を外した。「🔁 落とします」の本文には update.log の最後の一行（「最後の更新：…」）を添えるだけ。-UpdateCmd は受けるが使わない（前の作り値の呼び方を壊さないため）
-4. **after-reboot.ps1**：予定表 Claude* の要る数を 13 → **14**（ClaudeUpdate が消えたら欠けとして出るように）。試しの読み（-Dry）で「14件・最終結果は全て良い」
+## 1. 時間切れで切った枠は終了予定を消し「延びています」を出さない
+- 元：切った後も開始の時計（work-started.txt）と見込みが残り、終了予定を過ぎると「🕒 延びています」が鳴っていた（09-28 14:48・14:50 🙀）
+- 直し：Check-FrameLimit が書く **frame-cut.txt（開始の刻<TAB>件名）がいまの仕事を指していれば**
+  - **watch-notify.ps1**：延び（over／undef）を出さず「時間切れで切った枠なので延びは出さない」を記録だけ
+  - **inbox-watch.ps1**：state.json の見込み（mikomi）を空にする＝パネルの終了予定が消える
+- 作り値：**A 切った枠 → 延び出ない・見込み空**／**B 切っていない枠（frame-cut は前の仕事）→ 延び出る・見込み「60分」**
 
-## 作り値（update.log・予定表とも scratchpad。本物の claude update は叩いていない）
-| 場合 | update.log の一行 |
-|---|---|
-| 02:40 の形で通る（偽の update が即座に返る） | 「claude update：終了コード 0・Successfully updated from 2.1.284 to version 2.1.285（作り値）（1秒）」 |
-| 上限を越える（上限を5秒に縮め、偽の update が15秒眠る） | 「claude update：5秒の上限で切った（更新は済んでいない見込み）」 |
-| daily-reboot（枠 2026-10-01 03・偽の shutdown） | 「三つとも空。落とす」→ 帯 → shutdown が**同じ秒**（前は update で最大3分遅れた）。🔁 の本文に「最後の更新：…」 |
+## 2. pipe-check の訴えは二巡（20分）続いた時だけ鳴らす
+- 元：見たその回に鳴らしていた。09-28 17:50 の clock-broken・pub-late、09-27 22:30 の subj-gap は次の巡回で消え、🪟 と ✅ が対で出ていた
+- 直し（**pipe-check.ps1**）：初めて見た種類は **pipe-warn-first.txt** に刻を書いて pipe-warn.log へ「first 初めて見たので記録だけ」。**19分以上続いていれば一発目を鳴らす**（10分おきの巡回で三回目）。その前に消えれば「20分続かずに消えた（鳴らさない）」と書いて落とし、✅ も出さない。鳴らした後（⏰ まだ続いています・✅ 戻りました）は今まで通り
+- 作り値：**A 0分に clock-broken → 10分で消えた → 鳴らない**／**B pub-late が 0・10・20分と続いた → 20分に「🪟 異常です（連携に訴え：pub-late）」を一発**
 
-## 回る段の突き合わせ（作法36）
-- **手元（予定表 Claude* 14件）**：ClaudeAfterReboot（03:10・15:10）／ClaudeBoard（10分おき）／ClaudeCodeAtLogon（ログオン）／ClaudeDailyNotice（09:00・21:00）／ClaudeDailyReboot（03:00・15:00 から30分おき）／ClaudeEdgeSweep（03:00）／ClaudeHomeBackup（05:00）／ClaudeHookHeartbeat（10分おき）／ClaudeJamWatch（1分おき）／ClaudePipeCheck（10分おき）／ClaudeRevive（1分おき）／ClaudeSweepChecks（無効）／**ClaudeUpdate（02:40・14:40）＝新**／ClaudeWatchNotify（2分おき）
-- **雲**：check.yml（本体の押しで検査→配信）・job.yml（check-fast.js／panel-check.js）は変えていない
-- ＊02:40 の更新 → 03:00 の再起動で新しい版の窓が立つ。更新が570秒まで延びても 02:49:30 には終わる
+## 3. 郵便受けの詰まりは10分続いた時だけ鳴らす
+- 元：詰まり（読みが5分止まる／読み残しが3分）を見たその回に鳴らしていた。09-26 21:42・23:32、09-28 23:01 はどれも2〜4分で解けた
+- 直し（**watch-notify.ps1**）：**mail-stuck-first.txt** に「種類（silent／pending）<TAB>最初に見た刻」を置き、**同じ種類が10分続いたら一度だけ**鳴らす。10分より前に解ければ「10分続かずに解けた（鳴らさず記録だけ）」で消す。静かな帯の間は今まで通り黙って数える
+- 作り値：**A 0・2分と詰まり 4分で解けた → 鳴らない**／**B 0・6・10・12分と続いた → 10分に一度だけ鳴る（12分は鳴らない）**
 
 ## ファイル
-- ~/.claude/claude-update.ps1（新）／~/.claude/daily-reboot.ps1（写し .bak-20260929）／~/.claude/after-reboot.ps1（写し .bak-20260929）／予定表 ClaudeUpdate（新）。構文0件ずつ
+- ~/.claude/watch-notify.ps1（写し .bak-20260929b）：1・3
+- ~/.claude/inbox-watch.ps1（写し .bak-20260929）：1。**常駐を起こし直した**（起動 17:44:56 ＞ 台本 17:43:14・1本）
+- ~/.claude/pipe-check.ps1（写し .bak-20260929）：2
+- 構文0件ずつ
+
+## 回る段の突き合わせ（作法36）
+- 手元：ClaudeWatchNotify（2分おき・1・3）／ClaudePipeCheck（10分おき・2）／常駐 inbox-watch（1）。予定表の顔ぶれ（Claude* 14件）は変えていない
+- 雲：check.yml・job.yml は変えていない
 
 ## 実機
-- 画面に出る物は無し。**明日 09-30 02:40 過ぎに update.log へ一行、03:00 の reboot.log に「claude update」の行が出ず、🔁 の本文に「最後の更新：…」が付くこと**（人手待ち）
+- 画面に出る物は無し。**次に時間切れが出ても「🕒 延びています」が続かず、パネルの終了予定が消えること／pipe-check の 🪟 は20分続いた訴えだけ・郵便受けの 📮 は10分続いた詰まりだけ**（人手待ち）
 
-## 偽の鈴 9通（09-28 13:30〜09-29 04:12。別の枠で頼まれた分）
-| 刻 | 題 | 訳 |
-|---|---|---|
-| 09-28 13:38 | 🪟 異常です（手が要ります） | 生存の刻を退避先の四日前と読んだ（5419分）。直した |
-| 13:54 | 🪟 時間切れ（再挑戦 1/3） | 返り続けていた枠を前の「開始から8分」で切った。直した |
-| 14:48 | 🕒 延びています（14:50 🙀） | 切った枠の終了予定が過ぎただけ |
-| 16:55 | 🪟 異常です：再起動の後の点検 | 静かな帯の漏れ。直した |
-| 16:58 | 🪟 異常です（手が要ります） | 静かな帯の漏れ（stale）。直した |
-| 17:50 | 🪟 異常です（連携に訴え：clock-broken・pub-late） | 10分で自然に戻った |
-| 19:20 | 🙋 ヨシしてください | 断片の続き待ちで立った。取り下げ |
-| 19:34 | 🪟 異常です（手が要ります） | 生存の刻を四日前と読んだ（5776分）。直した |
-| 23:01 | 📮 郵便受けが詰まっています | 3分で解けた |
+## 残り
+- 0件
 
 ---
 
@@ -46,11 +42,12 @@
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **472件**ある。
+　ここに出るのは新しい20件。全部で **473件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r0929-1745.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0929-1745.md) | 09-29 17:45 | 偽の残り三つを塞いだ（延び・pipe-check・郵便受け）（r0929-1745） |
 | [`r0929-1633.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0929-1633.md) | 09-29 16:31 | claude update を予定表 ClaudeUpdate へ切り離した（r0929-1633） |
 | [`r0929-1616.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0929-1616.md) | 09-29 16:15 | 枠の切れ・ログオン後の二本・03:33 の更新・偽の鈴9通（r0929-1616） |
 | [`r0929-1528-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0929-1528-2.md) | 09-29 15:28 | 再起動-2（r0929-1528・後の測り） |
@@ -70,6 +67,5 @@
 | [`r0928-1756.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1756.md) | 09-28 18:07 | 読むだけ：pathspec の枠・控えの預けの枠・今の予定（r0928-1756） |
 | [`r0928-1750.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1750.md) | 09-28 17:48 | 静かな帯の漏れ二通を塞いだ（r0928-1750） |
 | [`r0928-1656-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1656-2.md) | 09-28 16:56 | 再起動-2（r0928-1656・後の測り） |
-| [`r0928-1654-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1654-2.md) | 09-28 16:54 | 再起動-2（r0928-1654・後の測り） |
 
 <!-- 控えの一覧 ここまで -->
