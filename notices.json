@@ -173,10 +173,5 @@
         "title":  "🪟 異常です（手が要ります）",
         "time":  1790570317,
         "message":  "静かな帯（再起動・窓の立ち直りの間は偽の鈴を黙らせる）\n見張りの生存記録が 5419 分途切れています。仕組みのどこかが止まっています。\nこちらがすること：端末の様子を見て、動いていなければ開き直してください。"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1790570047,
-        "message":  "静かな帯（再起動・窓の立ち直りの間は偽の鈴を黙らせる）\n静かな帯を入れた（quiet-band.txt と quiet-band.ps1）。再起動（daily-reboot の落とす命令の前）と窓の立ち直り（claude 0本）で入り、帯の間は dead・stale・📮 silent・#22・#29・hook-quiet・state-stale・pub-late・ntfy-down を出さずに数え、healthchecks は /fail の代わりにふつうの合図。明けたら「✅ 戻りました（訳・N分・黙らせた物 N件）」一通、60分で一度だけ「🪟 異常です（戻りません・60分）」強さ5。割り当ては帯の外だけ数え、after-reboot は60分。作り値：40分で戻る→戻りの一通だけ／70分→異常一通／帯の外の dead→今まで通り\nファイル: ~/.claude/quiet-band.ps1（新）・watch-notify.ps1・inbox-watch.ps1・pipe-check.ps1・daily-reboot.ps1・revive-claude.ps1・after-reboot.ps1・ntfy-say.ps1・ntfy-budget.ps1（写し .bak-20260928）・orders-open.tsv・work-note.txt／reports/r0928-1324.md・report-latest.md\n実測: 構文NG 0（9本）・BOM 保持・常駐 13:31:37 ＞ 台本 13:29:24\n未検収: 2026-09-27 19:40 差し替え後の一週、空き 300MB 割れの鈴が鳴らないこと（〜10-04・人手待ち）／2026-09-28 10:20 23時台・01時台に見張りが止まらないこと（〜10-01 の三夜・人手待ち）／2026-09-28 13:35 次の再起動（または窓の立ち直り）で「✅ 戻りました（…・黙らせた物 N件）」が一通だけ届き、偽の鈴が鳴らないこと（人手待ち）"
     }
 ]
