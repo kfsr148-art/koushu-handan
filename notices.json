@@ -1,6 +1,11 @@
 [
     {
         "title":  "✅ 終わりました（返事不要）",
+        "time":  1790659698,
+        "message":  "同じ枠の二度落としと落とす前の起き上がり札\n1 同じ枠の二度落としを reboot-done-\u003c枠\u003e.txt で塞いだ（09-29 04:30 に実際に二度目が落ちていた）\n2 落とす前の起き上がり札は、起動が印の刻より後のときだけ書く形に直した／3 偽9通を並べた\nファイル: ~/.claude/daily-reboot.ps1（.bak-20260929）／~/.claude/watch-notify.ps1（.bak-20260929）\n実測: 構文0件・作り値 3通り＋2通り・台帳の未了 0件\n／2026-09-29 14:27 今日15:00の枠で落ちたら 16:00・16:30 は「落とし済み」で二度目が無いこと（人手待ち）"
+    },
+    {
+        "title":  "✅ 終わりました（返事不要）",
         "time":  1790659327,
         "message":  "断片の受領（続き待ち）\n「1. daily-reboot が同じ枠で二度落とす穴を塞げ…2. 04:12 の」までの断片を控えた。「以上」が無いので着手していない（断片待ちは🙋を立てないよう待ち: なしで置く）"
     },
@@ -173,10 +178,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1790566359,
         "message":  "連携の地図三枚（map-1-parts・map-2-alerts・map-3-incidents）\nこの回は控えを書いていません（前の回の控えが残っています。中身は当てになりません）。"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1790565631,
-        "message":  "SessionStart の resume を仕事の始まりと読む誤りを直す・連携の地図三枚\nSessionStart の鉤を hook-notice -Kind session に替え、hook-notice に session を足した（hook.log に session と書き、控えの開始も刻まない）。作り値：session だけ→鍵 idle（時計を回さない）／session の後に枠（resume）→鍵 run:枠の刻。地図三枚（map-1-parts・map-2-alerts・map-3-incidents）は三つの手に分けて書かせている最中\nファイル: ~/.claude/hook-notice.ps1・settings.json（写し .bak-20260928）・orders-open.tsv・work-note.txt／reports/r0928-1216.md・report-latest.md\n実測: hook-notice 構文NG 0・BOM＋CRLF・settings.json 差分1行\n未検収: 2026-09-27 19:40 差し替え後の一週、空き 300MB 割れの鈴が鳴らないこと（〜10-04・人手待ち）／2026-09-28 10:20 23時台・01時台に見張りが止まらないこと（〜10-01 の三夜・人手待ち）"
     }
 ]
