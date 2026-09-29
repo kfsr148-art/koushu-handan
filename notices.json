@@ -168,10 +168,5 @@
         "title":  "✅ 戻りました（clock-broken・10分／pub-late・10分）",
         "time":  1790586026,
         "message":  "連携の見張りの訴えが消えました。\n\n・clock-broken・10分／pub-late・10分\n\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
-    },
-    {
-        "title":  "🪟 異常です（連携に訴え：clock-broken・pub-late）",
-        "time":  1790585426,
-        "message":  "連携の見張りから訴えが出ています。\n\n・pub-late … 公開側が 51分 遅れている（押しが済んだ札より古い）\n・clock-broken … 開始の時計が壊れている（at **無**／subj **無**）。走り出しも経過も出ない\n\n＊同じ種類が続く間は、3時間ごとに「⏰ まだ続いています」で鳴らし直します。消えたら「✅ 戻りました」を一通送ります。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
     }
 ]
