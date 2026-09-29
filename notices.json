@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1790659327,
+        "message":  "断片の受領（続き待ち）\n「1. daily-reboot が同じ枠で二度落とす穴を塞げ…2. 04:12 の」までの断片を控えた。「以上」が無いので着手していない（断片待ちは🙋を立てないよう待ち: なしで置く）"
+    },
+    {
         "title":  "😺 現在も順調にゃ",
         "time":  1790640012,
         "message":  "🔗 いまの線: https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n状態: 手待ち / 夜の鈴の棚卸し（09-28 13:30〜09-29 09:00）\n台帳: 残り 0件\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 0% / 週全体 8% / 週Fable 16%\n起こし直し: 今日 0回（固まり 0・重さ 0・0本 0） / 今日はまだ落ちていない\n訴え: 1件（orphan-kill）… pipe-warn.log"
@@ -173,10 +178,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1790565631,
         "message":  "SessionStart の resume を仕事の始まりと読む誤りを直す・連携の地図三枚\nSessionStart の鉤を hook-notice -Kind session に替え、hook-notice に session を足した（hook.log に session と書き、控えの開始も刻まない）。作り値：session だけ→鍵 idle（時計を回さない）／session の後に枠（resume）→鍵 run:枠の刻。地図三枚（map-1-parts・map-2-alerts・map-3-incidents）は三つの手に分けて書かせている最中\nファイル: ~/.claude/hook-notice.ps1・settings.json（写し .bak-20260928）・orders-open.tsv・work-note.txt／reports/r0928-1216.md・report-latest.md\n実測: hook-notice 構文NG 0・BOM＋CRLF・settings.json 差分1行\n未検収: 2026-09-27 19:40 差し替え後の一週、空き 300MB 割れの鈴が鳴らないこと（〜10-04・人手待ち）／2026-09-28 10:20 23時台・01時台に見張りが止まらないこと（〜10-01 の三夜・人手待ち）"
-    },
-    {
-        "title":  "🔎 調べました",
-        "time":  1790564766,
-        "message":  "「命令0回」で切られた三つの枠の元（読むだけ）\n①三つ（09-27 11:24・23:45・09-28 03:59）とも枠の字は窓に届いていない。窓が --resume で立ち直った直後の SessionStart の鉤が hook-notice -Kind resume を打ち、見張りがそれを仕事の始まりと読んで鍵を run にし、控えに残っていた前の件名で枠の時計を回し、9分後に命令0回で切った。会話の記録に利用者の文は無く bridge_status だけ、orders-full にも枠は無く、send-text の打ちも無い ②03:59 の枠は受信箱・郵便受け・台帳のどこからも戻っていない。01:38 の仕事の件名が控えに残り、03:49 の SessionStart の resume で枠の名に使われただけ\nファイル: reports/r0928-1201.md・report-latest.md\n未検収: 2026-09-27 19:40 差し替え後の一週、空き 300MB 割れの鈴が鳴らないこと（〜10-04・人手待ち）／2026-09-28 10:20 23時台・01時台に見張りが止まらないこと（〜10-01 の三夜・人手待ち）"
     }
 ]
