@@ -1,15 +1,15 @@
-﻿# 再起動-2（r0930-0336・後の測り）
+﻿# 再起動-2（r0930-1526・後の測り）
 
-**終わり** — 2026-09-30 03:36（VAIO）。毎週土曜の起こしで再起動し、起き上がった。
+**終わり** — 2026-09-30 15:26（VAIO）。毎週土曜の起こしで再起動し、起き上がった。
 
 | | 前 | 後 | 差 |
 |---|---|---|---|
-| 空き物理メモリ | 4396MB | **4306MB** | -90MB |
-| claude | 661MB | **248MB** | -413MB |
+| 空き物理メモリ | 4218MB | **4764MB** | +546MB |
+| claude | 377MB | **25MB** | -352MB |
 
-起き上がった刻 … 09/30/2026 03:02:33
-claude が起きた刻 … 2026-09-30 03:25:08（1本）
-前の測りの刻 … 2026-09-30 03:00:08
+起き上がった刻 … 09/30/2026 15:02:35
+claude が起きた刻 … 2026-09-30 15:21:21（1本）
+前の測りの刻 … 2026-09-30 15:00:12
 
 ---
 
@@ -18,11 +18,12 @@ claude が起きた刻 … 2026-09-30 03:25:08（1本）
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **479件**ある。
+　ここに出るのは新しい20件。全部で **480件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r0930-1526-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0930-1526-2.md) | 09-30 15:26 | 再起動-2（r0930-1526・後の測り） |
 | [`r0930-0336-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0930-0336-2.md) | 09-30 03:36 | 再起動-2（r0930-0336・後の測り） |
 | [`r0930-0331-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0930-0331-2.md) | 09-30 03:31 | 再起動-2（r0930-0331・後の測り） |
 | [`r0930-0120.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0930-0120.md) | 09-30 01:18 | conhost の落ち（0xc0000409）・窓の設定を素へ戻した（r0930-0120） |
@@ -42,6 +43,5 @@ claude が起きた刻 … 2026-09-30 03:25:08（1本）
 | [`r0929-0330-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0929-0330-2.md) | 09-29 03:30 | 再起動-2（r0929-0330・後の測り） |
 | [`r0928-2003.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-2003.md) | 09-28 19:59 | 「見張りの生存記録が N 分途切れています」の偽（5419分・5776分）を直した（r0928-2003） |
 | [`r0928-2005.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-2005.md) | 09-28 19:42 | map-3 の未特定・様子見の五行の元を当て直した（r0928-2005） |
-| [`r0928-1945.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0928-1945.md) | 09-28 19:38 | 仮置き・未実装の印と、欠けた絵・音の洗い出し（r0928-1945） |
 
 <!-- 控えの一覧 ここまで -->
