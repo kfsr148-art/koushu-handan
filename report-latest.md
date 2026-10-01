@@ -1,11 +1,11 @@
-﻿# 再起動-2（r1001-1524・後の測り）
+﻿# 再起動-2（r1001-1526・後の測り）
 
-**終わり** — 2026-10-01 15:24（VAIO）。毎週土曜の起こしで再起動し、起き上がった。
+**終わり** — 2026-10-01 15:26（VAIO）。毎週土曜の起こしで再起動し、起き上がった。
 
 | | 前 | 後 | 差 |
 |---|---|---|---|
-| 空き物理メモリ | 4651MB | **4768MB** | +117MB |
-| claude | 370MB | **15MB** | -355MB |
+| 空き物理メモリ | 4651MB | **4780MB** | +129MB |
+| claude | 370MB | **36MB** | -334MB |
 
 起き上がった刻 … 10/01/2026 15:02:03
 claude が起きた刻 … 2026-10-01 15:22:25（1本）
@@ -18,11 +18,12 @@ claude が起きた刻 … 2026-10-01 15:22:25（1本）
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **483件**ある。
+　ここに出るのは新しい20件。全部で **484件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r1001-1526-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1001-1526-2.md) | 10-01 15:26 | 再起動-2（r1001-1526・後の測り） |
 | [`r1001-1524-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1001-1524-2.md) | 10-01 15:24 | 再起動-2（r1001-1524・後の測り） |
 | [`r1001-0338-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1001-0338-2.md) | 10-01 03:38 | 再起動-2（r1001-0338・後の測り） |
 | [`r1001-0333-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1001-0333-2.md) | 10-01 03:33 | 再起動-2（r1001-0333・後の測り） |
@@ -42,6 +43,5 @@ claude が起きた刻 … 2026-10-01 15:22:25（1本）
 | [`r0929-1524-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0929-1524-2.md) | 09-29 15:24 | 再起動-2（r0929-1524・後の測り） |
 | [`r0929-1427.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0929-1427.md) | 09-29 14:25 | 同じ枠の二度落としを塞いだ・落とす前の起き上がり札・偽の鈴9通（r0929-1427） |
 | [`r0929-0430-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0929-0430-2.md) | 09-29 04:30 | 再起動-2（r0929-0430・後の測り） |
-| [`r0929-0412.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r0929-0412.md) | 09-29 04:10 | 夜の鈴の棚卸し（09-28 13:30〜09-29 04:10）（r0929-0412） |
 
 <!-- 控えの一覧 ここまで -->
