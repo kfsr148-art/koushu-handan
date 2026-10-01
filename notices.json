@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🔁 落とします（定時）",
+        "time":  1790834410,
+        "message":  "定時の再起動（枠 2026-10-01 15・10-01 15:00）\n空き 4651MB ／ claude 1本・私用 370MB\n空きメモリ 4651MB ／ 全体 8071MB\n見送り 0/3回\n最後の更新：2026-10-01 14:40:42  claude update：終了コード 0・Successfully updated from 2.1.285 to version 2.1.286（36秒）\n台帳の未了0・走っている道具なし・押し残し0\n60秒後に落ちる。戻りは「✅ 戻りました（再起動から）」で知らせる。"
+    },
+    {
         "title":  "😺 現在も順調にゃ",
         "time":  1790812813,
         "message":  "🔗 いまの線: https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n状態: 手待ち / conhost の落ちと窓の設定を素へ\n台帳: 残り 0件\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 0% / 週全体 27% / 週Fable 48%\n起こし直し: 今日 0回（固まり 0・重さ 0・0本 0） / 今日はまだ落ちていない\n訴え: 5件（state-stale・first・pub-late・hook-quiet・quiet）… pipe-warn.log"
