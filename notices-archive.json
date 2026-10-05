@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 戻りました（窓の立ち直り・3分・帯の間に黙らせた物 2件）",
+        "time":  1790677088,
+        "message":  "窓の立ち直りの静かな帯が明けました（09-29 19:14〜19:18・3分）。\n帯の間に黙らせた物：healthchecks の /fail・dead\n＊claude が立ち、hook.log が動き出したのを見て明けとしました。\n"
+    },
+    {
         "title":  "🪟 異常です（手が要ります）",
         "time":  1790676846,
         "message":  "枠の繋ぎと map の書き直し\n見えていた画面が 1 枚から 0 枚になりました。1 枚が見えなくなっています。claude のプロセスは 1 本から 1 本で、窓だけが消えています。\nこちらがすること：開き直してください。古いプロセスが残るので、開き直したあとに古いほうを終わらせてください。"
@@ -243,10 +248,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1790565631,
         "message":  "SessionStart の resume を仕事の始まりと読む誤りを直す・連携の地図三枚\nSessionStart の鉤を hook-notice -Kind session に替え、hook-notice に session を足した（hook.log に session と書き、控えの開始も刻まない）。作り値：session だけ→鍵 idle（時計を回さない）／session の後に枠（resume）→鍵 run:枠の刻。地図三枚（map-1-parts・map-2-alerts・map-3-incidents）は三つの手に分けて書かせている最中\nファイル: ~/.claude/hook-notice.ps1・settings.json（写し .bak-20260928）・orders-open.tsv・work-note.txt／reports/r0928-1216.md・report-latest.md\n実測: hook-notice 構文NG 0・BOM＋CRLF・settings.json 差分1行\n未検収: 2026-09-27 19:40 差し替え後の一週、空き 300MB 割れの鈴が鳴らないこと（〜10-04・人手待ち）／2026-09-28 10:20 23時台・01時台に見張りが止まらないこと（〜10-01 の三夜・人手待ち）"
-    },
-    {
-        "title":  "🔎 調べました",
-        "time":  1790564766,
-        "message":  "「命令0回」で切られた三つの枠の元（読むだけ）\n①三つ（09-27 11:24・23:45・09-28 03:59）とも枠の字は窓に届いていない。窓が --resume で立ち直った直後の SessionStart の鉤が hook-notice -Kind resume を打ち、見張りがそれを仕事の始まりと読んで鍵を run にし、控えに残っていた前の件名で枠の時計を回し、9分後に命令0回で切った。会話の記録に利用者の文は無く bridge_status だけ、orders-full にも枠は無く、send-text の打ちも無い ②03:59 の枠は受信箱・郵便受け・台帳のどこからも戻っていない。01:38 の仕事の件名が控えに残り、03:49 の SessionStart の resume で枠の名に使われただけ\nファイル: reports/r0928-1201.md・report-latest.md\n未検収: 2026-09-27 19:40 差し替え後の一週、空き 300MB 割れの鈴が鳴らないこと（〜10-04・人手待ち）／2026-09-28 10:20 23時台・01時台に見張りが止まらないこと（〜10-01 の三夜・人手待ち）"
     }
 ]
