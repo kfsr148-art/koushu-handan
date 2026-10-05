@@ -1,5 +1,10 @@
 [
     {
+        "title":  "🔎 調べました",
+        "time":  1791237966,
+        "message":  "10-06 04:00〜06:40 の押しの止まりの元\nGitHub 側。手元の push は帯の間も22回通っていた（失敗の行なし）。GitHub Actions の配信が 04:36〜06:12 に動かす機械を割り当てられず（The job was not acquired by Runner of type hosted）、公開側が 04:08 の姿で止まった。06:40 に戻った\n実測: push 22回・失敗した走り10本（15〜26分）・state-stale 1時間20分／pub-late 50分・台帳の未了 0件"
+    },
+    {
         "title":  "✅ 戻りました（state-stale・1時間20分／pub-late・50分）",
         "time":  1791236425,
         "message":  "連携の見張りの訴えが消えました。\n\n・state-stale・1時間20分／pub-late・50分\n\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
@@ -183,10 +188,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1790695687,
         "message":  "窓だけが消えた🪟を帯に入れる・19:14 の窓の落ちの元\nClaude Code が戻りました。"
-    },
-    {
-        "title":  "✅ 戻りました（窓の立ち直り・4分・帯の間に黙らせた物 2件）",
-        "time":  1790695568,
-        "message":  "窓の立ち直りの静かな帯が明けました（09-30 00:22〜00:26・4分）。\n帯の間に黙らせた物：dead・healthchecks の /fail\n＊claude が立ち、hook.log が動き出したのを見て明けとしました。"
     }
 ]
