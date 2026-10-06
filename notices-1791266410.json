@@ -1,5 +1,20 @@
 [
     {
+        "title":  "🔁 落とします（定時）",
+        "time":  1791266409,
+        "message":  "定時の再起動（枠 2026-10-06 15・10-06 15:00）\n空き 4533MB ／ claude 1本・私用 413MB\n空きメモリ 4533MB ／ 全体 8071MB\n見送り 0/3回\n最後の更新：2026-10-06 14:40:50  claude update：終了コード 0・Successfully updated from 2.1.289 to version 2.1.291（45秒）\n台帳の未了0・走っている道具なし・押し残し0\n60秒後に落ちる。戻りは「✅ 戻りました（再起動から）」で知らせる。"
+    },
+    {
+        "title":  "😺 現在も順調にゃ",
+        "time":  1791244811,
+        "message":  "🔗 いまの線: https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n状態: 手待ち / 10-06 04:00〜06:40 の押しの止まりの元\n台帳: 残り 0件\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 0% / 週全体 1% / 週Fable 0%\n起こし直し: 今日 0回（固まり 0・重さ 0・0本 0） / 今日はまだ落ちていない\n訴え: 6件（hook-quiet・quiet・orphan-kill・state-stale・first・pub-late）… pipe-warn.log"
+    },
+    {
+        "title":  "🔎 調べました",
+        "time":  1791237966,
+        "message":  "10-06 04:00〜06:40 の押しの止まりの元\nGitHub 側。手元の push は帯の間も22回通っていた（失敗の行なし）。GitHub Actions の配信が 04:36〜06:12 に動かす機械を割り当てられず（The job was not acquired by Runner of type hosted）、公開側が 04:08 の姿で止まった。06:40 に戻った\n実測: push 22回・失敗した走り10本（15〜26分）・state-stale 1時間20分／pub-late 50分・台帳の未了 0件"
+    },
+    {
         "title":  "✅ 戻りました（state-stale・1時間20分／pub-late・50分）",
         "time":  1791236425,
         "message":  "連携の見張りの訴えが消えました。\n\n・state-stale・1時間20分／pub-late・50分\n\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
@@ -23,11 +38,6 @@
         "title":  "🔁 落とします（定時）",
         "time":  1791223210,
         "message":  "定時の再起動（枠 2026-10-06 03・10-06 03:00）\n空き 5015MB ／ claude 1本・私用 378MB\n空きメモリ 5015MB ／ 全体 8071MB\n見送り 0/3回\n最後の更新：2026-10-06 02:40:38  claude update：終了コード 0・Claude Code is up to date (2.1.289)（33秒）\n台帳の未了0・走っている道具なし・押し残し0\n60秒後に落ちる。戻りは「✅ 戻りました（再起動から）」で知らせる。"
-    },
-    {
-        "title":  "😺 現在も順調にゃ",
-        "time":  1791201612,
-        "message":  "🔗 いまの線: https://claude.ai/code/session_01HbNfoUB7otX295K6cw68vy\n状態: 手待ち / 鍵切れの刻と kagi-watch が鳴らなかった訳\n台帳: 残り 0件\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 0% / 週全体 0% / 週Fable 0%\n起こし直し: 今日 0回（固まり 0・重さ 0・0本 0） / 今日はまだ落ちていない\n訴え: 2件（pub-late・first）… pipe-warn.log\n配分: 全体 あと14.4%/日 ／ Fable あと14.4%/日"
     },
     {
         "title":  "✅ 戻りました（再起動・29分・帯の間に黙らせた物 3件）",
@@ -173,20 +183,5 @@
         "title":  "🔁 落とします（定時）",
         "time":  1790704809,
         "message":  "定時の再起動（枠 2026-09-30 03・09-30 03:00）\n空き 4396MB ／ claude 1本・私用 661MB\n空きメモリ 4396MB ／ 全体 8071MB\n見送り 0/3回\n最後の更新：2026-09-30 02:40:36  claude update：終了コード 0・Claude Code is up to date (2.1.284)（32秒）\n台帳の未了0・走っている道具なし・押し残し0\n60秒後に落ちる。戻りは「✅ 戻りました（再起動から）」で知らせる。"
-    },
-    {
-        "title":  "👀 見てください（返事不要）",
-        "time":  1790698810,
-        "message":  "この間にまとまった知らせ 2本\n\n［✅ 終わりました（返事不要）］\nconhost の落ちの直前5分と共通点\n（札が立たないまま次の仕事へ移っていた分）\n完了: 読むだけ。着手した\n\n［👀 見てください（返事不要）］\nconhost の落ちと窓の設定を素へ\n1 共通点＝窓が手待ちで何も書いていない間に conhost の同じ所（0x68eff）で落ちた。直前に /clear・send-text・出力無し\n2 窓の設定を素へ戻した（題つきの鍵を消し、.lnk と ClaudeCodeAtLogon の /MAX を外した）。作り値で既定の窓で立った\n3 Windows Terminal 1.24 を入れ、send-text・read-screen・窓の数えが効くことを確かめた。起こす道は既定の窓のまま\nファイル: HKCUConsole（鍵を消した）／デスクトップの .lnk／予定表 ClaudeCodeAtLogon／写し ~/.claude/window-reset-bak-20260930/\n実測: 作り値 既定の窓＝300行×80桁・25×80・最大化なし／WT で send-text 届いた・read-screen hit・WinScan VIS・台帳の未了 0件\n／2026-09-30 01:20 既定の窓でも conhost が落ちるかの様子見（人手待ち）\n実機: 次に立つ窓が小さい既定の窓（ＭＳ ゴシック・80桁）で立つこと。見づらければ写しから戻せる"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1790695687,
-        "message":  "窓だけが消えた🪟を帯に入れる・19:14 の窓の落ちの元\nClaude Code が戻りました。"
-    },
-    {
-        "title":  "✅ 戻りました（窓の立ち直り・4分・帯の間に黙らせた物 2件）",
-        "time":  1790695568,
-        "message":  "窓の立ち直りの静かな帯が明けました（09-30 00:22〜00:26・4分）。\n帯の間に黙らせた物：dead・healthchecks の /fail\n＊claude が立ち、hook.log が動き出したのを見て明けとしました。"
     }
 ]
