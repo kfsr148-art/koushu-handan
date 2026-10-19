@@ -1,6 +1,7 @@
 {
-    "at":  "2026-10-20 00:50:19",
+    "at":  "2026-10-20 01:20:19",
     "kinds":  [
+                  "pub-late",
                   "state-stale"
               ],
     "ntfyDown":  false,
