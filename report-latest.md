@@ -1,15 +1,15 @@
-﻿# 再起動-2（r1022-1526・後の測り）
+﻿# 再起動-2（r1023-0328・後の測り）
 
-**終わり** — 2026-10-22 15:26（VAIO）。毎週土曜の起こしで再起動し、起き上がった。
+**終わり** — 2026-10-23 03:28（VAIO）。毎週土曜の起こしで再起動し、起き上がった。
 
 | | 前 | 後 | 差 |
 |---|---|---|---|
-| 空き物理メモリ | 4696MB | **4942MB** | +246MB |
-| claude | 373MB | **25MB** | -348MB |
+| 空き物理メモリ | 4785MB | **4542MB** | -243MB |
+| claude | 390MB | **29MB** | -361MB |
 
-起き上がった刻 … 10/22/2026 15:02:14
-claude が起きた刻 … 2026-10-22 15:21:52（1本）
-前の測りの刻 … 2026-10-22 15:00:06
+起き上がった刻 … 10/23/2026 03:02:27
+claude が起きた刻 … 2026-10-23 03:22:44（1本）
+前の測りの刻 … 2026-10-23 03:00:07
 
 ---
 
@@ -18,11 +18,12 @@ claude が起きた刻 … 2026-10-22 15:21:52（1本）
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **564件**ある。
+　ここに出るのは新しい20件。全部で **565件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r1023-0328-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1023-0328-2.md) | 10-23 03:28 | 再起動-2（r1023-0328・後の測り） |
 | [`r1022-1526-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1022-1526-2.md) | 10-22 15:26 | 再起動-2（r1022-1526・後の測り） |
 | [`r1022-1523-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1022-1523-2.md) | 10-22 15:23 | 再起動-2（r1022-1523・後の測り） |
 | [`r1022-0332-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1022-0332-2.md) | 10-22 03:32 | 再起動-2（r1022-0332・後の測り） |
@@ -42,6 +43,5 @@ claude が起きた刻 … 2026-10-22 15:21:52（1本）
 | [`r1018-1526-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1018-1526-2.md) | 10-18 15:26 | 再起動-2（r1018-1526・後の測り） |
 | [`r1018-0336-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1018-0336-2.md) | 10-18 03:36 | 再起動-2（r1018-0336・後の測り） |
 | [`r1018-0331-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1018-0331-2.md) | 10-18 03:31 | 再起動-2（r1018-0331・後の測り） |
-| [`r1017-1528-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1017-1528-2.md) | 10-17 15:28 | 再起動-2（r1017-1528・後の測り） |
 
 <!-- 控えの一覧 ここまで -->
