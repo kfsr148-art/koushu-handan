@@ -1,8 +1,8 @@
 {
-    "at":  "2026-10-28 15:24:05",
+    "at":  "2026-10-28 23:00:27",
     "kinds":  [
-                  "hook-quiet"
+                  "ntfy-down"
               ],
-    "ntfyDown":  false,
-    "text":  ""
+    "ntfyDown":  true,
+    "text":  "ntfy.sh が返さない（HTTP 000）。押し送りは黙って届かない"
 }
