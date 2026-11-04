@@ -1,7 +1,8 @@
 {
-    "at":  "2026-11-05 01:30:19",
+    "at":  "2026-11-05 02:50:20",
     "kinds":  [
-
+                  "pub-late",
+                  "state-stale"
               ],
     "ntfyDown":  false,
     "text":  ""
