@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1474">
+<html lang="ja" data-ver="1475">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1393,7 +1393,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1474</div>
+  <div id="verTag">v1475</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -10004,6 +10004,37 @@ window.ssRecognize = function(){
    写真から取り込んだ後、判定へ進む前に出す。34種の牌から場に見えているドラ表示牌を押すと、
    盤面の「ドラ指定」と同じ仕組み（ssSetDoraIndicator）でその次の牌をドラにし、そのまま判定へ進む。
    「ドラなしで判定」はドラ0のまま判定へ進む。押す操作の中で判定するので、声もその場で鳴らせる。 */
+/* ==== ⑨受付ページのカメラの撮り直し（v1475） ====
+   受付ページは、カメラを開いた時にこの本体を見えない枠で先に読み込んでおき、撮った一枚をまず ssPhotoQuality で見てもらう。
+   ＊読みと同じ道（自動の台形補正 → 牌の隙間で切る → 揃えて見本と比べる）で、牌ごとの「見本との遠さ」を出す。判定・記録・画面には触らない。
+   ＊見本との遠さが SS_RETAKE_FAR を超える牌が SS_RETAKE_N 枚以上、または手牌の列が見つからない ＝ ほとんど合っていない（'bad'）→ 受付ページは撮り直す。
+     1〜3枚なら少し怪しい（'doubt'）、0枚なら読めた（'good'）。どちらも今まで通り判定へ進む。見本が空なら 'unknown'（進む）。
+   ＊線は作り写真で決めた（2026-11-14・y1114-0701）。まっすぐな写真（正面・約15°・約30°・暗く青い）は遠さが最大32.1で13枚とも正解、
+     手牌の左3枚が写真の外へずれた写真は4通りとも遠さ38以上の牌が6枚以上（正解1〜8枚）、横ぶれ12px・25°の傾きは手牌の列が見つからない。 */
+window.SS_RETAKE_FAR = 36;
+window.SS_RETAKE_N = 4;
+window.ssPhotoQuality = function(img){
+  var tpl = window.ssTplLoad(), keys = Object.keys(tpl);
+  if(!img || !keys.length) return { verdict: 'unknown', far: 0 };
+  var wp = window.ssAutoBandAny(img);
+  if(!wp) return { verdict: 'bad', why: 'band', far: 13 };
+  var tplN = window.ssNormTpl(tpl, keys), far = 0, ds = [];
+  wp.cuts.forEach(function(t){
+    var m = window.ssMatchTile(window.ssFeatShape(window.ssNormFeat(window.ssTileFeature(wp.canvas, t))), tplN, keys);
+    var d = Math.sqrt(m.dist);
+    ds.push(Math.round(d * 10) / 10);
+    if(d > window.SS_RETAKE_FAR) far++;
+  });
+  return { verdict: far >= window.SS_RETAKE_N ? 'bad' : (far > 0 ? 'doubt' : 'good'), far: far, ds: ds };
+};
+/* 受付ページの枠（先に読み込んだ本体）へ、読み直さずに写真を渡す。受付ページの読み直し版（ssHandoff）と同じ流れ */
+window.ssTakeHandoff = function(dataUrl){
+  try{ localStorage.setItem('ssResumeAt', String(Date.now())); }catch(e){}
+  if(window.closeTitleScreen) window.closeTitleScreen();
+  var im = new Image();
+  im.onload = function(){ window.ssImg = im; window.ssShow(); if(window.ssAutoRun) window.ssAutoRun(); };
+  im.src = dataUrl;
+};
 window.SS_DORA_CODES = (function(){
   var a = [];
   ['m', 'p', 's'].forEach(function(su){ for(var n = 1; n <= 9; n++) a.push(su + n); });
