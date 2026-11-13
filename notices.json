@@ -173,10 +173,5 @@
         "title":  "✅ 戻りました（state-stale・10分）",
         "time":  1794309624,
         "message":  "連携の見張りの訴えが消えました。\n\n・state-stale・10分\n\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
-    },
-    {
-        "title":  "🪟 連携に訴えがあります（state-stale）",
-        "time":  1794309023,
-        "message":  "連携の見張りから訴えが出ています。\n\n・state-stale … 公開側の生存が 68分 書かれていない（state.json の at）。パネルは凍った状態を出し続ける\n\n＊同じ種類が続く間は、3時間ごとに「⏰ まだ続いています」で鳴らし直します。消えたら「✅ 戻りました」を一通送ります。\n＊全部の記録は ~/.claude/pipe-warn.log にあります。"
     }
 ]
