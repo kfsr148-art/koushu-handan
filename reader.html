@@ -10,18 +10,89 @@
   .big{font-size:16px;padding:14px 26px;border-radius:10px;border:1px solid rgba(243,236,224,.4);background:#1c2233;color:#f3ece0;}
   .note{font-size:12px;opacity:.78;line-height:1.6;}
   a{color:#9db8ff;font-size:12px;}
+  #app{position:fixed;inset:0;width:100%;height:100%;border:0;display:none;background:#0b0e18;}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="note" id="msg">軽い受付ページですの。ここなら写真選択で落ちませんわ。</div>
-  <button type="button" class="big" onclick="document.getElementById('f').click()">📷 写真を選ぶ</button>
+  <button type="button" class="big" id="pick">📷 写真を選ぶ</button>
   <input type="file" id="f" accept="image/*" style="display:none">
   <a href="koushu-handan.html">← 本体へ戻る</a>
 </div>
+<iframe id="app" title="本体"></iframe>
 <script>
+/* 受付ページ（2026-11-14・v1469）
+   ＊写真を選ぶのはこの軽いページで行う（重い本体で選ぶと落ちるため）。
+   ＊「写真を選ぶ」を押したその時に、音を鳴らせる状態を取っておく：攻め／守りの声のファイルを無音で一度鳴らして止め、
+     OS の読み上げも空の一言で一度起こす。スマホは、押した操作の中で一度鳴らした物だけ、後で鳴らせる。
+   ＊写真を預けたら、ページを読み直さずに、この画面の上へ本体を全面の枠で開く。本体は預かった写真を読んで判定まで進め、
+     判定した直後の声だけをこのページ（window.ssReaderVoice）に頼む。読み直すと押した操作の効き目が消えるため。 */
 (function(){
   var msg = document.getElementById('msg');
+  var VOICES = { attack: 'attack.wav.wav', defend: 'defend.wav.wav' };
+  var aud = {}, unlocked = false;
+  function say(text, rate){
+    if(!text || !window.speechSynthesis) return;
+    try{
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = 'ja-JP'; u.rate = rate || 1.0;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(u);
+    }catch(e){}
+  }
+  function unlock(){
+    if(unlocked) return;
+    unlocked = true;
+    Object.keys(VOICES).forEach(function(k){
+      try{
+        var a = new Audio(VOICES[k]);
+        a.preload = 'auto';
+        a.muted = true;
+        var stop = function(){ try{ a.pause(); a.currentTime = 0; }catch(e){} a.muted = false; };
+        var p = a.play();
+        if(p && p.then) p.then(stop, function(){ a.muted = false; }); else stop();
+        aud[k] = a;
+      }catch(e){}
+    });
+    try{
+      if(window.speechSynthesis){ var u = new SpeechSynthesisUtterance(' '); u.volume = 0; window.speechSynthesis.speak(u); }
+    }catch(e){}
+  }
+  /* 本体（枠の中）から呼ばれる。取っておいた声のファイルを鳴らし、無ければ OS の読み上げ */
+  window.ssReaderVoice = function(name, text, rate){
+    var a = aud[name];
+    if(a){
+      try{
+        if(window.speechSynthesis) window.speechSynthesis.cancel();
+        a.muted = false;
+        a.currentTime = 0;
+        var p = a.play();
+        if(p && p.catch) p.catch(function(){ say(text, rate); });
+        return true;
+      }catch(e){}
+    }
+    say(text, rate);
+    return true;
+  };
+  document.getElementById('pick').addEventListener('click', function(){
+    unlock();
+    document.getElementById('f').click();
+  });
+  window.ssReaderTake = function(img){
+    var sc = Math.min(1, 1280 / img.width);
+    var cv = document.createElement('canvas');
+    cv.width = Math.round(img.width * sc);
+    cv.height = Math.round(img.height * sc);
+    cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+    var data = cv.toDataURL('image/jpeg', 0.85);
+    localStorage.setItem('ssHandoff', data);
+    localStorage.setItem('ssResumeAt', String(Date.now()));
+    msg.textContent = '受け取りましたわ。本体を開いて判定いたしますの…';
+    var fr = document.getElementById('app');
+    fr.src = 'koushu-handan.html';
+    fr.style.display = 'block';
+  };
   document.getElementById('f').addEventListener('change', function(ev){
     var file = ev.target.files && ev.target.files[0];
     if(!file) return;
@@ -30,16 +101,8 @@
     var img = new Image();
     img.onload = function(){
       try{
-        var sc = Math.min(1, 1280 / img.width);
-        var cv = document.createElement('canvas');
-        cv.width = Math.round(img.width * sc);
-        cv.height = Math.round(img.height * sc);
-        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
-        var data = cv.toDataURL('image/jpeg', 0.85);
-        localStorage.setItem('ssHandoff', data);
-        localStorage.setItem('ssResumeAt', String(Date.now()));
+        window.ssReaderTake(img);
         URL.revokeObjectURL(url);
-        location.replace('koushu-handan.html');
       }catch(e){
         msg.textContent = '預かりに失敗しましたわ: ' + e.message;
       }
