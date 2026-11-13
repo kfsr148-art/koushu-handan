@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1475">
+<html lang="ja" data-ver="1476">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1393,7 +1393,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1475</div>
+  <div id="verTag">v1476</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -8919,9 +8919,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var _hd = localStorage.getItem('ssHandoff');
     if(_hd){
       localStorage.removeItem('ssHandoff');
-      var _im = new Image();
-      _im.onload = function(){ window.ssImg = _im; window.ssShow(); if(window.ssAutoRun) window.ssAutoRun(); };   /* 受付ページから来た写真は判定まで自動（v1465） */
-      _im.src = _hd;
+      window.ssTakeHandoff(_hd);   /* 受付ページから来た写真は判定まで自動（v1465）。先に読み込んだ枠へ渡す道と同じ関数（v1475） */
     }
   } catch(e){}
   if(window.ssTplSeedFromServer) window.ssTplSeedFromServer();
@@ -10009,8 +10007,8 @@ window.ssRecognize = function(){
    ＊読みと同じ道（自動の台形補正 → 牌の隙間で切る → 揃えて見本と比べる）で、牌ごとの「見本との遠さ」を出す。判定・記録・画面には触らない。
    ＊見本との遠さが SS_RETAKE_FAR を超える牌が SS_RETAKE_N 枚以上、または手牌の列が見つからない ＝ ほとんど合っていない（'bad'）→ 受付ページは撮り直す。
      1〜3枚なら少し怪しい（'doubt'）、0枚なら読めた（'good'）。どちらも今まで通り判定へ進む。見本が空なら 'unknown'（進む）。
-   ＊線は作り写真で決めた（2026-11-14・y1114-0701）。まっすぐな写真（正面・約15°・約30°・暗く青い）は遠さが最大32.1で13枚とも正解、
-     手牌の左3枚が写真の外へずれた写真は4通りとも遠さ38以上の牌が6枚以上（正解1〜8枚）、横ぶれ12px・25°の傾きは手牌の列が見つからない。 */
+   ＊線は作り写真で決めた（2026-11-14・y1114-0701）。まっすぐな写真（正面・約15度・約30度・暗く青い）は遠さが最大32.1で13枚とも正解、
+     手牌の左3枚が写真の外へずれた写真は4通りとも遠さ38以上の牌が6枚以上（正解1〜8枚）、横ぶれ12px・25度の傾きは手牌の列が見つからない。 */
 window.SS_RETAKE_FAR = 36;
 window.SS_RETAKE_N = 4;
 window.ssPhotoQuality = function(img){
