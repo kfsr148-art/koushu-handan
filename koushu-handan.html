@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1472">
+<html lang="ja" data-ver="1473">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1393,7 +1393,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1472</div>
+  <div id="verTag">v1473</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -4008,6 +4008,60 @@ document.addEventListener('DOMContentLoaded', function () {
           : ((a.fillWeak >= 2) ? 'これから面子（メンツ）を作る所のうち、嵌張（カンチャン）・辺張（ペンチャン）の一種類の牌でしか作れない所が2つ以上ある。そろうまでに時間がかかるので、守りだ。' : 'これから面子（メンツ）を作る所は、3つ以上が両面（リャンメン）などで作れる見込みだ。けれど、いま手の中にある良い形——そろった面子、対子（トイツ）、4と5のように両側で待てる両面——を数えると3つ以下しかない。見込みはあっても今の形が足りないので、守りだ。') }
     ];
   }
+  /* ==== 審判の重み付きの票で、際どい手と線に近い手だけを決め直す（v1473・y1114-0431 の②） ====
+     ＊決め直すのは「際どい手（analyze の borderline）」と「良形が必要数のあと1つ足りない手」だけ。国士・役満の芽は外す。
+     ＊審判は判定獣（本判定）を除く11人。票は tenLeans() のまま（兎の票は設定の兎スイッチに従う）。
+     ＊得点＝攻めの票の重みの和 − 守りの票の重みの和 ＋ 普段は割れる審判同士が同じ側に揃った分の上乗せ
+       （同じ側に倒れた二人ごとに（1 − κ）× 二人の重みの相乗平均）。>0 なら攻め・<0 なら守り・ちょうど0は本判定のまま。
+     ＊重み＝精度（その審判の的中が地の値をどれだけ上回るか・対数オッズの差）× 重なりの割引（1 ÷（1＋他の審判との κ×共に口を開いた割合 の和））。
+       的中：その局で点が増えた手は攻め、減った手は守りが正解（増減0は数えない）。
+     ＊値の出どころ：v1471（席を外した版）の雲1000局（reports/cloud-core-battle-1000-20261113-191605.tsv）の偶数局。
+       奇数局で確かめ、4000手で守り→攻めが761手（平均+237・決める用+306／確かめる用+171）。報告 reports/y1114-0431.md。
+     ＊analyze() そのものは変えない（core-probe・core-battle の測りが analyze と揃うように）。「判定する」の処理からだけ呼ぶ。 */
+  const REVOTE_W = {
+    butler: { a: 0.030996, d: 0.016352 },
+    strategist: { a: 0.144168, d: 0.163701 },
+    blunt: { a: 0.133269, d: 0.165675 },
+    lady: { a: 0.102204, d: 0.123066 },
+    french: { a: 0.131814, d: 0.09141 },
+    ichihime: { a: 0.07292, d: 0 },
+    sensei: { a: 0.092322, d: 0.112015 },
+    cat: { a: 0.201778, d: 0.142209 },
+    eda: { a: 0.060265, d: 0.061561 },
+    ai: { a: 0.146542, d: 0.113296 },
+    usagi: { a: 0.098586, d: 0.151065 }
+  };
+  const REVOTE_K = {
+    butler: { strategist: 0.048938, blunt: 0.101232, lady: 0, french: 0, ichihime: 0, sensei: 0.153832, cat: 0.006861, eda: 0.095994, ai: 0.039654, usagi: 0 },
+    strategist: { butler: 0.048938, blunt: 0.817958, lady: 0.224508, french: 0.288134, ichihime: 0, sensei: 1, cat: 0.518748, eda: 0.205086, ai: 0.500492, usagi: 0.063895 },
+    blunt: { butler: 0.101232, strategist: 0.817958, lady: 0.301047, french: 0.971011, ichihime: 0, sensei: 1, cat: 0.855036, eda: 0.672484, ai: 0.625141, usagi: 0.729818 },
+    lady: { butler: 0, strategist: 0.224508, blunt: 0.301047, french: 0, ichihime: 0, sensei: 0.345892, cat: 0.276238, eda: 0, ai: 0.173928, usagi: 0.074809 },
+    french: { butler: 0, strategist: 0.288134, blunt: 0.971011, lady: 0, ichihime: 0, sensei: 0.77881, cat: 0.559729, eda: 0.215128, ai: 0.065432, usagi: 0.842298 },
+    ichihime: { butler: 0, strategist: 0, blunt: 0, lady: 0, french: 0, sensei: 0, cat: 0, eda: 0, ai: 0, usagi: 0 },
+    sensei: { butler: 0.153832, strategist: 1, blunt: 1, lady: 0.345892, french: 0.77881, ichihime: 0, cat: 0.966364, eda: 0.711559, ai: 0.963263, usagi: 0 },
+    cat: { butler: 0.006861, strategist: 0.518748, blunt: 0.855036, lady: 0.276238, french: 0.559729, ichihime: 0, sensei: 0.966364, eda: 0.182196, ai: 0.202874, usagi: 0 },
+    eda: { butler: 0.095994, strategist: 0.205086, blunt: 0.672484, lady: 0, french: 0.215128, ichihime: 0, sensei: 0.711559, cat: 0.182196, ai: 0.125646, usagi: 0.172965 },
+    ai: { butler: 0.039654, strategist: 0.500492, blunt: 0.625141, lady: 0.173928, french: 0.065432, ichihime: 0, sensei: 0.963263, cat: 0.202874, eda: 0.125646, usagi: 0.008905 },
+    usagi: { butler: 0, strategist: 0.063895, blunt: 0.729818, lady: 0.074809, french: 0.842298, ichihime: 0, sensei: 0, cat: 0, eda: 0.172965, ai: 0.008905 }
+  };
+  function revoteVerdict(a, catN){
+    if(!a || a.tooMany || a.kokushiSeen || a.yakumanReach) return null;
+    if(!(a.borderline || a.goodShapes - a.shapeNeeded === -1)) return null;
+    const v = {};
+    tenLeans(a, catN).forEach(function(x){ if(REVOTE_W[x.key]) v[x.key] = x.lean || ''; });
+    const J = Object.keys(REVOTE_W);
+    let s = 0;
+    J.forEach(function(j){ if(v[j] === 'a') s += REVOTE_W[j].a; else if(v[j] === 'd') s -= REVOTE_W[j].d; });
+    for(let x = 0; x < J.length; x++){
+      for(let y = x + 1; y < J.length; y++){
+        const i = J[x], j = J[y];
+        if(!v[i] || v[i] !== v[j]) continue;
+        const side = v[i], bonus = (1 - REVOTE_K[i][j]) * Math.sqrt(REVOTE_W[i][side] * REVOTE_W[j][side]);
+        s += (side === 'a') ? bonus : -bonus;
+      }
+    }
+    return { from: a.verdict, to: s > 0 ? 'attack' : (s < 0 ? 'defend' : a.verdict), score: s };
+  }
   /* ---- 虎（判定エンジンの声）の台詞 ----
      八人目の人格ではない。方言チップには反応せず、いつも同じ口調で話す。
      数字は analyze() の返り値から取り、ここで計算し直さない。 */
@@ -4016,7 +4070,11 @@ document.addEventListener('DOMContentLoaded', function () {
     wideAttack:   '形のまとまりは{n}つで、必要な{m}つには足りません。ただ受けが{r}枚と広いので、判定は攻めです。',
     bigAttack:    '{名}が見えています。ここは文句なしの攻めです。',
     narrowDefend: '形のまとまりは足りていますが、受け{r}枚・打点{d}と狭くて安いので、判定は守りです。',
-    shortDefend:  '形のまとまりが{n}つで、必要な{m}つに届きません。判定は守りです。'
+    shortDefend:  '形のまとまりが{n}つで、必要な{m}つに届きません。判定は守りです。',
+    /* 審判の票で判定を決め直した手（v1473・y1114-0526 で全文を見せて裁定） */
+    voteAttack:       '形のまとまりは{n}つで、必要な{m}つにあと一つ足りません。ただ審判たちの票が攻めに傾いたので、判定は攻めです。',
+    voteDefendWide:   '形のまとまりは{n}つで、必要な{m}つに足りません。受けは{r}枚と広いのですが、審判たちの票が守りに傾いたので、判定は守りです。',
+    voteAttackNarrow: '形のまとまりは足りていますが、受けが{r}枚と狭い手です。ただ審判たちの票が攻めに傾いたので、判定は攻めです。'
   };
   function mascotSay(a){
     if(!a) return '';
@@ -4025,6 +4083,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if(a.kokushiSeen || a.yakumanReach){
       const name = a.yakumanReach ? (a.yakumanName || '役満') : '国士無双';
       s = MASCOT_WORDS.bigAttack.replace('{名}', name);
+    } else if(a.revote && a.revote.to !== a.revote.from){   /* 審判の票で決め直した手（v1473） */
+      s = atk ? (a.shapeOK ? MASCOT_WORDS.voteAttackNarrow : MASCOT_WORDS.voteAttack) : MASCOT_WORDS.voteDefendWide;
     } else if(a.shapeOK && atk){
       s = MASCOT_WORDS.shapeAttack;
     } else if(!a.shapeOK && atk){
@@ -8404,6 +8464,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // 手牌の中で孤立している1〜9の数牌も同じ猫牌として数える。字牌は猫牌ではない。
     const effectiveCatN = catN + countIsolatedRealTiles(hand.filter(t => t.suit !== 'cat'));
 
+    // 際どい手と良形があと1つ足りない手だけ、審判の重み付きの票で決め直す（v1473）。以下の記録・虎・カードは決め直した判定に従う
+    const _rv = revoteVerdict(a, effectiveCatN);
+    if(_rv){ a.revote = _rv; a.verdict = _rv.to; }
+
     // 判定を押した手を、三本の物差しの値と一緒に自動で記録に足す（猫牌率で集計）
     try{
       const _h = {};
@@ -8438,7 +8502,8 @@ document.addEventListener('DOMContentLoaded', function () {
                    // 判定獣の見立てを組むための材料（形が足りているか・守りの牌の数）
                    shapeOK: !!a.shapeOK, defHonors: a.defHonors, defTerminals: a.defTerminals,
                    yakumanReach: !!a.yakumanReach, yakumanName: a.yakumanName,
-                   kokushiSeen: !!a.kokushiSeen, kokushiKinds: a.kokushiKinds });
+                   kokushiSeen: !!a.kokushiSeen, kokushiKinds: a.kokushiKinds,
+                   revote: a.revote ? { from: a.revote.from, to: a.revote.to, score: Math.round(a.revote.score * 1000) / 1000 } : undefined });
       if(_rows.length > 500) _rows.splice(0, _rows.length - 500);
       localStorage.setItem('haipaiLog', JSON.stringify(_rows));
     }catch(e){ /* 記録に失敗しても判定は続ける */ }
