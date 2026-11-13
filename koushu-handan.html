@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1463">
+<html lang="ja" data-ver="1464">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1424,7 +1424,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1463</div>
+  <div id="verTag">v1464</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9155,10 +9155,28 @@ window.ssShow = function(){
   window.ssCalibStep = 0;
   window.ssCalibP1 = null;
   window.ssActiveCalib = null;
+  /* 手牌の列を自動で探して台形補正。外れたら前に押した四隅、それも無ければ四隅合わせへ（v1464） */
+  window.ssQuadStep = 0;
+  window.ssQuadPts = null;
+  window.ssWarp = null;
+  window.ssWarpNote = '';
+  var _needQuad = false;
+  var _auto = window.ssAutoBand(img);
+  if(_auto) window.ssWarp = window.ssMakeWarp(img, _auto.quad, 'auto');
+  if(window.ssWarp){
+    window.ssWarpNote = '手牌の列を自動で見つけ、まっすぐに直しました';
+  } else {
+    var _sq = window.ssQuadLoad();
+    if(_sq) window.ssWarp = window.ssMakeWarp(img, _sq.map(function(p){ return [p[0] * img.width, p[1] * img.height]; }), 'saved');
+    if(window.ssWarp) window.ssWarpNote = '自動では手牌の列が見つからず、前に押した四隅で直しました。違えば「四隅合わせ」で押し直せます';
+    else _needQuad = true;
+  }
   window.ssFitView(true);   /* 取込後は手牌の帯だけを映す（v1460） */
   window.ssRedraw();
   var cb0 = document.getElementById('ssCalibBtn');
   if(cb0) cb0.style.display = '';
+  var qb0 = document.getElementById('ssQuadBtn');
+  if(qb0) qb0.style.display = '';
   var ctb = document.getElementById('ssCutBtn');
   if(ctb) ctb.style.display = '';
   var ccr = document.getElementById('ssCutRow');
@@ -9178,7 +9196,7 @@ window.ssShow = function(){
   var _tplMode = false;
   try{ _tplMode = localStorage.getItem('ssTplMode') === '1'; }catch(e){}
   if(_tplMode && window.ssTplOpen){ window.ssTplOpen(); }
-  else if(window.ssCutShow){ window.ssCutShow(); }
+  else if(window.ssCutShow){ window.ssCutShow(); if(_needQuad) window.ssQuadStart(true); }
 };
 window.ssClose = function(){
   var ov = document.getElementById('ssOverlay');
@@ -9201,6 +9219,8 @@ window.ssShowMsg = function(t){
   if(pb) pb.style.display = '';
   var cb2 = document.getElementById('ssCalibBtn');
   if(cb2) cb2.style.display = 'none';
+  var qb2 = document.getElementById('ssQuadBtn');
+  if(qb2) qb2.style.display = 'none';
   var ctb2 = document.getElementById('ssCutBtn');
   if(ctb2) ctb2.style.display = 'none';
   var ccr2 = document.getElementById('ssCutRow');
@@ -9265,7 +9285,10 @@ window.ssFitView = function(band){
   if(!cv || !img) return;
   var v = { x: 0, y: 0, w: img.width, h: img.height };
   var hmax = 0.72;
-  if(band){
+  if(band && window.ssWarp && !window.ssActiveCalib){   /* 補正した帯をそのまま映す（v1464） */
+    v = { x: 0, y: 0, w: window.ssWarp.canvas.width, h: window.ssWarp.canvas.height, src: window.ssWarp.canvas };
+    hmax = 0.30;
+  } else if(band){
     var c = window.ssGetCalib();
     var bx1 = c.x1 * img.width, by1 = c.y1 * img.height, bx2 = c.x2 * img.width, by2 = c.y2 * img.height;
     var mx = (bx2 - bx1) * 0.04, my = (by2 - by1) * 0.25;
@@ -9288,7 +9311,21 @@ window.ssRedraw = function(){
   var ctx = cv.getContext('2d');
   var v = window.ssView || { x: 0, y: 0, w: img.width, h: img.height };
   ctx.clearRect(0, 0, cv.width, cv.height);
-  ctx.drawImage(img, v.x, v.y, v.w, v.h, 0, 0, cv.width, cv.height);
+  ctx.drawImage(v.src || img, v.x, v.y, v.w, v.h, 0, 0, cv.width, cv.height);
+  if(window.ssQuadPts && window.ssQuadPts.length){   /* 四隅合わせで押した点（v1464） */
+    ctx.strokeStyle = 'rgba(90,230,130,0.95)';
+    ctx.fillStyle = 'rgba(90,230,130,0.95)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    window.ssQuadPts.forEach(function(p, k){
+      var qx = (p[0] - v.x) * window.ssScale, qy = (p[1] - v.y) * window.ssScale;
+      if(k) ctx.lineTo(qx, qy); else ctx.moveTo(qx, qy);
+    });
+    ctx.stroke();
+    window.ssQuadPts.forEach(function(p){
+      ctx.beginPath(); ctx.arc((p[0] - v.x) * window.ssScale, (p[1] - v.y) * window.ssScale, 4, 0, Math.PI * 2); ctx.fill();
+    });
+  }
   if(window.ssCalibP1){
     var x = (window.ssCalibP1.x - v.x) * window.ssScale;
     var y = (window.ssCalibP1.y - v.y) * window.ssScale;
@@ -9307,6 +9344,12 @@ window.ssDrawFrame = function(calib){
   var ctx = cv.getContext('2d');
   var sc = window.ssScale;
   var v = window.ssView || { x: 0, y: 0 };
+  if(v.src && window.ssWarp && !window.ssActiveCalib){   /* 補正した帯：牌の隙間に合わせた13枠（v1464） */
+    ctx.strokeStyle = 'rgba(255,80,80,0.9)';
+    ctx.lineWidth = 2;
+    window.ssWarp.cuts.forEach(function(t){ ctx.strokeRect((t.sx - v.x) * sc, (t.sy - v.y) * sc, t.sw * sc, t.sh * sc); });
+    return;
+  }
   var X1 = (calib.x1 * img.width - v.x) * sc, Y1 = (calib.y1 * img.height - v.y) * sc;
   var X2 = (calib.x2 * img.width - v.x) * sc, Y2 = (calib.y2 * img.height - v.y) * sc;
   var w = (X2 - X1) / 13;
@@ -9319,6 +9362,10 @@ window.ssDrawFrame = function(calib){
 window.ssCutTiles = function(calib){
   var img = window.ssImg;
   if(!img || !calib) return [];
+  /* 補正した帯があれば、牌の隙間に合わせた13枚（帯の画素）を返す（v1464） */
+  if(window.ssWarp && !window.ssActiveCalib && window.ssWarp.cuts){
+    return window.ssWarp.cuts.map(function(t){ return { sx: t.sx, sy: t.sy, sw: t.sw, sh: t.sh }; });
+  }
   var X1 = calib.x1 * img.width, Y1 = calib.y1 * img.height;
   var X2 = calib.x2 * img.width, Y2 = calib.y2 * img.height;
   var w = (X2 - X1) / 13, h = Y2 - Y1;
@@ -9327,6 +9374,301 @@ window.ssCutTiles = function(calib){
     tiles.push({ sx: X1 + i * w, sy: Y1, sw: w, sh: h });
   }
   return tiles;
+};
+/* ==== ⑥斜めの写真の台形補正（v1464） ====
+   手牌の列（白い牌の面が横に並んだ帯）を自動で探し、上下左右の縁の線から四隅を出して、
+   射影変換でまっすぐな長方形（window.ssWarp.canvas）に引き直す。切り出しは牌の隙間に合わせる。
+   自動で見つからない時は、前に押した四隅（localStorage ssQuad）を使い、それも無ければ四隅合わせ（4点タップ）へ切り替える。
+   2点の「枠合わせ」をした写真（ssActiveCalib）は、今までどおり元の写真から切り出す。 */
+window.ssWarp = null;
+window.ssWarpNote = '';
+window.ssQuadStep = 0;
+window.ssQuadPts = null;
+window.SS_QUAD_NAMES = ['左上', '右上', '右下', '左下'];
+window.ssTileSrc = function(){ return (window.ssWarp && !window.ssActiveCalib) ? window.ssWarp.canvas : window.ssImg; };
+window.ssQuadLoad = function(){
+  try{
+    var q = JSON.parse(localStorage.getItem('ssQuad') || 'null');
+    if(q && q.length === 4) return q;
+  }catch(e){}
+  return null;
+};
+window.ssQuadSave = function(q){ try{ localStorage.setItem('ssQuad', JSON.stringify(q)); }catch(e){} };
+/* src[i] を dst[i] へ移す 3x3（9番目は1）。8元の連立をガウス消去で解く */
+window.ssHomography = function(src, dst){
+  var A = [], b = [], i, r, c, k;
+  for(i = 0; i < 4; i++){
+    var x = src[i][0], y = src[i][1], u = dst[i][0], v = dst[i][1];
+    A.push([x, y, 1, 0, 0, 0, -u * x, -u * y]); b.push(u);
+    A.push([0, 0, 0, x, y, 1, -v * x, -v * y]); b.push(v);
+  }
+  for(c = 0; c < 8; c++){
+    var p = c;
+    for(r = c + 1; r < 8; r++) if(Math.abs(A[r][c]) > Math.abs(A[p][c])) p = r;
+    if(Math.abs(A[p][c]) < 1e-12) return null;
+    var t = A[c]; A[c] = A[p]; A[p] = t; t = b[c]; b[c] = b[p]; b[p] = t;
+    for(r = 0; r < 8; r++){
+      if(r === c) continue;
+      var f = A[r][c] / A[c][c];
+      if(!f) continue;
+      for(k = c; k < 8; k++) A[r][k] -= f * A[c][k];
+      b[r] -= f * b[c];
+    }
+  }
+  var h = [];
+  for(i = 0; i < 8; i++) h.push(b[i] / A[i][i]);
+  h.push(1);
+  return h;
+};
+window.ssOtsu = function(hist, total){
+  var sum = 0, i;
+  for(i = 0; i < 256; i++) sum += i * hist[i];
+  var sB = 0, wB = 0, best = -1, th = 128;
+  for(i = 0; i < 256; i++){
+    wB += hist[i]; if(!wB) continue;
+    var wF = total - wB; if(!wF) break;
+    sB += i * hist[i];
+    var mB = sB / wB, mF = (sum - sB) / wF, v = wB * wF * (mB - mF) * (mB - mF);
+    if(v > best){ best = v; th = i; }
+  }
+  return th;
+};
+/* 点の並びに直線を当てる（二つ目の値を一つ目の値の一次式で）。外れ値を一度落として当て直す */
+window.ssFitLine = function(pts){
+  if(!pts || pts.length < 3) return null;
+  function fit(P){
+    var n = P.length, sx = 0, sy = 0, sxx = 0, sxy = 0;
+    for(var i = 0; i < n; i++){ sx += P[i][0]; sy += P[i][1]; sxx += P[i][0] * P[i][0]; sxy += P[i][0] * P[i][1]; }
+    var den = n * sxx - sx * sx;
+    if(Math.abs(den) < 1e-9) return { a: 0, b: sy / n };
+    var a = (n * sxy - sx * sy) / den;
+    return { a: a, b: (sy - a * sx) / n };
+  }
+  var L = fit(pts);
+  var res = pts.map(function(q){ return Math.abs(q[1] - (L.a * q[0] + L.b)); }).sort(function(a, b){ return a - b; });
+  var lim = Math.max(1.5, res[Math.floor(res.length * 0.5)] * 2.5);
+  var keep = pts.filter(function(q){ return Math.abs(q[1] - (L.a * q[0] + L.b)) <= lim; });
+  return keep.length >= 3 ? fit(keep) : L;
+};
+/* 四隅が [左上,右上,右下,左下] の順に回る凸の四角形か */
+window.ssQuadOk = function(Q){
+  if(!Q || Q.length !== 4) return false;
+  var sgn = 0;
+  for(var i = 0; i < 4; i++){
+    var a = Q[i], b = Q[(i + 1) % 4], c = Q[(i + 2) % 4];
+    var z = (b[0] - a[0]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[0] - b[0]);
+    if(!isFinite(z) || Math.abs(z) < 1e-6) return false;
+    if(!sgn) sgn = z > 0 ? 1 : -1; else if((z > 0 ? 1 : -1) !== sgn) return false;
+  }
+  return sgn > 0;   /* 画面の向き（下が +y）で時計回り */
+};
+/* 手牌の列を自動で探す。見つかれば写真の画素で四隅 [左上,右上,右下,左下] を返す。無ければ null */
+window.ssAutoBand = function(img){
+  try{
+    var W0 = img.width, H0 = img.height;
+    var s = Math.min(1, 800 / W0);
+    var W = Math.max(1, Math.round(W0 * s)), H = Math.max(1, Math.round(H0 * s));
+    var c = document.createElement('canvas'); c.width = W; c.height = H;
+    var g = c.getContext('2d'); g.drawImage(img, 0, 0, W, H);
+    var d = g.getImageData(0, 0, W, H).data;
+    var N = W * H, lum = new Uint8Array(N), low = new Uint8Array(N), hist = [], i, j, x, y;
+    for(i = 0; i < 256; i++) hist.push(0);
+    for(i = 0, j = 0; i < N; i++, j += 4){
+      var R = d[j], G = d[j + 1], B = d[j + 2];
+      var L = Math.round(0.299 * R + 0.587 * G + 0.114 * B);
+      lum[i] = L; hist[L]++;
+      low[i] = (Math.max(R, G, B) - Math.min(R, G, B)) <= 60 ? 1 : 0;
+    }
+    var T = Math.max(140, window.ssOtsu(hist, N));
+    var m = new Uint8Array(N);
+    for(i = 0; i < N; i++) m[i] = (lum[i] >= T && low[i]) ? 1 : 0;
+    /* 牌と牌の細い隙間を横に埋める（離れた14枚目の隙間は埋めない） */
+    var gap = Math.max(2, Math.round(W / 250));
+    for(y = 0; y < H; y++){
+      var last = -1;
+      for(x = 0; x < W; x++){
+        if(m[y * W + x] === 1){
+          if(last >= 0 && x - last > 1 && x - last <= gap + 1){ for(var q = last + 1; q < x; q++) m[y * W + q] = 2; }
+          last = x;
+        }
+      }
+    }
+    /* 繋がった塊を数え、横に長い塊を手牌の列の候補にする */
+    var lab = new Int32Array(N), stack = new Int32Array(N), nl = 0, best = null;
+    for(var p0 = 0; p0 < N; p0++){
+      if(!m[p0] || lab[p0]) continue;
+      nl++;
+      var sp = 0; stack[sp++] = p0; lab[p0] = nl;
+      var x0 = W, x1 = -1, y0 = H, y1 = -1, cnt = 0;
+      while(sp){
+        var p = stack[--sp], px = p % W, py = (p - px) / W;
+        cnt++;
+        if(px < x0) x0 = px; if(px > x1) x1 = px; if(py < y0) y0 = py; if(py > y1) y1 = py;
+        if(px > 0 && m[p - 1] && !lab[p - 1]){ lab[p - 1] = nl; stack[sp++] = p - 1; }
+        if(px < W - 1 && m[p + 1] && !lab[p + 1]){ lab[p + 1] = nl; stack[sp++] = p + 1; }
+        if(py > 0 && m[p - W] && !lab[p - W]){ lab[p - W] = nl; stack[sp++] = p - W; }
+        if(py < H - 1 && m[p + W] && !lab[p + W]){ lab[p + W] = nl; stack[sp++] = p + W; }
+      }
+      var bw = x1 - x0 + 1, bh = y1 - y0 + 1;
+      if(bw < W * 0.25 || bh < 6 || bw / bh < 2.5 || cnt < bw * bh * 0.2) continue;
+      if(!best || bw > best.bw) best = { id: nl, x0: x0, x1: x1, y0: y0, y1: y1, bw: bw, bh: bh };
+    }
+    if(!best) return null;
+    var id = best.id, tops = [], bots = [];
+    var xa = best.x0 + Math.round(best.bw * 0.06), xb = best.x1 - Math.round(best.bw * 0.06);
+    for(x = xa; x <= xb; x++){
+      var ty = -1, by = -1;
+      for(y = best.y0; y <= best.y1; y++){ if(lab[y * W + x] === id){ if(ty < 0) ty = y; by = y; } }
+      if(ty >= 0){ tops.push([x, ty]); bots.push([x, by]); }
+    }
+    var lt = window.ssFitLine(tops), lb = window.ssFitLine(bots);   /* y = a x + b */
+    if(!lt || !lb) return null;
+    var lefts = [], rights = [];
+    for(y = best.y0; y <= best.y1; y++){
+      var lx = -1, rx = -1;
+      for(x = best.x0; x <= best.x1; x++){ if(lab[y * W + x] === id){ if(lx < 0) lx = x; rx = x; } }
+      if(lx < 0) continue;
+      var yt = lt.a * lx + lt.b, yb = lb.a * lx + lb.b;
+      if(y > yt + (yb - yt) * 0.2 && y < yt + (yb - yt) * 0.8) lefts.push([y, lx]);
+      yt = lt.a * rx + lt.b; yb = lb.a * rx + lb.b;
+      if(y > yt + (yb - yt) * 0.2 && y < yt + (yb - yt) * 0.8) rights.push([y, rx]);
+    }
+    var ll = window.ssFitLine(lefts) || { a: 0, b: best.x0 }, lr = window.ssFitLine(rights) || { a: 0, b: best.x1 };   /* x = a y + b */
+    function meet(h, v){   /* y = h.a x + h.b と x = v.a y + v.b の交点 */
+      var den = 1 - v.a * h.a;
+      if(Math.abs(den) < 1e-9) return null;
+      var xx = (v.a * h.b + v.b) / den;
+      return [xx / s, (h.a * xx + h.b) / s];
+    }
+    var Q = [meet(lt, ll), meet(lt, lr), meet(lb, lr), meet(lb, ll)];
+    if(Q.some(function(z){ return !z; }) || !window.ssQuadOk(Q)) return null;
+    var dd = function(a, b){ return Math.hypot(a[0] - b[0], a[1] - b[1]); };
+    var wt = dd(Q[0], Q[1]), wb = dd(Q[3], Q[2]), hl = dd(Q[0], Q[3]), hr = dd(Q[1], Q[2]);
+    var asp = (wt + wb) / (hl + hr);
+    if(asp < 5 || asp > 16) return null;
+    if(Math.max(wt, wb) / Math.min(wt, wb) > 1.8 || Math.max(hl, hr) / Math.min(hl, hr) > 1.8) return null;
+    for(i = 0; i < 4; i++){
+      if(Q[i][0] < -W0 * 0.02 || Q[i][0] > W0 * 1.02 || Q[i][1] < -H0 * 0.02 || Q[i][1] > H0 * 1.02) return null;
+    }
+    return { quad: Q };
+  }catch(e){ return null; }
+};
+/* 補正した帯で、牌と牌の隙間（白い面の少ない縦の筋）を探して13枚に切る。見つからない所は等分の位置 */
+window.ssWarpCuts = function(o, OW, OH){
+  var y0 = Math.floor(OH * 0.2), y1 = Math.max(y0 + 1, Math.ceil(OH * 0.8)), rows = y1 - y0;
+  var hist = [], n = 0, x, y, i, k;
+  for(i = 0; i < 256; i++) hist.push(0);
+  for(y = y0; y < y1; y++) for(x = 0; x < OW; x++){ i = (y * OW + x) * 4; hist[Math.round(0.299 * o[i] + 0.587 * o[i + 1] + 0.114 * o[i + 2])]++; n++; }
+  var T = window.ssOtsu(hist, n);
+  var prof = new Array(OW);
+  for(x = 0; x < OW; x++){
+    var c = 0;
+    for(y = y0; y < y1; y++){
+      i = (y * OW + x) * 4;
+      var L = 0.299 * o[i] + 0.587 * o[i + 1] + 0.114 * o[i + 2];
+      if(L >= T && (Math.max(o[i], o[i + 1], o[i + 2]) - Math.min(o[i], o[i + 1], o[i + 2])) <= 60) c++;
+    }
+    prof[x] = c;
+  }
+  var cw = OW / 13, sep = [0];
+  for(k = 1; k < 13; k++){
+    var e = k * cw, a = Math.max(1, Math.round(e - cw * 0.2)), b = Math.min(OW - 2, Math.round(e + cw * 0.2));
+    var bx = Math.round(e), bv = Infinity;
+    for(x = a; x <= b; x++){ var v = prof[x] + Math.abs(x - e) / cw * rows * 0.3; if(v < bv){ bv = v; bx = x; } }
+    sep.push(prof[bx] <= rows * 0.5 ? bx : Math.round(e));
+  }
+  sep.push(OW);
+  var cuts = [];
+  for(k = 0; k < 13; k++){
+    var sx = sep[k], ex = sep[k + 1];
+    if(ex - sx < cw * 0.5){ sx = Math.round(k * cw); ex = Math.round((k + 1) * cw); }
+    cuts.push({ sx: sx, sy: 0, sw: Math.max(1, ex - sx), sh: OH });
+  }
+  return cuts;
+};
+/* 四隅 Q（写真の画素）を、まっすぐな長方形の帯へ引き直す */
+window.ssMakeWarp = function(img, Q, how){
+  try{
+    if(!window.ssQuadOk(Q)) return null;
+    var dd = function(a, b){ return Math.hypot(a[0] - b[0], a[1] - b[1]); };
+    var Wt = Math.max(dd(Q[0], Q[1]), dd(Q[3], Q[2])), Ht = Math.max(dd(Q[0], Q[3]), dd(Q[1], Q[2]));
+    var k = Math.min(1, 1600 / Wt);
+    var OW = Math.max(13, Math.round(Wt * k)), OH = Math.max(4, Math.round(Ht * k));
+    var Hm = window.ssHomography([[0, 0], [OW, 0], [OW, OH], [0, OH]], Q);
+    if(!Hm) return null;
+    var IW = img.width, IH = img.height;
+    var bx0 = Math.max(0, Math.floor(Math.min(Q[0][0], Q[1][0], Q[2][0], Q[3][0])) - 2);
+    var by0 = Math.max(0, Math.floor(Math.min(Q[0][1], Q[1][1], Q[2][1], Q[3][1])) - 2);
+    var bx1 = Math.min(IW, Math.ceil(Math.max(Q[0][0], Q[1][0], Q[2][0], Q[3][0])) + 2);
+    var by1 = Math.min(IH, Math.ceil(Math.max(Q[0][1], Q[1][1], Q[2][1], Q[3][1])) + 2);
+    var bw = bx1 - bx0, bh = by1 - by0;
+    if(bw < 2 || bh < 2) return null;
+    var sc = document.createElement('canvas'); sc.width = bw; sc.height = bh;
+    var sg = sc.getContext('2d'); sg.drawImage(img, bx0, by0, bw, bh, 0, 0, bw, bh);
+    var sd = sg.getImageData(0, 0, bw, bh).data;
+    var oc = document.createElement('canvas'); oc.width = OW; oc.height = OH;
+    var og = oc.getContext('2d'), od = og.createImageData(OW, OH), o = od.data;
+    for(var v = 0; v < OH; v++){
+      for(var u = 0; u < OW; u++){
+        var X = u + 0.5, Y = v + 0.5, w = Hm[6] * X + Hm[7] * Y + 1;
+        var fx = (Hm[0] * X + Hm[1] * Y + Hm[2]) / w - bx0 - 0.5, fy = (Hm[3] * X + Hm[4] * Y + Hm[5]) / w - by0 - 0.5;
+        if(fx < 0) fx = 0; if(fy < 0) fy = 0; if(fx > bw - 1) fx = bw - 1; if(fy > bh - 1) fy = bh - 1;
+        var ix = Math.floor(fx), iy = Math.floor(fy), ax = fx - ix, ay = fy - iy;
+        var ix2 = Math.min(bw - 1, ix + 1), iy2 = Math.min(bh - 1, iy + 1);
+        var p00 = (iy * bw + ix) * 4, p10 = (iy * bw + ix2) * 4, p01 = (iy2 * bw + ix) * 4, p11 = (iy2 * bw + ix2) * 4, q = (v * OW + u) * 4;
+        for(var ch = 0; ch < 3; ch++){
+          o[q + ch] = (sd[p00 + ch] * (1 - ax) + sd[p10 + ch] * ax) * (1 - ay) + (sd[p01 + ch] * (1 - ax) + sd[p11 + ch] * ax) * ay;
+        }
+        o[q + 3] = 255;
+      }
+    }
+    og.putImageData(od, 0, 0);
+    return { canvas: oc, quad: Q, how: how, cuts: window.ssWarpCuts(o, OW, OH) };
+  }catch(e){ return null; }
+};
+window.ssQuadStart = function(auto){
+  if(!window.ssImg) return;
+  window.ssCalibStep = 0;
+  window.ssCalibP1 = null;
+  window.ssQuadStep = 1;
+  window.ssQuadPts = [];
+  window.ssFitView(false);   /* 押す間は盤面全体を映す */
+  window.ssRedraw();
+  var info = document.getElementById('ssInfo');
+  if(info) info.textContent = (auto ? '自動では手牌の列が見つかりませんでした。' : '') + '手牌の列の左上の角をタップしてください（四隅合わせ 1/4）';
+};
+window.ssQuadTap = function(e){
+  var cv = document.getElementById('ssCanvas');
+  var img = window.ssImg;
+  if(!cv || !img) return;
+  var r = cv.getBoundingClientRect();
+  var v = window.ssView || { x: 0, y: 0 };
+  window.ssQuadPts.push([v.x + (e.clientX - r.left) / window.ssScale, v.y + (e.clientY - r.top) / window.ssScale]);
+  var info = document.getElementById('ssInfo');
+  var n = window.ssQuadPts.length;
+  if(n < 4){
+    window.ssQuadStep = n + 1;
+    window.ssRedraw();
+    if(info) info.textContent = '手牌の列の' + window.SS_QUAD_NAMES[n] + 'の角をタップしてください（四隅合わせ ' + (n + 1) + '/4）';
+    return;
+  }
+  var Q = window.ssQuadPts.slice();
+  window.ssQuadStep = 0;
+  window.ssQuadPts = null;
+  var wp = window.ssMakeWarp(img, Q, 'tap');
+  if(!wp){
+    window.ssQuadStart(false);
+    if(info) info.textContent = 'その四点では長方形に直せません。左上→右上→右下→左下の順に、左上からやり直してください';
+    return;
+  }
+  window.ssWarp = wp;
+  window.ssActiveCalib = null;
+  window.ssQuadSave(Q.map(function(p){ return [p[0] / img.width, p[1] / img.height]; }));
+  window.ssWarpNote = '押した四隅でまっすぐに直しました（次の写真で自動が外れた時もこの四隅を使います）';
+  window.ssFitView(true);
+  window.ssRedraw();
+  window.ssDrawFrame(window.ssGetCalib());
+  if(window.ssCutShow) window.ssCutShow();
 };
 window.ssCutShow = function(){
   var img = window.ssImg;
@@ -9350,13 +9692,13 @@ window.ssCutShow = function(){
   for(var i = 0; i < 13; i++){
     var t = tiles[i];
     var dx = pad + i * (cw + gap);
-    ctx.drawImage(img, t.sx, t.sy, t.sw, t.sh, dx, pad, cw, ch);
+    ctx.drawImage(window.ssTileSrc(), t.sx, t.sy, t.sw, t.sh, dx, pad, cw, ch);
     ctx.strokeStyle = 'rgba(243,236,224,0.25)';
     ctx.lineWidth = 1;
     ctx.strokeRect(dx + 0.5, pad + 0.5, cw - 1, ch - 1);
   }
   var info = document.getElementById('ssInfo');
-  if(info) info.textContent = '13マスに切り出しました。1マスに牌が1枚ずつ収まっていれば枠は合っています';
+  if(info) info.textContent = ((window.ssWarp && !window.ssActiveCalib && window.ssWarpNote) ? window.ssWarpNote + '。' : '') + '13マスに切り出しました。1マスに牌が1枚ずつ収まっていれば枠は合っています';
 };
 /* ==== ④テンプレ登録 (v764) ==== */
 window.SS_TPL_KEYS = (function(){
@@ -9441,7 +9783,7 @@ window.ssTplRenderStrip = function(){
   window._ssTplRects = [];
   for(var i = 0; i < 13; i++){
     var t = tiles[i], dx = pad + i * (cw + gap);
-    g.drawImage(img, t.sx, t.sy, t.sw, t.sh, dx, pad, cw, ch);
+    g.drawImage(window.ssTileSrc(), t.sx, t.sy, t.sw, t.sh, dx, pad, cw, ch);
     g.lineWidth = 2;
     g.strokeStyle = (i === window.ssTplSelected) ? 'rgba(90,230,130,0.95)' : 'rgba(243,236,224,0.25)';
     g.strokeRect(dx + 1, pad + 1, cw - 2, ch - 2);
@@ -9495,7 +9837,7 @@ window.ssTplAssign = function(key){
   var r = tiles[window.ssTplSelected || 0];
   if(!r) return;
   var have = window.ssTplLoad();
-  have[key] = window.ssTileFeature(img, r);
+  have[key] = window.ssTileFeature(window.ssTileSrc(), r);
   window.ssTplSave(have);
   window.ssTplRenderKeys();
   window.ssTplRenderProg();
@@ -9640,7 +9982,7 @@ window.ssRecognize = function(){
   window.ssRecog = [];
   var result = [];
   for(var i = 0; i < 13; i++){
-    var f = window.ssTileFeature(img, tiles[i]);
+    var f = window.ssTileFeature(window.ssTileSrc(), tiles[i]);
     var m = window.ssMatchTile(f, tpl, keys);
     window.ssRecog.push(m);
     result.push(window.ssKeyToTile(m.key));
@@ -9659,12 +10001,15 @@ window.ssCalibStart = function(){
   if(!window.ssImg) return;
   window.ssCalibStep = 1;
   window.ssCalibP1 = null;
+  window.ssQuadStep = 0;
+  window.ssQuadPts = null;
   window.ssFitView(false);   /* 枠合わせの間は盤面全体を映す（v1460） */
   window.ssRedraw();
   var info = document.getElementById('ssInfo');
   if(info) info.textContent = '左端の牌の左上をタップしてください';
 };
 window.ssCanvasTap = function(e){
+  if(window.ssQuadStep && window.ssQuadPts && window.ssImg){ window.ssQuadTap(e); return; }   /* 四隅合わせ（v1464） */
   if(!window.ssCalibStep || !window.ssImg) return;
   var cv = document.getElementById('ssCanvas');
   var r = cv.getBoundingClientRect();
@@ -9712,6 +10057,8 @@ window.ssReceive = function(){
   if(pb) pb.style.display = '';
   var cb1 = document.getElementById('ssCalibBtn');
   if(cb1) cb1.style.display = 'none';
+  var qb1 = document.getElementById('ssQuadBtn');
+  if(qb1) qb1.style.display = 'none';
   var ctb1 = document.getElementById('ssCutBtn');
   if(ctb1) ctb1.style.display = 'none';
   var ccr1 = document.getElementById('ssCutRow');
@@ -11512,6 +11859,7 @@ window.ssReceive = function(){
   <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px 12px; align-items:center; position:sticky; bottom:0; flex-shrink:0; width:100%; box-sizing:border-box; padding:6px 8px calc(6px + env(safe-area-inset-bottom)); background:rgba(8,10,18,0.96); z-index:1;">
     <span id="ssInfo" style="color:rgba(243,236,224,0.8); font-size:11px; font-family:var(--sans);"></span>
     <button type="button" id="ssCalibBtn" class="btn btn-group" style="display:none;" onclick="window.ssCalibStart()">枠合わせ</button>
+    <button type="button" id="ssQuadBtn" class="btn btn-group" style="display:none;" onclick="window.ssQuadStart(false)">四隅合わせ</button>
     <button type="button" id="ssCutBtn" class="btn btn-group" style="display:none;" onclick="window.ssCutShow()">読取牌表示</button>
     <button type="button" id="ssTplBtn" class="btn btn-group" style="display:none;" onclick="window.ssTplOpen()">テンプレ登録</button>
     <button type="button" id="ssGoBtn" class="btn btn-go" style="display:none; background:linear-gradient(180deg,#e0392b,#a8241a); box-shadow:0 4px 0 #6e1610, 0 6px 14px rgba(0,0,0,0.35);" onclick="window.ssRecognize()">写真取込牌で判定</button>
