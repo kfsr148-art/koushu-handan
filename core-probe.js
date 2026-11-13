@@ -146,7 +146,7 @@ const FIELDS = [
   'shapeOK', 'shapeNeeded', 'fillGood', 'fillWeak', 'fillRemain',
   'hasValue', 'doraValue', 'doraCount', 'redCount', 'yakuhaiPair',
   'kokushiSeen', 'kokushiKinds', 'kokushiShanten',
-  'yakumanReach', 'yakumanName', 'isDealer', 'defHonors', 'defTerminals'
+  'yakumanReach', 'yakumanName', 'defHonors', 'defTerminals'   // isDealer は v1471 で席を外した時に除いた
 ];
 
 /* 突き合わせ用の10通り。狙いを散らしてある。
