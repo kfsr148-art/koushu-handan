@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1471">
+<html lang="ja" data-ver="1472">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -432,6 +432,11 @@
   }
 
   /* テンプレ登録を開いている間は、取込の画面（写真・読取牌の列・釦の段）を隠し、登録の板だけを画面いっぱいに出す（v1463） */
+  /* ドラ表示牌を押す場面（v1472）：牌の箱は44px以上（外箱＝当たり判定・中身＝牌の絵。作法10） */
+  .ss-dp-row { display: flex; gap: 8px; justify-content: center; }
+  .ss-dp-btn { width: 46px; height: 46px; padding: 0; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .ss-dp-btn .dora-face { pointer-events: none; }
+  .ss-dp-btn:active .dora-face { transform: translateY(1px); }
   #ssOverlay.ss-tpl-open > :not(#ssTplPanel) { display: none !important; }
   #ssOverlay.ss-tpl-open > #ssTplPanel { position: fixed !important; inset: 0; width: auto !important; max-width: none !important; max-height: none !important; border: 0 !important; border-radius: 0 !important; }
 
@@ -1388,7 +1393,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1471</div>
+  <div id="verTag">v1472</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -2382,6 +2387,9 @@ document.addEventListener('DOMContentLoaded', function () {
     indicatorArmed = !indicatorArmed;
     refreshDora();
   };
+  /* 写真から取り込んだ後のドラ表示牌の場面（v1472）から使う。盤面の「ドラ指定」で牌を押した時と同じに表示牌を決める */
+  window.ssSetDoraIndicator = function(code){ doraIndicator = code || null; indicatorArmed = false; refreshDora(); };
+  window.ssTileChipBig = tileChipBig;
 
   // 盤面を次の配牌に向けて掃く。場風・自風は据え置き、牌・ドラ表示牌・入力・判定だけ初期化。
   // 「流す」ボタンと「次の配牌へ」ボタンの双方がここを呼ぶ（挙動を一本化）。
@@ -9918,13 +9926,55 @@ window.ssRecognize = function(){
     window.ssRecog.push({ key: c0.key, dist: c0.dist, key2: c1.key, dist2: c1.dist, moved: p > 0 });
     result.push(window.ssKeyToTile(c0.key));
   }
-  // 入力欄へ流し込み、そのまま判定へ進む
+  // 入力欄へ流し込み、ドラ表示牌を押す場面を挟んでから判定へ進む（v1472）
   var field = document.getElementById('qiText');
   if(field && window.ssTilesToInput){
     field.value = window.ssTilesToInput(result);
     if(window.ssRebuildHand) window.ssRebuildHand();
   }
   window.ssClose();
+  window.ssDoraPickOpen();
+};
+/* ==== ⑧ドラ表示牌を押す場面（v1472） ====
+   写真から取り込んだ後、判定へ進む前に出す。34種の牌から場に見えているドラ表示牌を押すと、
+   盤面の「ドラ指定」と同じ仕組み（ssSetDoraIndicator）でその次の牌をドラにし、そのまま判定へ進む。
+   「ドラなしで判定」はドラ0のまま判定へ進む。押す操作の中で判定するので、声もその場で鳴らせる。 */
+window.SS_DORA_CODES = (function(){
+  var a = [];
+  ['m', 'p', 's'].forEach(function(su){ for(var n = 1; n <= 9; n++) a.push(su + n); });
+  ['E', 'S', 'W', 'N', 'P', 'F', 'C'].forEach(function(h){ a.push(h); });
+  return a;
+})();
+window.ssDoraPickOpen = function(){
+  var ov = document.getElementById('ssDoraPick'), grid = document.getElementById('ssDoraGrid');
+  if(!ov || !grid) return;
+  if(!grid._built){
+    var rows = [window.SS_DORA_CODES.slice(0, 9), window.SS_DORA_CODES.slice(9, 18), window.SS_DORA_CODES.slice(18, 27), window.SS_DORA_CODES.slice(27)];
+    rows.forEach(function(row){
+      var r = document.createElement('div');
+      r.className = 'ss-dp-row';
+      row.forEach(function(code){
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'ss-dp-btn';
+        b.setAttribute('data-code', code);
+        b.innerHTML = window.ssTileChipBig ? window.ssTileChipBig(code) : code;
+        b.addEventListener('click', function(){ window.ssDoraPicked(code); });
+        r.appendChild(b);
+      });
+      grid.appendChild(r);
+    });
+    /* 「ドラなしで判定」は字牌の段の右端へ置き、横画面の低い高さに収める */
+    var none = document.getElementById('ssDoraNone');
+    if(none) grid.lastChild.appendChild(none);
+    grid._built = true;
+  }
+  ov.style.display = 'flex';
+};
+window.ssDoraPicked = function(code){
+  var ov = document.getElementById('ssDoraPick');
+  if(ov) ov.style.display = 'none';
+  if(window.ssSetDoraIndicator) window.ssSetDoraIndicator(code || null);
   var jb = document.getElementById('judgeBtn');
   if(jb && !jb.disabled) jb.click();
 };
@@ -11769,6 +11819,11 @@ window.ssReceive = function(){
     <button type="button" id="ssGoBtn" class="btn btn-go" style="display:none; background:linear-gradient(180deg,#e0392b,#a8241a); box-shadow:0 4px 0 #6e1610, 0 6px 14px rgba(0,0,0,0.35);" onclick="window.ssRecognize()">写真取込牌で判定</button>
     <button type="button" class="btn btn-clear" onclick="window.ssClose()">閉じる</button>
   </div>
+</div>
+<div id="ssDoraPick" style="display:none; position:fixed; inset:0; z-index:85; background:rgba(8,10,18,0.96); flex-direction:column; align-items:center; justify-content:center; justify-content:safe center; gap:8px; overflow-y:auto; padding:8px; box-sizing:border-box;">
+  <div style="color:var(--gold); font-size:14px; font-weight:700; font-family:var(--serif); text-align:center;">ドラ表示牌を押してください<span style="color:rgba(243,236,224,0.75); font-size:11px; font-weight:400; font-family:var(--sans);">（場に見えている表示牌を押すと、その次の牌をドラにして判定します）</span></div>
+  <div id="ssDoraGrid" style="display:flex; flex-direction:column; gap:4px; align-items:center;"></div>
+  <button type="button" id="ssDoraNone" class="btn btn-clear" style="min-height:44px;" onclick="window.ssDoraPicked(null)">ドラなしで判定</button>
 </div>
 <input type="file" id="ssFile" accept="image/*" style="display:none" onchange="window.ssFileChosen(event)">
 </body>
