@@ -11,14 +11,42 @@
   .note{font-size:12px;opacity:.78;line-height:1.6;}
   a{color:#9db8ff;font-size:12px;}
   #app{position:fixed;inset:0;width:100%;height:100%;border:0;display:none;background:#0b0e18;}
+  /* ページの中のカメラ（2026-11-14）：映像の上に手牌の帯と左端の線を重ね、右の撮るボタンで撮る */
+  #cam{position:fixed;inset:0;background:#000;display:none;}
+  #camBox{position:absolute;overflow:hidden;}
+  #camVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;}
+  #camGuide{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+  #camBtns{position:absolute;right:max(10px, env(safe-area-inset-right));top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;align-items:center;}
+  #camShot{width:68px;height:68px;border-radius:50%;border:4px solid #f3ece0;background:#e0392b;color:#fff;font-size:13px;font-weight:700;}
+  #camBack{min-width:56px;min-height:44px;border-radius:10px;border:1px solid rgba(243,236,224,.5);background:rgba(28,34,51,.85);color:#f3ece0;font-size:12px;}
+  #camTip{position:absolute;left:50%;top:10px;transform:translateX(-50%);font-size:12px;color:#f3ece0;background:rgba(0,0,0,.55);padding:4px 10px;border-radius:6px;white-space:nowrap;}
+  #camTurn{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:15px;color:#f3ece0;background:rgba(0,0,0,.7);text-align:center;padding:16px;}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="note" id="msg">軽い受付ページですの。ここなら写真選択で落ちませんわ。</div>
-  <button type="button" class="big" id="pick">📷 写真を選ぶ</button>
+  <button type="button" class="big" id="camOpen">📷 カメラで撮る</button>
+  <button type="button" class="big" id="pick">🖼 写真を選ぶ</button>
   <input type="file" id="f" accept="image/*" style="display:none">
   <a href="koushu-handan.html">← 本体へ戻る</a>
+</div>
+<div id="cam">
+  <div id="camBox">
+    <video id="camVideo" playsinline muted autoplay></video>
+    <svg id="camGuide" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+      <!-- 手牌の帯（既定の枠と同じ割合：横18.55%〜71.05%・縦85.92%〜99.24%） -->
+      <rect x="185.5" y="859.2" width="525" height="133.2" fill="rgba(212,175,55,0.10)" stroke="#d4af37" stroke-width="4" stroke-dasharray="14 8" vector-effect="non-scaling-stroke"/>
+      <!-- 左端の線（帯の左端を縦に通す） -->
+      <line x1="185.5" y1="760" x2="185.5" y2="1000" stroke="#ff5a4a" stroke-width="5" vector-effect="non-scaling-stroke"/>
+    </svg>
+  </div>
+  <div id="camTip">手牌を金の枠に、左端の牌を赤い線に合わせてくださいまし。枠が緑になったら自動で撮りますわ</div>
+  <div id="camBtns">
+    <button type="button" id="camShot">撮る</button>
+    <button type="button" id="camBack">戻る</button>
+  </div>
+  <div id="camTurn">スマホを横向きにしてくださいまし</div>
 </div>
 <iframe id="app" title="本体"></iframe>
 <script>
@@ -79,6 +107,121 @@
     unlock();
     document.getElementById('f').click();
   });
+  /* ページの中のカメラ（2026-11-14）。iPhone のカメラを呼び出さず、横向きの映像に手牌の帯と左端の線を重ね、撮るボタンで撮る。
+     撮った一枚は「写真を選ぶ」と同じく ssReaderTake へ渡す（読み直さず枠で本体を開いて判定まで）。 */
+  var cam = document.getElementById('cam'), box = document.getElementById('camBox'), video = document.getElementById('camVideo');
+  var stream = null;
+  function camLayout(){
+    if(cam.style.display !== 'block') return;
+    var W = window.innerWidth, H = window.innerHeight;
+    document.getElementById('camTurn').style.display = (H > W) ? 'flex' : 'none';
+    var a = (video.videoWidth && video.videoHeight) ? video.videoWidth / video.videoHeight : 16 / 9;
+    var bw = W, bh = W / a;
+    if(bh > H){ bh = H; bw = H * a; }
+    box.style.width = Math.round(bw) + 'px'; box.style.height = Math.round(bh) + 'px';
+    box.style.left = Math.round((W - bw) / 2) + 'px'; box.style.top = Math.round((H - bh) / 2) + 'px';
+  }
+  function camStop(){
+    autoStop();
+    if(stream){ stream.getTracks().forEach(function(t){ try{ t.stop(); }catch(e){} }); stream = null; }
+    try{ video.srcObject = null; }catch(e){}
+    cam.style.display = 'none';
+  }
+  /* 自動で撮る（2026-11-14）：0.2秒ごとに映像を小さく取って見る。
+     ①手牌が枠に収まる：枠の中の白い牌の面が十分（列の8割以上に面がある）で、枠の上の帯の外に白がはみ出していない
+     ②左端が線に合う：線のすぐ右は白い面、すぐ左（枠の外）は白が無い
+     ③止まっている：前の一枚との明るさの差が小さい
+     三つがそろって0.6秒続いたら枠を緑にし、さらに0.5秒そろったままなら撮る（手ぶれを避けるため少し待つ）。外れたら金に戻す。 */
+  var G = { x1: 0.1855, x2: 0.7105, y1: 0.8592, y2: 0.9924 };
+  var autoTimer = null, okSince = 0, greenSince = 0, prevGray = null;
+  var guideRect = document.querySelector('#camGuide rect');
+  function guideColor(green){
+    guideRect.setAttribute('stroke', green ? '#3ad46a' : '#d4af37');
+    guideRect.setAttribute('fill', green ? 'rgba(58,212,106,0.18)' : 'rgba(212,175,55,0.10)');
+    guideRect.setAttribute('stroke-dasharray', green ? '' : '14 8');
+  }
+  function autoStop(){ if(autoTimer){ clearInterval(autoTimer); autoTimer = null; } okSince = 0; greenSince = 0; prevGray = null; guideColor(false); }
+  var probeCv = document.createElement('canvas');
+  window.ssCamLook = function(){   /* いまの一枚を見て {fit, edge, still, ok} を返す */
+    var vw = video.videoWidth, vh = video.videoHeight;
+    if(!vw || !vh) return null;
+    var W = 320, H = Math.max(1, Math.round(320 * vh / vw));
+    probeCv.width = W; probeCv.height = H;
+    var g = probeCv.getContext('2d');
+    g.drawImage(video, 0, 0, W, H);
+    var d = g.getImageData(0, 0, W, H).data, n = W * H, L = new Uint8Array(n), wh = new Uint8Array(n), hist = [], i;
+    for(i = 0; i < 256; i++) hist.push(0);
+    for(i = 0; i < n; i++){
+      var r = d[i * 4], gg = d[i * 4 + 1], b = d[i * 4 + 2];
+      L[i] = Math.round(0.299 * r + 0.587 * gg + 0.114 * b); hist[L[i]]++;
+    }
+    var sum = 0; for(i = 0; i < 256; i++) sum += i * hist[i];
+    var sB = 0, wB = 0, best = -1, T = 128;
+    for(i = 0; i < 256; i++){ wB += hist[i]; if(!wB) continue; var wF = n - wB; if(!wF) break; sB += i * hist[i]; var mB = sB / wB, mF = (sum - sB) / wF, v = wB * wF * (mB - mF) * (mB - mF); if(v > best){ best = v; T = i; } }
+    T = Math.max(140, T);
+    for(i = 0; i < n; i++){ var j = i * 4; wh[i] = (L[i] >= T && Math.max(d[j], d[j + 1], d[j + 2]) - Math.min(d[j], d[j + 1], d[j + 2]) <= 60) ? 1 : 0; }
+    function frac(x0, x1, y0, y1){
+      var X0 = Math.max(0, Math.round(x0 * W)), X1 = Math.min(W, Math.round(x1 * W)), Y0 = Math.max(0, Math.round(y0 * H)), Y1 = Math.min(H, Math.round(y1 * H));
+      var s = 0, c = 0;
+      for(var y = Y0; y < Y1; y++) for(var x = X0; x < X1; x++){ s += wh[y * W + x]; c++; }
+      return c ? s / c : 0;
+    }
+    /* 枠の列のうち、白い面が縦に3割以上ある列の割合 */
+    var X0 = Math.round(G.x1 * W), X1 = Math.round(G.x2 * W), Y0 = Math.round(G.y1 * H), Y1 = Math.round(G.y2 * H), cols = 0, good = 0;
+    for(var x = X0; x < X1; x++){ var s = 0; for(var y = Y0; y < Y1; y++) s += wh[y * W + x]; cols++; if(s >= (Y1 - Y0) * 0.3) good++; }
+    var cover = cols ? good / cols : 0;
+    var above = frac(G.x1, G.x2, G.y1 - 0.08, G.y1 - 0.02);
+    var inL = frac(G.x1 + 0.004, G.x1 + 0.03, G.y1, G.y2), outL = frac(G.x1 - 0.035, G.x1 - 0.008, G.y1, G.y2);
+    var diff = 0;
+    if(prevGray && prevGray.length === n){ for(i = 0; i < n; i += 4) diff += Math.abs(L[i] - prevGray[i]); diff /= (n / 4); } else diff = 999;
+    prevGray = L;
+    var fit = cover >= 0.8 && above <= 0.25, edge = inL >= 0.35 && outL <= 0.12, still = diff < 6;
+    return { fit: fit, edge: edge, still: still, ok: fit && edge && still, cover: cover, above: above, inL: inL, outL: outL, diff: diff };
+  };
+  function autoStart(){
+    autoStop();
+    autoTimer = setInterval(function(){
+      if(cam.style.display !== 'block') return;
+      var r = window.ssCamLook();
+      var now = Date.now();
+      if(!r || !r.ok){ okSince = 0; greenSince = 0; guideColor(false); return; }
+      if(!okSince) okSince = now;
+      if(!greenSince && now - okSince >= 600){ greenSince = now; guideColor(true); }
+      if(greenSince && now - greenSince >= 500) shoot();
+    }, 200);
+  }
+  window.addEventListener('resize', camLayout);
+  window.addEventListener('orientationchange', function(){ setTimeout(camLayout, 300); });
+  video.addEventListener('loadedmetadata', camLayout);
+  document.getElementById('camOpen').addEventListener('click', function(){
+    unlock();
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      msg.textContent = 'このブラウザではページの中のカメラが使えませんの。「写真を選ぶ」からお願いいたしますわ';
+      return;
+    }
+    navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } } })
+      .then(function(s){
+        stream = s;
+        video.srcObject = s;
+        cam.style.display = 'block';
+        camLayout();
+        var p = video.play(); if(p && p.catch) p.catch(function(){});
+        autoStart();
+      })
+      .catch(function(e){
+        msg.textContent = 'カメラを開けませんでしたわ（' + (e && e.name || e) + '）。「写真を選ぶ」からお願いいたしますわ';
+      });
+  });
+  document.getElementById('camBack').addEventListener('click', camStop);
+  document.getElementById('camShot').addEventListener('click', function(){ unlock(); shoot(); });
+  function shoot(){
+    if(!video.videoWidth || !video.videoHeight) return;
+    var cv = document.createElement('canvas');
+    cv.width = video.videoWidth; cv.height = video.videoHeight;
+    cv.getContext('2d').drawImage(video, 0, 0, cv.width, cv.height);
+    camStop();
+    try{ window.ssReaderTake(cv); }catch(e){ msg.textContent = '預かりに失敗しましたわ: ' + e.message; }
+  }
   window.ssReaderTake = function(img){
     var sc = Math.min(1, 1280 / img.width);
     var cv = document.createElement('canvas');
