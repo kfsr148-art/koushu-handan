@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1473">
+<html lang="ja" data-ver="1474">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1393,7 +1393,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1473</div>
+  <div id="verTag">v1474</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -4012,8 +4012,8 @@ document.addEventListener('DOMContentLoaded', function () {
      ＊決め直すのは「際どい手（analyze の borderline）」と「良形が必要数のあと1つ足りない手」だけ。国士・役満の芽は外す。
      ＊審判は判定獣（本判定）を除く11人。票は tenLeans() のまま（兎の票は設定の兎スイッチに従う）。
      ＊得点＝攻めの票の重みの和 − 守りの票の重みの和 ＋ 普段は割れる審判同士が同じ側に揃った分の上乗せ
-       （同じ側に倒れた二人ごとに（1 − κ）× 二人の重みの相乗平均）。>0 なら攻め・<0 なら守り・ちょうど0は本判定のまま。
-     ＊重み＝精度（その審判の的中が地の値をどれだけ上回るか・対数オッズの差）× 重なりの割引（1 ÷（1＋他の審判との κ×共に口を開いた割合 の和））。
+       （同じ側に倒れた二人ごとに（1 − 普段の一致の度合い）× 二人の重みの相乗平均。一致の度合いは偶然の一致を引いた値）。>0 なら攻め・<0 なら守り・ちょうど0は本判定のまま。
+     ＊重み＝精度（その審判の的中が地の値をどれだけ上回るか・対数オッズの差）× 重なりの割引（1 ÷（1＋他の審判との一致の度合い×共に口を開いた割合 の和））。
        的中：その局で点が増えた手は攻め、減った手は守りが正解（増減0は数えない）。
      ＊値の出どころ：v1471（席を外した版）の雲1000局（reports/cloud-core-battle-1000-20261113-191605.tsv）の偶数局。
        奇数局で確かめ、4000手で守り→攻めが761手（平均+237・決める用+306／確かめる用+171）。報告 reports/y1114-0431.md。
