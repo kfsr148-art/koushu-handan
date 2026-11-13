@@ -205,7 +205,7 @@
     autoStop();
     shot = false;
     autoTimer = setInterval(function(){
-      if(cam.style.display !== 'block' || shot) return;
+      if(cam.style.display !== 'block' || shot || Date.now() < retakeHoldUntil) return;
       var r = window.ssCamLook();
       var now = Date.now();
       if(greenSince){   /* 緑になったら必ず撮る */
@@ -244,6 +244,7 @@
         camLayout();
         var p = video.play(); if(p && p.catch) p.catch(function(){});
         autoStart();
+        preloadApp();   /* 撮り直しの見極めと、読み直さずに渡すため、本体を見えない枠で先に読み込む（v1475） */
       })
       .catch(function(e){
         msg.textContent = 'カメラを開けませんでしたわ（' + (e && e.name || e) + '）。「写真を選ぶ」からお願いいたしますわ';
@@ -251,11 +252,30 @@
   });
   document.getElementById('camBack').addEventListener('click', camStop);
   document.getElementById('camShot').addEventListener('click', function(){ unlock(); shoot(); });
+  /* 撮り直し（2026-11-14・v1475）：カメラを開いた時に本体を見えない枠で先に読み込み、撮った一枚をまず本体の ssPhotoQuality で見てもらう。
+     ほとんど見本と合っていない（'bad'）時は判定へ進まず、カメラの画面のまま撮り直す（1.5秒は次を撮らない）。
+     読めた・少し怪しい・見本が空・本体がまだ読み込めていない時は、今まで通り進む。 */
+  var retakeHoldUntil = 0;
+  function appWin(){ try{ var w = document.getElementById('app').contentWindow; return (w && typeof w.ssPhotoQuality === 'function') ? w : null; }catch(e){ return null; } }
+  function preloadApp(){ var fr = document.getElementById('app'); if(!fr.getAttribute('src')) fr.src = 'koushu-handan.html'; }
+  function shrink(img){ var sc = Math.min(1, 1280 / img.width), c = document.createElement('canvas'); c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); return c; }
   function shoot(){
     if(!video.videoWidth || !video.videoHeight) return;
     var cv = document.createElement('canvas');
     cv.width = video.videoWidth; cv.height = video.videoHeight;
     cv.getContext('2d').drawImage(video, 0, 0, cv.width, cv.height);
+    var w = appWin();
+    if(w){
+      var q = null;
+      try{ q = w.ssPhotoQuality(shrink(cv)); }catch(e){ q = null; }
+      window._ssLastQuality = q;
+      if(q && q.verdict === 'bad'){
+        okSince = 0; greenSince = 0; seenSince = 0; shot = false; guideColor(false);
+        retakeHoldUntil = Date.now() + 1500;
+        stateText('読めませんでした。撮り直します');
+        return;
+      }
+    }
     camStop();
     try{ window.ssReaderTake(cv); }catch(e){ msg.textContent = '預かりに失敗しましたわ: ' + e.message; }
   }
@@ -270,6 +290,13 @@
     localStorage.setItem('ssResumeAt', String(Date.now()));
     msg.textContent = '受け取りましたわ。本体を開いて判定いたしますの…';
     var fr = document.getElementById('app');
+    var w = null; try{ w = fr.contentWindow; }catch(e){}
+    if(w && typeof w.ssTakeHandoff === 'function'){   /* 先に読み込んだ本体へ、読み直さずに渡す（v1475） */
+      localStorage.removeItem('ssHandoff');
+      fr.style.display = 'block';
+      w.ssTakeHandoff(data);
+      return;
+    }
     fr.src = 'koushu-handan.html';
     fr.style.display = 'block';
   };
