@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1465">
+<html lang="ja" data-ver="1466">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1424,7 +1424,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1465</div>
+  <div id="verTag">v1466</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9160,12 +9160,10 @@ window.ssShow = function(){
   window.ssQuadPts = null;
   window.ssWarp = null;
   window.ssWarpNote = '';
-  window.ssDoubt = [];
   var _needQuad = false;
-  var _auto = window.ssAutoBand(img);
-  if(_auto) window.ssWarp = window.ssMakeWarp(img, _auto.quad, 'auto');
+  window.ssWarp = window.ssAutoBandAny(img);   /* 縦で撮った写真も拾う（v1466） */
   if(window.ssWarp){
-    window.ssWarpNote = '手牌の列を自動で見つけ、まっすぐに直しました';
+    window.ssWarpNote = '手牌の列を自動で見つけ、' + (window.ssWarp.rot ? '向きを回して' : '') + 'まっすぐに直しました';
   } else {
     var _sq = window.ssQuadLoad();
     if(_sq) window.ssWarp = window.ssMakeWarp(img, _sq.map(function(p){ return [p[0] * img.width, p[1] * img.height]; }), 'saved');
@@ -9627,6 +9625,38 @@ window.ssMakeWarp = function(img, Q, how){
     return { canvas: oc, quad: Q, how: how, cuts: window.ssWarpCuts(o, OW, OH) };
   }catch(e){ return null; }
 };
+/* 縦で撮った写真も拾う（v1466）。そのままで見つからなければ、90°ずつ左右に回した写真で探し、
+   見つけた四隅を元の写真の座標へ戻して補正する（補正の後は手牌が横一列のまっすぐな帯になる）。
+   左右どちらに回すかは、見本があれば見本との合い方の良い方、無ければ右回り。 */
+window.ssAutoBandAny = function(img){
+  var a0 = window.ssAutoBand(img);
+  if(a0){ var w0 = window.ssMakeWarp(img, a0.quad, 'auto'); if(w0) return w0; }
+  var W0 = img.width, H0 = img.height, cands = [];
+  [90, 270].forEach(function(rot){
+    try{
+      var c = document.createElement('canvas'); c.width = H0; c.height = W0;
+      var g = c.getContext('2d');
+      if(rot === 90){ g.translate(H0, 0); g.rotate(Math.PI / 2); } else { g.translate(0, W0); g.rotate(-Math.PI / 2); }
+      g.drawImage(img, 0, 0);
+      var a = window.ssAutoBand(c);
+      if(!a) return;
+      var back = a.quad.map(function(p){ return rot === 90 ? [p[1], H0 - p[0]] : [W0 - p[1], p[0]]; });
+      var wp = window.ssMakeWarp(img, back, 'auto');
+      if(wp){ wp.rot = rot; cands.push(wp); }
+    }catch(e){}
+  });
+  if(!cands.length) return null;
+  if(cands.length === 1) return cands[0];
+  var tpl = window.ssTplLoad(), keys = Object.keys(tpl);
+  if(!keys.length) return cands[0];
+  var tplN = window.ssNormTpl(tpl, keys), best = null, bestS = Infinity;
+  cands.forEach(function(wp){
+    var s = 0;
+    wp.cuts.forEach(function(t){ s += window.ssMatchTile(window.ssFeatShape(window.ssNormFeat(window.ssTileFeature(wp.canvas, t))), tplN, keys).dist; });
+    if(s < bestS){ bestS = s; best = wp; }
+  });
+  return best;
+};
 window.ssQuadStart = function(auto){
   if(!window.ssImg) return;
   window.ssCalibStep = 0;
@@ -9697,11 +9727,6 @@ window.ssCutShow = function(){
     ctx.strokeStyle = 'rgba(243,236,224,0.25)';
     ctx.lineWidth = 1;
     ctx.strokeRect(dx + 0.5, pad + 0.5, cw - 1, ch - 1);
-    if(window.ssDoubt && window.ssDoubt.indexOf(i) >= 0){   /* 自動で進めなかった時の怪しい牌（v1465） */
-      ctx.strokeStyle = 'rgba(255,70,70,1)';
-      ctx.lineWidth = 3;
-      ctx.strokeRect(dx + 1.5, pad + 1.5, cw - 3, ch - 3);
-    }
   }
   var info = document.getElementById('ssInfo');
   if(info) info.textContent = ((window.ssWarp && !window.ssActiveCalib && window.ssWarpNote) ? window.ssWarpNote + '。' : '') + '13マスに切り出しました。1マスに牌が1枚ずつ収まっていれば枠は合っています';
@@ -9962,78 +9987,176 @@ window.ssKeyToTile = function(key){
   var num = parseInt(key[1], 10);
   return { suit:suit, num:num, code:key.slice(0,2), red:red, label:String(num) };
 };
+/* 見本と牌を同じ形に揃える（v1466）。24x32 の RGB（ssTileFeature の形）を受けて、同じ形で返す。
+   ①大きさ：白い牌の面の外枠（白い画素が3割以上の行・列の端から端）で切り直し、24x32 へ戻す。
+     見本が「既定の枠を13等分したマス」（余白や隣の牌の端を含む）から取られていても、補正した帯の牌（面にぴったり）と同じ範囲になる。
+   ②明るさ・色：色ごとに、明るい側（95%点）が白になるよう伸ばし（テレビの色かぶり・写真の暗さを消す）、
+     そのあと暗い側（明るさの3%点・100まで）を黒へ寄せて濃淡を揃える。 */
+window.ssNormFeat = function(f){
+  var W = window.SS_TPL_W, H = window.SS_TPL_H, n = W * H, i, x, y, c;
+  if(!f || f.length !== n * 3) return f;
+  var L = new Array(n), hist = [], wh = new Uint8Array(n);
+  for(i = 0; i < 256; i++) hist.push(0);
+  for(i = 0; i < n; i++){
+    L[i] = 0.299 * f[i * 3] + 0.587 * f[i * 3 + 1] + 0.114 * f[i * 3 + 2];
+    hist[Math.max(0, Math.min(255, Math.round(L[i])))]++;
+  }
+  var T = window.ssOtsu(hist, n);
+  for(i = 0; i < n; i++){
+    var mx = Math.max(f[i * 3], f[i * 3 + 1], f[i * 3 + 2]), mn = Math.min(f[i * 3], f[i * 3 + 1], f[i * 3 + 2]);
+    wh[i] = (L[i] >= T && mx - mn <= 60) ? 1 : 0;
+  }
+  var x0 = 0, x1 = W - 1, y0 = 0, y1 = H - 1;
+  var colOk = function(xx){ var s = 0; for(var yy = 0; yy < H; yy++) s += wh[yy * W + xx]; return s >= H * 0.3; };
+  var rowOk = function(yy){ var s = 0; for(var xx = 0; xx < W; xx++) s += wh[yy * W + xx]; return s >= W * 0.3; };
+  while(x0 < W - 1 && !colOk(x0)) x0++;
+  while(x1 > 0 && !colOk(x1)) x1--;
+  while(y0 < H - 1 && !rowOk(y0)) y0++;
+  while(y1 > 0 && !rowOk(y1)) y1--;
+  if(x1 - x0 + 1 < W * 0.5 || y1 - y0 + 1 < H * 0.5){ x0 = 0; x1 = W - 1; y0 = 0; y1 = H - 1; }
+  var g = new Array(n * 3), sx = (x1 - x0) / Math.max(1, W - 1), sy = (y1 - y0) / Math.max(1, H - 1);
+  for(y = 0; y < H; y++){
+    for(x = 0; x < W; x++){
+      var fx = x0 + x * sx, fy = y0 + y * sy, ix = Math.floor(fx), iy = Math.floor(fy);
+      var ix2 = Math.min(W - 1, ix + 1), iy2 = Math.min(H - 1, iy + 1), ax = fx - ix, ay = fy - iy;
+      for(c = 0; c < 3; c++){
+        g[(y * W + x) * 3 + c] = (f[(iy * W + ix) * 3 + c] * (1 - ax) + f[(iy * W + ix2) * 3 + c] * ax) * (1 - ay) +
+                                 (f[(iy2 * W + ix) * 3 + c] * (1 - ax) + f[(iy2 * W + ix2) * 3 + c] * ax) * ay;
+      }
+    }
+  }
+  var pct = function(arr, p){ var s = arr.slice().sort(function(a, b){ return a - b; }); return s[Math.min(s.length - 1, Math.floor(s.length * p))]; };
+  var gain = [];
+  for(c = 0; c < 3; c++){
+    var ch = [];
+    for(i = 0; i < n; i++) ch.push(g[i * 3 + c]);
+    gain.push(255 / Math.max(16, pct(ch, 0.95)));
+  }
+  var L2 = [];
+  for(i = 0; i < n; i++) L2.push(0.299 * g[i * 3] * gain[0] + 0.587 * g[i * 3 + 1] * gain[1] + 0.114 * g[i * 3 + 2] * gain[2]);
+  var lo = Math.min(100, pct(L2, 0.03));   /* 絵柄の少ない牌（一萬など）は暗い側が面の白に乗るので、伸ばし過ぎない */
+  var out = new Array(n * 3);
+  for(i = 0; i < n; i++){
+    for(c = 0; c < 3; c++){
+      var v = (g[i * 3 + c] * gain[c] - lo) / (255 - lo) * 255;
+      out[i * 3 + c] = v < 0 ? 0 : (v > 255 ? 255 : v);
+    }
+  }
+  /* ③少しぼかす（3x3）。切り出しの1〜2画素のずれで遠く見えないようにし、絵柄の色の違いを効かせる */
+  var bl = new Array(n * 3);
+  for(y = 0; y < H; y++){
+    for(x = 0; x < W; x++){
+      for(c = 0; c < 3; c++){
+        var s = 0, k = 0;
+        for(var dy = -1; dy <= 1; dy++) for(var dx = -1; dx <= 1; dx++){
+          var xx = x + dx, yy = y + dy;
+          if(xx < 0 || yy < 0 || xx >= W || yy >= H) continue;
+          s += out[(yy * W + xx) * 3 + c]; k++;
+        }
+        bl[(y * W + x) * 3 + c] = s / k;
+      }
+    }
+  }
+  return bl;
+};
+/* 形で比べる形に直す（v1466）。揃えた RGB を、明るさ L と色み a（赤−明るさ）・b（青−明るさ）に分け、
+   色の濃さ（色みの大きさの95%点）を一定にそろえる。色の薄い牌（字牌・白）は伸ばさない（ざらつきを拾わないため） */
+window.ssFeatShape = function(f){
+  var n = window.SS_TPL_W * window.SS_TPL_H, i;
+  if(!f || f.length !== n * 3) return null;
+  var L = new Float32Array(n), a = new Float32Array(n), b = new Float32Array(n), mag = [];
+  for(i = 0; i < n; i++){
+    var r = f[i * 3], g = f[i * 3 + 1], bb = f[i * 3 + 2], l = 0.299 * r + 0.587 * g + 0.114 * bb;
+    L[i] = l; a[i] = r - l; b[i] = bb - l; mag.push(Math.sqrt(a[i] * a[i] + b[i] * b[i]));
+  }
+  mag.sort(function(x, y){ return x - y; });
+  var m = mag[Math.floor(n * 0.95)];
+  if(m > 12){ var k = 60 / m; for(i = 0; i < n; i++){ a[i] *= k; b[i] *= k; } }
+  return { L: L, a: a, b: b };
+};
+window.ssNormTpl = function(tpl, keys){
+  var o = {};
+  for(var i = 0; i < keys.length; i++) o[keys[i]] = window.ssFeatShape(window.ssNormFeat(tpl[keys[i]]));
+  return o;
+};
+/* 二つの牌の遠さ。上下左右に SS_SHIFT 画素までずらしてみて、いちばん合う所の平均の差を返す（v1466） */
+window.SS_SHIFT = 2;
+window.SS_CHROMA_W = 0.5;
+window.ssShapeDist = function(A, B){
+  var W = window.SS_TPL_W, H = window.SS_TPL_H, R = window.SS_SHIFT, wc = window.SS_CHROMA_W, best = Infinity;
+  for(var dy = -R; dy <= R; dy++){
+    for(var dx = -R; dx <= R; dx++){
+      var s = 0, k = 0;
+      var ya = Math.max(0, dy), yb = Math.min(H, H + dy), xa = Math.max(0, dx), xb = Math.min(W, W + dx);
+      for(var y = ya; y < yb; y++){
+        for(var x = xa; x < xb; x++){
+          var ia = y * W + x, ib = (y - dy) * W + (x - dx);
+          var e = A.L[ia] - B.L[ib], ea = A.a[ia] - B.a[ib], eb = A.b[ia] - B.b[ib];
+          s += e * e + wc * (ea * ea + eb * eb); k++;
+        }
+      }
+      if(k){ var d = s / k; if(d < best) best = d; }
+    }
+  }
+  return best;
+};
+/* feat・tpl の値は ssFeatShape の形。近い順の並び（rank）も返す */
 window.ssMatchTile = function(feat, tpl, keys){
-  var best = null, bestD = Infinity, second = null, secondD = Infinity;
+  var rank = [];
   for(var i = 0; i < keys.length; i++){
     var t = tpl[keys[i]];
-    if(!t || t.length !== feat.length) continue;
-    var d = 0;
-    for(var j = 0; j < feat.length; j++){ var e = feat[j] - t[j]; d += e * e; }
-    if(d < bestD){ secondD = bestD; second = best; bestD = d; best = keys[i]; }
-    else if(d < secondD){ secondD = d; second = keys[i]; }
+    if(!t || !feat) continue;
+    rank.push({ key: keys[i], dist: window.ssShapeDist(feat, t) });
   }
-  return { key:best, dist:bestD, key2:second, dist2:secondD };
+  rank.sort(function(x, y){ return x.dist - y.dist; });
+  var r0 = rank[0] || { key: null, dist: Infinity }, r1 = rank[1] || { key: null, dist: Infinity };
+  return { key: r0.key, dist: r0.dist, key2: r1.key, dist2: r1.dist, rank: rank };
 };
-/* ==== ⑦撮ったら判定まで自動（v1465） ====
+/* 同じ牌は4枚まで（赤五は五と同じ牌として数える）。5枚目以上に読んだら、読み替えて損の少ない牌から次に近い牌へ移す（v1466） */
+window.ssLimitFour = function(ranks){
+  var base = function(k){ return (k && k.length === 3) ? k.slice(0, 2) : k; };
+  var pick = ranks.map(function(){ return 0; });
+  for(var loop = 0; loop < 64; loop++){
+    var cnt = {};
+    ranks.forEach(function(r, i){ var k = r[pick[i]] && base(r[pick[i]].key); if(k) cnt[k] = (cnt[k] || 0) + 1; });
+    var over = Object.keys(cnt).filter(function(k){ return cnt[k] > 4; })[0];
+    if(!over) break;
+    var bestI = -1, bestJ = -1, bestC = Infinity;
+    ranks.forEach(function(r, i){
+      if(!r[pick[i]] || base(r[pick[i]].key) !== over) return;
+      for(var j = pick[i] + 1; j < r.length; j++){
+        var kb = base(r[j].key);
+        if(kb === over || (cnt[kb] || 0) >= 4) continue;
+        var c = r[j].dist - r[pick[i]].dist;
+        if(c < bestC){ bestC = c; bestI = i; bestJ = j; }
+        break;
+      }
+    });
+    if(bestI < 0) break;
+    pick[bestI] = bestJ;
+  }
+  return pick;
+};
+/* ==== ⑦撮ったら判定まで自動（v1465・v1466 で止めない形に） ====
    受付ページ（reader.html）から来た写真は、取込→台形補正→読み取り→判定まで押さずに進む。
-   次の時だけ止まって、取込の確認画面に怪しい牌を赤枠で示す：
-     ・牌が13枚そろわない（白い面の少ないマス＝牌が無い）
-     ・見本と合う度合いが低い（平均の色の差が SS_AUTO_RMS を超える）
-     ・二つの見本で迷う（二番目に近い見本との差が SS_AUTO_MARGIN 倍より小さい）
-   テンプレ登録の途中・見本が空・手牌の列が見つからず四隅合わせを待っている時は、自動で進めない。
-   ＊敷居は仮の値。実機の写真で外れ方を見て直す。 */
-window.SS_AUTO_RMS = 40;
-window.SS_AUTO_MARGIN = 1.15;
-window.ssDoubt = [];
+   怪しい牌があっても止めない（赤枠・理由の一行も出さない）。手牌の列が見つからず四隅合わせの案内が出ていても、
+   それを畳んで前の四隅か既定の枠で読む。止まるのは、テンプレ登録の途中と、見本が空で読みようが無い時だけ。 */
 window.ssAutoRun = function(){
   var info = document.getElementById('ssInfo');
   var tplMode = false;
   try{ tplMode = localStorage.getItem('ssTplMode') === '1'; }catch(e){}
   if(tplMode || !window.ssImg) return 'tpl';
-  if(window.ssQuadStep) return 'quad';   /* 四隅合わせの案内が出ている。押してもらうまで待つ */
   var tpl = window.ssTplLoad(), keys = Object.keys(tpl);
   if(!keys.length){
     if(info) info.textContent = 'まだ見本が空なので、自動では判定へ進めません。「テンプレ登録」で牌を教えてください';
     return 'notpl';
   }
-  var src = window.ssTileSrc();
-  var tiles = window.ssCutTiles(window.ssGetCalib());
-  var doubt = [], why = [], i;
-  /* 牌があるか：マスの中の白っぽい面の割合 */
-  var present = 0;
-  for(i = 0; i < tiles.length; i++){
-    var t = tiles[i], w = Math.max(1, Math.round(t.sw)), h = Math.max(1, Math.round(t.sh));
-    var c = document.createElement('canvas'); c.width = w; c.height = h;
-    var g = c.getContext('2d'); g.drawImage(src, t.sx, t.sy, t.sw, t.sh, 0, 0, w, h);
-    var d = g.getImageData(0, 0, w, h).data, wh = 0;
-    for(var k = 0; k < d.length; k += 4){
-      if(0.299 * d[k] + 0.587 * d[k + 1] + 0.114 * d[k + 2] >= 140 && Math.max(d[k], d[k + 1], d[k + 2]) - Math.min(d[k], d[k + 1], d[k + 2]) <= 60) wh++;
-    }
-    if(wh / (w * h) >= 0.15) present++;
-    else { doubt.push(i); why.push((i + 1) + '枚目（牌が見えない）'); }
-  }
-  if(tiles.length < 13 || present < 13){
-    window.ssDoubt = doubt;
-    if(window.ssCutShow) window.ssCutShow();
-    if(info) info.textContent = '読み取れた牌が足りないので、自動では判定へ進めませんでした（' + present + '/13枚）。' + why.join('・');
-    return 'short';
-  }
-  for(i = 0; i < 13; i++){
-    var f = window.ssTileFeature(src, tiles[i]);
-    var m = window.ssMatchTile(f, tpl, keys);
-    var rms = Math.sqrt(m.dist / Math.max(1, f.length));
-    var label = window.SS_TPL_LABEL ? window.SS_TPL_LABEL[m.key] : m.key;
-    if(!m.key || rms > window.SS_AUTO_RMS){
-      doubt.push(i); why.push((i + 1) + '枚目（見本と合う度合いが低い' + (m.key ? '・近いのは' + label : '') + '）');
-    } else if(m.key2 && m.dist2 < m.dist * window.SS_AUTO_MARGIN * window.SS_AUTO_MARGIN){
-      doubt.push(i); why.push((i + 1) + '枚目（' + label + 'か' + (window.SS_TPL_LABEL ? window.SS_TPL_LABEL[m.key2] : m.key2) + 'かで迷う）');
-    }
-  }
-  if(doubt.length){
-    window.ssDoubt = doubt;
-    if(window.ssCutShow) window.ssCutShow();
-    if(info) info.textContent = '怪しい牌があるので、自動では判定へ進めませんでした。赤枠の牌：' + why.join('・') + '。確かめて「写真取込牌で判定」を押してください';
-    return 'doubt';
+  if(window.ssQuadStep){
+    window.ssQuadStep = 0;
+    window.ssQuadPts = null;
+    window.ssFitView(true);
+    window.ssRedraw();
+    window.ssDrawFrame(window.ssGetCalib());
   }
   window.ssRecognize();
   return 'judged';
@@ -10049,13 +10172,18 @@ window.ssRecognize = function(){
     return;
   }
   var tiles = window.ssCutTiles(window.ssGetCalib());
+  var tplN = window.ssNormTpl(tpl, keys);   /* 見本も牌も、同じ大きさ・明るさに揃えてから比べる（v1466） */
   window.ssRecog = [];
-  var result = [];
-  for(var i = 0; i < 13; i++){
-    var f = window.ssTileFeature(window.ssTileSrc(), tiles[i]);
-    var m = window.ssMatchTile(f, tpl, keys);
-    window.ssRecog.push(m);
-    result.push(window.ssKeyToTile(m.key));
+  var result = [], ranks = [], i;
+  for(i = 0; i < 13; i++){
+    var f = window.ssFeatShape(window.ssNormFeat(window.ssTileFeature(window.ssTileSrc(), tiles[i])));
+    ranks.push(window.ssMatchTile(f, tplN, keys).rank);
+  }
+  var pick = window.ssLimitFour(ranks);   /* 同じ牌は4枚まで（v1466） */
+  for(i = 0; i < 13; i++){
+    var r = ranks[i], p = pick[i], c0 = r[p] || { key: null, dist: Infinity }, c1 = r[p + 1] || { key: null, dist: Infinity };
+    window.ssRecog.push({ key: c0.key, dist: c0.dist, key2: c1.key, dist2: c1.dist, moved: p > 0 });
+    result.push(window.ssKeyToTile(c0.key));
   }
   // 入力欄へ流し込み、そのまま判定へ進む
   var field = document.getElementById('qiText');
