@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1469">
+<html lang="ja" data-ver="1470">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1424,7 +1424,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1469</div>
+  <div id="verTag">v1470</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -10252,38 +10252,11 @@ window.ssCanvasTap = function(e){
     if(info) info.textContent = 'この写真だけ枠を直しました。次の写真では既定へ戻ります（牌1枚 約' + Math.round((ix - p1.x) / 13) + '×' + Math.round(iy - p1.y) + 'px）';
   }
 };
+/* 下の段の「読取」：途中の画面（貼り付けの枠）を挟まず、すぐ受付ページ（カメラで撮る／写真を選ぶ）へ（v1470）。
+   テンプレ登録の続きではないので、その印は外してから飛ぶ。 */
 window.ssReceive = function(){
-  window.ssMarkTool();
   try{ localStorage.removeItem('ssTplMode'); }catch(e){}
-  var ov = document.getElementById('ssOverlay');
-  var cv = document.getElementById('ssCanvas');
-  if(!ov || !cv) return;
-  cv.style.display = 'none';
-  ov.style.display = 'flex';
-  var info = document.getElementById('ssInfo');
-  if(info) info.textContent = 'スクショの受け取りです。写真から選ぶか、枠を長押しして「ペースト」してください';
-  var pb = document.getElementById('ssPickBtn');
-  if(pb) pb.style.display = '';
-  var cb1 = document.getElementById('ssCalibBtn');
-  if(cb1) cb1.style.display = 'none';
-  var qb1 = document.getElementById('ssQuadBtn');
-  if(qb1) qb1.style.display = 'none';
-  var ctb1 = document.getElementById('ssCutBtn');
-  if(ctb1) ctb1.style.display = 'none';
-  var ccr1 = document.getElementById('ssCutRow');
-  if(ccr1) ccr1.style.display = 'none';
-  var tbb1 = document.getElementById('ssTplBtn');
-  if(tbb1) tbb1.style.display = 'none';
-  var tpp1 = document.getElementById('ssTplPanel');
-  if(tpp1) tpp1.style.display = 'none';
-  ov.classList.remove('ss-tpl-open');
-  var gob1 = document.getElementById('ssGoBtn');
-  if(gob1) gob1.style.display = 'none';
-  var pz = document.getElementById('ssPasteZone');
-  if(pz){
-    pz.style.display = 'block';
-    if(!pz._bound){ pz.addEventListener('paste', window.ssZonePaste); pz._bound = true; }
-  }
+  window.ssGoReader();
 };
 </script>
 <script>
