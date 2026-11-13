@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1468">
+<html lang="ja" data-ver="1469">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1424,7 +1424,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1468</div>
+  <div id="verTag">v1469</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1998,22 +1998,14 @@ document.addEventListener('DOMContentLoaded', function () {
       if (p && p.catch) p.catch(()=>{});
     } catch(e){}
   }
-  /* 撮って自動で判定した時（v1468）：受付ページから読み直した直後は画面に一度も触れておらず、
-     スマホでは声（音声ファイル・OS の読み上げ）が鳴らせない。自動の間（window._ssDeferVoice）に頼まれた声は鳴らさず控え、
-     次に画面に触れた時（指を離す・クリック・キー）に一度だけ鳴らす。字は先にそのまま出ている。 */
-  let _pendingVoice = null, _pendingArmed = false;
-  const _PENDING_EVENTS = ['touchend', 'click', 'pointerup', 'keydown'];
-  function _playPendingVoice(){
-    _PENDING_EVENTS.forEach(ev => document.removeEventListener(ev, _playPendingVoice, true));
-    _pendingArmed = false;
-    const p = _pendingVoice; _pendingVoice = null;
-    if (p) playVoice(p[0], p[1], p[2]);
-  }
+  /* 撮って自動で判定した時（v1469）：本体は受付ページ（reader.html）の上の枠で開いており、この枠では画面に一度も触れていない。
+     受付ページは「写真を選ぶ」を押した時に音を鳴らせる状態を取ってあるので、自動の間（window._ssAutoVoice）の声は受付ページに鳴らしてもらう。 */
   function playVoice(name, osText, osRate){
-    if (window._ssDeferVoice) {
-      _pendingVoice = [name, osText, osRate];   // 最後に頼まれた声だけ控える（判定の声が最後）
-      if (!_pendingArmed) { _pendingArmed = true; _PENDING_EVENTS.forEach(ev => document.addEventListener(ev, _playPendingVoice, true)); }
-      return;
+    if (window._ssAutoVoice) {
+      try {
+        const P = window.parent;
+        if (P && P !== window && typeof P.ssReaderVoice === 'function') { P.ssReaderVoice(name, osText, osRate); return; }
+      } catch(e){}
     }
     const seq = ++_playSeq;
     const a = _audio[name];
@@ -9286,6 +9278,8 @@ window.ssMarkTool = function(){
 };
 window.ssGoReader = function(){
   window.ssMarkTool();
+  /* 受付ページの枠の中で開いている時は、枠を重ねず受付ページそのものを開き直す（v1469） */
+  try{ if(window.top !== window){ window.top.location.href = 'reader.html'; return; } }catch(e){}
   location.href = 'reader.html';
 };
 /* ==== ②キャリブレーションUI (v759) ==== */
@@ -10174,8 +10168,8 @@ window.ssAutoRun = function(){
     window.ssRedraw();
     window.ssDrawFrame(window.ssGetCalib());
   }
-  window._ssDeferVoice = true;   /* 声は次に画面に触れた時に鳴らす（v1468） */
-  try{ window.ssRecognize(); } finally { window._ssDeferVoice = false; }
+  window._ssAutoVoice = true;   /* 判定の声は受付ページに鳴らしてもらう（v1469） */
+  try{ window.ssRecognize(); } finally { window._ssAutoVoice = false; }
   return 'judged';
 };
 window.ssRecognize = function(){
