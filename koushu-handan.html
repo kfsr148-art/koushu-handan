@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1460">
+<html lang="ja" data-ver="1461">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1052,7 +1052,8 @@
     .w2-round { display: flex; gap: 8px; flex: 0 0 auto; }
     .w2-seat  { display: flex; gap: 10px; flex: 0 1 auto; min-width: 0; }
     .w2-r { font-size: 13px; padding: 8px 6px; border-radius: 8px; line-height: 1.2; flex: 0 0 auto; }
-    .w2-s { font-size: 16px; padding: 10px 0; border-radius: 8px; line-height: 1.2; flex: 0 1 auto; width: 44px; min-width: 0; text-align: center; }
+    .w2-s { font-size: 16px; padding: 10px 0; border-radius: 8px; line-height: 1.2; flex: 0 1 auto; width: 44px; min-width: 0; text-align: center;
+            transition-property: background, color, border-color; }   /* 見える・見えないは即座に（v1461。all だと visibility まで遅れる） */
     .quick-input {
       display: none;   /* 横持ちは盤面タップで牌を並べるのでキーボード入力欄は省く。空いた幅は配牌表示枠へ回す */
     }
@@ -1421,7 +1422,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1460</div>
+  <div id="verTag">v1461</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1737,7 +1738,7 @@
           <button type="button" class="chip w2-r" data-round="E">東場</button>
           <button type="button" class="chip w2-r" data-round="S">南場</button>
         </div>
-        <div class="w2-seat" id="w2Seat" style="display:none;">
+        <div class="w2-seat" id="w2Seat" style="visibility:hidden;">
           <button type="button" class="chip w2-s" data-seat="E">東</button>
           <button type="button" class="chip w2-s" data-seat="S">南</button>
           <button type="button" class="chip w2-s" data-seat="W">西</button>
@@ -2500,7 +2501,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     const w2Seat = document.getElementById('w2Seat');
     if(w2Seat){
-      w2Seat.style.display = roundWind ? '' : 'none';   // 場が未選択なら自4つは出さない
+      w2Seat.style.visibility = roundWind ? '' : 'hidden';   // 場が未選択なら自4つは見せない（場所は取ったまま。並びを動かさない v1461）
       w2Seat.querySelectorAll('.w2-s').forEach(c=>{
         c.classList.toggle('on', c.getAttribute('data-seat') === seatWind);
       });
