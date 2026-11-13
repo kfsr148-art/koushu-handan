@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1462">
+<html lang="ja" data-ver="1463">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -449,6 +449,9 @@
   .seat-cell { font-size: 13px; padding: 6px 0; text-align: center; }
   .wind-readout { font-size: 12px; color: rgba(243,236,224,0.6); line-height: 1.6; margin-top: 2px; }
   .wind-2step { display: none; }   /* 縦持ちでは隠す。横持ちのみ二段式を出す。 */
+  /* テンプレ登録を開いている間は、取込の画面（写真・読取牌の列・釦の段）を隠し、登録の板だけを画面いっぱいに出す（v1463） */
+  #ssOverlay.ss-tpl-open > :not(#ssTplPanel) { display: none !important; }
+  #ssOverlay.ss-tpl-open > #ssTplPanel { position: fixed !important; inset: 0; width: auto !important; max-width: none !important; max-height: none !important; border: 0 !important; border-radius: 0 !important; }
 
   /* ---- inline picker (手牌のすぐ下に置く統合盤面) ---- */
   .picker-inline {
@@ -1421,7 +1424,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1462</div>
+  <div id="verTag">v1463</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9164,6 +9167,7 @@ window.ssShow = function(){
   if(tbb) tbb.style.display = '';
   var tpp = document.getElementById('ssTplPanel');
   if(tpp) tpp.style.display = 'none';
+  ov.classList.remove('ss-tpl-open');
   var gob = document.getElementById('ssGoBtn');
   if(gob) gob.style.display = '';
   if(!cv._tapBound){ cv.addEventListener('click', window.ssCanvasTap); cv._tapBound = true; }
@@ -9205,6 +9209,7 @@ window.ssShowMsg = function(t){
   if(tbb2) tbb2.style.display = 'none';
   var tpp2 = document.getElementById('ssTplPanel');
   if(tpp2) tpp2.style.display = 'none';
+  ov.classList.remove('ss-tpl-open');
   var gob2 = document.getElementById('ssGoBtn');
   if(gob2) gob2.style.display = 'none';
 };
@@ -9394,7 +9399,10 @@ window.ssTplOpen = function(){
   var panel = document.getElementById('ssTplPanel');
   if(!panel) return;
   try{ localStorage.setItem('ssTplMode', '1'); }catch(e){}
+  var ovT = document.getElementById('ssOverlay');
+  if(ovT){ window._ssTplBackScroll = ovT.scrollTop; ovT.classList.add('ss-tpl-open'); }
   panel.style.display = 'block';
+  panel.scrollTop = 0;
   window.ssTplSelected = 0;
   window.ssTplRenderStrip();
   window.ssTplRenderKeys();
@@ -9404,6 +9412,8 @@ window.ssTplOpen = function(){
 window.ssTplClose = function(){
   var panel = document.getElementById('ssTplPanel');
   if(panel) panel.style.display = 'none';
+  var ovT = document.getElementById('ssOverlay');
+  if(ovT){ ovT.classList.remove('ss-tpl-open'); ovT.scrollTop = window._ssTplBackScroll || 0; }
   try{ localStorage.removeItem('ssTplMode'); }catch(e){}
 };
 window.ssTplNextPhoto = function(){
@@ -9710,6 +9720,7 @@ window.ssReceive = function(){
   if(tbb1) tbb1.style.display = 'none';
   var tpp1 = document.getElementById('ssTplPanel');
   if(tpp1) tpp1.style.display = 'none';
+  ov.classList.remove('ss-tpl-open');
   var gob1 = document.getElementById('ssGoBtn');
   if(gob1) gob1.style.display = 'none';
   var pz = document.getElementById('ssPasteZone');
