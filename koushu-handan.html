@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1459">
+<html lang="ja" data-ver="1460">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1421,7 +1421,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1459</div>
+  <div id="verTag">v1460</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9149,14 +9149,10 @@ window.ssShow = function(){
   if(pz0) pz0.style.display = 'none';
   var pb0 = document.getElementById('ssPickBtn');
   if(pb0) pb0.style.display = 'none';
-  var maxW = Math.floor(window.innerWidth * 0.96);
-  var maxH = Math.floor(window.innerHeight * 0.72);
-  var sc = Math.min(maxW / img.width, maxH / img.height, 1);
-  cv.width  = Math.max(1, Math.round(img.width  * sc));
-  cv.height = Math.max(1, Math.round(img.height * sc));
-  window.ssScale = sc;
   window.ssCalibStep = 0;
   window.ssCalibP1 = null;
+  window.ssActiveCalib = null;
+  window.ssFitView(true);   /* 取込後は手牌の帯だけを映す（v1460） */
   window.ssRedraw();
   var cb0 = document.getElementById('ssCalibBtn');
   if(cb0) cb0.style.display = '';
@@ -9256,16 +9252,41 @@ window.ssGoReader = function(){
 window.ssScale = 1;
 window.ssCalibStep = 0;
 window.ssCalibP1 = null;
+/* 上の写真に映す範囲（写真の画素で）。band=true は手牌の帯だけ、false は盤面全体（枠合わせの間）。v1460 */
+window.ssView = null;
+window.ssFitView = function(band){
+  var cv = document.getElementById('ssCanvas');
+  var img = window.ssImg;
+  if(!cv || !img) return;
+  var v = { x: 0, y: 0, w: img.width, h: img.height };
+  var hmax = 0.72;
+  if(band){
+    var c = window.ssGetCalib();
+    var bx1 = c.x1 * img.width, by1 = c.y1 * img.height, bx2 = c.x2 * img.width, by2 = c.y2 * img.height;
+    var mx = (bx2 - bx1) * 0.04, my = (by2 - by1) * 0.25;
+    var x1 = Math.max(0, bx1 - mx), y1 = Math.max(0, by1 - my);
+    var x2 = Math.min(img.width, bx2 + mx), y2 = Math.min(img.height, by2 + my);
+    if(x2 > x1 + 1 && y2 > y1 + 1){ v = { x: x1, y: y1, w: x2 - x1, h: y2 - y1 }; hmax = 0.30; }
+  }
+  var maxW = Math.floor(window.innerWidth * 0.96);
+  var maxH = Math.floor(window.innerHeight * hmax);
+  var sc = Math.min(maxW / v.w, maxH / v.h, 1);
+  cv.width  = Math.max(1, Math.round(v.w * sc));
+  cv.height = Math.max(1, Math.round(v.h * sc));
+  window.ssScale = sc;
+  window.ssView = v;
+};
 window.ssRedraw = function(){
   var cv = document.getElementById('ssCanvas');
   var img = window.ssImg;
   if(!cv || !img) return;
   var ctx = cv.getContext('2d');
+  var v = window.ssView || { x: 0, y: 0, w: img.width, h: img.height };
   ctx.clearRect(0, 0, cv.width, cv.height);
-  ctx.drawImage(img, 0, 0, cv.width, cv.height);
+  ctx.drawImage(img, v.x, v.y, v.w, v.h, 0, 0, cv.width, cv.height);
   if(window.ssCalibP1){
-    var x = window.ssCalibP1.x * window.ssScale;
-    var y = window.ssCalibP1.y * window.ssScale;
+    var x = (window.ssCalibP1.x - v.x) * window.ssScale;
+    var y = (window.ssCalibP1.y - v.y) * window.ssScale;
     ctx.strokeStyle = 'rgba(90,230,130,0.95)';
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -9280,8 +9301,9 @@ window.ssDrawFrame = function(calib){
   if(!cv || !img || !calib) return;
   var ctx = cv.getContext('2d');
   var sc = window.ssScale;
-  var X1 = calib.x1 * img.width * sc, Y1 = calib.y1 * img.height * sc;
-  var X2 = calib.x2 * img.width * sc, Y2 = calib.y2 * img.height * sc;
+  var v = window.ssView || { x: 0, y: 0 };
+  var X1 = (calib.x1 * img.width - v.x) * sc, Y1 = (calib.y1 * img.height - v.y) * sc;
+  var X2 = (calib.x2 * img.width - v.x) * sc, Y2 = (calib.y2 * img.height - v.y) * sc;
   var w = (X2 - X1) / 13;
   ctx.strokeStyle = 'rgba(255,80,80,0.9)';
   ctx.lineWidth = 2;
@@ -9627,6 +9649,7 @@ window.ssCalibStart = function(){
   if(!window.ssImg) return;
   window.ssCalibStep = 1;
   window.ssCalibP1 = null;
+  window.ssFitView(false);   /* 枠合わせの間は盤面全体を映す（v1460） */
   window.ssRedraw();
   var info = document.getElementById('ssInfo');
   if(info) info.textContent = '左端の牌の左上をタップしてください';
@@ -9635,8 +9658,9 @@ window.ssCanvasTap = function(e){
   if(!window.ssCalibStep || !window.ssImg) return;
   var cv = document.getElementById('ssCanvas');
   var r = cv.getBoundingClientRect();
-  var ix = (e.clientX - r.left) / window.ssScale;
-  var iy = (e.clientY - r.top) / window.ssScale;
+  var v = window.ssView || { x: 0, y: 0 };
+  var ix = v.x + (e.clientX - r.left) / window.ssScale;
+  var iy = v.y + (e.clientY - r.top) / window.ssScale;
   var info = document.getElementById('ssInfo');
   if(window.ssCalibStep === 1){
     window.ssCalibP1 = { x: ix, y: iy };
@@ -9658,6 +9682,7 @@ window.ssCanvasTap = function(e){
     var calib = { x1: p1.x / img.width, y1: p1.y / img.height, x2: ix / img.width, y2: iy / img.height };
     window.ssActiveCalib = calib;
     window.ssCalibStep = 0;
+    window.ssFitView(true);   /* 直した枠の帯へ戻す（v1460） */
     window.ssRedraw();
     window.ssDrawFrame(calib);
     if(info) info.textContent = 'この写真だけ枠を直しました。次の写真では既定へ戻ります（牌1枚 約' + Math.round((ix - p1.x) / 13) + '×' + Math.round(iy - p1.y) + 'px）';
