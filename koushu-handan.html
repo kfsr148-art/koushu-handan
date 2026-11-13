@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1458">
+<html lang="ja" data-ver="1459">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1421,7 +1421,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1458</div>
+  <div id="verTag">v1459</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -9739,7 +9739,7 @@ window.ssReceive = function(){
   }catch(e){ /* 失敗しても通常動作を妨げない */ }
 })();
 </script>
-<div id="ssOverlay" style="display:none; position:fixed; inset:0; background:rgba(8,10,18,0.94); z-index:80; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
+<div id="ssOverlay" style="display:none; position:fixed; inset:0; background:rgba(8,10,18,0.94); z-index:80; flex-direction:column; align-items:center; justify-content:center; justify-content:safe center; gap:8px; overflow-y:auto; -webkit-overflow-scrolling:touch;">
   <canvas id="ssCanvas" style="border:1px solid rgba(243,236,224,0.25); border-radius:6px;"></canvas>
   <div id="ssCutRow" style="display:none; margin-top:6px; align-items:center; gap:10px;">
     <canvas id="ssCutCanvas" style="border:2px solid var(--gold); border-radius:4px; background:#141a28;"></canvas>
@@ -11473,7 +11473,7 @@ window.ssReceive = function(){
 })();
 </script>
   <div id="ssPasteZone" contenteditable="true" inputmode="none" spellcheck="false" style="display:none; min-width:250px; max-width:80vw; padding:12px 16px; border:1px dashed rgba(243,236,224,0.55); border-radius:8px; color:rgba(243,236,224,0.9); font-size:12px; font-family:var(--sans); text-align:center; -webkit-user-select:text; user-select:text;">ここを長押しして「ペースト」ですわ</div>
-  <div style="display:flex; gap:12px; align-items:center;">
+  <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px 12px; align-items:center; position:sticky; bottom:0; flex-shrink:0; width:100%; box-sizing:border-box; padding:6px 8px calc(6px + env(safe-area-inset-bottom)); background:rgba(8,10,18,0.96); z-index:1;">
     <span id="ssInfo" style="color:rgba(243,236,224,0.8); font-size:11px; font-family:var(--sans);"></span>
     <button type="button" id="ssCalibBtn" class="btn btn-group" style="display:none;" onclick="window.ssCalibStart()">枠合わせ</button>
     <button type="button" id="ssCutBtn" class="btn btn-group" style="display:none;" onclick="window.ssCutShow()">読取牌表示</button>
