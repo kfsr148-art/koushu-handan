@@ -254,7 +254,8 @@
   document.getElementById('camShot').addEventListener('click', function(){ unlock(); shoot(); });
   /* 撮り直し（2026-11-14・v1475）：カメラを開いた時に本体を見えない枠で先に読み込み、撮った一枚をまず本体の ssPhotoQuality で見てもらう。
      ほとんど見本と合っていない（'bad'）時は判定へ進まず、カメラの画面のまま撮り直す（1.5秒は次を撮らない）。
-     読めた・少し怪しい・見本が空・本体がまだ読み込めていない時は、今まで通り進む。 */
+     少し怪しい牌を二番目に似た牌へ入れ替えると攻守が変わる時（flip・v1477）も、同じく撮り直す。撮り直しは回数で打ち切らない。
+     読めた・少し怪しくても攻守が変わらない・見本が空・本体がまだ読み込めていない時は、今まで通り進む。 */
   var retakeHoldUntil = 0;
   function appWin(){ try{ var w = document.getElementById('app').contentWindow; return (w && typeof w.ssPhotoQuality === 'function') ? w : null; }catch(e){ return null; } }
   function preloadApp(){ var fr = document.getElementById('app'); if(!fr.getAttribute('src')) fr.src = 'koushu-handan.html'; }
@@ -269,7 +270,7 @@
       var q = null;
       try{ q = w.ssPhotoQuality(shrink(cv)); }catch(e){ q = null; }
       window._ssLastQuality = q;
-      if(q && q.verdict === 'bad'){
+      if(q && (q.verdict === 'bad' || q.flip)){
         okSince = 0; greenSince = 0; seenSince = 0; shot = false; guideColor(false);
         retakeHoldUntil = Date.now() + 1500;
         stateText('読めませんでした。撮り直します');
