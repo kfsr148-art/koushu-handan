@@ -23,3 +23,4 @@ scene-some-sou-10.wav.wav	攻めなのだ。ソーズがじゅう枚あるのだ
 color-man.wav.wav	マンズ
 color-pin.wav.wav	ピンズ
 color-sou.wav.wav	ソーズ
+scene-some-tail.wav.wav	枚あるのだ。ほかの色から切って、字牌を残して染めるのだ
