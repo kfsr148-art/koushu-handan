@@ -59,13 +59,17 @@ const dry = argv.indexOf('--dry') >= 0;
 const ti = argv.indexOf('--tail');
 const TAIL = ti >= 0 ? path.resolve(argv[ti + 1]) : path.join(DIR, 'scene-some-tail.wav.wav');
 const piece = (f) => { const t = trim(readWav(f)); const r = gainTo(t); return { s: r.s, g: r.g, rms0: rmsVoiced(t), sec: r.s.length / RATE }; };
+/* つなぎ目の差を4dB以内へ収める補正（2026-11-14・実測の差から）：色ごと・尾 */
+const COLOR_MUL = { man: 1, pin: 0.85, sou: 1.25 };
+const TAIL_MUL = 0.90;
+const mul = (p, m) => { const o = new Int16Array(p.s.length); for (let i = 0; i < o.length; i++) o[i] = Math.round(p.s[i] * m); return { s: o, g: p.g * m, rms0: p.rms0, sec: p.sec }; };
 const gap = (sec) => new Int16Array(Math.round(sec * RATE));
 
 const head = piece(path.join(DIR, 'attack.wav.wav'));
-const tail = piece(TAIL);
+const tail = mul(piece(TAIL), TAIL_MUL);
 let worst = 0;
 for (const k of ['man', 'pin', 'sou']) {
-  const col = piece(path.join(DIR, 'color-' + k + '.wav.wav'));
+  const col = mul(piece(path.join(DIR, 'color-' + k + '.wav.wav')), COLOR_MUL[k]);
   for (const n of [11, 12, 13]) {
     const num = piece(path.join(DIR, n + '.wav.wav'));
     const parts = [['攻め', head, GAP.head], ['色', col, GAP.color], ['数', num, GAP.num], ['尾', tail, 0]];
