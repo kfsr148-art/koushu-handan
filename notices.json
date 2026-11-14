@@ -1,13 +1,13 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1794638835,
+        "message":  "v1481 染め11〜13枚の声を本体へ（push 済み・雲の検査待ち）\n（札が立たないまま次の仕事へ移っていた分）\n完了: 染め11〜13枚の声9本（つなぎ済み・継ぎ目は最大3.9dB）を本体と受付ページの対象に足し v1481 を push（a0461cb0）。panel v146（猫の横の字）も push 済み。雲の検査は台帳に載せた。\nファイル: koushu-handan.html, reader.html, ver.txt, serifu.txt, serifu-adv.txt, panel.html, panel-check.js, panel-ver.txt, voice-join.js\n実機: 染めの芽で一色11〜13枚の手を攻めと判定すると「攻め→色→数→枚あるのだ…」の一本が鳴ること。パネルは指差しの猫の横の字が「まとめて写すヨシ！」（panel v146・ヨシ待ちの回）"
+    },
+    {
         "title":  "🙋 ヨシしてください",
         "time":  1794638797,
         "message":  "v1481／panel v146 の雲の検査を読んだ（v1481 は check ④ が FAIL）\n印: y1114-2045-2\n待っているのは：check.js ④ の直し（声30本の参照の数え方）の宣言へのヨシ\n答え方：「y1114-2045-2 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。"
-    },
-    {
-        "title":  "👀 見てください（返事不要）",
-        "time":  1794638527,
-        "message":  "v1481 染め11〜13枚の声を本体へ（push 済み・雲の検査待ち）\n染め11〜13枚の声9本（つなぎ済み・継ぎ目は最大3.9dB）を本体と受付ページの対象に足し v1481 を push（a0461cb0）。panel v146（猫の横の字）も push 済み。雲の検査は台帳に載せた。\nファイル: koushu-handan.html, reader.html, ver.txt, serifu.txt, serifu-adv.txt, panel.html, panel-check.js, panel-ver.txt, voice-join.js\n実機: 染めの芽で一色11〜13枚の手を攻めと判定すると「攻め→色→数→枚あるのだ…」の一本が鳴ること。パネルは指差しの猫の横の字が「まとめて写すヨシ！」（panel v146・ヨシ待ちの回）"
     },
     {
         "title":  "🙋 ヨシしてください",
