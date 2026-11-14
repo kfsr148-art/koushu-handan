@@ -271,6 +271,21 @@ section('④', '音声ファイルの突き合わせ', () => {
     else unresolved.push(n);
   });
 
+  /* 場面の声（v1480〜・y1114-1945／y1114-2045）。本体は 'scene-some-' + k + '-' + c[k] のように名前を組み立てて呼ぶので、
+     字面からは数えられない。本体にその組み立てが在るときだけ、組み立てで呼ばれる名前をここで足して突き合わせる。
+     ＊鳴らす物（scene-nashi／scene-yakuhai／scene-some-{man,pin,sou}-{6..13}）が無ければ NG（鳴らず attack の声に落ちるため）。
+     ＊つなぎの元（scene-some-tail・color-{man,pin,sou}）は voice-join.js が使う物なので、在れば参照済みに数える（無くても NG にしない）。 */
+  if (src.indexOf("'scene-some-' + k + '-' + c[k]") >= 0) {
+    const sceneNames = ['scene-nashi', 'scene-yakuhai'];
+    ['man', 'pin', 'sou'].forEach(k => { for (let n = 6; n <= 13; n++) sceneNames.push('scene-some-' + k + '-' + n); });
+    const findVoice = n => { const cands = []; dirs.forEach(d => seps.forEach(sep => exts.forEach(ext => cands.push(d + n + sep + ext)))); return cands.find(c => fs.existsSync(path.join(ROOT, c))); };
+    const sceneMissing = [];
+    sceneNames.forEach(n => { const hit = findVoice(n); if (hit) used.add(hit.replace(/\\/g, '/')); else sceneMissing.push(n); });
+    ['scene-some-tail', 'color-man', 'color-pin', 'color-sou'].forEach(n => { const hit = findVoice(n); if (hit) used.add(hit.replace(/\\/g, '/')); });
+    note('場面の声 : ' + sceneNames.length + '個のうち ' + (sceneNames.length - sceneMissing.length) + '個が実ファイルに解決');
+    if (sceneMissing.length === 0) ok('場面の声が全て実ファイルに解決した');
+    else ng('場面の声のファイルが無い（鳴らず attack の声に落ちる）: ' + sceneMissing.join(', '));
+  }
   note('必要な名前 : ' + nm.names.length + '個');
   note('解決した数 : ' + (nm.names.length - unresolved.length) + '個');
   if (unresolved.length === 0) ok('全ての名前が実ファイルに解決した');
