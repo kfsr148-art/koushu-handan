@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1479">
+<html lang="ja" data-ver="1480">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1393,7 +1393,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1479</div>
+  <div id="verTag">v1480</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1969,6 +1969,58 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   function speakCount(n){ if (n < 1 || n >= COUNT_YOMI.length) return; playVoice(String(n), COUNT_YOMI[n], 1.25); }
   function playVerdict(attack){ playVoice(attack ? 'attack' : 'defend', attack ? '攻め' : '守り', 1.05); }
+
+  /* ---- 攻めの三場面の声（v1480・y1114-1945）----
+     ＊雲の1400局（reports/cloud-core-battle-scenes-20261114-045117.tsv・reports/y1114-1600.md）で、攻めの手に限り
+       結論が立った三場面だけに、判定の声（attack）の代わりに長い声を鳴らす。優先は 染め → 役牌の対子 → 役なし
+       （重なるのは攻めの手の3.7%・reports/y1114-1930.md）。
+     ＊声のファイルは voice-scenes.txt の録音台本のとおり（scene-nashi／scene-yakuhai／scene-some-{man,pin,sou}-{6..10}）。
+       ファイルが無い間は今までどおり attack の声を鳴らす（鳴らない・OS音声で読むことはしない）。
+     ＊受付ページ（reader.html）から鳴らす経路は、受付ページが ssReaderHas(name) を持つまでは今までどおり attack の声。
+     ＊判定（analyze）は読むだけ。 */
+  function sceneVoiceName(a, tiles){
+    if(!a || a.tooMany || a.kokushiSeen || a.yakumanReach) return '';
+    if(!tiles || tiles.some(function(t){ return t.suit === 'cat'; })) return '';
+    const dirs = a.directions || [];
+    if(dirs.some(function(d){ return /染め|混一色|清一色/.test(d); })){
+      const c = { man:0, pin:0, sou:0 };
+      tiles.forEach(function(t){ if(c[t.suit] !== undefined) c[t.suit]++; });
+      const k = ['man','pin','sou'].reduce(function(x, y){ return c[y] > c[x] ? y : x; }, 'man');
+      return (c[k] >= 6 && c[k] <= 10) ? ('scene-some-' + k + '-' + c[k]) : '';
+    }
+    if(a.yakuhaiPair) return 'scene-yakuhai';
+    if(a.baseShanten >= 0 && a.baseShanten <= 2 && !a.hasValue && !a.doraValue) return 'scene-nashi';
+    return '';
+  }
+  const _sceneAudio = {}, _sceneMiss = {};
+  let _sceneSeq = 0;
+  function _stopSceneAudio(){ for (const k in _sceneAudio){ try { _sceneAudio[k].pause(); _sceneAudio[k].currentTime = 0; } catch(e){} } }
+  function playVerdictOrScene(attack, name){
+    const seq = ++_sceneSeq;
+    _stopSceneAudio();
+    if(!attack || !name || _sceneMiss[name]){ playVerdict(attack); return; }
+    if(window._ssAutoVoice){
+      try {
+        const P = window.parent;
+        if(P && P !== window && typeof P.ssReaderHas === 'function' && P.ssReaderHas(name) && typeof P.ssReaderVoice === 'function'){ P.ssReaderVoice(name, '', 1); return; }
+      } catch(e){}
+      playVerdict(attack); return;
+    }
+    if(_sceneAudio[name]){ _doPlayAudio(_sceneAudio[name]); return; }
+    const cands = [name + '.wav.wav', 'voice/' + name + '.wav.wav'];
+    let i = 0;
+    const tryNext = function(){
+      if(i >= cands.length){ _sceneMiss[name] = true; if(seq === _sceneSeq) playVerdict(attack); return; }
+      try {
+        const au = new Audio(cands[i++]);
+        au.preload = 'auto';
+        au.addEventListener('canplay', function(){ _sceneAudio[name] = au; _showVoiceCredit(); if(seq === _sceneSeq) _doPlayAudio(au); }, { once:true });
+        au.addEventListener('error', tryNext, { once:true });
+        au.load();
+      } catch(e){ tryNext(); }
+    };
+    tryNext();
+  }
 
   let _yoshiNext = false;   // 猫牌タップ時だけ true：枚数読みの代わりにヨシを鳴らす
   function addTile(t) {
@@ -8649,7 +8701,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const tOne = TURN_BY_SHANTEN[sh] || 8;
       return '撤退予約線：' + tOne + '巡目までに一向聴。届かなければ守りへ回る';
     })();
-    playVerdict(attack);   // 判定を声で告げる（盤面から目を上げずに結果を受け取れる）
+    playVerdictOrScene(attack, attack ? sceneVoiceName(a, hand) : '');   // 判定を声で告げる（攻めの三場面は長い声。v1480）（盤面から目を上げずに結果を受け取れる）
     lastAttack = attack;
     window._lastA = a;   // 人柄を切り替えたときに材料の一行を引き直すため
     /* 四つの目が「黙る帯」でも枚数を言えるように、数えた値だけ控える（2026-09-14・釦の押せ-2）。
