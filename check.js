@@ -286,6 +286,23 @@ section('④', '音声ファイルの突き合わせ', () => {
     if (sceneMissing.length === 0) ok('場面の声が全て実ファイルに解決した');
     else ng('場面の声のファイルが無い（鳴らず attack の声に落ちる）: ' + sceneMissing.join(', '));
   }
+  /* 全判定の助言の声（v1484・y1114-2218）。部品の台帳（voice-advice-catalog.js）と本体の表（ADV_TEXT）が一字も違わないこと、
+     台帳の部品と数字 advn-0〜13 が全て実ファイルに在ることを見る（無いと文字だけ出て、声は攻め／守りの一言へ落ちる）。 */
+  if (src.indexOf('const ADV_TEXT = ') >= 0) {
+    const cat = require('./voice-advice-catalog.js').T;
+    const m = /const ADV_TEXT = (\{[^\n]*\});/.exec(src);
+    let same = false;
+    try { same = !!m && JSON.stringify(JSON.parse(m[1])) === JSON.stringify(cat); } catch (e) { same = false; }
+    if (same) ok('助言の部品の表（ADV_TEXT）が台帳と一致した（' + Object.keys(cat).length + '部品）');
+    else ng('助言の部品の表（ADV_TEXT）が voice-advice-catalog.js と違う');
+    const advNames = Object.keys(cat);
+    for (let k = 0; k <= 13; k++) advNames.push('advn-' + k);
+    const miss = [];
+    advNames.forEach(n => { const cands = []; dirs.forEach(d => seps.forEach(sep => exts.forEach(ext => cands.push(d + n + sep + ext)))); const hit = cands.find(c => fs.existsSync(path.join(ROOT, c))); if (hit) used.add(hit.replace(/\\/g, '/')); else miss.push(n); });
+    note('助言の声 : ' + advNames.length + '個のうち ' + (advNames.length - miss.length) + '個が実ファイルに解決');
+    if (miss.length === 0) ok('助言の声が全て実ファイルに解決した');
+    else ng('助言の声のファイルが無い（声は攻め／守りの一言に落ちる）: ' + miss.join(', '));
+  }
   note('必要な名前 : ' + nm.names.length + '個');
   note('解決した数 : ' + (nm.names.length - unresolved.length) + '個');
   if (unresolved.length === 0) ok('全ての名前が実ファイルに解決した');

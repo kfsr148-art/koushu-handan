@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1483">
+<html lang="ja" data-ver="1484">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1396,7 +1396,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1483</div>
+  <div id="verTag">v1484</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1922,7 +1922,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
   _preloadVoices();
-  function _stopAllAudio(){ for (const k in _audio){ try { _audio[k].pause(); _audio[k].currentTime = 0; } catch(e){} } }
+  function _stopAllAudio(){ for (const k in _audio){ try { _audio[k].pause(); _audio[k].currentTime = 0; } catch(e){} } try { _advStop(); } catch(e){} }
   // ファイルがあればそれを、無ければOS音声で。連打時は前を止めて今のだけ。
   let _playSeq = 0;   // 最新の再生要求だけを通す（連打・差し替え対策）
   function _doPlayAudio(a){
@@ -2015,6 +2015,187 @@ document.addEventListener('DOMContentLoaded', function () {
       return { key:'sensei', text: yomi + 'が' + m[2] + '枚あります。ほかの色から切って、' + yomi + 'と字牌（ジハイ）を残して染めなさい。' };
     }
     return null;
+  }
+  /* ==== 全判定の助言（v1484・y1114-2218 のヨシ）====
+     ＊三場面（sceneAdvice）が当たる手は今まで通り。当たらない手に、型どおりの助言を一行以上と声で出す。
+     ＊文は部品（ADV_TEXT）を並べて作る。表は voice-advice-catalog.js から作った物（部品の台帳）。声は同名の wav を続けて一本に繋いで鳴らす。
+       部品が一つでも読めなければ、声は今までの 攻め／守り の一言へ戻る（文字は出る）。
+     ＊記録で確かめた物＝攻めの撤退予約線の巡目と三場面だけ。ほかは「定石では、」と断って言う。
+     ＊言う審判＝判定と同じ側に倒れた人柄七人のうち、REVOTE_W の重みが最大の人（金の縁）。同じ側の人がいなければずんだ。 */
+  const ADV_TEXT = {"adv-teiseki":"定石では、","adva-head":"攻めなのだ。","adva-from":"から切って、","adva-weak":"つながりの薄い牌から切って、","adva-t3":"3巡目までに一向聴なのだ。","adva-t6":"6巡目までに一向聴なのだ。","adva-t7":"7巡目までに一向聴なのだ。","adva-t8":"8巡目までに一向聴なのだ。","adva-w-butler":"ドラがあって、打点が高いのだ。","adva-w-strategist":"受け入れが広いのだ。","adva-w-blunt":"良い形がそろっているのだ。","adva-w-lady":"守りに使える牌が少ないから、押すのだ。","adva-w-french":"浮いた牌が少ないのだ。","adva-w-ichihime":"対子が多くて、手が見えているのだ。","adva-w-sensei":"染めの形が見えているのだ。","adva-kok-a":"国士の芽なのだ。一九字牌の十三種のうち、いま","adva-kok-b":"種そろっているのだ。","adva-kok-c":"真ん中の牌から切って、一九字牌を残すのだ。","adva-chi-a":"七対子の形なのだ。対子が","adva-chi-b":"組あるのだ。","adva-chi-c":"対子は崩さずに、一枚の牌を入れ替えるのだ。","adva-toi-a":"対々和の形なのだ。刻子が","adva-toi-b":"組、対子が","adva-toi-c":"組あるのだ。","adva-toi-d":"順子になりそうな牌から切って、刻子と対子を残すのだ。","adva-ikk-a":"あと一枚で聴牌なのだ。","adva-ikk-b":"受けの広い方を残して、真っすぐ押すのだ。期限は引かないのだ。","adva-neko-a":"つながらない牌が","adva-neko-b":"枚あるのだ。","adva-neko-c":"そこから切って形を作るのだ。形ができるまで、期限は決めないのだ。","adva-tan-a":"端の牌と字牌が","adva-tan-b":"枚しかないのだ。","adva-tan-c":"端と字牌から切って、真ん中の牌で作るのだ。","adva-yak-a":"役満の芽が見えているのだ。","adva-yak-b":"その役に使う牌を残して、使わない牌から切るのだ。","adva-s-nito":"七対子と対々の二兎なのだ。定石では、対子は崩さずに、七対子を先に見るのだ。","adva-s-kasa":"形が重なりすぎているのだ。定石では、重なった一組を先に切って、受けを広げるのだ。","adva-s-nosafe":"速いが安全牌が無いのだ。定石では、このまま押すのだ。","adva-s-ukai":"ドラが浮いているのだ。定石では、ドラは持ち続けて、形を作るのだ。","adva-s-soba":"定石では、ドラの近くの牌は残して、遠い牌から切るのだ。","adva-s-jihai":"定石では、字牌の対子は雀頭の候補に残して、押すのだ。","advd-head":"守りなのだ。","advd-w-far":"この手は、上がりまで遠いのだ。","advd-w-cheap":"遠い上に、打点も安いのだ。","advd-w-shape":"形が悪くて、まとまらないのだ。","advd-w-honor":"字牌と端の牌が多くて、守れるのだ。","advd-w-few":"安全牌が少ないのだ。","advd-w-pair":"対子が多くて、守りに回せるのだ。","advd-cut":"から切るのだ。","advd-and":"と","advd-keep":"は、安全牌として残すのだ。","advd-s-soba":"定石では、ドラの近くの牌から先に切るのだ。","advd-s-jihai":"の対子は、安全牌として抱えるのだ。","advd-s-nito":"定石では、二兎の対子は、安全牌に回すのだ。","advd-s-ukai":"定石では、浮いたドラは持たずに切るのだ。","advd-riichi":"定石では、リーチを受けたら、その人の捨てた牌、残した字牌と対子、筋の順に切るのだ。","advt-m1":"一萬","advt-p1":"一筒","advt-s1":"一索","advt-m2":"二萬","advt-p2":"二筒","advt-s2":"二索","advt-m3":"三萬","advt-p3":"三筒","advt-s3":"三索","advt-m4":"四萬","advt-p4":"四筒","advt-s4":"四索","advt-m5":"五萬","advt-p5":"五筒","advt-s5":"五索","advt-m6":"六萬","advt-p6":"六筒","advt-s6":"六索","advt-m7":"七萬","advt-p7":"七筒","advt-s7":"七索","advt-m8":"八萬","advt-p8":"八筒","advt-s8":"八索","advt-m9":"九萬","advt-p9":"九筒","advt-s9":"九索","advt-E":"東","advt-S":"南","advt-W":"西","advt-N":"北","advt-P":"白","advt-F":"發","advt-C":"中"};
+  const ADV_JUDGES = ['butler','strategist','blunt','lady','french','ichihime','sensei'];
+  function advKey(t){ return t.suit === 'honor' ? t.code : ({ man:'m', pin:'p', sou:'s' }[t.suit] + t.num); }
+  function advSpeaker(a, attack, catN){
+    const side = attack ? 'a' : 'd';
+    let best = '', bw = -1;
+    tenLeans(a, catN).forEach(function(x){
+      if(ADV_JUDGES.indexOf(x.key) < 0 || x.lean !== side || !REVOTE_W[x.key]) return;
+      const w = REVOTE_W[x.key][side];
+      if(w > bw){ bw = w; best = x.key; }
+    });
+    return best || 'blunt';
+  }
+  function advFacts(a, tiles){
+    const cnt = {}; let catN = 0, yaochuN = 0;
+    tiles.forEach(function(t){
+      if(t.suit === 'cat'){ catN++; return; }
+      const k = advKey(t); cnt[k] = (cnt[k] || 0) + 1;
+      if(t.suit === 'honor' || t.num === 1 || t.num === 9) yaochuN++;
+    });
+    const keys = Object.keys(cnt), vals = keys.map(function(k){ return cnt[k]; });
+    const dt = a.doraCode || null;
+    const near = function(k, r){ if(!/^[mps]/.test(k)) return false; const n = +k[1]; for(let d = -r; d <= r; d++){ if(d && cnt[k[0] + (n + d)]) return true; } return false; };
+    return {
+      cnt: cnt, catN: catN, yaochuN: yaochuN,
+      yaochuKinds: keys.filter(function(k){ return /^([ESWNPFC]|[mps][19])$/.test(k); }).length,
+      pairKinds: vals.filter(function(c){ return c >= 2; }).length,
+      pairs2: vals.filter(function(c){ return c === 2; }).length,
+      trip: vals.filter(function(c){ return c >= 3; }).length,
+      trip3: vals.filter(function(c){ return c === 3; }).length,
+      quad: vals.some(function(c){ return c >= 4; }),
+      honorPairs: keys.filter(function(k){ return /^[ESWNPFC]$/.test(k) && cnt[k] === 2; }),
+      def: (a.defHonors || 0) + (a.defTerminals || 0),
+      doraSoba: !!(dt && !cnt[dt] && near(dt, 2)),
+      doraFloat: !!(dt && cnt[dt] === 1 && !near(dt, 2))
+    };
+  }
+  function advFloat(a, tiles){
+    const used = {};
+    (a.shapeTiles || []).forEach(function(x){ const k = (x.suit === 'honor') ? ('h' + x.code) : (x.suit + x.num); used[k] = (used[k] || 0) + (x.n || 1); });
+    for(let i = 0; i < tiles.length; i++){
+      const x = tiles[i]; if(x.suit === 'cat') continue;
+      const k = (x.suit === 'honor') ? ('h' + x.code) : (x.suit + x.num);
+      if(used[k] > 0){ used[k]--; continue; }
+      if(x.suit !== 'honor' && x.num >= 2 && x.num <= 8) return advKey(x);
+    }
+    return '';
+  }
+  /* 部品の並び（行ごと）。要素は 文字列＝部品の id／{n:数}＝数字の声／{t:牌のコード}＝牌の名 */
+  function advLines(a, tiles, attack, key){
+    const F = advFacts(a, tiles), sh = a.baseShanten, TEI = 'adv-teiseki';
+    const dirs = a.directions || [];
+    if(attack){
+      if(a.kokushiSeen) return [['adva-kok-a', { n: Math.min(13, F.yaochuKinds) }, 'adva-kok-b'], [TEI, 'adva-kok-c']];
+      if(a.yakumanReach) return [['adva-yak-a'], [TEI, 'adva-yak-b']];
+      const chi = dirs.filter(function(d){ return /七対子/.test(d); })[0];
+      if(chi){
+        const m = /対子([0-9]+)/.exec(chi);
+        return [['adva-chi-a', { n: Math.min(13, m ? +m[1] : F.pairKinds) }, 'adva-chi-b'], [TEI, 'adva-chi-c']];
+      }
+      if(dirs.some(function(d){ return /対々和/.test(d); })) return [['adva-toi-a', { n: F.trip }, 'adva-toi-b', { n: F.pairs2 }, 'adva-toi-c'], [TEI, 'adva-toi-d']];
+      if(dirs.some(function(d){ return /タンヤオ/.test(d); })) return [['adva-tan-a', { n: Math.min(13, F.yaochuN) }, 'adva-tan-b'], [TEI, 'adva-tan-c']];
+      if(sh >= 0 && sh <= 1) return [['adva-ikk-a'], [TEI, 'adva-ikk-b']];
+      if(F.catN >= 4) return [['adva-neko-a', { n: Math.min(13, F.catN) }, 'adva-neko-b'], [TEI, 'adva-neko-c']];
+      const cut = pickCutTile(a, tiles);
+      const l1 = ['adva-head'];
+      if(cut && cut.code && ADV_TEXT['advt-' + cut.code]) l1.push({ t: cut.code }, 'adva-from'); else l1.push('adva-weak');
+      if(sh >= 2){ const T = { 2: 3, 3: 6, 4: 7, 5: 8 }[sh] || 8; l1.push('adva-t' + T); }
+      l1.push('adva-w-' + key);
+      const lines = [l1];
+      if(F.pairs2 >= 3 && F.trip >= 1) lines.push(['adva-s-nito']);
+      else if(F.quad || F.trip3 >= 2) lines.push(['adva-s-kasa']);
+      else if(sh >= 0 && sh <= 2 && F.def === 0) lines.push(['adva-s-nosafe']);
+      else if(F.doraFloat) lines.push(['adva-s-ukai']);
+      else if(F.doraSoba) lines.push(['adva-s-soba']);
+      else if(F.honorPairs.length) lines.push(['adva-s-jihai']);
+      return lines;
+    }
+    /* 守り：①訳 ②序盤の切り方 ③リーチを受けた時 */
+    const defLine = (sh <= 3) ? 5 : 6;
+    let w = 'shape';
+    if(sh >= 3 && !a.hasValue && !a.doraValue) w = 'cheap';
+    else if(sh >= 3) w = 'far';
+    else if(a.goodShapes <= 1) w = 'shape';
+    else if(F.def >= defLine) w = 'honor';
+    else if(F.def <= 1) w = 'few';
+    else if(F.pairKinds >= 3) w = 'pair';
+    const lines = [['advd-head', 'advd-w-' + w]];
+    const l2 = [TEI];
+    const fl = advFloat(a, tiles);
+    if(fl) l2.push({ t: fl }, 'advd-cut');
+    const keep = [];
+    Object.keys(F.cnt).filter(function(k){ return /^[ESWNPFC]$/.test(k); }).forEach(function(k){ keep.push(k); });
+    Object.keys(F.cnt).filter(function(k){ return /^[mps]/.test(k) && F.cnt[k] >= 2; }).forEach(function(k){ keep.push(k); });
+    if(keep.length){
+      l2.push({ t: keep[0] });
+      if(keep.length >= 2){ l2.push('advd-and', { t: keep[1] }); }
+      l2.push('advd-keep');
+    }
+    if(l2.length > 1) lines.push(l2);
+    if(F.pairs2 >= 3 && F.trip >= 1) lines.push(['advd-s-nito']);
+    else if(F.honorPairs.length) lines.push([TEI, { t: F.honorPairs[0] }, 'advd-s-jihai']);
+    else if(F.doraFloat) lines.push(['advd-s-ukai']);
+    else if(F.doraSoba) lines.push(['advd-s-soba']);
+    lines.push(['advd-riichi']);
+    return lines;
+  }
+  function advTokText(t){
+    if(typeof t === 'string') return ADV_TEXT[t] || '';
+    if(t.n !== undefined) return String(t.n);
+    return toneCodeName(t.t);
+  }
+  function advTokName(t){ return (typeof t === 'string') ? t : (t.n !== undefined ? ('advn-' + t.n) : ('advt-' + t.t)); }
+  /* 判定ごとの助言（三場面が当たれば sceneAdvice のまま）。失敗しても判定は止めない。
+     返す物：{ key, text, audio:[{name,gap}] または null }。守りも返す（金の縁と一行は攻め・守りとも出る） */
+  function adviceFor(a, tiles, attack){
+    try {
+      if(!a || a.tooMany) return null;
+      const sc = attack ? sceneAdvice(a, tiles) : null;
+      if(sc) return { key: sc.key, text: sc.text, audio: null };
+      const sorted = watchSortHand(tiles.slice());
+      const catN = tiles.filter(function(t){ return t.suit === 'cat'; }).length;
+      const key = advSpeaker(a, attack, catN);
+      const lines = advLines(a, sorted, attack, key);
+      const audio = [];
+      lines.forEach(function(l){
+        l.forEach(function(t, i){
+          const nm = advTokName(t);
+          audio.push({ name: nm, gap: (audio.length === 0) ? 0 : (i === 0 ? 0.15 : (nm === 'adv-teiseki' ? 0.15 : 0.07)) });
+        });
+      });
+      return { key: key, text: lines.map(function(l){ return l.map(advTokText).join(''); }).join('<br>'), audio: audio };
+    } catch(e){ return null; }
+  }
+  /* 声：部品の wav（24kHz・mono・16bit）を読んで間の無音ごと一本の wav に繋ぎ、一度だけ鳴らす。読めない部品があれば今までの一言へ戻る */
+  let _advAudio = null, _advSeq = 0;
+  function _advStop(){ _advSeq++; try { if(_advAudio){ _advAudio.pause(); _advAudio = null; } } catch(e){} }
+  function _advBlob(parts){
+    let n = 0; parts.forEach(function(p){ n += p.length; });
+    const o = new DataView(new ArrayBuffer(44 + n * 2));
+    const W = function(i, s){ for(let k = 0; k < s.length; k++) o.setUint8(i + k, s.charCodeAt(k)); };
+    W(0, 'RIFF'); o.setUint32(4, 36 + n * 2, true); W(8, 'WAVEfmt '); o.setUint32(16, 16, true); o.setUint16(20, 1, true); o.setUint16(22, 1, true);
+    o.setUint32(24, 24000, true); o.setUint32(28, 48000, true); o.setUint16(32, 2, true); o.setUint16(34, 16, true); W(36, 'data'); o.setUint32(40, n * 2, true);
+    let p = 44; parts.forEach(function(s){ for(let i = 0; i < s.length; i++){ o.setInt16(p, s[i], true); p += 2; } });
+    return new Blob([o.buffer], { type: 'audio/wav' });
+  }
+  const _advPcm = {};
+  function playAdvice(adv, attack){
+    _stopSceneAudio(); _stopAllAudio();
+    try { if('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch(e){}
+    _advStop();
+    const seq = _advSeq;
+    if(_frameHidden()) return;
+    const uniq = adv.audio.map(function(i){ return i.name; }).filter(function(v, i, s){ return s.indexOf(v) === i; });
+    const load = function(nm){
+      if(_advPcm[nm]) return Promise.resolve();
+      return fetch(nm + '.wav.wav').then(function(r){ if(!r.ok) throw new Error(nm); return r.arrayBuffer(); }).then(function(b){
+        const dv = new DataView(b), n = Math.floor((b.byteLength - 44) / 2), s = new Int16Array(n);
+        for(let i = 0; i < n; i++) s[i] = dv.getInt16(44 + i * 2, true);
+        _advPcm[nm] = s;
+      });
+    };
+    Promise.all(uniq.map(load)).then(function(){
+      if(seq !== _advSeq || _frameHidden()) return;
+      const parts = [];
+      adv.audio.forEach(function(it){ if(it.gap) parts.push(new Int16Array(Math.round(it.gap * 24000))); parts.push(_advPcm[it.name]); });
+      parts.push(new Int16Array(3600));
+      const url = URL.createObjectURL(_advBlob(parts));
+      const au = new Audio(url);
+      _advAudio = au;
+      au.addEventListener('ended', function(){ try { URL.revokeObjectURL(url); } catch(e){} }, { once: true });
+      _showVoiceCredit();
+      const p = au.play(); if(p && p.catch) p.catch(function(){});
+    }).catch(function(){ if(seq === _advSeq) playVerdict(attack); });
   }
   const _sceneAudio = {}, _sceneMiss = {};
   let _sceneSeq = 0;
@@ -8742,7 +8923,8 @@ document.addEventListener('DOMContentLoaded', function () {
       const tOne = TURN_BY_SHANTEN[sh] || 8;
       return '撤退予約線：' + tOne + '巡目までに一向聴。届かなければ守りへ回る';
     })();
-    playVerdictOrScene(attack, attack ? sceneVoiceName(a, hand) : '');   // 判定を声で告げる（攻めの三場面は長い声。v1480）（盤面から目を上げずに結果を受け取れる）
+    const _adv = adviceFor(a, hand, attack);   // 全判定の助言（v1484）。三場面が当たる手は今まで通り
+    if(_adv && _adv.audio){ playAdvice(_adv, attack); } else { playVerdictOrScene(attack, attack ? sceneVoiceName(a, hand) : ''); }   // 判定を声で告げる（攻めの三場面は長い声。v1480）（盤面から目を上げずに結果を受け取れる）
     lastAttack = attack;
     window._lastA = a;   // 人柄を切り替えたときに材料の一行を引き直すため
     /* 四つの目が「黙る帯」でも枚数を言えるように、数えた値だけ控える（2026-09-14・釦の押せ-2）。
@@ -8903,7 +9085,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    const _sceneAdv = attack ? sceneAdvice(a, hand) : null;   // 場面の助言（v1482）。無ければ null
+    const _sceneAdv = _adv;   // 助言（v1482 の三場面＋v1484 の全判定）。無ければ null
     v.innerHTML = `
       <div class="verdict-card ${attack?'attack':'defend'}">
         ${(function(){
