@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1482">
+<html lang="ja" data-ver="1483">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1396,7 +1396,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1482</div>
+  <div id="verTag">v1483</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -2019,7 +2019,24 @@ document.addEventListener('DOMContentLoaded', function () {
   const _sceneAudio = {}, _sceneMiss = {};
   let _sceneSeq = 0;
   function _stopSceneAudio(){ for (const k in _sceneAudio){ try { _sceneAudio[k].pause(); _sceneAudio[k].currentTime = 0; } catch(e){} } }
+  /* 受付ページの上では声を鳴らさない（v1483）：
+     ＊受付ページ（reader.html）の枠の中の本体で、その枠が見えていない間は、判定の声を鳴らさない。
+     ＊受付ページへ戻る時・頁を離れる時は、声のファイルも OS の読み上げもすべて止める（読み上げは頁を読み直しても続くことがある）。 */
+  function _frameHidden(){
+    try {
+      if(window.parent === window) return false;
+      const fe = window.frameElement;
+      return !!fe && getComputedStyle(fe).display === 'none';
+    } catch(e){ return false; }
+  }
+  window.ssStopVoices = function(){
+    try { if('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch(e){}
+    try { _stopAllAudio(); } catch(e){}
+    try { _stopSceneAudio(); } catch(e){}
+  };
+  window.addEventListener('pagehide', function(){ window.ssStopVoices(); });
   function playVerdictOrScene(attack, name){
+    if(_frameHidden()){ window.ssStopVoices(); return; }   // 受付ページが出ている間は鳴らさない（v1483）
     const seq = ++_sceneSeq;
     _stopSceneAudio();
     if(!attack || !name || _sceneMiss[name]){ playVerdict(attack); return; }
@@ -9169,6 +9186,7 @@ window.ssMarkTool = function(){
 };
 window.ssGoReader = function(){
   window.ssMarkTool();
+  try{ if(window.ssStopVoices) window.ssStopVoices(); }catch(e){}   /* 受付ページへ戻る前に、鳴っている声を止める（v1483） */
   /* 受付ページの枠の中で開いている時は、枠を重ねず受付ページそのものを開き直す（v1469） */
   try{ if(window.top !== window){ window.top.location.href = 'reader.html'; return; } }catch(e){}
   location.href = 'reader.html';
