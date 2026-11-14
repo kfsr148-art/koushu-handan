@@ -495,7 +495,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v144（9月23日）</p>
+  <p class="ver" id="verTag">panel v145（11月14日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -523,7 +523,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '144';
+  var PANEL_VER = '145';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1230,6 +1230,7 @@
          v90 で板の跡地にも同じ字の行を置いたので、**同じ字が二段に並んでいた**。
          押せない釦は用が無いので釦の側を外し、**字だけの一行**（黄色）を残す。 */
     var n = buildBundle().count;   /* v114：札と通知の合計（mergedTodo が数える） */
+    copyLeft = n;   /* 頭の猫が見る残り（v145） */
     /* M ＝ **直近の「写せます（N件）」の知らせと同じ数**（v96）。
        ＊v95 は控えの札の全数（allRows.length）だった。あれは「溜まっている総量」で、
          **いま片付いたひとまとまりの大きさ**ではない。知らせが「写せます（2件）」と
@@ -1674,6 +1675,9 @@
   var catFrames = ['cat0-w.png', 'cat1-w.png', 'cat2-w.png', 'cat3-w.png', 'cat4-w.png'];
   var catI = 0;
   var catAwake = false;
+  /* 「まとめて写す」の残り（未写しの札の数）。setCopyBoardLabel が釦の N と同じ値を置く（v145）。
+     runCatTick は毎コマ（100ms）呼ばれるので、数え直さずここだけを見る。 */
+  var copyLeft = 0;
   (function () {   /* 先読み。読めなくても画面は壊れない（img が出ないだけ） */
     catFrames.concat(['cat-sleep-w.png', 'genba-cat-80.png'])
       .forEach(function (n) { var im = new Image(); im.src = n; });
@@ -1708,6 +1712,12 @@
       catAwake = true;
       catI = (catI + 1) % catFrames.length;
       el.src = catFrames[catI];
+    } else if (copyLeft > 0) {
+      /* v145：「まとめて写す」に残りがある間は、ヨシ待ちと同じ指差しの現場猫を出す。
+         写して残りが0になれば、下の枝で寝姿（cat-sleep-w）へ戻る。
+         ＊作業中（コマ送り）と連絡なし（寝姿）はこの上で先に返すので、そのまま。 */
+      catAwake = false;
+      if (el.src.indexOf('genba-cat-80') < 0) { el.src = 'genba-cat-80.png'; }
     } else if (catAwake || el.src.indexOf('cat-sleep-w') < 0) {   /* 走り・待機のどちらからでも寝姿へ戻る */
       catAwake = false;
       el.src = 'cat-sleep-w.png';
