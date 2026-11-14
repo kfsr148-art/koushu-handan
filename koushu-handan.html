@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1481">
+<html lang="ja" data-ver="1482">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -299,6 +299,9 @@
   /* いま喋っている話者だけ点灯。人柄チップの選択中と同じ白（金枠は使わない）。 */
   .verdict-zones .vz-chip.on .vz-ic { background: rgba(243,236,224,0.92); border-color: transparent;
     box-shadow: 0 0 0 1px rgba(243,236,224,0.92); }
+  /* 場面の助言（v1482・y1114-2200）を出す審判の顔だけ、金の縁で光らせる。見た目の箱（.vz-ic）にだけ足し、当たり判定（44px）は触らない。
+     ＊いま喋っている話者の白い点灯（.on）とは別の合図なので、両方が重なっても読める。 */
+  .verdict-zones .vz-chip.scene .vz-ic { box-shadow: 0 0 0 2px #e6c36a, 0 0 9px 2px rgba(230,195,106,0.75); }
   /* 顔は丸く縁取る。overflow:hidden は付けない（object-fit:contain で収まるため要らない）。 */
   .verdict-zones .vz-face { border-radius: 50%;
     border: 1px solid rgba(138,127,92,0.6); background: rgba(0,0,0,0.35); }
@@ -1393,7 +1396,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1481</div>
+  <div id="verTag">v1482</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1991,6 +1994,27 @@ document.addEventListener('DOMContentLoaded', function () {
     if(a.yakuhaiPair) return 'scene-yakuhai';
     if(a.baseShanten >= 0 && a.baseShanten <= 2 && !a.hasValue && !a.doraValue) return 'scene-nashi';
     return '';
+  }
+  /* 場面の助言（v1482・y1114-2200）：声と同じ場面（sceneVoiceName）を、受け持ちの審判の口調で一行にする。
+     ずんだもん＝役なしの早い手／一姫＝役牌の対子／先生＝染めの芽。結論の出ていない場面は null（何も出さない）。
+     声のファイルの有無とは関わらない（声は playVerdictOrScene が別に鳴らす）。 */
+  function sceneAdvice(a, tiles){
+    const nm = sceneVoiceName(a, tiles);
+    if(!nm) return null;
+    if(nm === 'scene-nashi') return { key:'blunt', text:'このままだと上がれないのだ。立直（リーチ）か、鳴いて役（ヤク）を付けるのだ。' };
+    if(nm === 'scene-yakuhai'){
+      const c = {};
+      tiles.forEach(function(t){ if(t.suit === 'honor'){ c[t.code] = (c[t.code] || 0) + 1; } });
+      const code = ['P','F','C','E','S','W','N'].filter(function(k){ return c[k] >= 2; })[0];
+      const lab = code ? ((honorData[code] || {}).label || code) : '役牌';
+      return { key:'ichihime', text: lab + 'の対子（トイツ）があるにゃ。出たらすぐ鳴いて、役（ヤク）を決めるにゃ！' };
+    }
+    const m = /^scene-some-(man|pin|sou)-([0-9]+)$/.exec(nm);
+    if(m){
+      const yomi = toneSuitYomi(TONE_SUIT_JP[m[1]]);
+      return { key:'sensei', text: yomi + 'が' + m[2] + '枚あります。ほかの色から切って、' + yomi + 'と字牌（ジハイ）を残して染めなさい。' };
+    }
+    return null;
   }
   const _sceneAudio = {}, _sceneMiss = {};
   let _sceneSeq = 0;
@@ -8862,6 +8886,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
+    const _sceneAdv = attack ? sceneAdvice(a, hand) : null;   // 場面の助言（v1482）。無ければ null
     v.innerHTML = `
       <div class="verdict-card ${attack?'attack':'defend'}">
         ${(function(){
@@ -8875,7 +8900,7 @@ document.addEventListener('DOMContentLoaded', function () {
               : (x.key === 'usagi' ? USAGI_IMG : null));
             // 押すとその判定者の言い分が助言欄に出る。人柄のある七人は人柄ボタンの選択も連れて動く。
             const tap = ' onclick="window.vzTap(\'' + x.key + '\', event)"';
-            const lit = (x.key === currentTone) ? ' on' : '';   // 初手はいま選ばれている人柄が喋っている
+            const lit = ((x.key === currentTone) ? ' on' : '') + ((_sceneAdv && x.key === _sceneAdv.key) ? ' scene' : '');   // 初手はいま選ばれている人柄が喋っている／場面の助言を出す審判は金の縁（v1482）
             // 外箱＝当たり判定、中身＝見た目。中身を包んでおかないと判定を広げられない。
             const inner = img
               ? '<span class="vz-ic vz-face"><img src="' + img + '" alt="' + x.mark + '"></span>'
@@ -8903,6 +8928,7 @@ document.addEventListener('DOMContentLoaded', function () {
         <!-- 台詞は行の外。列に入れると幅が狭まって余計に折れ、カードが縦に太る -->
         <div class="verdict-word${(a.borderline||a.yakumanReach||(a.kokushiSeen&&!a.yakumanReach))?' long':''}" style="font-size:13px !important;">${pickVerdictWord(attack)}</div>
         ${retreatLine ? `<div class="retreat-line" style="font-size:10px !important; color:#c9b98a; margin-top:6px; letter-spacing:.04em;">${retreatLine}</div>` : ''}
+        ${_sceneAdv ? `<div class="tone-angle scene-line" style="font-size:10px !important; color:rgba(243,236,224,0.92); margin-top:4px; letter-spacing:.04em;">${sayHTML(_sceneAdv.key, _sceneAdv.text)}</div>` : ''}
         <div class="tone-angle" style="font-size:10px !important; color:rgba(243,236,224,0.7); margin-top:4px; letter-spacing:.04em;${toneAngleLine(a) ? '' : ' display:none;'}">${sayHTML(currentTone, toneAngleLine(a))}</div>
         <div class="tone-row">
           <button type="button" class="tone-btn${currentTone==='butler'?' active':''}" data-tone="butler" onclick="window.setTone('butler')">執事</button>
