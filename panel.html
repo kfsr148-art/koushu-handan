@@ -495,7 +495,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v149（11月14日）</p>
+  <p class="ver" id="verTag">panel v150（11月14日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -523,7 +523,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '149';
+  var PANEL_VER = '150';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1682,12 +1682,14 @@
      場所と字の大きさは、ヨシ待ちの時の「まとめて写すヨシ！」と同じ #headWait（出る時だけ字が入り、空なら畳む）。 */
   var WAIT_TEXT = '待機中、、、。';
   /* 猫の絵と頭の字は必ず対（v149）。runCatTick の判定の順と同じ順で決める：
-       ヨシ待ち → 指差し／連絡なし → 寝姿（字なし）／作業中 → コマ送り（字なし）／写していない札が残る → 指差し／それ以外 → 待機の猫。
+       ヨシ待ち → 指差し／連絡なし → 寝姿（字なし）／作業中 → コマ送り（「作業中、、、。」・v150）／写していない札が残る → 指差し／それ以外 → 待機の猫。
      ＊指差しの猫が出ている時は、ヨシ待ちでも「写していない札が残っている」でも必ず「まとめて写すヨシ！」。待機の猫の時は「待機中、、、。」。 */
   var POINT_TEXT = 'まとめて写すヨシ！';
+  var WORK_TEXT = '作業中、、、。';
   function headText() {
     if (lastStat === 'ヨシ待ち') { return POINT_TEXT; }
-    if (lastLost || isRunning()) { return ''; }
+    if (lastLost) { return ''; }   /* 連絡なしの寝姿は字なし */
+    if (isRunning()) { return WORK_TEXT; }   /* 走る猫（v150） */
     return (copyLeft > 0) ? POINT_TEXT : WAIT_TEXT;
   }
   function paintStandbyText() {
