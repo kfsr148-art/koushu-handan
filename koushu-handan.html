@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1476">
+<html lang="ja" data-ver="1477">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1393,7 +1393,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1476</div>
+  <div id="verTag">v1477</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -4062,6 +4062,22 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     return { from: a.verdict, to: s > 0 ? 'attack' : (s < 0 ? 'defend' : a.verdict), score: s };
   }
+  /* 受付ページの撮り直しの見極め（v1477）。照合の牌の並び（13枚の key）を、盤面に出さずに「判定する」と同じ形
+     （analyze() の後に②で決め直す）で判定し、攻守（'attack'／'defend'）だけを返す。
+     ドラは0（撮った時点ではドラ表示牌がまだ決まっていない）。盤面の手牌は判定の間だけ差し替えて戻す（watchAnalyzeTiles と同じ）。記録・画面には触らない。 */
+  window.ssQuietVerdict = function(keys){
+    const tiles = parseDigits(tilesToInput(keys.map(window.ssKeyToTile))).tiles;
+    if(tiles.length !== 13) return null;
+    const savedHand = hand, savedDora = doraCount;
+    hand = tiles; doraCount = 0;
+    try{
+      const a = analyze();
+      if(!a) return null;
+      const catN = tiles.filter(t => t.suit === 'cat').length + countIsolatedRealTiles(tiles.filter(t => t.suit !== 'cat'));
+      const rv = revoteVerdict(a, catN);
+      return rv ? rv.to : a.verdict;
+    } finally { hand = savedHand; doraCount = savedDora; }
+  };
   /* ---- 虎（判定エンジンの声）の台詞 ----
      八人目の人格ではない。方言チップには反応せず、いつも同じ口調で話す。
      数字は analyze() の返り値から取り、ここで計算し直さない。 */
@@ -10006,7 +10022,8 @@ window.ssRecognize = function(){
    受付ページは、カメラを開いた時にこの本体を見えない枠で先に読み込んでおき、撮った一枚をまず ssPhotoQuality で見てもらう。
    ＊読みと同じ道（自動の台形補正 → 牌の隙間で切る → 揃えて見本と比べる）で、牌ごとの「見本との遠さ」を出す。判定・記録・画面には触らない。
    ＊見本との遠さが SS_RETAKE_FAR を超える牌が SS_RETAKE_N 枚以上、または手牌の列が見つからない ＝ ほとんど合っていない（'bad'）→ 受付ページは撮り直す。
-     1〜3枚なら少し怪しい（'doubt'）、0枚なら読めた（'good'）。どちらも今まで通り判定へ進む。見本が空なら 'unknown'（進む）。
+     1〜3枚なら少し怪しい（'doubt'）、0枚なら読めた（'good'）。見本が空なら 'unknown'（進む）。
+     ＊少し怪しい時は、怪しい牌を二番目に似た牌へ入れ替えても攻守が変わらないかを裏で見る（v1477・ssDoubtFlip）。変わるなら flip:true で、受付ページは撮り直す。変わらなければ進む。
    ＊線は作り写真で決めた（2026-11-14・y1114-0701）。まっすぐな写真（正面・約15度・約30度・暗く青い）は遠さが最大32.1で13枚とも正解、
      手牌の左3枚が写真の外へずれた写真は4通りとも遠さ38以上の牌が6枚以上（正解1〜8枚）、横ぶれ12px・25度の傾きは手牌の列が見つからない。 */
 window.SS_RETAKE_FAR = 36;
@@ -10016,14 +10033,45 @@ window.ssPhotoQuality = function(img){
   if(!img || !keys.length) return { verdict: 'unknown', far: 0 };
   var wp = window.ssAutoBandAny(img);
   if(!wp) return { verdict: 'bad', why: 'band', far: 13 };
-  var tplN = window.ssNormTpl(tpl, keys), far = 0, ds = [];
+  var tplN = window.ssNormTpl(tpl, keys), far = 0, ds = [], ranks = [];
   wp.cuts.forEach(function(t){
     var m = window.ssMatchTile(window.ssFeatShape(window.ssNormFeat(window.ssTileFeature(wp.canvas, t))), tplN, keys);
     var d = Math.sqrt(m.dist);
     ds.push(Math.round(d * 10) / 10);
+    ranks.push(m.rank);
     if(d > window.SS_RETAKE_FAR) far++;
   });
-  return { verdict: far >= window.SS_RETAKE_N ? 'bad' : (far > 0 ? 'doubt' : 'good'), far: far, ds: ds };
+  var verdict = far >= window.SS_RETAKE_N ? 'bad' : (far > 0 ? 'doubt' : 'good');
+  var out = { verdict: verdict, far: far, ds: ds };
+  if(verdict === 'doubt' && ranks.length === 13 && window.ssQuietVerdict) out.flip = window.ssDoubtFlip(ranks);
+  return out;
+};
+/* 少し怪しい牌の入れ替え（v1477）：見本との遠さが SS_RETAKE_FAR を超えた牌（1〜3枚）を、二番目に似た牌（赤五と五のように同じ牌は飛ばす）に
+   入れ替えた並びを、入れ替える・入れ替えないの全ての組み合わせ（最大8通り）で裏で判定する（ssQuietVerdict・ドラ0）。
+   どれか一つでも読みのままの攻守と違えば true（受付ページは撮り直す）。同じ牌が5枚以上になる組み合わせは、あり得ない手なので数えない。 */
+window.ssDoubtFlip = function(ranks){
+  var base = function(k){ return (k && k.length === 3) ? k.slice(0, 2) : k; };
+  var pick = window.ssLimitFour(ranks), keys0 = [], alts = [];
+  ranks.forEach(function(r, i){
+    var c = r[pick[i]];
+    keys0.push(c ? c.key : null);
+    if(!c || Math.sqrt(c.dist) <= window.SS_RETAKE_FAR) return;
+    for(var j = pick[i] + 1; j < r.length; j++){
+      if(base(r[j].key) !== base(c.key)){ alts.push({ i: i, key: r[j].key }); break; }
+    }
+  });
+  if(keys0.indexOf(null) >= 0 || !alts.length) return false;
+  var v0 = window.ssQuietVerdict(keys0);
+  if(!v0) return false;
+  for(var mask = 1; mask < (1 << alts.length); mask++){
+    var ks = keys0.slice(), cnt = {}, ok = true;
+    alts.forEach(function(x, b){ if(mask & (1 << b)) ks[x.i] = x.key; });
+    ks.forEach(function(k){ var kb = base(k); cnt[kb] = (cnt[kb] || 0) + 1; if(cnt[kb] > 4) ok = false; });
+    if(!ok) continue;
+    var v = window.ssQuietVerdict(ks);
+    if(v && v !== v0) return true;
+  }
+  return false;
 };
 /* 受付ページの枠（先に読み込んだ本体）へ、読み直さずに写真を渡す。受付ページの読み直し版（ssHandoff）と同じ流れ */
 window.ssTakeHandoff = function(dataUrl){
