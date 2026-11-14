@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1477">
+<html lang="ja" data-ver="1478">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1393,7 +1393,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1477</div>
+  <div id="verTag">v1478</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -3931,7 +3931,7 @@ document.addEventListener('DOMContentLoaded', function () {
   window.applyToneMark = applyToneMark;
   // 十人の見立て。実測50000回で分かれ目のはっきりした値に線を引く。
   //   執事＝打点1以上／軍師＝距離ごとの受け入れ／ずんだ＝良形4組以上
-  //   お嬢様＝距離ごとの守りの弾／マダム＝浮き牌／一姫＝見える役／先生＝向聴
+  //   お嬢様＝距離ごとの守りの弾／マダム＝浮き牌／一姫＝見える役／先生＝一色に6枚以上
   //   現場猫・枝豆・AIスイッチは既存の目盛りをそのまま使う
   /* 兎の判定式。残り枠が愚形で一つも詰まらなければ攻め、二つ以上詰まれば守り。
      閾値の字面はここだけが持つ（枝豆の目盛りと同じ流儀）。 */
@@ -3965,6 +3965,9 @@ document.addEventListener('DOMContentLoaded', function () {
       if(used[key] > 0){ used[key]--; return; }
       if(x.suit !== 'honor' && x.num >= 2 && x.num <= 8) fl++;
     });
+    const suitN = { man: 0, pin: 0, sou: 0 };
+    hand.forEach(function(x){ if(suitN[x.suit] !== undefined) suitN[x.suit]++; });
+    const oneSuitMax = Math.max(suitN.man, suitN.pin, suitN.sou);
     const gunLine = (sh <= 2) ? -1 : (sh === 3 ? 30 : (sh === 4 ? 70 : 9999));
     const defLine = (sh <= 3) ? 5 : 6;
     return [
@@ -3974,7 +3977,7 @@ document.addEventListener('DOMContentLoaded', function () {
       { key:'lady',       mark:'嬢', lean: (def >= defLine) ? 'd' : 'a' },
       { key:'french',     mark:'マ', lean: (fl <= 1) ? 'a' : (fl >= 5 ? 'd' : '') },
       { key:'ichihime',   mark:'姫', lean: (a.yakumanReach || a.kokushiSeen || pairKinds >= 4 || a.yakuhaiPair) ? 'a' : '' },
-      { key:'sensei',     mark:'先', lean: (sh <= 2) ? 'a' : (sh >= 5 ? 'd' : '') },
+      { key:'sensei',     mark:'先', lean: (oneSuitMax >= 6) ? 'a' : '' },
       // say は投票欄のアイコンを押したときに助言欄へ出す一行。人柄のある七人は人柄側の
       // toneAngleLine が言い分を持っているので、ここでは持たない三つの道具にだけ添える。
       // 文面は誤診記録（mdOpen）の言い回しに合わせる。
@@ -4017,6 +4020,7 @@ document.addEventListener('DOMContentLoaded', function () {
        的中：その局で点が増えた手は攻め、減った手は守りが正解（増減0は数えない）。
      ＊値の出どころ：v1471（席を外した版）の雲1000局（reports/cloud-core-battle-1000-20261113-191605.tsv）の偶数局。
        奇数局で確かめ、4000手で守り→攻めが761手（平均+237・決める用+306／確かめる用+171）。報告 reports/y1114-0431.md。
+     ＊先生だけ v1478 で材料を替えた（一色に6枚以上→攻め・ほかは黙る）。重みは攻め0.188312・守り0、他の審判との一致の度合いは全て0（y1114-0654 の甲・y1114-1031）。
      ＊analyze() そのものは変えない（core-probe・core-battle の測りが analyze と揃うように）。「判定する」の処理からだけ呼ぶ。 */
   const REVOTE_W = {
     butler: { a: 0.030996, d: 0.016352 },
@@ -4025,23 +4029,23 @@ document.addEventListener('DOMContentLoaded', function () {
     lady: { a: 0.102204, d: 0.123066 },
     french: { a: 0.131814, d: 0.09141 },
     ichihime: { a: 0.07292, d: 0 },
-    sensei: { a: 0.092322, d: 0.112015 },
+    sensei: { a: 0.188312, d: 0 },
     cat: { a: 0.201778, d: 0.142209 },
     eda: { a: 0.060265, d: 0.061561 },
     ai: { a: 0.146542, d: 0.113296 },
     usagi: { a: 0.098586, d: 0.151065 }
   };
   const REVOTE_K = {
-    butler: { strategist: 0.048938, blunt: 0.101232, lady: 0, french: 0, ichihime: 0, sensei: 0.153832, cat: 0.006861, eda: 0.095994, ai: 0.039654, usagi: 0 },
-    strategist: { butler: 0.048938, blunt: 0.817958, lady: 0.224508, french: 0.288134, ichihime: 0, sensei: 1, cat: 0.518748, eda: 0.205086, ai: 0.500492, usagi: 0.063895 },
-    blunt: { butler: 0.101232, strategist: 0.817958, lady: 0.301047, french: 0.971011, ichihime: 0, sensei: 1, cat: 0.855036, eda: 0.672484, ai: 0.625141, usagi: 0.729818 },
-    lady: { butler: 0, strategist: 0.224508, blunt: 0.301047, french: 0, ichihime: 0, sensei: 0.345892, cat: 0.276238, eda: 0, ai: 0.173928, usagi: 0.074809 },
-    french: { butler: 0, strategist: 0.288134, blunt: 0.971011, lady: 0, ichihime: 0, sensei: 0.77881, cat: 0.559729, eda: 0.215128, ai: 0.065432, usagi: 0.842298 },
+    butler: { strategist: 0.048938, blunt: 0.101232, lady: 0, french: 0, ichihime: 0, sensei: 0, cat: 0.006861, eda: 0.095994, ai: 0.039654, usagi: 0 },
+    strategist: { butler: 0.048938, blunt: 0.817958, lady: 0.224508, french: 0.288134, ichihime: 0, sensei: 0, cat: 0.518748, eda: 0.205086, ai: 0.500492, usagi: 0.063895 },
+    blunt: { butler: 0.101232, strategist: 0.817958, lady: 0.301047, french: 0.971011, ichihime: 0, sensei: 0, cat: 0.855036, eda: 0.672484, ai: 0.625141, usagi: 0.729818 },
+    lady: { butler: 0, strategist: 0.224508, blunt: 0.301047, french: 0, ichihime: 0, sensei: 0, cat: 0.276238, eda: 0, ai: 0.173928, usagi: 0.074809 },
+    french: { butler: 0, strategist: 0.288134, blunt: 0.971011, lady: 0, ichihime: 0, sensei: 0, cat: 0.559729, eda: 0.215128, ai: 0.065432, usagi: 0.842298 },
     ichihime: { butler: 0, strategist: 0, blunt: 0, lady: 0, french: 0, sensei: 0, cat: 0, eda: 0, ai: 0, usagi: 0 },
-    sensei: { butler: 0.153832, strategist: 1, blunt: 1, lady: 0.345892, french: 0.77881, ichihime: 0, cat: 0.966364, eda: 0.711559, ai: 0.963263, usagi: 0 },
-    cat: { butler: 0.006861, strategist: 0.518748, blunt: 0.855036, lady: 0.276238, french: 0.559729, ichihime: 0, sensei: 0.966364, eda: 0.182196, ai: 0.202874, usagi: 0 },
-    eda: { butler: 0.095994, strategist: 0.205086, blunt: 0.672484, lady: 0, french: 0.215128, ichihime: 0, sensei: 0.711559, cat: 0.182196, ai: 0.125646, usagi: 0.172965 },
-    ai: { butler: 0.039654, strategist: 0.500492, blunt: 0.625141, lady: 0.173928, french: 0.065432, ichihime: 0, sensei: 0.963263, cat: 0.202874, eda: 0.125646, usagi: 0.008905 },
+    sensei: { butler: 0, strategist: 0, blunt: 0, lady: 0, french: 0, ichihime: 0, cat: 0, eda: 0, ai: 0, usagi: 0 },
+    cat: { butler: 0.006861, strategist: 0.518748, blunt: 0.855036, lady: 0.276238, french: 0.559729, ichihime: 0, sensei: 0, eda: 0.182196, ai: 0.202874, usagi: 0 },
+    eda: { butler: 0.095994, strategist: 0.205086, blunt: 0.672484, lady: 0, french: 0.215128, ichihime: 0, sensei: 0, cat: 0.182196, ai: 0.125646, usagi: 0.172965 },
+    ai: { butler: 0.039654, strategist: 0.500492, blunt: 0.625141, lady: 0.173928, french: 0.065432, ichihime: 0, sensei: 0, cat: 0.202874, eda: 0.125646, usagi: 0.008905 },
     usagi: { butler: 0, strategist: 0.063895, blunt: 0.729818, lady: 0.074809, french: 0.842298, ichihime: 0, sensei: 0, cat: 0, eda: 0.172965, ai: 0.008905 }
   };
   function revoteVerdict(a, catN){
