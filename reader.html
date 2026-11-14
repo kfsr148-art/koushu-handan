@@ -65,7 +65,7 @@
   /* 攻めの三場面の声（v1480・voice-scenes.txt）。ファイルが置かれていれば、判定の声の代わりに本体が鳴らしてもらう。
      置かれていない名前は聞こえず、本体が今までの attack の声を鳴らす（ssReaderHas が false を返す）。 */
   var SCENE = ['scene-nashi', 'scene-yakuhai'];
-  ['man', 'pin', 'sou'].forEach(function(k){ [6, 7, 8, 9, 10].forEach(function(n){ SCENE.push('scene-some-' + k + '-' + n); }); });
+  ['man', 'pin', 'sou'].forEach(function(k){ [6, 7, 8, 9, 10, 11, 12, 13].forEach(function(n){ SCENE.push('scene-some-' + k + '-' + n); }); });
   var sceneOk = {};
   var aud = {}, unlocked = false;
   function say(text, rate){
