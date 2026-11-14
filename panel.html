@@ -495,7 +495,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v147（11月14日）</p>
+  <p class="ver" id="verTag">panel v148（11月14日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -523,7 +523,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '147';
+  var PANEL_VER = '148';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1586,7 +1586,7 @@
       el.innerHTML = '';
       return;
     }
-    if (hw) { hw.textContent = ''; }
+    if (hw) { hw.textContent = (!lastLost && !isRunning() && copyLeft === 0) ? WAIT_TEXT : ''; }   /* v148：待機の猫の横の字（待ちの時だけ） */
     el.innerHTML = sh
       ? ('<li class="why stline"><p class="m">' + sh + '</p></li>')
       : '';
@@ -1678,6 +1678,15 @@
   /* 「まとめて写す」の残り（未写しの札の数）。setCopyBoardLabel が釦の N と同じ値を置く（v145）。
      runCatTick は毎コマ（100ms）呼ばれるので、数え直さずここだけを見る。 */
   var copyLeft = 0;
+  /* 待機の猫（genba-taiki-80.png）の横の字（v148）。出すのは待ちの時だけ＝手待ち・写していない札が0件・連絡なしでない。
+     場所と字の大きさは、ヨシ待ちの時の「まとめて写すヨシ！」と同じ #headWait（出る時だけ字が入り、空なら畳む）。 */
+  var WAIT_TEXT = '待機中、、、。';
+  function paintStandbyText() {
+    var hw = $('headWait');
+    if (!hw || lastStat === 'ヨシ待ち') { return; }   /* ヨシ待ちの字は別の所（stateLine 側）が入れる */
+    var t = (!lastLost && !isRunning() && copyLeft === 0) ? WAIT_TEXT : '';
+    if (hw.textContent !== t) { hw.textContent = t; }
+  }
   (function () {   /* 先読み。読めなくても画面は壊れない（img が出ないだけ） */
     catFrames.concat(['cat-sleep-w.png', 'genba-cat-80.png', 'genba-taiki-80.png'])
       .forEach(function (n) { var im = new Image(); im.src = n; });
@@ -1685,6 +1694,7 @@
   function runCatTick() {
     var el = $('runcat');
     if (!el) { return; }
+    paintStandbyText();   /* 待機の猫の横の字（v148） */
     /* 頭の枠の猫（2026-09-13・頭の猫-1／-5）。
        ＊**ヨシ待ちの回だけ**、現場猫の原寸80px（genba-cat-80.png）へ替える。
          出す条件は、黄色い札の字を題の行へ移すのと同じ（lastStat === 'ヨシ待ち'）。
