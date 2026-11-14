@@ -114,6 +114,19 @@ function safeTrail(kyoku, seat) {
   return out.join(',');
 }
 
+/* 席ごとの打牌の並び（自摸切りは末尾に _、立直宣言牌は末尾に *）と、鳴き・槓の記録（「何打目の前か:面子」を空白で並べる）。
+   ＊赤五は 0 のまま。配牌と合わせれば、手の内の牌がいつ切られたかを後から数えられる。 */
+function playTrail(kyoku, seat) {
+  const cuts = [], calls = [];
+  for (const e of kyoku) {
+    if (!e) { continue; }
+    if (e.dapai && e.dapai.l === seat) { cuts.push(e.dapai.p); }
+    else if (e.fulou && e.fulou.l === seat) { calls.push(cuts.length + ':' + e.fulou.m); }
+    else if (e.gang && e.gang.l === seat) { calls.push(cuts.length + ':' + e.gang.m); }
+  }
+  return [cuts.join(','), calls.join(' ')];
+}
+
 /* 書き出す17項目。core-probe.js の FIELDS は28項目あるが、
    一行を読み切れる長さに収めるため、宣言した17項目だけを採る。
    ＊順も宣言のとおり。増やしたくなったら、ここへ足してから宣言し直すこと。 */
@@ -130,7 +143,7 @@ BATTLE_FIELDS.forEach(k => {
 
 const HEAD = ['局', '席', '親', '配牌']
   .concat(BATTLE_FIELDS)
-  .concat(['結果', '点棒', '役', '巡目', '向聴列', '安全列']);
+  .concat(['結果', '点棒', '役', '巡目', '向聴列', '安全列', 'ドラ表示牌', '打牌列', '鳴き列']);
 
 function main() {
   const analyze = makeAnalyze();
@@ -192,6 +205,10 @@ function main() {
       let strail = '';
       try { strail = safeTrail(kyoku, seat); } catch (e) { strail = 'ERR'; }
       cells.push(strail);
+      const pt = playTrail(kyoku, seat);
+      cells.push(((qipai.baopai) || ''));
+      cells.push(pt[0]);
+      cells.push(pt[1]);
       fs.writeSync(fd, cells.join('\t') + '\n', null, 'utf8');
       rows++;
     }
