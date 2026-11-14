@@ -495,7 +495,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v145（11月14日）</p>
+  <p class="ver" id="verTag">panel v146（11月14日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -523,7 +523,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '145';
+  var PANEL_VER = '146';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -903,7 +903,7 @@
     /* ヨシ待ちは先に見る（v123・猫の矛盾-1）。isRunning() は「走り出しが最後の終わりより
        新しい」だけでも真になるので、後ろに置くとヨシ待ちの回まで「作業中」で潰れる。
        ＊猫の側は runCatTick がヨシ待ちの枝で先に返すので、こちらだけ順を直せばよい。 */
-    if (lastStat === 'ヨシ待ち') { return 'ヨシを返してください'; }
+    if (lastStat === 'ヨシ待ち') { return 'まとめて写すヨシ！'; }   /* v146：頭の猫の横の字（旧「ヨシを返してください」）。出る時・消える時は変えない */
     /* 連絡なしは作業中より先（v124・止まりの見分け-1）。
        生存が STALE_SEC より古い間は、凍った「作業中」を出さない。 */
     if (lastLost) { return '連絡なし'; }
