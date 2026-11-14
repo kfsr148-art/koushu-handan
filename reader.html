@@ -62,6 +62,11 @@
 (function(){
   var msg = document.getElementById('msg');
   var VOICES = { attack: 'attack.wav.wav', defend: 'defend.wav.wav' };
+  /* 攻めの三場面の声（v1480・voice-scenes.txt）。ファイルが置かれていれば、判定の声の代わりに本体が鳴らしてもらう。
+     置かれていない名前は聞こえず、本体が今までの attack の声を鳴らす（ssReaderHas が false を返す）。 */
+  var SCENE = ['scene-nashi', 'scene-yakuhai'];
+  ['man', 'pin', 'sou'].forEach(function(k){ [6, 7, 8, 9, 10].forEach(function(n){ SCENE.push('scene-some-' + k + '-' + n); }); });
+  var sceneOk = {};
   var aud = {}, unlocked = false;
   function say(text, rate){
     if(!text || !window.speechSynthesis) return;
@@ -86,10 +91,26 @@
         aud[k] = a;
       }catch(e){}
     });
+    /* 場面の声も、押した操作の中で一度だけ無音で鳴らして止める。読めた物だけ sceneOk を立てる。 */
+    SCENE.forEach(function(k){
+      try{
+        var a = new Audio(k + '.wav.wav');
+        a.preload = 'auto';
+        a.muted = true;
+        a.addEventListener('canplay', function(){ sceneOk[k] = true; }, { once: true });
+        a.addEventListener('error', function(){ sceneOk[k] = false; }, { once: true });
+        var stop = function(){ try{ a.pause(); a.currentTime = 0; }catch(e){} a.muted = false; };
+        var p = a.play();
+        if(p && p.then) p.then(stop, function(){ a.muted = false; }); else stop();
+        aud[k] = a;
+      }catch(e){}
+    });
     try{
       if(window.speechSynthesis){ var u = new SpeechSynthesisUtterance(' '); u.volume = 0; window.speechSynthesis.speak(u); }
     }catch(e){}
   }
+  /* 本体（枠の中）から先に問われる：この場面の声のファイルを鳴らせるか（読めた物だけ true） */
+  window.ssReaderHas = function(name){ return sceneOk[name] === true && !!aud[name]; };
   /* 本体（枠の中）から呼ばれる。取っておいた声のファイルを鳴らし、無ければ OS の読み上げ */
   window.ssReaderVoice = function(name, text, rate){
     var a = aud[name];
