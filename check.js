@@ -2020,7 +2020,7 @@ window.addEventListener('load', function(){ setTimeout(function(){
         try{
           /* judged … 判定に入れたか。14枚（多牌）は判定釦が押せず、前の手の画面を読んでしまう */
           res.push({hand:h, judged:document.body.classList.contains('judged'),
-            verdict:txt('#verdict'), angle:txt('.tone-angle'),
+            verdict:txt('#verdict'), angle:txt('.tone-angle:not(.scene-line)'),
             multi:marks('multi-mark'), naki:marks('naki-mark'), dup:marks('dup-mark'),
             safe:marks('safe-mark'), float:marks('float-mark'), edge:marks('edge-mark'), head:marks('head-mark'),
             cut:marks('cut-mark'), cat:marks('cat-mark'), eda:marks('eda-mark'), om:marks('om-mark')});
