@@ -64,6 +64,25 @@ function junme(kyoku) {
   return Math.ceil(z / 4);
 }
 
+/* 席ごとの向聴の推移。その席が牌を切る直前（十四枚の状態）の向聴数を、切った順に並べる。
+   ＊鳴きがあっても「何度目の打牌か」で数えるので、巡目の目安になる。コンマ区切り。 */
+function shantenTrail(kyoku, seat) {
+  const sp = Majiang.Shoupai.fromString((kyoku[0].qipai || {}).shoupai[seat]);
+  const out = [];
+  for (const e of kyoku) {
+    if (!e) { continue; }
+    if (e.zimo && e.zimo.l === seat) { sp.zimo(e.zimo.p, false); }
+    else if (e.gangzimo && e.gangzimo.l === seat) { sp.zimo(e.gangzimo.p, false); }
+    else if (e.fulou && e.fulou.l === seat) { sp.fulou(e.fulou.m, false); }
+    else if (e.gang && e.gang.l === seat) { sp.gang(e.gang.m, false); }
+    else if (e.dapai && e.dapai.l === seat) {
+      out.push(Majiang.Util.xiangting(sp));
+      sp.dapai(e.dapai.p, false);
+    }
+  }
+  return out.join(',');
+}
+
 /* 書き出す17項目。core-probe.js の FIELDS は28項目あるが、
    一行を読み切れる長さに収めるため、宣言した17項目だけを採る。
    ＊順も宣言のとおり。増やしたくなったら、ここへ足してから宣言し直すこと。 */
@@ -80,7 +99,7 @@ BATTLE_FIELDS.forEach(k => {
 
 const HEAD = ['局', '席', '親', '配牌']
   .concat(BATTLE_FIELDS)
-  .concat(['結果', '点棒', '役', '巡目']);
+  .concat(['結果', '点棒', '役', '巡目', '向聴列']);
 
 function main() {
   const analyze = makeAnalyze();
@@ -135,7 +154,10 @@ function main() {
       cells.push(outcomeOf(end, seat));
       cells.push(fenpei[seat] === undefined ? '' : fenpei[seat]);
       cells.push(seat === (end.hule ? end.hule.l : -1) ? yaku : '');
+      let trail = '';
+      try { trail = shantenTrail(kyoku, seat); } catch (e) { trail = 'ERR'; }
       cells.push(jun);
+      cells.push(trail);
       fs.writeSync(fd, cells.join('\t') + '\n', null, 'utf8');
       rows++;
     }
