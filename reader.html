@@ -110,9 +110,14 @@
     }catch(e){}
   }
   /* 本体（枠の中）から先に問われる：この場面の声のファイルを鳴らせるか（読めた物だけ true） */
-  window.ssReaderHas = function(name){ return sceneOk[name] === true && !!aud[name]; };
+  /* 本体の枠が出ていない間（受付ページが見えている間）は、声を鳴らさない（v1483） */
+  function appShown(){ var fr = document.getElementById('app'); return !!fr && fr.style.display === 'block'; }
+  function hush(){ try{ if(window.speechSynthesis) window.speechSynthesis.cancel(); }catch(e){} Object.keys(aud).forEach(function(k){ try{ aud[k].pause(); aud[k].currentTime = 0; }catch(e){} }); }
+  window.addEventListener('pagehide', hush);
+  window.ssReaderHas = function(name){ return appShown() && sceneOk[name] === true && !!aud[name]; };
   /* 本体（枠の中）から呼ばれる。取っておいた声のファイルを鳴らし、無ければ OS の読み上げ */
   window.ssReaderVoice = function(name, text, rate){
+    if(!appShown()) return false;
     var a = aud[name];
     if(a){
       try{
