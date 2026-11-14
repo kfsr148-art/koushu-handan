@@ -200,6 +200,7 @@ section('②', '起動時404の数', () => {
     while ((g = lit.exec(arg))) {
       const v = g[1] !== undefined ? g[1] : g[2];
       if (!/^[\w./-]+\.\w+$/.test(v)) continue;
+      if (v.charAt(0) === '.') continue; /* 名前の後ろ半分だけの字面（nm + '.wav.wav'）は動的な組み立て */
       const line = lineOf(m.index);
       if (fs.existsSync(path.join(ROOT, v))) note('起動時 fetch  : ' + v + ' (' + line + '行) → 実在');
       else misses.push({ url: v, from: '起動時 fetch (' + line + '行)' });
