@@ -495,7 +495,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v152（11月15日）</p>
+  <p class="ver" id="verTag">panel v153（11月15日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -523,7 +523,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '152';
+  var PANEL_VER = '153';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1584,8 +1584,8 @@
        ＊字を失った黄色い札は、ヨシ待ちの回は**出さない**（器を空にすれば縦線ごと消える）。
        ＊ヨシ待ちでない回は今までどおり——黄色い札に字を出し、題の右には何も出さない。 */
     var hw = $('headWait');
-    if (lastStat === 'ヨシ待ち') {
-      if (hw) { hw.textContent = String(sl || '').replace(/<[^>]*>/g, ''); }
+    if (lastStat === 'ヨシ待ち' && !isRunning()) {   /* v153：ヨシ待ちの回も、頭の字は headText（猫の絵と対）。作業中に着手し直した回は、下の通常の行へ */
+      if (hw) { hw.textContent = headText(); }
       el.innerHTML = '';
       return;
     }
@@ -1694,13 +1694,15 @@
     /* v152：順は 作業中＞まとめて写す＞待機中＞接続不良。猫の絵と字は必ず対なので、runCatTick と同じ順。
        ＊接続不良は、生存が途切れていて、作業中でも写す物も無いときだけ。 */
     if (isRunning()) { return WORK_TEXT; }   /* 走る猫（v150） */
-    if (lastStat === 'ヨシ待ち' || copyLeft > 0) { return POINT_TEXT; }
+    /* v153：「まとめて写すヨシ！」は、直近に終わった仕事（写していない札）が1件以上ある時だけ。
+       ヨシ待ちの札が立っていても、写す物が0件なら指差しにしない（待機中へ）。 */
+    if (copyLeft > 0) { return POINT_TEXT; }
     if (lastLost) { return LOST_TEXT; }   /* 連絡なしの寝姿（v151：「接続不良、、、。」） */
     return WAIT_TEXT;
   }
   function paintStandbyText() {
     var hw = $('headWait');
-    if (!hw || (lastStat === 'ヨシ待ち' && !isRunning())) { return; }   /* ヨシ待ちの字は別の所（stateLine 側・同じ字）が入れる */
+    if (!hw) { return; }   /* v153：ヨシ待ちでも、字は headText（猫の絵と対）に従う */
     var t = headText();
     if (hw.textContent !== t) { hw.textContent = t; }
   }
@@ -1728,7 +1730,7 @@
       catAwake = true;
       catI = (catI + 1) % catFrames.length;
       el.src = catFrames[catI];
-    } else if (lastStat === 'ヨシ待ち' || copyLeft > 0) {
+    } else if (copyLeft > 0) {   /* v153：写す物が1件以上ある時だけ指差し。ヨシ待ちでも0件なら待機の猫 */
       catAwake = false;
       if (el.src.indexOf('genba-cat-80') < 0) { el.src = 'genba-cat-80.png'; }
     } else if (lastLost) {
