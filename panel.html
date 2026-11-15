@@ -495,7 +495,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v154（11月15日）</p>
+  <p class="ver" id="verTag">panel v155（11月15日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -523,7 +523,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '154';
+  var PANEL_VER = '155';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1752,6 +1752,7 @@
     pullBoard();  /* 板の三つ（v44）。一覧が空のときだけ出るが、取得は先に始める */
     pullUsage();
     tick();
+    startStateSse();   /* v155：状態の変わり目を ntfy で直に聞く（届かなければ公開ページの読み取りのまま） */
     if (timer) { clearInterval(timer); }
     pullNtfyLatest();     /* 押したその場で写せるよう、開いたときに一度取っておく */
     timer = setInterval(tick, 15000);
@@ -2826,13 +2827,37 @@
      見張りが commit と push で公開ページへ出す。status.md と同じ道。 */
   var STATE_URL = 'https://kfsr148-art.github.io/koushu-handan/state.json';
 
-  function pullState() {
+  /* v155：状態の変わり目を ntfy.sh で直に聞く（公開ページは押してから届くまで約70秒かかる）。
+     ＊聞くのは専用の話題（STATE_TOPIC）。載っているのは状態の記号だけ（stat・startedAt・statAt・cloud・mikomi・at）。件名などは載っていないので、
+       件名・指示・見込みは、公開ページから読んだ最後の写し（lastStateObj）のまま、変わった所だけ重ねる。
+     ＊ntfy が届かない・切れている時は、今までの公開ページの読み取り（15秒ごと）がそのまま働く。
+     ＊新しい方を採る：聞いた状態の方が公開ページの写しより新しい間は、古い写しで巻き戻さない（stateAtMax）。 */
+  var STATE_TOPIC = 'koushu-st-911d32e41f58c7b5b2d77dc3';
+  var stateAtMax = 0, lastStateObj = null, stateEs = null;
+  function startStateSse() {
+    if (stateEs || typeof EventSource === 'undefined' || location.protocol === 'file:') { return; }
+    try {
+      stateEs = new EventSource('https://ntfy.sh/' + STATE_TOPIC + '/sse?since=30s');
+      stateEs.onmessage = function (e) {
+        try {
+          var ev = JSON.parse(e.data);
+          if (!ev || ev.event !== 'message') { return; }
+          var m = JSON.parse(ev.message);
+          if (!m || typeof m.at !== 'number' || !lastStateObj) { return; }   // 公開ページの写しを一度も読めていない間は、重ねる土台が無いので待つ
+          var d = {}; for (var k in lastStateObj) { d[k] = lastStateObj[k]; }
+          d.stat = m.stat; d.startedAt = m.startedAt; d.statAt = m.statAt; d.cloud = m.cloud; d.mikomi = m.mikomi; d.at = m.at;
+          pullState(d);
+        } catch (x) { }
+      };
+    } catch (e) { stateEs = null; }
+  }
+  function pullState(obj) {
     /* 取り置きを避ける。GitHub の配信網は少し遅れるが、状態は「呼ぶもの」ではないので構わない。 */
-    fetch(STATE_URL + '?_t=' + Date.now(), { cache: 'no-store' })
+    (obj ? Promise.resolve(obj) : fetch(STATE_URL + '?_t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) {
         if (!r.ok) { throw new Error('HTTP ' + r.status); }
         return r.json();
-      })
+      }))
       .then(function (d) {
         /* JSON として読めても、形が違えば「読めない」と言う（v31）。
            配列や別物が来ると d.at が無く、`NaN時間前` を**平常の色**で出していた
@@ -2841,6 +2866,9 @@
         if (!d || typeof d !== 'object' || Array.isArray(d) || typeof d.at !== 'number') {
           throw new Error('形が違います（at が数ではありません）');
         }
+        /* v155：聞いた状態より古い公開ページの写しは使わず、新しい方（lastStateObj）で判じ直す（連絡なしの判定も、新しい方の at で続く） */
+        if (!obj && d.at < stateAtMax && lastStateObj) { d = lastStateObj; }
+        if (d.at >= stateAtMax) { stateAtMax = d.at; lastStateObj = d; }
         var sec = Math.floor(Date.now() / 1000) - (d.at || 0);
         var w = String(d.stat || '');
         var subj = String(d.subj || '');
