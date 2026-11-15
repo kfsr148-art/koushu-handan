@@ -317,6 +317,8 @@ section('④', '音声ファイルの突き合わせ', () => {
     } catch (e) { ng('声の復号の検査が落ちた: ' + e.message); }
     const advNames = Object.keys(cat);
     for (let k = 0; k <= 13; k++) advNames.push('advn-' + k);
+    /* 方言の声（v1494・y1115-29）：台本 voice-advice-dial.js の声の名（advy-<字の印>）も、全て実ファイルに在ること（参照されている物としても数える） */
+    try { require('./voice-advice-dial.js').entries().forEach((v, k) => advNames.push(k.replace(/[.]wav[.]wav$/, ''))); } catch (e) { ng('方言の声の台本が読めない: ' + e.message); }
     const miss = [];
     advNames.forEach(n => { const cands = []; dirs.forEach(d => seps.forEach(sep => exts.forEach(ext => cands.push(d + n + sep + ext)))); const hit = cands.find(c => fs.existsSync(path.join(ROOT, c))); if (hit) used.add(hit.replace(/\\/g, '/')); else miss.push(n); });
     note('助言の声 : ' + advNames.length + '個のうち ' + (advNames.length - miss.length) + '個が実ファイルに解決');
