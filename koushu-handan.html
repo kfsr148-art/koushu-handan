@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1494">
+<html lang="ja" data-ver="1495">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1396,7 +1396,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1494</div>
+  <div id="verTag">v1495</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -2166,6 +2166,133 @@ function advDialectize(text, dk, polite) {
   if (!dk || !ADV_DIALECT[dk] || !text) { return text; }
   return text.replace(/([^。！？<>]*?)([。！？])/g, function (m, core, p) { return advDialSentence(core, dk, polite) + p; });
 }
+/* ---- 方言を二、三文に一回だけ付ける（v1495・y1115-39）----
+   ＊文の並び（最初の攻め／守りから終わりの一言まで）のうち、文の終わりを持つ部品を一つずつ数え、方言を付けるのは
+     最初・最後と、その間の二、三文に一回。付けない文は人格の語尾のまま。
+   ＊方言ごとに語尾を三通り（0・1・2）。付けた順に 0→1→2→0… と回し、同じ語尾が続けて出ないようにする（0 は今までの形）。
+   ＊部品が二文以上を持つときは、**最後の文だけ**に付ける。声は部品ごと（字の印の声）なので、字と声が同じ形で決まる。 */
+const ADV_DIAL_VAR = {   // v≥1 の語尾。pl＝丁寧でない人格に足す語（[v1, v2]）／po＝丁寧な人格の丁寧な語尾に足す語（[v1, v2]）
+  miyazaki: { pl: ['っちゃが', 'とよ'], po: ['っちゃ', 'ちゃが'] },
+  hakata: { pl: ['たい', 'けん'], po: ['ばい', 'たい'] },
+  osaka: { pl: ['やん', 'やんか'], po: ['なぁ', 'で'] },
+  kyoto: { pl: ['わぁ', 'おす'], po: ['なぁ', 'わぁ'] },
+  aomori: { pl: ['だべ', 'んだ'], po: ['だべ', 'んだ'] },
+  okinawa: { pl: ['やさ', 'ねー'], po: ['やさ', 'ねー'] },
+  bushi: { pl: ['じゃ', 'でござるぞ'], po: ['ぞ', 'ぞよ'] },
+  yoji: { pl: ['の', 'もん'], po: ['の', 'ねー'] }
+};
+function advDialSentenceV(core, dk, polite, v) {   // v＝0（今までの形）・1・2
+  if (!v) { return advDialSentence(core, dk, polite); }
+  const d = ADV_DIALECT[dk], t = ADV_DIAL_VAR[dk];
+  if (!d || !t || !core) { return core; }
+  const tl = /^(.+?)(、(?:ウィ|モナミ))$/.exec(core);
+  if (tl) { return advDialSentenceV(tl[1], dk, polite, v) + tl[2]; }
+  if (!polite) {
+    const w = t.pl[v - 1];
+    if (dk === 'bushi' && /ぞ$/.test(core)) { return core; }   // 「進むぞ」は、すでに武士の言い方。足さない
+    if (dk === 'bushi' && v === 1) { if (/のだ$/.test(core)) { return core.replace(/のだ$/, 'のじゃ'); } if (/だ$/.test(core)) { return core.replace(/だ$/, 'じゃ'); } if (/ぞ$/.test(core)) { return core; } }
+    return core + w;
+  }
+  if (/(よ|ね)$/.test(core)) {
+    let b = core.slice(0, -1);
+    if (!advTail(b, ADV_POL) && !/(わ|の)$/.test(b)) { b += 'です'; }
+    return advDialSentenceV(b, dk, polite, v);
+  }
+  const w = t.po[v - 1], f = advTail(core, ADV_FEM), p = advTail(core, ADV_POL), fm = advFemMap(w);
+  if (f && (!p || f.length >= p.length || /(わ|の)$/.test(core))) {
+    const r = fm[{ 'なさいませ': 'なさいな', 'なさい': 'なさいな' }[f] || f];
+    if (r) { return core.slice(0, -f.length) + r; }
+  }
+  if (p === 'ましょう') { return core + (v === 1 ? 'ね' : 'よ'); }   // 「ましょう」に方言の語を足すと不自然になる所（ましょうんだ 等）は、ね／よ にする
+  if (p) {
+    if (dk === 'bushi' && v === 1) { const r = { 'ございません': 'ござりませぬ', 'ございます': 'ござりまする', 'おりません': 'おりませぬ', 'おります': 'おりまする', 'いたしません': 'いたしませぬ', 'いたします': 'いたしまする', 'ましょう': 'ましょうぞ', 'ません': 'ませぬ', 'ます': 'まする', 'です': 'にござる', 'ませ': 'ませ' }[p]; if (r) { return core.slice(0, -p.length) + r; } }
+    return core.slice(0, -p.length) + p + w;
+  }
+  return core;
+}
+/* 部品の字の、最後の文だけに方言を通す（部品の字が「。」「！」「？」で終わる時だけ。終わらない部品は変えない） */
+function advDialLast(text, dk, polite, v) {
+  if (!text || !/[。！？]$/.test(text)) { return text; }
+  const body = text.slice(0, -1), end = text.slice(-1), i = Math.max(body.lastIndexOf('。'), body.lastIndexOf('！'), body.lastIndexOf('？'));
+  return body.slice(0, i + 1) + advDialSentenceV(body.slice(i + 1), dk, polite, v) + end;
+}
+/* 人格の語尾が三文続けて同じ時、三つ目だけ語尾に一字足して切る（v1495）。足す字は人格ごと。方言を付けた文は対象にしない。 */
+const ADV_ALT = { blunt: 'よ', butler: 'ね', strategist: 'ぞ', lady: 'よ', french: 'よ', ichihime: 'ん', sensei: 'ね' };
+function advAltLast(text, tone) {
+  if (!text || !/[。！？]$/.test(text)) { return text; }
+  const w = ADV_ALT[tone] || 'よ', body = text.slice(0, -1), end = text.slice(-1);
+  if (/ぞ$/.test(body)) { return body + 'よ' + end; }   // 語尾がすでに ぞ／よ／ね の時は、もう一字足す
+  if (/よ$/.test(body)) { return body + 'ね' + end; }
+  if (/ね$/.test(body)) { return body + 'ぇ' + end; }
+  return body + w + end;
+}
+/* 方言を付ける部品の選び。n＝文の終わりを持つ部品の数。返すのは、各部品の語尾の番号（付けない＝-1・付ける＝0/1/2）。 */
+function advDialPlan(n) {
+  const pos = [];
+  if (n <= 0) { return []; }
+  pos.push(0);
+  let p = 0, k = 0;
+  while (true) { p += (k++ % 2 === 0) ? 3 : 2; if (p >= n - 1) { break; } pos.push(p); }
+  if (n - 1 > 0) { if (pos.length > 1 && (n - 1) - pos[pos.length - 1] < 2) { pos.pop(); } pos.push(n - 1); }
+  const out = []; for (let i = 0; i < n; i++) { out.push(-1); }
+  pos.forEach(function (q, j) { out[q] = j % 3; });
+  return out;
+}
+/* ---- ひと続きの話として組む（v1495・y1115-39／40）----
+   ＊最初の「攻め／守り」から終わりの一言まで、選んだ人格が一人で話す一つの話にする。助言の行の前に、つなぎの言葉を置く。
+     つなぎは、方言を選んでいる時はその方言の言い方、選んでいない時は人格の言い方。四つ（0＝それで／1＝それから／2＝あと／3＝だから）。
+     最初の助言の行は 0、次からは 1・2 を交互、終わりの一言の前は 3（同じつなぎが続けて出ない）。頭の「攻め／守り」と頭の一言の前には置かない。 */
+const ADV_CONN_TONE = {
+  blunt: ['それで、', 'それから、', 'あと、', 'だから、'], butler: ['つきましては、', 'それから、', '加えまして、', 'ですから、'],
+  strategist: ['さて、', 'また、', 'さらに、', 'ゆえに、'], lady: ['それで、', 'それから、', 'あと、', 'ですから、'],
+  french: ['それでね、', 'それから、', 'あと、', 'だから、'], ichihime: ['それでね、', 'それから、', 'あとね、', 'だからね、'],
+  sensei: ['そこで、', '次に、', 'また、', 'ですから、']
+};
+const ADV_CONN_DIAL = {
+  miyazaki: ['それで、', 'それから、', 'あと、', 'じゃから、'], hakata: ['そいで、', 'それから、', 'あとは、', 'じゃけん、'],
+  osaka: ['ほんで、', 'それから、', 'あと、', 'せやから、'], kyoto: ['ほな、', 'それから、', 'あと、', 'そやさかい、'],
+  aomori: ['んだば、', 'それがら、', 'あど、', 'んだがら、'], okinawa: ['それでね、', 'それからね、', 'あとね、', 'だからよー、'],
+  bushi: ['されば、', 'また、', 'さらに、', 'ゆえに、'], yoji: ['それでね、', 'それからね、', 'あとね、', 'だからね、']
+};
+function advConn(tone, dial, slot) { const t = (dial && ADV_CONN_DIAL[dial]) ? ADV_CONN_DIAL[dial] : (ADV_CONN_TONE[tone] || ADV_CONN_TONE.blunt); return t[slot]; }
+/* lines＝行の並び。行は部品の並び（{t:その人格の字, term:文の終わりで終わるか}）。lines[0]＝頭の攻め／守り、lines[1]＝頭の一言、最後の行＝終わりの一言、間＝助言の行。
+   返すのは、並べる物の列（つなぎ {conn:true,slot,text}／部品 {li,ti,text,v,changed}）と、続けた字。 */
+function advTalk(lines, tone, dial) {
+  const polite = !!ADV_POLITE[tone], units = [];
+  lines.forEach(function (l, li) { l.forEach(function (tk, ti) { if (tk.term) { units.push([li, ti]); } }); });
+  const plan = dial ? advDialPlan(units.length) : [], pv = {};
+  units.forEach(function (u, k) { pv[u[0] + ',' + u[1]] = dial ? plan[k] : -1; });
+  const items = [], last = lines.length - 1; let text = '';
+  lines.forEach(function (l, li) {
+    if (li >= 2) { const slot = (li === last) ? 3 : (li === 2 ? 0 : 1 + ((li - 3) % 2)); const c = advConn(tone, dial, slot); items.push({ conn: true, slot: slot, text: c }); text += c; }
+    l.forEach(function (tk, ti) {
+      const v = (pv[li + ',' + ti] === undefined) ? -1 : pv[li + ',' + ti];
+      const x = (v >= 0) ? advDialLast(tk.t, dial, polite, v) : tk.t;
+      items.push({ li: li, ti: ti, text: x, v: v, alt: false, term: !!tk.term, changed: x !== tk.t }); text += x;
+    });
+  });
+  // 同じ語尾が三文続いたら、直せる文（付けていない部品の最後の文）の語尾を変えて切る。文ごとに見る（二文を持つ部品の中の文は直せない）。
+  for (let it = 0; it < 6; it++) {
+    const segs = []; let pos = 0, all = '';
+    items.forEach(function (x, k) { all += x.text; pos += x.text.length; segs.push([k, pos]); });
+    const ends = []; for (let i = 0; i < all.length; i++) { if ('。！？'.indexOf(all.charAt(i)) >= 0) { ends.push(i); } }
+    const key = ends.map(function (e) { return all.slice(Math.max(0, e - 3), e + 1); });
+    const can = ends.map(function (e) {
+      for (let q = 0; q < segs.length; q++) { if (e < segs[q][1]) { const x = items[segs[q][0]]; return (!x.conn && x.term && x.v < 0 && !x.alt && e === segs[q][1] - 1 && advAltLast(x.text, tone) !== x.text) ? segs[q][0] : -1; } }
+      return -1;
+    });
+    let fixed = false;
+    for (let i = 2; i < ends.length && !fixed; i++) {
+      if (key[i] === key[i - 1] && key[i - 1] === key[i - 2]) {
+        const order = [i - 1, i, i - 2];
+        for (let q = 0; q < order.length; q++) { const k = can[order[q]]; if (k >= 0) { items[k].text = advAltLast(items[k].text, tone); items[k].alt = true; items[k].changed = true; fixed = true; break; } }
+      }
+    }
+    if (!fixed) { break; }
+  }
+  text = items.map(function (x) { return x.text; }).join('');
+  return { items: items, text: text };
+}
 /* 方言の声の名（v1494・y1115-29 のヨシ）：方言を通した部品の字そのものから決める。同じ字は人格・方言を越えて一つの声を使い回す。
    ＊FNV-1a（32ビット）を字の UTF-16 の並びに掛けた8桁の16進。本体も node も同じ結果になる。 */
 function advHash(s) {
@@ -2340,23 +2467,17 @@ function advDecodeWav(ab) {
   /* 声の名：助言の文の声は今のずんだもんの部品のまま。最初の「攻め／守り」だけ人格の声（v1492） */
   /* 方言を選んでいる時の声（v1494・y1115-29）。部品ごとに字を方言へ通し、その字の印（advy-<8桁>）の声を探す。
      字が変わらない部品・牌の名・数字は方言なしの声のまま。方言の声が無い時（読み込めない時）は fb（方言なしの声）へ落とす。 */
-  function advDialName(text, tone){
-    const d = advDial(); if(!d || !text) return '';
-    const x = advDialectize(text, d, !!ADV_POLITE[tone]);
-    return x === text ? '' : advDialVoice(x);
-  }
-  function advTokVoices(t, tone){
-    const base = advTokNames(t, tone);
-    if(!advDial()) return base.map(function(n){ return { name: n }; });
-    const one = function(n, text){ const dn = advDialName(text, tone); return dn ? { name: dn, fb: n } : { name: n }; };
-    if(typeof t === 'string') return [one(base[0], advTokText(t, tone))];
-    if(t.sc){   // 場面：語りの部品だけ方言に通す（牌・色・数字はそのまま）
-      const s = ADV_SCENE[tone] || ADV_SCENE.blunt, x = t.sc.scene;
-      if(x === 'nashi') return [one(base[0], s.nashi)];
-      if(x === 'yakuhai') return base.map(function(n, i){ return (i === base.length - 1) ? one(n, s.yakuhai[0]) : { name: n }; });
-      return base.map(function(n, i){ return (i === 3) ? one(n, s.some[0]) : ((i === 5) ? one(n, s.some[1]) : { name: n }); });
+  /* 部品 → { t:その人格の字, base:元の声の名, term:文の終わりで終わるか } の並び（牌・数字・場面の語りを含む）。advTalk へ渡す（v1495） */
+  function advParts(tok, tone){
+    const names = advTokNames(tok, tone), tm = function(t, b){ return { t: t, base: b, term: /[。！？]$/.test(t) }; };
+    if(typeof tok === 'string') return [tm(advTokText(tok, tone), names[0])];
+    if(tok.sc){
+      const s = ADV_SCENE[tone] || ADV_SCENE.blunt, x = tok.sc;
+      if(x.scene === 'nashi') return [tm(s.nashi, names[0])];
+      if(x.scene === 'yakuhai') return [{ t: x.lab, base: x.code ? names[0] : '', term: false }, tm(s.yakuhai[0], names[names.length - 1])];
+      return [{ t: x.yomi, base: names[0], term: false }, { t: 'が', base: names[1], term: false }, { t: String(x.n), base: names[2], term: false }, tm(s.some[0], names[3]), { t: x.yomi, base: names[4], term: false }, tm(s.some[1], names[5])];
     }
-    return base.map(function(n){ return { name: n }; });
+    return [{ t: advTokText(tok, tone), base: names[0], term: false }];
   }
   function advTokNames(t, tone){
     if(typeof t === 'string'){
@@ -2394,17 +2515,19 @@ function advDecodeWav(ab) {
   function advCompose(ctx, tone){
     const sd = ctx.attack ? 'a' : 'd', m = advMode();
     const oi = advPickOne('o-' + tone + '-' + sd + '-' + m), ci = advPickOne('c-' + tone + '-' + sd + '-' + m);
-    const lines = [[ctx.attack ? 'adva-head' : 'advd-head'], ['advk-' + ctx.vkey, 'advs-' + tone + '-' + sd + '-' + m + '-' + oi]].concat(ctx.lines, [['advc-' + tone + '-' + sd + '-' + m + '-' + ci]]);
-    const audio = [];
-    lines.forEach(function(l){
-      l.forEach(function(t, i){
-        advTokVoices(t, tone).forEach(function(v, k){
-          audio.push({ name: v.name, fb: v.fb, gap: (audio.length === 0) ? 0 : ((i === 0 && k === 0) ? 0.15 : (v.name === 'adv-teiseki' ? 0.15 : 0.07)) });
-        });
-      });
+    const toks = [[ctx.attack ? 'adva-head' : 'advd-head'], ['advk-' + ctx.vkey, 'advs-' + tone + '-' + sd + '-' + m + '-' + oi]].concat(ctx.lines, [['advc-' + tone + '-' + sd + '-' + m + '-' + ci]]);
+    const lines = toks.map(function(l){ let o = []; l.forEach(function(t){ o = o.concat(advParts(t, tone)); }); return o; });
+    /* v1495：最初の「攻め／守り」から終わりの一言まで、選んだ人格が一人でひと続きに話す一つの話にする（つなぎの言葉・方言を二、三文に一回・語尾の連続を切る）。字と声は同じ並びから作る。 */
+    const r = advTalk(lines, tone, advDial()), audio = []; let prevConn = false;
+    r.items.forEach(function(it){
+      if(it.conn){ audio.push({ name: advDialVoice(it.text), opt: true, gap: audio.length ? 0.15 : 0 }); prevConn = true; return; }
+      const p = lines[it.li][it.ti];
+      if(!p.base){ prevConn = false; return; }
+      const nm = it.changed ? advDialVoice(it.text) : p.base;
+      audio.push({ name: nm, fb: it.changed ? p.base : undefined, gap: (audio.length === 0) ? 0 : ((it.ti === 0 && !prevConn) ? 0.15 : (nm === 'adv-teiseki' ? 0.15 : 0.07)) });
+      prevConn = false;
     });
-    const text = advDialectize(lines.map(function(l){ return l.map(function(t){ return advTokText(t, tone); }).join(''); }).join('<br>'), advDial(), !!ADV_POLITE[tone]);
-    return { text: text, audio: audio };
+    return { text: r.text, audio: audio };
   }
   /* 判定のあとに人格・方言の釦を押した時：字だけ書き直す（見方は変えない・声は鳴らし直さない） */
   function advRefresh(){
@@ -2463,10 +2586,10 @@ function advDecodeWav(ab) {
         _advPcm[nm] = advDecodeWav(b);   // v1493：軽い形式（IMA ADPCM）も読む
       });
     };
-    Promise.all(adv.audio.map(function(it){ return load(it.name).catch(function(e){ if(!it.fb) throw e; it.name = it.fb; return load(it.fb); }); })).then(function(){   // v1494：方言の声が無ければ方言なしの声へ
+    Promise.all(adv.audio.map(function(it){ return load(it.name).catch(function(e){ if(it.fb){ it.name = it.fb; return load(it.fb); } if(it.opt){ it.skip = true; return; } throw e; }); })).then(function(){   // v1494：方言の声が無ければ方言なしの声へ
       if(seq !== _advSeq || _frameHidden()) return;
       const parts = [];
-      adv.audio.forEach(function(it){ if(it.gap) parts.push(new Int16Array(Math.round(it.gap * 24000))); parts.push(_advPcm[it.name]); });
+      adv.audio.forEach(function(it){ if(it.skip) return; if(it.gap) parts.push(new Int16Array(Math.round(it.gap * 24000))); parts.push(_advPcm[it.name]); });
       parts.push(new Int16Array(3600));
       const url = URL.createObjectURL(_advBlob(parts));
       const au = new Audio(url);
