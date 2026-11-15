@@ -1,12 +1,5 @@
-advh-butler-a.wav.wav
-advh-butler-d.wav.wav
-advh-strategist-a.wav.wav
-advh-strategist-d.wav.wav
-advh-lady-a.wav.wav
-advh-lady-d.wav.wav
-advh-french-a.wav.wav
-advh-french-d.wav.wav
-advh-ichihime-a.wav.wav
-advh-ichihime-d.wav.wav
-advh-sensei-a.wav.wav
-advh-sensei-d.wav.wav
+advc-butler-d-d-0.wav.wav
+advc-lady-d-d-0.wav.wav
+advc-french-d-d-0.wav.wav
+advc-lady-a-t-2.wav.wav
+advc-french-a-t-2.wav.wav
