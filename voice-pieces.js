@@ -8,6 +8,7 @@
 const fs = require('fs'), path = require('path');
 const DIR = __dirname, RATE = 24000, THR = 500, TARGET_RMS = 1700, PAD = 0.03, FADE = 0.008;
 const { T } = require('./voice-advice-catalog.js');
+const ADPCM = require('./adpcm.js');   // 軽い形式（IMA ADPCM）。advx-（人格の口調の声）だけこの形で置く（y1115-25）
 function readWav(f) {
   const b = fs.readFileSync(f);
   if (b.toString('ascii', 0, 4) !== 'RIFF' || b.readUInt16LE(22) !== 1 || b.readUInt32LE(24) !== RATE || b.readUInt16LE(34) !== 16) throw new Error('形式が違う: ' + f);
@@ -44,7 +45,8 @@ for (const id of Object.keys(T)) {
   const src = path.join(DIR, 'reports', 'voice-advice-out', id + '.wav.wav');
   if (!fs.existsSync(src)) { console.log('素の声が無い: ' + id); process.exitCode = 1; continue; }
   const r = fix(readWav(src));
-  writeWav(path.join(DIR, id + '.wav.wav'), r.s);
+  if (/^advx-/.test(id)) { fs.writeFileSync(path.join(DIR, id + '.wav.wav'), ADPCM.encode(r.s, RATE)); }
+  else { writeWav(path.join(DIR, id + '.wav.wav'), r.s); }
   const sec = r.s.length / RATE; if (sec > maxSec) { maxSec = sec; longest = id; }
   n++;
 }

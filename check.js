@@ -308,6 +308,13 @@ section('④', '音声ファイルの突き合わせ', () => {
       if (bad.length === 0) ok('人格表の部品名が全て台帳に在る');
       else ng('人格表に台帳に無い部品名: ' + bad.join(', '));
     } catch (e) { ng('人格表の核の検査が落ちた: ' + e.message); }
+    /* 声の復号（v1493・y1115-25）：本体の ADV_ADPCM_BEGIN〜END の写しが adpcm-web.js と一字も違わないこと。声は軽い形式（IMA ADPCM）も読む。 */
+    try {
+      const ws = fs.readFileSync(path.join(ROOT, 'adpcm-web.js'), 'utf8').replace(/\r\n/g, '\n'), bs2 = src.replace(/\r\n/g, '\n');
+      const cut2 = x => x.slice(x.indexOf('/* ADV_ADPCM_BEGIN */'), x.indexOf('/* ADV_ADPCM_END */') + '/* ADV_ADPCM_END */'.length);
+      if (bs2.indexOf('/* ADV_ADPCM_BEGIN */') >= 0 && cut2(bs2) === cut2(ws)) ok('声の復号（ADPCM）の写しが adpcm-web.js と一致した');
+      else ng('本体の声の復号（ADV_ADPCM_BEGIN〜END）が adpcm-web.js と違う');
+    } catch (e) { ng('声の復号の検査が落ちた: ' + e.message); }
     const advNames = Object.keys(cat);
     for (let k = 0; k <= 13; k++) advNames.push('advn-' + k);
     const miss = [];
