@@ -520,7 +520,7 @@ advy-385a84dd.wav.wav	わが策の通りにせよじゃ。
 advy-3866d732.wav.wav	前へ進みますの。
 advy-386b8c43.wav.wav	押していくぞわぁ。
 advy-3890cde4.wav.wav	先生の言う通りにしなさいたい。
-advy-3893408e.wav.wav	のトイツ（トイツ）があるのだ。出たらすぐないて、やく（ヤク）を決めるのだよ。
+advy-3893408e.wav.wav	のトイツがあるのだ。出たらすぐないて、ヤクを決めるのだよ。
 advy-38a05af1.wav.wav	トイツは崩さずに、いちまいのハイを入れ替えるといいにゃわぁ。
 advy-38b93758.wav.wav	押していくのだもん。
 advy-38d398f4.wav.wav	はしとジハイから切って、真ん中のハイで作るといいですっちゃ。
@@ -1380,7 +1380,7 @@ advy-93bf76df.wav.wav	押したら後悔するにゃさー。
 advy-93c98834.wav.wav	しのぎますさー。
 advy-93ce8b0d.wav.wav	はしとジハイから切って、真ん中のハイで作るのがようござりまする。
 advy-93d61210.wav.wav	押していきなさいの。
-advy-94275846.wav.wav	とジハイ（ジハイ）を残してそめるにゃん。
+advy-94275846.wav.wav	とジハイを残してそめるにゃん。
 advy-943de13f.wav.wav	危ないことはおやめなさいねー。
 advy-946fe8f8.wav.wav	はトイツだから、最後まで抱えておくのだでござるぞ。
 advy-947fd5e6.wav.wav	慎重にいくでござる。
@@ -1492,7 +1492,7 @@ advy-a0c4906f.wav.wav	ついてきなさいぞ。
 advy-a0c8fe11.wav.wav	あなたを信じているのだっちゃが。
 advy-a0dcbece.wav.wav	いくにゃおす！
 advy-a0f2788e.wav.wav	あなたを信じているのだやんか。
-advy-a117ffc1.wav.wav	とジハイ（ジハイ）を残してそめるのだよ。
+advy-a117ffc1.wav.wav	とジハイを残してそめるのだよ。
 advy-a1418f15.wav.wav	あなたのために頑張るなぁ、モナミ。
 advy-a181e71b.wav.wav	しのぐのだやわ。
 advy-a1aba8af.wav.wav	真ん中のハイから切って、はしのハイとジハイを残すといいですばい。
