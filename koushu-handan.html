@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1493">
+<html lang="ja" data-ver="1494">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1396,7 +1396,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1493</div>
+  <div id="verTag">v1494</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -2166,6 +2166,14 @@ function advDialectize(text, dk, polite) {
   if (!dk || !ADV_DIALECT[dk] || !text) { return text; }
   return text.replace(/([^。！？<>]*?)([。！？])/g, function (m, core, p) { return advDialSentence(core, dk, polite) + p; });
 }
+/* 方言の声の名（v1494・y1115-29 のヨシ）：方言を通した部品の字そのものから決める。同じ字は人格・方言を越えて一つの声を使い回す。
+   ＊FNV-1a（32ビット）を字の UTF-16 の並びに掛けた8桁の16進。本体も node も同じ結果になる。 */
+function advHash(s) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  return ('00000000' + h.toString(16)).slice(-8);
+}
+function advDialVoice(text) { return 'advy-' + advHash(text); }
 /* ADV_TONE_END */
 /* ADV_ADPCM_BEGIN */
 const ADV_STEP = [7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 21, 23, 25, 28, 31, 34, 37, 41, 45, 50, 55, 60, 66, 73, 80, 88, 97, 107, 118, 130, 143, 157, 173, 190, 209, 230, 253, 279, 307, 337, 371, 408, 449, 494, 544, 598, 658, 724, 796, 876, 963, 1060, 1166, 1282, 1411, 1552, 1707, 1878, 2066, 2272, 2499, 2749, 3024, 3327, 3660, 4026, 4428, 4871, 5358, 5894, 6484, 7132, 7845, 8630, 9493, 10442, 11487, 12635, 13899, 15289, 16818, 18500, 20350, 22385, 24623, 27086, 29794, 32767];
@@ -2330,6 +2338,26 @@ function advDecodeWav(ab) {
     return toneCodeName(t.t);
   }
   /* 声の名：助言の文の声は今のずんだもんの部品のまま。最初の「攻め／守り」だけ人格の声（v1492） */
+  /* 方言を選んでいる時の声（v1494・y1115-29）。部品ごとに字を方言へ通し、その字の印（advy-<8桁>）の声を探す。
+     字が変わらない部品・牌の名・数字は方言なしの声のまま。方言の声が無い時（読み込めない時）は fb（方言なしの声）へ落とす。 */
+  function advDialName(text, tone){
+    const d = advDial(); if(!d || !text) return '';
+    const x = advDialectize(text, d, !!ADV_POLITE[tone]);
+    return x === text ? '' : advDialVoice(x);
+  }
+  function advTokVoices(t, tone){
+    const base = advTokNames(t, tone);
+    if(!advDial()) return base.map(function(n){ return { name: n }; });
+    const one = function(n, text){ const dn = advDialName(text, tone); return dn ? { name: dn, fb: n } : { name: n }; };
+    if(typeof t === 'string') return [one(base[0], advTokText(t, tone))];
+    if(t.sc){   // 場面：語りの部品だけ方言に通す（牌・色・数字はそのまま）
+      const s = ADV_SCENE[tone] || ADV_SCENE.blunt, x = t.sc.scene;
+      if(x === 'nashi') return [one(base[0], s.nashi)];
+      if(x === 'yakuhai') return base.map(function(n, i){ return (i === base.length - 1) ? one(n, s.yakuhai[0]) : { name: n }; });
+      return base.map(function(n, i){ return (i === 3) ? one(n, s.some[0]) : ((i === 5) ? one(n, s.some[1]) : { name: n }); });
+    }
+    return base.map(function(n){ return { name: n }; });
+  }
   function advTokNames(t, tone){
     if(typeof t === 'string'){
       if(tone !== 'blunt' && (t === 'adva-head' || t === 'advd-head')) return ['advh-' + tone + '-' + (t === 'adva-head' ? 'a' : 'd')];
@@ -2370,8 +2398,8 @@ function advDecodeWav(ab) {
     const audio = [];
     lines.forEach(function(l){
       l.forEach(function(t, i){
-        advTokNames(t, tone).forEach(function(nm, k){
-          audio.push({ name: nm, gap: (audio.length === 0) ? 0 : ((i === 0 && k === 0) ? 0.15 : (nm === 'adv-teiseki' ? 0.15 : 0.07)) });
+        advTokVoices(t, tone).forEach(function(v, k){
+          audio.push({ name: v.name, fb: v.fb, gap: (audio.length === 0) ? 0 : ((i === 0 && k === 0) ? 0.15 : (v.name === 'adv-teiseki' ? 0.15 : 0.07)) });
         });
       });
     });
@@ -2429,14 +2457,13 @@ function advDecodeWav(ab) {
     _advStop();
     const seq = _advSeq;
     if(_frameHidden()) return;
-    const uniq = adv.audio.map(function(i){ return i.name; }).filter(function(v, i, s){ return s.indexOf(v) === i; });
     const load = function(nm){
       if(_advPcm[nm]) return Promise.resolve();
       return fetch(nm + '.wav.wav').then(function(r){ if(!r.ok) throw new Error(nm); return r.arrayBuffer(); }).then(function(b){
         _advPcm[nm] = advDecodeWav(b);   // v1493：軽い形式（IMA ADPCM）も読む
       });
     };
-    Promise.all(uniq.map(load)).then(function(){
+    Promise.all(adv.audio.map(function(it){ return load(it.name).catch(function(e){ if(!it.fb) throw e; it.name = it.fb; return load(it.fb); }); })).then(function(){   // v1494：方言の声が無ければ方言なしの声へ
       if(seq !== _advSeq || _frameHidden()) return;
       const parts = [];
       adv.audio.forEach(function(it){ if(it.gap) parts.push(new Int16Array(Math.round(it.gap * 24000))); parts.push(_advPcm[it.name]); });
