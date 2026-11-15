@@ -296,6 +296,18 @@ section('④', '音声ファイルの突き合わせ', () => {
     try { same = !!m && JSON.stringify(JSON.parse(m[1])) === JSON.stringify(cat); } catch (e) { same = false; }
     if (same) ok('助言の部品の表（ADV_TEXT）が台帳と一致した（' + Object.keys(cat).length + '部品）');
     else ng('助言の部品の表（ADV_TEXT）が voice-advice-catalog.js と違う');
+    /* 人格表・方言の層の核（v1492・y1115-20）：本体の ADV_TONE_BEGIN〜END の写しが advice-tone-core.js と一字も違わないこと、人格表の部品名が台帳に在ること */
+    try {
+      const cs = fs.readFileSync(path.join(ROOT, 'advice-tone-core.js'), 'utf8').replace(/\r\n/g, '\n'), bs = src.replace(/\r\n/g, '\n');
+      const cut = x => x.slice(x.indexOf('/* ADV_TONE_BEGIN */'), x.indexOf('/* ADV_TONE_END */') + '/* ADV_TONE_END */'.length);
+      if (bs.indexOf('/* ADV_TONE_BEGIN */') >= 0 && cut(bs) === cut(cs)) ok('人格表・方言の層の写しが advice-tone-core.js と一致した');
+      else ng('本体の人格表・方言の層（ADV_TONE_BEGIN〜END）が advice-tone-core.js と違う');
+      global.ADV_TEXT = cat; delete require.cache[require.resolve('./advice-tone-core.js')];
+      const core = require('./advice-tone-core.js'), bad = [];
+      Object.keys(core.ADV_TONE).forEach(t => Object.keys(core.ADV_TONE[t]).forEach(id => { if (!cat[id]) bad.push(t + ':' + id); }));
+      if (bad.length === 0) ok('人格表の部品名が全て台帳に在る');
+      else ng('人格表に台帳に無い部品名: ' + bad.join(', '));
+    } catch (e) { ng('人格表の核の検査が落ちた: ' + e.message); }
     const advNames = Object.keys(cat);
     for (let k = 0; k <= 13; k++) advNames.push('advn-' + k);
     const miss = [];
@@ -317,8 +329,12 @@ section('④', '音声ファイルの突き合わせ', () => {
   if (fs.existsSync(voiceDir)) {
     fs.readdirSync(voiceDir).forEach(f => { if (audioRe.test(f)) onDisk.push('voice/' + f); });
   }
-  const orphans = onDisk.filter(f => !used.has(f));
-  if (orphans.length === 0) ok('孤児ファイルなし（' + onDisk.length + '個すべて参照されている）');
+  /* 引退した声（v1492）：助言の頭の一言を「見る所＋言い切り」に組み替えたため、前の形（advo-…）と、人格を分ける前の終わりの一言（advc-a-n-0 の形）は使わなくなった。消さずに残す決め（git の履歴に残る物は消さない）。 */
+  const RETIRED = /^(advo-|advc-[ad]-[ndt]-[0-9]\.)/;
+  const retired = onDisk.filter(f => !used.has(f) && RETIRED.test(f));
+  const orphans = onDisk.filter(f => !used.has(f) && !RETIRED.test(f));
+  if (retired.length) note('引退した声（残してある）: ' + retired.length + '個');
+  if (orphans.length === 0) ok('孤児ファイルなし（' + onDisk.length + '個すべて参照されている' + (retired.length ? '・引退した声 ' + retired.length + '個を除く' : '') + '）');
   else ng('どの名前からも参照されない音声 ' + orphans.length + '件: ' + orphans.join(', '));
 
   /* 空白入りのファイル名（v1311の事故） */

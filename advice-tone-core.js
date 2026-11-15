@@ -111,12 +111,16 @@ function advTail(core, list) { for (let i = 0; i < list.length; i++) { const w =
 function advDialSentence(core, dk, polite) {
   const d = ADV_DIALECT[dk];
   if (!d || !core) { return core; }
+  const tl = /^(.+?)(、(?:ウィ|モナミ))$/.exec(core);   // 「…わ、モナミ」「…のよ、ウィ」は、呼びかけの前の語尾を直す
+  if (tl) { return advDialSentence(tl[1], dk, polite) + tl[2]; }
   if (!polite) {
     if (dk === 'osaka') {
+      if (/い$/.test(core)) { return core + 'で'; }   // 「いい」の後ろに「や」を付けると「いいや（いいえ）」と読めるため
       if (/ぞ$/.test(core)) { return core.replace(/ぞ$/, 'で'); }
       if (/のだ$/.test(core)) { return core.replace(/のだ$/, 'のやで'); }
       if (/だ$/.test(core)) { return core.replace(/だ$/, 'やで'); }
     }
+    if (dk === 'kyoto' && /い$/.test(core)) { return core + 'なぁ'; }   // 「いい」の後ろに「え」「やわ」を付けると「いいえ」「いいや」と読めるため
     if (dk === 'bushi') {
       if (/のだ$/.test(core)) { return core.replace(/のだ$/, 'のでござる'); }
       if (/だ$/.test(core)) { return core.replace(/だ$/, 'でござる'); }
@@ -131,7 +135,7 @@ function advDialSentence(core, dk, polite) {
   }
   const f = advTail(core, ADV_FEM), p = advTail(core, ADV_POL);
   if (f && (!p || f.length >= p.length || /(わ|の)$/.test(core))) {
-    const r = d.fem[f];
+    const r = d.fem[{ 'なさいませ': 'なさいな', 'なさい': 'なさいな' }[f] || f];   // 「なさい」「なさいませ」は「なさいな」の置き換えを使う
     if (r) { return core.slice(0, -f.length) + r; }
   }
   if (p) { const r = d.pol(p); if (r) { return core.slice(0, -p.length) + r; } }
