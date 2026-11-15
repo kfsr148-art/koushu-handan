@@ -146,6 +146,133 @@ function advDialectize(text, dk, polite) {
   if (!dk || !ADV_DIALECT[dk] || !text) { return text; }
   return text.replace(/([^。！？<>]*?)([。！？])/g, function (m, core, p) { return advDialSentence(core, dk, polite) + p; });
 }
+/* ---- 方言を二、三文に一回だけ付ける（v1495・y1115-39）----
+   ＊文の並び（最初の攻め／守りから終わりの一言まで）のうち、文の終わりを持つ部品を一つずつ数え、方言を付けるのは
+     最初・最後と、その間の二、三文に一回。付けない文は人格の語尾のまま。
+   ＊方言ごとに語尾を三通り（0・1・2）。付けた順に 0→1→2→0… と回し、同じ語尾が続けて出ないようにする（0 は今までの形）。
+   ＊部品が二文以上を持つときは、**最後の文だけ**に付ける。声は部品ごと（字の印の声）なので、字と声が同じ形で決まる。 */
+const ADV_DIAL_VAR = {   // v≥1 の語尾。pl＝丁寧でない人格に足す語（[v1, v2]）／po＝丁寧な人格の丁寧な語尾に足す語（[v1, v2]）
+  miyazaki: { pl: ['っちゃが', 'とよ'], po: ['っちゃ', 'ちゃが'] },
+  hakata: { pl: ['たい', 'けん'], po: ['ばい', 'たい'] },
+  osaka: { pl: ['やん', 'やんか'], po: ['なぁ', 'で'] },
+  kyoto: { pl: ['わぁ', 'おす'], po: ['なぁ', 'わぁ'] },
+  aomori: { pl: ['だべ', 'んだ'], po: ['だべ', 'んだ'] },
+  okinawa: { pl: ['やさ', 'ねー'], po: ['やさ', 'ねー'] },
+  bushi: { pl: ['じゃ', 'でござるぞ'], po: ['ぞ', 'ぞよ'] },
+  yoji: { pl: ['の', 'もん'], po: ['の', 'ねー'] }
+};
+function advDialSentenceV(core, dk, polite, v) {   // v＝0（今までの形）・1・2
+  if (!v) { return advDialSentence(core, dk, polite); }
+  const d = ADV_DIALECT[dk], t = ADV_DIAL_VAR[dk];
+  if (!d || !t || !core) { return core; }
+  const tl = /^(.+?)(、(?:ウィ|モナミ))$/.exec(core);
+  if (tl) { return advDialSentenceV(tl[1], dk, polite, v) + tl[2]; }
+  if (!polite) {
+    const w = t.pl[v - 1];
+    if (dk === 'bushi' && /ぞ$/.test(core)) { return core; }   // 「進むぞ」は、すでに武士の言い方。足さない
+    if (dk === 'bushi' && v === 1) { if (/のだ$/.test(core)) { return core.replace(/のだ$/, 'のじゃ'); } if (/だ$/.test(core)) { return core.replace(/だ$/, 'じゃ'); } if (/ぞ$/.test(core)) { return core; } }
+    return core + w;
+  }
+  if (/(よ|ね)$/.test(core)) {
+    let b = core.slice(0, -1);
+    if (!advTail(b, ADV_POL) && !/(わ|の)$/.test(b)) { b += 'です'; }
+    return advDialSentenceV(b, dk, polite, v);
+  }
+  const w = t.po[v - 1], f = advTail(core, ADV_FEM), p = advTail(core, ADV_POL), fm = advFemMap(w);
+  if (f && (!p || f.length >= p.length || /(わ|の)$/.test(core))) {
+    const r = fm[{ 'なさいませ': 'なさいな', 'なさい': 'なさいな' }[f] || f];
+    if (r) { return core.slice(0, -f.length) + r; }
+  }
+  if (p === 'ましょう') { return core + (v === 1 ? 'ね' : 'よ'); }   // 「ましょう」に方言の語を足すと不自然になる所（ましょうんだ 等）は、ね／よ にする
+  if (p) {
+    if (dk === 'bushi' && v === 1) { const r = { 'ございません': 'ござりませぬ', 'ございます': 'ござりまする', 'おりません': 'おりませぬ', 'おります': 'おりまする', 'いたしません': 'いたしませぬ', 'いたします': 'いたしまする', 'ましょう': 'ましょうぞ', 'ません': 'ませぬ', 'ます': 'まする', 'です': 'にござる', 'ませ': 'ませ' }[p]; if (r) { return core.slice(0, -p.length) + r; } }
+    return core.slice(0, -p.length) + p + w;
+  }
+  return core;
+}
+/* 部品の字の、最後の文だけに方言を通す（部品の字が「。」「！」「？」で終わる時だけ。終わらない部品は変えない） */
+function advDialLast(text, dk, polite, v) {
+  if (!text || !/[。！？]$/.test(text)) { return text; }
+  const body = text.slice(0, -1), end = text.slice(-1), i = Math.max(body.lastIndexOf('。'), body.lastIndexOf('！'), body.lastIndexOf('？'));
+  return body.slice(0, i + 1) + advDialSentenceV(body.slice(i + 1), dk, polite, v) + end;
+}
+/* 人格の語尾が三文続けて同じ時、三つ目だけ語尾に一字足して切る（v1495）。足す字は人格ごと。方言を付けた文は対象にしない。 */
+const ADV_ALT = { blunt: 'よ', butler: 'ね', strategist: 'ぞ', lady: 'よ', french: 'よ', ichihime: 'ん', sensei: 'ね' };
+function advAltLast(text, tone) {
+  if (!text || !/[。！？]$/.test(text)) { return text; }
+  const w = ADV_ALT[tone] || 'よ', body = text.slice(0, -1), end = text.slice(-1);
+  if (/ぞ$/.test(body)) { return body + 'よ' + end; }   // 語尾がすでに ぞ／よ／ね の時は、もう一字足す
+  if (/よ$/.test(body)) { return body + 'ね' + end; }
+  if (/ね$/.test(body)) { return body + 'ぇ' + end; }
+  return body + w + end;
+}
+/* 方言を付ける部品の選び。n＝文の終わりを持つ部品の数。返すのは、各部品の語尾の番号（付けない＝-1・付ける＝0/1/2）。 */
+function advDialPlan(n) {
+  const pos = [];
+  if (n <= 0) { return []; }
+  pos.push(0);
+  let p = 0, k = 0;
+  while (true) { p += (k++ % 2 === 0) ? 3 : 2; if (p >= n - 1) { break; } pos.push(p); }
+  if (n - 1 > 0) { if (pos.length > 1 && (n - 1) - pos[pos.length - 1] < 2) { pos.pop(); } pos.push(n - 1); }
+  const out = []; for (let i = 0; i < n; i++) { out.push(-1); }
+  pos.forEach(function (q, j) { out[q] = j % 3; });
+  return out;
+}
+/* ---- ひと続きの話として組む（v1495・y1115-39／40）----
+   ＊最初の「攻め／守り」から終わりの一言まで、選んだ人格が一人で話す一つの話にする。助言の行の前に、つなぎの言葉を置く。
+     つなぎは、方言を選んでいる時はその方言の言い方、選んでいない時は人格の言い方。四つ（0＝それで／1＝それから／2＝あと／3＝だから）。
+     最初の助言の行は 0、次からは 1・2 を交互、終わりの一言の前は 3（同じつなぎが続けて出ない）。頭の「攻め／守り」と頭の一言の前には置かない。 */
+const ADV_CONN_TONE = {
+  blunt: ['それで、', 'それから、', 'あと、', 'だから、'], butler: ['つきましては、', 'それから、', '加えまして、', 'ですから、'],
+  strategist: ['さて、', 'また、', 'さらに、', 'ゆえに、'], lady: ['それで、', 'それから、', 'あと、', 'ですから、'],
+  french: ['それでね、', 'それから、', 'あと、', 'だから、'], ichihime: ['それでね、', 'それから、', 'あとね、', 'だからね、'],
+  sensei: ['そこで、', '次に、', 'また、', 'ですから、']
+};
+const ADV_CONN_DIAL = {
+  miyazaki: ['それで、', 'それから、', 'あと、', 'じゃから、'], hakata: ['そいで、', 'それから、', 'あとは、', 'じゃけん、'],
+  osaka: ['ほんで、', 'それから、', 'あと、', 'せやから、'], kyoto: ['ほな、', 'それから、', 'あと、', 'そやさかい、'],
+  aomori: ['んだば、', 'それがら、', 'あど、', 'んだがら、'], okinawa: ['それでね、', 'それからね、', 'あとね、', 'だからよー、'],
+  bushi: ['されば、', 'また、', 'さらに、', 'ゆえに、'], yoji: ['それでね、', 'それからね、', 'あとね、', 'だからね、']
+};
+function advConn(tone, dial, slot) { const t = (dial && ADV_CONN_DIAL[dial]) ? ADV_CONN_DIAL[dial] : (ADV_CONN_TONE[tone] || ADV_CONN_TONE.blunt); return t[slot]; }
+/* lines＝行の並び。行は部品の並び（{t:その人格の字, term:文の終わりで終わるか}）。lines[0]＝頭の攻め／守り、lines[1]＝頭の一言、最後の行＝終わりの一言、間＝助言の行。
+   返すのは、並べる物の列（つなぎ {conn:true,slot,text}／部品 {li,ti,text,v,changed}）と、続けた字。 */
+function advTalk(lines, tone, dial) {
+  const polite = !!ADV_POLITE[tone], units = [];
+  lines.forEach(function (l, li) { l.forEach(function (tk, ti) { if (tk.term) { units.push([li, ti]); } }); });
+  const plan = dial ? advDialPlan(units.length) : [], pv = {};
+  units.forEach(function (u, k) { pv[u[0] + ',' + u[1]] = dial ? plan[k] : -1; });
+  const items = [], last = lines.length - 1; let text = '';
+  lines.forEach(function (l, li) {
+    if (li >= 2) { const slot = (li === last) ? 3 : (li === 2 ? 0 : 1 + ((li - 3) % 2)); const c = advConn(tone, dial, slot); items.push({ conn: true, slot: slot, text: c }); text += c; }
+    l.forEach(function (tk, ti) {
+      const v = (pv[li + ',' + ti] === undefined) ? -1 : pv[li + ',' + ti];
+      const x = (v >= 0) ? advDialLast(tk.t, dial, polite, v) : tk.t;
+      items.push({ li: li, ti: ti, text: x, v: v, alt: false, term: !!tk.term, changed: x !== tk.t }); text += x;
+    });
+  });
+  // 同じ語尾が三文続いたら、直せる文（付けていない部品の最後の文）の語尾を変えて切る。文ごとに見る（二文を持つ部品の中の文は直せない）。
+  for (let it = 0; it < 6; it++) {
+    const segs = []; let pos = 0, all = '';
+    items.forEach(function (x, k) { all += x.text; pos += x.text.length; segs.push([k, pos]); });
+    const ends = []; for (let i = 0; i < all.length; i++) { if ('。！？'.indexOf(all.charAt(i)) >= 0) { ends.push(i); } }
+    const key = ends.map(function (e) { return all.slice(Math.max(0, e - 3), e + 1); });
+    const can = ends.map(function (e) {
+      for (let q = 0; q < segs.length; q++) { if (e < segs[q][1]) { const x = items[segs[q][0]]; return (!x.conn && x.term && x.v < 0 && !x.alt && e === segs[q][1] - 1 && advAltLast(x.text, tone) !== x.text) ? segs[q][0] : -1; } }
+      return -1;
+    });
+    let fixed = false;
+    for (let i = 2; i < ends.length && !fixed; i++) {
+      if (key[i] === key[i - 1] && key[i - 1] === key[i - 2]) {
+        const order = [i - 1, i, i - 2];
+        for (let q = 0; q < order.length; q++) { const k = can[order[q]]; if (k >= 0) { items[k].text = advAltLast(items[k].text, tone); items[k].alt = true; items[k].changed = true; fixed = true; break; } }
+      }
+    }
+    if (!fixed) { break; }
+  }
+  text = items.map(function (x) { return x.text; }).join('');
+  return { items: items, text: text };
+}
 /* 方言の声の名（v1494・y1115-29 のヨシ）：方言を通した部品の字そのものから決める。同じ字は人格・方言を越えて一つの声を使い回す。
    ＊FNV-1a（32ビット）を字の UTF-16 の並びに掛けた8桁の16進。本体も node も同じ結果になる。 */
 function advHash(s) {
@@ -155,4 +282,4 @@ function advHash(s) {
 }
 function advDialVoice(text) { return 'advy-' + advHash(text); }
 /* ADV_TONE_END */
-if (typeof module !== 'undefined') { module.exports = { ADV_TONE_KEYS, ADV_POLITE, ADV_TONE, ADV_SCENE, ADV_DIALECT, advToneText, advSceneText, advDialectize, advHash, advDialVoice }; }
+if (typeof module !== 'undefined') { module.exports = { ADV_TONE_KEYS, ADV_POLITE, ADV_TONE, ADV_SCENE, ADV_DIALECT, advToneText, advSceneText, advDialectize, advHash, advDialVoice, advDialSentenceV, advDialLast, advDialPlan, advAltLast, advConn, advTalk, ADV_CONN_TONE, ADV_CONN_DIAL }; }

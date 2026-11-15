@@ -47,7 +47,7 @@ function fix(s) {
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   const lines = fs.readFileSync(path.join(ROOT, 'voice-advice-dial.txt'), 'utf8').split(/\r?\n/).filter(l => l && l[0] !== '#');
-  const todo = lines.filter(l => { const nm = l.split('\t')[0]; return nm && !fs.existsSync(path.join(OUT, nm)); });
+  const todo = lines.filter(l => { const nm = l.split('\t')[0]; return nm && !fs.existsSync(path.join(OUT, nm)) && !fs.existsSync(path.join(ROOT, nm)); });   // 直下に既にある声（前に作って移した物）も飛ばす（y1115-39）
   console.log('台本 ' + lines.length + '本／もう有る ' + (lines.length - todo.length) + '本／のこり ' + todo.length + '本／今回は先頭から ' + Math.min(LIMIT, todo.length) + '本');
   if (todo.length === 0) { console.log('全部できている'); return; }
   console.log('VOICEVOX エンジン（Docker・CPU）を立てる…');
