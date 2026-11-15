@@ -318,9 +318,12 @@ section('④', '音声ファイルの突き合わせ', () => {
     const advNames = Object.keys(cat);
     for (let k = 0; k <= 13; k++) advNames.push('advn-' + k);
     /* 方言の声（v1494・y1115-29）：台本 voice-advice-dial.js の声の名（advy-<字の印>）も、全て実ファイルに在ること（参照されている物としても数える） */
-    try { require('./voice-advice-dial.js').entries().forEach((v, k) => advNames.push(k.replace(/[.]wav[.]wav$/, ''))); } catch (e) { ng('方言の声の台本が読めない: ' + e.message); }
+    /* v1497：方言の声は、人物ごとの語尾に組み直したので、声（約6,300本）が未作成の間は「無い」を落とさず数だけ知らせる（字が先・声は部品の元の声へ落ちる）。声ができたら advNames へ戻す（台帳：人物の声）。 */
+    const dialNames = [];
+    try { require('./voice-advice-dial.js').entries().forEach((v, k) => dialNames.push(k.replace(/[.]wav[.]wav$/, ''))); } catch (e) { ng('方言の声の台本が読めない: ' + e.message); }
     const miss = [];
     advNames.forEach(n => { const cands = []; dirs.forEach(d => seps.forEach(sep => exts.forEach(ext => cands.push(d + n + sep + ext)))); const hit = cands.find(c => fs.existsSync(path.join(ROOT, c))); if (hit) used.add(hit.replace(/\\/g, '/')); else miss.push(n); });
+    { let dmiss = 0; dialNames.forEach(n => { const cands = []; dirs.forEach(d => seps.forEach(sep => exts.forEach(ext => cands.push(d + n + sep + ext)))); const hit = cands.find(c => fs.existsSync(path.join(ROOT, c))); if (hit) used.add(hit.replace(/\\/g, '/')); else dmiss++; }); note('方言の声（人物の語尾）: ' + dialNames.length + '本のうち未作成 ' + dmiss + '本（声は元の声へ落ちる・字は人物の語尾）'); }
     note('助言の声 : ' + advNames.length + '個のうち ' + (advNames.length - miss.length) + '個が実ファイルに解決');
     if (miss.length === 0) ok('助言の声が全て実ファイルに解決した');
     else ng('助言の声のファイルが無い（声は攻め／守りの一言に落ちる）: ' + miss.join(', '));
