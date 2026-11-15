@@ -141,11 +141,6 @@ function advDialSentence(core, dk, polite) {
   if (p) { const r = d.pol(p); if (r) { return core.slice(0, -p.length) + r; } }
   return core;
 }
-/* 文章（「。」「！」「？」で終わる文の並び。「<br>」で区切ってよい）に方言を通す */
-function advDialectize(text, dk, polite) {
-  if (!dk || !ADV_DIALECT[dk] || !text) { return text; }
-  return text.replace(/([^。！？<>]*?)([。！？])/g, function (m, core, p) { return advDialSentence(core, dk, polite) + p; });
-}
 /* ---- 方言を二、三文に一回だけ付ける（v1495・y1115-39）----
    ＊文の並び（最初の攻め／守りから終わりの一言まで）のうち、文の終わりを持つ部品を一つずつ数え、方言を付けるのは
      最初・最後と、その間の二、三文に一回。付けない文は人格の語尾のまま。
@@ -282,4 +277,4 @@ function advHash(s) {
 }
 function advDialVoice(text) { return 'advy-' + advHash(text); }
 /* ADV_TONE_END */
-if (typeof module !== 'undefined') { module.exports = { ADV_TONE_KEYS, ADV_POLITE, ADV_TONE, ADV_SCENE, ADV_DIALECT, advToneText, advSceneText, advDialectize, advHash, advDialVoice, advDialSentenceV, advDialLast, advDialPlan, advAltLast, advConn, advTalk, ADV_CONN_TONE, ADV_CONN_DIAL }; }
+if (typeof module !== 'undefined') { module.exports = { ADV_TONE_KEYS, ADV_POLITE, ADV_TONE, ADV_SCENE, ADV_DIALECT, advToneText, advSceneText, advHash, advDialVoice, advDialSentenceV, advDialLast, advDialPlan, advAltLast, advConn, advTalk, ADV_CONN_TONE, ADV_CONN_DIAL }; }

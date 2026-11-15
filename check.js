@@ -339,7 +339,7 @@ section('④', '音声ファイルの突き合わせ', () => {
     fs.readdirSync(voiceDir).forEach(f => { if (audioRe.test(f)) onDisk.push('voice/' + f); });
   }
   /* 引退した声（v1492）：助言の頭の一言を「見る所＋言い切り」に組み替えたため、前の形（advo-…）と、人格を分ける前の終わりの一言（advc-a-n-0 の形）は使わなくなった。消さずに残す決め（git の履歴に残る物は消さない）。 */
-  const RETIRED = /^(advo-|advc-[ad]-[ndt]-[0-9]\.)/;
+  const RETIRED = /^(advo-|advy-|advc-[ad]-[ndt]-[0-9]\.)/;   // v1495：ひと続きの話に組み直して使わなくなった方言の声（advy-…・台本に無い物）も、消さずに残す
   const retired = onDisk.filter(f => !used.has(f) && RETIRED.test(f));
   const orphans = onDisk.filter(f => !used.has(f) && !RETIRED.test(f));
   if (retired.length) note('引退した声（残してある）: ' + retired.length + '個');
