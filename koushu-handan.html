@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1486">
+<html lang="ja" data-ver="1487">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1396,7 +1396,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1486</div>
+  <div id="verTag">v1487</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -2075,22 +2075,29 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     return '';
   }
+  /* 撤退予約線（v1487）：向聴2以上の攻めに出る。巡目の部品名を返す（線が出ない手は ''）。場面の文・特殊形の文のあとにも付ける */
+  function advRetreatPart(a, attack){
+    const sh = a.baseShanten;
+    return (attack && sh >= 2) ? ('adva-t' + ({ 2: 3, 3: 6, 4: 7, 5: 8 }[sh] || 8)) : '';
+  }
   /* 部品の並び（行ごと）。要素は 文字列＝部品の id／{n:数}＝数字の声／{t:牌のコード}＝牌の名 */
   function advLines(a, tiles, attack, key){
     const F = advFacts(a, tiles), sh = a.baseShanten, TEI = 'adv-teiseki';
     const dirs = a.directions || [];
+    const tl = advRetreatPart(a, attack);
+    const withT = function(r){ if(tl) r.push([tl]); return r; };   // 特殊形の文のあとに、巡目の一文を足す（v1487）
     if(attack){
-      if(a.kokushiSeen) return [['adva-kok-a', { n: Math.min(13, F.yaochuKinds) }, 'adva-kok-b'], [TEI, 'adva-kok-c']];
-      if(a.yakumanReach) return [['adva-yak-a'], [TEI, 'adva-yak-b']];
+      if(a.kokushiSeen) return withT([['adva-kok-a', { n: Math.min(13, F.yaochuKinds) }, 'adva-kok-b'], [TEI, 'adva-kok-c']]);
+      if(a.yakumanReach) return withT([['adva-yak-a'], [TEI, 'adva-yak-b']]);
       const chi = dirs.filter(function(d){ return /七対子/.test(d); })[0];
       if(chi){
         const m = /対子([0-9]+)/.exec(chi);
-        return [['adva-chi-a', { n: Math.min(13, m ? +m[1] : F.pairKinds) }, 'adva-chi-b'], [TEI, 'adva-chi-c']];
+        return withT([['adva-chi-a', { n: Math.min(13, m ? +m[1] : F.pairKinds) }, 'adva-chi-b'], [TEI, 'adva-chi-c']]);
       }
-      if(dirs.some(function(d){ return /対々和/.test(d); })) return [['adva-toi-a', { n: F.trip }, 'adva-toi-b', { n: F.pairs2 }, 'adva-toi-c'], [TEI, 'adva-toi-d']];
-      if(dirs.some(function(d){ return /タンヤオ/.test(d); })) return [['adva-tan-a', { n: Math.min(13, F.yaochuN) }, 'adva-tan-b'], [TEI, 'adva-tan-c']];
+      if(dirs.some(function(d){ return /対々和/.test(d); })) return withT([['adva-toi-a', { n: F.trip }, 'adva-toi-b', { n: F.pairs2 }, 'adva-toi-c'], [TEI, 'adva-toi-d']]);
+      if(dirs.some(function(d){ return /タンヤオ/.test(d); })) return withT([['adva-tan-a', { n: Math.min(13, F.yaochuN) }, 'adva-tan-b'], [TEI, 'adva-tan-c']]);
       if(sh >= 0 && sh <= 1) return [['adva-ikk-a'], [TEI, 'adva-ikk-b']];
-      if(F.catN >= 4) return [['adva-neko-a', { n: Math.min(13, F.catN) }, 'adva-neko-b'], [TEI, 'adva-neko-c']];
+      if(F.catN >= 4) return withT([['adva-neko-a', { n: Math.min(13, F.catN) }, 'adva-neko-b'], [TEI, 'adva-neko-c']]);
       const cut = pickCutTile(a, tiles);
       const l1 = ['adva-head'];
       if(cut && cut.code && ADV_TEXT['advt-' + cut.code]) l1.push({ t: cut.code }, 'adva-from'); else l1.push('adva-weak');
@@ -2146,7 +2153,11 @@ document.addEventListener('DOMContentLoaded', function () {
     try {
       if(!a || a.tooMany) return null;
       const sc = attack ? sceneAdvice(a, tiles) : null;
-      if(sc) return { key: sc.key, text: sc.text, audio: null };
+      if(sc){
+        const tp = advRetreatPart(a, attack), nm = sceneVoiceName(a, tiles);   // 線が出る手は、場面の声のあとに巡目の一文をつなぐ（v1487）
+        if(tp && nm && ADV_TEXT[tp]) return { key: sc.key, text: sc.text + '<br>' + ADV_TEXT[tp], audio: [{ name: nm, gap: 0 }, { name: tp, gap: 0.15 }], scene: nm };
+        return { key: sc.key, text: sc.text, audio: null };
+      }
       const sorted = watchSortHand(tiles.slice());
       const catN = tiles.filter(function(t){ return t.suit === 'cat'; }).length;
       const key = advSpeaker(a, attack, catN);
@@ -2200,7 +2211,7 @@ document.addEventListener('DOMContentLoaded', function () {
       au.addEventListener('ended', function(){ try { URL.revokeObjectURL(url); } catch(e){} }, { once: true });
       _showVoiceCredit();
       const p = au.play(); if(p && p.catch) p.catch(function(){});
-    }).catch(function(){ if(seq === _advSeq) playVerdict(attack); });
+    }).catch(function(){ if(seq === _advSeq){ if(adv.scene) playVerdictOrScene(attack, adv.scene); else playVerdict(attack); } });
   }
   const _sceneAudio = {}, _sceneMiss = {};
   let _sceneSeq = 0;
