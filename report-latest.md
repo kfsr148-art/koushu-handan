@@ -1,14 +1,96 @@
-﻿# y1114-2500：panel v150 の雲の検査
+# 助言の声の読み直し（y1115-voice-yomi）
 
-**結論：すべて PASS。落ちた検査なし、直しは不要。**
+雲の voice-advice.js が書き戻した部品を voice-pieces.js で直下へ置いた。置いた声 104本（部品 90＋数字 14）／いちばん長い部品 advd-riichi 7.77秒。本体（koushu-handan.html）は触っていない。
 
-| 対象 | 結果 | 出所 |
-|---|---|---|
-| panel v150（d06fe71f・17:51 JST） | 全てPASS・終了コード0／17秒 | reports/cloud-panel-check-20261114-085217.md（08:52 UTC＝17:52 JST・2回目） |
-| panel v149（c23309ad・17:40 JST） | 全てPASS・終了コード0／17秒 | reports/cloud-panel-check-20261114-084113.md（08:41 UTC＝17:41 JST） |
-| 本体 v1482（e3049c01・17:17 JST）の速い検査 | 全てPASS（check・adv-check の両方PASS）・終了コード0／51秒。版の3箇所は 1482 で一致 | reports/cloud-check-fast-20261114-081757.md（08:17 UTC＝17:17 JST） |
+## 全部品の読ませる字
 
-**公開側の版：** ver.txt = 1482、panel-ver.txt = 150。どちらも期待どおり。
-
-＊ログの dbus の ERROR 行は雲の Chrome が出す定番の雑音で、結果には関係しない。
-＊速い検査の刻は e3049c01 の commit と同刻の押しに対応する。
+- adv-teiseki：定石では、
+- adva-head：攻めなのだ。
+- adva-from：から切って、
+- adva-weak：つながりの薄い牌から切って、
+- adva-t3：3巡目までに一向聴なのだ。
+- adva-t6：6巡目までに一向聴なのだ。
+- adva-t7：7巡目までに一向聴なのだ。
+- adva-t8：8巡目までに一向聴なのだ。
+- adva-w-butler：ドラがあって、打点が高いのだ。
+- adva-w-strategist：受け入れが広いのだ。
+- adva-w-blunt：良い形がそろっているのだ。
+- adva-w-lady：守りに使える牌が少ないから、押すのだ。
+- adva-w-french：浮いた牌が少ないのだ。
+- adva-w-ichihime：対子が多くて、手が見えているのだ。
+- adva-w-sensei：染めの形が見えているのだ。
+- adva-kok-a：国士の芽なのだ。一九字牌の十三種のうち、いま
+- adva-kok-b：種そろっているのだ。
+- adva-kok-c：真ん中の牌から切って、一九字牌を残すのだ。
+- adva-chi-a：七対子の形なのだ。対子が
+- adva-chi-b：組あるのだ。
+- adva-chi-c：対子は崩さずに、一枚の牌を入れ替えるのだ。
+- adva-toi-a：対々和の形なのだ。刻子が
+- adva-toi-b：組、対子が
+- adva-toi-c：組あるのだ。
+- adva-toi-d：順子になりそうな牌から切って、刻子と対子を残すのだ。
+- adva-ikk-a：あと一枚で聴牌なのだ。
+- adva-ikk-b：受けの広い方を残して、真っすぐ押すのだ。期限は引かないのだ。
+- adva-neko-a：つながらない牌が
+- adva-neko-b：枚あるのだ。
+- adva-neko-c：そこから切って形を作るのだ。形ができるまで、期限は決めないのだ。
+- adva-tan-a：端の牌と字牌が
+- adva-tan-b：枚しかないのだ。
+- adva-tan-c：端と字牌から切って、真ん中の牌で作るのだ。
+- adva-yak-a：役満の芽が見えているのだ。
+- adva-yak-b：その役に使う牌を残して、使わない牌から切るのだ。
+- adva-s-nito：七対子と対々の二兎なのだ。定石では、対子は崩さずに、七対子を先に見るのだ。
+- adva-s-kasa：形が重なりすぎているのだ。定石では、重なった一組を先に切って、受けを広げるのだ。
+- adva-s-nosafe：速いが安全牌が無いのだ。定石では、このまま押すのだ。
+- adva-s-ukai：ドラが浮いているのだ。定石では、ドラは持ち続けて、形を作るのだ。
+- adva-s-soba：定石では、ドラの近くの牌は残して、遠い牌から切るのだ。
+- adva-s-jihai：定石では、字牌の対子は雀頭の候補に残して、押すのだ。
+- advd-head：守りなのだ。
+- advd-w-far：この手は、上がりまで遠いのだ。
+- advd-w-cheap：遠い上に、打点も安いのだ。
+- advd-w-shape：形が悪くて、まとまらないのだ。
+- advd-w-honor：字牌と端の牌が多くて、守れるのだ。
+- advd-w-few：安全牌が少ないのだ。
+- advd-w-pair：対子が多くて、守りに回せるのだ。
+- advd-cut：から切るのだ。
+- advd-and：と
+- advd-keep：は、安全牌として残すのだ。
+- advd-s-soba：定石では、ドラの近くの牌から先に切るのだ。
+- advd-s-jihai：の対子は、安全牌として抱えるのだ。
+- advd-s-nito：定石では、二兎の対子は、安全牌に回すのだ。
+- advd-s-ukai：定石では、浮いたドラは持たずに切るのだ。
+- advd-riichi：定石では、リーチを受けたら、その人の捨てた牌、残した字牌と対子、筋の順に切るのだ。
+- advt-m1：一萬
+- advt-p1：一筒
+- advt-s1：一索
+- advt-m2：二萬
+- advt-p2：二筒
+- advt-s2：二索
+- advt-m3：三萬
+- advt-p3：三筒
+- advt-s3：三索
+- advt-m4：四萬
+- advt-p4：四筒
+- advt-s4：四索
+- advt-m5：五萬
+- advt-p5：五筒
+- advt-s5：五索
+- advt-m6：六萬
+- advt-p6：六筒
+- advt-s6：六索
+- advt-m7：七萬
+- advt-p7：七筒
+- advt-s7：七索
+- advt-m8：八萬
+- advt-p8：八筒
+- advt-s8：八索
+- advt-m9：九萬
+- advt-p9：九筒
+- advt-s9：九索
+- advt-E：東
+- advt-S：南
+- advt-W：西
+- advt-N：北
+- advt-P：白
+- advt-F：發
+- advt-C：中
