@@ -146,5 +146,13 @@ function advDialectize(text, dk, polite) {
   if (!dk || !ADV_DIALECT[dk] || !text) { return text; }
   return text.replace(/([^。！？<>]*?)([。！？])/g, function (m, core, p) { return advDialSentence(core, dk, polite) + p; });
 }
+/* 方言の声の名（v1494・y1115-29 のヨシ）：方言を通した部品の字そのものから決める。同じ字は人格・方言を越えて一つの声を使い回す。
+   ＊FNV-1a（32ビット）を字の UTF-16 の並びに掛けた8桁の16進。本体も node も同じ結果になる。 */
+function advHash(s) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  return ('00000000' + h.toString(16)).slice(-8);
+}
+function advDialVoice(text) { return 'advy-' + advHash(text); }
 /* ADV_TONE_END */
-if (typeof module !== 'undefined') { module.exports = { ADV_TONE_KEYS, ADV_POLITE, ADV_TONE, ADV_SCENE, ADV_DIALECT, advToneText, advSceneText, advDialectize }; }
+if (typeof module !== 'undefined') { module.exports = { ADV_TONE_KEYS, ADV_POLITE, ADV_TONE, ADV_SCENE, ADV_DIALECT, advToneText, advSceneText, advDialectize, advHash, advDialVoice }; }
