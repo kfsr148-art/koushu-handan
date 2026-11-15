@@ -361,7 +361,7 @@ try {
     } else if (k === 'ヨシ待ち') {
       /* 字は題の行の三つ目（#headWait）へ移した（2026-09-13・頭の猫-4）。
          黄色い札そのものは、ヨシ待ちの回は縦線ごと出さない決め。 */
-      if (!/まとめて写すヨシ！/.test(r.headWait || '')) { ng('ヨシ待ち：題の行に字が無い「' + String(r.headWait) + '」'); }
+      if (!/ヨシ待ち、、、。/.test(r.headWait || '')) { ng('ヨシ待ち：題の行に字が無い「' + String(r.headWait) + '」'); }
       else if (r.stText) { ng('ヨシ待ち：黄色い札が出ている「' + String(r.stText).slice(0, 30) + '」'); }
       else { ok('ヨシ待ち：題の行「' + r.headWait + '」／黄色い札は出ない'); }
     } else {
