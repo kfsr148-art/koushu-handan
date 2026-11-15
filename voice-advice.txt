@@ -55,7 +55,7 @@ advd-s-soba.wav.wav	定石では、ドラの近くのハイから先に切るの
 advd-s-jihai.wav.wav	のトイツは、アンゼンパイとしてかかえるのだ。
 advd-s-nito.wav.wav	定石では、にとのトイツは、アンゼンパイに回すのだ。
 advd-s-ukai.wav.wav	定石では、ういたドラはもたずに切るのだ。
-advd-riichi.wav.wav	定石では、リーチを受けたら、そのひとの捨てたハイ、のこしたジハイとトイツ、スジの順に切るのだ。
+advd-riichi.wav.wav	リーチを受けたら、そのひとの捨てたハイ、のこしたジハイとトイツ、スジの順に切るのだ。
 advt-m1.wav.wav	イーワン
 advt-p1.wav.wav	イーピン
 advt-s1.wav.wav	イーソー
