@@ -495,7 +495,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v151（11月14日）</p>
+  <p class="ver" id="verTag">panel v152（11月15日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -523,7 +523,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '151';
+  var PANEL_VER = '152';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -575,7 +575,7 @@
      ＊状態は state.json の stat（作業中／ヨシ待ち／終わり／手待ち／異常）。
        v81 まで札の題から数え直していたので、ヨシ待ちの札が立っていても
        題から読めない札が一枚あれば「作業中」と出ていた。**状態は状態から読む**。 */
-  var lastStat = '', lastStartedAt = 0, lastSubj = '';
+  var lastStat = '', lastStartedAt = 0, lastSubj = '', lastStatAt = 0;   /* lastStatAt：状態が今の字になった刻（v152・ヨシ待ちのあとに再開したかを見る） */
   /* 生存が途切れているか（v124・止まりの見分け-1）。state.json の at と now の差が
      STALE_SEC を超えた回に立つ。**判定の順は ヨシ待ち → 連絡なし → 作業中。**
      ＊v123 まで、連絡なしは paintState（上の札）にしか伝わっていなかった。
@@ -896,6 +896,9 @@
     /* 上限は state.json の stat より強い。凍った「作業中」でも、開き過ぎたら倒す。 */
     if (lastStartedAt > 0 && (Math.floor(Date.now() / 1000) - lastStartedAt) > runCapSec()) { return false; }
     if (lastStat === '作業中') { return true; }
+    /* v152：状態がヨシ待ちでも、その札を出した刻より新しく着手し直していれば、作業中。
+       ヨシ待ちで止まっている間は、着手の刻がヨシ待ちの刻より古いので、今までどおり作業中にならない。 */
+    if (lastStat === 'ヨシ待ち') { return lastStartedAt > 0 && lastStartedAt > lastStatAt; }
     return lastStartedAt > 0 && lastStartedAt > lastDoneAt();
   }
 
@@ -903,7 +906,7 @@
     /* ヨシ待ちは先に見る（v123・猫の矛盾-1）。isRunning() は「走り出しが最後の終わりより
        新しい」だけでも真になるので、後ろに置くとヨシ待ちの回まで「作業中」で潰れる。
        ＊猫の側は runCatTick がヨシ待ちの枝で先に返すので、こちらだけ順を直せばよい。 */
-    if (lastStat === 'ヨシ待ち') { return 'まとめて写すヨシ！'; }   /* v146：頭の猫の横の字（旧「ヨシを返してください」）。出る時・消える時は変えない */
+    if (lastStat === 'ヨシ待ち' && !isRunning()) { return 'まとめて写すヨシ！'; }   /* v146：頭の猫の横の字（旧「ヨシを返してください」）。出る時・消える時は変えない */
     /* 連絡なしは作業中より先（v124・止まりの見分け-1）。
        生存が STALE_SEC より古い間は、凍った「作業中」を出さない。 */
     if (lastLost) { return '連絡なし'; }
@@ -1688,14 +1691,16 @@
   var WORK_TEXT = '作業中、、、。';
   var LOST_TEXT = '接続不良、、、。';
   function headText() {
-    if (lastStat === 'ヨシ待ち') { return POINT_TEXT; }
-    if (lastLost) { return LOST_TEXT; }   /* 連絡なしの寝姿（v151：「接続不良、、、。」） */
+    /* v152：順は 作業中＞まとめて写す＞待機中＞接続不良。猫の絵と字は必ず対なので、runCatTick と同じ順。
+       ＊接続不良は、生存が途切れていて、作業中でも写す物も無いときだけ。 */
     if (isRunning()) { return WORK_TEXT; }   /* 走る猫（v150） */
-    return (copyLeft > 0) ? POINT_TEXT : WAIT_TEXT;
+    if (lastStat === 'ヨシ待ち' || copyLeft > 0) { return POINT_TEXT; }
+    if (lastLost) { return LOST_TEXT; }   /* 連絡なしの寝姿（v151：「接続不良、、、。」） */
+    return WAIT_TEXT;
   }
   function paintStandbyText() {
     var hw = $('headWait');
-    if (!hw || lastStat === 'ヨシ待ち') { return; }   /* ヨシ待ちの字は別の所（stateLine 側・同じ字）が入れる */
+    if (!hw || (lastStat === 'ヨシ待ち' && !isRunning())) { return; }   /* ヨシ待ちの字は別の所（stateLine 側・同じ字）が入れる */
     var t = headText();
     if (hw.textContent !== t) { hw.textContent = t; }
   }
@@ -1716,31 +1721,20 @@
          白猫は 56x36 のまま枠の中ほどに出る。寸を書き替える手は要らなくなった。
        ＊2026-09-07 の黒猫の待機-1 から 09-12 のヨシの猫-8 まで、ここには影絵・ドット絵・顔を
          置いては外してきた。今回は**全身の原寸**で、下の札と同じ絵柄に揃えている。 */
-    if (lastStat === 'ヨシ待ち') {
-      catAwake = false;
-      if (el.src.indexOf('genba-cat-80') < 0) { el.src = 'genba-cat-80.png'; }
-      return;
-    }
-    /* 判定の順は ヨシ待ち → 連絡なし → 作業中（v124・止まりの見分け-1）。
-       生存が途切れている間は、凍った「作業中」で走らせない。 */
-    if (lastLost) {
-      catAwake = false;
-      if (el.src.indexOf('cat-sleep-w') < 0) { el.src = 'cat-sleep-w.png'; }
-      return;
-    }
-    /* v123（猫の矛盾-1）… stat 一本ではなく isRunning() で見る。
-       走り出しの控えが最後の終わりの札より新しいあいだは、stat が手待ちへ落ちても走らせる。 */
+    /* v152：順は 作業中＞まとめて写す（ヨシ待ち・写していない札）＞待機中＞接続不良。字（headText）と同じ順。
+       ＊走り出しが最後の終わりより新しい間は、ヨシ待ちの札が残っていても走らせる（isRunning が、ヨシ待ちの刻より新しく着手し直したかを見る）。
+       ＊生存が途切れていても、写す物が残っていれば指差しの猫。寝姿（接続不良）は、作業中でも写す物も無いときだけ。 */
     if (isRunning()) {
       catAwake = true;
       catI = (catI + 1) % catFrames.length;
       el.src = catFrames[catI];
-    } else if (copyLeft > 0) {
-      /* v145：「まとめて写す」に残りがある間は、ヨシ待ちと同じ指差しの現場猫を出す。
-         写して残りが0になれば、下の枝で寝姿（cat-sleep-w）へ戻る。
-         ＊作業中（コマ送り）と連絡なし（寝姿）はこの上で先に返すので、そのまま。 */
+    } else if (lastStat === 'ヨシ待ち' || copyLeft > 0) {
       catAwake = false;
       if (el.src.indexOf('genba-cat-80') < 0) { el.src = 'genba-cat-80.png'; }
-    } else if (catAwake || el.src.indexOf('genba-taiki') < 0) {   /* 走り・指差しのどちらからでも待機の猫へ戻る（v147：寝姿の白猫から、現場猫の待機の絵 genba-taiki-80.png へ。連絡なしは寝姿のまま） */
+    } else if (lastLost) {
+      catAwake = false;
+      if (el.src.indexOf('cat-sleep-w') < 0) { el.src = 'cat-sleep-w.png'; }
+    } else if (catAwake || el.src.indexOf('genba-taiki') < 0) {   /* 走り・指差し・寝姿のどれからでも待機の猫へ戻る */
       catAwake = false;
       el.src = 'genba-taiki-80.png';
     }
@@ -2850,6 +2844,7 @@
         var subj = String(d.subj || '');
         /* 釦の字が見る三つ（v82）。状態・着手の刻・件名。 */
         lastStat = w; lastStartedAt = (d.startedAt || 0); lastSubj = subj;
+        lastStatAt = (typeof d.statAt === 'number') ? d.statAt : 0;
         /* 最後に押した札の刻（v142）。一覧が古いかを見分けるのに使う。下の freshen を見よ。 */
         lastCardAt = (typeof d.cardAt === 'number') ? d.cardAt : 0;
         /* 生存の途切れと見込みを、ここで一度だけ控える（v124・止まりの見分け-1）。
