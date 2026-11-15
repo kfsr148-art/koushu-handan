@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1484">
+<html lang="ja" data-ver="1485">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1396,7 +1396,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1484</div>
+  <div id="verTag">v1485</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -2060,6 +2060,11 @@ document.addEventListener('DOMContentLoaded', function () {
     };
   }
   function advFloat(a, tiles){
+    try {   // v1485：マダムの名指し（toneFacts の浮き牌）と同じ計算から取る
+      const F = toneFacts(a, tiles);
+      for(let i = 0; i < tiles.length; i++){ if(F.floatIdx.has(i)) return advKey(tiles[i]); }
+      return '';
+    } catch(e){}
     const used = {};
     (a.shapeTiles || []).forEach(function(x){ const k = (x.suit === 'honor') ? ('h' + x.code) : (x.suit + x.num); used[k] = (used[k] || 0) + (x.n || 1); });
     for(let i = 0; i < tiles.length; i++){
@@ -4826,8 +4831,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     if(t === 'french'){
       // 浮き牌が一枚も無い手では、名指す牌そのものが無い。数え方は変えず、名指しだけをやめる。
+      const _c = window._lastCut;   // v1485：ずんだもん・兎と同じ pickCutTile の牌を名指す
+      if(_c && _c.code && !F.floatIdx.has(_c.idx)){
+        return '最初に切るなら' + toneCodeName(_c.code) + 'ですわ。切っても聴牌（テンパイ）までの遠さが変わらない牌の中で、ほかの牌とのつながりがいちばん薄いんですの。';
+      }
       if(F.floatIdx.size === 0) return '面子（メンツ）にも搭子（ターツ）にも入らない2〜8の数牌（シューパイ）は、ございませんの。どの牌も形に入っているか、1・9・字牌（ジハイ）として守りに使えますわ。';
-      return '最初に切るなら' + F.floatTop + 'ですわ。'
+      return '最初に切るなら' + ((_c && _c.code) ? toneCodeName(_c.code) : F.floatTop) + 'ですわ。'
         + '面子（メンツ）にも搭子（ターツ）にも入っておらず、1・9・字牌（ジハイ）のように守りに使える牌でもありませんの。手に置いておく理由がございませんわ。';
     }
     if(t === 'ichihime'){
