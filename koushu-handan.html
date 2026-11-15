@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1490">
+<html lang="ja" data-ver="1491">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1396,7 +1396,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1490</div>
+  <div id="verTag">v1491</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -2099,7 +2099,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if(sh >= 0 && sh <= 1) return [['adva-ikk-a'], [TEI, 'adva-ikk-b']];
       if(F.catN >= 4) return withT([['adva-neko-a', { n: Math.min(13, F.catN) }, 'adva-neko-b'], [TEI, 'adva-neko-c']]);
       const cut = pickCutTile(a, tiles);
-      const l1 = ['adva-head'];
+      const l1 = [];   // v1491：頭の「攻めなのだ。」は adviceFor が一番最初に置く
       if(cut && cut.code && ADV_TEXT['advt-' + cut.code]) l1.push({ t: cut.code }, 'adva-from'); else l1.push('adva-weak');
       if(sh >= 2){ const T = { 2: 3, 3: 6, 4: 7, 5: 8 }[sh] || 8; l1.push('adva-t' + T); }
       l1.push('adva-w-' + key);
@@ -2121,7 +2121,7 @@ document.addEventListener('DOMContentLoaded', function () {
     else if(F.def >= defLine) w = 'honor';
     else if(F.def <= 1) w = 'few';
     else if(F.pairKinds >= 3) w = 'pair';
-    const lines = [['advd-head', 'advd-w-' + w]];
+    const lines = [['advd-w-' + w]];   // v1491：頭の「守りなのだ。」は adviceFor が一番最初に置く
     const l2 = [];   // v1486：序盤の切り方の行は「定石では、」を付けない
     const fl = advFloat(a, tiles);
     if(fl) l2.push('advd-cut-a', { t: fl }, 'advd-cut');   // v1489：「まず〔牌〕から切るといいのだ。」
@@ -2176,9 +2176,9 @@ document.addEventListener('DOMContentLoaded', function () {
       if(sc){
         const tp = advRetreatPart(a, attack), nm = sceneVoiceName(a, tiles);   // 線が出る手は、場面の声のあとに巡目の一文をつなぐ（v1487）
         if(nm){   // 頭の一言・場面の声・巡目の一文・終わりの一言の順に一本で鳴らす（v1490）
-          const oc = advOpenClose(sc.key, attack), aud = [], tx = [];
-          if(oc.o){ aud.push({ name: oc.o, gap: 0 }); tx.push(ADV_TEXT[oc.o]); }
-          aud.push({ name: nm, gap: aud.length ? 0.15 : 0 }); tx.push(sc.text);
+          const hd = attack ? 'adva-head' : 'advd-head', oc = advOpenClose(sc.key, attack), aud = [{ name: hd, gap: 0 }], tx = [ADV_TEXT[hd]];   // 順番：攻め／守り→頭の一言→場面→巡目→終わり（v1491）
+          if(oc.o){ aud.push({ name: oc.o, gap: 0.15 }); tx.push(ADV_TEXT[oc.o]); }
+          aud.push({ name: nm, gap: 0.15 }); tx.push(sc.text);
           if(tp && ADV_TEXT[tp]){ aud.push({ name: tp, gap: 0.15 }); tx.push(ADV_TEXT[tp]); }
           if(oc.c){ aud.push({ name: oc.c, gap: 0.15 }); tx.push(ADV_TEXT[oc.c]); }
           return { key: sc.key, text: tx.join('<br>'), audio: aud, scene: nm };
@@ -2191,6 +2191,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const lines = advLines(a, sorted, attack, key);
       const oc = advOpenClose(key, attack);   // 頭の一言と終わりの一言（v1490）
       if(oc.o) lines.unshift([oc.o]);
+      lines.unshift([attack ? 'adva-head' : 'advd-head']);   // 順番：攻め／守り→頭の一言→助言→終わりの一言（v1491）
       if(oc.c) lines.push([oc.c]);
       const audio = [];
       lines.forEach(function(l){
