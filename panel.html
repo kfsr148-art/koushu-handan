@@ -149,9 +149,6 @@
   /* 訴えの行（v118）。黄色の行の下に赤で一行。 */
   .pipe{margin:4px 0 0;padding:6px 8px;border-radius:6px;background:#3a1414;color:#ff9b9b;font-size:12px;line-height:1.5;}
   .pipe.hide{display:none;}
-  #copiedList{display:none;}
-  #copiedList.open{display:block;}
-  #copiedList li{opacity:.62;}
   /* 「終わりました」の箱（v47）。畳んである見え方は控えと同じ。
      ＊ただし**薄くしない**。片付けた札ではなく、読み返す先だから。 */
   #doneList{display:none;}
@@ -466,11 +463,6 @@
     <button type="button" class="cpall" id="arcHead">🗄 過去の札 ▼</button>
     <ul id="arcList"></ul>
   </div>
-  <div class="done-box hide" id="copiedBox">
-    <button type="button" class="cpall" id="copiedHead"></button>
-    <!-- ＊「未達 N件：」の一行（v59）は **v68 で消した**。器ごと外している。 -->
-    <ul id="copiedList"></ul>
-  </div>
   <!-- 写し取り一覧への口（v30 で足した・並びは v49 でいちばん下へ）。
        本体の全画面を撮った PNG を並べたシート。組み直すのは node shot-all.js。
        ここは開くだけで、パネル側は何も持たない。 -->
@@ -495,7 +487,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v155（11月15日）</p>
+  <p class="ver" id="verTag">panel v156（11月15日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -523,7 +515,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '155';
+  var PANEL_VER = '156';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1511,7 +1503,6 @@
          ＊板の中身が変わればこの印は解ける（pullBoard で見ている）。 */
       boardTaken = true;
       paintDoneBox(allRows);
-      paintCopied(allRows);
       setCopyAllLabel();
       paintBoard();        /* 札が0件になるので、跡地へ板の二段を出す */
       /* 出す数は「実際に写しへ入った札の数」（v74）。todo.length は板の二枠を数えないので使わない。 */
@@ -1934,7 +1925,6 @@
         setCopyAllLabel();   /* 釦の字を件数つきに（v38）。落としたあとの数で組む */
         setCopyBoardLabel(); /* まとめて写すの側も同じ数で組む（v52） */
         paintDoneBox(allRows);   /* 「終わりました」の箱（v47）。写した写さないに関わらず全部 */
-        paintCopied(allRows);
 
         /* ＊「◯件ぜんぶ片付いています」の枠と「片付いた札を出す」の釦は **v43 で外した**。
              ＊もともとは「控えには届いているのに『ありません』と出ると壊れて見える」ため
@@ -2338,7 +2328,7 @@
      ＊違うのは**札を動かさない**ところだけ。ここに居る札はもう片付いた札なので、
        印を付け直す相手も、落とす先も無い。箱に収まったまま置く。
      ＊どの札かは、箱を組んだときに控えた並び（doneItems／copiedItems）から引く。 */
-  var doneItems = [], copiedItems = [];
+  var doneItems = [];
   /* 写しの一行目には、必ず notices.json の道を置く（v79）。
      ＊まとめて写しは前から入れていたが、個別の「写す」には入っていなかった。
        受け取る側は写された文だけを見るので、どの札の写しにも読み元を添える。
@@ -2369,7 +2359,6 @@
          ＊終わりました（返事不要）は「終わりました N件」の箱、
            調べました・その他は「写した札 N件」の箱。振り分けは箱の側が持つ。 */
       paintDoneBox(allRows);
-      paintCopied(allRows);
       /* 写した札は、押した時点で一覧から消す（v24）。薄く残さない。
          ＊次の取得を待たずにその場で消す。待つと、押したのに残って見える。 */
       var li = btn.parentNode && btn.parentNode.parentNode;
@@ -2553,7 +2542,6 @@
            ＊機械が見た様子の一行そのものは v70 で消した。 */
         lastWatch = (u && u.watch && typeof u.watch === 'object') ? u.watch : null;
         paintDoneBox(allRows);
-        paintCopied(allRows);   /* 届いた印は watch が来てから付く */
       paintArcBox();     /* 過去の札の箱（v118）。中身は開いたときに取る */
       paintPipeWarn();   /* 連携の訴えの行（v118） */
       })
@@ -2743,55 +2731,6 @@
       .catch(function () { /* 読めない回は出さない（前の姿を残す） */ });
   }
 
-  function paintCopied(all) {
-    var box = $('copiedBox'), head = $('copiedHead'), ul = $('copiedList');
-    if (!box || !head || !ul) { return; }
-    /* 片付いた札は二通り（v34）。押して写したものと、「ここまで読んだ」に含まれるもの。
-       どちらもここへ入れるが、**印は書き分ける**——読んだ側に「届いた」は付けない
-       （そちらは押していないので、届いたかどうかを判じる物差しが無い）。 */
-    /* 終わりました（返事不要）はここへ入れない（v54）。
-       ＊あちらには専用の「終わりました N件」の箱があり、二つに出ると同じ札が二度並ぶ。
-         写した札の箱に入れるのは**調べました・その他**だけにする。
-       ＊表紙の件数は下で items.length から組むので、外した分がそのまま数にも効く。 */
-    var items = (all || []).filter(function (d) { return isDone(d) && !isDoneNotice(d.title); });
-    if (!items.length) { box.className = 'done-box hide'; ul.innerHTML = ''; return; }
-    box.className = 'done-box';
-    var res = lastWatch ? tsOf(lastWatch.lastResume) : null;
-    var got = 0, red = 0, html = '';
-    /* 箱の中の札にも写す釦を付ける（v67）。押したときにどの札かを引くため、並びを控える。 */
-    copiedItems = items;
-    items.forEach(function (d, i) {
-      var t = copied[keyOf(d)];
-      var byCopy = !!t;
-      var ok = (byCopy && res !== null && typeof t === 'number' && t > 1 && res > t * 1000);
-      if (ok) { got++; }
-      if (!byCopy) { red++; }
-      html += '<li class="ack' + (isOpen(keyOf(d)) ? ' open' : '') + '" data-k="' + okey(keyOf(d)) + '">'
-            + '<p class="t"><span class="tx">' + esc(d.title || '(題なし)')
-            + '<span class="when">' + hhmm(d.time) + '</span>'
-            + (ok ? '<span class="got">届いた</span>' : '')
-            + (byCopy ? '' : '<span class="read">チャットで読んだ</span>')
-            + '</span>'
-            + '<button type="button" class="cp" data-i="' + i + '">写す</button></p>'
-            + '<p class="m">' + esc(d.message) + '</p></li>';
-    });
-    ul.innerHTML = html;
-    var open = (ul.className === 'open');
-    /* 表紙の字は v57 で「写した札」から「済んだ札」へ、v76 で「ヨシした数」へ変えた。
-       「届いた」も v76 で「ヨシ済み確認」へ。
-       ＊変えたのは**表紙の字だけ**。件数の数え方も中身も開閉の動きも触っていない。 */
-    head.textContent = 'ヨシした数 ' + items.length + '件'
-                     + (got ? '（ヨシ済み確認 ' + got + '件）' : '')
-                     + (red ? '（読んだ ' + red + '件）' : '') + (open ? ' ▲' : ' ▼');
-    /* ＊「未達 N件：」の名指し（v59）は **v68 で消した**。行も、行を組む処理も、
-         そのために控えていた値も外した。表紙の「済んだ札 N件（届いた N件）」は
-         そのまま残っており、届いたの印を付ける判じ（上の `ok`）にも触れていない。 */
-    head.onclick = function () {
-      var o = (ul.className !== 'open');
-      ul.className = o ? 'open' : '';
-      head.textContent = head.textContent.replace(/[▼▲]\s*$/, '') + (o ? ' ▲' : ' ▼');
-    };
-  }
 
   function agoText(sec) {
     if (sec < 60) { return Math.max(0, Math.floor(sec)) + '秒前'; }
@@ -3086,17 +3025,6 @@
     toggleOpen(li);
   });
 
-  /* 済んだ札の箱も同じ形（開閉は v32・写す釦は v67）。 */
-  $('copiedList').addEventListener('click', function (e) {
-    var b = e.target;
-    if (b && b.className && b.className.indexOf('cp') === 0) {
-      copyBoxed(copiedItems, parseInt(b.getAttribute('data-i'), 10), b);
-      return;
-    }
-    var li = b;
-    while (li && li.tagName !== 'LI') { li = li.parentNode; }
-    toggleOpen(li);   /* 開閉は一箇所で。開いた印を覚えるのもここ（v47） */
-  });
 
   /* ＊「確認も見る」の切り替えと、ヨシ・入力欄・送るの受けは v11 で撤去した。
        受け取り確認（📥／👍）の知らせ自体が出なくなったので、切り替える相手がいない。
