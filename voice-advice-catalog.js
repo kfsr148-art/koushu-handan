@@ -92,6 +92,9 @@ require('./voice-advice-open.js').all().forEach(x => add(x[0], x[1], x[2]));
 const _tc = require('./advice-tone-core.js');
 _tc.ADV_TONE_KEYS.filter(k => k !== 'blunt').forEach(k => { add('advh-' + k + '-a', _tc.ADV_TONE[k]['adva-head']); add('advh-' + k + '-d', _tc.ADV_TONE[k]['advd-head']); });
 
+/* 助言の文を人格の口調（方言なし）で読む声（y1115-25）。文は voice-advice-persona.js */
+require('./voice-advice-persona.js').all().forEach(x => add(x[0], x[1], x[2]));
+
 module.exports = { T, SAY };
 if (require.main === module) {
   const ids = Object.keys(T);
