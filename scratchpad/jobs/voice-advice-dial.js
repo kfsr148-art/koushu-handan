@@ -11,6 +11,7 @@ const OUT = path.join(ROOT, 'reports', 'voice-advice-dial-out');
 const BASE = 'http://127.0.0.1:50021';
 const SPEAKER = Number(process.env.VV_SPEAKER || 3);
 const LIMIT = Number(process.env.VV_LIMIT || 1000);
+const MAX_SEC = Number(process.env.VV_MAX_SEC || 1020);   // 1回の枠は20分以内（y1116-1）：エンジンを立てる分を引いて、17分で区切って書く（続きは次の走り）
 const ADPCM = require(path.join(ROOT, 'adpcm.js'));
 const RATE = 24000, THR = 500, TARGET_RMS = 1700, PAD = 0.03, FADE = 0.008;
 
@@ -59,6 +60,7 @@ function fix(s) {
   console.log('エンジンの版: ' + await waitUp());
   const t0 = Date.now(); let ok = 0, bytes = 0;
   for (const l of todo.slice(0, LIMIT)) {
+    if ((Date.now() - t0) / 1000 > MAX_SEC) { console.log('時間の区切り（' + MAX_SEC + '秒）で切る'); break; }
     const [name, text] = l.split('\t');
     if (!name || !text) continue;
     const raw = ADPCM.decode(await synth(text));
