@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1489">
+<html lang="ja" data-ver="1490">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1396,7 +1396,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1489</div>
+  <div id="verTag">v1490</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -2022,7 +2022,7 @@ document.addEventListener('DOMContentLoaded', function () {
        部品が一つでも読めなければ、声は今までの 攻め／守り の一言へ戻る（文字は出る）。
      ＊記録で確かめた物＝攻めの撤退予約線の巡目と三場面だけ。ほかは「定石では、」と断って言う。
      ＊言う審判＝判定と同じ側に倒れた人柄七人のうち、REVOTE_W の重みが最大の人（金の縁）。同じ側の人がいなければずんだ。 */
-  const ADV_TEXT = {"adv-teiseki":"定石では、","adva-head":"攻めなのだ。","adva-from":"から切るといいのだ。","adva-weak":"つながりの薄い牌から切って、","adva-t3":"3巡目までに一向聴なのだ。","adva-t6":"6巡目までに一向聴なのだ。","adva-t7":"7巡目までに一向聴なのだ。","adva-t8":"8巡目までに一向聴なのだ。","adva-w-butler":"ドラがあって、打点が高いのだ。","adva-w-strategist":"受け入れが広いのだ。","adva-w-blunt":"良い形がそろっているのだ。","adva-w-lady":"守りに使える牌が少ないから、押すのだ。","adva-w-french":"浮いた牌が少ないのだ。","adva-w-ichihime":"対子が多くて、手が見えているのだ。","adva-w-sensei":"染めの形が見えているのだ。","adva-kok-a":"国士の芽なのだ。端の牌と字牌の十三種のうち、いま","adva-kok-b":"種そろっているのだ。","adva-kok-c":"真ん中の牌から切って、端の牌と字牌を残すといいのだ。","adva-chi-a":"七対子の形なのだ。対子が","adva-chi-b":"組あるのだ。","adva-chi-c":"対子は崩さずに、一枚の牌を入れ替えるといいのだ。","adva-toi-a":"対々和の形なのだ。刻子が","adva-toi-b":"組、対子が","adva-toi-c":"組あるのだ。","adva-toi-d":"順子になりそうな牌から切って、刻子と対子を残すといいのだ。","adva-ikk-a":"あと一枚で聴牌なのだ。","adva-ikk-b":"受けの広い方を残して、まっすぐ押すのだ。何巡目まで、とは決めないのだ。","adva-neko-a":"つながらない牌が","adva-neko-b":"枚あるのだ。","adva-neko-c":"そこから切って形を作るのだ。何巡目まで、とは決めないのだ。","adva-tan-a":"端の牌と字牌が","adva-tan-b":"枚しかないのだ。","adva-tan-c":"端と字牌から切って、真ん中の牌で作るといいのだ。","adva-yak-a":"役満の芽が見えているのだ。","adva-yak-b":"その役に使う牌を残して、使わない牌から切るといいのだ。","adva-s-nito":"七対子と対々の二兎なのだ。定石では、対子は崩さずに、七対子を先に見るのだ。","adva-s-kasa":"形が重なりすぎているのだ。定石では、重なった一組を先に切って、受けを広げるのだ。","adva-s-nosafe":"速いが安全牌が無いのだ。定石では、このまま押すのだ。","adva-s-ukai":"ドラが浮いているのだ。定石では、ドラは持ち続けて、形を作るのだ。","adva-s-soba":"定石では、ドラの近くの牌は残して、遠い牌から切るのだ。","adva-s-jihai":"定石では、字牌の対子は雀頭の候補に残して、押すのだ。","advd-head":"守りなのだ。","advd-w-far":"この手は、上がりまで遠いのだ。","advd-w-cheap":"遠い上に、打点も安いのだ。","advd-w-shape":"形が悪くて、まとまらないのだ。","advd-w-honor":"字牌と端の牌が多くて、守れるのだ。","advd-w-few":"安全牌が少ないのだ。","advd-w-pair":"対子が多くて、守りに回せるのだ。","advd-cut-a":"まず","advd-cut":"から切るといいのだ。","advd-and":"と","advd-keep":"は残しておくのだ。","advd-s-soba":"定石では、ドラの近くの牌から先に切るのだ。","advd-s-jihai":"は対子だから、最後まで抱えておくのだ。","advd-s-nito":"定石では、二兎の対子は、安全牌に回すのだ。","advd-s-ukai":"定石では、浮いたドラは持たずに切るのだ。","advd-riichi":"リーチが来たら、その人が捨てた牌から切るのだ。","advd-r2a":"なければ","advd-r2b":"、その次はスジなのだ。","advd-r2c":"なければ、スジの牌を切るのだ。","advt-m1":"一萬","advt-p1":"一筒","advt-s1":"一索","advt-m2":"二萬","advt-p2":"二筒","advt-s2":"二索","advt-m3":"三萬","advt-p3":"三筒","advt-s3":"三索","advt-m4":"四萬","advt-p4":"四筒","advt-s4":"四索","advt-m5":"五萬","advt-p5":"五筒","advt-s5":"五索","advt-m6":"六萬","advt-p6":"六筒","advt-s6":"六索","advt-m7":"七萬","advt-p7":"七筒","advt-s7":"七索","advt-m8":"八萬","advt-p8":"八筒","advt-s8":"八索","advt-m9":"九萬","advt-p9":"九筒","advt-s9":"九索","advt-E":"東","advt-S":"南","advt-W":"西","advt-N":"北","advt-P":"白","advt-F":"發","advt-C":"中"};
+  const ADV_TEXT = {"adv-teiseki":"定石では、","adva-head":"攻めなのだ。","adva-from":"から切るといいのだ。","adva-weak":"つながりの薄い牌から切って、","adva-t3":"3巡目までに一向聴なのだ。","adva-t6":"6巡目までに一向聴なのだ。","adva-t7":"7巡目までに一向聴なのだ。","adva-t8":"8巡目までに一向聴なのだ。","adva-w-butler":"ドラがあって、打点が高いのだ。","adva-w-strategist":"受け入れが広いのだ。","adva-w-blunt":"良い形がそろっているのだ。","adva-w-lady":"守りに使える牌が少ないから、押すのだ。","adva-w-french":"浮いた牌が少ないのだ。","adva-w-ichihime":"対子が多くて、手が見えているのだ。","adva-w-sensei":"染めの形が見えているのだ。","adva-kok-a":"国士の芽なのだ。端の牌と字牌の十三種のうち、いま","adva-kok-b":"種そろっているのだ。","adva-kok-c":"真ん中の牌から切って、端の牌と字牌を残すといいのだ。","adva-chi-a":"七対子の形なのだ。対子が","adva-chi-b":"組あるのだ。","adva-chi-c":"対子は崩さずに、一枚の牌を入れ替えるといいのだ。","adva-toi-a":"対々和の形なのだ。刻子が","adva-toi-b":"組、対子が","adva-toi-c":"組あるのだ。","adva-toi-d":"順子になりそうな牌から切って、刻子と対子を残すといいのだ。","adva-ikk-a":"あと一枚で聴牌なのだ。","adva-ikk-b":"受けの広い方を残して、まっすぐ押すのだ。何巡目まで、とは決めないのだ。","adva-neko-a":"つながらない牌が","adva-neko-b":"枚あるのだ。","adva-neko-c":"そこから切って形を作るのだ。何巡目まで、とは決めないのだ。","adva-tan-a":"端の牌と字牌が","adva-tan-b":"枚しかないのだ。","adva-tan-c":"端と字牌から切って、真ん中の牌で作るといいのだ。","adva-yak-a":"役満の芽が見えているのだ。","adva-yak-b":"その役に使う牌を残して、使わない牌から切るといいのだ。","adva-s-nito":"七対子と対々の二兎なのだ。定石では、対子は崩さずに、七対子を先に見るのだ。","adva-s-kasa":"形が重なりすぎているのだ。定石では、重なった一組を先に切って、受けを広げるのだ。","adva-s-nosafe":"速いが安全牌が無いのだ。定石では、このまま押すのだ。","adva-s-ukai":"ドラが浮いているのだ。定石では、ドラは持ち続けて、形を作るのだ。","adva-s-soba":"定石では、ドラの近くの牌は残して、遠い牌から切るのだ。","adva-s-jihai":"定石では、字牌の対子は雀頭の候補に残して、押すのだ。","advd-head":"守りなのだ。","advd-w-far":"この手は、上がりまで遠いのだ。","advd-w-cheap":"遠い上に、打点も安いのだ。","advd-w-shape":"形が悪くて、まとまらないのだ。","advd-w-honor":"字牌と端の牌が多くて、守れるのだ。","advd-w-few":"安全牌が少ないのだ。","advd-w-pair":"対子が多くて、守りに回せるのだ。","advd-cut-a":"まず","advd-cut":"から切るといいのだ。","advd-and":"と","advd-keep":"は残しておくのだ。","advd-s-soba":"定石では、ドラの近くの牌から先に切るのだ。","advd-s-jihai":"は対子だから、最後まで抱えておくのだ。","advd-s-nito":"定石では、二兎の対子は、安全牌に回すのだ。","advd-s-ukai":"定石では、浮いたドラは持たずに切るのだ。","advd-riichi":"リーチが来たら、その人が捨てた牌から切るのだ。","advd-r2a":"なければ","advd-r2b":"、その次はスジなのだ。","advd-r2c":"なければ、スジの牌を切るのだ。","advt-m1":"一萬","advt-p1":"一筒","advt-s1":"一索","advt-m2":"二萬","advt-p2":"二筒","advt-s2":"二索","advt-m3":"三萬","advt-p3":"三筒","advt-s3":"三索","advt-m4":"四萬","advt-p4":"四筒","advt-s4":"四索","advt-m5":"五萬","advt-p5":"五筒","advt-s5":"五索","advt-m6":"六萬","advt-p6":"六筒","advt-s6":"六索","advt-m7":"七萬","advt-p7":"七筒","advt-s7":"七索","advt-m8":"八萬","advt-p8":"八筒","advt-s8":"八索","advt-m9":"九萬","advt-p9":"九筒","advt-s9":"九索","advt-E":"東","advt-S":"南","advt-W":"西","advt-N":"北","advt-P":"白","advt-F":"發","advt-C":"中","advo-butler-a-n-0":"点の高さから見るのだ。","advo-butler-a-n-1":"まず点を見るのだ。","advo-butler-a-n-2":"高い点を狙うのだ。","advo-butler-a-d-0":"あなたに高い点を取ってほしいのだ。","advo-butler-a-d-1":"点の高さは、ボクが見ているのだ。","advo-butler-a-d-2":"高い点で、あなたを喜ばせたいのだ。","advo-butler-a-t-0":"ふん、点の高さがすべてなのだ。","advo-butler-a-t-1":"安い手で満足するなんて許さないのだ。","advo-butler-a-t-2":"点は高くなくちゃ意味がないのだ。","advo-butler-d-n-0":"点は捨てて、守るのだ。","advo-butler-d-n-1":"点より、振り込みを避けるのだ。","advo-butler-d-n-2":"今は点を追わないのだ。","advo-butler-d-d-0":"点なんていらないのだ。あなたが無事ならいいのだ。","advo-butler-d-d-1":"点よりあなたが大事なのだ。","advo-butler-d-d-2":"今は点を追わなくていいのだ。","advo-butler-d-t-0":"ふん、点を欲しがって振り込むなんて恥ずかしいのだ。","advo-butler-d-t-1":"点は諦めるのだ。ボクの言う通りなのだ。","advo-butler-d-t-2":"点に目がくらんだら、負けるのだ。","advo-strategist-a-n-0":"受けの広さで見るのだ。","advo-strategist-a-n-1":"広い受けを使うのだ。","advo-strategist-a-n-2":"受け入れから見るのだ。","advo-strategist-a-d-0":"受けの広さは、ボクが見ているのだ。","advo-strategist-a-d-1":"広い受けで、あなたを勝たせたいのだ。","advo-strategist-a-d-2":"受け入れは、ボクがしっかり数えるのだ。","advo-strategist-a-t-0":"ふん、受けの広さも見ずに攻めるつもりなのだ？","advo-strategist-a-t-1":"受けが広いのを活かさない手はないのだ。","advo-strategist-a-t-2":"広い受けを無駄にしたら許さないのだ。","advo-strategist-d-n-0":"受けを追わずに、守るのだ。","advo-strategist-d-n-1":"受けの広さは、いったん忘れるのだ。","advo-strategist-d-n-2":"広い受けでも、今は守るのだ。","advo-strategist-d-d-0":"受けを追わなくても、あなたを守るのだ。","advo-strategist-d-d-1":"広い受けより、あなたの無事が大事なのだ。","advo-strategist-d-d-2":"今は受けを諦めても大丈夫なのだ。","advo-strategist-d-t-0":"受けを追って振り込むのは、愚かなのだ。","advo-strategist-d-t-1":"広い受けに惑わされたら、負けるのだ。","advo-strategist-d-t-2":"受けより守りなのだ。ボクの策を聞くのだ。","advo-blunt-a-n-0":"形から見るのだ。","advo-blunt-a-n-1":"形を整えて進むのだ。","advo-blunt-a-n-2":"形を見て、押すのだ。","advo-blunt-a-d-0":"形は、ボクがしっかり見ているのだ。","advo-blunt-a-d-1":"形を整えて、あなたに勝ってほしいのだ。","advo-blunt-a-d-2":"形を作るのを、手伝うのだ。","advo-blunt-a-t-0":"ふふん、形も見ずに攻めるなんてありえないのだ。","advo-blunt-a-t-1":"形が大事なのだ。ボクの言う通りにするのだ。","advo-blunt-a-t-2":"形を崩したら許さないのだ。","advo-blunt-d-n-0":"形を崩しても、守るのだ。","advo-blunt-d-n-1":"形より、守りなのだ。","advo-blunt-d-n-2":"形は後回しなのだ。","advo-blunt-d-d-0":"形が崩れても、あなたを守るのだ。","advo-blunt-d-d-1":"形なんて、どうでもいいのだ。あなたが大事なのだ。","advo-blunt-d-d-2":"形は気にしなくていいのだ。","advo-blunt-d-t-0":"ふふん、形にこだわって振り込むなんて笑えるのだ。","advo-blunt-d-t-1":"形を崩す勇気を持つのだ。","advo-blunt-d-t-2":"形より守りなのだ。ボクに従うのだ。","advo-lady-a-n-0":"残す安全牌を見て、押すのだ。","advo-lady-a-n-1":"安全牌の残りを数えて、進むのだ。","advo-lady-a-n-2":"安全牌を確かめてから、押すのだ。","advo-lady-a-d-0":"安全牌は、ボクが数えておくのだ。","advo-lady-a-d-1":"残す安全牌を見ながら、あなたを支えるのだ。","advo-lady-a-d-2":"安全牌の残りは、ボクが見ているのだ。","advo-lady-a-t-0":"ふん、安全牌も数えずに押すなんて無謀なのだ。","advo-lady-a-t-1":"安全牌の残りくらい、見ておくのだ。","advo-lady-a-t-2":"安全牌を数えてから押すのだ。ボクの言う通りなのだ。","advo-lady-d-n-0":"残す安全牌を決めるのだ。","advo-lady-d-n-1":"安全牌を残して、守るのだ。","advo-lady-d-n-2":"まず安全牌を数えるのだ。","advo-lady-d-d-0":"安全牌は、あなたのためにとっておくのだ。","advo-lady-d-d-1":"残す安全牌は、ボクが選んでおくのだ。","advo-lady-d-d-2":"安全牌を残して、あなたを守りたいのだ。","advo-lady-d-t-0":"ふん、安全牌を先に切るなんて信じられないのだ。","advo-lady-d-t-1":"残す安全牌も決めずに守れるわけがないのだ。","advo-lady-d-t-2":"安全牌は大事に残すのだ。ボクの言う通りなのだ。","advo-french-a-n-0":"浮いた牌から見るのだ。","advo-french-a-n-1":"浮いた牌を片づけて、押すのだ。","advo-french-a-n-2":"浮いた牌を切って、進むのだ。","advo-french-a-d-0":"浮いた牌は、ボクが見つけておくのだ。","advo-french-a-d-1":"浮いた牌を切って、あなたの手を軽くするのだ。","advo-french-a-d-2":"浮いた牌がなくなるまで、手伝うのだ。","advo-french-a-t-0":"ふん、浮いた牌を抱えたまま攻めるなんて遅いのだ。","advo-french-a-t-1":"浮いた牌くらい、さっさと切るのだ。","advo-french-a-t-2":"浮いた牌を放っておいたら許さないのだ。","advo-french-d-n-0":"浮いた牌の切る順を決めるのだ。","advo-french-d-n-1":"浮いた牌から切って、守るのだ。","advo-french-d-n-2":"浮いた牌の順番を見るのだ。","advo-french-d-d-0":"浮いた牌の順番は、ボクが考えるのだ。","advo-french-d-d-1":"浮いた牌から切って、あなたを守るのだ。","advo-french-d-d-2":"切る順番を、一緒に決めるのだ。","advo-french-d-t-0":"ふん、浮いた牌の切る順も考えないのだ？","advo-french-d-t-1":"浮いた牌の順番を間違えたら、負けるのだ。","advo-french-d-t-2":"切る順番は、ボクが決めるのだ。","advo-ichihime-a-n-0":"見える役から見るのだ。","advo-ichihime-a-n-1":"役を見て、押すのだ。","advo-ichihime-a-n-2":"役がつながる形を見るのだ。","advo-ichihime-a-d-0":"役が見えたら、あなたに教えるのだ。","advo-ichihime-a-d-1":"役をつくって、あなたに勝ってほしいのだ。","advo-ichihime-a-d-2":"役は、ボクが探しておくのだ。","advo-ichihime-a-t-0":"ふん、役も見ずに攻めるなんて無謀なのだ。","advo-ichihime-a-t-1":"役が見えているなら、迷わず行くのだ。","advo-ichihime-a-t-2":"役のない手で攻めたら許さないのだ。","advo-ichihime-d-n-0":"役は追わずに、守るのだ。","advo-ichihime-d-n-1":"見える役は、いったん忘れるのだ。","advo-ichihime-d-n-2":"役より、守りなのだ。","advo-ichihime-d-d-0":"役を諦めても、あなたは大丈夫なのだ。","advo-ichihime-d-d-1":"役より、あなたが無事なのが大事なのだ。","advo-ichihime-d-d-2":"今は役を追わなくていいのだ。","advo-ichihime-d-t-0":"ふん、役にこだわって振り込むなんて愚かなのだ。","advo-ichihime-d-t-1":"役を追うのはやめるのだ。","advo-ichihime-d-t-2":"役より守りなのだ。ボクに従うのだ。","advo-sensei-a-n-0":"上がりまでの距離を見るのだ。","advo-sensei-a-n-1":"距離と染めを見て、進むのだ。","advo-sensei-a-n-2":"染めの形と距離から見るのだ。","advo-sensei-a-d-0":"距離は、ボクが測っておくのだ。","advo-sensei-a-d-1":"上がりまでの近さを、一緒に見るのだ。","advo-sensei-a-d-2":"染められるか、ボクが見ておくのだ。","advo-sensei-a-t-0":"ふん、距離も測らずに攻めるなんて無茶なのだ。","advo-sensei-a-t-1":"距離と染めくらい、見ておくのだ。","advo-sensei-a-t-2":"遠い手で攻めたら許さないのだ。","advo-sensei-d-n-0":"上がりまでの距離を見て、引くのだ。","advo-sensei-d-n-1":"距離を測って、守るのだ。","advo-sensei-d-n-2":"染めは追わずに、守るのだ。","advo-sensei-d-d-0":"距離は、ボクが測っておくのだ。","advo-sensei-d-d-1":"染めを諦めても、大丈夫なのだ。","advo-sensei-d-d-2":"無理に近づかなくていいのだ。","advo-sensei-d-t-0":"ふん、距離も見ずに押したら負けるのだ。","advo-sensei-d-t-1":"染めに目がくらんだら、負けるのだ。","advo-sensei-d-t-2":"距離を見るのだ。ボクの言う通りなのだ。","advc-a-n-0":"いくのだ。","advc-a-n-1":"押していくのだ。","advc-a-n-2":"進むのだ。","advc-a-d-0":"がんばるのだ。","advc-a-d-1":"ボクがついているのだ。","advc-a-d-2":"あなたを信じているのだ。","advc-a-t-0":"負けたら知らないのだ。","advc-a-t-1":"ボクの言う通りにするのだ。","advc-a-t-2":"ついてくるのだ。","advc-d-n-0":"しのぐのだ。","advc-d-n-1":"慎重にいくのだ。","advc-d-n-2":"無理はしないのだ。","advc-d-d-0":"無理しないでほしいのだ。","advc-d-d-1":"ボクがそばにいるのだ。","advc-d-d-2":"あなたが心配なのだ。","advc-d-t-0":"押したら後悔するのだ。","advc-d-t-1":"ボクの言うことを聞くのだ。","advc-d-t-2":"危ないことはやめるのだ。"};
   const ADV_JUDGES = ['butler','strategist','blunt','lady','french','ichihime','sensei'];
   function advKey(t){ return t.suit === 'honor' ? t.code : ({ man:'m', pin:'p', sou:'s' }[t.suit] + t.num); }
   function advSpeaker(a, attack, catN){
@@ -2148,6 +2148,25 @@ document.addEventListener('DOMContentLoaded', function () {
     return toneCodeName(t.t);
   }
   function advTokName(t){ return (typeof t === 'string') ? t : (t.n !== undefined ? ('advn-' + t.n) : ('advt-' + t.t)); }
+  /* 頭の一言・終わりの一言（v1490・y1115-10 のヨシ）。審判（金の縁）×ノーマル／デレデレ／ツンツン（今の台詞の三値 currentTaunt）×攻め・守りで三通りずつ。
+     毎回くじで一つ引き、同じ組み合わせで直前に出た物は除く（端末の記憶 koushu_adv_last。読めなければ今の画面の間だけ覚える）。審判の名前は言わない。
+     文は voice-advice-open.js（台帳に入っている）。中身の声は今のまま、前と後ろに一言ずつ足す。 */
+  const _advLastMem = {}; let _advLastLoaded = false;
+  function advPickOne(combo){
+    if(!_advLastLoaded){ _advLastLoaded = true; try { const o = JSON.parse(localStorage.getItem('koushu_adv_last') || '{}') || {}; for(const k in o){ _advLastMem[k] = o[k]; } } catch(e){} }
+    const pool = [0, 1, 2].filter(function(i){ return i !== _advLastMem[combo]; });
+    const i = pool[Math.floor(Math.random() * pool.length)];
+    _advLastMem[combo] = i;
+    try { localStorage.setItem('koushu_adv_last', JSON.stringify(_advLastMem)); } catch(e){}
+    return i;
+  }
+  function advOpenClose(key, attack){
+    const m = (currentTaunt === 'dere') ? 'd' : (currentTaunt === 'tsun') ? 't' : 'n', sd = attack ? 'a' : 'd';
+    const o = 'advo-' + key + '-' + sd + '-' + m + '-' + advPickOne('o-' + key + '-' + sd + '-' + m);
+    const c = 'advc-' + sd + '-' + m + '-' + advPickOne('c-' + sd + '-' + m);
+    return { o: ADV_TEXT[o] ? o : '', c: ADV_TEXT[c] ? c : '' };
+  }
+
   /* 判定ごとの助言（三場面が当たれば sceneAdvice のまま）。失敗しても判定は止めない。
      返す物：{ key, text, audio:[{name,gap}] または null }。守りも返す（金の縁と一行は攻め・守りとも出る） */
   function adviceFor(a, tiles, attack){
@@ -2156,13 +2175,23 @@ document.addEventListener('DOMContentLoaded', function () {
       const sc = attack ? sceneAdvice(a, tiles) : null;
       if(sc){
         const tp = advRetreatPart(a, attack), nm = sceneVoiceName(a, tiles);   // 線が出る手は、場面の声のあとに巡目の一文をつなぐ（v1487）
-        if(tp && nm && ADV_TEXT[tp]) return { key: sc.key, text: sc.text + '<br>' + ADV_TEXT[tp], audio: [{ name: nm, gap: 0 }, { name: tp, gap: 0.15 }], scene: nm };
+        if(nm){   // 頭の一言・場面の声・巡目の一文・終わりの一言の順に一本で鳴らす（v1490）
+          const oc = advOpenClose(sc.key, attack), aud = [], tx = [];
+          if(oc.o){ aud.push({ name: oc.o, gap: 0 }); tx.push(ADV_TEXT[oc.o]); }
+          aud.push({ name: nm, gap: aud.length ? 0.15 : 0 }); tx.push(sc.text);
+          if(tp && ADV_TEXT[tp]){ aud.push({ name: tp, gap: 0.15 }); tx.push(ADV_TEXT[tp]); }
+          if(oc.c){ aud.push({ name: oc.c, gap: 0.15 }); tx.push(ADV_TEXT[oc.c]); }
+          return { key: sc.key, text: tx.join('<br>'), audio: aud, scene: nm };
+        }
         return { key: sc.key, text: sc.text, audio: null };
       }
       const sorted = watchSortHand(tiles.slice());
       const catN = tiles.filter(function(t){ return t.suit === 'cat'; }).length;
       const key = advSpeaker(a, attack, catN);
       const lines = advLines(a, sorted, attack, key);
+      const oc = advOpenClose(key, attack);   // 頭の一言と終わりの一言（v1490）
+      if(oc.o) lines.unshift([oc.o]);
+      if(oc.c) lines.push([oc.c]);
       const audio = [];
       lines.forEach(function(l){
         l.forEach(function(t, i){

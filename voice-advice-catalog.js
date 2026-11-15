@@ -85,6 +85,9 @@ for (let i = 0; i < 9; i++) {
 }
 [['E', '東', 'トン'], ['S', '南', 'ナン'], ['W', '西', 'シャー'], ['N', '北', 'ペー'], ['P', '白', 'ハク'], ['F', '發', 'ハツ'], ['C', '中', 'チュン']].forEach(x => add('advt-' + x[0], x[1], x[2]));
 
+/* 頭の一言・終わりの一言（144本・y1115-10）。文は voice-advice-open.js */
+require('./voice-advice-open.js').all().forEach(x => add(x[0], x[1], x[2]));
+
 module.exports = { T, SAY };
 if (require.main === module) {
   const ids = Object.keys(T);
