@@ -353,3 +353,15 @@ advc-sensei-d-d-2.wav.wav	あなたが心配です。
 advc-sensei-d-t-0.wav.wav	押したら、後悔しますよ。
 advc-sensei-d-t-1.wav.wav	せんせいの言うことを聞きなさい。
 advc-sensei-d-t-2.wav.wav	危ないことはやめなさい。
+advh-butler-a.wav.wav	攻めでございます。
+advh-butler-d.wav.wav	守りでございます。
+advh-strategist-a.wav.wav	攻めだ。
+advh-strategist-d.wav.wav	守りだ。
+advh-lady-a.wav.wav	攻めですわ。
+advh-lady-d.wav.wav	守りですわ。
+advh-french-a.wav.wav	攻めですわ。
+advh-french-d.wav.wav	守りですわ。
+advh-ichihime-a.wav.wav	攻めだにゃ。
+advh-ichihime-d.wav.wav	守りだにゃ。
+advh-sensei-a.wav.wav	攻めです。
+advh-sensei-d.wav.wav	守りです。
