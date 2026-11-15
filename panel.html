@@ -487,7 +487,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v156（11月15日）</p>
+  <p class="ver" id="verTag">panel v157（11月15日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -515,7 +515,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '156';
+  var PANEL_VER = '157';
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1577,7 +1577,10 @@
     var hw = $('headWait');
     if (lastStat === 'ヨシ待ち' && !isRunning()) {   /* v153：ヨシ待ちの回も、頭の字は headText（猫の絵と対）。作業中に着手し直した回は、下の通常の行へ */
       if (hw) { hw.textContent = headText(); }
-      el.innerHTML = '';
+      /* v157：ヨシ待ちの札（🙋 ヨシしてください）が、この待ちの刻より後に届いていない間は、取り寄せ中の一行を出す。
+         ＊状態は ntfy で直に届くが、札の中身（印・待っている事・要点）は公開ページ経由で約1分遅れる。その間の空白を埋める。 */
+      var gotAsk = (allRows || []).some(function (d) { return d && String(d.title || '').indexOf('ヨシしてください') >= 0 && (d.time || 0) >= lastStatAt - 300; });
+      el.innerHTML = gotAsk ? '' : '<li class="why stline"><p class="m">🙋 ヨシしてください：札（印・待っている事・要点）を取り寄せています。約1分</p></li>';
       return;
     }
     if (hw) { hw.textContent = headText(); }   /* v149：猫の絵と対の字（指差し＝まとめて写すヨシ！／待機＝待機中、、、。） */
@@ -1681,12 +1684,15 @@
   var POINT_TEXT = 'まとめて写すヨシ！';
   var WORK_TEXT = '作業中、、、。';
   var LOST_TEXT = '接続不良、、、。';
+  /* v157：ヨシ待ちは待機中と別の猫（yoshi-cat-icon.png）と別の字。順は 作業中＞ヨシ待ち＞まとめて写す＞待機中＞接続不良。 */
+  var YOSHI_TEXT = 'ヨシ待ち、、、。';
   function headText() {
     /* v152：順は 作業中＞まとめて写す＞待機中＞接続不良。猫の絵と字は必ず対なので、runCatTick と同じ順。
        ＊接続不良は、生存が途切れていて、作業中でも写す物も無いときだけ。 */
     if (isRunning()) { return lastCloud ? (WORK_TEXT + '（' + lastCloud + '）') : WORK_TEXT; }   /* 走る猫（v150）。雲で作業が回っている間は、進み（何回目・何本）を添える（v154） */
     /* v153：「まとめて写すヨシ！」は、直近に終わった仕事（写していない札）が1件以上ある時だけ。
        ヨシ待ちの札が立っていても、写す物が0件なら指差しにしない（待機中へ）。 */
+    if (lastStat === 'ヨシ待ち') { return YOSHI_TEXT; }   /* v157：作業中の次。isRunning が偽の間（止まって待っている間）だけここへ来る */
     if (copyLeft > 0) { return POINT_TEXT; }
     if (lastLost) { return LOST_TEXT; }   /* 連絡なしの寝姿（v151：「接続不良、、、。」） */
     return WAIT_TEXT;
@@ -1698,7 +1704,7 @@
     if (hw.textContent !== t) { hw.textContent = t; }
   }
   (function () {   /* 先読み。読めなくても画面は壊れない（img が出ないだけ） */
-    catFrames.concat(['cat-sleep-w.png', 'genba-cat-80.png', 'genba-taiki-80.png'])
+    catFrames.concat(['cat-sleep-w.png', 'genba-cat-80.png', 'genba-taiki-80.png', 'yoshi-cat-icon.png'])
       .forEach(function (n) { var im = new Image(); im.src = n; });
   })();
   function runCatTick() {
@@ -1721,6 +1727,9 @@
       catAwake = true;
       catI = (catI + 1) % catFrames.length;
       el.src = catFrames[catI];
+    } else if (lastStat === 'ヨシ待ち') {   /* v157：ヨシ待ちは専用の猫 */
+      catAwake = false;
+      if (el.src.indexOf('yoshi-cat-icon') < 0) { el.src = 'yoshi-cat-icon.png'; }
     } else if (copyLeft > 0) {   /* v153：写す物が1件以上ある時だけ指差し。ヨシ待ちでも0件なら待機の猫 */
       catAwake = false;
       if (el.src.indexOf('genba-cat-80') < 0) { el.src = 'genba-cat-80.png'; }
