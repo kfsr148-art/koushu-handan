@@ -48,8 +48,7 @@ function fix(s) {
   fs.mkdirSync(OUT, { recursive: true });
   const lines = fs.readFileSync(path.join(ROOT, 'voice-advice-dial.txt'), 'utf8').split(/\r?\n/).filter(l => l && l[0] !== '#');
   const rp = path.join(ROOT, 'voice-advice-dial-redo.txt');
-  const redo = new Set(fs.existsSync(rp) ? fs.readFileSync(rp, 'utf8').split(/?
-/).filter(Boolean) : []);
+  const redo = new Set(fs.existsSync(rp) ? fs.readFileSync(rp, 'utf8').split(/\r?\n/).filter(Boolean) : []);
   const todo = lines.filter(l => { const nm = l.split('\t')[0]; return nm && !fs.existsSync(path.join(OUT, nm)) && (redo.has(nm) || !fs.existsSync(path.join(ROOT, nm))); });   // 作り直しの名簿（voice-advice-dial-redo.txt）にある名は、直下に在っても作る（y1115-50）   // 直下に既にある声（前に作って移した物）も飛ばす（y1115-39）
   console.log('台本 ' + lines.length + '本／もう有る ' + (lines.length - todo.length) + '本／のこり ' + todo.length + '本／今回は先頭から ' + Math.min(LIMIT, todo.length) + '本');
   if (todo.length === 0) { console.log('全部できている'); return; }
