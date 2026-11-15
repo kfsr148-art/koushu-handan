@@ -88,6 +88,10 @@ for (let i = 0; i < 9; i++) {
 /* 頭の一言・終わりの一言（144本・y1115-10）。文は voice-advice-open.js */
 require('./voice-advice-open.js').all().forEach(x => add(x[0], x[1], x[2]));
 
+/* 最初の「攻め／守り」の人格版（12本・y1115-20）。字は advice-tone-core.js の表と同じ */
+const _tc = require('./advice-tone-core.js');
+_tc.ADV_TONE_KEYS.filter(k => k !== 'blunt').forEach(k => { add('advh-' + k + '-a', _tc.ADV_TONE[k]['adva-head']); add('advh-' + k + '-d', _tc.ADV_TONE[k]['advd-head']); });
+
 module.exports = { T, SAY };
 if (require.main === module) {
   const ids = Object.keys(T);

@@ -257,7 +257,7 @@ advc-butler-a-t-2.wav.wav	ついてきなさいませ。
 advc-butler-d-n-0.wav.wav	しのぎます。
 advc-butler-d-n-1.wav.wav	慎重に参りましょう。
 advc-butler-d-n-2.wav.wav	無理はいたしません。
-advc-butler-d-d-0.wav.wav	どうかご無理なさらぬよう。
+advc-butler-d-d-0.wav.wav	どうかご無理は禁物でございます。
 advc-butler-d-d-1.wav.wav	わたくしがおそばにおります。
 advc-butler-d-d-2.wav.wav	お客様が心配でございます。
 advc-butler-d-t-0.wav.wav	押せば、後悔なさいますよ。
@@ -289,11 +289,11 @@ advc-lady-a-d-1.wav.wav	わたくしがついておりますの。
 advc-lady-a-d-2.wav.wav	あなたを信じておりますわ。
 advc-lady-a-t-0.wav.wav	負けても存じませんわ。
 advc-lady-a-t-1.wav.wav	わたくしの言う通りになさいませ。
-advc-lady-a-t-2.wav.wav	ついていらっしゃいな。
+advc-lady-a-t-2.wav.wav	ついてきなさいな。
 advc-lady-d-n-0.wav.wav	しのぎますわ。
 advc-lady-d-n-1.wav.wav	慎重に参りますの。
 advc-lady-d-n-2.wav.wav	無理はいたしませんわ。
-advc-lady-d-d-0.wav.wav	どうか無理なさらないで。
+advc-lady-d-d-0.wav.wav	どうか無理は禁物ですわ。
 advc-lady-d-d-1.wav.wav	わたくしがおそばにおりますの。
 advc-lady-d-d-2.wav.wav	あなたが心配ですわ。
 advc-lady-d-t-0.wav.wav	押したら、後悔なさいますわよ。
@@ -307,11 +307,11 @@ advc-french-a-d-1.wav.wav	わたくしがついているわ。
 advc-french-a-d-2.wav.wav	あなたを信じているわ。
 advc-french-a-t-0.wav.wav	負けても知らないわよ。
 advc-french-a-t-1.wav.wav	わたくしの言う通りにしなさい。
-advc-french-a-t-2.wav.wav	ついていらっしゃい。
+advc-french-a-t-2.wav.wav	ついてきなさい。
 advc-french-d-n-0.wav.wav	しのぎましょう、ね。
 advc-french-d-n-1.wav.wav	慎重にいくのよ。
 advc-french-d-n-2.wav.wav	無理は禁物よ。
-advc-french-d-d-0.wav.wav	どうか無理しないで、モナミ。
+advc-french-d-d-0.wav.wav	どうか無理は禁物よ、モナミ。
 advc-french-d-d-1.wav.wav	わたくしがそばにいるわ。
 advc-french-d-d-2.wav.wav	あなたが心配よ。
 advc-french-d-t-0.wav.wav	押したら、後悔するわよ。
