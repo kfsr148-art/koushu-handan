@@ -1,1 +1,17 @@
+adva-from.wav.wav
+adva-kok-a.wav.wav
+adva-kok-c.wav.wav
+adva-chi-c.wav.wav
+adva-toi-d.wav.wav
+adva-ikk-b.wav.wav
+adva-neko-c.wav.wav
+adva-tan-c.wav.wav
+adva-yak-b.wav.wav
+advd-cut-a.wav.wav
+advd-cut.wav.wav
+advd-keep.wav.wav
+advd-s-jihai.wav.wav
 advd-riichi.wav.wav
+advd-r2a.wav.wav
+advd-r2b.wav.wav
+advd-r2c.wav.wav
