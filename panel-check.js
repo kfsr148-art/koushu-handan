@@ -308,7 +308,7 @@ const U_NONE  = { at: new Date(now * 1000).toISOString(), http: 200, empty: true
 const ST = {
   '作業中':   { stat: '作業中', subj: 'パネルの守り-1（実測）', mikomi: '30分', startedAt: now - 300, statAt: now - 300, at: now },
   '手待ち':   { stat: '手待ち', subj: 'パネルの守り-1', mikomi: '', startedAt: 0, statAt: now - 100, at: now },
-  'ヨシ待ち': { stat: 'ヨシ待ち', subj: 'パネルの守り-1', mikomi: '', startedAt: 0, statAt: now - 100, at: now },
+  'ヨシ待ち': { stat: 'ヨシ待ち', subj: 'パネルの守り-1', mikomi: '', startedAt: 0, statAt: now - 700, at: now },
   '異常':     { stat: '異常', subj: 'パネルの守り-1', mikomi: '', startedAt: 0, statAt: now - 100, at: now }
 };
 
