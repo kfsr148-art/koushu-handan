@@ -47,6 +47,13 @@ function voiced(buf) {   // 声の始まりと終わり（秒）。振幅 800 �
   console.log('ずんだもんの声の種類: ' + (z ? z.styles.map(s => s.name + '=' + s.id).join(' ') : '見つからない'));
 
   const lines = fs.readFileSync(path.join(ROOT, 'voice-advice.txt'), 'utf8').split(/\r?\n/).filter(l => l && l[0] !== '#');
+  // 読みを直した部品だけ作り直す（2026-11-15）：voice-advice-only.txt があれば、その名の行だけを回す
+  const OF = path.join(ROOT, 'voice-advice-only.txt');
+  if (fs.existsSync(OF)) {
+    const only = new Set(fs.readFileSync(OF, 'utf8').split(/\r?\n/).filter(Boolean));
+    for (let i = lines.length - 1; i >= 0; i--) if (!only.has(lines[i].split('\t')[0])) lines.splice(i, 1);
+    console.log('作り直す部品 ' + lines.length + '本');
+  }
   let ok = 0;
   for (const l of lines) {
     const [name, text] = l.split('\t');
