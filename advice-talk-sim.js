@@ -16,9 +16,9 @@ const tk = t => ({ t: t, term: TERM.test(t) });
 const SCENES = [{ sc: { scene: 'nashi' } }, { sc: { scene: 'yakuhai', lab: '白', code: 'P' } }, { sc: { scene: 'some', yomi: '萬子（マンズ）', n: '8', suit: 'man' } }];
 function scenarios(vk) {   // 助言の行の場面（頭・終わりを除く）
   const A = [], D = [], w = 'adva-w-' + vk;
-  A.push([[{ t: 'm7' }, 'adva-from', 'adva-t6', w]]);
-  ['adva-s-nito', 'adva-s-kasa', 'adva-s-nosafe', 'adva-s-ukai', 'adva-s-soba', 'adva-s-jihai'].forEach(s => A.push([[{ t: 'm7' }, 'adva-from', 'adva-t6', w], [s]]));
-  A.push([['adva-weak', 'adva-t3', w]]);
+  A.push([[w], [{ t: 'm7' }, 'adva-from', 'adva-t6']]);
+  ['adva-s-nito', 'adva-s-nosafe', 'adva-s-ukai', 'adva-s-jihai'].forEach(s => A.push([[w], [{ t: 'm7' }, 'adva-from', 'adva-t6'], [s]]));   // v1500：重なり・近く（切るを重ねる定石）は付けない
+  A.push([[w], ['adva-weak']]);   // v1500：「上がれない」と言うので巡目は足さない
   A.push([['adva-kok-a', { n: 8 }, 'adva-kok-b'], [TEI, 'adva-kok-c'], ['adva-t7']]);
   A.push([['adva-chi-a', { n: 4 }, 'adva-chi-b'], [TEI, 'adva-chi-c'], ['adva-t6']]);
   A.push([['adva-toi-a', { n: 2 }, 'adva-toi-b', { n: 3 }, 'adva-toi-c'], [TEI, 'adva-toi-d'], ['adva-t6']]);
@@ -26,7 +26,7 @@ function scenarios(vk) {   // 助言の行の場面（頭・終わりを除く�
   A.push([['adva-ikk-a'], [TEI, 'adva-ikk-b']]);
   A.push([['adva-neko-a', { n: 4 }, 'adva-neko-b'], [TEI, 'adva-neko-c'], ['adva-t8']]);
   A.push([['adva-yak-a'], [TEI, 'adva-yak-b'], ['adva-t7']]);
-  A.push([[SCENES[0]], ['adva-t3']]);
+  A.push([[SCENES[0]]]);   // v1500：「役が無くて上がれない」の後に一向聴は足さない
   A.push([[SCENES[1]]]);
   A.push([[SCENES[2]], ['adva-t6']]);
   ['far', 'cheap', 'shape', 'honor', 'few', 'pair'].forEach(k => {
@@ -36,7 +36,7 @@ function scenarios(vk) {   // 助言の行の場面（頭・終わりを除く�
   D.push([['advd-w-far'], ['advd-cut-a', { t: 'm7' }, 'advd-cut'], ['advd-riichi'], ['advd-r2c']]);
   D.push([['advd-w-far'], ['advd-cut-a', { t: 'm7' }, 'advd-cut', { t: 'p5' }, 'advd-and', { t: 's5' }, 'advd-keep'], ['advd-s-nito'], ['advd-riichi'], ['advd-r2a', { t: 'p5' }, 'advd-r2b']]);
   D.push([['advd-w-far'], ['advd-cut-a', { t: 'm7' }, 'advd-cut'], ['advd-s-ukai'], ['advd-riichi'], ['advd-r2c']]);
-  D.push([['advd-w-far'], ['advd-cut-a', { t: 'm7' }, 'advd-cut', { t: 'P' }, 'advd-keep'], ['advd-s-soba'], ['advd-riichi'], ['advd-r2a', { t: 'P' }, 'advd-r2b']]);
+  D.push([['advd-w-far'], ['advd-cut-a', { t: 'm7' }, 'advd-cut', { t: 'P' }, 'advd-keep'], ['advd-riichi'], ['advd-r2a', { t: 'P' }, 'advd-r2b']]);   // v1500：近くの牌から切る定石は付けない
   return { A: A, D: D };
 }
 function tokens(l, tone) {   // 助言の行の部品 → {t,term} の列
@@ -56,9 +56,9 @@ function tokens(l, tone) {   // 助言の行の部品 → {t,term} の列
   return out;
 }
 function build(adviceLines, tone, sd, m, vk, i) {
-  const lines = [[tk(C.advToneText(tone, sd === 'a' ? 'adva-head' : 'advd-head'))], [{ t: T['advk-' + vk], term: false }, tk(T['advs-' + tone + '-' + sd + '-' + m + '-' + i])]];
+  const lines = [[tk(C.advToneText(tone, sd === 'a' ? 'adva-head' : 'advd-head'))]];   // v1500：頭の見る所の行は付けない
   adviceLines.forEach(l => lines.push(tokens(l, tone)));
-  lines.push([tk(T['advc-' + tone + '-' + sd + '-' + m + '-' + i])]);
+  if (m !== 'n') { lines.push([tk(T['advc-' + tone + '-' + sd + '-' + m + '-' + i])]); }   // ノーマルの終わりの一言は付けない
   return lines;
 }
 function each(cb) {   // 全組み合わせを回して cb(結果, 条件) を呼ぶ
@@ -66,7 +66,7 @@ function each(cb) {   // 全組み合わせを回して cb(結果, 条件) を�
     const sc = scenarios(vk), list = sd === 'a' ? sc.A : sc.D;
     for (let i = 0; i < 3; i++) list.forEach((ls, k) => {
       const lines = build(ls, tone, sd, m, vk, i);
-      cb(C.advTalk(lines, tone, dial), { tone: tone, dial: dial, m: m, sd: sd, vk: vk, i: i, k: k, lines: lines });
+      cb(C.advTalk(lines, tone, dial, m !== 'n'), { tone: tone, dial: dial, m: m, sd: sd, vk: vk, i: i, k: k, lines: lines });
     });
   })))));
 }
