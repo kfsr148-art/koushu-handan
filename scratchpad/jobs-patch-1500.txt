@@ -1,0 +1,43 @@
+// node patch1500.js <root>：助言の話の順と繰り返しの直し（v1500・y1116-13）を、本体・シムへ当てる
+const fs = require('fs'); const root = process.argv[2];
+function edit(file, fn) {
+  const p = root + '/' + file; const raw = fs.readFileSync(p, 'utf8'); const crlf = raw.indexOf('\r\n') >= 0;
+  let s = raw.split('\r\n').join('\n');
+  const rep = (a, b) => { if (s.split(a).length !== 2) throw new Error(file + ' uniq ' + a.slice(0, 70)); s = s.replace(a, () => b); };
+  fn(rep); fs.writeFileSync(p, crlf ? s.split('\n').join('\r\n') : s);
+}
+// ---- 本体 ----
+edit('koushu-handan.html', rep => {
+  // 攻めの助言：訳（その人格の見立て）を先頭へ。手の遠さは一度だけ（「上がれない」の時は巡目を足さない）。定石が「切る」を重ねる二つ（重なり・近く）は付けない
+  rep("      const l1 = [];   // v1491：頭の「攻めなのだ。」は adviceFor が一番最初に置く\n      if(cut && cut.code && ADV_TEXT['advt-' + cut.code]) l1.push({ t: cut.code }, 'adva-from'); else l1.push('adva-weak');\n      if(sh >= 2){ const T = { 2: 3, 3: 6, 4: 7, 5: 8 }[sh] || 8; l1.push('adva-t' + T); }\n      l1.push('adva-w-' + key);\n      const lines = [l1];\n",
+      "      const l1 = [];   // v1491：頭の「攻めなのだ。」は adviceFor が一番最初に置く\n      const hasCut = !!(cut && cut.code && ADV_TEXT['advt-' + cut.code]);   // v1500：話の順は 結論→訳→やる事→ひと言。訳（見立て）を先に、切る牌と巡目をひと続きに\n      if(hasCut) l1.push({ t: cut.code }, 'adva-from'); else l1.push('adva-weak');\n      if(hasCut && sh >= 2){ const T = { 2: 3, 3: 6, 4: 7, 5: 8 }[sh] || 8; l1.push('adva-t' + T); }   // 「上がれない」と「一向聴」で手の遠さを二度言わない\n      const lines = [['adva-w-' + key], l1];\n");
+  rep("      else if(F.quad || F.trip3 >= 2) lines.push(['adva-s-kasa']);\n", "      else if(F.quad || F.trip3 >= 2) { /* v1500：「重なった一組を先に切る」は上の「切る」と同じ事なので足さない */ }\n");
+  rep("      else if(F.doraSoba) lines.push(['adva-s-soba']);\n      else if(F.honorPairs.length) lines.push(['adva-s-jihai']);\n", "      else if(F.doraSoba) { /* v1500：「ドラの近くの牌は残して遠い牌から切る」は上の「切る」と同じ事なので足さない */ }\n      else if(F.honorPairs.length) lines.push(['adva-s-jihai']);\n");
+  rep("    else if(F.doraSoba) lines.push(['advd-s-soba']);\n", "    /* v1500：守りの「ドラの近くの牌から先に切る」は上の切り方と同じ事なので足さない */\n");
+  // 場面の文（役が無い）は「上がれない」と言うので、巡目（一向聴）を足さない
+  rep("        if(tp && ADV_TEXT[tp]) lines.push([tp]);\n", "        if(tp && ADV_TEXT[tp] && sc.info.scene !== 'nashi') lines.push([tp]);   // v1500：「役が無くて上がれない」と言う文のあとに、一向聴で手の遠さを二度言わない\n");
+  // 組み立て：頭の見る所の行は付けない（訳が言うので）。終わりの一言は、攻め・守りをもう一度言うノーマルでは付けない
+  rep("    const oi = advPickOne('o-' + tone + '-' + sd + '-' + m), ci = advPickOne('c-' + tone + '-' + sd + '-' + m);\n    const toks = [[ctx.attack ? 'adva-head' : 'advd-head'], ['advk-' + ctx.vkey, 'advs-' + tone + '-' + sd + '-' + m + '-' + oi]].concat(ctx.lines, [['advc-' + tone + '-' + sd + '-' + m + '-' + ci]]);\n",
+      "    const toks = [[ctx.attack ? 'adva-head' : 'advd-head']].concat(ctx.lines);   // v1500：結論→訳→やる事→ひと言。頭の「〇から見る」は、訳が同じ事を言うので付けない\n    if(m !== 'n'){ toks.push(['advc-' + tone + '-' + sd + '-' + m + '-' + advPickOne('c-' + tone + '-' + sd + '-' + m)]); }   // ノーマルの終わりの一言は攻め・守りをもう一度言うので付けない（デレ・ツンは励ましの一言として残す）\n");
+});
+edit('koushu-handan.html', rep => {
+  rep("const r = advTalk(lines, tone, advDial()), audio = [];", "const r = advTalk(lines, tone, advDial(), m !== 'n'), audio = [];");
+});
+// ---- 核（つなぎの置き方：頭の次の行から。終わりの一言が付く時だけ最後の行の前に「だから」） ----
+edit('advice-tone-core.js', rep => {
+  rep('function advTalk(lines, tone, dial) {', 'function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言の行が付いているか（v1500）');
+  rep("    if (li >= 2) { const slot = (li === last) ? 3 : (li === 2 ? 0 : 1 + ((li - 3) % 2));", "    if (li >= 1) { const slot = (hasEnd && li === last) ? 3 : (li === 1 ? 0 : 1 + ((li - 2) % 2));");   // v1500：頭の見る所の行を無くしたので、つなぎは頭の次の行（訳）から
+});
+// ---- シム（本体の組み立てと同じ並び） ----
+edit('advice-talk-sim.js', rep => {
+  rep("  A.push([[{ t: 'm7' }, 'adva-from', 'adva-t6', w]]);\n  ['adva-s-nito', 'adva-s-kasa', 'adva-s-nosafe', 'adva-s-ukai', 'adva-s-soba', 'adva-s-jihai'].forEach(s => A.push([[{ t: 'm7' }, 'adva-from', 'adva-t6', w], [s]]));\n  A.push([['adva-weak', 'adva-t3', w]]);\n",
+      "  A.push([[w], [{ t: 'm7' }, 'adva-from', 'adva-t6']]);\n  ['adva-s-nito', 'adva-s-nosafe', 'adva-s-ukai', 'adva-s-jihai'].forEach(s => A.push([[w], [{ t: 'm7' }, 'adva-from', 'adva-t6'], [s]]));   // v1500：重なり・近く（切るを重ねる定石）は付けない\n  A.push([[w], ['adva-weak']]);   // v1500：「上がれない」と言うので巡目は足さない\n");
+  rep("  A.push([[SCENES[0]], ['adva-t3']]);\n", "  A.push([[SCENES[0]]]);   // v1500：「役が無くて上がれない」の後に一向聴は足さない\n");
+  rep("  D.push([['advd-w-far'], ['advd-cut-a', { t: 'm7' }, 'advd-cut', { t: 'P' }, 'advd-keep'], ['advd-s-soba'], ['advd-riichi'], ['advd-r2a', { t: 'P' }, 'advd-r2b']]);\n", "  D.push([['advd-w-far'], ['advd-cut-a', { t: 'm7' }, 'advd-cut', { t: 'P' }, 'advd-keep'], ['advd-riichi'], ['advd-r2a', { t: 'P' }, 'advd-r2b']]);   // v1500：近くの牌から切る定石は付けない\n");
+  rep("  const lines = [[tk(C.advToneText(tone, sd === 'a' ? 'adva-head' : 'advd-head'))], [{ t: T['advk-' + vk], term: false }, tk(T['advs-' + tone + '-' + sd + '-' + m + '-' + i])]];\n  adviceLines.forEach(l => lines.push(tokens(l, tone)));\n  lines.push([tk(T['advc-' + tone + '-' + sd + '-' + m + '-' + i])]);\n",
+      "  const lines = [[tk(C.advToneText(tone, sd === 'a' ? 'adva-head' : 'advd-head'))]];   // v1500：頭の見る所の行は付けない\n  adviceLines.forEach(l => lines.push(tokens(l, tone)));\n  if (m !== 'n') { lines.push([tk(T['advc-' + tone + '-' + sd + '-' + m + '-' + i])]); }   // ノーマルの終わりの一言は付けない\n");
+});
+edit('advice-talk-sim.js', rep => {
+  rep("cb(C.advTalk(lines, tone, dial), {", "cb(C.advTalk(lines, tone, dial, m !== 'n'), {");
+});
+console.log('patched', root);
