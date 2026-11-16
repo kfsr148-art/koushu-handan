@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1501">
+<html lang="ja" data-ver="1502">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1396,7 +1396,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1501</div>
+  <div id="verTag">v1502</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -2387,7 +2387,6 @@ const ADV_OMO = {
   }
 };
 function advHasTriple(text) { const ss = text.match(/[^。！？]*[。！？]/g) || []; let run = 1; for (let k = 1; k < ss.length; k++) { if (ss[k].slice(-4) === ss[k - 1].slice(-4)) { run++; if (run >= 3) { return true; } } else { run = 1; } } return false; }   // 同じ語尾が三文続くか（面白みの一言を足して続くなら、足さない）
-function advOmoText(dial, tone, scene, i) { const o = ADV_OMO[dial + ':' + tone]; return (o && o[scene]) ? (o[scene][i] || '') : ''; }
 function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言の行が付いているか（v1500）
   const polite = !!ADV_POLITE[tone], units = [];
   lines.forEach(function (l, li) { l.forEach(function (tk, ti) { if (tk.term && !tk.lit) { units.push([li, ti]); } }); });   // lit＝面白みの一言（書いた字のまま。方言を通さない・v1501）
