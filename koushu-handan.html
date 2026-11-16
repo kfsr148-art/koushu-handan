@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1499">
+<html lang="ja" data-ver="1500">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1396,7 +1396,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1499</div>
+  <div id="verTag">v1500</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -2358,7 +2358,7 @@ const ADV_CONN_DIAL = {
 function advConn(tone, dial, slot) { const t = (dial && ADV_CONN_DIAL[dial]) ? ADV_CONN_DIAL[dial] : (ADV_CONN_TONE[tone] || ADV_CONN_TONE.blunt); return t[slot]; }
 /* lines＝行の並び。行は部品の並び（{t:その人格の字, term:文の終わりで終わるか}）。lines[0]＝頭の攻め／守り、lines[1]＝頭の一言、最後の行＝終わりの一言、間＝助言の行。
    返すのは、並べる物の列（つなぎ {conn:true,slot,text}／部品 {li,ti,text,v,changed}）と、続けた字。 */
-function advTalk(lines, tone, dial) {
+function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言の行が付いているか（v1500）
   const polite = !!ADV_POLITE[tone], units = [];
   lines.forEach(function (l, li) { l.forEach(function (tk, ti) { if (tk.term) { units.push([li, ti]); } }); });
   const chara = dial ? (ADV_CHARA[dial] && ADV_CHARA[dial][tone]) : null;
@@ -2366,7 +2366,7 @@ function advTalk(lines, tone, dial) {
   units.forEach(function (u, k) { pv[u[0] + ',' + u[1]] = dial ? plan[k] : -1; });
   const items = [], last = lines.length - 1, ends4 = []; let text = '';
   lines.forEach(function (l, li) {
-    if (li >= 2) { const slot = (li === last) ? 3 : (li === 2 ? 0 : 1 + ((li - 3) % 2)); let c = advConn(tone, dial, slot); if (chara && slot === 0) { c = chara.k + '、'; } items.push({ conn: true, slot: slot, text: c }); text += c; }
+    if (li >= 1) { const slot = (hasEnd && li === last) ? 3 : (li === 1 ? 0 : 1 + ((li - 2) % 2)); let c = advConn(tone, dial, slot); if (chara && slot === 0) { c = chara.k + '、'; } items.push({ conn: true, slot: slot, text: c }); text += c; }
     l.forEach(function (tk, ti) {
       const v = (pv[li + ',' + ti] === undefined) ? (dial ? 0 : -1) : pv[li + ',' + ti];   // 方言ありは、文の終わりを持たない部品の中の文にも人物の語尾を付ける（0から）
       let base = (v >= 0) ? tk.t.replace(/、(?:ウィ|モナミ)(?=[。！？])/g, '') : tk.t;   // 方言の世界の人物は、外国語の呼びかけを言わない
@@ -2521,15 +2521,15 @@ function advDecodeWav(ab) {
       if(F.catN >= 4) return withT([['adva-neko-a', { n: Math.min(13, F.catN) }, 'adva-neko-b'], [TEI, 'adva-neko-c']]);
       const cut = pickCutTile(a, tiles);
       const l1 = [];   // v1491：頭の「攻めなのだ。」は adviceFor が一番最初に置く
-      if(cut && cut.code && ADV_TEXT['advt-' + cut.code]) l1.push({ t: cut.code }, 'adva-from'); else l1.push('adva-weak');
-      if(sh >= 2){ const T = { 2: 3, 3: 6, 4: 7, 5: 8 }[sh] || 8; l1.push('adva-t' + T); }
-      l1.push('adva-w-' + key);
-      const lines = [l1];
+      const hasCut = !!(cut && cut.code && ADV_TEXT['advt-' + cut.code]);   // v1500：話の順は 結論→訳→やる事→ひと言。訳（見立て）を先に、切る牌と巡目をひと続きに
+      if(hasCut) l1.push({ t: cut.code }, 'adva-from'); else l1.push('adva-weak');
+      if(hasCut && sh >= 2){ const T = { 2: 3, 3: 6, 4: 7, 5: 8 }[sh] || 8; l1.push('adva-t' + T); }   // 「上がれない」と「一向聴」で手の遠さを二度言わない
+      const lines = [['adva-w-' + key], l1];
       if(F.pairs2 >= 3 && F.trip >= 1) lines.push(['adva-s-nito']);
-      else if(F.quad || F.trip3 >= 2) lines.push(['adva-s-kasa']);
+      else if(F.quad || F.trip3 >= 2) { /* v1500：「重なった一組を先に切る」は上の「切る」と同じ事なので足さない */ }
       else if(sh >= 0 && sh <= 2 && F.def === 0) lines.push(['adva-s-nosafe']);
       else if(F.doraFloat) lines.push(['adva-s-ukai']);
-      else if(F.doraSoba) lines.push(['adva-s-soba']);
+      else if(F.doraSoba) { /* v1500：「ドラの近くの牌は残して遠い牌から切る」は上の「切る」と同じ事なので足さない */ }
       else if(F.honorPairs.length) lines.push(['adva-s-jihai']);
       return lines;
     }
@@ -2558,7 +2558,7 @@ function advDecodeWav(ab) {
     if(F.pairs2 >= 3 && F.trip >= 1) lines.push(['advd-s-nito']);
     else if(F.honorPairs.length) lines.push([{ t: F.honorPairs[0] }, 'advd-s-jihai']);   // v1489：「安全牌として」を重ねず、定石も付けない
     else if(F.doraFloat) lines.push(['advd-s-ukai']);
-    else if(F.doraSoba) lines.push(['advd-s-soba']);
+    /* v1500：守りの「ドラの近くの牌から先に切る」は上の切り方と同じ事なので足さない */
     lines.push(['advd-riichi']);   // v1489：リーチの行は短い二文に分ける
     lines.push(keep.length ? ['advd-r2a', { t: keep[0] }, 'advd-r2b'] : ['advd-r2c']);
     return lines;
@@ -2620,11 +2620,11 @@ function advDecodeWav(ab) {
   /* ctx={attack, vkey, lines(頭・終わりを除く助言の部品の行), scene}。字と声を同じ並びから作る：攻め／守り→頭の一言→助言→終わりの一言 */
   function advCompose(ctx, tone){
     const sd = ctx.attack ? 'a' : 'd', m = advMode();
-    const oi = advPickOne('o-' + tone + '-' + sd + '-' + m), ci = advPickOne('c-' + tone + '-' + sd + '-' + m);
-    const toks = [[ctx.attack ? 'adva-head' : 'advd-head'], ['advk-' + ctx.vkey, 'advs-' + tone + '-' + sd + '-' + m + '-' + oi]].concat(ctx.lines, [['advc-' + tone + '-' + sd + '-' + m + '-' + ci]]);
+    const toks = [[ctx.attack ? 'adva-head' : 'advd-head']].concat(ctx.lines);   // v1500：結論→訳→やる事→ひと言。頭の「〇から見る」は、訳が同じ事を言うので付けない
+    if(m !== 'n'){ toks.push(['advc-' + tone + '-' + sd + '-' + m + '-' + advPickOne('c-' + tone + '-' + sd + '-' + m)]); }   // ノーマルの終わりの一言は攻め・守りをもう一度言うので付けない（デレ・ツンは励ましの一言として残す）
     const lines = toks.map(function(l){ let o = []; l.forEach(function(t){ o = o.concat(advParts(t, tone)); }); return o; });
     /* v1495：最初の「攻め／守り」から終わりの一言まで、選んだ人格が一人でひと続きに話す一つの話にする（つなぎの言葉・方言を二、三文に一回・語尾の連続を切る）。字と声は同じ並びから作る。 */
-    const r = advTalk(lines, tone, advDial()), audio = []; let prevConn = false;
+    const r = advTalk(lines, tone, advDial(), m !== 'n'), audio = []; let prevConn = false;
     r.items.forEach(function(it){
       if(it.conn){ audio.push({ name: advDialVoice(it.text), opt: true, gap: audio.length ? 0.15 : 0 }); prevConn = true; return; }
       const p = lines[it.li][it.ti];
@@ -2654,7 +2654,7 @@ function advDecodeWav(ab) {
         const tp = advRetreatPart(a, attack), nm = sceneVoiceName(a, tiles);   // 線が出る手は、場面の文のあとに巡目の一文をつなぐ（v1487）
         if(!nm) return { key: sc.key, text: sc.text, audio: null };
         key = sc.key; scene = nm; lines = [[{ sc: sc.info, nm: nm }]];
-        if(tp && ADV_TEXT[tp]) lines.push([tp]);
+        if(tp && ADV_TEXT[tp] && sc.info.scene !== 'nashi') lines.push([tp]);   // v1500：「役が無くて上がれない」と言う文のあとに、一向聴で手の遠さを二度言わない
       } else {
         const sorted = watchSortHand(tiles.slice());
         const catN = tiles.filter(function(t){ return t.suit === 'cat'; }).length;

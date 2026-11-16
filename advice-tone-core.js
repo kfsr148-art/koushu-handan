@@ -338,7 +338,7 @@ const ADV_CONN_DIAL = {
 function advConn(tone, dial, slot) { const t = (dial && ADV_CONN_DIAL[dial]) ? ADV_CONN_DIAL[dial] : (ADV_CONN_TONE[tone] || ADV_CONN_TONE.blunt); return t[slot]; }
 /* lines＝行の並び。行は部品の並び（{t:その人格の字, term:文の終わりで終わるか}）。lines[0]＝頭の攻め／守り、lines[1]＝頭の一言、最後の行＝終わりの一言、間＝助言の行。
    返すのは、並べる物の列（つなぎ {conn:true,slot,text}／部品 {li,ti,text,v,changed}）と、続けた字。 */
-function advTalk(lines, tone, dial) {
+function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言の行が付いているか（v1500）
   const polite = !!ADV_POLITE[tone], units = [];
   lines.forEach(function (l, li) { l.forEach(function (tk, ti) { if (tk.term) { units.push([li, ti]); } }); });
   const chara = dial ? (ADV_CHARA[dial] && ADV_CHARA[dial][tone]) : null;
@@ -346,7 +346,7 @@ function advTalk(lines, tone, dial) {
   units.forEach(function (u, k) { pv[u[0] + ',' + u[1]] = dial ? plan[k] : -1; });
   const items = [], last = lines.length - 1, ends4 = []; let text = '';
   lines.forEach(function (l, li) {
-    if (li >= 2) { const slot = (li === last) ? 3 : (li === 2 ? 0 : 1 + ((li - 3) % 2)); let c = advConn(tone, dial, slot); if (chara && slot === 0) { c = chara.k + '、'; } items.push({ conn: true, slot: slot, text: c }); text += c; }
+    if (li >= 1) { const slot = (hasEnd && li === last) ? 3 : (li === 1 ? 0 : 1 + ((li - 2) % 2)); let c = advConn(tone, dial, slot); if (chara && slot === 0) { c = chara.k + '、'; } items.push({ conn: true, slot: slot, text: c }); text += c; }
     l.forEach(function (tk, ti) {
       const v = (pv[li + ',' + ti] === undefined) ? (dial ? 0 : -1) : pv[li + ',' + ti];   // 方言ありは、文の終わりを持たない部品の中の文にも人物の語尾を付ける（0から）
       let base = (v >= 0) ? tk.t.replace(/、(?:ウィ|モナミ)(?=[。！？])/g, '') : tk.t;   // 方言の世界の人物は、外国語の呼びかけを言わない
