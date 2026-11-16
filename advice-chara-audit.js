@@ -10,9 +10,10 @@
 'use strict';
 const S = require('./advice-talk-sim.js');
 const C = require('./advice-tone-core.js');
-let total = 0, runs = 0; const bad = {}, miss = { c: 0, k: 0 };
+let total = 0, runs = 0, ovl = 0; const bad = {}, miss = { c: 0, k: 0 };
 S.each((r, c) => {
   total++;
+  if (c.omo && C.advOmoOverlaps(c.omoScene, c.ids)) { ovl++; }   // 一言と助言の中身の意味の重なり（v1503）
   const ss = r.text.split(/(?<=[。！？])/).filter(Boolean); let run = 1;
   for (let k = 1; k < ss.length; k++) { if (ss[k].slice(-4) === ss[k - 1].slice(-4)) { run++; if (run === 3) runs++; } else { run = 1; } }
   if (!c.dial) return;
@@ -30,6 +31,11 @@ S.each((r, c) => {
   });
 });
 const keys = Object.keys(bad);
-console.log('組み合わせ ' + total + '通り／同じ語尾が三文続く ' + runs + '件／人物から外れた言葉 ' + keys.length + '種／呼びかけが出ない ' + miss.c + '件／口癖が出ない ' + miss.k + '件');
+let omoBad = 0; const seenT = {};   // 一言：人物の数・場面×五通り・形・ほかの人物と同じ文（v1503）
+Object.keys(C.ADV_OMO).forEach(k => ['dora', 'far', 'honor', 'guard', 'special', 'nick'].forEach(s => { const a = C.ADV_OMO[k][s]; if (!a || a.length !== 5) { omoBad++; console.log('  一言が五通りで無い ' + k + ' ' + s); return; } a.forEach(x => { if (seenT[x]) { omoBad++; console.log('  同じ文 ' + x + ' ← ' + seenT[x] + ' / ' + k + ' ' + s); } seenT[x] = k + ' ' + s; if (s === 'nick' ? (!/^、/.test(x) || /[。！？]$/.test(x)) : !/[。！？]$/.test(x)) { omoBad++; console.log('  形が違う ' + k + ' ' + s + ': ' + x); } }); }));
+if (Object.keys(C.ADV_OMO).length !== 56) { omoBad++; console.log('  一言の人物が56人でない ' + Object.keys(C.ADV_OMO).length); }
+let ovlDead = 0; { const TT = require('./voice-advice-catalog.js').T; Object.keys(C.ADV_OMO_OVERLAP).forEach(sn => { if (!Object.keys(TT).some(id => C.ADV_OMO_OVERLAP[sn].test(id))) { ovlDead++; console.log('  重なりの印が台帳に無い ' + sn); } }); }
+console.log('一言 ' + Object.keys(C.ADV_OMO).length + '人・' + Object.keys(seenT).length + '文／形・重複の指摘 ' + omoBad);
+console.log('組み合わせ ' + total + '通り／同じ語尾が三文続く ' + runs + '件／人物から外れた言葉 ' + keys.length + '種／一言と助言の重なり ' + ovl + '件／呼びかけが出ない ' + miss.c + '件／口癖が出ない ' + miss.k + '件');
 keys.slice(0, 40).forEach(k => console.log('  ' + k));
-process.exit(runs === 0 && keys.length === 0 && miss.c === 0 && miss.k === 0 ? 0 : 1);
+process.exit(runs === 0 && ovl === 0 && omoBad === 0 && ovlDead === 0 && keys.length === 0 && miss.c === 0 && miss.k === 0 ? 0 : 1);
