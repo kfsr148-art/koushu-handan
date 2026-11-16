@@ -50,15 +50,20 @@ function tokens(l, tone) {   // 助言の行の部品 → {t,term} の列
       else { out.push({ t: x.yomi, term: false }); out.push({ t: 'が', term: false }); out.push({ t: String(x.n), term: false }); out.push(tk(s.some[0])); out.push({ t: x.yomi, term: false }); out.push(tk(s.some[1])); }
       return;
     }
+    if (t.lit !== undefined) { out.push({ t: t.lit, term: false, lit: true }); return; }
     if (t.n !== undefined) { out.push({ t: String(t.n), term: false }); return; }
     out.push({ t: TILE[t.t] || t.t, term: false });
   });
   return out;
 }
-function build(adviceLines, tone, sd, m, vk, i, omoText) {
+function cutPos(ls) { for (let a = 0; a < ls.length; a++) { for (let b = 0; b < ls[a].length - 1; b++) { const t = ls[a][b], nx = ls[a][b + 1]; if (t && typeof t === 'object' && t.t !== undefined && (nx === 'adva-from' || nx === 'advd-cut')) { return [a, b]; } } } return null; }   // 切る牌を言う所（牌の名の直後・v1503）
+function build(adviceLines, tone, sd, m, vk, i, om) {   // om＝{text, kind}（面白みの一言。front＝助言の前／inline＝牌の名の直後／end＝最後）
   const lines = [[tk(C.advToneText(tone, sd === 'a' ? 'adva-head' : 'advd-head'))]];   // v1500：頭の見る所の行は付けない
-  adviceLines.forEach(l => lines.push(tokens(l, tone)));
-  if (omoText) { lines.push([{ t: omoText, term: false, lit: true }]); }   // v1501：代表三人の面白みの一言
+  const al = adviceLines.map(l => l.slice());
+  if (om && om.kind === 'inline') { const cp = cutPos(al); if (cp) { al[cp[0]].splice(cp[1] + 1, 0, { lit: om.text }); } }
+  if (om && om.kind === 'front') { lines.push([{ t: om.text, term: false, lit: true }]); }
+  al.forEach(l => lines.push(tokens(l, tone)));
+  if (om && om.kind === 'end') { lines.push([{ t: om.text, term: false, lit: true }]); }
   if (m !== 'n') { lines.push([tk(T['advc-' + tone + '-' + sd + '-' + m + '-' + i])]); }   // ノーマルの終わりの一言は付けない
   return lines;
 }
@@ -69,7 +74,17 @@ function each(cb) {   // 全組み合わせを回して cb(結果, 条件) を�
       const lines = build(ls, tone, sd, m, vk, i);
       cb(C.advTalk(lines, tone, dial, m !== 'n'), { tone: tone, dial: dial, m: m, sd: sd, vk: vk, i: i, k: k, lines: lines });
       const ob = C.ADV_OMO[dial + ':' + tone];
-      if (ob) { Object.keys(ob).forEach(sn => ob[sn].forEach(tx => { const l2 = build(ls, tone, sd, m, vk, i, tx), r2 = C.advTalk(l2, tone, dial, m !== 'n'); if (C.advHasTriple(r2.text)) { return; } cb(r2, { tone: tone, dial: dial, m: m, sd: sd, vk: vk, i: i, k: k, lines: l2, omo: tx }); })); }
+      if (ob && i === 0 && (vk === VK[0] || vk === VK[3])) {   // 一言付きは、見方を二つ・くじ一つに絞って回す（量が多いため）
+        Object.keys(ob).forEach(sn => {
+          if (sn === 'nick' && !cutPos(ls)) { return; }
+          if (C.advOmoOverlaps(sn, ls)) { return; }
+          ob[sn].forEach(tx => {
+            const l2 = build(ls, tone, sd, m, vk, i, { text: tx, kind: C.ADV_OMO_KIND[sn] }), r2 = C.advTalk(l2, tone, dial, m !== 'n');
+            if (C.advHasTriple(r2.text)) { return; }
+            cb(r2, { tone: tone, dial: dial, m: m, sd: sd, vk: vk, i: i, k: k, lines: l2, omo: tx, omoScene: sn, ids: ls });
+          });
+        });
+      }
     });
   })))));
 }
