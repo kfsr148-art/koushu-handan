@@ -1,5 +1,10 @@
 [
     {
+        "title":  "✅ 終わりました（返事不要）",
+        "time":  1794793929,
+        "message":  "v1498 を stable に進めた\nstable を e95f8abc（v1496）から 722d65c9（v1498）へ進め、push した（強制押し・タグのみ）。雲の速い検査と配信は全PASS・success 済み。\n実測: git log -1 stable = 722d65c9 v1498"
+    },
+    {
         "title":  "😺 現在も順調にゃ",
         "time":  1794787214,
         "message":  "🔗 いまの線: https://claude.ai/code/session_012aGgAFf5sHMiT4QraMojQR\n状態: 手待ち / v1498 の雲の検査と配信の結果確認\n台帳: 残り 48件（返事パネルの頭、連絡なしの時の寝ている白猫の横に「接続不良、、、・受付ページ（カメラで撮る／写真を選ぶの画面）が出ている時に、ずんだもんの声が鳴る・助言を全部の判定に出す・全部の判定に助言を出す件を、守りを細かくする形に直す・全部の判定に助言を出す件を、攻めも細かくした形に直す・助言の声の読みを直す）\n見張り: 生存○ 見張り○ 片付け○ 受信箱○\n使用量: セッション 0% / 週全体 61% / 週Fable 62%\n起こし直し: 今日 1回（固まり 1・重さ 0・0本 0） / 最後に落ちた刻 04:42\n訴え: 7件（subj-gap・first・step-slow・done-swept・pub-late・push-defer・done-stale-note）… pipe-warn.log"
@@ -168,10 +173,5 @@
         "title":  "👀 見てください（返事不要）",
         "time":  1794751810,
         "message":  "この間にまとまった知らせ 2本\n\n［✅ 終わりました（返事不要）］\nv1496 納品報告（雲の速い検査PASS）\n（札が立たないまま次の仕事へ移っていた分）\n完了: cloud-check-fast（data-ver 1496）全PASS・check.yml success を確認。報告を reports/y1115-53.md へ残して push、kumo-set clear 済み\nファイル: reports/y1115-53.md\n実機: 人格の声で括弧付きの語が読み一回だけ／panel の版の字が v155\n\n［👀 見てください（返事不要）］\npanel v156 ヨシした数の欄を外す\n返事パネルの「ヨシした数（ヨシ済み確認）」の箱（#copiedBox・paintCopied・押下処理・CSS）を外し panel v156 を push（89638e1f）。v1496 の check.yml は success。終わりました箱と上の一覧は触っていない。\nファイル: panel.html, panel-ver.txt\n実測: 構文検査 OK／pre-push NG 0件\n実機: パネルの下に「ヨシした数 N件」の箱が出ない／「✅ 終わりました N件」の箱は残る／版の字が panel v156"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1794751345,
-        "message":  "この間にまとまった知らせ 2本\n\n［👀 見てください（返事不要）］\nv1496 納品報告（雲の速い検査PASS）\ncloud-check-fast（data-ver 1496）全PASS・check.yml success を確認。報告を reports/y1115-53.md へ残して push、kumo-set clear 済み\nファイル: reports/y1115-53.md\n実機: 人格の声で括弧付きの語が読み一回だけ／panel の版の字が v155\n\n［✅ 終わりました（返事不要）］\n写せます（3件）"
     }
 ]
