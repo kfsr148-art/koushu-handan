@@ -55,9 +55,10 @@ function tokens(l, tone) {   // 助言の行の部品 → {t,term} の列
   });
   return out;
 }
-function build(adviceLines, tone, sd, m, vk, i) {
+function build(adviceLines, tone, sd, m, vk, i, omoText) {
   const lines = [[tk(C.advToneText(tone, sd === 'a' ? 'adva-head' : 'advd-head'))]];   // v1500：頭の見る所の行は付けない
   adviceLines.forEach(l => lines.push(tokens(l, tone)));
+  if (omoText) { lines.push([{ t: omoText, term: false, lit: true }]); }   // v1501：代表三人の面白みの一言
   if (m !== 'n') { lines.push([tk(T['advc-' + tone + '-' + sd + '-' + m + '-' + i])]); }   // ノーマルの終わりの一言は付けない
   return lines;
 }
@@ -67,6 +68,8 @@ function each(cb) {   // 全組み合わせを回して cb(結果, 条件) を�
     for (let i = 0; i < 3; i++) list.forEach((ls, k) => {
       const lines = build(ls, tone, sd, m, vk, i);
       cb(C.advTalk(lines, tone, dial, m !== 'n'), { tone: tone, dial: dial, m: m, sd: sd, vk: vk, i: i, k: k, lines: lines });
+      const ob = C.ADV_OMO[dial + ':' + tone];
+      if (ob) { Object.keys(ob).forEach(sn => ob[sn].forEach(tx => { const l2 = build(ls, tone, sd, m, vk, i, tx), r2 = C.advTalk(l2, tone, dial, m !== 'n'); if (C.advHasTriple(r2.text)) { return; } cb(r2, { tone: tone, dial: dial, m: m, sd: sd, vk: vk, i: i, k: k, lines: l2, omo: tx }); })); }
     });
   })))));
 }
