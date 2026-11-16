@@ -800,7 +800,7 @@ const ADV_OMO_OVERLAP = {
   honor: /^(adva-s-jihai|advd-s-jihai|advd-w-honor)$/,
   guard: /^advd-w-pair$/
 };
-function advOmoOverlaps(scene, lines) {   // lines＝助言の部品の行（id 文字列・場面の材料 {sc}・数・牌）
+function advOmoOverlaps(scene, lines) {   // lines＝助言の部品の行（id 文字列・場面の材料の塊・数・牌）
   const re = ADV_OMO_OVERLAP[scene]; let hit = false;
   lines.forEach(function (l) { l.forEach(function (t) { if (typeof t === 'string') { if (re && re.test(t)) { hit = true; } } else if (t.sc && scene === 'far' && t.sc.scene === 'nashi') { hit = true; } }); });
   return hit;
