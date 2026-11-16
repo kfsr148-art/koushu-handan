@@ -1,7 +1,8 @@
 {
-    "at":  "2026-11-16 12:30:21",
+    "at":  "2026-11-16 14:50:31",
     "kinds":  [
-
+                  "done-stale-note",
+                  "pub-late"
               ],
     "ntfyDown":  false,
     "text":  ""
