@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1500">
+<html lang="ja" data-ver="1501">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1396,7 +1396,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1500</div>
+  <div id="verTag">v1501</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -2358,9 +2358,39 @@ const ADV_CONN_DIAL = {
 function advConn(tone, dial, slot) { const t = (dial && ADV_CONN_DIAL[dial]) ? ADV_CONN_DIAL[dial] : (ADV_CONN_TONE[tone] || ADV_CONN_TONE.blunt); return t[slot]; }
 /* lines＝行の並び。行は部品の並び（{t:その人格の字, term:文の終わりで終わるか}）。lines[0]＝頭の攻め／守り、lines[1]＝頭の一言、最後の行＝終わりの一言、間＝助言の行。
    返すのは、並べる物の列（つなぎ {conn:true,slot,text}／部品 {li,ti,text,v,changed}）と、続けた字。 */
+/* 代表三人の面白みの一言（v1501・y1117-0100 のヨシ）：武家の奥方様（bushi×french）・ずんだ組のこ（yoji×blunt）・大阪のいとはん（osaka×lady）だけ。
+   場面ごとに二通り。話の順の最後の「ひと言」の所へ、方言の変換を通さず書いた字のまま足す。場面の決め方と覚え（四回に一回は足さない・前と同じ文を続けない）は本体。 */
+const ADV_OMO = {
+  'bushi:french': {
+    dora: ['ドラをお切りになるのは、わたくし、少し寂しゅうございますけれど、お供いたしますわ。', 'ドラは名残惜しゅうございますが、旦那様のお決めになった事でございますもの。'],
+    far: ['手が遠いのは、いつものことでございます。今日も辛抱いたしますわ。', '遠回りも、武家の妻の務めでございますわ。'],
+    honor: ['古くから、東と發はつきものと申しますでしょう。まことかどうかは存じませんけれど。', '字牌は嫁入り道具のようなものと聞いております。ほんとうかどうかは存じませんが。'],
+    guard: ['わたくし、損な役回りでございますが、お守りはしっかり務めますわ。', '守りはいつも陰の仕事でございます。それでも、わたくしは構いませんの。'],
+    special: ['わたくし、麻雀は初めてでございますが、巡目の数え方ならそらで言えますの。', 'こう見えて、牌の数は台所で数え慣れておりますの。'],
+    nick: ['切る牌は、いわゆる文官の牌から、お選びなさいませ。', '数ばかりの牌は、足軽のようなもの。惜しまずお出しくださいませ。']
+  },
+  'yoji:blunt': {
+    dora: ['ドラを切るのは、ちょっとさびしいのだ。でも、がんばるのだよー。', 'ドラさん、ごめんなのだ。あとでありがとうって言うのだ。'],
+    far: ['手が遠いのは、いつものことなのだ。きょうも、がんばるのだよー。', 'ぜんぜん来ないのだ。でも、ぼくはあきらめないのだ。'],
+    honor: ['パパが言ってたのだ。東と發はなかよしなのだ。ぼく、信じてるのだよー。', '字の牌がいっぱいなのだ。ほんとはよく読めないのだ。'],
+    guard: ['ぼく、守るのはちょっと損な役なのだ。でも、がんばるのだよー。', 'まもるのは地味なのだ。でも、みんなのためなのだ。'],
+    special: ['ぼく、きのう四さいになったばかりなのに、ほんとはくわしいのだよー。', 'ぼく、牌の名前は、もうぜんぶ言えるのだ。たぶんなのだ。'],
+    nick: ['その牌は、ころころしたやつなのだ。さきに切るのだよー。', 'かどっこの牌から、そっと出すのだ。']
+  },
+  'osaka:lady': {
+    dora: ['ドラを切るのは、ちょっと寂しいですけど、ええですわ、あなた。', 'ドラは惜しいですなぁ。せやけど、うちは我慢しますえ。'],
+    far: ['手ぇが遠いのは、いつもの事ですわ。今日も気ぃ長う待ちますえ。', '遠いもんは遠いですわ。急いたかて、しゃあないですえ。'],
+    honor: ['東と發はつきもんて、昔から言いますのや。ほんまかどうかは知りまへんけど。', '字ぃの牌は縁起がええて、よう聞きますえ。当たるかどうかは知りまへん。'],
+    guard: ['うちが損な役でも、守りはきっちり務めますえ。', '守るんは地味ですけど、うちは嫌いやおまへん。'],
+    special: ['うち、お琴よりミナミの雀荘の方が通うてますのや。', 'お嬢はんやて言われますけど、牌はよう触ってますえ。'],
+    nick: ['その牌は、地味な牌ですわな。先に切りなはれ。', '端っこの牌は、遠慮のうお出しやす。']
+  }
+};
+function advHasTriple(text) { const ss = text.match(/[^。！？]*[。！？]/g) || []; let run = 1; for (let k = 1; k < ss.length; k++) { if (ss[k].slice(-4) === ss[k - 1].slice(-4)) { run++; if (run >= 3) { return true; } } else { run = 1; } } return false; }   // 同じ語尾が三文続くか（面白みの一言を足して続くなら、足さない）
+function advOmoText(dial, tone, scene, i) { const o = ADV_OMO[dial + ':' + tone]; return (o && o[scene]) ? (o[scene][i] || '') : ''; }
 function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言の行が付いているか（v1500）
   const polite = !!ADV_POLITE[tone], units = [];
-  lines.forEach(function (l, li) { l.forEach(function (tk, ti) { if (tk.term) { units.push([li, ti]); } }); });
+  lines.forEach(function (l, li) { l.forEach(function (tk, ti) { if (tk.term && !tk.lit) { units.push([li, ti]); } }); });   // lit＝面白みの一言（書いた字のまま。方言を通さない・v1501）
   const chara = dial ? (ADV_CHARA[dial] && ADV_CHARA[dial][tone]) : null;
   const plan = dial ? advDialPlanAll(units.length) : [], pv = {};
   units.forEach(function (u, k) { pv[u[0] + ',' + u[1]] = dial ? plan[k] : -1; });
@@ -2368,7 +2398,7 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
   lines.forEach(function (l, li) {
     if (li >= 1) { const slot = (hasEnd && li === last) ? 3 : (li === 1 ? 0 : 1 + ((li - 2) % 2)); let c = advConn(tone, dial, slot); if (chara && slot === 0) { c = chara.k + '、'; } items.push({ conn: true, slot: slot, text: c }); text += c; }
     l.forEach(function (tk, ti) {
-      const v = (pv[li + ',' + ti] === undefined) ? (dial ? 0 : -1) : pv[li + ',' + ti];   // 方言ありは、文の終わりを持たない部品の中の文にも人物の語尾を付ける（0から）
+      const v = tk.lit ? -1 : ((pv[li + ',' + ti] === undefined) ? (dial ? 0 : -1) : pv[li + ',' + ti]);   // 方言ありは、文の終わりを持たない部品の中の文にも人物の語尾を付ける（0から）
       let base = (v >= 0) ? tk.t.replace(/、(?:ウィ|モナミ)(?=[。！？])/g, '') : tk.t;   // 方言の世界の人物は、外国語の呼びかけを言わない
       if (v >= 0 && tone === 'french') { base = base.replace(/ようございます/g, 'いいです').replace(/でございません/g, 'ません').replace(/でございます/g, 'です').replace(/ございません/g, 'ません').replace(/ございます/g, 'です'); }   // マダムは「です」でそろえる（「ございます」と混ぜない・y1116-6）
       let vv = v, x = tk.t;
@@ -2624,10 +2654,17 @@ function advDecodeWav(ab) {
     if(m !== 'n'){ toks.push(['advc-' + tone + '-' + sd + '-' + m + '-' + advPickOne('c-' + tone + '-' + sd + '-' + m)]); }   // ノーマルの終わりの一言は攻め・守りをもう一度言うので付けない（デレ・ツンは励ましの一言として残す）
     const lines = toks.map(function(l){ let o = []; l.forEach(function(t){ o = o.concat(advParts(t, tone)); }); return o; });
     /* v1495：最初の「攻め／守り」から終わりの一言まで、選んだ人格が一人でひと続きに話す一つの話にする（つなぎの言葉・方言を二、三文に一回・語尾の連続を切る）。字と声は同じ並びから作る。 */
-    const r = advTalk(lines, tone, advDial(), m !== 'n'), audio = []; let prevConn = false;
+    const cands = advOmoPick(ctx, tone);   // v1501：代表三人だけ。ひと言の所（終わりの一言があればその前）へ、書いた字のままの一文を足す。同じ語尾が三文続くなら、もう一通り、それも続くなら足さない
+    let L = lines, r = advTalk(L, tone, advDial(), m !== 'n');
+    for(let ci = 0; ci < cands.length; ci++){
+      const L2 = lines.slice(); L2.splice(L2.length - (m !== 'n' ? 1 : 0), 0, [{ t: cands[ci], base: advDialVoice(cands[ci]), term: false, lit: true }]);
+      const r2 = advTalk(L2, tone, advDial(), m !== 'n');
+      if(!advHasTriple(r2.text)){ L = L2; r = r2; break; }
+    }
+    const audio = []; let prevConn = false;
     r.items.forEach(function(it){
       if(it.conn){ audio.push({ name: advDialVoice(it.text), opt: true, gap: audio.length ? 0.15 : 0 }); prevConn = true; return; }
-      const p = lines[it.li][it.ti];
+      const p = L[it.li][it.ti];
       if(!p.base){ prevConn = false; return; }
       const nm = it.changed ? advDialVoice(it.text) : p.base;
       audio.push({ name: nm, fb: it.changed ? p.base : undefined, gap: (audio.length === 0) ? 0 : ((it.ti === 0 && !prevConn) ? 0.15 : (nm === 'adv-teiseki' ? 0.15 : 0.07)) });
@@ -2644,6 +2681,35 @@ function advDecodeWav(ab) {
 
   /* 判定ごとの助言（三場面が当たれば sceneAdvice のまま）。失敗しても判定は止めない。
      返す物：{ key, text, audio:[{name,gap}] または null }。守りも返す（金の縁と一行は攻め・守りとも出る） */
+  /* 代表三人の面白みの一言（v1501・y1117-0100）：場面は上から順に見て最初に当たった一つ（国士・七対子→守りで浮いたドラを切る→手が遠い→字牌→守り→それ以外）。失敗しても助言は止めない */
+  function advOmoScene(a, tiles, attack){
+    try {
+      const F = advFacts(a, tiles), sh = a.baseShanten, dirs = a.directions || [];
+      if(a.kokushiSeen || dirs.some(function(d){ return /七対子/.test(d); })) return 'special';
+      if(!attack && F.doraFloat) return 'dora';
+      if(sh >= 3) return 'far';
+      if(F.honorPairs.length) return 'honor';
+      if(!attack) return 'guard';
+      return 'nick';
+    } catch(e){ return ''; }
+  }
+  /* 一言を選ぶ：四回に一回は足さない（回数で決める）。同じ場面で前に出した文は続けない（二通りの片方ずつ）。覚えは端末の koushu_adv_omo（読めなければ画面の間だけ）。同じ判定の中の組み直しでは選び直さない */
+  const _advOmoMem = { n: 0, last: {} }; let _advOmoLoaded = false;
+  function advOmoPick(ctx, tone){
+    const key = advDial() + ':' + tone, tb = ADV_OMO[key];
+    if(!tb || !ctx.omo || !tb[ctx.omo]) return '';
+    if(!ctx.omoPick) ctx.omoPick = {};
+    if(ctx.omoPick[key] === undefined){
+      if(!_advOmoLoaded){ _advOmoLoaded = true; try { const o = JSON.parse(localStorage.getItem('koushu_adv_omo') || '{}') || {}; if(typeof o.n === 'number') _advOmoMem.n = o.n; if(o.last) for(const k in o.last){ _advOmoMem.last[k] = o.last[k]; } } catch(e){} }
+      _advOmoMem.n++;
+      let i = -1;
+      if(_advOmoMem.n % 4 !== 0){ const lv = _advOmoMem.last[ctx.omo]; i = (lv === 0) ? 1 : (lv === 1) ? 0 : Math.floor(Math.random() * 2); _advOmoMem.last[ctx.omo] = i; }
+      try { localStorage.setItem('koushu_adv_omo', JSON.stringify(_advOmoMem)); } catch(e){}
+      ctx.omoPick[key] = i;
+    }
+    const i = ctx.omoPick[key];
+    return i < 0 ? [] : [tb[ctx.omo][i], tb[ctx.omo][1 - i]];   // 選んだ文・もう一通りの文（選んだ文を足すと同じ語尾が三文続く時の代わり）
+  }
   function adviceFor(a, tiles, attack){
     try {
       if(!a || a.tooMany) return null;
@@ -2661,7 +2727,7 @@ function advDecodeWav(ab) {
         key = advSpeaker(a, attack, catN);   // 金の丸＝見方の審判
         lines = advLines(a, sorted, attack, key);
       }
-      const ctx = { attack: attack, vkey: key, lines: lines, scene: scene };
+      const ctx = { attack: attack, vkey: key, lines: lines, scene: scene, omo: advOmoScene(a, tiles, attack) };
       window._advCtx = ctx;
       const r = advCompose(ctx, tone);
       return { key: key, text: r.text, audio: r.audio, scene: scene || undefined };

@@ -338,9 +338,39 @@ const ADV_CONN_DIAL = {
 function advConn(tone, dial, slot) { const t = (dial && ADV_CONN_DIAL[dial]) ? ADV_CONN_DIAL[dial] : (ADV_CONN_TONE[tone] || ADV_CONN_TONE.blunt); return t[slot]; }
 /* lines＝行の並び。行は部品の並び（{t:その人格の字, term:文の終わりで終わるか}）。lines[0]＝頭の攻め／守り、lines[1]＝頭の一言、最後の行＝終わりの一言、間＝助言の行。
    返すのは、並べる物の列（つなぎ {conn:true,slot,text}／部品 {li,ti,text,v,changed}）と、続けた字。 */
+/* 代表三人の面白みの一言（v1501・y1117-0100 のヨシ）：武家の奥方様（bushi×french）・ずんだ組のこ（yoji×blunt）・大阪のいとはん（osaka×lady）だけ。
+   場面ごとに二通り。話の順の最後の「ひと言」の所へ、方言の変換を通さず書いた字のまま足す。場面の決め方と覚え（四回に一回は足さない・前と同じ文を続けない）は本体。 */
+const ADV_OMO = {
+  'bushi:french': {
+    dora: ['ドラをお切りになるのは、わたくし、少し寂しゅうございますけれど、お供いたしますわ。', 'ドラは名残惜しゅうございますが、旦那様のお決めになった事でございますもの。'],
+    far: ['手が遠いのは、いつものことでございます。今日も辛抱いたしますわ。', '遠回りも、武家の妻の務めでございますわ。'],
+    honor: ['古くから、東と發はつきものと申しますでしょう。まことかどうかは存じませんけれど。', '字牌は嫁入り道具のようなものと聞いております。ほんとうかどうかは存じませんが。'],
+    guard: ['わたくし、損な役回りでございますが、お守りはしっかり務めますわ。', '守りはいつも陰の仕事でございます。それでも、わたくしは構いませんの。'],
+    special: ['わたくし、麻雀は初めてでございますが、巡目の数え方ならそらで言えますの。', 'こう見えて、牌の数は台所で数え慣れておりますの。'],
+    nick: ['切る牌は、いわゆる文官の牌から、お選びなさいませ。', '数ばかりの牌は、足軽のようなもの。惜しまずお出しくださいませ。']
+  },
+  'yoji:blunt': {
+    dora: ['ドラを切るのは、ちょっとさびしいのだ。でも、がんばるのだよー。', 'ドラさん、ごめんなのだ。あとでありがとうって言うのだ。'],
+    far: ['手が遠いのは、いつものことなのだ。きょうも、がんばるのだよー。', 'ぜんぜん来ないのだ。でも、ぼくはあきらめないのだ。'],
+    honor: ['パパが言ってたのだ。東と發はなかよしなのだ。ぼく、信じてるのだよー。', '字の牌がいっぱいなのだ。ほんとはよく読めないのだ。'],
+    guard: ['ぼく、守るのはちょっと損な役なのだ。でも、がんばるのだよー。', 'まもるのは地味なのだ。でも、みんなのためなのだ。'],
+    special: ['ぼく、きのう四さいになったばかりなのに、ほんとはくわしいのだよー。', 'ぼく、牌の名前は、もうぜんぶ言えるのだ。たぶんなのだ。'],
+    nick: ['その牌は、ころころしたやつなのだ。さきに切るのだよー。', 'かどっこの牌から、そっと出すのだ。']
+  },
+  'osaka:lady': {
+    dora: ['ドラを切るのは、ちょっと寂しいですけど、ええですわ、あなた。', 'ドラは惜しいですなぁ。せやけど、うちは我慢しますえ。'],
+    far: ['手ぇが遠いのは、いつもの事ですわ。今日も気ぃ長う待ちますえ。', '遠いもんは遠いですわ。急いたかて、しゃあないですえ。'],
+    honor: ['東と發はつきもんて、昔から言いますのや。ほんまかどうかは知りまへんけど。', '字ぃの牌は縁起がええて、よう聞きますえ。当たるかどうかは知りまへん。'],
+    guard: ['うちが損な役でも、守りはきっちり務めますえ。', '守るんは地味ですけど、うちは嫌いやおまへん。'],
+    special: ['うち、お琴よりミナミの雀荘の方が通うてますのや。', 'お嬢はんやて言われますけど、牌はよう触ってますえ。'],
+    nick: ['その牌は、地味な牌ですわな。先に切りなはれ。', '端っこの牌は、遠慮のうお出しやす。']
+  }
+};
+function advHasTriple(text) { const ss = text.match(/[^。！？]*[。！？]/g) || []; let run = 1; for (let k = 1; k < ss.length; k++) { if (ss[k].slice(-4) === ss[k - 1].slice(-4)) { run++; if (run >= 3) { return true; } } else { run = 1; } } return false; }   // 同じ語尾が三文続くか（面白みの一言を足して続くなら、足さない）
+function advOmoText(dial, tone, scene, i) { const o = ADV_OMO[dial + ':' + tone]; return (o && o[scene]) ? (o[scene][i] || '') : ''; }
 function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言の行が付いているか（v1500）
   const polite = !!ADV_POLITE[tone], units = [];
-  lines.forEach(function (l, li) { l.forEach(function (tk, ti) { if (tk.term) { units.push([li, ti]); } }); });
+  lines.forEach(function (l, li) { l.forEach(function (tk, ti) { if (tk.term && !tk.lit) { units.push([li, ti]); } }); });   // lit＝面白みの一言（書いた字のまま。方言を通さない・v1501）
   const chara = dial ? (ADV_CHARA[dial] && ADV_CHARA[dial][tone]) : null;
   const plan = dial ? advDialPlanAll(units.length) : [], pv = {};
   units.forEach(function (u, k) { pv[u[0] + ',' + u[1]] = dial ? plan[k] : -1; });
@@ -348,7 +378,7 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
   lines.forEach(function (l, li) {
     if (li >= 1) { const slot = (hasEnd && li === last) ? 3 : (li === 1 ? 0 : 1 + ((li - 2) % 2)); let c = advConn(tone, dial, slot); if (chara && slot === 0) { c = chara.k + '、'; } items.push({ conn: true, slot: slot, text: c }); text += c; }
     l.forEach(function (tk, ti) {
-      const v = (pv[li + ',' + ti] === undefined) ? (dial ? 0 : -1) : pv[li + ',' + ti];   // 方言ありは、文の終わりを持たない部品の中の文にも人物の語尾を付ける（0から）
+      const v = tk.lit ? -1 : ((pv[li + ',' + ti] === undefined) ? (dial ? 0 : -1) : pv[li + ',' + ti]);   // 方言ありは、文の終わりを持たない部品の中の文にも人物の語尾を付ける（0から）
       let base = (v >= 0) ? tk.t.replace(/、(?:ウィ|モナミ)(?=[。！？])/g, '') : tk.t;   // 方言の世界の人物は、外国語の呼びかけを言わない
       if (v >= 0 && tone === 'french') { base = base.replace(/ようございます/g, 'いいです').replace(/でございません/g, 'ません').replace(/でございます/g, 'です').replace(/ございません/g, 'ません').replace(/ございます/g, 'です'); }   // マダムは「です」でそろえる（「ございます」と混ぜない・y1116-6）
       let vv = v, x = tk.t;
@@ -388,4 +418,4 @@ function advHash(s) {
 }
 function advDialVoice(text) { return 'advy-' + advHash(text); }
 /* ADV_TONE_END */
-if (typeof module !== 'undefined') { module.exports = { ADV_CHARA, advDialPlanAll, ADV_TONE_KEYS, ADV_POLITE, ADV_TONE, ADV_SCENE, ADV_DIALECT, advToneText, advSceneText, advHash, advDialVoice, advDialSentenceV, advAltLast, advConn, advTalk, ADV_CONN_TONE, ADV_CONN_DIAL }; }
+if (typeof module !== 'undefined') { module.exports = { ADV_CHARA, advDialPlanAll, ADV_TONE_KEYS, ADV_POLITE, ADV_TONE, ADV_SCENE, ADV_DIALECT, advToneText, advSceneText, advHash, advDialVoice, advDialSentenceV, advAltLast, advConn, advTalk, ADV_CONN_TONE, ADV_CONN_DIAL, ADV_OMO, advOmoText, advHasTriple }; }

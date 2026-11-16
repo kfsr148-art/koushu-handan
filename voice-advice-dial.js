@@ -23,6 +23,7 @@ function generate(P) {
   const C = require('./advice-tone-core.js'), S = require('./advice-talk-sim.js');
   const m = new Map();
   S.each(function (r) { r.items.forEach(function (x) { if (x.conn || x.changed) { const nm = C.advDialVoice(x.text); if (!m.has(nm)) { m.set(nm, { text: x.text, say: P.say(x.text) }); } } }); });
+  Object.keys(C.ADV_OMO).forEach(function (k) { Object.keys(C.ADV_OMO[k]).forEach(function (sn) { C.ADV_OMO[k][sn].forEach(function (tx) { const nm = C.advDialVoice(tx); if (!m.has(nm)) { m.set(nm, { text: tx, say: P.say(tx) }); } }); }); });   // v1501：代表三人の面白みの一言（書いた字のまま一文一本）
   return m;
 }
 module.exports = { entries, generate };
