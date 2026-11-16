@@ -324,6 +324,8 @@ section('④', '音声ファイルの突き合わせ', () => {
     dialNames.forEach(n => advNames.push(n));   // v1498：方言の声（人物の語尾）6,291本が揃ったので、無ければNGに戻す
     const miss = [];
     advNames.forEach(n => { const cands = []; dirs.forEach(d => seps.forEach(sep => exts.forEach(ext => cands.push(d + n + sep + ext)))); const hit = cands.find(c => fs.existsSync(path.join(ROOT, c))); if (hit) used.add(hit.replace(/\\/g, '/')); else miss.push(n); });
+    /* 声の台本（読み）に「漢字（カナ）」の括弧が残っていない（y1116・立直（リーチ）を二回読む件）：台本の読みの列に括弧が一つも無いこと。声の台本を新しく作る時は voice-advice-persona.js の say() を必ず通す。 */
+    { let pn = 0; ['voice-advice.txt', 'voice-advice-dial.txt', 'voice-advice-only.txt'].forEach(f => { const p = path.join(ROOT, f); if (!fs.existsSync(p)) return; fs.readFileSync(p, 'utf8').split(/\r?\n/).forEach(l => { if (!l || l[0] === '#') return; const cols = l.split('\t'); if (/[（）]/.test(cols[cols.length - 1])) pn++; }); }); if (pn === 0) ok('声の台本の読みに括弧が残っていない'); else ng('声の台本の読みに括弧が残っている ' + pn + '行（say() を通していない・漢字（カナ）を二回読む）'); }
     note('助言の声 : ' + advNames.length + '個のうち ' + (advNames.length - miss.length) + '個が実ファイルに解決');
     if (miss.length === 0) ok('助言の声が全て実ファイルに解決した');
     else ng('助言の声のファイルが無い（声は攻め／守りの一言に落ちる）: ' + miss.join(', '));
