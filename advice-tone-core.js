@@ -367,7 +367,6 @@ const ADV_OMO = {
   }
 };
 function advHasTriple(text) { const ss = text.match(/[^。！？]*[。！？]/g) || []; let run = 1; for (let k = 1; k < ss.length; k++) { if (ss[k].slice(-4) === ss[k - 1].slice(-4)) { run++; if (run >= 3) { return true; } } else { run = 1; } } return false; }   // 同じ語尾が三文続くか（面白みの一言を足して続くなら、足さない）
-function advOmoText(dial, tone, scene, i) { const o = ADV_OMO[dial + ':' + tone]; return (o && o[scene]) ? (o[scene][i] || '') : ''; }
 function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言の行が付いているか（v1500）
   const polite = !!ADV_POLITE[tone], units = [];
   lines.forEach(function (l, li) { l.forEach(function (tk, ti) { if (tk.term && !tk.lit) { units.push([li, ti]); } }); });   // lit＝面白みの一言（書いた字のまま。方言を通さない・v1501）
@@ -418,4 +417,4 @@ function advHash(s) {
 }
 function advDialVoice(text) { return 'advy-' + advHash(text); }
 /* ADV_TONE_END */
-if (typeof module !== 'undefined') { module.exports = { ADV_CHARA, advDialPlanAll, ADV_TONE_KEYS, ADV_POLITE, ADV_TONE, ADV_SCENE, ADV_DIALECT, advToneText, advSceneText, advHash, advDialVoice, advDialSentenceV, advAltLast, advConn, advTalk, ADV_CONN_TONE, ADV_CONN_DIAL, ADV_OMO, advOmoText, advHasTriple }; }
+if (typeof module !== 'undefined') { module.exports = { ADV_CHARA, advDialPlanAll, ADV_TONE_KEYS, ADV_POLITE, ADV_TONE, ADV_SCENE, ADV_DIALECT, advToneText, advSceneText, advHash, advDialVoice, advDialSentenceV, advAltLast, advConn, advTalk, ADV_CONN_TONE, ADV_CONN_DIAL, ADV_OMO, advHasTriple }; }
