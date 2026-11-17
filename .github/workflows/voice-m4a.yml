@@ -1,0 +1,93 @@
+# 助言の声を AAC（m4a）で作る・分割して雲で回す（2026-11-18・y1118-0400 の枠：声の詰め方を変える）
+#
+#   ＊押しでは回らない。手で起こす：  gh workflow run voice-m4a.yml -f kind=dial   （dial／parts／convert）
+#   ＊10分割で並べて回し（各 25 分以内）、最後の段が出来た声を reports/voice-m4a-out/ へまとめて押し戻す。
+#     足りない物は、同じ命令をもう一度起こせば続きから作る（出来た声は作らない）。
+#   ＊台本・名簿は voice-plan/（dial.txt・parts.txt）。出来た声は、こちらで直下へ移す（tools/voice-m4a.js の説明を見よ）。
+name: 声をm4aで作る
+on:
+  workflow_dispatch:
+    inputs:
+      kind:
+        description: 'dial（方言の声）／parts（人格の部品）／convert（今の声を AAC へ）'
+        required: true
+        default: 'dial'
+permissions:
+  contents: write
+concurrency:
+  group: koushu-voice-m4a
+  cancel-in-progress: false
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            /tools/
+            /voice-plan/
+            /adpcm.js
+            /reports/voice-m4a-out/
+            /adv*.wav.wav
+            /color-*.wav.wav
+            /*.m4a
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: ffmpeg を用意する
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1; then sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg; fi
+          ffmpeg -version | head -1
+      - name: 声を作る
+        env:
+          KIND: ${{ github.event.inputs.kind }}
+          SHARD: ${{ matrix.shard }}
+          SHARDS: '10'
+          OUT_DIR: ${{ github.workspace }}/out
+        run: node tools/voice-m4a.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: out-${{ matrix.shard }}
+          path: out
+          if-no-files-found: ignore
+          retention-days: 3
+  collect:
+    needs: make
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            /reports/voice-m4a-out/
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: out-*
+          path: collected
+          merge-multiple: true
+      - name: 出来た声を押し戻す
+        run: |
+          mkdir -p reports/voice-m4a-out
+          N=$(find collected -name '*.m4a' 2>/dev/null | wc -l)
+          echo "出来た声 ${N}本"
+          if [ "$N" -eq 0 ]; then echo "新しい声は無かった"; exit 0; fi
+          cp collected/*.m4a reports/voice-m4a-out/
+          git config user.name "koushu-voice-bot"
+          git config user.email "koushu-voice-bot@users.noreply.github.com"
+          git add reports/voice-m4a-out
+          git commit -q -m "voice-m4a: ${{ github.event.inputs.kind }} ${N}本"
+          for i in 1 2 3 4 5; do
+            if git push -q origin HEAD:main; then echo "押し戻した"; exit 0; fi
+            git pull -q --rebase origin main || true
+            sleep 5
+          done
+          echo "押せなかった"; exit 1
