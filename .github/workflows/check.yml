@@ -189,10 +189,32 @@ jobs:
           fi
       - uses: actions/configure-pages@v5
         if: steps.guard.outputs.skip != '1' && steps.tip.outputs.stale != '1'
+      # ---- 公開に載せる物を絞る（2026-11-17・y1117-1900 のヨシ）----
+      #   ＊今までは「.」（リポジトリ全部）を配っていたので、作りかけの声（reports/voice-*-out）や古い声ごと 930MB に膨らみ、
+      #     Pages の上限（1GB）に迫った。pack-site.js が、本体と台帳（voice-used.txt）が今使う声と、本体・パネル等の要る物だけを _site/ に組む。
+      #   ＊台帳の声が直下に無ければ pack-site.js が落ち、配信は止まる（欠けたまま公開しない）。
+      - name: 公開の荷を組む（pack-site.js）
+        if: steps.guard.outputs.skip != '1' && steps.tip.outputs.stale != '1'
+        run: node pack-site.js
+      - name: 公開の大きさを数える（1GBに近づいたら訴える）
+        if: steps.guard.outputs.skip != '1' && steps.tip.outputs.stale != '1'
+        run: |
+          MB=$(cat site-size.txt)
+          echo "公開の大きさ: ${MB}MB（上限の目安 1024MB）"
+          echo "### 公開の大きさ: ${MB}MB（上限の目安 1024MB）" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$MB" -ge 800 ]; then
+            TITLE_B64=$(printf '⚠ 公開の大きさが %sMB（上限 1024MB に近い）' "$MB" | base64 -w0)
+            printf 'â' | curl -s --max-time 20 \
+              -H "Title: =?UTF-8?B?${TITLE_B64}?=" \
+              -H "Priority: 5" \
+              -H "Cache: no" \
+              --data-binary @- \
+              "https://ntfy.sh/${{ secrets.NTFY_TOPIC }}" > /dev/null || true
+          fi
       - uses: actions/upload-pages-artifact@v3
         if: steps.guard.outputs.skip != '1' && steps.tip.outputs.stale != '1'
         with:
-          path: '.'
+          path: '_site'
       - id: deployment
         if: steps.guard.outputs.skip != '1' && steps.tip.outputs.stale != '1'
         uses: actions/deploy-pages@v4
