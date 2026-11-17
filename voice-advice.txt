@@ -694,3 +694,17 @@ advx-sensei-scene-yakuhai.wav.wav	のトイツがあります。出たらすぐ�
 advx-sensei-scene-some1.wav.wav	枚あります。ほかの色から切って、
 advx-sensei-scene-some2.wav.wav	とジハイを残してそめなさい。
 advx-ga.wav.wav	が
+adva-kok-m.wav.wav	まよいどころなのだ。
+advd-kyu.wav.wav	きゅうしゅきゅうはいだから、ながすのが基本なのだ。
+advx-butler-adva-kok-m.wav.wav	まよいどころでございます。
+advx-butler-advd-kyu.wav.wav	きゅうしゅきゅうはいでございますから、流すのが基本でございます。
+advx-strategist-adva-kok-m.wav.wav	まよいどころだ。
+advx-strategist-advd-kyu.wav.wav	きゅうしゅきゅうはいだから、流すのが基本だ。
+advx-lady-adva-kok-m.wav.wav	まよいどころですわ。
+advx-lady-advd-kyu.wav.wav	きゅうしゅきゅうはいですから、流すのが基本ですわ。
+advx-french-adva-kok-m.wav.wav	まよいどころですの。
+advx-french-advd-kyu.wav.wav	きゅうしゅきゅうはいですから、流すのが基本ですの。
+advx-ichihime-adva-kok-m.wav.wav	まよいどころだにゃ。
+advx-ichihime-advd-kyu.wav.wav	きゅうしゅきゅうはいだから、流すのが基本だにゃ。
+advx-sensei-adva-kok-m.wav.wav	まよいどころです。
+advx-sensei-advd-kyu.wav.wav	きゅうしゅきゅうはいですから、流すのが基本です。
