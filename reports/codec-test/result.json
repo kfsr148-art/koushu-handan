@@ -1,0 +1,227 @@
+{
+ "rows": [
+  {
+   "n": "advy-2fad4238",
+   "text": "攻めださー。",
+   "sec": 0.83,
+   "cur": 10300,
+   "f": {
+    "aac24": {
+     "bytes": 3681,
+     "ratio": 0.36,
+     "dSamples": 570,
+     "lag": 0,
+     "snr": 9.5
+    },
+    "aac32": {
+     "bytes": 4661,
+     "ratio": 0.45,
+     "dSamples": 570,
+     "lag": 0,
+     "snr": 12.2
+    },
+    "aac48": {
+     "bytes": 6464,
+     "ratio": 0.63,
+     "dSamples": 570,
+     "lag": 0,
+     "snr": 15.1
+    },
+    "opus24": {
+     "bytes": 2736,
+     "ratio": 0.27,
+     "dSamples": 0,
+     "lag": 0,
+     "snr": 12
+    }
+   }
+  },
+  {
+   "n": "advy-005aa8f9",
+   "text": "ついてくるにゃやん、みんな。",
+   "sec": 2.17,
+   "cur": 26684,
+   "f": {
+    "aac24": {
+     "bytes": 7902,
+     "ratio": 0.3,
+     "dSamples": 208,
+     "lag": 0,
+     "snr": 9.9
+    },
+    "aac32": {
+     "bytes": 10046,
+     "ratio": 0.38,
+     "dSamples": 208,
+     "lag": 0,
+     "snr": 12.4
+    },
+    "aac48": {
+     "bytes": 14443,
+     "ratio": 0.54,
+     "dSamples": 208,
+     "lag": 0,
+     "snr": 16.2
+    },
+    "opus24": {
+     "bytes": 6321,
+     "ratio": 0.24,
+     "dSamples": 0,
+     "lag": 0,
+     "snr": 12.3
+    }
+   }
+  },
+  {
+   "n": "advy-0101384c",
+   "text": "国士の芽どすえ。端の牌と字牌の十三種のうち、いま",
+   "sec": 5.11,
+   "cur": 62268,
+   "f": {
+    "aac24": {
+     "bytes": 17025,
+     "ratio": 0.27,
+     "dSamples": 338,
+     "lag": 0,
+     "snr": 10.4
+    },
+    "aac32": {
+     "bytes": 22030,
+     "ratio": 0.35,
+     "dSamples": 338,
+     "lag": 0,
+     "snr": 11.1
+    },
+    "aac48": {
+     "bytes": 32344,
+     "ratio": 0.52,
+     "dSamples": 338,
+     "lag": 0,
+     "snr": 14
+    },
+    "opus24": {
+     "bytes": 15155,
+     "ratio": 0.24,
+     "dSamples": 0,
+     "lag": 0,
+     "snr": 11.3
+    }
+   }
+  },
+  {
+   "n": "advy-0b750995",
+   "text": "さびしいけど、ぼくは泣かへんのどす。かわりに、おきゃくはんの草履をそろえるんや。",
+   "sec": 6.49,
+   "cur": 79164,
+   "f": {
+    "aac24": {
+     "bytes": 21301,
+     "ratio": 0.27,
+     "dSamples": 985,
+     "lag": 0,
+     "snr": 10.9
+    },
+    "aac32": {
+     "bytes": 27854,
+     "ratio": 0.35,
+     "dSamples": 985,
+     "lag": 0,
+     "snr": 13.6
+    },
+    "aac48": {
+     "bytes": 40929,
+     "ratio": 0.52,
+     "dSamples": 985,
+     "lag": 0,
+     "snr": 12.3
+    },
+    "opus24": {
+     "bytes": 19482,
+     "ratio": 0.25,
+     "dSamples": 0,
+     "lag": 0,
+     "snr": 12.9
+    }
+   }
+  },
+  {
+   "n": "advy-07c96a50",
+   "text": "このままだと上がれませんっちゃ。立直（リーチ）か、鳴いて役（ヤク）を付けるのがようございますっちゃ、旦那さま。",
+   "sec": 7.4,
+   "cur": 90172,
+   "f": {
+    "aac24": {
+     "bytes": 24087,
+     "ratio": 0.27,
+     "dSamples": 640,
+     "lag": 0,
+     "snr": 11
+    },
+    "aac32": {
+     "bytes": 31572,
+     "ratio": 0.35,
+     "dSamples": 640,
+     "lag": 0,
+     "snr": 14.3
+    },
+    "aac48": {
+     "bytes": 47113,
+     "ratio": 0.52,
+     "dSamples": 640,
+     "lag": 0,
+     "snr": 18.2
+    },
+    "opus24": {
+     "bytes": 23860,
+     "ratio": 0.26,
+     "dSamples": 0,
+     "lag": 0,
+     "snr": 13.1
+    }
+   }
+  },
+  {
+   "n": "advy-333c8b29",
+   "text": "このままだと上がれませんねー。立直（リーチ）か、鳴いて役（ヤク）を付けるのがようございますねー、おともだち。",
+   "sec": 7.24,
+   "cur": 88380,
+   "f": {
+    "aac24": {
+     "bytes": 23671,
+     "ratio": 0.27,
+     "dSamples": 315,
+     "lag": 0,
+     "snr": 11.6
+    },
+    "aac32": {
+     "bytes": 30977,
+     "ratio": 0.35,
+     "dSamples": 315,
+     "lag": 0,
+     "snr": 14.6
+    },
+    "aac48": {
+     "bytes": 46215,
+     "ratio": 0.52,
+     "dSamples": 315,
+     "lag": 0,
+     "snr": 15.6
+    },
+    "opus24": {
+     "bytes": 23391,
+     "ratio": 0.26,
+     "dSamples": 0,
+     "lag": 0,
+     "snr": 13.6
+    }
+   }
+  }
+ ],
+ "totCur": 356968,
+ "totF": {
+  "aac24": 97667,
+  "aac32": 127140,
+  "aac48": 187508,
+  "opus24": 90945
+ }
+}
