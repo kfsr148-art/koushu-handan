@@ -178,10 +178,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1794879249,
         "message":  "麻雀の言葉の読み直し（y1117-1050 後続）\nvoice-yomi-check.md を読み、読み違いの語28個ほどを voice-advice-persona.js の YOMI に追加（字は変えず声に渡す読みだけ）。一向聴の順序の不具合も直した。\nファイル: voice-advice-persona.js, reports/y1117-1050.md\n実測: node --check 通過／all() 329本のまま\n未検収: 声の音の再生成（voice-pieces.js）は未実施"
-    },
-    {
-        "title":  "🙋 ヨシしてください",
-        "time":  1794879007,
-        "message":  "麻雀の言葉の読みの点検・雲で VOICEVOX にかけ中／撤退線の数えを出した\n印: y1117-1050\n待っているのは：雲の走り（job.yml 走り43995558760・読みの点検）の完了。雲待ちに登録済み（印 y1117-1050）。終わったら reports/voice-yomi-check.md を読み、読み違いを声に渡す字だけ直して、直した言葉の一覧を知らせる\n要点：①撤退予約線の巡目の数えと宣言を reports/y1117-1040.md に出して push（6369a1e5）。本体は触っていない（ヨシ待ちの案）。②読みの点検：言葉 約130語の一覧（voice-yomi-terms.txt）と雲の job（scratchpad/jobs/voice-yomi-check.js）を push（e2c38d38）。声は作らない。起こす前に job.yml の…\n答え方：「y1117-1050 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。"
     }
 ]
