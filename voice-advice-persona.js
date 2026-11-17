@@ -14,7 +14,7 @@ const YOMI = [['九種九牌', 'きゅうしゅきゅうはい'], ['迷い所', 
   ['役', 'やく'], ['形', 'かたち'], ['点', 'てん'], ['手が', 'てが'], ['手は', 'ては'], ['何巡目', 'なんじゅんめ'], ['巡目', 'じゅんめ']];
 /* 「漢字（カナ）」の並びは、括弧の中の読みだけを一回読む（立直（リーチ）→リーチ。字の方は変えない）。先にこれを通す（y1115-48） */
 const PAREN = new RegExp('[一-龥々〆ヵヶ]+（([ぁ-んァ-ヶー・]+)）', 'g');
-function say(t) { let s = t.replace(PAREN, '$1'); YOMI.forEach(function (p) { s = s.split(p[0]).join(p[1]); }); s = s.replace(/じゅんめまでに(?!、)/g, 'じゅんめまでに、'); if (t === 'まず') { s = 'まず、'; } return s; }   // v1506：声に一拍の間（切る牌の前・巡目の前）。画面の字は変えない
+function say(t) { let s = t.replace(PAREN, '$1'); YOMI.forEach(function (p) { s = s.split(p[0]).join(p[1]); }); return s; }
 function all() {
   const out = [];
   C.ADV_TONE_KEYS.filter(function (k) { return k !== 'blunt'; }).forEach(function (tone) {

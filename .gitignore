@@ -9,3 +9,6 @@ shots/run.err.log
 # 中身は npm ci で入れ直せるので、写しは配らない。
 node_modules/
 genba-taiki.png
+
+_site/
+site-size.txt
