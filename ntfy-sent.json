@@ -1,12 +1,5 @@
 [
     {
-        "time":  1794880409,
-        "at":  "2026-11-17 10:53:29",
-        "title":  "😽 終わったにゃ、写して",
-        "parts":  1,
-        "body":  "v1505 九種九牌・迷い所 声づくり 1/2（方言457本）を雲で起こした\r\n（札が立たないまま次の仕事へ移っていた分）\r\n完了: y1117-1100 にヨシを受け、作業用の写し（scratchpad/w6）に v1505 を当てて点検した（構文 OK・全組み合わせ 327,467通りで語尾三つ0／人物外0／重なり0・核と本体の写しは同じ）。声の台本を push（db2d6305）：方言の新しい声 457本（想定の126本より多い。新しい一文が入ると後ろの文の語尾の付き方が変わるため）・部品14本。起こす前に job.yml の queued・in_progress は 0。本体はまだ触っていない（声が揃ってから当てる）。「助言を聞きやすくする工夫（文の長さの緩急・声の間）」の枠が届いた。受け直しの枠と一緒に、今の作業の後で扱う。\r\nファイル: voice-advice-dial.json voice-advice-dial.txt voice-advice.txt voice-advice-only.txt voice-advice-persona.js\r\n実測: 声の台本 7,902本（今まで7,445）／直下にまだ無い 方言457＋部品14"
-    },
-    {
         "time":  1794881961,
         "at":  "2026-11-17 11:19:21",
         "title":  "🪟 時間切れ：長すぎ（20分）（再挑戦 1/3）",
@@ -208,5 +201,12 @@
         "title":  "😽 終わったにゃ、写して",
         "parts":  1,
         "body":  "声の詰め方の比べ（AAC・24kHzのまま）を雲で実行中\r\nこの回は控えを書いていません（前の回の控えが残っています。中身は当てになりません）。"
+    },
+    {
+        "time":  1794942996,
+        "at":  "2026-11-18 04:16:36",
+        "title":  "😽 終わったにゃ、写して",
+        "parts":  1,
+        "body":  "この間にまとまった知らせ 2本\r\n\r\n［✅ 終わりました（返事不要）］\r\n声の詰め方の比べ（AAC・24kHzのまま）を雲で実行中\r\n（札が立たないまま次の仕事へ移っていた分）\r\n種類: 外待ち\r\n完了: 乙はやめ、24kHzのまま AAC（m4a）24k／32k／48k と Opus（参考）で今の声を作り直し、大きさと音の差を測る雲の台本（scratchpad/jobs/codec-compare.js）を押した（9a81cf73）。今の声（字数の違う6本）を ADPCM から復号して各形式へ。iPhone の Safari で聞き比べ・つなぎ（decodeAudioData で繋ぐ）を試せるページ reports/codec-test/index.html も同じ走りが書く。声づくりには進まない（本人が見てから）。\r\nファイル: scratchpad/jobs/codec-compare.js\r\n\r\n［👀 見てください（返事不要）］\r\n声の詰め方の比べ（AAC）の結果を知らせた\r\nreports/codec-test/result.md と cloud-codec-compare-20261117-190408.md を読んだ。合計 今357KB／aac24 98KB（0.27）／aac32 127KB（0.36）／aac48 188KB（0.53）／opus24 91KB。つなぎのずれは全部0。声は本人が聞いてから作る。\r\nファイル: reports/y1118-0420.md／report-latest.md／work-note.txt\r\n実測: 雲の走り 53秒・終了コード0\r\n実機: iPhone で reports/codec-test/index.html を開き、六本を今／aac24／aac32／aac48 で聞き比べ、許せる最小の段を言う\r\n未検収: 声の聞き比べ（人手待ち）"
     }
 ]
