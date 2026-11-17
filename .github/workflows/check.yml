@@ -204,7 +204,7 @@ jobs:
           echo "### 公開の大きさ: ${MB}MB（上限の目安 1024MB）" >> "$GITHUB_STEP_SUMMARY"
           if [ "$MB" -ge 800 ]; then
             TITLE_B64=$(printf '⚠ 公開の大きさが %sMB（上限 1024MB に近い）' "$MB" | base64 -w0)
-            printf 'â' | curl -s --max-time 20 \
+            printf '\xe2\x80\x8b' | curl -s --max-time 20 \
               -H "Title: =?UTF-8?B?${TITLE_B64}?=" \
               -H "Priority: 5" \
               -H "Cache: no" \
