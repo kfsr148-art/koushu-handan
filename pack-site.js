@@ -43,7 +43,7 @@ function pack() {
   let n = 0, bytes = 0, skipReports = 0, skipManaged = 0, skipManagedBytes = 0, skipReportsBytes = 0; const have = new Set();
   walk(ROOT, '', (full, rel, name) => {
     const size = fs.statSync(full).size;
-    if (/^reports\//.test(rel) && /\.wav(\.wav)?$/.test(name)) { skipReports++; skipReportsBytes += size; return; }
+    if (/^reports\//.test(rel) && /\.(wav(\.wav)?|m4a)$/.test(name)) { skipReports++; skipReportsBytes += size; return; }
     if (rel === name && isManaged(name)) { if (!man.has(name)) { skipManaged++; skipManagedBytes += size; return; } have.add(name); }
     const to = path.join(OUT, rel); fs.mkdirSync(path.dirname(to), { recursive: true }); fs.copyFileSync(full, to); n++; bytes += size;
   });
