@@ -20,6 +20,7 @@ function scenarios(vk) {   // 助言の行の場面（頭・終わりを除く�
   ['adva-s-nito', 'adva-s-nosafe', 'adva-s-ukai', 'adva-s-jihai'].forEach(s => A.push([[w], [{ t: 'm7' }, 'adva-from', 'adva-t6'], [s]]));   // v1500：重なり・近く（切るを重ねる定石）は付けない
   A.push([[w], ['adva-weak']]);   // v1500：「上がれない」と言うので巡目は足さない
   A.push([['adva-kok-a', { n: 8 }, 'adva-kok-b'], [TEI, 'adva-kok-c'], ['adva-t7']]);
+  A.push([['adva-kok-a', { n: 10 }, 'adva-kok-b', 'adva-kok-m'], [TEI, 'adva-kok-c'], ['adva-t7']]);   // v1505：10種＝迷い所
   A.push([['adva-chi-a', { n: 4 }, 'adva-chi-b'], [TEI, 'adva-chi-c'], ['adva-t6']]);
   A.push([['adva-toi-a', { n: 2 }, 'adva-toi-b', { n: 3 }, 'adva-toi-c'], [TEI, 'adva-toi-d'], ['adva-t6']]);
   A.push([['adva-tan-a', { n: 3 }, 'adva-tan-b'], [TEI, 'adva-tan-c'], ['adva-t3']]);
@@ -32,6 +33,7 @@ function scenarios(vk) {   // 助言の行の場面（頭・終わりを除く�
   ['far', 'cheap', 'shape', 'honor', 'few', 'pair'].forEach(k => {
     D.push([['advd-w-' + k], ['advd-cut-a', { t: 'm7' }, 'advd-cut', { t: 'E' }, 'advd-and', { t: 'S' }, 'advd-keep'], [{ t: 'E' }, 'advd-s-jihai'], ['advd-riichi'], ['advd-r2a', { t: 'E' }, 'advd-r2b']]);
   });
+  D.push([['advd-kyu'], ['advd-w-far'], ['advd-cut-a', { t: 'm7' }, 'advd-cut', { t: 'E' }, 'advd-and', { t: 'S' }, 'advd-keep'], [{ t: 'E' }, 'advd-s-jihai'], ['advd-riichi'], ['advd-r2a', { t: 'E' }, 'advd-r2b']]);   // v1505：九種九牌は最初に流すと言う
   D.push([['advd-w-far'], [{ t: 'P' }, 'advd-keep'], ['advd-riichi'], ['advd-r2a', { t: 'P' }, 'advd-r2b']]);
   D.push([['advd-w-far'], ['advd-cut-a', { t: 'm7' }, 'advd-cut'], ['advd-riichi'], ['advd-r2c']]);
   D.push([['advd-w-far'], ['advd-cut-a', { t: 'm7' }, 'advd-cut', { t: 'p5' }, 'advd-and', { t: 's5' }, 'advd-keep'], ['advd-s-nito'], ['advd-riichi'], ['advd-r2a', { t: 'p5' }, 'advd-r2b']]);
