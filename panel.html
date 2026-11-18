@@ -149,6 +149,8 @@
   /* 訴えの行（v118）。黄色の行の下に赤で一行。 */
   .pipe{margin:4px 0 0;padding:6px 8px;border-radius:6px;background:#3a1414;color:#ff9b9b;font-size:12px;line-height:1.5;}
   .pipe.hide{display:none;}
+  .kumo-line{margin:4px 0 0;font-size:12px;line-height:1.5;color:#9fc8b8;}
+  .kumo-line.hide{display:none;}
   /* 「終わりました」の箱（v47）。畳んである見え方は控えと同じ。
      ＊ただし**薄くしない**。片付けた札ではなく、読み返す先だから。 */
   #doneList{display:none;}
@@ -428,6 +430,7 @@
        訴えが無い回は行ごと出さない。 -->
   <p class="pipe hide" id="pipeWarn"></p>
   <p class="pipe hide" id="wakeWarn"></p>
+  <p class="kumo-line hide" id="kumoLine"></p>
   <ul id="stLine"></ul>
   <button class="cpall" id="btnCopyBoard" type="button">まとめて写す（0件）</button>
   <!-- 写せる札の題を一行ずつ（v115・パネルの見え方-1）。
@@ -1707,6 +1710,7 @@
   var lastEvAt = 0;
   function headText() {
     /* v166（2026-11-19 本人の決め）：手番が開いていても、合図の足跡が3分動いていなければ作業中にしない（見張りが stat＝動きなし を書く） */
+    if (/^止まり/.test(String(lastStat || ''))) { return String(lastStat); }   /* v166：StopFailure（使用量の上限など）は止まり（HH:MM にリセット）をそのまま出す */
     if (lastStat === '動きなし') { return '動きなし（最後の動き ' + (lastEvAt ? pad2s(lastEvAt) : '不明') + '）'; }
     /* v152：順は 作業中＞まとめて写す＞待機中＞接続不良。猫の絵と字は必ず対なので、runCatTick と同じ順。
        ＊接続不良は、生存が途切れていて、作業中でも写す物も無いときだけ。 */
@@ -2872,6 +2876,8 @@
         lastRl = (d.rl && typeof d.rl === 'object') ? d.rl : null;   /* v163 */
         try { if (lastUsageObj) { paintUsage(lastUsageObj); } } catch (e) { }
         /* 赤い行（v159）：雲待ちが起こせない／作業中が終了予定を1時間過ぎた。state.json の warn。 */
+        /* v166：手番が閉じている間の雲待ちは、状態を作業中にせず、手待ちの下に一行（検査中：題・見込み HH:MM）。state.json の kumo。 */
+        try { var kl = $('kumoLine'); if (kl) { var kt = (typeof d.kumo === 'string') ? d.kumo : ''; kl.textContent = kt; kl.className = kt ? 'kumo-line' : 'kumo-line hide'; } } catch (e) { }
         try { var ww = $('wakeWarn'); if (ww) { var wt = (typeof d.warn === 'string') ? d.warn : ''; ww.textContent = wt ? ('⚠ ' + wt) : ''; ww.className = wt ? 'pipe' : 'pipe hide'; } } catch (e) { }
         /* 最後に押した札の刻（v142）。一覧が古いかを見分けるのに使う。下の freshen を見よ。 */
         lastCardAt = (typeof d.cardAt === 'number') ? d.cardAt : 0;
