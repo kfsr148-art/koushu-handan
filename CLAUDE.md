@@ -869,3 +869,7 @@ gh run list --workflow job.yml --limit 5
 ③ 出した知らせは `stuck-alert.txt` に残り、**本人の新しい指示（`last-order.txt` の更新）が来るまで消えない**。30分おきに鳴り直す。
 ④ 雲待ちの走りの見分けは「台帳を立てた後に始まった走り」だけ（`voice-m4a.yml` など手で起こす物は head_sha で絞らない）。前の走りで ready にして早起きしない。
 ⑤ ヨシが要らない待ちは `ヨシ待ち` に載せない（`種類: 外待ち`）。
+
+## 40. run_in_background をやめる（2026-11-18）
+
+Windows では `run_in_background` の命令が終わっても完了の知らせが出ず、手待ちの窓を起こさない不具合がある（anthropics/claude-code #21048・#91503）。**push・測定・pack-site など裏で走らせて終わりを待つ形は使わない。** 5分以内で済む物は手前で走らせ、長い物は雲（`gh workflow run`）か、手元なら `~/.claude/local-run.ps1` で切り離して走らせ、`kumo-set.ps1 -Workflow local:<終わりの印のファイル>` で待ちを登録して手番を閉じる。終わりは見張りが受信箱へ一行入れて窓を起こす。
