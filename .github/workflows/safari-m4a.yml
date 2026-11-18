@@ -1,0 +1,26 @@
+name: Safari で m4a の声が鳴るか（WebKit）
+# 2026-11-18・y1118-1440 の枠：公開ページの m4a が Safari（WebKit）で復号できるかを macOS で確かめる。手で起こす（workflow_dispatch）。
+on:
+  workflow_dispatch:
+    inputs:
+      names:
+        description: '標本の声の名（カンマ区切り・.m4a は付けない）'
+        required: true
+jobs:
+  safari:
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/safari-m4a.js
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install playwright@1.48.2 --no-save
+      - run: npx playwright install webkit
+      - run: node tools/safari-m4a.js
+        env:
+          NAMES: ${{ github.event.inputs.names }}
