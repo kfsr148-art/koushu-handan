@@ -1,0 +1,20 @@
+// v1508：執事×幼児で、読み（ひらがな）が要る字を全組み合わせの写しから集める。reports/v1508-yoji-texts.json へ書く。
+'use strict';
+const fs = require('fs'), path = require('path'), os = require('os');
+const ROOT = path.join(__dirname, '..'), SUB = path.join(__dirname, 'jobs', 'v1507');
+const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'koushu-yomi-'));
+['advice-tone-core.js', 'voice-advice-catalog.js', 'voice-advice-open.js', 'voice-advice-persona.js'].forEach(f => fs.copyFileSync(path.join(ROOT, f), path.join(tmp, f)));
+fs.readdirSync(SUB).forEach(f => fs.copyFileSync(path.join(SUB, f), path.join(tmp, f)));
+process.env.HEAD_HTML = path.join(ROOT, 'koushu-handan.html');
+const S = require(path.join(tmp, 'advice-talk-sim.js'));
+const C = require(path.join(tmp, 'advice-tone-core.js'));
+S.TONES.splice(0, S.TONES.length, 'butler');
+S.DIALS.splice(0, S.DIALS.length, 'yoji');
+const seen = new Map(), orig = C.ADV_BUTLER_DIAL.yoji.fx;
+C.ADV_BUTLER_DIAL.yoji.fx = function (s) { seen.set(s, (seen.get(s) || 0) + 1); return orig(s); };
+const t0 = Date.now(); let n = 0;
+S.each(() => { n++; });
+const list = [...seen.keys()].sort();
+fs.writeFileSync(path.join(ROOT, 'reports', 'v1508-yoji-texts.json'), JSON.stringify(list, null, 0).replace(/","/g, '",\n"') + '\n');
+console.log('組み合わせ ' + n + '・字 ' + list.length + ' 本・漢字を含む ' + list.filter(x => /[一-龥々]/.test(x)).length + ' 本・' + Math.round((Date.now() - t0) / 1000) + '秒');
+fs.rmSync(tmp, { recursive: true, force: true });
