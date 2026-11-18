@@ -151,6 +151,7 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: write   # 検査を通った印（タグ check-pass）を進める（2026-11-18）
+      actions: write    # 先端が進んで配りを飛ばした回に、配りの走り（state-deploy.yml）を呼ぶ（2026-11-19）
       pages: write
       id-token: write
     environment:
@@ -294,3 +295,10 @@ jobs:
               echo "印より前か同じ・並びが取れない：進めない"
             fi
           fi
+      # 検査が通ったのに先端が進んでいて配りを飛ばした回は、印を進めた後に配りの走り（state-deploy.yml）を呼ぶ（2026-11-19）。
+      #   ＊先端は雲の走りの reports/ の押し戻しなど。その押しの配りは印が進む前に走るので、検査の済んだ本体・パネルを古い印の版へ戻して配っていた（v168 が出なかった 02:51）。
+      - name: 先端が進んで飛ばした回は、配りの走りを呼ぶ
+        if: always() && needs.scope.outputs.heavy == '1' && needs.check.result == 'success' && steps.tip.outputs.stale == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run state-deploy.yml --ref main -R "$GITHUB_REPOSITORY" && echo '配りの走りを呼んだ' || echo '配りの走りを呼べなかった'
