@@ -497,7 +497,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v167（11月19日）</p>
+  <p class="ver" id="verTag">panel v168（11月19日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -526,7 +526,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '167';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
+  var PANEL_VER = '168';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -751,44 +751,15 @@
          v102 でその札ごと畳んだので、印の出しどころがここになった。
        ＊呼ぶ側が「作業中（パネルの整理-13）」のような字を渡す。渡さなければ今までどおり。 */
     var W = head || '作業中';
-    var endSec = lastEndAt;
-    var gm = 0;
-    if (endSec <= 0) {
-      gm = guessMin(lastSubj);
-      if (gm > 0 && lastStartedAt > 0) { endSec = lastStartedAt + gm * 60; }
-    }
+    /* v168（2026-11-19 本人の決め）：終了予定は、窓が書いた見込み（state.json の startedAt＋mikomi）だけを出す。
+       元の無い刻（過去の実測からの当て・決まりの幅・過ぎたら延ばす）は出さず「見込みなし」。台帳の起きる刻は下の一行（kumo）が出す。 */
     var nowSec = Math.floor(Date.now() / 1000);
-    /* 遠すぎる刻は当てにしない（v107）。上の黄色の行と同じ見張り。 */
-    if (endSec > 0 && (endSec - nowSec) > FAR_SEC) { endSec = 0; gm = 0; }
-    /* 過ぎ方が大きすぎる刻は、そもそも当てにしない（v124・止まりの見分け-1）。
-       ＊仕事が替わってから work-started.txt が書き換わるまでの十数秒に読むと、
-         **前の仕事の開始 ＋ 新しい見込み**で足した刻が出る（v107 で捕まえた形）。
-         その刻は「少し超過している」のではなく**材料が古い**ので、数字にしない。
-       ＊物差しは走らせる上限（見込みの3倍／無ければ6時間）と同じ。超過は見せ、
-         材料の古さは伏せる、の線がここで分かれる。panel-check ⑦ の二つが両側を見張る。 */
-    if (endSec > 0 && (nowSec - endSec) > runCapSec()) { endSec = 0; gm = 0; }
-    if (endSec > 0 && endSec <= nowSec) {
-      var step = (gm > 0 ? gm : 10) * 60;   /* 延ばす幅。当てが無ければ10分刻み */
-      /* 延ばすのは**一幅まで**（v124・止まりの見分け-1）。
-         ＊v123 までは guard 200 で回していたが、10分刻みなら33時間先まで延びる。
-           上限として働いておらず、止まった回の刻がいつまでも「これから終わる」顔で出ていた。
-         ＊一幅を超えて過ぎていたら、延ばすのをやめて「過ぎています」と言う。 */
-      if ((nowSec - endSec) > step) {
-        /* 延ばすのをやめる。**過ぎた刻はそのまま出す**——「超過して走っている回の終了予定は
-           過去になるのが正しく、経過の分と並べて読むためにここに要る」（v107 の決め。
-           panel-check ⑦ がこれを見張っている）。消すのではなく、過ぎたと言い切る。 */
-        /* ＊開始と経過の括弧は**呼ぶ側が足す**（黄色の行）。ここで足すと二重になる。 */
-        var e0 = new Date(endSec * 1000);
-        return W + '、' + e0.getHours() + '時' + ('0' + e0.getMinutes()).slice(-2)
-             + '分終了予定を過ぎています';
-      }
-      endSec += step;
+    if (lastStartedAt > 0 && lastMikomiMin > 0) {
+      var endSec = lastStartedAt + lastMikomiMin * 60, e = new Date(endSec * 1000);
+      var hm = e.getHours() + '時' + ('0' + e.getMinutes()).slice(-2) + '分';
+      return (endSec <= nowSec) ? (W + '、' + hm + '終了予定を過ぎています') : (W + '、' + hm + '終了予定');
     }
-    if (endSec > 0) {
-      var e = new Date(endSec * 1000);
-      return W + '、' + e.getHours() + '時' + ('0' + e.getMinutes()).slice(-2) + '分終了予定';
-    }
-    return W + '、終了予定不明';
+    return W + '、見込みなし';
   }
 
   /* 板の跡地へ出す状態の一行（v91 で三通り・v94 で字を替えた）。
