@@ -199,6 +199,14 @@ jobs:
         id: tip
         if: steps.guard.outputs.skip != '1'
         run: |
+          # 控えの回（heavy=0＝札・状態・使用量・報告だけ）は、先端でなくても配る（2026-11-18）。
+          #   ＊押しが数分おきに続くと、配信の順番待ちの間に先端が進み、どの回も「先端でない」で飛ばされて、札と状態が一つも配られなかった（19:33〜）。
+          #   ＊同じ群れ（group: pages）は新しい一本だけを待たせて古い待ちを取り下げるので、順序は崩れない。検査に時間のかかる本体の回（heavy=1）だけが、後出しで新しい配信を上書きし得るので、そちらは従来どおり先端だけ配る。
+          if [ "${{ needs.scope.outputs.heavy }}" = "0" ]; then
+            echo "stale=0" >> "$GITHUB_OUTPUT"
+            echo "控えの回：先端でなくてもこの回の commit を配る"
+            exit 0
+          fi
           git fetch --quiet --depth=1 origin main
           TIP=$(git rev-parse FETCH_HEAD)
           echo "先端 $TIP ／ この回 $GITHUB_SHA"
