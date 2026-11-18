@@ -1,7 +1,8 @@
 {
-    "at":  "2026-11-18 13:10:20",
+    "at":  "2026-11-18 14:00:31",
     "kinds":  [
-
+                  "pub-late",
+                  "subj-gap"
               ],
     "ntfyDown":  false,
     "text":  ""
