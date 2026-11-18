@@ -1,6 +1,11 @@
 [
     {
         "title":  "🙋 ヨシしてください",
+        "time":  1794981248,
+        "message":  "待つ命令を弾く PreToolUse の関門（Bash と PowerShell）を入れた・作り値で確認・本番はこの窓では未反映\n印: y1118-1440\n待っているのは：前の⑤古い声の除去のヨシ（「y1118-1440 にヨシ」・消す物 9,479本・459MB・一覧 reports/old-voices-to-delete-y1118.txt）は引き続き待ち。関門の件はヨシ不要。\n見込み: 5分（終わり 14:58）\n要点：一、関門を入れた：~/.claude/block-wait.ps1（PreToolUse・matcher は Bash|PowerShell・settings.json に登録・控え settings.json.bak-20261118-bw）。弾く物＝sleep／Start-Sleep／gh run watch／until・while で gh run・git fetch・git push・cu…\n答え方：「y1118-1440 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。"
+    },
+    {
+        "title":  "🙋 ヨシしてください",
         "time":  1794980769,
         "message":  "札の複数行が切れる件の直し・task-notification を枠にしない直し・check.yml の結果（PASS）・⑤のヨシ待ち\n印: y1118-1440\n待っているのは：⑤古い声の除去のヨシ（「y1118-1440 にヨシ」）。消す物＝直下の古い声（IMA ADPCM の adv*.wav.wav）9,479本・計459MB（甲＝同名の m4a がある 5,548本・289MB／乙＝計画から外れた古い方言の声 3,931本・170MB）。一覧は reports/old-voices-to-delete-y1118.txt（push 済み）。場面の声など非 adv の .wav.wav は消さない。検査（check.yml 44242964232・ba987f5d）は PASS・配信済みなので、ヨシが出れば消して push する。\n見込み: 15分（14:47 追記：panel v161 の push が通った＝6e7f3269。ヨシが出るまで⑤は止まる）\n要点：三（check.yml の見込みと結果）：y1118-1425 の見込みの終わりは 14:45 と書いたが、実際は 14:29 に終わった（走り 44242964232＝05:15:24Z→05:29:53Z＝14分29秒。内訳：scope 43秒・check 13分・deploy 35秒）。結果は success。check は速い版でなくフル版の長さ（⑦21視野）で 111.8秒の駆動、④音声…\n答え方：「y1118-1440 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。"
     },
