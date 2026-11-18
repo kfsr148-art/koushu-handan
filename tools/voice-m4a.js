@@ -70,7 +70,7 @@ async function synth(text) {
   if (synthMode) {
     sh('docker pull voicevox/voicevox_engine:cpu-latest'); sh('docker rm -f vv 2>/dev/null || true');
     sh('docker run -d --name vv -p 127.0.0.1:50021:50021 voicevox/voicevox_engine:cpu-latest');
-    console.log('エンジンの版: ' + await waitUp());
+    console.log('エンジンの版: ' + await waitUp()); try { const ud = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, '..', 'voice-user-dict.json'), 'utf8')); for (const w of ud) { const r = await fetch(BASE + '/user_dict_word?surface=' + encodeURIComponent(w.surface) + '&pronunciation=' + encodeURIComponent(w.pronunciation) + '&accent_type=' + (w.accent_type || 0), { method: 'POST' }); console.log('ユーザー辞書：' + w.surface + '→' + w.pronunciation + '（' + r.status + '）'); } } catch (e) { console.log('ユーザー辞書を入れられなかった：' + e.message); }   // 2026-11-19：読み違いの言葉をユーザー辞書で直す（voice-user-dict.json）
   }
   const t0 = Date.now(); let ok = 0, bytes = 0, fail = 0;
   for (const [name, text] of mine) {

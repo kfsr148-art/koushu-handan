@@ -148,8 +148,8 @@ function row(stack, name, p, back) {
    ＊読む先はどれも公開側。返事パネルが見ているものと同じ。
    ＊猫の絵はリポジトリにあるものをそのまま使う（RunCat の走りコマと眠り、現場猫の絵）。
      ウィジェットは動かせないので、走るコマは**静止の一枚**を選ぶ。 */
-const URL_STATE   = 'https://kfsr148-art.github.io/koushu-handan/state.json';
-const URL_NOTICES = 'https://kfsr148-art.github.io/koushu-handan/notices.json';
+const URL_STATE   = 'https://kfsr148-art.github.io/koushu-state/state.json';
+const URL_NOTICES = 'https://kfsr148-art.github.io/koushu-state/notices.json';
 const URL_VER     = 'https://kfsr148-art.github.io/koushu-handan/ver.txt';
 const URL_PANEL   = 'https://kfsr148-art.github.io/koushu-handan/panel.html';
 const URL_IMG     = 'https://kfsr148-art.github.io/koushu-handan/';
