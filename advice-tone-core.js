@@ -849,7 +849,7 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
       if (v >= 0 && tone === 'french') { base = base.replace(/ようございます/g, 'いいです').replace(/でございません/g, 'ません').replace(/でございます/g, 'です').replace(/ございません/g, 'ません').replace(/ございます/g, 'です'); }   // マダムは「です」でそろえる（「ございます」と混ぜない・y1116-6）
       let vv = v, x = tk.t;
       if (v >= 0) { const q = advDialAll(base, dial, polite, v, tk.fx ? [] : ends4); x = q.text; vv = q.v; if (dial === 'bushi' && (tone === 'lady' || tone === 'french')) { x = advBushiFem(x); } }
-      if (bk && bk.fx && !tk.lit && !tk.head) { x = bk.fx(x); }   // v1508 執事×方言（頭の一言・面白みは書いた字のまま）
+      if (bk && bk.fx && (!bk.std || bk.yoji) && !tk.lit && !tk.head) { x = bk.fx(x); }   // 2026-11-19 本人の指示：一文に標準と方言を混ぜない＝標準の丁寧語の方言（宮崎・博多・京都・青森・沖縄）には元のある形も掛けない（沖縄は乙で作り直す）   // v1508 執事×方言（頭の一言・面白みは書いた字のまま）
       if (tk.head) { (x.match(/[^。！？]*[。！？]/g) || []).forEach(function (q) { ends4.push(q.slice(-4)); }); }   // v1506：頭の一言の語尾も、続く文の語尾選びの控えに入れる（同じ語尾が三文続かないように）
       items.push({ li: li, ti: ti, text: x, v: (v >= 0 ? vv : v), alt: false, term: !!tk.term, changed: x !== tk.t }); text += x;
     });
