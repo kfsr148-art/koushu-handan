@@ -756,6 +756,8 @@
     var nowSec = Math.floor(Date.now() / 1000);
     if (lastStartedAt > 0 && lastMikomiMin > 0) {
       var endSec = lastStartedAt + lastMikomiMin * 60, e = new Date(endSec * 1000);
+      /* 材料の古い刻（前の仕事の開始を引きずった形・過ぎ方が走らせる上限を超えた）は出さない（v124 の守り・panel-check ⑦） */
+      if ((nowSec - endSec) > runCapSec()) { return W + '、見込みなし'; }
       var hm = e.getHours() + '時' + ('0' + e.getMinutes()).slice(-2) + '分';
       return (endSec <= nowSec) ? (W + '、' + hm + '終了予定を過ぎています') : (W + '、' + hm + '終了予定');
     }
