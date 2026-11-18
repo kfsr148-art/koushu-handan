@@ -13,7 +13,7 @@
 'use strict';
 const fs = require('fs'), path = require('path');
 const ROOT = __dirname, OUT = process.env.PACK_OUT || path.join(ROOT, '_site');
-const MANAGED = /^(advy|advx)-.*\.wav\.wav$/;   // 台帳で絞る声（方言の声・人格の部品の声）
+const MANAGED = /^(advy|advx)-.*\.(wav\.wav|m4a)$/;   // 台帳で絞る声（方言の声・人格の部品の声）。v1506 から声は m4a（AAC）。古い .wav.wav も台帳に無ければ載せない
 const SKIP_TOP = new Set(['.git', '.github', 'node_modules', 'scratchpad', '_site']);
 const isManaged = f => MANAGED.test(f);
 function readManifest() {
@@ -24,8 +24,8 @@ function readManifest() {
 function makeManifest(dialJson, advTxt) {
   const names = new Set();
   const d = JSON.parse(fs.readFileSync(dialJson || path.join(ROOT, 'voice-advice-dial.json'), 'utf8'));
-  Object.keys(d).forEach(k => names.add(k + '.wav.wav'));
-  fs.readFileSync(advTxt || path.join(ROOT, 'voice-advice.txt'), 'utf8').split(/\r?\n/).forEach(l => { if (!l || l[0] === '#') { return; } const n = l.split('\t')[0]; if (isManaged(n)) { names.add(n); } });
+  Object.keys(d).forEach(k => names.add(k.replace(/[.]wav[.]wav$/, '') + '.m4a'));   // v1506：声の名は .m4a
+  fs.readFileSync(advTxt || path.join(ROOT, 'voice-advice.txt'), 'utf8').split(/\r?\n/).forEach(l => { if (!l || l[0] === '#') { return; } const n = l.split('\t')[0].replace(/[.]wav[.]wav$/, '') + '.m4a'; if (isManaged(n)) { names.add(n); } });
   fs.writeFileSync(path.join(ROOT, 'voice-used.txt'), [...names].sort().join('\n') + '\n');
   return names.size;
 }
