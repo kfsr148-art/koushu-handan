@@ -494,7 +494,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v163（11月18日）</p>
+  <p class="ver" id="verTag">panel v164（11月18日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -502,6 +502,7 @@
   <!-- 遠隔で繋がっている会話の名と pid（v127・落ちた後の起こし-2）。state.json の rcName / rcPid。
        取れていなければ何も出さない。 -->
   <p class="usage-when" id="rcTag" hidden></p>
+  <p class="usage-when" id="evTag" hidden></p>
   <!-- ＊使用量の下の断り書き（この機械のローカルの…）は **v71 で消した**。器ごと外している。
        数字の三つと「N分前取得」の行はそのまま。 -->
 </div>
@@ -522,7 +523,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '163';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
+  var PANEL_VER = '164';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -2833,7 +2834,7 @@
           var m = JSON.parse(ev.message);
           if (!m || typeof m.at !== 'number' || !lastStateObj) { return; }   // 公開ページの写しを一度も読めていない間は、重ねる土台が無いので待つ
           var d = {}; for (var k in lastStateObj) { d[k] = lastStateObj[k]; }
-          d.stat = m.stat; d.startedAt = m.startedAt; d.statAt = m.statAt; d.cloud = m.cloud; d.mikomi = m.mikomi; d.at = m.at;
+          d.stat = m.stat; d.startedAt = m.startedAt; d.statAt = m.statAt; d.cloud = m.cloud; d.mikomi = m.mikomi; d.at = m.at; if (m.ev) { d.ev = m.ev; d.evAt = m.evAt; }
           pullState(d);
         } catch (x) { }
       };
@@ -2879,6 +2880,9 @@
         paintBar();
 
         /* 遠隔で繋がっている会話の名と pid（v127・落ちた後の起こし-2）。取れなければ畳む。 */
+        /* v164：Claude Code の合図（hook_event_name の英語）をそのまま小さく出す。作業中／手待ちの字は合図の変換表で引いた物（state.json の stat）。 */
+        var evEl = $('evTag');
+        if (evEl) { var evN = String(d.ev || ''); if (evN) { var evD = new Date((d.evAt || 0) * 1000); evEl.textContent = '合図：' + evN + (d.evAt ? '（' + ('0' + evD.getHours()).slice(-2) + ':' + ('0' + evD.getMinutes()).slice(-2) + ':' + ('0' + evD.getSeconds()).slice(-2) + '）' : ''); evEl.hidden = false; } else { evEl.textContent = ''; evEl.hidden = true; } }
         var rcEl = $('rcTag');
         if (rcEl) {
           var rcN = String(d.rcName || ''), rcP = (typeof d.rcPid === 'number') ? d.rcPid : 0;
