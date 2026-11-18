@@ -137,29 +137,39 @@ jobs:
       cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: write   # 検査を通った印（タグ check-pass）を進める（2026-11-18）
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # 控えの回でも、**直前の本体の検査が落ちたまま**なら配信しない。
-      #   ＊落ちた版のまま、あとの控えの押しが公開してしまうのを止めるため。
-      #   ＊ここは**落とさずに飛ばす**（exit 1 にすると走りが failure になり、
-      #     次の回の関門をこちらが濁す。2026-09-12 21:49 の failure で踏んだ形）。
-      #   ＊直った版が通れば、次の控えの回から配信が戻る（ひとりでに戻る）。
-      - name: 直前の検査が落ちていないかを見る
+      # 控えの回でも、**検査を通っていない本体の変更が先端に残っている間**は配信しない（2026-11-18）。
+      #   ＊前は「直前の完了した走りが failure か」で見ていたので、①本体の検査が走っている最中（未完了）と、
+      #     ②failure のあとに控えの回が一度 success（配信を飛ばした回）になった後は、素通りして
+      #     検査前の本体を配信していた（昼の v1506・18:07 の v1507 が検査の前に公開へ出た）。
+      #   ＊今は「検査を通った印」（タグ check-pass＝配信の段が、検査が success の回に進める）から先端までの差を見て、
+      #     本体の検査対象のファイルが一つでも変わっていれば飛ばす。検査が通れば印が進み、次の控えの回から配信が戻る。
+      #   ＊ここは**落とさずに飛ばす**（exit 1 にすると走りが failure になり、次の回の関門を濁す）。
+      - name: 検査を通っていない本体の変更が残っていないかを見る
         id: guard
         if: needs.scope.outputs.heavy == '0'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          LAST=$(gh run list -R "$GITHUB_REPOSITORY" -w "自動検査と配信" -b main -L 12 \
-                  --json conclusion,status --jq '[.[] | select(.status=="completed" and (.conclusion=="success" or .conclusion=="failure"))][0].conclusion')
-          echo "直前の走り: ${LAST:-なし}"
-          if [ "$LAST" = "failure" ]; then
+          LIST='^(koushu-handan\.html|check\.js|adv-check\.js|check-all\.js|ver\.txt|panel\.html|panel-check\.js|widget-check\.js|usage-widget(-loader)?\.js|\.github/workflows/check\.yml)$'
+          CHANGED=$(gh api --paginate "repos/$GITHUB_REPOSITORY/compare/check-pass...$GITHUB_SHA?per_page=100" --jq '.files[].filename' 2>/dev/null) && OK=1 || OK=0
+          if [ "$OK" != "1" ]; then
             echo "skip=1" >> "$GITHUB_OUTPUT"
-            echo "直前の検査が落ちている。この回は配信を飛ばす（直った版が通れば戻る）"
+            echo "検査を通った印（check-pass）との差が取れない。安全側で、この回は配信を飛ばす"
+          elif echo "$CHANGED" | grep -qE "$LIST"; then
+            echo "skip=1" >> "$GITHUB_OUTPUT"
+            echo "検査を通った印から、本体のファイルが変わっている（検査が走っているか落ちている）。この回は配信を飛ばす（検査が通れば戻る）"
+            echo "$CHANGED" | grep -E "$LIST" | head
           else
             echo "skip=0" >> "$GITHUB_OUTPUT"
+            echo "検査を通った印から、本体の変更は無い。配信してよい"
           fi
       - uses: actions/checkout@v4
         if: steps.guard.outputs.skip != '1'
@@ -218,3 +228,21 @@ jobs:
       - id: deployment
         if: steps.guard.outputs.skip != '1' && steps.tip.outputs.stale != '1'
         uses: actions/deploy-pages@v4
+      # 検査が success の本体の回は、配信したか（先端が進んで飛ばしたか）にかかわらず、その commit まで検査を通ったと印を付ける（前へだけ進める）。
+      - name: 検査を通った印（check-pass）を進める
+        if: always() && needs.scope.outputs.heavy == '1' && needs.check.result == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          CUR=$(gh api "repos/$GITHUB_REPOSITORY/git/refs/tags/check-pass" --jq '.object.sha' 2>/dev/null || echo NONE)
+          if [ "$CUR" = "NONE" ]; then
+            gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref=refs/tags/check-pass -f sha="$GITHUB_SHA" && echo "check-pass を新しく作った: $GITHUB_SHA"
+          else
+            ST=$(gh api "repos/$GITHUB_REPOSITORY/compare/$CUR...$GITHUB_SHA" --jq '.status' 2>/dev/null || echo error)
+            echo "check-pass $CUR → $GITHUB_SHA の関係: $ST"
+            if [ "$ST" = "ahead" ]; then
+              gh api -X PATCH "repos/$GITHUB_REPOSITORY/git/refs/tags/check-pass" -f sha="$GITHUB_SHA" -F force=true && echo "check-pass を進めた"
+            else
+              echo "印より前か同じ・並びが取れない：進めない"
+            fi
+          fi
