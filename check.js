@@ -355,6 +355,8 @@ section('④', '音声ファイルの突き合わせ', () => {
   }
   /* 引退した声（v1492）：助言の頭の一言を「見る所＋言い切り」に組み替えたため、前の形（advo-…）と、人格を分ける前の終わりの一言（advc-a-n-0 の形）は使わなくなった。消さずに残す決め（git の履歴に残る物は消さない）。 */
   const RETIRED = /^(advo-|advy-|advc-[ad]-[ndt]-[0-9]\.)/;   // v1495：ひと続きの話に組み直して使わなくなった方言の声（advy-…・台本に無い物）も、消さずに残す
+  /* v1506：声は m4a（AAC）が正本。同名の .wav.wav（古い形）が参照されている名なら、同名の .m4a も参照されている物として数える */
+  onDisk.forEach(f => { if (/[.]m4a$/.test(f) && used.has(f.replace(/[.]m4a$/, '.wav.wav'))) used.add(f); });
   const retired = onDisk.filter(f => !used.has(f) && RETIRED.test(f));
   const orphans = onDisk.filter(f => !used.has(f) && !RETIRED.test(f));
   if (retired.length) note('引退した声（残してある）: ' + retired.length + '個');
@@ -666,7 +668,7 @@ section('⑤', '死にコード', () => {
     const re = new RegExp('\\b' + bare.replace(/\$/g, '\\$') + '\\b', 'g');
     let c = 0;
     while (re.exec(srcNoB64)) c++;
-    if (c <= 1) dead.push({ name, ...d });
+    if (c <= 1 && name !== 'ADV_WORDS') dead.push({ name, ...d });   // v1506：ADV_WORDS は ADV_TONE の核（正本 advice-tone-core.js）の写しの一部で、本体は読まず、声づくりの道具だけが読む
   });
   dead.sort((a, b) => a.line - b.line);
 
