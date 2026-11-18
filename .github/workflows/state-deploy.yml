@@ -1,0 +1,96 @@
+# 札・状態だけの押しの配信（2026-11-18 23:30 本人の決め「丙」）
+#
+#   ＊state.json・notices.json などの控えだけの押しは、check.yml を走らせない（check.yml の paths-ignore）。
+#     代わりにこの走りが、検査の段も「何が変わったか」の段も通さず、配信だけを一本で行う。
+#     check.yml では scope（約32秒）と段の間の待ち（約29秒）を通ってから配信していた（23:27 の実測）。
+#   ＊配る中身と関門は check.yml の deploy（控えの回）と同じ：
+#       ・検査を通っていない本体・パネルの変更が先端に残っていれば、その物だけ check-pass の版へ戻して配る
+#       ・check-pass が読めなければ、安全側で配信を飛ばす
+#   ＊群れ（group: pages）は check.yml の配信と同じ。同時に配るのは一本だけ。
+name: 札と状態の配信
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'state.json'
+      - 'notices.json'
+      - 'notices-*.json'
+      - 'status.md'
+      - 'board.json'
+      - 'usage.json'
+      - 'pipe-warn.json'
+      - 'ntfy-latest.txt'
+      - 'ntfy-sent.json'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 検査を通っていない本体の変更が残っていないかを見る
+        id: guard
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          R="$GITHUB_REPOSITORY"
+          FILES='koushu-handan.html check.js adv-check.js check-all.js ver.txt panel.html panel-check.js widget-check.js usage-widget.js usage-widget-loader.js .github/workflows/check.yml'
+          TAGSHA=$(gh api "repos/$R/git/refs/tags/check-pass" --jq '.object.sha' 2>/dev/null || echo NONE)
+          TAGDATE=""
+          [ "$TAGSHA" != "NONE" ] && TAGDATE=$(gh api "repos/$R/git/commits/$TAGSHA" --jq '.committer.date' 2>/dev/null || echo "")
+          if [ -z "$TAGDATE" ]; then
+            echo "skip=1" >> "$GITHUB_OUTPUT"
+            echo "検査を通った印（check-pass）が読めない。安全側で、この回は配信を飛ばす"
+          else
+            NEWER=""
+            for F in $FILES; do
+              D=$(gh api "repos/$R/commits?sha=$GITHUB_SHA&path=$F&per_page=1" --jq '.[0].commit.committer.date // empty' 2>/dev/null || echo "")
+              if [ -n "$D" ] && [ "$D" \> "$TAGDATE" ]; then NEWER="$NEWER $F"; fi
+            done
+            echo "skip=0" >> "$GITHUB_OUTPUT"
+            if [ -n "$NEWER" ]; then
+              echo "revert=1" >> "$GITHUB_OUTPUT"
+              echo "newer=$NEWER" >> "$GITHUB_OUTPUT"
+              echo "検査を通った印より後に本体のファイルが変わっている：$NEWER。これらは検査を通った版へ戻して配る"
+            else
+              echo "検査を通った印より後の本体の変更は無い。配信してよい"
+            fi
+          fi
+      - uses: actions/checkout@v4
+        if: steps.guard.outputs.skip != '1'
+      - name: 検査を通っていない本体・パネルの変更を、検査を通った版へ戻して配る
+        if: steps.guard.outputs.skip != '1' && steps.guard.outputs.revert == '1'
+        run: |
+          git fetch --quiet --no-tags --depth=1 origin "refs/tags/check-pass:refs/tags/check-pass"
+          NEWER="${{ steps.guard.outputs.newer }}"
+          case " $NEWER " in *" panel.html "*) NEWER="$NEWER panel-ver.txt" ;; esac
+          for F in $NEWER; do
+            if git cat-file -e "check-pass:$F" 2>/dev/null; then
+              git checkout check-pass -- "$F" && echo "戻した: $F"
+            else
+              rm -f "$F" && echo "検査を通った版に無い→外した: $F"
+            fi
+          done
+      - uses: actions/configure-pages@v5
+        if: steps.guard.outputs.skip != '1'
+      - name: 公開の荷を組む（pack-site.js）
+        if: steps.guard.outputs.skip != '1'
+        run: node pack-site.js
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.guard.outputs.skip != '1'
+        with:
+          path: '_site'
+      - id: deployment
+        if: steps.guard.outputs.skip != '1'
+        uses: actions/deploy-pages@v4
