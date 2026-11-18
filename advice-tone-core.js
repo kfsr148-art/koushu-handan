@@ -803,26 +803,58 @@ function advOmoOverlaps(scene, lines) {   // lines＝助言の部品の行（id 
   return hit;
 }
 function advHasTriple(text) { const ss = text.match(/[^。！？]*[。！？]/g) || []; let run = 1; for (let k = 1; k < ss.length; k++) { if (ss[k].slice(-4) === ss[k - 1].slice(-4)) { run++; if (run >= 3) { return true; } } else { run = 1; } } return false; }   // 同じ語尾が三文続くか（面白みの一言を足して続くなら、足さない）
+/* v1508 執事×方言の決め（reports/kuchou-hyou.md の一人目・2026-11-18 本人の決め）。advTalk が執事の時だけ使う。
+   std：標準の丁寧語の字のまま（方言の語尾・呼び名を付けない）に、元のある形だけ足す（fx）。k＝口癖（無ければ標準のつなぎ）。
+   宮崎＝ございます→ござんす・てください→てくいやんせ（ウィキペディア「宮崎弁」）／博多＝てください→てんしゃい（ウィキペディア「博多弁」・要検証）／
+   京都＝おVなさいませ→おVおくれやす・名詞＋です→どす（fun-japan 京ことば）／青森＝標準のまま（弘大の辞書で確かめられるまで）／
+   沖縄＝です・でございます→やいびーん・お願いいたします→うにげーさびら（本人の指摘・okinawa-labo・ウィキブックス「沖縄語/動詞文」。沖縄語の元が無い動詞は作らない）。
+   大阪＝船場言葉（ねん・どない・やで を使わない・ございます→おます（一つの言葉に一度）・呼び名 だんさん）／武士＝一人称 それがし・呼び名「殿」を付けない／
+   幼児＝ミント型（標準の執事の字のまま、音だけ す→しゅ・さ→しゃ・し→ち・せ→しぇ・ござ→ごじゃ、最初と最後を「ばぶ」で挟む。漢字は ADV_YOJI_KANA の読みでひらがなに）。 */
+function advSenba(s0) {
+  let t = s0, used = false;
+  t = t.replace(/どないしはりますねん|どないしますねん/g, 'どうなさいますか').replace(/どない/g, 'どう').replace(/お客様|旦那はん|旦那さま/g, 'だんさん');
+  t = t.replace(/(で|に)ございます(?:で|わ|ねん)?/g, function (m, a) { if (!used) { used = true; return a + 'おます'; } return 'です'; });
+  t = t.replace(/ございまして/g, 'おまして').replace(/ございません(?:で)?/g, function () { if (used) { return 'ありません'; } used = true; return 'おまへん'; });
+  t = t.replace(/ようございますなぁ/g, 'ようおますなぁ').replace(/ございます(?:で|ねん)?(?=[。、！？…])/g, function () { if (used) { return 'ます'; } used = true; return 'おます'; });
+  t = t.replace(/(ます|ました|ません)ねん/g, '$1わ').replace(/(です|だす)ねん/g, 'ですわ').replace(/ますで(?=[。、！？…])/g, 'ますわ').replace(/ませんで(?=[。、！？…])/g, 'ませんわ');
+  return t.replace(/やろけど/g, 'でっしゃろけど').replace(/やで(?=[。、！？…])/g, 'です').replace(/ねん(?=[。、！？…])/g, 'わ');
+}
+const ADV_YOJI_KANA = {};   // 幼児の読み（標準の執事の字 → ひらがなの字）。雲の読みの道具で作って入れる
+function advMint(s) { const m = { 'ござ': 'ごじゃ', 'す': 'しゅ', 'さ': 'しゃ', 'し': 'ち', 'せ': 'しぇ' }; return s.replace(/ござ|[すさしせ]/g, function (x) { return m[x]; }); }
+const ADV_BUTLER_DIAL = {
+  miyazaki: { std: true, k: 'ひとつ申し上げます', fx: function (s) { return s.replace(/てくださいませ|てください/g, 'てくいやんせ').replace(/ございます/g, 'ござんす'); } },
+  hakata: { std: true, k: 'あきんどの勘どころです', fx: function (s) { return s.replace(/てくださいませ|てください/g, 'てんしゃい'); } },
+  kyoto: { std: true, k: 'おそれいります', fx: function (s) { return s.replace(/お([^、。！？\s]{1,6}?)なさいませ/g, 'お$1おくれやす').replace(/([^いますでし])です(?=[。！？])/g, '$1どす'); } },
+  aomori: { std: true, k: '', fx: null },
+  okinawa: { std: true, k: '畏れながら', fx: function (s) { return s.replace(/お願いいたします|お願い申し上げます/g, 'うにげーさびら').replace(/でございます(?=[。！？])/g, 'やいびーん').replace(/([^いますでし])です(?=[。！？])/g, '$1やいびーん'); } },
+  osaka: { std: false, c: 'だんさん', fx: advSenba },
+  bushi: { std: false, c: '', fx: function (s) { return s.replace(/わたくし/g, 'それがし'); } },
+  yoji: { std: true, k: '', yoji: true, fx: function (s) { return advMint(ADV_YOJI_KANA[s] || s); } }
+};
 function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言の行が付いているか（v1500）
+  const bk = (tone === 'butler' && dial) ? (ADV_BUTLER_DIAL[dial] || null) : null;   // v1508 執事×方言の決め
+  if (bk && bk.std) { dial = ''; }   // 標準の丁寧語の字のまま（方言の語尾・つなぎを通さない）
   const polite = !!ADV_POLITE[tone], units = [];
   lines.forEach(function (l, li) { l.forEach(function (tk, ti) { if (tk.term && !tk.lit) { units.push([li, ti]); } }); });   // lit＝面白みの一言（書いた字のまま。方言を通さない・v1501）
-  const chara = dial ? (ADV_CHARA[dial] && ADV_CHARA[dial][tone]) : null;
+  let chara = dial ? (ADV_CHARA[dial] && ADV_CHARA[dial][tone]) : null;
+  if (bk) { chara = bk.std ? (bk.k ? { k: bk.k, c: '' } : null) : { k: chara.k, c: (bk.c !== undefined ? bk.c : chara.c) }; }
   const plan = dial ? advDialPlanAll(units.length) : [], pv = {};
   units.forEach(function (u, k) { pv[u[0] + ',' + u[1]] = dial ? plan[k] : -1; });
   const items = [], last = lines.length - 1, ends4 = []; let text = '', nconn = 0;
   lines.forEach(function (l, li) {
-    if (li >= 1 && !l.nc) { const slot = (hasEnd && li === last) ? 3 : (nconn === 0 ? 0 : 1 + ((nconn - 1) % 2)); nconn++; let c = advConn(tone, dial, slot); if (chara && slot === 0) { c = chara.k + '、'; } items.push({ conn: true, slot: slot, text: c }); text += c; }
+    if (li >= 1 && !l.nc) { const slot = (hasEnd && li === last) ? 3 : (nconn === 0 ? 0 : 1 + ((nconn - 1) % 2)); nconn++; let c = advConn(tone, dial, slot); if (chara && slot === 0) { c = chara.k + '、'; } if (bk && bk.yoji) { c = bk.fx(c); } items.push({ conn: true, slot: slot, text: c }); text += c; }
     l.forEach(function (tk, ti) {
       const v = tk.lit ? -1 : ((pv[li + ',' + ti] === undefined) ? (dial ? 0 : -1) : pv[li + ',' + ti]);   // 方言ありは、文の終わりを持たない部品の中の文にも人物の語尾を付ける（0から）
       let base = (v >= 0) ? tk.t.replace(/、(?:ウィ|モナミ)(?=[。！？])/g, '') : tk.t;   // 方言の世界の人物は、外国語の呼びかけを言わない
       if (v >= 0 && tone === 'french') { base = base.replace(/ようございます/g, 'いいです').replace(/でございません/g, 'ません').replace(/でございます/g, 'です').replace(/ございません/g, 'ません').replace(/ございます/g, 'です'); }   // マダムは「です」でそろえる（「ございます」と混ぜない・y1116-6）
       let vv = v, x = tk.t;
       if (v >= 0) { const q = advDialAll(base, dial, polite, v, tk.fx ? [] : ends4); x = q.text; vv = q.v; if (dial === 'bushi' && (tone === 'lady' || tone === 'french')) { x = advBushiFem(x); } }
+      if (bk && bk.fx && !tk.lit && !tk.head) { x = bk.fx(x); }   // v1508 執事×方言（頭の一言・面白みは書いた字のまま）
       if (tk.head) { (x.match(/[^。！？]*[。！？]/g) || []).forEach(function (q) { ends4.push(q.slice(-4)); }); }   // v1506：頭の一言の語尾も、続く文の語尾選びの控えに入れる（同じ語尾が三文続かないように）
       items.push({ li: li, ti: ti, text: x, v: (v >= 0 ? vv : v), alt: false, term: !!tk.term, changed: x !== tk.t }); text += x;
     });
   });
-  if (chara && !lines.noAddr) { for (let q = items.length - 1; q >= 0; q--) { const it = items[q]; if (!it.conn && it.term && it.v >= 0) { if (/[。！？]$/.test(it.text)) { it.text = it.text.slice(0, -1) + '、' + chara.c + it.text.slice(-1); it.changed = true; text = ''; } break; } } }
+  if (chara && chara.c && !lines.noAddr) { for (let q = items.length - 1; q >= 0; q--) { const it = items[q]; if (!it.conn && it.term && it.v >= 0) { if (/[。！？]$/.test(it.text)) { it.text = it.text.slice(0, -1) + '、' + chara.c + it.text.slice(-1); it.changed = true; text = ''; } break; } } }
   // 同じ語尾が三文続いたら、直せる文（付けていない部品の最後の文）の語尾を変えて切る。文ごとに見る（二文を持つ部品の中の文は直せない）。
   for (let it = 0; it < 6; it++) {
     const segs = []; let pos = 0, all = '';
@@ -841,6 +873,10 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
       }
     }
     if (!fixed) { break; }
+  }
+  if (bk && bk.yoji && items.length) {   // 幼児：最初と最後を「ばぶ」で挟む（つなぎと同じ扱いの声）
+    const w = advHash(items.map(function (x) { return x.text; }).join('')).charCodeAt(7) % 2;
+    items.unshift({ conn: true, slot: -1, text: w ? 'ばぶばぶ。' : 'ばぶー。' }); items.push({ conn: true, slot: -1, text: w ? 'ばぶー。' : 'ばぶ。' });
   }
   text = items.map(function (x) { return x.text; }).join('');
   return { items: items, text: text };
@@ -1052,4 +1088,4 @@ function advApplyNc(lines, nc, noEnd) {   // noEnd＝終わりの一言の行が
   return lines;
 }
 /* ADV_TONE_END */
-if (typeof module !== 'undefined') { module.exports = { ADV_SOFT, ADV_CAP, ADV_CHARA, advDialPlanAll, ADV_TONE_KEYS, ADV_POLITE, ADV_TONE, ADV_SCENE, ADV_DIALECT, advToneText, advSceneText, advHash, advDialVoice, advDialSentenceV, advAltLast, advConn, advTalk, ADV_CONN_TONE, ADV_CONN_DIAL, ADV_OMO, ADV_OMO_KIND, ADV_OMO_OVERLAP, advHasTriple, advOmoOverlaps, ADV_BLUNT_NEW, ADV_GEN, ADV_SHORT_IDS, ADV_SHORT_SRC, advGen, advSid, ADV_CAP, advEst, advLongRun, advBad, advShortLs, advCompactLs, advDropSLs, advEchoLs, advNcLine, advVariants, advApplyNc, ADV_WORDS, ADV_WORD_LIT }; }
+if (typeof module !== 'undefined') { module.exports = { ADV_BUTLER_DIAL, ADV_YOJI_KANA, advMint, advSenba, ADV_SOFT, ADV_CAP, ADV_CHARA, advDialPlanAll, ADV_TONE_KEYS, ADV_POLITE, ADV_TONE, ADV_SCENE, ADV_DIALECT, advToneText, advSceneText, advHash, advDialVoice, advDialSentenceV, advAltLast, advConn, advTalk, ADV_CONN_TONE, ADV_CONN_DIAL, ADV_OMO, ADV_OMO_KIND, ADV_OMO_OVERLAP, advHasTriple, advOmoOverlaps, ADV_BLUNT_NEW, ADV_GEN, ADV_SHORT_IDS, ADV_SHORT_SRC, advGen, advSid, ADV_CAP, advEst, advLongRun, advBad, advShortLs, advCompactLs, advDropSLs, advEchoLs, advNcLine, advVariants, advApplyNc, ADV_WORDS, ADV_WORD_LIT }; }
