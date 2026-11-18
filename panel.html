@@ -488,7 +488,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v161（11月18日）</p>
+  <p class="ver" id="verTag">panel v162（11月18日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -516,7 +516,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '161';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
+  var PANEL_VER = '162';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1687,12 +1687,23 @@
   var LOST_TEXT = '接続不良、、、。';
   /* v157：ヨシ待ちは待機中と別の猫（yoshi-cat-icon.png）と別の字。順は 作業中＞ヨシ待ち＞まとめて写す＞待機中＞接続不良。 */
   var YOSHI_TEXT = 'ヨシ待ち、、、。';
+  /* v162：雲の走りやヨシ待ちで仕事が続いている間は「検査中：<走っている物>・見込みHH:MM」。本当に何も無い時だけ「待機中」。 */
+  function checkText() {
+    var sub = String(lastSubj || '').replace(/^[^：]*：/, '');
+    var cut = sub.indexOf('（'); if (cut > 0) { sub = sub.slice(0, cut); }
+    if (sub.length > 26) { sub = sub.slice(0, 26) + '…'; }
+    var eta = '見込み未定';
+    if (lastStartedAt > 0 && lastMikomiMin > 0) { eta = '見込み' + pad2s(lastStartedAt + lastMikomiMin * 60); }
+    return '検査中：' + (sub ? sub + '（雲の走り）' : '雲の走り') + '・' + eta;
+  }
   function headText() {
     /* v152：順は 作業中＞まとめて写す＞待機中＞接続不良。猫の絵と字は必ず対なので、runCatTick と同じ順。
        ＊接続不良は、生存が途切れていて、作業中でも写す物も無いときだけ。 */
+    if (isRunning() && (lastCloud || /^雲/.test(String(lastSubj || '')))) { return checkText(); }   /* v162：雲の走りの待ちは「検査中」 */
     if (isRunning()) { return lastCloud ? (WORK_TEXT + '（' + lastCloud + '）') : WORK_TEXT; }   /* 走る猫（v150）。雲で作業が回っている間は、進み（何回目・何本）を添える（v154） */
     /* v153：「まとめて写すヨシ！」は、直近に終わった仕事（写していない札）が1件以上ある時だけ。
        ヨシ待ちの札が立っていても、写す物が0件なら指差しにしない（待機中へ）。 */
+    if (lastStat === 'ヨシ待ち' && (lastCloud || /^雲/.test(String(lastSubj || '')))) { return checkText(); }   /* v162：ヨシ待ちでも雲の走りが続いている間は検査中 */
     if (lastStat === 'ヨシ待ち') { return YOSHI_TEXT; }   /* v157：作業中の次。isRunning が偽の間（止まって待っている間）だけここへ来る */
     if (copyLeft > 0) { return POINT_TEXT; }
     if (lastLost) { return LOST_TEXT; }   /* 連絡なしの寝姿（v151：「接続不良、、、。」） */
