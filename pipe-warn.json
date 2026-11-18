@@ -1,7 +1,7 @@
 {
-    "at":  "2026-11-18 10:20:20",
+    "at":  "2026-11-18 10:30:20",
     "kinds":  [
-                  "push-fail",
+                  "pub-late",
                   "state-stale"
               ],
     "ntfyDown":  false,
