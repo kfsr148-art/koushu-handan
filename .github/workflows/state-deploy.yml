@@ -22,6 +22,8 @@ on:
       - 'pipe-warn.json'
       - 'ntfy-latest.txt'
       - 'ntfy-sent.json'
+  # 雲の走り（job.yml・voice-m4a.yml）が押し戻した後に呼ぶ（GITHUB_TOKEN の押しは走りを起こさないので、先端を配る者が居なくなるのを防ぐ・2026-11-19）
+  workflow_dispatch:
 
 permissions:
   contents: read

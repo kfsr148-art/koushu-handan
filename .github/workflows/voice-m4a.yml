@@ -14,6 +14,7 @@ on:
         default: 'dial'
 permissions:
   contents: write
+  actions: write   # 押し戻した後に配りの走り（state-deploy.yml）を呼ぶ（2026-11-19）
 concurrency:
   group: koushu-voice-m4a
   cancel-in-progress: false
@@ -86,7 +87,12 @@ jobs:
           git add reports/voice-m4a-out
           git commit -q -m "voice-m4a: ${{ github.event.inputs.kind }} ${N}本"
           for i in 1 2 3 4 5; do
-            if git push -q origin HEAD:main; then echo "押し戻した"; exit 0; fi
+            if git push -q origin HEAD:main; then
+              echo "押し戻した"
+              # 押し戻した commit は GITHUB_TOKEN の押しなので走りを起こさない。配りの走りを workflow_dispatch で一本呼ぶ（GITHUB_TOKEN でも起こせる例外・2026-11-19）
+              GH_TOKEN="${{ github.token }}" gh workflow run state-deploy.yml --ref main -R "$GITHUB_REPOSITORY" && echo '配りの走りを呼んだ' || echo '配りの走りを呼べなかった'
+              exit 0
+            fi
             git pull -q --rebase origin main || true
             sleep 5
           done
