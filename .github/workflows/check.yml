@@ -173,8 +173,10 @@ jobs:
               if [ -n "$D" ] && [ "$D" \> "$TAGDATE" ]; then NEWER="$NEWER $F"; fi
             done
             if [ -n "$NEWER" ]; then
-              echo "skip=1" >> "$GITHUB_OUTPUT"
-              echo "検査を通った印（$TAGDATE）より後に、本体のファイルが変わっている：$NEWER。この回は配信を飛ばす（検査が通れば戻る）"
+              echo "skip=0" >> "$GITHUB_OUTPUT"
+              echo "revert=1" >> "$GITHUB_OUTPUT"
+              echo "newer=$NEWER" >> "$GITHUB_OUTPUT"
+              echo "検査を通った印（$TAGDATE）より後に、本体のファイルが変わっている：$NEWER。札・状態は今すぐ配り、これらのファイルは検査を通った版へ戻して配る"
             else
               echo "skip=0" >> "$GITHUB_OUTPUT"
               echo "検査を通った印より後の本体の変更は無い。配信してよい"
@@ -206,6 +208,22 @@ jobs:
             echo "stale=1" >> "$GITHUB_OUTPUT"
             echo "先端が進んでいるので、この回は配信を飛ばす（先端の回が配る）"
           fi
+      # 札（notices.json）・状態（state.json）・使用量・報告は、検査を待たずにすぐ配る（本人の決め 2026-11-18）。検査を待つのは本体とパネルの作りだけ。
+      #   ＊検査を通っていない本体・パネルの変更が先端に残っている回は、その物だけ「検査を通った印（タグ check-pass）の版」へ戻して配る。
+      #   ＊パネルの版の字（panel-ver.txt）はパネル本体と対なので、パネルを戻す時は一緒に戻す。
+      - name: 検査を通っていない本体・パネルの変更を、検査を通った版へ戻して配る
+        if: steps.guard.outputs.skip != '1' && steps.guard.outputs.revert == '1' && steps.tip.outputs.stale != '1'
+        run: |
+          git fetch --quiet --no-tags --depth=1 origin "refs/tags/check-pass:refs/tags/check-pass"
+          NEWER="${{ steps.guard.outputs.newer }}"
+          case " $NEWER " in *" panel.html "*) NEWER="$NEWER panel-ver.txt" ;; esac
+          for F in $NEWER; do
+            if git cat-file -e "check-pass:$F" 2>/dev/null; then
+              git checkout check-pass -- "$F" && echo "戻した: $F"
+            else
+              rm -f "$F" && echo "検査を通った版に無い→外した: $F"
+            fi
+          done
       - uses: actions/configure-pages@v5
         if: steps.guard.outputs.skip != '1' && steps.tip.outputs.stale != '1'
       # ---- 公開に載せる物を絞る（2026-11-17・y1117-1900 のヨシ）----
