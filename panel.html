@@ -494,7 +494,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v165（11月19日）</p>
+  <p class="ver" id="verTag">panel v166（11月19日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -523,7 +523,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '165';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
+  var PANEL_VER = '166';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -899,8 +899,8 @@
     if (lastStat === '作業中') { return true; }
     /* v152：状態がヨシ待ちでも、その札を出した刻より新しく着手し直していれば、作業中。
        ヨシ待ちで止まっている間は、着手の刻がヨシ待ちの刻より古いので、今までどおり作業中にならない。 */
-    if (lastStat === 'ヨシ待ち') { return lastStartedAt > 0 && lastStartedAt > lastStatAt; }
-    return lastStartedAt > 0 && lastStartedAt > lastDoneAt();
+    /* v166（2026-11-19 本人の決め）：推し量りで作業中にしない。前は「着手の刻が最後の終わりの札より新しければ作業中」としていたので、終わりの札が遅れると、止まった窓を作業中と出していた（01:30〜01:34）。 */
+    return false;
   }
 
   function stateLineText() {
@@ -1704,7 +1704,10 @@
     if (lastStartedAt > 0 && lastMikomiMin > 0) { eta = '見込み' + pad2s(lastStartedAt + lastMikomiMin * 60); }
     return '検査中：' + (sub ? sub + '（雲の走り）' : '雲の走り') + '・' + eta;
   }
+  var lastEvAt = 0;
   function headText() {
+    /* v166（2026-11-19 本人の決め）：手番が開いていても、合図の足跡が3分動いていなければ作業中にしない（見張りが stat＝動きなし を書く） */
+    if (lastStat === '動きなし') { return '動きなし（最後の動き ' + (lastEvAt ? pad2s(lastEvAt) : '不明') + '）'; }
     /* v152：順は 作業中＞まとめて写す＞待機中＞接続不良。猫の絵と字は必ず対なので、runCatTick と同じ順。
        ＊接続不良は、生存が途切れていて、作業中でも写す物も無いときだけ。 */
     if (isRunning() && (lastCloud || /^雲/.test(String(lastSubj || '')))) { return checkText(); }   /* v162：雲の走りの待ちは「検査中」 */
@@ -2863,6 +2866,7 @@
         var subj = String(d.subj || '');
         /* 釦の字が見る三つ（v82）。状態・着手の刻・件名。 */
         lastStat = w; lastStartedAt = (d.startedAt || 0); lastSubj = subj;
+        lastEvAt = (typeof d.evAt === 'number') ? d.evAt : 0;   /* v166：最後の動き（合図の刻） */
         lastStatAt = (typeof d.statAt === 'number') ? d.statAt : 0;
         lastCloud = (typeof d.cloud === 'string') ? d.cloud : '';
         lastRl = (d.rl && typeof d.rl === 'object') ? d.rl : null;   /* v163 */
