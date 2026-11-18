@@ -497,7 +497,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v168（11月19日）</p>
+  <p class="ver" id="verTag">panel v169（11月19日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -526,7 +526,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '168';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
+  var PANEL_VER = '169';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -754,6 +754,8 @@
     /* v168（2026-11-19 本人の決め）：終了予定は、窓が書いた見込み（state.json の startedAt＋mikomi）だけを出す。
        元の無い刻（過去の実測からの当て・決まりの幅・過ぎたら延ばす）は出さず「見込みなし」。台帳の起きる刻は下の一行（kumo）が出す。 */
     var nowSec = Math.floor(Date.now() / 1000);
+    /* v169：雲待ちの間は雲の見込みを出す（窓の見込みが過ぎていても「終了予定を過ぎています」にしない） */
+    if (kumoEtaSec() > 0) { var ce = new Date(kumoEtaSec() * 1000); return W + '、' + ce.getHours() + '時' + ('0' + ce.getMinutes()).slice(-2) + '分終了予定（雲）'; }
     if (lastStartedAt > 0 && lastMikomiMin > 0) {
       var endSec = lastStartedAt + lastMikomiMin * 60, e = new Date(endSec * 1000);
       /* 材料の古い刻（前の仕事の開始を引きずった形・過ぎ方が走らせる上限を超えた）は出さない（v124 の守り・panel-check ⑦） */
@@ -1667,6 +1669,15 @@
        ヨシ待ち → 指差し／連絡なし → 寝姿（字なし）／作業中 → コマ送り（「作業中、、、。」・v150）／写していない札が残る → 指差し／それ以外 → 待機の猫。
      ＊指差しの猫が出ている時は、ヨシ待ちでも「写していない札が残っている」でも必ず「まとめて写すヨシ！」。待機の猫の時は「待機中、、、。」。 */
   var POINT_TEXT = 'まとめて写すヨシ！';
+  var lastKumo = '';
+  /* v169（2026-11-19 本人の決め）：雲待ちの一行（kumo）の「見込み HH:MM」を秒に。見込みの前なら刻を、過ぎていれば 0 を返す。 */
+  function kumoEtaSec() {
+    var m = String(lastKumo || '').match(/見込み[ ]*([0-9]{1,2}):([0-9]{2})/); if (!m) { return 0; }
+    var d = new Date(); d.setHours(Number(m[1]), Number(m[2]), 0, 0);
+    var sec = Math.floor(d.getTime() / 1000), now = Math.floor(Date.now() / 1000);
+    if (sec < now - 12 * 3600) { sec += 24 * 3600; }
+    return sec > now ? sec : 0;
+  }
   var WORK_TEXT = '作業中、、、。';
   var LOST_TEXT = '接続不良、、、。';
   /* v157：ヨシ待ちは待機中と別の猫（yoshi-cat-icon.png）と別の字。順は 作業中＞ヨシ待ち＞まとめて写す＞待機中＞接続不良。 */
@@ -1692,6 +1703,8 @@
     /* v153：「まとめて写すヨシ！」は、直近に終わった仕事（写していない札）が1件以上ある時だけ。
        ヨシ待ちの札が立っていても、写す物が0件なら指差しにしない（待機中へ）。 */
     if (lastStat === 'ヨシ待ち') { return YOSHI_TEXT; }   /* v157：作業中の次。isRunning が偽の間（止まって待っている間）だけここへ来る */
+    /* v169：本人が次にする事とその刻。雲待ちの見込みの前なら「HH:MM になったら まとめて写すヨシ！」、過ぎたか雲の札が来たら（一行が消えたら）「まとめて写すヨシ！」 */
+    if (kumoEtaSec() > 0) { var ke = new Date(kumoEtaSec() * 1000); return ('0' + ke.getHours()).slice(-2) + ':' + ('0' + ke.getMinutes()).slice(-2) + ' になったら ' + POINT_TEXT; }
     if (copyLeft > 0) { return POINT_TEXT; }
     if (lastLost) { return LOST_TEXT; }   /* 連絡なしの寝姿（v151：「接続不良、、、。」） */
     return WAIT_TEXT;
@@ -1729,7 +1742,7 @@
     } else if (lastStat === 'ヨシ待ち') {   /* v157：ヨシ待ちは専用の猫 */
       catAwake = false;
       if (el.src.indexOf('yoshi-cat-icon') < 0) { el.src = 'yoshi-cat-icon.png'; }
-    } else if (copyLeft > 0) {   /* v153：写す物が1件以上ある時だけ指差し。ヨシ待ちでも0件なら待機の猫 */
+    } else if (kumoEtaSec() > 0 || copyLeft > 0) {   /* v169：雲待ちの見込みの前も指差しの猫（字は「HH:MM になったら まとめて写すヨシ！」）。v153：写す物が1件以上ある時だけ指差し。ヨシ待ちでも0件なら待機の猫 */
       catAwake = false;
       if (el.src.indexOf('genba-cat-80') < 0) { el.src = 'genba-cat-80.png'; }
     } else if (lastLost) {
@@ -2849,6 +2862,7 @@
         try { if (lastUsageObj) { paintUsage(lastUsageObj); } } catch (e) { }
         /* 赤い行（v159）：雲待ちが起こせない／作業中が終了予定を1時間過ぎた。state.json の warn。 */
         /* v166：手番が閉じている間の雲待ちは、状態を作業中にせず、手待ちの下に一行（検査中：題・見込み HH:MM）。state.json の kumo。 */
+        lastKumo = (typeof d.kumo === 'string') ? d.kumo : '';   /* v169：現場猫の一言と上の帯が雲の見込みを見る */
         try { var kl = $('kumoLine'); if (kl) { var kt = (typeof d.kumo === 'string') ? d.kumo : ''; kl.textContent = kt; kl.className = kt ? 'kumo-line' : 'kumo-line hide'; } } catch (e) { }
         try { var ww = $('wakeWarn'); if (ww) { var wt = (typeof d.warn === 'string') ? d.warn : ''; ww.textContent = wt ? ('⚠ ' + wt) : ''; ww.className = wt ? 'pipe' : 'pipe hide'; } } catch (e) { }
         /* 最後に押した札の刻（v142）。一覧が古いかを見分けるのに使う。下の freshen を見よ。 */
