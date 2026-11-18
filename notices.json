@@ -70,6 +70,11 @@
         "message":  "札の複数行が切れる件の直し・task-notification を枠にしない直し・check.yml の結果（PASS）・⑤のヨシ待ち\n印: y1118-1440\n待っているのは：⑤古い声の除去のヨシ（「y1118-1440 にヨシ」）。消す物＝直下の古い声（IMA ADPCM の adv*.wav.wav）9,479本・計459MB（甲＝同名の m4a がある 5,548本・289MB／乙＝計画から外れた古い方言の声 3,931本・170MB）。一覧は reports/old-voices-to-delete-y1118.txt（push 済み）。場面の声など非 adv の .wav.wav は消さない。検査（check.yml 44242964232・ba987f5d）は PASS・配信済みなので、ヨシが出れば消して push する。\n見込み: 15分（14:47 追記：panel v161 の push が通った＝6e7f3269。ヨシが出るまで⑤は止まる）\n要点：三（check.yml の見込みと結果）：y1118-1425 の見込みの終わりは 14:45 と書いたが、実際は 14:29 に終わった（走り 44242964232＝05:15:24Z→05:29:53Z＝14分29秒。内訳：scope 43秒・check 13分・deploy 35秒）。結果は success。check は速い版でなくフル版の長さ（⑦21視野）で 111.8秒の駆動、④音声…\n答え方：「y1118-1440 にヨシ」で進めます。裸の「ヨシ」は、いちばん新しい待ちへのヨシとして通ります。"
     },
     {
+        "title":  "🔎 調べました",
+        "time":  1795010967,
+        "message":  "止まりの合図 StopFailure を足す（asyncRewake の枠は取り消し）\n取り消し：23:02 の asyncRewake の枠で入れた三つ（rewake.js の合図・変換表の asyncRewake・見張りの「合図が変わったら60秒で押す」）を控えから戻した（rewake.js・turn-mark.js・inbox-watch.ps1。構文OK・常駐 23:08:44 に起こし直し）。\n一、turn-mark.js に StopFailure を足した：settings.json に StopFailure の hook（turn-mark.js StopFailure＝ev に英語のまま書く／turn-push.ps1＝async で押す）。控え settings.json.bak-20261118sf。\n二、変換表に「StopFailure→止まり」を一行足した（UserPromptSubmit→作業中・Stop→手待ち・StopFailure→止まり）。\n三、今止まった訳（記録で確かめた事だけ）：直前の手番は 23:04:52 に普通に終わっている（会話の記録＝stop_hook_summary・所要156秒、hook.log の stop 23:04:53〜57「画面=出」）。画面の最後の文言は、私の返事の終わり「次の枠で、パネルの合図の英語と最終確認の刻が変わったかを見て札に書きます。」。エラー（API Error）や Esc の止まりの記録は無かった。合図は Stop（23:04:48）が鳴り、手待ちの state.json が 23:05:01（cd7578fd）と 23:05:16（7973f44b）に押されている。パネルが作業中のままに見えたのは、公開ページへの反映の遅れ（押してから公開まで約1〜数分）と見られる（未確認：その刻の公開の字は取っていない）。窓は止まったのではなく、返事を終えて手待ちだった。\nファイル: ~/.claude/turn-mark.js・~/.claude/settings.json（bak-20261118sf）・~/.claude/rewake.js（戻し）・~/.claude/inbox-watch.ps1（戻し）"
+    },
+    {
         "title":  "✅ 終わりました（返事不要）",
         "time":  1795010784,
         "message":  "この間にまとまった知らせ 3本\n\n［✅ 終わりました（返事不要）］\n使用量の枠が尽きた時の備え：自動の続きの設定を入れた・止まった時に起こす見張りを足した・VAIO は眠らない\n（次の枠が先に届いたため、止まる前に出した札。札の抜けではありません）\n種類: 外待ち\n完了: 一、autoContinueAtUsageLimit：settings.json に**入っていなかった**（既定は「入」と書く解説があるが、明記は無かった）。**入れた**（\"autoContinueAtUsageLimit\": true・控え settings.json.bak-20261118ac）。元：Claude Code Hub の解説（キーは ~/.claude/settings.json・/config に切り替え・v2.1.234 から）・gori.me の記事。**注意：遠隔（Remote Control）が繋がっていると、自動の続きが働かないという報告がある**（claudeissues の #100650・v2.1.295）。この窓は遠隔で繋いでいるので、設定だけでは当てにできない→下の二で補う。\n二、自動の続きが止まった時の見張り（inbox-watch.ps1 の新しい Check-UsageResume・毎巡回・控え bak-20261118ur・構文OK・常駐を起こし直した）：状態表示が控えた使用量（~/.claude/usage.json の five_hour）が 95% 以上の時、その枠のリセットの刻を覚える（usage-resume.txt）。リセットから2分たっても窓の足跡（PreToolUse・PostToolUse・stop・frame-work）が動いていなければ、受信箱へ「使用量の枠のリセット HH:MM の後の続き（自動の続きが止まった）」の一行を入れ（asyncRewake で窓が起きる）、ntfy で「🪟 自動の続きが止まった（起こした）」を一発鳴らす。窓が動き出していれば起こさない。一つのリセットにつき一度だけ。続けて二度尽きても、リセットのたびに同じ手が働く。※ntfy は今日の上限で明朝 09:00 まで 429（鳴らない）。受信箱の一行で起こす方は効く。\n三、VAIO が眠らないか：電源の型「バランス」で、スリープまでの時間＝AC・DC とも 0（眠らない）、休止状態までの時間＝AC・DC とも 0（休止しない）。眠らない設定になっている（powercfg で確認）。\n今の枠：セッション 96%（20:38）・20:50 にリセット。20:51 に待ちの台帳の続きで起き、執事の実装を新しい仕事として始める（今の見張りも同じリセットを覚えた）。\nファイル: ~/.claude/settings.json（bak-20261118ac）・~/.claude/inbox-watch.ps1（bak-20261118ur）\n\n［🔎 調べました］\nasyncRewake で起こした時も合図を書く・合図が変わったら1分以内に押す\n一、rewake.js（受信箱・雲待ちで窓を起こす待ち手）が exit 2 で窓を起こす時、turn-mark.js asyncRewake を呼んで ev に「asyncRewake」と英語で書き、turn-push.ps1 を切り離しで呼んで押す（控え rewake.js.bak-20261118ar・構文OK）。\n二、turn-mark.js の変換表に「asyncRewake→作業中」を一行足した（UserPromptSubmit→作業中・asyncRewake→作業中・Stop→手待ち。控え turn-mark.js.bak-20261118ar）。\n三、見張り（inbox-watch.ps1）：合図（ev）が前に押した時と違えば、押しの間合いを最長60秒にした（前は字が同じだと3分あけ、作業中が続く間は ev だけ変わっても押さなかった＝22:40〜22:56 の穴）。控え bak-20261118ev・構文OK・常駐 23:04:29 に起こし直し。\n確かめはこれから：asyncRewake で起きる回は、受信箱か雲待ちの台帳から起きた時に初めて鳴る（作り値で本物の state.json を書き替えるのは避けた）。次の枠で、パネルの「合図：…」の英語と最終確認の刻が変わったかを見て札に書く。\nファイル: ~/.claude/rewake.js・~/.claude/turn-mark.js・~/.claude/inbox-watch.ps1\n\n［✅ 終わりました（返事不要）］\n写せます（2件）"
@@ -323,10 +328,5 @@
         "title":  "✅ 終わりました（返事不要）",
         "time":  1794981399,
         "message":  "写せます（1件）"
-    },
-    {
-        "title":  "✅ 終わりました（返事不要）",
-        "time":  1794981019,
-        "message":  "写せます（11件）"
     }
 ]
