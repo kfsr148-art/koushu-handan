@@ -52,6 +52,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # 押し戻した後に配りの走り（state-deploy.yml）を呼ぶ（2026-11-19）
 
 concurrency:
   group: koushu-cloud-job
@@ -176,7 +177,12 @@ jobs:
           fi
           git commit -m '雲で回した結果を reports/ へ'
           for i in 1 2 3; do
-            git pull --rebase -q origin main && git push -q origin HEAD:main && { echo '押した'; exit 0; }
+            if git pull --rebase -q origin main && git push -q origin HEAD:main; then
+              echo '押した'
+              # 押し戻した commit は GITHUB_TOKEN の押しなので走りを起こさない。配りの走りを workflow_dispatch で一本呼ぶ（GITHUB_TOKEN でも起こせる例外・2026-11-19）
+              GH_TOKEN="${{ github.token }}" gh workflow run state-deploy.yml --ref main -R "$GITHUB_REPOSITORY" && echo '配りの走りを呼んだ' || echo '配りの走りを呼べなかった'
+              exit 0
+            fi
             echo "押し直す（$i 回目）"
             sleep 5
           done
