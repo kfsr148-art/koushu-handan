@@ -250,6 +250,12 @@
   /* ％は数字より一回り小さく。太さも一段落とす。 */
   .usage .u-pct{font-size:.62em; font-weight:600; margin-left:1px;}
   /* 80%以上は赤、50〜79%は橙、それ未満は緑。名前は灰のまま。 */
+  .usage .u-bar{display:block; height:8px; margin:5px 6px 3px; background:rgba(128,128,128,.25); border-radius:4px; overflow:hidden;}
+  .usage .u-bar i{display:block; height:100%; border-radius:4px;}
+  .usage .u-bar i.hot{background:#ff5a4d;}
+  .usage .u-bar i.warm{background:#ffa63d;}
+  .usage .u-bar i.cool{background:#5ad07a;}
+  .usage .u-reset{display:block; font-size:11px; color:var(--dim); line-height:1.4; white-space:nowrap;}
   .usage .hot{color:#ff5a4d;}
   .usage .warm{color:#ffa63d;}
   .usage .cool{color:#5ad07a;}
@@ -460,7 +466,7 @@
   <!-- 過去の札（v118・先の穴-2 ②）。上限で押し出された札の行き先。
        読む元は notices-archive.json（notify-record.ps1 が押し出す前に移す）。
        ＊開いたときに初めて取りに行く（起動のたびに取ると重い）。 -->
-  <div class="done-box hide" id="arcBox">
+  <div class="done-box hide" id="arcBox" hidden style="display:none">
     <button type="button" class="cpall" id="arcHead">🗄 過去の札 ▼</button>
     <ul id="arcList"></ul>
   </div>
@@ -488,7 +494,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v162（11月18日）</p>
+  <p class="ver" id="verTag">panel v163（11月18日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -516,7 +522,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '162';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
+  var PANEL_VER = '163';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -568,6 +574,7 @@
      ＊状態は state.json の stat（作業中／ヨシ待ち／終わり／手待ち／異常）。
        v81 まで札の題から数え直していたので、ヨシ待ちの札が立っていても
        題から読めない札が一枚あれば「作業中」と出ていた。**状態は状態から読む**。 */
+  var lastRl = null, lastUsageObj = null;   /* v163：状態表示の rate_limits（state.json の rl）と、直近に読めた usage.json */
   var lastStat = '', lastStartedAt = 0, lastSubj = '', lastStatAt = 0, lastCloud = '';   /* lastCloud：雲の作業の進み（v154・「2回目・済み1,000/4,069本」など。作業中の字の横へ添える） */   /* lastStatAt：状態が今の字になった刻（v152・ヨシ待ちのあとに再開したかを見る） */
   /* 生存が途切れているか（v124・止まりの見分け-1）。state.json の at と now の差が
      STALE_SEC を超えた回に立つ。**判定の順は ヨシ待ち → 連絡なし → 作業中。**
@@ -2510,6 +2517,16 @@
     var srcU   = emptyU ? (goodU ? goodU.body : null) : (u.body || null);
     var lim = (srcU && srcU.limits) ? srcU.limits : [];
     var html = '';
+    /* v163：使用状況を大きく。セッション・週は状態表示の rate_limits（state.json の rl・30分以内なら）、Fable は API の usage.json（rate_limits に Fable の枠は無い）。 */
+    var rl = lastRl, rlAt = (rl && typeof rl.rlAt === 'number') ? rl.rlAt : 0;
+    var rlAge = rlAt ? (Date.now() / 1000 - rlAt) : 1e9, rlFresh = (rlAge < 1800);
+    var epochOf = function (iso) { var t = new Date(iso).getTime(); return isNaN(t) ? 0 : Math.floor(t / 1000); };
+    var resetText = function (sec) {
+      if (!sec) { return ''; }
+      var d = new Date(sec * 1000), n = new Date();
+      return (d.toDateString() === n.toDateString() ? '' : ((d.getMonth() + 1) + '/' + d.getDate() + ' ')) + pad2s(sec) + 'にリセット';
+    };
+    var usedRl = false;
     lim.forEach(function (L) {
       if (typeof L.percent !== 'number') { return; }
       var name = (L.kind === 'session') ? 'セッション'
@@ -2517,19 +2534,27 @@
                : (L.kind === 'weekly_scoped' && L.scope && L.scope.model && L.scope.model.display_name)
                  ? L.scope.model.display_name
                  : L.kind;
-      var p = Math.round(L.percent);
+      var pv = L.percent, rs = epochOf(L.resets_at);
+      if (rlFresh && L.kind === 'session' && typeof rl.s === 'number') { pv = rl.s; rs = rl.sr || rs; usedRl = true; }
+      if (rlFresh && L.kind === 'weekly_all' && typeof rl.w === 'number') { pv = rl.w; rs = rl.wr || rs; usedRl = true; }
+      var p = Math.max(0, Math.min(100, Math.round(pv)));
       html += '<span class="u"><span class="u-name">' + esc(name) + '</span>'
            + '<span class="u-num ' + usageTone(p) + '">' + p
-           + '<span class="u-pct">%</span></span></span>';
+           + '<span class="u-pct">%</span></span>'
+           + '<span class="u-bar"><i class="' + usageTone(p) + '" style="width:' + p + '%"></i></span>'
+           + '<span class="u-reset">' + esc(resetText(rs)) + '</span></span>';
     });
+    var hmOf = function (sec) { return sec ? pad2s(sec) : '—'; };
+    var srcNote = rlFresh ? ('状態表示 ' + hmOf(rlAt) + ' 取得')
+                : (rlAt ? ('状態表示は古い（前の値 ' + hmOf(rlAt) + '）') : '状態表示の値なし');
     var at = u.at ? Math.floor(new Date(u.at).getTime() / 1000) : 0;
     var age = at ? (Date.now() / 1000 - at) : 0;
-    var when = at ? (agoText(age) + '取得') : '取得時刻ふめい';
-    var cls = (age > 3600) ? ' class="u-old"' : '';
+    var when = srcNote + '／API ' + (at ? (hmOf(at) + ' 取得（' + agoText(age) + '）') : '取得時刻ふめい');
+    var cls = (age > 3600 || (!rlFresh && !at)) ? ' class="u-old"' : '';
     /* 控えを出している回は、いまの取得の刻ではなく**その値がいつのものか**を出す。 */
     if (emptyU && goodU) {
       var gAt = goodU.at ? Math.floor(new Date(goodU.at).getTime() / 1000) : 0;
-      when = (gAt ? agoText(Date.now() / 1000 - gAt) : '') + '時点の値・いまは取れていません';
+      when = srcNote + '／API ' + (gAt ? (hmOf(gAt) + ' 時点の値・いまは取れていません') : '時点ふめい');
       cls = ' class="u-old"';
     }
     var tail = '<span' + cls + '>' + when + '</span>';
@@ -2560,6 +2585,7 @@
     fetch(USAGE_URL + '?_t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (u) {
+        lastUsageObj = u;
         paintUsage(u);
         /* lastWatch は残す。「届いた」の印を判じるのに要る（paintCopied が読む）。
            ＊機械が見た様子の一行そのものは v70 で消した。 */
@@ -2723,7 +2749,7 @@
   function paintArcBox() {
     var box = $("arcBox"), head = $("arcHead"), ul = $("arcList");
     if (!box || !head || !ul) { return; }
-    box.className = "done-box";
+    box.className = "done-box hide"; box.hidden = true; return;   /* v163：過去の札は表示しない（本人の決め 11-18 19:31・notices-archive.json は消さない）。下は呼ばない */
     head.textContent = arcLabel(arcLoaded ? arcItems.length : -1, false);
     loadArcCount(head, ul);   /* 件数だけ先に読む（v119） */
     head.onclick = function () {
@@ -2838,6 +2864,8 @@
         lastStat = w; lastStartedAt = (d.startedAt || 0); lastSubj = subj;
         lastStatAt = (typeof d.statAt === 'number') ? d.statAt : 0;
         lastCloud = (typeof d.cloud === 'string') ? d.cloud : '';
+        lastRl = (d.rl && typeof d.rl === 'object') ? d.rl : null;   /* v163 */
+        try { if (lastUsageObj) { paintUsage(lastUsageObj); } } catch (e) { }
         /* 赤い行（v159）：雲待ちが起こせない／作業中が終了予定を1時間過ぎた。state.json の warn。 */
         try { var ww = $('wakeWarn'); if (ww) { var wt = (typeof d.warn === 'string') ? d.warn : ''; ww.textContent = wt ? ('⚠ ' + wt) : ''; ww.className = wt ? 'pipe' : 'pipe hide'; } } catch (e) { }
         /* 最後に押した札の刻（v142）。一覧が古いかを見分けるのに使う。下の freshen を見よ。 */
