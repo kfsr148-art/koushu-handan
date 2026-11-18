@@ -898,7 +898,7 @@
     /* 生存が途切れていたら、状態がどうであれ走らせない（連絡なしが先）。 */
     if (lastLost) { return false; }
     /* 上限は state.json の stat より強い。凍った「作業中」でも、開き過ぎたら倒す。 */
-    if (lastStartedAt > 0 && (Math.floor(Date.now() / 1000) - lastStartedAt) > runCapSec()) { return false; }
+    /* v166：開き過ぎたら倒す推し量りは外した（動きなしは見張りが stat で書く） */
     if (lastStat === '作業中') { return true; }
     /* v152：状態がヨシ待ちでも、その札を出した刻より新しく着手し直していれば、作業中。
        ヨシ待ちで止まっている間は、着手の刻がヨシ待ちの刻より古いので、今までどおり作業中にならない。 */
@@ -1714,11 +1714,10 @@
     if (lastStat === '動きなし') { return '動きなし（最後の動き ' + (lastEvAt ? pad2s(lastEvAt) : '不明') + '）'; }
     /* v152：順は 作業中＞まとめて写す＞待機中＞接続不良。猫の絵と字は必ず対なので、runCatTick と同じ順。
        ＊接続不良は、生存が途切れていて、作業中でも写す物も無いときだけ。 */
-    if (isRunning() && (lastCloud || /^雲/.test(String(lastSubj || '')))) { return checkText(); }   /* v162：雲の走りの待ちは「検査中」 */
+    /* v166：雲待ちで「検査中」にする推し量りは外した（雲待ちは手待ちの下の一行・kumo） */
     if (isRunning()) { return lastCloud ? (WORK_TEXT + '（' + lastCloud + '）') : WORK_TEXT; }   /* 走る猫（v150）。雲で作業が回っている間は、進み（何回目・何本）を添える（v154） */
     /* v153：「まとめて写すヨシ！」は、直近に終わった仕事（写していない札）が1件以上ある時だけ。
        ヨシ待ちの札が立っていても、写す物が0件なら指差しにしない（待機中へ）。 */
-    if (lastStat === 'ヨシ待ち' && (lastCloud || /^雲/.test(String(lastSubj || '')))) { return checkText(); }   /* v162：ヨシ待ちでも雲の走りが続いている間は検査中 */
     if (lastStat === 'ヨシ待ち') { return YOSHI_TEXT; }   /* v157：作業中の次。isRunning が偽の間（止まって待っている間）だけここへ来る */
     if (copyLeft > 0) { return POINT_TEXT; }
     if (lastLost) { return LOST_TEXT; }   /* 連絡なしの寝姿（v151：「接続不良、、、。」） */
