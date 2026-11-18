@@ -23,6 +23,18 @@ name: 自動検査と配信
 on:
   push:
     branches: [main]
+    # 札・状態だけの押しは検査も配信もここでは走らせない（2026-11-18 23:30 本人の決め「丙」）。配信は state-deploy.yml が一本で行う。
+    #   ＊ここに挙げた物だけの押しで走らないだけで、本体などが一緒に入った押しは今までどおり走る。
+    paths-ignore:
+      - 'state.json'
+      - 'notices.json'
+      - 'notices-*.json'
+      - 'status.md'
+      - 'board.json'
+      - 'usage.json'
+      - 'pipe-warn.json'
+      - 'ntfy-latest.txt'
+      - 'ntfy-sent.json'
   workflow_dispatch:
 
 permissions:
