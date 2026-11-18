@@ -72,7 +72,7 @@ jobs:
     if: needs.scope.outputs.heavy == '1'
     runs-on: ubuntu-latest
     # ＊検査の段には打ち切りを掛けない。掛けると毎分の押しが走っているフル版を毎回打ち切る。
-    timeout-minutes: 30
+    timeout-minutes: 25   # 2026-11-18：30→25分（実測 10〜15分。固まった走りを早く落とす）
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -158,18 +158,27 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          LIST='^(koushu-handan\.html|check\.js|adv-check\.js|check-all\.js|ver\.txt|panel\.html|panel-check\.js|widget-check\.js|usage-widget(-loader)?\.js|\.github/workflows/check\.yml)$'
-          CHANGED=$(gh api --paginate "repos/$GITHUB_REPOSITORY/compare/check-pass...$GITHUB_SHA?per_page=100" --jq '.files[].filename' 2>/dev/null) && OK=1 || OK=0
-          if [ "$OK" != "1" ]; then
+          R="$GITHUB_REPOSITORY"
+          FILES='koushu-handan.html check.js adv-check.js check-all.js ver.txt panel.html panel-check.js widget-check.js usage-widget.js usage-widget-loader.js .github/workflows/check.yml'
+          TAGSHA=$(gh api "repos/$R/git/refs/tags/check-pass" --jq '.object.sha' 2>/dev/null || echo NONE)
+          TAGDATE=""
+          [ "$TAGSHA" != "NONE" ] && TAGDATE=$(gh api "repos/$R/git/commits/$TAGSHA" --jq '.committer.date' 2>/dev/null || echo "")
+          if [ -z "$TAGDATE" ]; then
             echo "skip=1" >> "$GITHUB_OUTPUT"
-            echo "検査を通った印（check-pass）との差が取れない。安全側で、この回は配信を飛ばす"
-          elif echo "$CHANGED" | grep -qE "$LIST"; then
-            echo "skip=1" >> "$GITHUB_OUTPUT"
-            echo "検査を通った印から、本体のファイルが変わっている（検査が走っているか落ちている）。この回は配信を飛ばす（検査が通れば戻る）"
-            echo "$CHANGED" | grep -E "$LIST" | head
+            echo "検査を通った印（check-pass）が読めない。安全側で、この回は配信を飛ばす"
           else
-            echo "skip=0" >> "$GITHUB_OUTPUT"
-            echo "検査を通った印から、本体の変更は無い。配信してよい"
+            NEWER=""
+            for F in $FILES; do
+              D=$(gh api "repos/$R/commits?sha=$GITHUB_SHA&path=$F&per_page=1" --jq '.[0].commit.committer.date // empty' 2>/dev/null || echo "")
+              if [ -n "$D" ] && [ "$D" \> "$TAGDATE" ]; then NEWER="$NEWER $F"; fi
+            done
+            if [ -n "$NEWER" ]; then
+              echo "skip=1" >> "$GITHUB_OUTPUT"
+              echo "検査を通った印（$TAGDATE）より後に、本体のファイルが変わっている：$NEWER。この回は配信を飛ばす（検査が通れば戻る）"
+            else
+              echo "skip=0" >> "$GITHUB_OUTPUT"
+              echo "検査を通った印より後の本体の変更は無い。配信してよい"
+            fi
           fi
       - uses: actions/checkout@v4
         if: steps.guard.outputs.skip != '1'
@@ -238,9 +247,10 @@ jobs:
           if [ "$CUR" = "NONE" ]; then
             gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref=refs/tags/check-pass -f sha="$GITHUB_SHA" && echo "check-pass を新しく作った: $GITHUB_SHA"
           else
-            ST=$(gh api "repos/$GITHUB_REPOSITORY/compare/$CUR...$GITHUB_SHA" --jq '.status' 2>/dev/null || echo error)
-            echo "check-pass $CUR → $GITHUB_SHA の関係: $ST"
-            if [ "$ST" = "ahead" ]; then
+            CD=$(gh api "repos/$GITHUB_REPOSITORY/git/commits/$CUR" --jq '.committer.date' 2>/dev/null || echo "")
+            ND=$(gh api "repos/$GITHUB_REPOSITORY/git/commits/$GITHUB_SHA" --jq '.committer.date' 2>/dev/null || echo "")
+            echo "check-pass $CUR（$CD）→ $GITHUB_SHA（$ND）"
+            if [ -n "$ND" ] && { [ -z "$CD" ] || [ "$ND" \> "$CD" ]; }; then
               gh api -X PATCH "repos/$GITHUB_REPOSITORY/git/refs/tags/check-pass" -f sha="$GITHUB_SHA" -F force=true && echo "check-pass を進めた"
             else
               echo "印より前か同じ・並びが取れない：進めない"
