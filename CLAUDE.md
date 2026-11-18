@@ -873,3 +873,7 @@ gh run list --workflow job.yml --limit 5
 ## 40. run_in_background をやめる（2026-11-18）
 
 Windows では `run_in_background` の命令が終わっても完了の知らせが出ず、手待ちの窓を起こさない不具合がある（anthropics/claude-code #21048・#91503）。**push・測定・pack-site など裏で走らせて終わりを待つ形は使わない。** 5分以内で済む物は手前で走らせ、長い物は雲（`gh workflow run`）か、手元なら `~/.claude/local-run.ps1` で切り離して走らせ、`kumo-set.ps1 -Workflow local:<終わりの印のファイル>` で待ちを登録して手番を閉じる。終わりは見張りが受信箱へ一行入れて窓を起こす。
+
+## 41. 重い計算は雲で回す（2026-11-18）
+
+**5分を超える重い計算（全組み合わせの監査・総なめ・声づくり等）は、VAIO の手元で回さず、必ず雲（`job.yml`・`voice-m4a.yml` など）で回す。** 手元で回す時は、札の待ちに「手元」と書き、パネルに「雲の走り待ち」と出さない（手元の待ちは `local-run.ps1` ＋ `kumo-set.ps1 -Workflow local:…` だが、5分以内の物に限る）。VAIO は 8GB の機械で、重い計算を回すと見張りが詰まる。
