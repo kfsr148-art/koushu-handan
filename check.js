@@ -331,7 +331,7 @@ section('④', '音声ファイルの突き合わせ', () => {
       const PK = require('./pack-site.js'), man = PK.readManifest();
       if (!man) { ng('voice-used.txt が無い（公開の荷の台帳）'); }
       else {
-        const lack = advNames.filter(n => PK.isManaged(n + '.wav.wav') && !man.has(n + '.wav.wav'));
+        const lack = advNames.filter(n => PK.isManaged(n + '.m4a') && !man.has(n + '.m4a'));
         if (lack.length === 0) ok('本体が使う助言の声が全て公開の荷の台帳（voice-used.txt）に入っている');
         else ng('本体が使う声が公開の荷の台帳に無い（公開で鳴らない）: ' + lack.length + '本 例 ' + lack.slice(0, 3).join(', '));
       }

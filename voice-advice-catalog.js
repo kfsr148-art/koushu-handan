@@ -17,7 +17,6 @@ add('adv-teiseki', '定石では、');
 add('adva-head', '攻めなのだ。');
 add('adva-from', 'から切るといいのだ。');
 add('adva-weak', 'つながりの薄い牌から切って、');
-[3, 6, 7, 8].forEach(n => add('adva-t' + n, n + '巡目までに一向聴なのだ。', ['','','','さん','','','ろく','なな','はち'][n] + 'じゅんめまでに、イーシャンテンなのだ。'));
 add('adva-w-butler', 'ドラがあって、打点が高いのだ。', 'ドラがあって、ダテンが高いのだ。');
 add('adva-w-strategist', '受け入れが広いのだ。', 'うけいれが広いのだ。');
 add('adva-w-blunt', '良い形がそろっているのだ。');
@@ -41,7 +40,6 @@ add('adva-ikk-a', 'あと一枚で聴牌なのだ。', 'あと、いちまいで
 add('adva-ikk-b', '受けの広い方を残して、まっすぐ押すのだ。何巡目まで、とは決めないのだ。', 'うけの広いほうを残して、まっすぐおすのだ。なんじゅんめまで、とは決めないのだ。');
 add('adva-neko-a', 'つながらない牌が', 'つながらないハイが');
 add('adva-neko-b', '枚あるのだ。', 'まい、あるのだ。');
-add('adva-neko-c', 'そこから切って形を作るのだ。何巡目まで、とは決めないのだ。', 'そこから切って、かたちを作るのだ。なんじゅんめまで、とは決めないのだ。');
 add('adva-tan-a', '端の牌と字牌が', 'はしのハイとジハイが');
 add('adva-tan-b', '枚しかないのだ。', 'まいしかないのだ。');
 add('adva-tan-c', '端と字牌から切って、真ん中の牌で作るといいのだ。', 'はしとジハイから切って、まんなかのハイで作るといいのだ。');
@@ -63,7 +61,7 @@ add('advd-w-shape', '形が悪くて、まとまらないのだ。');
 add('advd-w-honor', '字牌と端の牌が多くて、守れるのだ。', 'ジハイとはしのハイが多くて、守れるのだ。');
 add('advd-w-few', '安全牌が少ないのだ。', 'アンゼンパイが少ないのだ。');
 add('advd-w-pair', '対子が多くて、守りに回せるのだ。', 'トイツが多くて、守りに回せるのだ。');
-add('advd-cut-a', 'まず');
+add('advd-cut-a', 'まず', 'まず、');
 add('advd-cut', 'から切るといいのだ。');
 add('advd-and', 'と');
 add('advd-keep', 'は残しておくのだ。');
@@ -96,6 +94,13 @@ _tc.ADV_TONE_KEYS.filter(k => k !== 'blunt').forEach(k => { add('advh-' + k + '-
 
 /* 助言の文を人格の口調（方言なし）で読む声（y1115-25）。文は voice-advice-persona.js */
 require('./voice-advice-persona.js').all().forEach(x => add(x[0], x[1], x[2]));
+
+/* v1506：新しい部品のずんだの字（人格の字は advice-tone-core.js の ADV_BLUNT_NEW）・長さの詰めの短い版（-s）・麻雀の言葉（advw-） */
+const _PP = require('./voice-advice-persona.js'), _CC = require('./advice-tone-core.js');
+const _YM = {}; [3, 6, 7, 8].forEach(n => { _YM['adva-t' + n] = ['', '', '', 'さん', '', '', 'ろく', 'なな', 'はち'][n] + 'じゅんめまでに、イーシャンテン、とどかなければ、まもりにまわるのだ。'; });
+_YM['adva-tn'] = 'なんじゅんめまで、とは、決めないのだ。';
+Object.keys(_CC.ADV_BLUNT_NEW).forEach(id => add(id, _CC.ADV_BLUNT_NEW[id], _YM[id] || _PP.say(_CC.ADV_BLUNT_NEW[id])));
+Object.keys(_CC.ADV_SHORT_IDS).forEach(id => { if (_CC.ADV_SHORT_SRC[id]) { return; } const g = _CC.advGen(T[id]); add(id + '-s', g, _PP.say(g)); });
 
 module.exports = { T, SAY };
 if (require.main === module) {
