@@ -1,8 +1,7 @@
-😽 終わったにゃ、写して（2026-11-18 23:09:46・1通）
+😽 終わったにゃ、写して（2026-11-18 23:21:26・1通）
 ----------------------------------------
-止まりの合図 StopFailure を足す（asyncRewake の枠は取り消し）
-取り消し：23:02 の asyncRewake の枠で入れた三つ（rewake.js の合図・変換表の asyncRewake・見張りの「合図が変わったら60秒で押す」）を控えから戻した（rewake.js・turn-mark.js・inbox-watch.ps1。構文OK・常駐 23:08:44 に起こし直し）。
-一、turn-mark.js に StopFailure を足した：settings.json に StopFailure の hook（turn-mark.js StopFailure＝ev に英語のまま書く／turn-push.ps1＝async で押す）。控え settings.json.bak-20261118sf。
-二、変換表に「StopFailure→止まり」を一行足した（UserPromptSubmit→作業中・Stop→手待ち・StopFailure→止まり）。
-三、今止まった訳（記録で確かめた事だけ）：直前の手番は 23:04:52 に普通に終わっている（会話の記録＝stop_hook_summary・所要156秒、hook.log の stop 23:04:53〜57「画面=出」）。画面の最後の文言は、私の返事の終わり「次の枠で、パネルの合図の英語と最終確認の刻が変わったかを見て札に書きます。」。エラー（API Error）や Esc の止まりの記録は無かった。合図は Stop（23:04:48）が鳴り、手待ちの state.json が 23:05:01（cd7578fd）と 23:05:16（7973f44b）に押されている。パネルが作業中のままに見えたのは、公開ページへの反映の遅れ（押してから公開まで約1〜数分）と見られる（未確認：その刻の公開の字は取っていない）。窓は止まったのではなく、返事を終えて手待ちだった。
-ファイル: ~/.claude/turn-mark.js・~/.claude/settings.json（bak-20261118sf）・~/.claude/rewake.js（戻し）・~/.claude/inbox-watch.ps1（戻し）
+パネルの遅れ：ev が変われば60秒で押す（入れ直し）・パネルの読み方・押した刻と出た刻
+一、「ev が変われば最長60秒で押す」だけを入れ直した（inbox-watch.ps1・控え bak-20261118e2・構文OK・常駐 23:19:53 に起こし直し）。asyncRewake の分は入れていない。
+二、パネルの state.json の読み方（panel.html の作り）：読み先は公開ページ https://kfsr148-art.github.io/koushu-handan/state.json。読むたびに「?_t=<今の刻ミリ秒>」を付け、fetch に cache:'no-store' を付けている＝Pages の max-age=600 の溜めは避けている。読み直しは15秒おき（tick）。遅れの元は溜めではなく、押してから公開されるまで：押すたびに check.yml が走り、後の押しが来ると前の走りは取り消される（23:09〜23:10 に6本中5本 cancelled）。最後の走りは 14:10:07→14:12:49（UTC）＝約2分40秒。押しが続く間は配信が後へ延び続ける。
+三、次の手待ちの「押した刻」と「パネルに出た刻」：この手番を閉じた後、23:25 ごろに受信箱の一行で自分で起き（local-run の recheckidle）、busy.txt の Stop の刻・state.json を押した刻・配信の終わりの刻・公開に Stop が出た刻を並べて札に書く。
+ファイル: ~/.claude/inbox-watch.ps1（bak-20261118e2）・scratchpad/recheck-idle.sh
