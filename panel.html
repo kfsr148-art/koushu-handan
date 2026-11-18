@@ -494,7 +494,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v164（11月18日）</p>
+  <p class="ver" id="verTag">panel v165（11月19日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -523,7 +523,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '164';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
+  var PANEL_VER = '165';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -589,7 +589,7 @@
   /* 最後に押した札の刻（v142・古い並びの取り直し-1）。state.json の cardAt をそのまま持つ。 */
   var lastCardAt = 0;
   /* 過去の実測（estimates.json）。見込みが無いときの終了予定を、ここから当てる。 */
-  var EST_URL = 'https://kfsr148-art.github.io/koushu-handan/estimates.json';
+  var EST_URL = 'https://kfsr148-art.github.io/koushu-state/estimates.json';
   var est = null;
   function pullEst() {
     fetch(EST_URL + '?_t=' + Date.now(), { cache: 'no-store' })
@@ -652,12 +652,12 @@
   }
 
   /* 知らせの一覧。ntfy へ出るのは異常だけになったので、読み物はここから取る。 */
-  var NOTICES_URL = 'https://kfsr148-art.github.io/koushu-handan/notices.json';
+  var NOTICES_URL = 'https://kfsr148-art.github.io/koushu-state/notices.json';
   /* 「ここまで読んだ」の控え（v34）。{at, upto} の二つだけを持つ。
      チャットの側で state.json や報告書を直に読んで済ませた回は、パネルの「写す」を
      押していないので札が残り続ける。その受け。upto **以前**の札は写した扱いにする。
      ＊書くのは Claude Code の側（node seen-set.js）。パネルからは読むだけ。 */
-  var SEEN_URL = 'https://kfsr148-art.github.io/koushu-handan/seen.json';
+  var SEEN_URL = 'https://kfsr148-art.github.io/koushu-state/seen.json';
   var seenUpto = 0;
   /* ＊「写した札を出す」の釦とともに `ignoreSeen` も **v43 で外した**。
        押す相手が無くなったので、常に false のまま残る死んだ旗になっていた。 */
@@ -682,7 +682,7 @@
      ＊値はどれも VAIO の側にしか無いので、`board-emit.ps1` が10分ごとに
        `board.json` へ書いて押し出す。パネルは**読むだけ**で、何も数えない。
      ＊読めなかったら**そう書く**。黙って空にしない。 */
-  var BOARD_URL = 'https://kfsr148-art.github.io/koushu-handan/board.json';
+  var BOARD_URL = 'https://kfsr148-art.github.io/koushu-state/board.json';
   var board = null;        /* 読めた中身 */
   var boardErr = '';       /* 読めなかった理由 */
   var boardEverRead = false;  /* 一度でも読めたか（v113）。読めていれば、取れない回も前の値を出す */
@@ -1124,7 +1124,7 @@
      ＊写すのは**この一行だけ**。前後に改行も空白も付けない。
      ＊copyInto は釦の名で札を選ぶ作りで、こちらは cpall のままにしたいので、
        同じ手をここへ書く。字を戻す先も札も、この釦のものを使う。 */
-  var NOTICES_RAW = 'https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/notices.json';
+  var NOTICES_RAW = 'https://raw.githubusercontent.com/kfsr148-art/koushu-state/main/notices.json';
   function copyUrl(btn) {
     var back = 'URLを写す';
     var reset = function (ms) {
@@ -1285,7 +1285,7 @@
        全体が四千字に達したら、そこから先は一行だけにして「ほかN件」で締める。
      ＊受け取った指示の一行は **v72 で落とした**。画面から消した行（v70）は写しにも入れない。
      ＊長い本文を貼ると受け取る側が添付へ変えてしまうので、四千字はその上限として置いた値。 */
-  var NOTICES_PAGE = 'https://kfsr148-art.github.io/koushu-handan/notices.json';
+  var NOTICES_PAGE = 'https://kfsr148-art.github.io/koushu-state/notices.json';
   /* ---- 写しの頭に置く道は、**一意の名**にする（v143・写しの道-1）----
      ＊`notices.json` は**毎回同じ道**なので、受け取る側の読み口は**前に読んだ中身を返す**
        ことがある（配信網が道ごとに取り置くため）。写しを渡しても古い並びが開く。
@@ -1540,7 +1540,7 @@
      ＊畳み … 未写しが0本になったら釦ごと畳む（「まとめて写す」と同じ）。
      ＊分割は結合して一枚 … 控えには**割る前の一枚**が入っている。未写しが複数あれば、
        古い順に continuous へ繋いで**一度に一枚**で写す。 */
-  var NTFY_SENT_URL = 'https://kfsr148-art.github.io/koushu-handan/ntfy-sent.json';
+  var NTFY_SENT_URL = 'https://kfsr148-art.github.io/koushu-state/ntfy-sent.json';
   var NTFY_COPIED_KEY = 'ntfyCopied.v1';
   var ntfySent = [];          /* 先に取っておいた一覧（古い順） */
   var ntfyCopied = {};        /* 写した印。鍵は 刻|題 */
@@ -1878,7 +1878,7 @@
        あの綴りは毎回名が変わる道を指すので、**一度も取られていない道＝必ず新しい中身**が来る。
      ＊取り直しても古ければ、**今までどおり次の巡回を待つ**（掴んだ並びをそのまま使う）。
      ＊`latest-name.txt` が読めない・道の形が違う回も、今までどおり（掴んだ並びを使う）。 */
-  var LATEST_NAME_URL = 'https://kfsr148-art.github.io/koushu-handan/latest-name.txt';
+  var LATEST_NAME_URL = 'https://kfsr148-art.github.io/koushu-state/latest-name.txt';
   /* 一意の名を取り直す（v143）。取れたら写しの頭に置く道を差し替える。
      ＊取れない回・道の形が違う回は `notices.json` へ戻す（黙って古い名を持ち続けない）。
      ＊綴りは一行しかないので、毎回の巡回で取っても軽い。 */
@@ -2578,7 +2578,7 @@
   }
 
   /* usage.json は state.json とは別の口。読めなければ黙って畳む。 */
-  var USAGE_URL = 'https://kfsr148-art.github.io/koushu-handan/usage.json';
+  var USAGE_URL = 'https://kfsr148-art.github.io/koushu-state/usage.json';
   /* 直近に読めた watch（見張りが機械で測った値）。届いた印と、機械の様子の一行が使う。
      読めていないときは null のまま。**null なら何も言わない**——判じられないものに印を付けない。 */
   var lastWatch = null;
@@ -2690,11 +2690,11 @@
      上限（40枚）で押し出された札は、消える前に notices-archive.json へ移してある。
      ここはそれを**開いたときにだけ**取りに行って並べる。写す釦は今までの箱と同じ形。
      ＊取れなくても画面は壊さない。頭の字だけ「読めません」にして終わる。 */
-  var ARCHIVE_URL = "https://kfsr148-art.github.io/koushu-handan/notices-archive.json";
+  var ARCHIVE_URL = "https://kfsr148-art.github.io/koushu-state/notices-archive.json";
   /* 件数だけを別に読む（v119・過去の札の件数-1）。
      ＊見出しに数を出すために本体（notices-archive.json）を毎回取りに行くのは重い。
        notify-record が退避のたびに書く archive-count.txt を読む。0件なら「0件」。 */
-  var ARCHIVE_COUNT_URL = "https://kfsr148-art.github.io/koushu-handan/archive-count.txt";
+  var ARCHIVE_COUNT_URL = "https://kfsr148-art.github.io/koushu-state/archive-count.txt";
   var arcCount = -1;
   var arcItems = [];
   var arcLoaded = false;
@@ -2764,7 +2764,7 @@
   /* ---- 連携の訴え（v118・先の穴-2 ④）----
      ntfy が落ちていると、知らせでは知らせようがない。画面に出す。
      ＊読む元は pipe-warn.json。ntfyDown が真のときだけ出す（ほかの訴えは定時と札で足りる）。 */
-  var PIPEWARN_URL = "https://kfsr148-art.github.io/koushu-handan/pipe-warn.json";
+  var PIPEWARN_URL = "https://kfsr148-art.github.io/koushu-state/pipe-warn.json";
   function paintPipeWarn() {
     var el = $("pipeWarn");
     if (!el) { return; }
@@ -2814,7 +2814,7 @@
      押し送りは「人を呼ぶもの」三種だけに絞り、状態はこちらから読みに行く形にした。
      置き場はリポジトリ直下。iPhone から VAIO のファイルには手が届かないので、
      見張りが commit と push で公開ページへ出す。status.md と同じ道。 */
-  var STATE_URL = 'https://kfsr148-art.github.io/koushu-handan/state.json';
+  var STATE_URL = 'https://kfsr148-art.github.io/koushu-state/state.json';
 
   /* v155：状態の変わり目を ntfy.sh で直に聞く（公開ページは押してから届くまで約70秒かかる）。
      ＊聞くのは専用の話題（STATE_TOPIC）。載っているのは状態の記号だけ（stat・startedAt・statAt・cloud・mikomi・at）。件名などは載っていないので、
