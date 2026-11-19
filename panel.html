@@ -321,6 +321,10 @@
   #stLine{margin:6px 0 0; padding:0;}
   li.steps{list-style:none; margin:2px 0;}
   li.steps .m{margin:0; font-size:14px; line-height:1.5; color:var(--dim);}
+  /* v180：作業中の「終わる見込み」（水色・太め）と「段 N/M」。見込み・段の台帳が無い／過ぎた時は赤（.bad）で空欄にしない */
+  li.steps .m.eta{font-size:16px; font-weight:700; color:var(--wait);}
+  li.steps .m.stepn{font-size:15px; font-weight:700; color:var(--dim);}
+  li.steps .m.bad{font-size:16px; font-weight:700; color:var(--act);}
   /* ＊ヨシ待ちの札そのものを出さなくなったので（2026-09-13・頭の猫-4）、
      頭の猫-2 で入れた寄せ（yoshiTop）は役目を終えて外した。 */
 
@@ -505,7 +509,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v179（11月19日）</p>
+  <p class="ver" id="verTag">panel v180（11月20日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -534,7 +538,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '179';  /* v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
+  var PANEL_VER = '180';  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
   /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
@@ -599,6 +603,8 @@
   var lastLost = false;
   /* 控えの見込み（分）。読めない回・「不明」の回は 0。走らせる上限に使う。 */
   var lastMikomiMin = 0;
+  /* v180（2026-11-20）：見込みの生の字（空＝未記入／不明）と、段の数（済み・全体）。作業中の「終わる見込み」「段 N/M」の材料 */
+  var lastMikomiRaw = '', lastStepDone = 0, lastStepTotal = 0;
   /* 最後に押した札の刻（v142・古い並びの取り直し-1）。state.json の cardAt をそのまま持つ。 */
   var lastCardAt = 0;
   /* 過去の実測（estimates.json）。見込みが無いときの終了予定を、ここから当てる。 */
@@ -1609,13 +1615,27 @@
     /* v173（2026-11-19 本人の枠）：題の行と同じ字を出していた黄色い帯は外した。空いた所に、段の台帳の「すんだ：」「いま：（何分たった）」「これから：」を一行ずつ出す。
        ＊字は state.json の sDone・sNow・sNowAt・sNext（見張りの決め所 state-decide.js が段の台帳から取る）。いまやる段が無い時は何も出さない。 */
     var rows = [];
+    /* v180（2026-11-20 本人の枠）：作業中は必ず「終わる見込み HH:MM（あとN分）」と「段 N/M」を出す。
+       ＊見込みが無ければ空欄にせず赤で「見込み未記入」（窓が「不明」と書いた回は「見込み不明」）。見込みを過ぎたら「見込みを過ぎた N分」。
+       ＊段は、済んでいない段があるときだけ「段 N/M」（N＝済み＋1）。台帳が無い・全部済みの回は赤で「段の台帳 未記入」。 */
+    if (lastStat === '作業中') {
+      var nowS = Math.floor(Date.now() / 1000);
+      if (lastStartedAt > 0 && lastMikomiMin > 0) {
+        var endS = lastStartedAt + lastMikomiMin * 60;
+        if (endS > nowS) { rows.push({ t: '終わる見込み ' + pad2s(endS) + '（あと' + Math.ceil((endS - nowS) / 60) + '分）', c: 'eta' }); }
+        else { rows.push({ t: '見込みを過ぎた ' + Math.floor((nowS - endS) / 60) + '分', c: 'bad' }); }
+      } else if (/不明/.test(lastMikomiRaw)) { rows.push({ t: '見込み不明', c: 'bad' }); }
+      else { rows.push({ t: '見込み未記入', c: 'bad' }); }
+      if (lastSNow && lastStepTotal > 0) { rows.push({ t: '段 ' + (lastStepDone + 1) + '/' + lastStepTotal, c: 'stepn' }); }
+      else { rows.push({ t: '段の台帳 未記入', c: 'bad' }); }
+    }
     if (lastSNow) {
       if (lastSDone) { rows.push('✅ 完了：' + lastSDone); }   /* v176：頭の字を替えた（ひらがなの「すんだ」は「ずんだ」と読み違えるので使わない） */
       var mins = lastSNowAt > 0 ? Math.max(0, Math.floor((Date.now() / 1000 - lastSNowAt) / 60)) : -1;
       rows.push('▶ 進行中：' + lastSNow + (mins >= 0 ? '（' + mins + '分）' : ''));
       if (lastSNext) { rows.push('⏳ 予定：' + lastSNext); }
     }
-    el.innerHTML = rows.map(function (r) { return '<li class="steps"><p class="m">' + esc(r) + '</p></li>'; }).join('');
+    el.innerHTML = rows.map(function (r) { var isO = (typeof r !== 'string'); return '<li class="steps"><p class="m' + (isO ? ' ' + r.c : '') + '">' + esc(isO ? r.t : r) + '</p></li>'; }).join('');
   }
 
   /* この札は片付いているか。「写す」を押した／「ここまで読んだ」に含まれる、のどちらか。 */
@@ -2921,6 +2941,7 @@
         lastLost = (sec > STALE_SEC);
         var mkm = String(d.mikomi || '').match(/(\d+)/);
         lastMikomiMin = mkm ? parseInt(mkm[1], 10) : 0;
+        lastMikomiRaw = String(d.mikomi || '').trim(); lastStepDone = (typeof d.stepDone === 'number') ? d.stepDone : 0; lastStepTotal = (typeof d.stepTotal === 'number') ? d.stepTotal : 0;   /* v180 */
 
         paintBar();
 
