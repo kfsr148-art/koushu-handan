@@ -36,6 +36,11 @@ on:
       - 'ntfy-latest.txt'
       - 'ntfy-sent.json'
   workflow_dispatch:
+  # 2026-11-19 本人の枠：声の走り（voice-m4a.yml）が成功で済んだら、検査と配信を起こす。声を使う版の本体は、声が揃う前に配信へ出さない
+  #   （声が欠ければ check の④と pack-site が止める）。走りが成功でない時は scope の段で何もしない。
+  workflow_run:
+    workflows: ['声をm4aで作る']
+    types: [completed]
 
 permissions:
   contents: read
@@ -45,6 +50,7 @@ permissions:
 jobs:
   # ---- 一段：何が変わった push かを見るだけ ----
   scope:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
