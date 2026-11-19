@@ -497,7 +497,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v169（11月19日）</p>
+  <p class="ver" id="verTag">panel v170（11月19日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -526,7 +526,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '169';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
+  var PANEL_VER = '170';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -579,7 +579,8 @@
        v81 まで札の題から数え直していたので、ヨシ待ちの札が立っていても
        題から読めない札が一枚あれば「作業中」と出ていた。**状態は状態から読む**。 */
   var lastRl = null, lastUsageObj = null;   /* v163：状態表示の rate_limits（state.json の rl）と、直近に読めた usage.json */
-  var lastStat = '', lastStartedAt = 0, lastSubj = '', lastStatAt = 0, lastCloud = '';   /* lastCloud：雲の作業の進み（v154・「2回目・済み1,000/4,069本」など。作業中の字の横へ添える） */   /* lastStatAt：状態が今の字になった刻（v152・ヨシ待ちのあとに再開したかを見る） */
+  var lastStat = '', lastStartedAt = 0, lastSubj = '', lastStatAt = 0, lastCloud = '', lastHelp = '';   /* v170：lastHelp＝裏の手伝い（「裏で手伝い N本」／「手伝い 不明 N本」・state.json の help） */
+    /* lastCloud：雲の作業の進み（v154・「2回目・済み1,000/4,069本」など。作業中の字の横へ添える） */   /* lastStatAt：状態が今の字になった刻（v152・ヨシ待ちのあとに再開したかを見る） */
   /* 生存が途切れているか（v124・止まりの見分け-1）。state.json の at と now の差が
      STALE_SEC を超えた回に立つ。**判定の順は ヨシ待ち → 連絡なし → 作業中。**
      ＊v123 まで、連絡なしは paintState（上の札）にしか伝わっていなかった。
@@ -1699,7 +1700,8 @@
     /* v152：順は 作業中＞まとめて写す＞待機中＞接続不良。猫の絵と字は必ず対なので、runCatTick と同じ順。
        ＊接続不良は、生存が途切れていて、作業中でも写す物も無いときだけ。 */
     /* v166：雲待ちで「検査中」にする推し量りは外した（雲待ちは手待ちの下の一行・kumo） */
-    if (isRunning()) { return lastCloud ? (WORK_TEXT + '（' + lastCloud + '）') : WORK_TEXT; }   /* 走る猫（v150）。雲で作業が回っている間は、進み（何回目・何本）を添える（v154） */
+    if (isRunning()) { var wx = [lastCloud, (/^裏で手伝い/.test(lastHelp) ? lastHelp : '')].filter(Boolean).join('・'); return wx ? (WORK_TEXT + '（' + wx + '）') : WORK_TEXT; }   /* v170：裏の手伝いが走っていれば「裏で手伝い N本」を添える */
+      /* 走る猫（v150）。雲で作業が回っている間は、進み（何回目・何本）を添える（v154） */
     /* v153：「まとめて写すヨシ！」は、直近に終わった仕事（写していない札）が1件以上ある時だけ。
        ヨシ待ちの札が立っていても、写す物が0件なら指差しにしない（待機中へ）。 */
     if (lastStat === 'ヨシ待ち') { return YOSHI_TEXT; }   /* v157：作業中の次。isRunning が偽の間（止まって待っている間）だけここへ来る */
@@ -2857,13 +2859,13 @@
         lastStat = w; lastStartedAt = (d.startedAt || 0); lastSubj = subj;
         lastEvAt = (typeof d.evAt === 'number') ? d.evAt : 0;   /* v166：最後の動き（合図の刻） */
         lastStatAt = (typeof d.statAt === 'number') ? d.statAt : 0;
-        lastCloud = (typeof d.cloud === 'string') ? d.cloud : '';
+        lastCloud = (typeof d.cloud === 'string') ? d.cloud : ''; lastHelp = (typeof d.help === 'string') ? d.help : '';
         lastRl = (d.rl && typeof d.rl === 'object') ? d.rl : null;   /* v163 */
         try { if (lastUsageObj) { paintUsage(lastUsageObj); } } catch (e) { }
         /* 赤い行（v159）：雲待ちが起こせない／作業中が終了予定を1時間過ぎた。state.json の warn。 */
         /* v166：手番が閉じている間の雲待ちは、状態を作業中にせず、手待ちの下に一行（検査中：題・見込み HH:MM）。state.json の kumo。 */
         lastKumo = (typeof d.kumo === 'string') ? d.kumo : '';   /* v169：現場猫の一言と上の帯が雲の見込みを見る */
-        try { var kl = $('kumoLine'); if (kl) { var kt = (typeof d.kumo === 'string') ? d.kumo : ''; kl.textContent = kt; kl.className = kt ? 'kumo-line' : 'kumo-line hide'; } } catch (e) { }
+        try { var kl = $('kumoLine'); if (kl) { var kt = [(typeof d.kumo === 'string') ? d.kumo : '', (typeof d.help === 'string' && /^手伝い 不明/.test(d.help)) ? d.help : ''].filter(Boolean).join('　');   /* v170：30分どの合図も無い手伝いは下の一行に「手伝い 不明 N本」 */ kl.textContent = kt; kl.className = kt ? 'kumo-line' : 'kumo-line hide'; } } catch (e) { }
         try { var ww = $('wakeWarn'); if (ww) { var wt = (typeof d.warn === 'string') ? d.warn : ''; ww.textContent = wt ? ('⚠ ' + wt) : ''; ww.className = wt ? 'pipe' : 'pipe hide'; } } catch (e) { }
         /* 最後に押した札の刻（v142）。一覧が古いかを見分けるのに使う。下の freshen を見よ。 */
         lastCardAt = (typeof d.cardAt === 'number') ? d.cardAt : 0;
