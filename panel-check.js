@@ -178,6 +178,8 @@ function probeSource(scene) {
     /* v173：遠隔の釦（字・はみ出し）と、消した「遠隔：」の行 */
     var rcA = document.getElementById('rcLink'), rcT = document.getElementById('rcTag');
     o.rcText = rcA ? String(rcA.textContent || '').trim() : ''; o.rcShown = vis(rcA); o.rcSW = rcA ? rcA.scrollWidth : 0; o.rcCW = rcA ? rcA.clientWidth : 0; o.rcTagShown = rcT ? !rcT.hidden : false;
+    /* 字そのものの幅（headless の窓はスマホの幅まで縮まないので、釦の実測ではなく字の幅と釦の内側の幅の計算で比べる） */
+    if (rcA) { var sp = document.createElement('span'); var cs = getComputedStyle(rcA); sp.style.font = cs.font; sp.style.whiteSpace = 'nowrap'; sp.style.position = 'absolute'; sp.style.visibility = 'hidden'; sp.textContent = rcA.textContent; document.body.appendChild(sp); o.rcNat = Math.ceil(sp.getBoundingClientRect().width); o.rcPadX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0); o.rcMarX = (parseFloat(cs.marginLeft) || 0) + (parseFloat(cs.marginRight) || 0); sp.remove(); }
     var hw = document.getElementById('headWait');
     o.headWait = hw ? String(hw.textContent || '').trim() : null;
     o.headWaitColor = hw ? getComputedStyle(hw).color : null;
@@ -476,13 +478,17 @@ try {
   head('⑤の続き 遠隔の釦（スマホの幅で字が溢れない）');
   {
     const rcS = Object.assign({}, ST['作業中'], { rcUrl: 'https://claude.ai/code/session_012aGgAFf5sHMiT4QraMojQR', rcName: 'koushu-handan-93', rcPid: 6308 });
-    for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
-      const r = run(tmp, { state: rcS, notices: MIX, settle: 1500 }, w, h);
-      if (!r) { ng(w + 'px：測れない'); continue; }
-      if (r.rcText !== '🔗 遠隔（koushu-handan-93・pid 6308）') { ng(w + 'px：釦の字が違う「' + r.rcText + '」'); continue; }
-      if (r.rcTagShown) { ng(w + 'px：消したはずの「遠隔：」の行が出ている'); }
-      if (r.rcSW > r.rcCW + 1) { ng(w + 'px：釦の字が溢れる（字の幅 ' + r.rcSW + 'px ＞ 釦 ' + r.rcCW + 'px）'); }
-      else { ok(w + 'px：「' + r.rcText + '」が釦に収まる（字の幅 ' + r.rcSW + 'px ≦ 釦 ' + r.rcCW + 'px）'); }
+    const r = run(tmp, { state: rcS, notices: MIX, settle: 1500 }, 390, 844);
+    if (!r) { ng('測れない'); }
+    else if (r.rcText !== '🔗 遠隔（koushu-handan-93・pid 6308）') { ng('釦の字が違う「' + r.rcText + '」'); }
+    else {
+      if (r.rcTagShown) { ng('消したはずの「遠隔：」の行が出ている'); } else { ok('「遠隔：」の行は出ない'); }
+      note('字の幅 ' + r.rcNat + 'px（釦の左右の余白 ' + r.rcPadX + 'px・外の余白 ' + r.rcMarX + 'px）。窓の幅は ' + r.w + 'px（headless はスマホの幅まで縮まない）');
+      for (const w of [390, 375, 360, 320]) {
+        const inner = w - r.rcMarX - r.rcPadX;
+        if (r.rcNat <= inner) { ok(w + 'px：字 ' + r.rcNat + 'px ≦ 釦の内側 ' + inner + 'px で収まる'); }
+        else { ng(w + 'px：字 ' + r.rcNat + 'px ＞ 釦の内側 ' + inner + 'px（「…」で切れる）'); }
+      }
     }
   }
   /* ---- ⑥⑦ 終了予定（黄色い帯の刻）：v173 で帯を外したので測る相手が無い ---- */
