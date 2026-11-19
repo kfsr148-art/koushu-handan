@@ -152,6 +152,7 @@ function probeSource(scene) {
     /* 黄色の行（状態の一行）と、その箱の高さ */
     var st = document.getElementById('stLine');
     o.stText = txt(st);
+    o.stBad = [].map.call(st ? st.querySelectorAll('p.m.bad') : [], function (x) { return x.textContent; }).join('／');   /* v180：赤の行 */
     /* 黄色の行の色（v108・パネルの色-1）。刻だけ別色にしてあるので、二つ測る。
        ＊地の色は、行の箱（li）から取る。CSS の字面ではなく**描かれた実際の色**を見る。 */
     o.stColor = st ? getComputedStyle(st.querySelector('p.m') || st).color : null;
@@ -371,7 +372,9 @@ try {
       if (!r) { ng(k + '：測れない（目印が出ない）'); continue; }
       if (SIX[k][1].test(String(r.headWait || ''))) { ok(k + '：題の行「' + String(r.headWait).slice(0, 34) + '」'); }
       else { ng(k + '：題の行が違う「' + String(r.headWait).slice(0, 40) + '」'); }
-      if (String(r.stText || '')) { ng(k + '：黄色い帯の跡に字が出た「' + String(r.stText).slice(0, 30) + '」'); }
+      if (k === '作業中') {   /* v180：作業中は「見込み未記入」「段の台帳 未記入」を赤で出す（下の base は見込み・段の台帳が無い） */
+        if (/見込み未記入/.test(String(r.stBad || '')) && /段の台帳 未記入/.test(String(r.stBad || ''))) { ok(k + '：見込み・段の台帳が無い回は赤で未記入を出す'); } else { ng(k + '：赤の未記入が出ない（赤「' + String(r.stBad || '') + '」）'); }
+      } else if (String(r.stText || '')) { ng(k + '：黄色い帯の跡に字が出た「' + String(r.stText).slice(0, 30) + '」'); }
       if (/（なし）/.test(String(r.headWait || ''))) { ng(k + '：「（なし）」が出た'); }
     }
   }
@@ -473,8 +476,38 @@ try {
     const noNow = Object.assign({}, ST['作業中'], { sDone: 'パネルの字', sNow: '', sNext: '' });
     const r2 = run(tmp, { state: noNow, notices: MIX, settle: 1500 }, 390, 844);
     if (!r2) { ng('測れない（やる段が無い回）'); }
-    else if (String(r2.stText || '')) { ng('やる段が無いのに字が出た（' + String(r2.stText).slice(0, 40) + '）'); }
-    else { ok('やる段が無い回は何も出さない'); }
+    else if (/✅ 完了|▶ 進行中|⏳ 予定/.test(String(r2.stText || ''))) { ng('やる段が無いのに三行が出た（' + String(r2.stText).slice(0, 40) + '）'); }
+    else if (!/段の台帳 未記入/.test(String(r2.stBad || ''))) { ng('やる段が無い作業中に赤の「段の台帳 未記入」が出ない（' + String(r2.stText || '').slice(0, 40) + '）'); }
+    else { ok('やる段が無い回は三行を出さず、赤で「段の台帳 未記入」を出す（v180）'); }
+  }
+  /* ---- ⑤の二 作業中の「終わる見込み」と「段 N/M」（v180・2026-11-20 本人の枠） ---- */
+  head('⑤の二 作業中の終わる見込みと段 N/M（無ければ赤）');
+  {
+    const base2 = Object.assign({}, ST['作業中'], { sNow: '声の繋ぎ', sNowAt: now - 600, sDone: 'パネルの字', sNext: '検査と配信', stepDone: 2, stepTotal: 5 });
+    const mk = extra => run(tmp, { state: Object.assign({}, base2, extra), notices: MIX, settle: 1500 }, 390, 844);
+    const T = r => String(r && r.stText || ''), B = r => String(r && r.stBad || '');
+    let r = mk({});
+    if (!r) { ng('測れない（見込みあり）'); }
+    else {
+      if (/終わる見込み [0-9]{2}:[0-9]{2}（あと(24|25|26)分）/.test(T(r))) { ok('見込みあり：「' + (T(r).match(/終わる見込み[^\n]*/) || [''])[0] + '」'); } else { ng('見込みありの字が違う（' + T(r).slice(0, 50) + '）'); }
+      if (/段 3\/5/.test(T(r))) { ok('「段 3/5」が出る（済み2・全体5）'); } else { ng('「段 3/5」が出ない（' + T(r).slice(0, 60) + '）'); }
+      if (B(r)) { ng('見込みも段もあるのに赤が出た（' + B(r) + '）'); } else { ok('見込み・段があれば赤は出ない'); }
+    }
+    r = mk({ mikomi: '10分', startedAt: now - 1500 });
+    if (!r) { ng('測れない（過ぎた）'); }
+    else if (/見込みを過ぎた (14|15|16)分/.test(B(r))) { ok('見込みを過ぎたら赤「' + B(r) + '」'); } else { ng('「見込みを過ぎた N分」が赤で出ない（赤「' + B(r) + '」）'); }
+    r = mk({ mikomi: '' });
+    if (!r) { ng('測れない（未記入）'); }
+    else if (/見込み未記入/.test(B(r))) { ok('見込みが空なら赤「見込み未記入」'); } else { ng('「見込み未記入」が赤で出ない（赤「' + B(r) + '」）'); }
+    r = mk({ mikomi: '不明' });
+    if (!r) { ng('測れない（不明）'); }
+    else if (/見込み不明/.test(B(r))) { ok('「不明」と書かれた回は赤「見込み不明」'); } else { ng('「見込み不明」が赤で出ない（赤「' + B(r) + '」）'); }
+    r = mk({ sNow: '', sDone: '', sNext: '', stepDone: 0, stepTotal: 0 });
+    if (!r) { ng('測れない（台帳なし）'); }
+    else if (/段の台帳 未記入/.test(B(r)) && !/段 [0-9]/.test(T(r))) { ok('台帳が無ければ赤「段の台帳 未記入」（段 N/M は出さない）'); } else { ng('台帳なしの字が違う（赤「' + B(r) + '」／' + T(r).slice(0, 40) + '）'); }
+    r = run(tmp, { state: ST['手待ち'], notices: MIX, settle: 1500 }, 390, 844);
+    if (!r) { ng('測れない（手待ち）'); }
+    else if (/終わる見込み|見込み未記入|見込みを過ぎた|段 [0-9]|段の台帳/.test(T(r))) { ng('作業中でないのに見込み・段の行が出た（' + T(r).slice(0, 40) + '）'); } else { ok('作業中でない回（手待ち）には出ない'); }
   }
   /* ---- ⑤の続き 遠隔の釦（v175・2026-11-19 本人の枠）：二行（上に大きく「🔗 遠隔」・下に小さく「名・pid N」）。狭い時は下の行が折り返し、「…」で切らない ---- */
   head('⑤の続き 遠隔の釦（二行・折り返し込みで溢れない）');
