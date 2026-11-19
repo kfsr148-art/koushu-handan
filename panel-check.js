@@ -465,7 +465,8 @@ try {
     if (!r) { ng('測れない'); }
     else {
       const t = String(r.stText || '');
-      const a = t.indexOf('すんだ：パネルの字'), b = t.indexOf('いま：声の繋ぎ（10分たった）'), c = t.indexOf('これから：検査と配信');
+      const a = t.indexOf('✅ 完了：パネルの字'), b = t.indexOf('▶ 進行中：声の繋ぎ（10分）'), c = t.indexOf('⏳ 予定：検査と配信');   // v176：頭の字を替えた
+      if (/すんだ|いま：|これから：/.test(t)) { ng('前の頭の字（すんだ・いま・これから）が残っている（' + t.slice(0, 40) + '）'); }
       if (a >= 0 && b > a && c > b) { ok('三行が順に出る（' + t.slice(0, 50) + '）'); } else { ng('三行が違う（' + t.slice(0, 60) + '）'); }
       if (r.headWait && t.indexOf(String(r.headWait)) >= 0) { ng('題の行と同じ字が下にも出ている（' + r.headWait + '）'); } else { ok('題の行と同じ字は下に出ない'); }
     }
