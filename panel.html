@@ -497,7 +497,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v170（11月19日）</p>
+  <p class="ver" id="verTag">panel v171（11月19日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -526,7 +526,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '170';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
+  var PANEL_VER = '171';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -757,6 +757,7 @@
     var nowSec = Math.floor(Date.now() / 1000);
     /* v169：雲待ちの間は雲の見込みを出す（窓の見込みが過ぎていても「終了予定を過ぎています」にしない） */
     if (kumoEtaSec() > 0) { var ce = new Date(kumoEtaSec() * 1000); return W + '、' + ce.getHours() + '時' + ('0' + ce.getMinutes()).slice(-2) + '分終了予定（雲）'; }
+    if (/^検査中：/.test(lastCloud)) { return W + '、見込み不明'; }   /* v171：雲待ちで見込み（前5回の中央値）が無い時は「見込み不明」。窓の見込みで「終了予定を過ぎています」を出さない */
     if (lastStartedAt > 0 && lastMikomiMin > 0) {
       var endSec = lastStartedAt + lastMikomiMin * 60, e = new Date(endSec * 1000);
       /* 材料の古い刻（前の仕事の開始を引きずった形・過ぎ方が走らせる上限を超えた）は出さない（v124 の守り・panel-check ⑦） */
@@ -906,7 +907,7 @@
            **印の出しどころがこの行だけ**になった。出さないと、何の件で動いているかが
            画面のどこにも無くなる。
          ＊印が取れない回（件名が割れない形）は、今までどおり「作業中、…」のまま。 */
-      var head = '作業中' + (lastMark ? '（' + lastMark + '）' : '');
+      var head = /^検査中：/.test(lastCloud) ? lastCloud : ('作業中' + (lastMark ? '（' + lastMark + '）' : ''));   /* v171：雲待ちの間は頭を「検査中：〈題〉」に */
       return endPredText(head) + (bits.length ? ('（' + bits.join('・') + '）') : '');
     }
     /* ---- 何を終えて待っているのかを、先に出す（v115・パネルの見え方-1 ③⑥）----
@@ -1700,6 +1701,7 @@
     /* v152：順は 作業中＞まとめて写す＞待機中＞接続不良。猫の絵と字は必ず対なので、runCatTick と同じ順。
        ＊接続不良は、生存が途切れていて、作業中でも写す物も無いときだけ。 */
     /* v166：雲待ちで「検査中」にする推し量りは外した（雲待ちは手待ちの下の一行・kumo） */
+    if (isRunning() && /^検査中：/.test(lastCloud)) { return lastCloud; }   /* v171（2026-11-19 本人の枠）：雲待ちの間は「検査中：〈題〉」 */
     if (isRunning()) { var wx = [lastCloud, (/^裏で手伝い/.test(lastHelp) ? lastHelp : '')].filter(Boolean).join('・'); return wx ? (WORK_TEXT + '（' + wx + '）') : WORK_TEXT; }   /* v170：裏の手伝いが走っていれば「裏で手伝い N本」を添える */
       /* 走る猫（v150）。雲で作業が回っている間は、進み（何回目・何本）を添える（v154） */
     /* v153：「まとめて写すヨシ！」は、直近に終わった仕事（写していない札）が1件以上ある時だけ。
