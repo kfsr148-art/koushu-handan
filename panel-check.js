@@ -326,6 +326,14 @@ head('① 構文');
   if (!ngc) { ok('script の塊 ' + n + '件、どれも読める'); }
 }
 
+/* ---- 状態の決め所（state-decide.js）の総当たり（2026-11-19 本人の枠⑥）：ヨシ待ち→止まり→作業中→検査中→待ち→待機中の順と中身 ---- */
+{
+  head('状態の決め所の総当たり（state-decide-test.js）');
+  const r = require('child_process').spawnSync(process.execPath, [path.join(path.dirname(SRC), 'state-decide-test.js')], { encoding: 'utf8', timeout: 60000 });
+  const last = String(r.stdout || '').trim().split(/\r?\n/).pop() || '';
+  if (r.status === 0) { ok(last); } else { ng(last || ('起こせなかった：' + (r.error ? r.error.message : r.status))); String(r.stdout || '').split(/\r?\n/).filter(l => /^NG/.test(l)).slice(0, 10).forEach(note); }
+}
+
 if (!BROWSER) {
   head('まとめ（返事パネルの検査）');
   note('ブラウザが無いので②〜⑥は測れなかった（落ちとは別）');
