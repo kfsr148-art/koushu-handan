@@ -179,7 +179,8 @@ function probeSource(scene) {
     var rcA = document.getElementById('rcLink'), rcT = document.getElementById('rcTag');
     o.rcText = rcA ? String(rcA.textContent || '').trim() : ''; o.rcShown = vis(rcA); o.rcSW = rcA ? rcA.scrollWidth : 0; o.rcCW = rcA ? rcA.clientWidth : 0; o.rcTagShown = rcT ? !rcT.hidden : false;
     /* 字そのものの幅（headless の窓はスマホの幅まで縮まないので、釦の実測ではなく字の幅と釦の内側の幅の計算で比べる） */
-    if (rcA) { var sp = document.createElement('span'); var cs = getComputedStyle(rcA); sp.style.font = cs.font; sp.style.whiteSpace = 'nowrap'; sp.style.position = 'absolute'; sp.style.visibility = 'hidden'; sp.textContent = rcA.textContent; document.body.appendChild(sp); o.rcNat = Math.ceil(sp.getBoundingClientRect().width); o.rcFs = parseFloat(cs.fontSize) || 0; o.rcPadX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0); o.rcMarX = (parseFloat(cs.marginLeft) || 0) + (parseFloat(cs.marginRight) || 0); sp.remove(); }
+    /* v175：釦を各スマホの幅（外の余白28pxを引いた幅）に絞り、折り返し込みで字が釦から溢れないか・「…」で切っていないかを見る（字の幅は電話と雲で違うので測って比べない） */
+    o.rcFit = []; if (rcA) { var cs0 = getComputedStyle(rcA); o.rcEllipsis = (cs0.textOverflow === 'ellipsis'); var w0 = rcA.style.width; [390, 375, 360, 320].forEach(function (W) { rcA.style.width = (W - 28) + 'px'; var top = rcA.querySelector('.rc-top'), sub = rcA.querySelector('.rc-sub'); var over = (rcA.scrollWidth > rcA.clientWidth + 1) || (rcA.scrollHeight > rcA.clientHeight + 1); [top, sub].forEach(function (e) { if (e && (e.scrollWidth > e.clientWidth + 1)) { over = true; } }); o.rcFit.push({ w: W, over: over, h: Math.round(rcA.getBoundingClientRect().height), subLines: sub ? Math.round(sub.getBoundingClientRect().height / 16) : 0 }); }); rcA.style.width = w0; o.rcTop = (rcA.querySelector('.rc-top') || {}).textContent || ''; o.rcSub = (rcA.querySelector('.rc-sub') || {}).textContent || ''; }
     var hw = document.getElementById('headWait');
     o.headWait = hw ? String(hw.textContent || '').trim() : null;
     o.headWaitColor = hw ? getComputedStyle(hw).color : null;
@@ -474,24 +475,21 @@ try {
     else if (String(r2.stText || '')) { ng('やる段が無いのに字が出た（' + String(r2.stText).slice(0, 40) + '）'); }
     else { ok('やる段が無い回は何も出さない'); }
   }
-  /* ---- ⑤の続き 遠隔の釦（v173・2026-11-19 本人の枠）：「🔗 遠隔（名・pid N）」の一つにし、「遠隔：」の行は出さない。スマホの幅で字が溢れない ---- */
-  head('⑤の続き 遠隔の釦（スマホの幅で字が溢れない）');
+  /* ---- ⑤の続き 遠隔の釦（v175・2026-11-19 本人の枠）：二行（上に大きく「🔗 遠隔」・下に小さく「名・pid N」）。狭い時は下の行が折り返し、「…」で切らない ---- */
+  head('⑤の続き 遠隔の釦（二行・折り返し込みで溢れない）');
   {
     const rcS = Object.assign({}, ST['作業中'], { rcUrl: 'https://claude.ai/code/session_012aGgAFf5sHMiT4QraMojQR', rcName: 'koushu-handan-93', rcPid: 6308 });
     const r = run(tmp, { state: rcS, notices: MIX, settle: 1500 }, 390, 844);
     if (!r) { ng('測れない'); }
-    else if (r.rcText !== '🔗 遠隔（koushu-handan-93・pid 6308）') { ng('釦の字が違う「' + r.rcText + '」'); }
     else {
+      if (r.rcTop === '🔗 遠隔' && r.rcSub === 'koushu-handan-93・pid 6308') { ok('上「' + r.rcTop + '」／下「' + r.rcSub + '」'); } else { ng('釦の字が違う（上「' + r.rcTop + '」／下「' + r.rcSub + '」）'); }
       if (r.rcTagShown) { ng('消したはずの「遠隔：」の行が出ている'); } else { ok('「遠隔：」の行は出ない'); }
-      note('字の幅 ' + r.rcNat + 'px（釦の左右の余白 ' + r.rcPadX + 'px・外の余白 ' + r.rcMarX + 'px）。窓の幅は ' + r.w + 'px（headless はスマホの幅まで縮まない）');
-      const mq = html.match(/@media [(]max-width:([0-9]+)px[)][{] a[.]cpall[.]rc[{]font-size:([0-9.]+)px;[}] [}]/);   // 狭い幅で字を小さくする指定
-      for (const w of [390, 375, 360, 320]) {
-        const inner = w - r.rcMarX - r.rcPadX;
-        const nat = (mq && w <= Number(mq[1]) && r.rcFs) ? Math.ceil(r.rcNat * Number(mq[2]) / r.rcFs) : r.rcNat;
-        if (nat !== r.rcNat) { note(w + 'px：字を ' + mq[2] + 'px にする指定が効く（字の幅 ' + r.rcNat + '→' + nat + 'px）'); }
-        if (nat <= inner) { ok(w + 'px：字 ' + nat + 'px ≦ 釦の内側 ' + inner + 'px で収まる'); }
-        else { ng(w + 'px：字 ' + nat + 'px ＞ 釦の内側 ' + inner + 'px（「…」で切れる）'); }
+      if (r.rcEllipsis) { ng('釦に「…」切り（text-overflow: ellipsis）が残っている'); } else { ok('「…」で切らない'); }
+      for (const x of (r.rcFit || [])) {
+        if (x.over) { ng(x.w + 'px：釦の中で字が溢れる（高さ ' + x.h + 'px）'); }
+        else { ok(x.w + 'px：折り返し込みで釦に収まる（高さ ' + x.h + 'px・下の行 ' + x.subLines + '行）'); }
       }
+      if (!(r.rcFit || []).length) { ng('釦の幅を絞った測りができない'); }
     }
   }
   /* ---- ⑥⑦ 終了予定（黄色い帯の刻）：v173 で帯を外したので測る相手が無い ---- */
