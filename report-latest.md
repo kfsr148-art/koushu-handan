@@ -39,6 +39,12 @@
 ## 残り
 - 実機の確かめ一つ（上記）。orders-open.tsv の未了10件は、本人の裁定どおり触らない。
 
+## 追記（00:2x）取り消し
+- 本人の指示で、**使用量の上限の後の起こし役（StopFailure への rewake-limit の足し）を取り消した**。settings.json の StopFailure から該当の1件を外し、写し settings.json.bak-20261120 と同一に戻した（`grep rewake-limit settings.json` は0件）。Stop には何も足していない。
+- `~/.claude/rewake-limit.js` の字は置いたまま（どこからも呼ばれない）。上の「作り値5通りPASS」は道具の中身の記録として残す。
+- 実機の確かめ（02:50 前後）は不要になった。段の台帳の `[決]` も外した。
+- 残るのは、先に指示された 固まりの見極め（inbox-watch の Restart-Window）の使用量関門（reboot-hold.js --usage-only）で、今回の取り消しの対象外。
+
 ---
 
 <!-- 控えの一覧 ここから -->
@@ -51,7 +57,7 @@
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
-| [`y1119-2315-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-2315-2.md) | 11-20 00:01 | 使用量の止まりを rewake で起こす（rewake-limit.js）・台帳照合の取り下げ（2026-11-20 00:10） |
+| [`y1119-2315-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-2315-2.md) | 11-20 00:05 | 使用量の止まりを rewake で起こす（rewake-limit.js）・台帳照合の取り下げ（2026-11-20 00:10） |
 | [`y1119-2315.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-2315.md) | 11-19 23:49 | 立て直しの確かめと「様子を写す」・使用量の待ちで窓を落とさない（2026-11-20 00:00） |
 | [`y1119-2300.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-2300.md) | 11-19 23:40 | SessionStart の rewake を外し、窓を立てる時に最初の一言を渡す（2026-11-19 23:00） |
 | [`cloud-panel-check-20261119-143215.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-panel-check-20261119-143215.md) | 11-19 23:40 | 雲で回した：`panel-check.js` |
