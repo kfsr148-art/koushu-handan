@@ -95,8 +95,8 @@ jobs:
             if git push -q origin HEAD:main; then
               echo "押し戻した"
               if [ "$MISSING" -ne 0 ]; then echo "声が揃っていないので、配りは呼ばない（同じ命令をもう一度起こせば続きから作る）"; exit 1; fi
-              # この走りが成功で終われば check.yml が workflow_run で検査と配信を起こす。配りの走りも一本呼ぶ
-              GH_TOKEN="${{ github.token }}" gh workflow run state-deploy.yml --ref main -R "$GITHUB_REPOSITORY" && echo '配りの走りを呼んだ' || echo '配りの走りを呼べなかった'
+              # 2026-11-19 13:50 本人の枠：声を直下へ移して押した時だけ、検査と配信（check.yml）を起こす。押す物が無い（0本）時は上で抜けるので何も起こさない
+              GH_TOKEN="${{ github.token }}" gh workflow run check.yml --ref main -R "$GITHUB_REPOSITORY" && echo '検査と配信を起こした' || { echo '検査と配信を起こせなかった'; exit 1; }
               exit 0
             fi
             git pull -q --rebase origin main || true
