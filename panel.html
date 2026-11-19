@@ -177,7 +177,8 @@
     border:1px solid var(--line); border-radius:10px;}
   .cpall:active{filter:brightness(1.4);}
   /* いまの線（v144）。a で作るので、字を箱の真ん中へ寄せる。的は .cpall の48px。 */
-  a.cpall.rc{display:block; text-align:center; line-height:48px; text-decoration:none; box-sizing:border-box; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}   /* v173：スマホの幅で字が溢れないよう、一行で「…」切り */
+  a.cpall.rc{display:block; text-align:center; line-height:48px; text-decoration:none; box-sizing:border-box; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  @media (max-width:340px){ a.cpall.rc{font-size:13px;} }   /* v173：320px の幅では字（16px で約291px）が釦の内側（272px）を越えるので、字を小さくして収める */   /* v173：スマホの幅で字が溢れないよう、一行で「…」切り */
   a.cpall.rc.hide{display:none;}
   .cpall.ok{color:var(--done); border-color:var(--done);}
   /* 写す物が無いとき（v38）。押せなくしたことが見て分かるように色を落とす。
@@ -501,7 +502,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v173（11月19日）</p>
+  <p class="ver" id="verTag">panel v174（11月19日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -530,7 +531,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '173';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
+  var PANEL_VER = '174';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
