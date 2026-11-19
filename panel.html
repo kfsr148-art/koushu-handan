@@ -484,13 +484,13 @@
   <!-- 写し取り一覧への口（v30 で足した・並びは v49 でいちばん下へ）。
        本体の全画面を撮った PNG を並べたシート。組み直すのは node shot-all.js。
        ここは開くだけで、パネル側は何も持たない。 -->
-  <!-- 知らせの一覧のURLを写す小さな釦（v64）。写し取り一覧の隣に横並びで置く。
-       ＊写るのは一行だけ。改行も空白も入れず、一続きの字でそのまま渡す。 -->
+  <!-- 様子を写す小さな釦（v178・前は v64 の「URLを写す」）。写し取り一覧の隣に横並びで置く。
+       ＊番地ではなく、パネルが今持つ様子を字で写す（statusText）。 -->
   <div class="shotsrow">
     <a class="cpall" id="btnShots"
        href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
        target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
-    <button type="button" class="cpall url" id="btnCopyUrl">URLを写す</button>
+    <button type="button" class="cpall url" id="btnCopyUrl">様子を写す</button>
   </div>
   <!-- 常時出す三つ。どれも既にリポジトリへ書いてある値の見せ方だけで、経路は増やしていない。
        版の並び＝ver.txt（本体）と stable の枝の ver.txt（公開）。
@@ -505,7 +505,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v177（11月19日）</p>
+  <p class="ver" id="verTag">panel v178（11月19日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -534,7 +534,8 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '177';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
+  var PANEL_VER = '178';  /* v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
+  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1110,20 +1111,43 @@
     } else { ng(); }
   }
 
-  /* 知らせの一覧のURLを写す（v64）。
-     ＊写すのは**この一行だけ**。前後に改行も空白も付けない。
-     ＊copyInto は釦の名で札を選ぶ作りで、こちらは cpall のままにしたいので、
-       同じ手をここへ書く。字を戻す先も札も、この釦のものを使う。 */
-  var NOTICES_RAW = 'https://raw.githubusercontent.com/kfsr148-art/koushu-state/main/notices.json';
+  /* 様子を写す（v178・2026-11-19 本人の枠）。前は v64 の「URLを写す」で、固定名の番地（raw の notices.json）を写していた。
+     ＊固定名の番地は、チャット側では古い写ししか読めない（23:03 に raw は 14:04 止まり・Pages は 00:22 止まり）。
+       新しい札が無い時に様子が伝わらないので、番地ではなく字を写す。
+     ＊字はパネルが既に持つ値だけで、押した時に同期で組む（押してから読みに行くと iPhone でコピーが弾かれる）。
+       現況・最終確認・最後の合図と刻・遠隔の名と pid・赤い行・一番新しい札の刻と題・押した刻。 */
+  var lastEvName = '', lastRcName = '', lastRcPid = 0;
+  function statusText() {
+    var NL = String.fromCharCode(10);
+    var f = function (sec) {
+      if (!sec) { return '—'; }
+      var d = new Date(sec * 1000), p = function (n) { return (n < 10 ? '0' : '') + n; };
+      return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+    };
+    var head = ''; try { head = headText() || ''; } catch (e) { head = ''; }
+    var reds = [];
+    ['pipeWarn', 'wakeWarn'].forEach(function (id) { var el = $(id); if (el && !/(^| )hide( |$)/.test(el.className) && String(el.textContent || '').trim()) { reds.push(String(el.textContent).trim()); } });
+    var newest = null;
+    (allRows || []).forEach(function (d) { if (d && (!newest || (d.time || 0) > (newest.time || 0))) { newest = d; } });
+    return ['様子（パネル v' + PANEL_VER + '）',
+      '現況：' + (head || '—') + (lastSubj ? '／' + lastSubj : ''),
+      '最終確認：' + f(lastState && lastState.at),
+      '最後の合図：' + (lastEvName || '—') + '（' + f(lastEvAt) + '）',
+      '遠隔：' + (lastRcName || '—') + (lastRcPid ? '・pid ' + lastRcPid : ''),
+      '赤い行：' + (reds.length ? reds.join('／') : 'なし'),
+      '一番新しい札：' + (newest ? f(newest.time) + '「' + (newest.title || '(題なし)') + '」' : 'なし'),
+      '押した刻：' + f(Math.floor(Date.now() / 1000))].join(NL);
+  }
   function copyUrl(btn) {
-    var back = 'URLを写す';
+    var back = '様子を写す';
+    var text = statusText();   /* 押した瞬間に同期で組む。この後に読みに行かない */
     var reset = function (ms) {
       setTimeout(function () { btn.textContent = back; btn.className = 'cpall url'; }, ms);
     };
     var ok = function () { btn.textContent = '写した'; btn.className = 'cpall url ok'; reset(2000); };
-    var ng = function () { fallback(NOTICES_RAW); btn.textContent = '写せません'; reset(3000); };
+    var ng = function () { fallback(text); btn.textContent = '写せません'; reset(3000); };
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      try { navigator.clipboard.writeText(NOTICES_RAW).then(ok, ng); } catch (e) { ng(); }
+      try { navigator.clipboard.writeText(text).then(ok, ng); } catch (e) { ng(); }
     } else { ng(); }
   }
 
@@ -2878,6 +2902,7 @@
         /* 釦の字が見る三つ（v82）。状態・着手の刻・件名。 */
         lastStat = w; lastStartedAt = (d.startedAt || 0); lastSubj = subj;
         lastEvAt = (typeof d.evAt === 'number') ? d.evAt : 0;   /* v166：最後の動き（合図の刻） */
+        lastEvName = String(d.ev || ''); lastRcName = String(d.rcName || ''); lastRcPid = (typeof d.rcPid === 'number') ? d.rcPid : 0;   /* v178：様子を写すが使う */
         lastStatAt = (typeof d.statAt === 'number') ? d.statAt : 0;
         lastCloud = (typeof d.cloud === 'string') ? d.cloud : ''; lastHelp = (typeof d.help === 'string') ? d.help : ''; lastDetail = (typeof d.detail === 'string') ? d.detail.replace(/（なし）/g, '') : ''; lastSDone = String(d.sDone || ''); lastSNow = String(d.sNow || ''); lastSNowAt = Number(d.sNowAt) || 0; lastSNext = String(d.sNext || '');
         lastRl = (d.rl && typeof d.rl === 'object') ? d.rl : null;   /* v163 */
