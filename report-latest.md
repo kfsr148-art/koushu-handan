@@ -1,49 +1,36 @@
-# 使用量の止まりを rewake で起こす（rewake-limit.js）・台帳照合の取り下げ（2026-11-20 00:10）
+# 検査の見込みを回の種類別の前5回の中央値にした（2026-11-20 00:40）
 
 ## 札の頭
-- 状態：終わり。残りは実機の確かめ一つ（実際に上限で止まったとき）。
+- 状態：終わり。残りなし。
 
-## 本人の裁定の実施
-- 台帳 orders-open.tsv の未了10件の照合は**しない**（1日を超えたら自動の時間切れに任せる）。段の台帳の `[決]` を外した。
-- ヨシ待ちを解いた：yoshi-open.tsv（昨日の古い印 51行）を空にした（写し yoshi-open.tsv.bak-20261120）。
+## 何が外れていたか
+- 見込みを出す `Get-KumoEta`（`~/.claude/kumo-wait.ps1`）は、同じ workflow（check.yml）の**直近5回の成功を種類を分けずに**混ぜて中央値を取っていた。
+- 実際の所要は、パネルの版を上げた回が 10〜16分（v178 15分54秒・v179 10分35秒）、報告だけの回が約3分。混ぜると 3〜4分に引きずられる。
+- 今回の実例（kumo-wait.log）：00:18:16 の見込みは「前5回 3分・3分・4分・11分・15分 の中央値 4分」。実際の v180 は **13分21秒**（00:31 に終了）。**9分21秒外れ**。この見込みだと、00:22 ごろに赤い「起きる刻を過ぎた」が誤って出ていた。
 
-## 大事な穴：autoContinueAtUsageLimit は遠隔の会話では始まらない
-- 代わりに **StopFailure にも rewake を掛けた**。使用量の止まりなら、戻る刻＋2分まで待って exit 2 で窓を起こし「続きをせよ」と渡す。
-- 新しい道具 `~/.claude/rewake-limit.js`（rewake.js は触らず別立て）。settings.json の StopFailure に `async:true・asyncRewake:true・timeout:86400` で掛けた（写し settings.json.bak-20261120・足したのは1件・差分は足した11行だけ）。
-- 動き
-  1. 使用量の止まりか判じる：usage.json の5時間枠・週枠が 95%以上でリセット前、または返事の本文に limit／usage／rate。判じられなければ待たず 0 で抜ける。
-  2. 戻る刻：usage.json（二つのうち遅い方）→ 無ければ返事の「resets HH:MM」。どちらも無ければ待たない。24時間の鉤の上限に収まらなければ待たない。
-  3. 戻る刻＋2分（REWAKE_GRACE_SEC=120）に stderr へ「使用量の上限が戻りました…続きをしてください。work-note・job-steps・inbox の未処理から続きを始めること」を出し exit 2。
-  4. 待つ間に指示（UserPromptSubmit）か手番の閉じ（Stop 等）が来たら、本人が戻ったとして待ちを止める。二重に待たない（rewake-limit.lock）。claude -p では待たない。
-- 経過は rewake.log に「[使用量]」の印で残る。
+## 直したこと（`~/.claude/kumo-wait.ps1`・写し kumo-wait.ps1.bak-20261120）
+1. **回の種類を commit が触ったファイルで決める**（`Get-RunKind`）：本体替え＝koushu-handan.html・check.js・adv-check.js・check-all.js・ver.txt／パネル替え＝panel.html・panel-check.js・panel-ver.txt／それ以外＝報告だけ。本体を触っていれば本体替えが先。答えは `kumo-kind.tsv`（sha と種類）に控え、同じ commit を二度引かない。
+2. **`Get-KumoEta` を種類別にした**：今の走りと同じ種類の、直近40回の成功のうち**前5回だけ**の所要（updated_at − created_at）の中央値。check.yml だけがこの形で、job.yml・voice-m4a.yml などは従来どおり。
+3. 同じ種類が直近40回に一つも無ければ **見込みなし（0）**。混ぜた中央値へは戻さない。
+4. `Get-KumoRun` が走りの `head_sha` を返し、見込みを出す呼び元（Check-KumoWait）がそれを渡す。
+5. **赤い「起きる刻を過ぎた」**（inbox-watch.ps1）は台帳の `eta` を見る作りで、その `eta` を出すのがこの `Get-KumoEta`。なので**同じ見込みで判じられる**（inbox-watch 側は直していない）。
+- 常駐（inbox-watch.ps1）は kumo-wait.ps1 を起動時に読み込むので、起こし直した（pid 9204・00:33:18 起動 ＞ 台本 00:33:04）。構文検査 0件・BOMあり・定義は一つずつ。
 
-## 作り値の確かめ（偽の置き場・偽の usage.json・猶予1秒）
-| 試し | 期待 | 結果 |
-|---|---|---|
-| A 使用量99%・戻る刻が4秒後 | 約5秒で exit 2＋「続きを」 | **PASS**（5.1秒・exit 2・文面が出た） |
-| B 他の誤り・使用量50% | 待たず exit 0 | PASS（0.2秒・「判じられない」） |
-| C 待ち始めた後に指示が来る | 止めて exit 0 | PASS（「本人が戻った」） |
-| D claude -p | 待たず exit 0・ログなし | PASS |
-| E usage.json 無し・返事に resets 11pm | 11pm まで待ち始め、Stop で止まる | PASS |
-- 初回は作りの穴で B〜D が別の理由で通っていた（刻を最初に一度だけ取っていた）。刻を走らせるたびに取り直して再実測し、全 PASS。テストは scratchpad（リポジトリ外）。
-- 構文検査：rewake-limit.js `node --check` 通過／settings.json は JSON として読め、読み書きの往復で一致。
+## 今の回で確かめた（本物の GitHub を読むだけ・何も送らない）
+| 回 | 種類 | 前5回（成功）の所要 | 中央値＝見込み | 実測 |
+|---|---|---|---|---|
+| panel v180（3eba79ad） | パネル替え | 11分35秒・16分54秒・16分8秒・12分58秒・13分55秒 | **13分55秒** | **13分21秒**（差34秒） |
+| 報告だけ（ce3e6865） | 報告だけ | 3分3秒・3分27秒・15分46秒・4分51秒・3分49秒 | **3分27秒** | 3分30秒（差3秒） |
+- 旧法（混ぜる）は 4分で、v180 の実測と 9分21秒ずれた。新法は 34秒。
+- 通しの確認：差し込んだ本物の kumo-wait.ps1 を一時の置き場で読み込み、`Get-KumoRun`（HeadSha 一致）→ `Get-KumoEta`（13分55秒）の順で通った。
+- 報告だけの回の前5回に 15分46秒が一つ混じる（報告の分類だが重い走りだった回）。中央値なので 3分27秒は動かない。
 
-## まだ確かめられていない所（正直に）
-1. **窓が実際に StopFailure の rewake で起きるか**。公式の書きぶりでは StopFailure の出力は無視される扱いなので、asyncRewake が StopFailure で効くかは**実機で止まらないと分からない**。作り値が確かめたのは道具の中身（判じ・待ち・exit 2）だけ。
-2. **今の窓には効かない**かもしれない。フックは窓の立ち上げ時に読むので、掛けた後に立つ窓（次は 03:00 の定時以降、または立て直し）から確実。いまの窓は 02:50 のリセットを待つなら**このフックを読んでいない可能性がある**。
-3. 効かなかったときの保険は、見張り（常駐）の Esc・send-text 側に残してある。
+## 公開の確認（前の枠の panel v180 の分も併せて）
+- 公開の panel-ver.txt＝180。公開の panel.html に「終わる見込み」「見込み未記入」「段の台帳 未記入」（9件）。
+- パネルが読む koushu-state の state.json に stepDone＝0・stepTotal＝5・mikomi＝40分・sNow が載る（この枠の台帳そのもの）。
 
 ## 実機で見る所
-- 使用量が上限で止まったあと、戻る刻＋2分（5時間枠なら 02:52 ごろ）に、窓が落ちずに「使用量の上限が戻りました」で起きて続きを始めること。rewake.log に `[使用量] 待ちを始めた` → `起こした（exit 2）` が付くこと。付かない（待ちが始まらない）なら StopFailure では asyncRewake が走らないということ。
-
-## 残り
-- 実機の確かめ一つ（上記）。orders-open.tsv の未了10件は、本人の裁定どおり触らない。
-
-## 追記（00:2x）取り消し
-- 本人の指示で、**使用量の上限の後の起こし役（StopFailure への rewake-limit の足し）を取り消した**。settings.json の StopFailure から該当の1件を外し、写し settings.json.bak-20261120 と同一に戻した（`grep rewake-limit settings.json` は0件）。Stop には何も足していない。
-- `~/.claude/rewake-limit.js` の字は置いたまま（どこからも呼ばれない）。上の「作り値5通りPASS」は道具の中身の記録として残す。
-- 実機の確かめ（02:50 前後）は不要になった。段の台帳の `[決]` も外した。
-- 残るのは、先に指示された 固まりの見極め（inbox-watch の Restart-Window）の使用量関門（reboot-hold.js --usage-only）で、今回の取り消しの対象外。
+- 次に検査の雲待ちを立てたとき、台帳の見込み（パネルの雲待ちの一行・kumo-wait.log の「見込み：」の行）が、パネル替えなら 11〜17分・報告だけなら 3〜4分の値で、**種類の名（パネル替え／報告だけ）つき**で出ること。赤い「起きる刻を過ぎた」が、実測より早く出ないこと。
 
 ---
 
@@ -52,11 +39,12 @@
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **941件**ある。
+　ここに出るのは新しい20件。全部で **942件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y1120-0030.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1120-0030.md) | 11-20 00:34 | 検査の見込みを回の種類別の前5回の中央値にした（2026-11-20 00:40） |
 | [`y1119-2315-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-2315-2.md) | 11-20 00:05 | 使用量の止まりを rewake で起こす（rewake-limit.js）・台帳照合の取り下げ（2026-11-20 00:10） |
 | [`y1119-2315.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-2315.md) | 11-19 23:49 | 立て直しの確かめと「様子を写す」・使用量の待ちで窓を落とさない（2026-11-20 00:00） |
 | [`y1119-2300.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-2300.md) | 11-19 23:40 | SessionStart の rewake を外し、窓を立てる時に最初の一言を渡す（2026-11-19 23:00） |
@@ -76,6 +64,5 @@
 | [`y1119-1600.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-1600.md) | 11-19 15:55 | 台帳の済の付け方の直し（2026-11-19 16:00） |
 | [`y1119-1555.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-1555.md) | 11-19 15:50 | 定時の再起動の見送りを今の実物で見る形に・台帳の行を自動で済に（2026-11-19 15:55） |
 | [`y1119-1540.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-1540.md) | 11-19 15:39 | 定時の再起動の見送りと、台帳の未了の内訳（数えるだけ・何も消していない）2026-11-19 15:40 |
-| [`y1119-1520.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-1520.md) | 11-19 15:19 | 定時の再起動の後の点検の直し（2026-11-19 15:20） |
 
 <!-- 控えの一覧 ここまで -->
