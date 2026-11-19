@@ -505,7 +505,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v176（11月19日）</p>
+  <p class="ver" id="verTag">panel v177（11月19日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -534,7 +534,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '176';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
+  var PANEL_VER = '177';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -1184,7 +1184,7 @@
       var name, mark, t;
       if (m.kind === 'card') {
         name = plain(headOf(m.card)) || '（件名なし）';
-        mark = kindMark(m.card.title);
+        mark = (m.pushed ? '😽' : '') + kindMark(m.card.title);   /* v177：同じ印の押し通知を送った札は頭に 😽 */
         t = hhmm(m.card.time);
       } else {
         name = String(m.ntfy.title || '（題なし）');
@@ -1362,11 +1362,16 @@
 
   function mergedTodo() {
     var a = [];
+    /* v177（2026-11-19 本人の枠）：終わりの出来事は印（eid）一つ。札と同じ印の押し通知（😽）は別の行にせず、その札の頭に 😽 を付ける */
+    var cardEid = {}, pushEid = {};
+    (shown || []).forEach(function (d) { if (d && d.eid) { cardEid[d.eid] = 1; } });
+    (ntfySent || []).forEach(function (e) { if (e && e.eid) { pushEid[e.eid] = 1; } });
     (shown || []).forEach(function (d) {
       if (isCountCard(d)) { return; }
-      if (!isCopied(d)) { a.push({ t: d.time || 0, kind: 'card', card: d }); }
+      if (!isCopied(d)) { a.push({ t: d.time || 0, kind: 'card', card: d, pushed: !!(d.eid && pushEid[d.eid]) }); }
     });
     (ntfySent || []).forEach(function (e) {
+      if (e && e.eid && cardEid[e.eid]) { return; }   /* 札と同じ印の押し通知は札の行にまとめる */
       if (!ntfyCopied[ntfyKeyOf(e)]) { a.push({ t: e.time || 0, kind: 'ntfy', ntfy: e }); }
     });
     a.sort(function (x, y) { return y.t - x.t; });
