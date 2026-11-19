@@ -69,27 +69,33 @@ jobs:
         with:
           sparse-checkout: |
             /reports/voice-m4a-out/
+            /voice-used.txt
+            /*.m4a
           sparse-checkout-cone-mode: false
       - uses: actions/download-artifact@v4
         with:
           pattern: out-*
           path: collected
           merge-multiple: true
-      - name: 出来た声を押し戻す
+      - name: 出来た声を直下へ移し、台帳と突き合わせてから押し戻す
         run: |
-          mkdir -p reports/voice-m4a-out
           N=$(find collected -name '*.m4a' 2>/dev/null | wc -l)
           echo "出来た声 ${N}本"
           if [ "$N" -eq 0 ]; then echo "新しい声は無かった"; exit 0; fi
-          cp collected/*.m4a reports/voice-m4a-out/
+          # 出来た声は直下へ移す（reports/voice-m4a-out には置かない）
+          cp collected/*.m4a .
+          # 台帳（voice-used.txt）の声が直下に全部在るかを突き合わせる。欠けが在れば、揃うまで配りは呼ばない
+          MISSING=$(while read -r f; do if [ -n "$f" ] && [ ! -f "$f" ]; then echo "$f"; fi; done < voice-used.txt | wc -l)
+          echo "台帳の欠け ${MISSING}本"
           git config user.name "koushu-voice-bot"
           git config user.email "koushu-voice-bot@users.noreply.github.com"
-          git add reports/voice-m4a-out
-          git commit -q -m "voice-m4a: ${{ github.event.inputs.kind }} ${N}本"
+          git add -- ./*.m4a
+          git commit -q -m "voice-m4a: ${{ github.event.inputs.kind }} ${N}本を直下へ（台帳の欠け ${MISSING}本）"
           for i in 1 2 3 4 5; do
             if git push -q origin HEAD:main; then
               echo "押し戻した"
-              # 押し戻した commit は GITHUB_TOKEN の押しなので走りを起こさない。配りの走りを workflow_dispatch で一本呼ぶ（GITHUB_TOKEN でも起こせる例外・2026-11-19）
+              if [ "$MISSING" -ne 0 ]; then echo "声が揃っていないので、配りは呼ばない（同じ命令をもう一度起こせば続きから作る）"; exit 1; fi
+              # この走りが成功で終われば check.yml が workflow_run で検査と配信を起こす。配りの走りも一本呼ぶ
               GH_TOKEN="${{ github.token }}" gh workflow run state-deploy.yml --ref main -R "$GITHUB_REPOSITORY" && echo '配りの走りを呼んだ' || echo '配りの走りを呼べなかった'
               exit 0
             fi
