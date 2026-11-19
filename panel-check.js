@@ -375,7 +375,7 @@ try {
       else { ng(k + '：題の行が違う「' + String(r.headWait).slice(0, 40) + '」'); }
       if (k === '作業中') {   /* v180：作業中は「見込み未記入」「段の台帳 未記入」を赤で出す（下の base は見込み・段の台帳が無い） */
         if (/見込み未記入/.test(String(r.stBad || '')) && /段の台帳 未記入/.test(String(r.stBad || ''))) { ok(k + '：見込み・段の台帳が無い回は赤で未記入を出す'); } else { ng(k + '：赤の未記入が出ない（赤「' + String(r.stBad || '') + '」）'); }
-      } else if (String(r.stText || '')) { ng(k + '：黄色い帯の跡に字が出た「' + String(r.stText).slice(0, 30) + '」'); }
+      } else if (String(r.stText || '') && !((k === '検査中' || k === '待ち') && /^(終わる見込み|見込み未記入|見込み不明|見込みを過ぎた)/.test(String(r.stText || '')))) {   /* v182：検査中・待ちは見込みの行だけ出る */ ng(k + '：黄色い帯の跡に字が出た「' + String(r.stText).slice(0, 30) + '」'); }
       if (/（なし）/.test(String(r.headWait || ''))) { ng(k + '：「（なし）」が出た'); }
     }
   }
