@@ -347,44 +347,26 @@ try {
   calibrate(tmp);
   note('額縁の較正 : 幅+' + padW + ' / 高さ+' + padH);
 
-  /* ---- ② 四通りの状態 ---- */
-  head('② 四通りの状態');
-  const WANT = {
-    '作業中':   /^作業中/,
-    '手待ち':   /次の指示待ち/,
-    'ヨシ待ち': null,   /* 2026-09-13・頭の猫-4 で題の行へ移した。黄色の行には出ない */
-    '異常':     null   /* 黄色の行は出ない決め。異常は札で出る */
-  };
-  /* ＊異常のときは**黄色の行には出ない**決め（状態の一行は三通りだけ）。異常は**札**で出るので、
-       作り値にも異常の札を入れて、そちらを見る。 */
-  const MIX_BAD = MIX.concat([N(now - 400, '🪟 異常です（手が要ります）', '窓が落ちています。開き直してください。')]);
-  const seen = {};
-  for (const k of Object.keys(ST)) {
-    const r = run(tmp, { state: ST[k], notices: (k === '異常' ? MIX_BAD : MIX), settle: 1500 }, 390, 844);
-    seen[k] = r;
-    if (!r) { ng(k + '：測れない（目印が出ない）'); continue; }
-    if (WANT[k]) {
-      if (WANT[k].test(r.stText)) { ok(k + '：黄色の行「' + r.stText.slice(0, 34) + '」'); }
-      else { ng(k + '：黄色の行が違う「' + r.stText.slice(0, 40) + '」'); }
-    } else if (k === 'ヨシ待ち') {
-      /* 字は題の行の三つ目（#headWait）へ移した（2026-09-13・頭の猫-4）。
-         黄色い札そのものは、ヨシ待ちの回は縦線ごと出さない決め。 */
-      if (!/ヨシ待ち、、、。/.test(r.headWait || '')) { ng('ヨシ待ち：題の行に字が無い「' + String(r.headWait) + '」'); }
-      else if (r.stText) { ng('ヨシ待ち：黄色い札が出ている「' + String(r.stText).slice(0, 30) + '」'); }
-      else { ok('ヨシ待ち：題の行「' + r.headWait + '」／黄色い札は出ない'); }
-    } else {
-      const card = (r.cards || []).find(c => /異常/.test(c));
-      if (r.stText && /作業中|次の指示待ち|まとめて写すヨシ/.test(r.stText)) {
-        ng('異常：黄色の行が別の状態を出している「' + r.stText.slice(0, 30) + '」');
-      } else if (card) { ok('異常：札が出る「' + card.slice(0, 30) + '」');
-      } else {
-        /* **異常はパネルに出さない**で確定（2026-09-01 の裁定）。
-             ＊異常は 🪟 の押し送りで直接鳴る形が既にある。パネルにも持つと二重になり、
-               片方だけ古い・片方だけ出る、という食い違いの元になる。
-             ＊よって黄色の行は 作業中／次の指示待ち／ヨシ待ち の三通りのままでよい。
-               この枝は「出ていないこと」を確かめる側であって、落ちではない。 */
-        note('異常：パネルには出さない（押し送りで知らせる）＝2026-09-01 裁定');
-      }
+  /* ---- ② 六つの状態（v173・2026-11-19 本人の枠）：題の行（#headWait）の字と、黄色い帯が出ないこと ----
+     ＊状態は見張りの決め所（state-decide.js）が六つから一つ選び、state.json の stat と detail に書く。パネルは字にするだけ。 */
+  head('② 六つの状態（題の行）');
+  {
+    const base = { subj: '題', mikomi: '', startedAt: now - 300, statAt: now - 60, at: now };
+    const SIX = {
+      '作業中': [{ stat: '作業中', detail: '裏で手伝い1本・雲1本' }, /^作業中、、、。（裏で手伝い1本・雲1本）$/],
+      '検査中': [{ stat: '検査中', detail: 'v1508 検査と配信・終了予定 12:30' }, /^検査中：v1508 検査と配信・終了予定 12:30$/],
+      '待ち':   [{ stat: '待ち', detail: '残りの段 2・次「声の繋ぎ」' }, /^待ち：残りの段 2・次「声の繋ぎ」$/],
+      'ヨシ待ち': [{ stat: 'ヨシ待ち', detail: 'まとめ札' }, /ヨシ待ち、、、。/],
+      '止まり': [{ stat: '止まり（使用量・13:00 にリセット）', detail: '' }, /^止まり（使用量・13:00 にリセット）$/],
+      '待機中': [{ stat: '待機中', detail: '' }, /待機中、、、。|まとめて写すヨシ/]
+    };
+    for (const k of Object.keys(SIX)) {
+      const r = run(tmp, { state: Object.assign({}, base, SIX[k][0]), notices: MIX, settle: 1500 }, 390, 844);
+      if (!r) { ng(k + '：測れない（目印が出ない）'); continue; }
+      if (SIX[k][1].test(String(r.headWait || ''))) { ok(k + '：題の行「' + String(r.headWait).slice(0, 34) + '」'); }
+      else { ng(k + '：題の行が違う「' + String(r.headWait).slice(0, 40) + '」'); }
+      if (String(r.stText || '')) { ng(k + '：黄色い帯の跡に字が出た「' + String(r.stText).slice(0, 30) + '」'); }
+      if (/（なし）/.test(String(r.headWait || ''))) { ng(k + '：「（なし）」が出た'); }
     }
   }
 
