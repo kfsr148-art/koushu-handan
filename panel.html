@@ -177,7 +177,7 @@
     border:1px solid var(--line); border-radius:10px;}
   .cpall:active{filter:brightness(1.4);}
   /* いまの線（v144）。a で作るので、字を箱の真ん中へ寄せる。的は .cpall の48px。 */
-  a.cpall.rc{display:flex; align-items:center; justify-content:center; text-decoration:none; box-sizing:border-box;}
+  a.cpall.rc{display:block; text-align:center; line-height:48px; text-decoration:none; box-sizing:border-box; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}   /* v173：スマホの幅で字が溢れないよう、一行で「…」切り */
   a.cpall.rc.hide{display:none;}
   .cpall.ok{color:var(--done); border-color:var(--done);}
   /* 写す物が無いとき（v38）。押せなくしたことが見て分かるように色を落とす。
@@ -402,7 +402,7 @@
     <!-- いまの線（v144・いまの線-1）。いまの窓の remote-control の宛先。押せばその会話が開く。
          読む元は state.json の rcUrl（inbox-watch.ps1 が sessions/<pid>.json の bridgeSessionId から組む）。
          取れていなければ行ごと畳む。 -->
-    <a class="cpall rc hide" id="rcLink" href="#" target="_blank" rel="noopener">🔗 いまの線</a>
+    <a class="cpall rc hide" id="rcLink" href="#" target="_blank" rel="noopener">🔗 遠隔</a>
     <!-- ＊「受け取った指示 HH:MM「…」」の一行（v61）は **v70 で画面から消した**。
          器ごと外している。値を書く側（inbox-feed.ps1 → last-order.txt → state.json）は
          そのまま動いており、まとめて写しの中には今までどおり入る。
@@ -2895,12 +2895,8 @@
         var rcEl = $('rcTag');
         if (rcEl) {
           var rcN = String(d.rcName || ''), rcP = (typeof d.rcPid === 'number') ? d.rcPid : 0;
-          if (rcN || rcP) {
-            rcEl.textContent = '遠隔：' + (rcN || '名なし') + (rcP ? '（pid ' + rcP + '）' : '');
-            rcEl.hidden = false;
-          } else {
-            rcEl.textContent = ''; rcEl.hidden = true;
-          }
+          /* v173（2026-11-19 本人の枠）：「遠隔：名（pid）」の行は消し、名と pid は上の釦「🔗 遠隔（名・pid N）」へ一つにした */
+          rcEl.textContent = ''; rcEl.hidden = true;
         }
         /* いまの線（v144）。宛先が claude.ai/code の形のときだけ押せる形で出す。 */
         var rcA = $('rcLink');
@@ -2908,7 +2904,8 @@
           var rcU = String(d.rcUrl || '');
           if (/^https:\/\/claude\.ai\/code\/session_[A-Za-z0-9_]+$/.test(rcU)) {
             rcA.href = rcU;
-            rcA.textContent = '🔗 いまの線' + (d.rcName ? '（' + String(d.rcName) + '）' : '');
+            var rcBits = [String(d.rcName || ''), (typeof d.rcPid === 'number' && d.rcPid) ? ('pid ' + d.rcPid) : ''].filter(Boolean);
+            rcA.textContent = '🔗 遠隔' + (rcBits.length ? '（' + rcBits.join('・') + '）' : '');   /* v173：釦の名を「いまの線」から「遠隔」へ。pid も入れる */
             rcA.classList.remove('hide');
           } else {
             rcA.removeAttribute('href'); rcA.classList.add('hide');

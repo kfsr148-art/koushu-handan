@@ -175,6 +175,9 @@ function probeSource(scene) {
     o.ntfyBtn2 = bn ? txt(bn) : null;
     o.stH = st ? Math.round(st.getBoundingClientRect().height * 10) / 10 : null;
     /* 題の行の三つ目（2026-09-13・頭の猫-4）。ヨシ待ちの字はここへ移った。 */
+    /* v173：遠隔の釦（字・はみ出し）と、消した「遠隔：」の行 */
+    var rcA = document.getElementById('rcLink'), rcT = document.getElementById('rcTag');
+    o.rcText = rcA ? String(rcA.textContent || '').trim() : ''; o.rcShown = vis(rcA); o.rcSW = rcA ? rcA.scrollWidth : 0; o.rcCW = rcA ? rcA.clientWidth : 0; o.rcTagShown = rcT ? !rcT.hidden : false;
     var hw = document.getElementById('headWait');
     o.headWait = hw ? String(hw.textContent || '').trim() : null;
     o.headWaitColor = hw ? getComputedStyle(hw).color : null;
@@ -468,6 +471,19 @@ try {
     if (!r2) { ng('測れない（やる段が無い回）'); }
     else if (String(r2.stText || '')) { ng('やる段が無いのに字が出た（' + String(r2.stText).slice(0, 40) + '）'); }
     else { ok('やる段が無い回は何も出さない'); }
+  }
+  /* ---- ⑤の続き 遠隔の釦（v173・2026-11-19 本人の枠）：「🔗 遠隔（名・pid N）」の一つにし、「遠隔：」の行は出さない。スマホの幅で字が溢れない ---- */
+  head('⑤の続き 遠隔の釦（スマホの幅で字が溢れない）');
+  {
+    const rcS = Object.assign({}, ST['作業中'], { rcUrl: 'https://claude.ai/code/session_012aGgAFf5sHMiT4QraMojQR', rcName: 'koushu-handan-93', rcPid: 6308 });
+    for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
+      const r = run(tmp, { state: rcS, notices: MIX, settle: 1500 }, w, h);
+      if (!r) { ng(w + 'px：測れない'); continue; }
+      if (r.rcText !== '🔗 遠隔（koushu-handan-93・pid 6308）') { ng(w + 'px：釦の字が違う「' + r.rcText + '」'); continue; }
+      if (r.rcTagShown) { ng(w + 'px：消したはずの「遠隔：」の行が出ている'); }
+      if (r.rcSW > r.rcCW + 1) { ng(w + 'px：釦の字が溢れる（字の幅 ' + r.rcSW + 'px ＞ 釦 ' + r.rcCW + 'px）'); }
+      else { ok(w + 'px：「' + r.rcText + '」が釦に収まる（字の幅 ' + r.rcSW + 'px ≦ 釦 ' + r.rcCW + 'px）'); }
+    }
   }
   /* ---- ⑥⑦ 終了予定（黄色い帯の刻）：v173 で帯を外したので測る相手が無い ---- */
   head('⑥⑦ 黄色い帯の終了予定（v173 で外した）');
