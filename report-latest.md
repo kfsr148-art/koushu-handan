@@ -44,6 +44,13 @@
 ## 残り
 - 「手番が終わって5分以内に札が公開に載る」の実測（見張りが Stop から公開で札が見えるまでの秒を測り、受信箱へ一行入れて窓を起こす）。
 
+## 札の5分の実測（00:57 追記・実測 PASS）
+- 測り方：card-proof.sh が、始まり（00:51:11）より後の最初の Stop を待ち、公開の notices.json にこの回の札（件名に「00:04以後の札」）が見えるまでを測った。
+- 結果（card-proof-result.txt）：**Stop 00:51:29 → 札の時刻 00:52:12（43秒）→ 公開で見えた 00:52:38（Stop から 69秒）＝ PASS（5分以内）**。
+- 記録（watch-notify.log）の筋：00:51:37 に Stop を拾い、00:52:09 に退避の札を**止められずに先に立て**（直した道・note-missed.txt）、続けて今の札を積み、00:52:11「溜めた終わりの札 3本を一枚にまとめる」、00:52:20 押し送り、00:52:35 控えへ入れた。**三枠ぶんの札が一枚にまとまって出た**（前は退避が落ちて二枠ぶんが消えた）。
+- 30秒の静かさ待ち（00:51:29 の Stop → 00:52:09 の積みまで約40秒）と配信（札の時刻から公開まで26秒）は、どちらも5分に十分収まった。
+- 残り：なし。
+
 ---
 
 <!-- 控えの一覧 ここから -->
@@ -56,7 +63,7 @@
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
-| [`y1120-0050.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1120-0050.md) | 11-20 00:48 | 00:04 以後の札が出なかった訳と直し・input-stall・panel v180／検査の見込みの結果（2026-11-20 00:55） |
+| [`y1120-0050.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1120-0050.md) | 11-20 00:54 | 00:04 以後の札が出なかった訳と直し・input-stall・panel v180／検査の見込みの結果（2026-11-20 00:55） |
 | [`y1120-0030.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1120-0030.md) | 11-20 00:35 | 検査の見込みを回の種類別の前5回の中央値にした（2026-11-20 00:40） |
 | [`cloud-panel-check-20261119-151645.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-panel-check-20261119-151645.md) | 11-20 00:35 | 雲で回した：`panel-check.js` |
 | [`y1119-2315-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-2315-2.md) | 11-20 00:05 | 使用量の止まりを rewake で起こす（rewake-limit.js）・台帳照合の取り下げ（2026-11-20 00:10） |
