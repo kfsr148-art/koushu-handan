@@ -313,6 +313,10 @@
      ＊中の一行を上へ寄せるのではなく、箱の中で**縦の中ほど**に置く。
        字が一行の回（次の指示待ち）でも、二行の回（作業中）と同じ位置に見える。 */
   li.why.stline{min-height:79px; display:flex; align-items:center;}
+  /* v173：すんだ・いま・これから（黄色い帯の跡）。地の色は付けず、字だけ一行ずつ */
+  #stLine{margin:6px 0 0; padding:0;}
+  li.steps{list-style:none; margin:2px 0;}
+  li.steps .m{margin:0; font-size:14px; line-height:1.5; color:var(--dim);}
   /* ＊ヨシ待ちの札そのものを出さなくなったので（2026-09-13・頭の猫-4）、
      頭の猫-2 で入れた寄せ（yoshiTop）は役目を終えて外した。 */
 
@@ -497,7 +501,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v172（11月19日）</p>
+  <p class="ver" id="verTag">panel v173（11月19日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -526,7 +530,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '172';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
+  var PANEL_VER = '173';  /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
   /* 版が変わっていたら、問い合わせの字を付けて読み直す。
@@ -579,7 +583,7 @@
        v81 まで札の題から数え直していたので、ヨシ待ちの札が立っていても
        題から読めない札が一枚あれば「作業中」と出ていた。**状態は状態から読む**。 */
   var lastRl = null, lastUsageObj = null;   /* v163：状態表示の rate_limits（state.json の rl）と、直近に読めた usage.json */
-  var lastStat = '', lastStartedAt = 0, lastSubj = '', lastStatAt = 0, lastCloud = '', lastHelp = '', lastDetail = '';   /* v172：lastDetail＝状態の中身（state.json の detail・state-decide.js が決める） */   /* v170：lastHelp＝裏の手伝い（「裏で手伝い N本」／「手伝い 不明 N本」・state.json の help） */
+  var lastStat = '', lastStartedAt = 0, lastSubj = '', lastStatAt = 0, lastCloud = '', lastHelp = '', lastDetail = '', lastSDone = '', lastSNow = '', lastSNowAt = 0, lastSNext = '';   /* v172：lastDetail＝状態の中身（state.json の detail・state-decide.js が決める） */   /* v170：lastHelp＝裏の手伝い（「裏で手伝い N本」／「手伝い 不明 N本」・state.json の help） */
     /* lastCloud：雲の作業の進み（v154・「2回目・済み1,000/4,069本」など。作業中の字の横へ添える） */   /* lastStatAt：状態が今の字になった刻（v152・ヨシ待ちのあとに再開したかを見る） */
   /* 生存が途切れているか（v124・止まりの見分け-1）。state.json の at と now の差が
      STALE_SEC を超えた回に立つ。**判定の順は ヨシ待ち → 連絡なし → 作業中。**
@@ -1566,18 +1570,17 @@
        ＊字を失った黄色い札は、ヨシ待ちの回は**出さない**（器を空にすれば縦線ごと消える）。
        ＊ヨシ待ちでない回は今までどおり——黄色い札に字を出し、題の右には何も出さない。 */
     var hw = $('headWait');
-    if (lastStat === 'ヨシ待ち' && !isRunning()) {   /* v153：ヨシ待ちの回も、頭の字は headText（猫の絵と対）。作業中に着手し直した回は、下の通常の行へ */
-      if (hw) { hw.textContent = headText(); }
-      /* v157：ヨシ待ちの札（🙋 ヨシしてください）が、この待ちの刻より後に届いていない間は、取り寄せ中の一行を出す。
-         ＊状態は ntfy で直に届くが、札の中身（印・待っている事・要点）は公開ページ経由で約1分遅れる。その間の空白を埋める。 */
-      var gotAsk = (allRows || []).some(function (d) { return d && String(d.title || '').indexOf('ヨシしてください') >= 0 && (d.time || 0) >= lastStatAt - 300; });
-      el.innerHTML = gotAsk ? '' : '<li class="why stline"><p class="m">🙋 ヨシしてください：札（印・待っている事・要点）を取り寄せています。約1分</p></li>';
-      return;
-    }
     if (hw) { hw.textContent = headText(); }   /* v149：猫の絵と対の字（指差し＝まとめて写すヨシ！／待機＝待機中、、、。） */
-    el.innerHTML = sh
-      ? ('<li class="why stline"><p class="m">' + sh + '</p></li>')
-      : '';
+    /* v173（2026-11-19 本人の枠）：題の行と同じ字を出していた黄色い帯は外した。空いた所に、段の台帳の「すんだ：」「いま：（何分たった）」「これから：」を一行ずつ出す。
+       ＊字は state.json の sDone・sNow・sNowAt・sNext（見張りの決め所 state-decide.js が段の台帳から取る）。いまやる段が無い時は何も出さない。 */
+    var rows = [];
+    if (lastSNow) {
+      if (lastSDone) { rows.push('すんだ：' + lastSDone); }
+      var mins = lastSNowAt > 0 ? Math.max(0, Math.floor((Date.now() / 1000 - lastSNowAt) / 60)) : -1;
+      rows.push('いま：' + lastSNow + (mins >= 0 ? '（' + mins + '分たった）' : ''));
+      if (lastSNext) { rows.push('これから：' + lastSNext); }
+    }
+    el.innerHTML = rows.map(function (r) { return '<li class="steps"><p class="m">' + esc(r) + '</p></li>'; }).join('');
   }
 
   /* この札は片付いているか。「写す」を押した／「ここまで読んだ」に含まれる、のどちらか。 */
@@ -2867,7 +2870,7 @@
         lastStat = w; lastStartedAt = (d.startedAt || 0); lastSubj = subj;
         lastEvAt = (typeof d.evAt === 'number') ? d.evAt : 0;   /* v166：最後の動き（合図の刻） */
         lastStatAt = (typeof d.statAt === 'number') ? d.statAt : 0;
-        lastCloud = (typeof d.cloud === 'string') ? d.cloud : ''; lastHelp = (typeof d.help === 'string') ? d.help : ''; lastDetail = (typeof d.detail === 'string') ? d.detail.replace(/（なし）/g, '') : '';
+        lastCloud = (typeof d.cloud === 'string') ? d.cloud : ''; lastHelp = (typeof d.help === 'string') ? d.help : ''; lastDetail = (typeof d.detail === 'string') ? d.detail.replace(/（なし）/g, '') : ''; lastSDone = String(d.sDone || ''); lastSNow = String(d.sNow || ''); lastSNowAt = Number(d.sNowAt) || 0; lastSNext = String(d.sNext || '');
         lastRl = (d.rl && typeof d.rl === 'object') ? d.rl : null;   /* v163 */
         try { if (lastUsageObj) { paintUsage(lastUsageObj); } } catch (e) { }
         /* 赤い行（v159）：雲待ちが起こせない／作業中が終了予定を1時間過ぎた。state.json の warn。 */
