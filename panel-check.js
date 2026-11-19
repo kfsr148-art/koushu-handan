@@ -779,6 +779,31 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     else if (!need80) { ng('頭の猫 … ヨシ待ちの原寸80px（genba-cat-80.png）が無い'); }
     else { ok('頭の猫はヨシ待ちだけ80px'); }
   })();
+  /* 様子を写す（v178・2026-11-19 本人の枠）：番地でなく字を写す。字はパネルが持つ値から同期で組む。
+     ＊statusText を偽の値で回し、七つ（現況・最終確認・最後の合図と刻・遠隔の名と pid・赤い行・一番新しい札の刻と題・押した刻）が入るかを見る。
+     ＊statusText の中で読みに行かない（fetch・then・await・XMLHttpRequest が無い）。写す手は押した直後に statusText() を呼ぶ。固定名の番地を写さない。 */
+  (function () {
+    const H = html.split(String.fromCharCode(13) + String.fromCharCode(10)).join(String.fromCharCode(10));   // 改行の混ざりを揃えてから切り出す
+    const i = H.indexOf('  function statusText() {');
+    const j = (i >= 0) ? H.indexOf('\n  }\n', i) : -1;
+    const body = (i >= 0 && j > i) ? H.slice(i, j + 4) : '';
+    if (!body) { ng('様子を写す … statusText が無い'); return; }
+    if (/fetch\(|\.then\(|await |XMLHttpRequest/.test(body)) { ng('様子を写す … statusText の中で読みに行っている'); return; }
+    const els = { pipeWarn: { className: 'pipe', textContent: '止まっとるかも：作り値の赤い行' }, wakeWarn: { className: 'pipe hide', textContent: '' } };
+    let txt = '';
+    try {
+      const fn = new Function('headText', 'lastSubj', 'lastState', 'lastEvName', 'lastEvAt', 'lastRcName', 'lastRcPid', '$', 'allRows', 'PANEL_VER', body + '\nreturn statusText();');
+      txt = fn(() => '待機中', '作り値の件名', { at: 1795090000 }, 'idle_prompt', 1795089990, 'koushu-handan-93', 6308, id => els[id] || null,
+        [{ time: 1795080000, title: '✅ 古い札' }, { time: 1795089000, title: '👀 作り値の新しい札' }], '178');
+    } catch (e) { ng('様子を写す … statusText が回らない：' + e.message); return; }
+    const want = [['現況', '現況：待機中／作り値の件名'], ['最終確認', '最終確認：'], ['最後の合図と刻', '最後の合図：idle_prompt（'], ['遠隔の名と pid', '遠隔：koushu-handan-93・pid 6308'], ['赤い行', '赤い行：止まっとるかも：作り値の赤い行'], ['一番新しい札の刻と題', '「👀 作り値の新しい札」'], ['押した刻', '押した刻：']];
+    const miss = want.filter(w => txt.indexOf(w[1]) < 0).map(w => w[0]);
+    const cp = H.slice(H.indexOf('  function copyUrl(btn) {'), H.indexOf('  function copyWait(btn)'));
+    if (miss.length) { ng('様子を写す … 字に無い：' + miss.join('・')); }
+    else if (cp.indexOf('var text = statusText();') < 0 || cp.indexOf('writeText(text)') < 0) { ng('様子を写す … 写す手が押した直後に statusText() を組んで写していない'); }
+    else if (/raw\.githubusercontent|notices\.json/.test(cp) || H.indexOf('>URLを写す<') >= 0 || H.indexOf('>様子を写す<') < 0) { ng('様子を写す … 固定名の番地か前の釦の名が残っている'); }
+    else { ok('様子を写すは七つを同期で字にして写す'); }
+  })();
   /* 版の三箇所（作法4）。ここも字面で切り出す。 */
   function pick(src, head, tail) {
     const a = src.indexOf(head);
