@@ -541,7 +541,36 @@ try {
     if (!r) { ng('測れない（foot なし）'); }
     else if (/最後の合図：PreToolUse（/.test(r.evTag || '') && r.footHidden) { ok('合図は作業の途中でもそのまま出し、foot が無ければ下の数は畳む'); } else { ng('PreToolUse／foot なしの出方が違う（' + (r.evTag || '') + '・hidden=' + r.footHidden + '）'); }
   }
+  /* ---- ⑤の四 待ちにも「終わる見込み HH:MM（あとN分）」・様子を写すに見込みの行（v182・2026-11-20 本人の枠） ---- */
+  head('⑤の四 待ちの終わる見込み（検査中・待ち・雲待ち）と様子を写すの見込み行');
+  {
+    const hm = sec => { const d = new Date(sec * 1000); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); };
+    const T = r => String(r && r.stText || ''), B = r => String(r && r.stBad || '');
+    const mk = st => run(tmp, { state: st, notices: MIX, settle: 1500 }, 390, 844);
+    let r = mk(Object.assign({}, ST['手待ち'], { stat: '検査中', detail: '雲の検査・終了予定 ' + hm(now + 600) }));
+    if (!r) { ng('測れない（検査中）'); }
+    else if (/終わる見込み [0-9]{2}:[0-9]{2}（あと(9|10|11)分）/.test(T(r)) && !B(r)) { ok('検査中：「' + (T(r).match(/終わる見込み[^）]*）/) || [''])[0] + '」（赤なし）'); } else { ng('検査中の見込みが出ない（' + T(r).slice(0, 80) + '・赤「' + B(r) + '」）'); }
+    r = mk(Object.assign({}, ST['手待ち'], { kumo: '雲：パネル替え・見込み ' + hm(now + 420) }));
+    if (!r) { ng('測れない（手待ち＋雲待ち）'); }
+    else if (/終わる見込み [0-9]{2}:[0-9]{2}（あと(6|7|8)分）/.test(T(r))) { ok('手待ちの下の雲待ちにも出る'); } else { ng('雲待ちの見込みが出ない（' + T(r).slice(0, 80) + '）'); }
+    r = mk(Object.assign({}, ST['手待ち'], { kumo: '雲：パネル替え・見込み ' + hm(now - 900) }));
+    if (!r) { ng('測れない（雲待ちの見込み超過）'); }
+    else if (/見込みを過ぎた (14|15|16)分/.test(B(r))) { ok('見込みを過ぎたら赤「' + B(r) + '」'); } else { ng('雲待ちの超過が赤で出ない（赤「' + B(r) + '」）'); }
+    r = mk(Object.assign({}, ST['手待ち'], { stat: '検査中', detail: '雲の検査・見込み不明' }));
+    if (!r) { ng('測れない（見込み不明）'); }
+    else if (/見込み不明/.test(B(r))) { ok('検査中で刻が無ければ赤「見込み不明」'); } else { ng('「見込み不明」が赤で出ない（赤「' + B(r) + '」）'); }
+    r = mk(Object.assign({}, ST['手待ち'], { stat: '待ち', detail: '窓が閉じている' }));
+    if (!r) { ng('測れない（待ち・刻なし）'); }
+    else if (/見込み未記入/.test(B(r))) { ok('待ちで刻が無ければ赤「見込み未記入」'); } else { ng('待ちの「見込み未記入」が赤で出ない（赤「' + B(r) + '」）'); }
+    r = mk(ST['手待ち']);
+    if (!r) { ng('測れない（何も待たない手待ち）'); }
+    else if (/終わる見込み|見込み未記入|見込みを過ぎた|見込み不明/.test(T(r))) { ng('何も待たない手待ちに見込みが出ている（' + T(r).slice(0, 60) + '）'); } else { ok('何も待たない手待ちには見込みを出さない'); }
+    const LF = String.fromCharCode(10), H2 = html.split(String.fromCharCode(13) + LF).join(LF);
+    const si = H2.indexOf('  function statusText() {'), sj = si >= 0 ? H2.indexOf(LF + '  }' + LF, si) : -1, sb = (si >= 0 && sj > si) ? H2.slice(si, sj + 4) : '';
+    if (sb.indexOf("'見込み：'") >= 0 && H2.indexOf('function etaLineText()') >= 0) { ok('様子を写すの字に「見込み：」の行がある（作業中は mikomi・待ちは待ちの見込み・無ければ赤と同じ字）'); } else { ng('様子を写すに見込みの行が無い'); }
+  }
   /* ---- ⑥⑦ 終了予定（黄色い帯の刻）：v173 で帯を外したので測る相手が無い ---- */
+
   head('⑥⑦ 黄色い帯の終了予定（v173 で外した）');
   note('黄色い帯を外した（v173）。終了予定は検査中の中身だけに出し、状態の決め所の総当たりで見る');
 

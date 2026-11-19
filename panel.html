@@ -509,7 +509,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v181（11月20日）</p>
+  <p class="ver" id="verTag">panel v182（11月20日）</p>
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
   <div class="usage" id="usageTag" hidden></div>
   <p class="usage-msg" id="usageMsg" hidden></p>
@@ -540,7 +540,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '181';  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
+  var PANEL_VER = '182';  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
   /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
@@ -1127,6 +1127,28 @@
      ＊v179：頭は「写す」と同じ形——一番新しい notices-<刻>.json の番地（copySrcUrl。巡回のたびに公開の latest-name.txt から取り置く。
        取れない回は notices.json）＋現況の行（nowLine）。その下に残りを足す。新しい札が0件でも写せる。 */
   var lastEvName = '', lastRcName = '', lastRcPid = 0;
+  /* v182（2026-11-20 本人の枠）：待ち（検査中・待ち・手待ちの下の雲待ち）にも「終わる見込み HH:MM（あとN分）」を出す。
+     ＊刻は見張りが種類別の前5回の中央値で出した物（kumo の「見込み HH:MM」・detail の「終了予定／再開 HH:MM」）をそのまま読む。
+     ＊刻が読めなければ赤で「見込み未記入」（「不明」とあれば「見込み不明」）。過ぎていれば赤で「見込みを過ぎた N分」。 */
+  function waitEtaRow() {
+    var nowS = Math.floor(Date.now() / 1000);
+    if (lastStat === '作業中' || !(lastStat === '検査中' || lastStat === '待ち' || String(lastKumo || '') !== '')) { return null; }
+    var src = String(lastKumo || '') + ' ' + String(lastDetail || '');
+    var m = src.match(/(?:見込み|終了予定|再開)[ ]*([0-9]{1,2}):([0-9]{2})/);
+    if (!m) { return { t: /不明/.test(src) ? '見込み不明' : '見込み未記入', c: 'bad' }; }
+    var d = new Date(); d.setHours(Number(m[1]), Number(m[2]), 0, 0);
+    var sec = Math.floor(d.getTime() / 1000); if (sec < nowS - 12 * 3600) { sec += 24 * 3600; }
+    if (sec > nowS) { return { t: '終わる見込み ' + pad2s(sec) + '（あと' + Math.ceil((sec - nowS) / 60) + '分）', c: 'eta' }; }
+    return { t: '見込みを過ぎた ' + Math.floor((nowS - sec) / 60) + '分', c: 'bad' };
+  }
+  function etaLineText() {   /* 様子を写す用：作業中は mikomi、待ちは waitEtaRow。どちらでもなければ「なし」 */
+    var nowS = Math.floor(Date.now() / 1000), r = null;
+    if (lastStat === '作業中') {
+      if (lastStartedAt > 0 && lastMikomiMin > 0) { var e = lastStartedAt + lastMikomiMin * 60; r = (e > nowS) ? ('終わる見込み ' + pad2s(e) + '（あと' + Math.ceil((e - nowS) / 60) + '分）') : ('見込みを過ぎた ' + Math.floor((nowS - e) / 60) + '分'); }
+      else { r = /不明/.test(lastMikomiRaw) ? '見込み不明' : '見込み未記入'; }
+    } else { var w = waitEtaRow(); if (w) { r = w.t; } }
+    return r || 'なし（作業も待ちも無い）';
+  }
   function statusText() {
     var NL = String.fromCharCode(10);
     var f = function (sec) {
@@ -1144,6 +1166,7 @@
       '状態：' + (head || '—') + (lastSubj ? '／' + lastSubj : '') + '（パネル v' + PANEL_VER + '）',
       '最後の合図：' + (lastEvName || '—') + '（' + f(lastEvAt) + '）',
       '遠隔：' + (lastRcName || '—') + (lastRcPid ? '・pid ' + lastRcPid : ''),
+      '見込み：' + (function () { try { return etaLineText(); } catch (e) { return '—'; } })(),
       '赤い行：' + (reds.length ? reds.join('／') : 'なし'),
       '一番新しい札：' + (newest ? f(newest.time) + '「' + (newest.title || '(題なし)') + '」' : 'なし'),
       '押した刻：' + f(Math.floor(Date.now() / 1000))].join(NL);
@@ -1631,6 +1654,8 @@
       if (lastSNow && lastStepTotal > 0) { rows.push({ t: '段 ' + (lastStepDone + 1) + '/' + lastStepTotal, c: 'stepn' }); }
       else { rows.push({ t: '段の台帳 未記入', c: 'bad' }); }
     }
+    var wRow = null; try { wRow = waitEtaRow(); } catch (e) { wRow = null; }   /* v182 */
+    if (wRow) { rows.push(wRow); }
     if (lastSNow) {
       if (lastSDone) { rows.push('✅ 完了：' + lastSDone); }   /* v176：頭の字を替えた（ひらがなの「すんだ」は「ずんだ」と読み違えるので使わない） */
       var mins = lastSNowAt > 0 ? Math.max(0, Math.floor((Date.now() / 1000 - lastSNowAt) / 60)) : -1;
