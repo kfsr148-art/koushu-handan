@@ -1,38 +1,43 @@
-# 立て直しの確かめと「様子を写す」・使用量の待ちで窓を落とさない（2026-11-20 00:00）
+# 使用量の止まりを rewake で起こす（rewake-limit.js）・台帳照合の取り下げ（2026-11-20 00:10）
 
 ## 札の頭
-- 状態：終わり（残りは台帳の照合だけ）。今動いている物：常駐 inbox-watch（pid 10796・23:49:04 起動）。
+- 状態：終わり。残りは実機の確かめ一つ（実際に上限で止まったとき）。
 
-## ① 立て直しの見張りを本物で確かめた
-- 23:37:51 手待ちを確認（最後の合図 idle_prompt・181秒前・待ち手1本）→ 旧窓を落とし、予定表 ClaudeCodeAtLogon で立て直し。
-- 新しい窓 pid 4704（23:38:04）・遠隔 rcName koushu-handan-50／rcPid 4704・待ち手1本（pid 11136）。確かめの一行で rewake が exit 2 で窓を起こした。詳細は reports/y1119-2300.md 末尾「立て直しの記録」。
+## 本人の裁定の実施
+- 台帳 orders-open.tsv の未了10件の照合は**しない**（1日を超えたら自動の時間切れに任せる）。段の台帳の `[決]` を外した。
+- ヨシ待ちを解いた：yoshi-open.tsv（昨日の古い印 51行）を空にした（写し yoshi-open.tsv.bak-20261120）。
 
-## ② 「様子を写す」（panel v179）
-- 公開の panel-ver.txt = 179。公開の panel.html に「様子を写す」6箇所・statusText 3箇所。
-- 同じ枠が二つ届いた件は、一つの仕事にした（**二つ目は合わせた**）。
+## 大事な穴：autoContinueAtUsageLimit は遠隔の会話では始まらない
+- 代わりに **StopFailure にも rewake を掛けた**。使用量の止まりなら、戻る刻＋2分まで待って exit 2 で窓を起こし「続きをせよ」と渡す。
+- 新しい道具 `~/.claude/rewake-limit.js`（rewake.js は触らず別立て）。settings.json の StopFailure に `async:true・asyncRewake:true・timeout:86400` で掛けた（写し settings.json.bak-20261120・足したのは1件・差分は足した11行だけ）。
+- 動き
+  1. 使用量の止まりか判じる：usage.json の5時間枠・週枠が 95%以上でリセット前、または返事の本文に limit／usage／rate。判じられなければ待たず 0 で抜ける。
+  2. 戻る刻：usage.json（二つのうち遅い方）→ 無ければ返事の「resets HH:MM」。どちらも無ければ待たない。24時間の鉤の上限に収まらなければ待たない。
+  3. 戻る刻＋2分（REWAKE_GRACE_SEC=120）に stderr へ「使用量の上限が戻りました…続きをしてください。work-note・job-steps・inbox の未処理から続きを始めること」を出し exit 2。
+  4. 待つ間に指示（UserPromptSubmit）か手番の閉じ（Stop 等）が来たら、本人が戻ったとして待ちを止める。二重に待たない（rewake-limit.lock）。claude -p では待たない。
+- 経過は rewake.log に「[使用量]」の印で残る。
 
-## ③ 使用量の待ちの間は窓を落とさない
-使用量の上限で止まると、02:50（5時間枠のリセット）に窓が自分で続きをやる。窓を落とすとその待ちが消えるので、窓を落とす道を全部洗った。
-
-| 道 | 使用量の待ちを見るか | 状態 |
+## 作り値の確かめ（偽の置き場・偽の usage.json・猶予1秒）
+| 試し | 期待 | 結果 |
 |---|---|---|
-| 03:00 の定時の再起動（daily-reboot.ps1） | reboot-hold.js が訳を返す（見送りの訳に「使用量の上限の待ち」が入る） | 23:35 に済み・今回再確認 |
-| 立て直しの見張り（restart-proof.ps1） | reboot-hold.js --usage-only が訳を返す間は待つ | 23:35 に済み |
-| ClaudeRevive（revive-claude.ps1） | 生きた窓は落とさない。閉じるのは**子の居ない打ち止めの輪の窓だけ**（203〜207行）。窓が居れば loopok で何もしない | 直さず（もともと落とさない形） |
-| 固まりの見極め（inbox-watch.ps1 の Restart-Window） | **見ていなかった** → 今回、頭に関門を足した | **直した** |
+| A 使用量99%・戻る刻が4秒後 | 約5秒で exit 2＋「続きを」 | **PASS**（5.1秒・exit 2・文面が出た） |
+| B 他の誤り・使用量50% | 待たず exit 0 | PASS（0.2秒・「判じられない」） |
+| C 待ち始めた後に指示が来る | 止めて exit 0 | PASS（「本人が戻った」） |
+| D claude -p | 待たず exit 0・ログなし | PASS |
+| E usage.json 無し・返事に resets 11pm | 11pm まで待ち始め、Stop で止まる | PASS |
+- 初回は作りの穴で B〜D が別の理由で通っていた（刻を最初に一度だけ取っていた）。刻を走らせるたびに取り直して再実測し、全 PASS。テストは scratchpad（リポジトリ外）。
+- 構文検査：rewake-limit.js `node --check` 通過／settings.json は JSON として読め、読み書きの往復で一致。
 
-- 直した所：`inbox-watch.ps1` の `Restart-Window` の頭に、`reboot-hold.js --usage-only` が訳を返したら**落とさず `Say` に記録して 0 を返す**関門（6行）。作り値（FrozenKilled）の間は見ない。呼び元は「固まり」の一箇所だけ。
-- 見分けの条件（reboot-hold.js）：最後の合図が StopFailure／状態が「止まり…」、または usage.json の5時間枠・週枠が 95% 以上でリセット前。今は 5時間枠 86%・週枠 64% なので `--usage-only` は空（落とす側は今までどおり動く）。
-- 手順：写し inbox-watch.ps1.bak-20261120 → 直す → 構文検査 0件・BOM あり・差分は足した6行だけ → 常駐を起こし直し（pid 10796・23:49:04 ＞ 台本 23:48:42）。
-- 途中で踏んだ穴：置換文字列の `\r\n` が本物の改行に化けた（作法34）。`"`r?`n"` に直して通した。
-- **見送りの訳**（reboot-hold.js）には使用量の訳が入っている。今回 Restart-Window も同じ訳を見る形になり、三本（定時・立て直し・固まり）が揃った。
-
-## 残り
-- 台帳 orders-open.tsv の「未了：受領」10件（2026-11-19 21:43〜23:30）。コミット履歴では panel v179 までの分は済んでいる様子。**照合は本人の指示待ち**（黙って落とさない）。
-- 使用量が 100% で止まった場合の 02:50 の自動の続きは、実機で止まったときにしか確かめられない（人手待ち・見るのは窓が落ちずに続くか）。
+## まだ確かめられていない所（正直に）
+1. **窓が実際に StopFailure の rewake で起きるか**。公式の書きぶりでは StopFailure の出力は無視される扱いなので、asyncRewake が StopFailure で効くかは**実機で止まらないと分からない**。作り値が確かめたのは道具の中身（判じ・待ち・exit 2）だけ。
+2. **今の窓には効かない**かもしれない。フックは窓の立ち上げ時に読むので、掛けた後に立つ窓（次は 03:00 の定時以降、または立て直し）から確実。いまの窓は 02:50 のリセットを待つなら**このフックを読んでいない可能性がある**。
+3. 効かなかったときの保険は、見張り（常駐）の Esc・send-text 側に残してある。
 
 ## 実機で見る所
-- 使用量が上限で止まったあと、02:50 に窓が自分で続きを始めること（窓が落ちて新しく立っていないこと）。
+- 使用量が上限で止まったあと、戻る刻＋2分（5時間枠なら 02:52 ごろ）に、窓が落ちずに「使用量の上限が戻りました」で起きて続きを始めること。rewake.log に `[使用量] 待ちを始めた` → `起こした（exit 2）` が付くこと。付かない（待ちが始まらない）なら StopFailure では asyncRewake が走らないということ。
+
+## 残り
+- 実機の確かめ一つ（上記）。orders-open.tsv の未了10件は、本人の裁定どおり触らない。
 
 ---
 
@@ -41,11 +46,12 @@
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **940件**ある。
+　ここに出るのは新しい20件。全部で **941件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y1119-2315-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-2315-2.md) | 11-20 00:01 | 使用量の止まりを rewake で起こす（rewake-limit.js）・台帳照合の取り下げ（2026-11-20 00:10） |
 | [`y1119-2315.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-2315.md) | 11-19 23:49 | 立て直しの確かめと「様子を写す」・使用量の待ちで窓を落とさない（2026-11-20 00:00） |
 | [`y1119-2300.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-2300.md) | 11-19 23:40 | SessionStart の rewake を外し、窓を立てる時に最初の一言を渡す（2026-11-19 23:00） |
 | [`cloud-panel-check-20261119-143215.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-panel-check-20261119-143215.md) | 11-19 23:40 | 雲で回した：`panel-check.js` |
@@ -65,6 +71,5 @@
 | [`y1119-1555.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-1555.md) | 11-19 15:50 | 定時の再起動の見送りを今の実物で見る形に・台帳の行を自動で済に（2026-11-19 15:55） |
 | [`y1119-1540.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-1540.md) | 11-19 15:39 | 定時の再起動の見送りと、台帳の未了の内訳（数えるだけ・何も消していない）2026-11-19 15:40 |
 | [`y1119-1520.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-1520.md) | 11-19 15:19 | 定時の再起動の後の点検の直し（2026-11-19 15:20） |
-| [`y1119-1505.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1119-1505.md) | 11-19 15:05 | パネルの止まり扱いの分数と、控えの関門の訳の出し先（2026-11-19 15:06） |
 
 <!-- 控えの一覧 ここまで -->
