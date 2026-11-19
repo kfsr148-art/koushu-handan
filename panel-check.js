@@ -152,6 +152,7 @@ function probeSource(scene) {
     /* 黄色の行（状態の一行）と、その箱の高さ */
     var st = document.getElementById('stLine');
     o.stText = txt(st);
+    o.evTag = txt(document.getElementById('evTag')); o.footTag = txt(document.getElementById('footTag')); o.footHidden = !!(document.getElementById('footTag') || {}).hidden;   /* v181 */
     o.stBad = [].map.call(st ? st.querySelectorAll('p.m.bad') : [], function (x) { return x.textContent; }).join('／');   /* v180：赤の行 */
     /* 黄色の行の色（v108・パネルの色-1）。刻だけ別色にしてあるので、二つ測る。
        ＊地の色は、行の箱（li）から取る。CSS の字面ではなく**描かれた実際の色**を見る。 */
@@ -525,6 +526,20 @@ try {
       }
       if (!(r.rcFit || []).length) { ng('釦の幅を絞った測りができない'); }
     }
+  }
+  /* ---- ⑤の三 最後の合図と刻をそのまま・パネルの下の数（v181・2026-11-20 本人の枠） ---- */
+  head('⑤の三 最後の合図と刻・下の数（台帳・起こし直し）');
+  {
+    const nowE = Math.floor(Date.now() / 1000);
+    let r = run(tmp, { state: Object.assign({}, ST['手待ち'], { ev: 'Stop', evAt: nowE - 125, foot: { ledger: 7, revive: '今日 3回（固まり 1・重さ 1・0本 1）', reviveLast: '04:12' } }), notices: MIX, settle: 1500 }, 390, 844);
+    if (!r) { ng('測れない（合図・下の数）'); }
+    else {
+      if (/最後の合図：Stop（[0-9]{2}:[0-9]{2}:[0-9]{2}・2分前）/.test(r.evTag || '')) { ok('最後の合図と刻をそのまま出す「' + r.evTag + '」'); } else { ng('最後の合図の字が違う（' + (r.evTag || '') + '）'); }
+      if (/台帳 残り7件/.test(r.footTag || '') && /起こし直し 今日 3回/.test(r.footTag || '') && /最後 04:12/.test(r.footTag || '') && !r.footHidden) { ok('下の数が出る「' + r.footTag + '」'); } else { ng('下の数が出ない（' + (r.footTag || '') + '）'); }
+    }
+    r = run(tmp, { state: Object.assign({}, ST['手待ち'], { ev: 'PreToolUse', evAt: nowE - 5 }), notices: MIX, settle: 1500 }, 390, 844);
+    if (!r) { ng('測れない（foot なし）'); }
+    else if (/最後の合図：PreToolUse（/.test(r.evTag || '') && r.footHidden) { ok('合図は作業の途中でもそのまま出し、foot が無ければ下の数は畳む'); } else { ng('PreToolUse／foot なしの出方が違う（' + (r.evTag || '') + '・hidden=' + r.footHidden + '）'); }
   }
   /* ---- ⑥⑦ 終了予定（黄色い帯の刻）：v173 で帯を外したので測る相手が無い ---- */
   head('⑥⑦ 黄色い帯の終了予定（v173 で外した）');
