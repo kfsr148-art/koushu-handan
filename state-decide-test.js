@@ -31,4 +31,17 @@ for (const e in EV) for (const a in AG) for (const g in BG) for (const k in KW) 
   if (/（なし）/.test(r.detail)) { ng(c, r, '「（なし）」'); }
 }
 console.log('状態の決め所の総当たり：' + n + '組・NG ' + bad + '件・内訳 ' + JSON.stringify(seen));
-process.exit(bad ? 1 : 0);
+// （終わりは下の進行中の起点の確かめの後）
+// 2026-11-19 16:20 本人の枠：「▶ 進行中（N分）」の起点は今待っている走りの始まり。二本続けて走らせると二本目は0分から
+{
+  const st = [{ k: 'x', t: '一' }, { k: '雲', t: '確かめてから公開している' }];
+  const old = { t: '前の仕事|確かめてから公開している', at: now - 9900 };
+  const a = decide({ now, alive: 1, busy: { ev: 'Stop', evAt: now - 30 }, kumo: { state: 'waiting', subj: '一本目', workflow: 'check.yml', since: String(now - 700), runid: '1', runat: String(now - 600) }, steps: st, nowStep: old, job: '仕事' });
+  const b = decide({ now, alive: 1, busy: { ev: 'Stop', evAt: now - 30 }, kumo: { state: 'waiting', subj: '二本目', workflow: 'check.yml', since: String(now - 20), runid: '2', runat: String(now - 3) }, steps: st, nowStep: old, job: '仕事' });
+  if (a.sNowAt !== now - 600) { bad++; console.log('NG 一本目の起点が走りの始まりでない：' + a.sNowAt); }
+  if (b.sNowAt !== now - 3) { bad++; console.log('NG 二本目の起点が二本目の走りの始まりでない：' + b.sNowAt); }
+  const c = decide({ now, alive: 1, busy: { ev: 'Stop', evAt: now - 30 }, kumo: {}, steps: [{ k: ' ', t: '確かめてから公開している' }], nowStep: old, job: '仕事' });
+  if (c.sNowAt === now - 9900) { bad++; console.log('NG 前の仕事の起点を引きずった'); }
+  console.log('進行中の起点：二本目は二本目の走りの始まりから（' + (bad ? 'NG あり' : '合い') + '）');
+  process.exit(bad ? 1 : 0);
+}

@@ -17,6 +17,14 @@ function readSteps(txt) {
 }
 function cut(s, n) { s = String(s || '').trim(); return s.length > n ? s.slice(0, n) + '…' : s; }
 // 材料 m：{ now, alive, busy:{ev,evAt,stat,subj,agents,bg}, kumo:{state,subj,eta,workflow}, steps:[{k,t}] }
+// 「▶ 進行中（N分）」の起点（2026-11-19 16:20 本人の枠）：雲待ちの段（[雲]）で雲の走りを待っている間は、今待っている走りの始まり（kumo-wait.txt の runat＝run_started_at、無ければ created_at）。
+//   走りが替われば起点も替わる。それ以外の段は step-now.json（仕事の名と段の字の組で覚える。仕事が替われば取り直す）
+function nowAtOf(m, first) {
+  if (!first) { return 0; }
+  const kw = m.kumo || {}, kst = String(kw.state || '');
+  if (first.k === '雲' && (kst === 'waiting' || kst === 'ack')) { const ra = Number(kw.runat) || 0; return ra > 0 ? ra : (Number(kw.since) || 0); }
+  return (m.nowStep && m.nowStep.t === ((m.job || '') + '|' + first.t)) ? (Number(m.nowStep.at) || 0) : 0;
+}
 function decide(m) {
   const now = m.now, b = m.busy || {}, kw = m.kumo || {}, steps = m.steps || [];
   const pend = steps.filter(r => r.k !== 'x'); const first = pend[0] || null;
@@ -35,7 +43,7 @@ function decide(m) {
   // 題（2026-11-19 13:00 本人の枠）：段の台帳に残りがある間は台帳の「仕事:」の行。無ければ窓の合図の題（受けた枠の頭の一行）
   const out = { stat: '', detail: '', subj: (pend.length && m.job) ? String(m.job) : String(b.subj || ''), eta: 0, resumeAt: 0, help: back > 0 ? backTx : (unk > 0 ? ('手伝い 不明 ' + unk + '本') : ''), steps: pend.length, next: first ? first.t : '',
     // 2026-11-19 12:40 本人の枠：パネルの「すんだ：」「いま：（何分たった）」「これから：」の材料（段の台帳の字そのまま）
-    sDone: (steps.filter(r => r.k === 'x').slice(-1)[0] || {}).t || '', sNow: first ? first.t : '', sNowAt: first && m.nowStep && m.nowStep.t === first.t ? (Number(m.nowStep.at) || 0) : 0, sNext: pend[1] ? pend[1].t : '' };
+    sDone: (steps.filter(r => r.k === 'x').slice(-1)[0] || {}).t || '', sNow: first ? first.t : '', sNowAt: nowAtOf(m, first), sNext: pend[1] ? pend[1].t : '' };
   const kst = String(kw.state || ''), clock = /^clock:([0-9]+)$/.exec(String(kw.workflow || ''));
   // 一、ヨシ待ち：残りの段の先頭が [決]
   if (first && first.k === '決') { out.stat = 'ヨシ待ち'; out.detail = cut(first.t, 60); return out; }
@@ -64,9 +72,10 @@ function gather(alive) {
   const now = Math.floor(Date.now() / 1000), steps = readSteps(st), first = steps.filter(r => r.k !== 'x')[0];
   // 「いま」の段が始まった刻を控える（段の字が替わった時に刻を取り直す）。控えは step-now.json
   let ns = null; try { ns = JSON.parse(fs.readFileSync(ROOT + '/step-now.json', 'utf8')); } catch (e) { }
-  if (first && (!ns || ns.t !== first.t)) { ns = { t: first.t, at: now }; try { fs.writeFileSync(ROOT + '/step-now.json', JSON.stringify(ns)); } catch (e) { } }
-  const jm = /^仕事:[ 　]*(.+)$/m.exec(st || '');
-  return { now: now, alive: alive, busy: busy, kumo: readKv(ROOT + '/kumo-wait.txt'), steps: steps, nowStep: ns, job: jm ? jm[1].trim() : '' };
+  const jm = /^仕事:[ 　]*(.+)$/m.exec(st || ''), job = jm ? jm[1].trim() : '';
+  const key = first ? (job + '|' + first.t) : '';   // 仕事の名と段の字の組で覚える（同じ字の段でも仕事が替われば起点を取り直す・2026-11-19 16:20）
+  if (first && (!ns || ns.t !== key)) { ns = { t: key, at: now }; try { fs.writeFileSync(ROOT + '/step-now.json', JSON.stringify(ns)); } catch (e) { } }
+  return { now: now, alive: alive, busy: busy, kumo: readKv(ROOT + '/kumo-wait.txt'), steps: steps, nowStep: ns, job: job };
 }
 module.exports = { decide, gather, readSteps };
 if (require.main === module) {
