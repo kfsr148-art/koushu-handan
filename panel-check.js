@@ -469,93 +469,27 @@ try {
     else { ok(nm + ' ' + vw + 'x' + vh + '：溢れ・重なりなし'); }
   }
 
-  /* ---- ⑤ 状態の札の高さ ---- */
-  head('⑤ 状態の札の高さ（題の長短で変わらない）');
+  /* ---- ⑤ すんだ・いま・これから（v173・2026-11-19 本人の枠）：黄色い帯の跡に、段の台帳の三行を出す。いまやる段が無い時は何も出さない ---- */
+  head('⑤ すんだ・いま・これから（段の台帳の三行）');
   {
-    const shortS = Object.assign({}, ST['作業中'], { subj: '短い題' });
-    const longS  = Object.assign({}, ST['作業中'],
-      { subj: 'パネルの守り-1（返事パネルを検査の網に入れて四通りの状態と束ねの件数と視野の溢れを見る）— panel v104' });
-    const a = run(tmp, { state: shortS, notices: MIX, settle: 1500 }, 390, 844);
-    const b = run(tmp, { state: longS,  notices: MIX, settle: 1500 }, 390, 844);
-    /* 物差しは二つ。**題の長短で変わらないこと**と、**固定した高さそのもの**。
-       ＊長短の比べだけでは、高さの固定を外しても「どちらも同じだけ縮む」ので拾えない
-         （2026-09-01 の実測で分かった）。字面の min-height と突き合わせる。 */
-    const mH = html.match(/li\.why\.stline\s*\{[^}]*min-height:\s*(\d+(?:\.\d+)?)px/);
-    if (!mH) { ng('黄色の行に高さの固定（min-height）が無い'); }
-    if (!a || !b) { ng('測れない'); }
-    else if (a.stH === null || b.stH === null) { ng('黄色の行が見つからない'); }
-    else if (Math.abs(a.stH - b.stH) > 0.5) {
-      ng('題の長短で高さが変わる（短い ' + a.stH + 'px ／ 長い ' + b.stH + 'px）');
-    } else if (mH && a.stH + 0.5 < Number(mH[1])) {
-      ng('固定した高さ ' + mH[1] + 'px より低い（実測 ' + a.stH + 'px）。固定が効いていない');
-    } else {
-      ok('短い題 ' + a.stH + 'px ＝ 長い題 ' + b.stH + 'px' + (mH ? ('（固定 ' + mH[1] + 'px）') : ''));
-    }
-  }
-
-  /* ---- ⑥ 終了予定の計算 ---- */
-  head('⑥ 終了予定（ウィジェットと同じ計算）');
-  {
-    const st = ST['作業中'];
-    const r = seen['作業中'] || run(tmp, { state: st, notices: MIX, settle: 1500 }, 390, 844);
-    const mm = String(st.mikomi).match(/(\d+)/);
-    let end = st.startedAt + parseInt(mm[1], 10) * 60;
-    const nowS = Math.floor(Date.now() / 1000);
-    const step = parseInt(mm[1], 10) * 60;
-    let guard = 0;
-    while (end <= nowS && guard < 200) { end += step; guard++; }
-    const e = new Date(end * 1000);
-    const want = e.getHours() + '時' + ('0' + e.getMinutes()).slice(-2) + '分終了予定';
-    if (!r) { ng('測れない'); }
-    else if (String(r.stText).indexOf(want) >= 0) { ok('黄色の行に「' + want + '」（開始＋見込みの計算が一致）'); }
-    else { ng('終了予定が合わない（欲しい「' + want + '」／出た「' + String(r.stText).slice(0, 40) + '」）'); }
-  }
-
-  /* ---- ⑦ 遠すぎる終了予定を数字にしない（2026-09-02・走り出しの時刻ずれ-1） ---- */
-  /*   仕事が替わってから work-started.txt が書き換わるまでの十数秒に読むと、
-   *   **前の仕事の開始 ＋ 新しい見込み** で足してしまう。実際に押し送りが
-   *   2026-09-02 06:11:55 に「22時58分」（16時間46分先）を出した。
-   *   ここでは、開始を8時間前に置いた作り値で **数字が出ないこと** を見る。
-   *   ＊いまより前の刻は伏せないのが正しい（超過して走っている回がそれ）。併せて見る。 */
-  head('⑦ 遠すぎる終了予定は数字にしない');
-  {
-    /* 黄色の行（stLine）が出す刻を拾って、**いまから12時間以内**であることを見る。
-       ＊材料が狂うと、この行は平然と16時間先の刻を出す。字の形は同じなので、
-         「数字が出ているか」では捕まらない。**出た数字を刻に戻して測る**。 */
-    const far = Object.assign({}, ST['作業中'], { startedAt: now - 8 * 3600, mikomi: '40分' });
-    const bad = new Date((now - 8 * 3600 + 40 * 60) * 1000);
-    const badText = bad.getHours() + '時' + ('0' + bad.getMinutes()).slice(-2) + '分';
-    const r = run(tmp, { state: far, notices: MIX, settle: 1500 }, 390, 844);
+    const withSteps = Object.assign({}, ST['作業中'], { sDone: 'パネルの字', sNow: '声の繋ぎ', sNowAt: now - 600, sNext: '検査と配信' });
+    const r = run(tmp, { state: withSteps, notices: MIX, settle: 1500 }, 390, 844);
     if (!r) { ng('測れない'); }
     else {
-      const t = String(r.stText);
-      const m = t.match(/([0-9]+)時([0-9]+)分終了予定/);
-      if (t.indexOf(badText) >= 0) {
-        ng('前の仕事の開始を引きずった刻がそのまま出た（' + badText + '）');
-      } else if (!m) {
-        ok('前の仕事の開始（8時間前）を引きずった形で、刻を出していない（' + t.slice(0, 40) + '）');
-      } else {
-        const e = new Date(); e.setHours(Number(m[1]), Number(m[2]), 0, 0);
-        let ahead = (e.getTime() / 1000) - now;
-        if (ahead < -12 * 3600) { ahead += 24 * 3600; }
-        if (ahead <= 12 * 3600) {
-          ok('引きずった刻（' + badText + '）は出ず、いまから' +
-             Math.round(ahead / 60) + '分先の刻に収まった（' + m[0] + '）');
-        } else {
-          ng('12時間より先の刻が出た（' + m[0] + '・' + Math.round(ahead / 3600) + '時間先）');
-        }
-      }
+      const t = String(r.stText || '');
+      const a = t.indexOf('すんだ：パネルの字'), b = t.indexOf('いま：声の繋ぎ（10分たった）'), c = t.indexOf('これから：検査と配信');
+      if (a >= 0 && b > a && c > b) { ok('三行が順に出る（' + t.slice(0, 50) + '）'); } else { ng('三行が違う（' + t.slice(0, 60) + '）'); }
+      if (r.headWait && t.indexOf(String(r.headWait)) >= 0) { ng('題の行と同じ字が下にも出ている（' + r.headWait + '）'); } else { ok('題の行と同じ字は下に出ない'); }
     }
-    /* 超過して走っている回は、これまでどおり（endPredText が先へ送る）。
-       伏せるのは先へ飛んだ刻だけで、超過そのものを消さないことを見る。 */
-    const over = Object.assign({}, ST['作業中'], { startedAt: now - 3600, mikomi: '20分' });
-    const r2 = run(tmp, { state: over, notices: MIX, settle: 1500 }, 390, 844);
-    if (!r2) { ng('測れない'); }
-    else if (/[0-9]+時[0-9]+分終了予定/.test(String(r2.stText))) {
-      ok('超過中（開始60分前・見込み20分）でも刻は消えない（' + String(r2.stText).slice(0, 34) + '）');
-    } else { ng('超過中の刻まで消えた（' + String(r2.stText).slice(0, 50) + '）'); }
+    const noNow = Object.assign({}, ST['作業中'], { sDone: 'パネルの字', sNow: '', sNext: '' });
+    const r2 = run(tmp, { state: noNow, notices: MIX, settle: 1500 }, 390, 844);
+    if (!r2) { ng('測れない（やる段が無い回）'); }
+    else if (String(r2.stText || '')) { ng('やる段が無いのに字が出た（' + String(r2.stText).slice(0, 40) + '）'); }
+    else { ok('やる段が無い回は何も出さない'); }
   }
-
+  /* ---- ⑥⑦ 終了予定（黄色い帯の刻）：v173 で帯を外したので測る相手が無い ---- */
+  head('⑥⑦ 黄色い帯の終了予定（v173 で外した）');
+  note('黄色い帯を外した（v173）。終了予定は検査中の中身だけに出し、状態の決め所の総当たりで見る');
 
   /* ---- ⑧ 値の無い使用量を 0% として描かない（2026-09-02・使用量の空振り-1） ---- */
   head('⑧ 値の無い使用量を 0% と描かない');
@@ -579,44 +513,9 @@ try {
   }
 
 
-  /* ---- ⑨ 終了予定の刻だけが別色（2026-09-02・パネルの色-1） ---- */
-  /*   ＊刻は明るい水色（--pred:#7fdfff）、それ以外は今までどおり黄色（--ask:#e8c14a）。
-   *   ＊描かれた実際の色を読み、**地とのコントラスト比も出して 4.5 以上**を見る。
-   *   ＊刻の無い状態（次の指示待ち・ヨシを返してください）では、包む相手がいないので
-   *     .pred が出ないことを見る。 */
-  head('⑨ 終了予定の刻だけが別色');
-  {
-    const rgb = (c) => { const m = String(c || '').match(/([0-9]+)[^0-9]+([0-9]+)[^0-9]+([0-9]+)/); return m ? [ +m[1], +m[2], +m[3] ] : null; };
-    const lum = (c) => { const v = c.map(x => x / 255).map(x => x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4)); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; };
-    const cr  = (a, b) => { const l1 = lum(a), l2 = lum(b); const hi = Math.max(l1, l2), lo = Math.min(l1, l2); return (hi + 0.05) / (lo + 0.05); };
-    const ASK  = [232, 193, 74];
-    const PRED = [127, 223, 255];
-    const same = (a, b) => a && b && a[0] === b[0] && a[1] === b[1] && a[2] === b[2];
-
-    const r = run(tmp, { state: ST['作業中'], notices: MIX, settle: 1500 }, 390, 844);
-    if (!r) { ng('測れない'); }
-    else {
-      const pc = rgb(r.predColor), sc = rgb(r.stColor), bg = rgb(r.stBg);
-      if (!pc) { ng('作業中：刻が包まれていない（' + String(r.stText).slice(0, 40) + '）'); }
-      else if (!same(pc, PRED)) { ng('作業中：刻の色が違う（' + r.predColor + '）'); }
-      else if (!/[0-9]+時[0-9]+分終了予定/.test(r.predText)) { ng('作業中：包んだ字が刻でない（' + r.predText + '）'); }
-      else if (!same(sc, ASK)) { ng('作業中：刻の外が黄色でない（' + r.stColor + '）'); }
-      else if (!bg) { ng('作業中：地の色が読めない'); }
-      else {
-        const c1 = cr(pc, bg), c2 = cr(sc, bg);
-        if (c1 < 4.5) { ng('刻と地のコントラスト比が足りない（' + c1.toFixed(2) + '）'); }
-        else { ok('作業中：刻「' + r.predText + '」が水色（比 ' + c1.toFixed(2) + '）／外は黄色（比 ' + c2.toFixed(2) + '）'); }
-      }
-    }
-    for (const nm of ['手待ち']) {
-      const r2 = run(tmp, { state: ST[nm], notices: MIX, settle: 1200 }, 390, 844);
-      if (!r2) { ng(nm + '：測れない'); }
-      else if (r2.predColor) { ng(nm + '：刻が無いのに包まれている（' + r2.predText + '）'); }
-      else if (same(rgb(r2.stColor), ASK)) { ok(nm + '：包まず黄色のまま（' + String(r2.stText).slice(0, 20) + '）'); }
-      else { ng(nm + '：色が黄色でない（' + r2.stColor + '）'); }
-    }
-  }
-
+  /* ---- ⑨ 終了予定の刻の色分け：v173（2026-11-19）で黄色い帯を外したので測る相手が無い。検査中の終了予定は state-decide-test.js が見る ---- */
+  head('⑨ 終了予定の刻だけが別色（v173 で黄色い帯を外した）');
+  note('黄色い帯を外した（v173）。検査中の「終了予定 HH:MM／見込み不明」は状態の決め所の総当たりで見る');
 
   /* ---- ⑩ 通知の本文を写す釦（2026-09-02・通知のコピー-1） ---- */
   /*   ＊三通り：短い通知／長い報告（送る側では7通に割れる長さ）／空。
@@ -757,9 +656,7 @@ try {
       else { ok('通知だけ写しても札の残は 残3／3件のまま。札の印は空'); }
 
       const st = String(r.stText || '');
-      if (/札その3 が終わりました/.test(st) && /次の指示待ち/.test(st)) {
-        ok('黄色の行に題が先に出る（' + st.slice(0, 34) + '）');
-      } else { ng('黄色の行に題が出ない（' + st.slice(0, 40) + '）'); }
+      if (!st) { ok('黄色い帯は出ない（v173 で外した）'); } else { ng('黄色い帯の跡に字が出た（段の台帳が無い回なのに）「' + st.slice(0, 40) + '」'); }
 
       const td = String(r.todoText || '');
       if (r.todoRows === 3 && /札その3/.test(td) && /✅/.test(td) && /🔎/.test(td)) {
@@ -790,9 +687,9 @@ try {
       else if (['本文の二行目', '本文の三行目', '読みの道-2', '読みの道-3', '巡回の固まり-2'].some(w => clip.indexOf(w) < 0)) {
         ng('写しに欠けがある（' + clip.split(NLc).length + '行）');
       }
-      else if (!/読みの道-3 が終わりました/.test(st)) { ng('黄色の行に題が無い（' + st.slice(0, 40) + '）'); }
+      else if (st) { ng('黄色い帯の跡に字が出た（' + st.slice(0, 40) + '）'); }
       else if (r.todoRows !== 3) { ng('目次が3行でない（' + r.todoRows + '行）'); }
-      else { ok('残3／3件 → 3件 写した。写し ' + clip.split(NLc).length + '行に本文全部、黄色の行に題、目次3行'); }
+      else { ok('残3／3件 → 3件 写した。写し ' + clip.split(NLc).length + '行に本文全部、黄色い帯は出ない、目次3行'); }
     }
   }
 
