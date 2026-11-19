@@ -792,17 +792,21 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     const els = { pipeWarn: { className: 'pipe', textContent: '止まっとるかも：作り値の赤い行' }, wakeWarn: { className: 'pipe hide', textContent: '' } };
     let txt = '';
     try {
-      const fn = new Function('headText', 'lastSubj', 'lastState', 'lastEvName', 'lastEvAt', 'lastRcName', 'lastRcPid', '$', 'allRows', 'PANEL_VER', body + '\nreturn statusText();');
+      const fn = new Function('headText', 'lastSubj', 'lastState', 'lastEvName', 'lastEvAt', 'lastRcName', 'lastRcPid', '$', 'allRows', 'PANEL_VER', 'copySrcUrl', 'nowLine', body + '\nreturn statusText();');
+      const URL1 = 'https://kfsr148-art.github.io/koushu-state/notices-1795089000.json';
       txt = fn(() => '待機中', '作り値の件名', { at: 1795090000 }, 'idle_prompt', 1795089990, 'koushu-handan-93', 6308, id => els[id] || null,
-        [{ time: 1795080000, title: '✅ 古い札' }, { time: 1795089000, title: '👀 作り値の新しい札' }], '178');
+        [{ time: 1795080000, title: '✅ 古い札' }, { time: 1795089000, title: '👀 作り値の新しい札' }], '179', URL1, () => '現況：待機中 ／ 本体v1508 ／ stable v1507 ／ 最終確認23:20');
+      if (txt.split(String.fromCharCode(10))[0] !== URL1 || txt.split(String.fromCharCode(10))[1].indexOf('現況：') !== 0) { ng('様子を写す … 頭が「写す」と同じ形（notices-<刻>.json の番地＋現況の行）でない'); return; }
+      const txt0 = fn(() => '待機中', '', { at: 1795090000 }, '', 0, '', 0, () => null, [], '179', URL1, () => '現況：待機中');
+      if (txt0.indexOf('一番新しい札：なし') < 0) { ng('様子を写す … 札が0件の時に写せない'); return; }
     } catch (e) { ng('様子を写す … statusText が回らない：' + e.message); return; }
-    const want = [['現況', '現況：待機中／作り値の件名'], ['最終確認', '最終確認：'], ['最後の合図と刻', '最後の合図：idle_prompt（'], ['遠隔の名と pid', '遠隔：koushu-handan-93・pid 6308'], ['赤い行', '赤い行：止まっとるかも：作り値の赤い行'], ['一番新しい札の刻と題', '「👀 作り値の新しい札」'], ['押した刻', '押した刻：']];
+    const want = [['番地', 'notices-1795089000.json'], ['現況の行', '現況：待機中 ／ 本体v'], ['状態', '状態：待機中／作り値の件名'], ['最終確認', '最終確認23:20'], ['最後の合図と刻', '最後の合図：idle_prompt（'], ['遠隔の名と pid', '遠隔：koushu-handan-93・pid 6308'], ['赤い行', '赤い行：止まっとるかも：作り値の赤い行'], ['一番新しい札の刻と題', '「👀 作り値の新しい札」'], ['押した刻', '押した刻：']];
     const miss = want.filter(w => txt.indexOf(w[1]) < 0).map(w => w[0]);
     const cp = H.slice(H.indexOf('  function copyUrl(btn) {'), H.indexOf('  function copyWait(btn)'));
     if (miss.length) { ng('様子を写す … 字に無い：' + miss.join('・')); }
     else if (cp.indexOf('var text = statusText();') < 0 || cp.indexOf('writeText(text)') < 0) { ng('様子を写す … 写す手が押した直後に statusText() を組んで写していない'); }
     else if (/raw\.githubusercontent|notices\.json/.test(cp) || H.indexOf('>URLを写す<') >= 0 || H.indexOf('>様子を写す<') < 0) { ng('様子を写す … 固定名の番地か前の釦の名が残っている'); }
-    else { ok('様子を写すは七つを同期で字にして写す'); }
+    else { ok('様子を写すは番地＋現況の行＋六つを同期で字にして写す（札0件でも写せる）'); }
   })();
   /* 版の三箇所（作法4）。ここも字面で切り出す。 */
   function pick(src, head, tail) {
