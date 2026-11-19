@@ -293,13 +293,14 @@ jobs:
         run: |
           CUR=$(gh api "repos/$GITHUB_REPOSITORY/git/refs/tags/check-pass" --jq '.object.sha' 2>/dev/null || echo NONE)
           if [ "$CUR" = "NONE" ]; then
-            gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref=refs/tags/check-pass -f sha="$GITHUB_SHA" && echo "check-pass を新しく作った: $GITHUB_SHA"
+            if gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref=refs/tags/check-pass -f sha="$GITHUB_SHA" >/dev/null 2>&1; then echo "check-pass を新しく作った: $GITHUB_SHA"; else echo "印を作れなかった。印は先端の回が作る"; fi
           else
             CD=$(gh api "repos/$GITHUB_REPOSITORY/git/commits/$CUR" --jq '.committer.date' 2>/dev/null || echo "")
             ND=$(gh api "repos/$GITHUB_REPOSITORY/git/commits/$GITHUB_SHA" --jq '.committer.date' 2>/dev/null || echo "")
             echo "check-pass $CUR（$CD）→ $GITHUB_SHA（$ND）"
             if [ -n "$ND" ] && { [ -z "$CD" ] || [ "$ND" \> "$CD" ]; }; then
-              gh api -X PATCH "repos/$GITHUB_REPOSITORY/git/refs/tags/check-pass" -f sha="$GITHUB_SHA" -F force=true && echo "check-pass を進めた"
+              # 2026-11-19 本人の枠：先端で workflows が変わった後に古い回が印を動かすと GITHUB_TOKEN が 403 で断られる。落ちにせず抜ける（印は先端の回が進める）
+              if gh api -X PATCH "repos/$GITHUB_REPOSITORY/git/refs/tags/check-pass" -f sha="$GITHUB_SHA" -F force=true >/dev/null 2>"$RUNNER_TEMP/cp-err.txt"; then echo "check-pass を進めた"; else echo "印を進められなかった（$(head -c 160 "$RUNNER_TEMP/cp-err.txt" | tr '\n' ' ')）。印は先端の回が進める"; fi
             else
               echo "印より前か同じ・並びが取れない：進めない"
             fi
