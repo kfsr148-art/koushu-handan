@@ -179,7 +179,7 @@ function probeSource(scene) {
     var rcA = document.getElementById('rcLink'), rcT = document.getElementById('rcTag');
     o.rcText = rcA ? String(rcA.textContent || '').trim() : ''; o.rcShown = vis(rcA); o.rcSW = rcA ? rcA.scrollWidth : 0; o.rcCW = rcA ? rcA.clientWidth : 0; o.rcTagShown = rcT ? !rcT.hidden : false;
     /* 字そのものの幅（headless の窓はスマホの幅まで縮まないので、釦の実測ではなく字の幅と釦の内側の幅の計算で比べる） */
-    if (rcA) { var sp = document.createElement('span'); var cs = getComputedStyle(rcA); sp.style.font = cs.font; sp.style.whiteSpace = 'nowrap'; sp.style.position = 'absolute'; sp.style.visibility = 'hidden'; sp.textContent = rcA.textContent; document.body.appendChild(sp); o.rcNat = Math.ceil(sp.getBoundingClientRect().width); o.rcPadX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0); o.rcMarX = (parseFloat(cs.marginLeft) || 0) + (parseFloat(cs.marginRight) || 0); sp.remove(); }
+    if (rcA) { var sp = document.createElement('span'); var cs = getComputedStyle(rcA); sp.style.font = cs.font; sp.style.whiteSpace = 'nowrap'; sp.style.position = 'absolute'; sp.style.visibility = 'hidden'; sp.textContent = rcA.textContent; document.body.appendChild(sp); o.rcNat = Math.ceil(sp.getBoundingClientRect().width); o.rcFs = parseFloat(cs.fontSize) || 0; o.rcPadX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0); o.rcMarX = (parseFloat(cs.marginLeft) || 0) + (parseFloat(cs.marginRight) || 0); sp.remove(); }
     var hw = document.getElementById('headWait');
     o.headWait = hw ? String(hw.textContent || '').trim() : null;
     o.headWaitColor = hw ? getComputedStyle(hw).color : null;
@@ -484,10 +484,13 @@ try {
     else {
       if (r.rcTagShown) { ng('消したはずの「遠隔：」の行が出ている'); } else { ok('「遠隔：」の行は出ない'); }
       note('字の幅 ' + r.rcNat + 'px（釦の左右の余白 ' + r.rcPadX + 'px・外の余白 ' + r.rcMarX + 'px）。窓の幅は ' + r.w + 'px（headless はスマホの幅まで縮まない）');
+      const mq = html.match(/@media [(]max-width:([0-9]+)px[)][{] a[.]cpall[.]rc[{]font-size:([0-9.]+)px;[}] [}]/);   // 狭い幅で字を小さくする指定
       for (const w of [390, 375, 360, 320]) {
         const inner = w - r.rcMarX - r.rcPadX;
-        if (r.rcNat <= inner) { ok(w + 'px：字 ' + r.rcNat + 'px ≦ 釦の内側 ' + inner + 'px で収まる'); }
-        else { ng(w + 'px：字 ' + r.rcNat + 'px ＞ 釦の内側 ' + inner + 'px（「…」で切れる）'); }
+        const nat = (mq && w <= Number(mq[1]) && r.rcFs) ? Math.ceil(r.rcNat * Number(mq[2]) / r.rcFs) : r.rcNat;
+        if (nat !== r.rcNat) { note(w + 'px：字を ' + mq[2] + 'px にする指定が効く（字の幅 ' + r.rcNat + '→' + nat + 'px）'); }
+        if (nat <= inner) { ok(w + 'px：字 ' + nat + 'px ≦ 釦の内側 ' + inner + 'px で収まる'); }
+        else { ng(w + 'px：字 ' + nat + 'px ＞ 釦の内側 ' + inner + 'px（「…」で切れる）'); }
       }
     }
   }
