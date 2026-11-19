@@ -32,7 +32,8 @@ function decide(m) {
   }
   const back = nHelp + nKumo + nCmd;
   const backTx = [nHelp ? '裏で手伝い' + nHelp + '本' : '', nKumo ? '雲' + nKumo + '本' : '', nCmd ? '裏の命令' + nCmd + '本' : ''].filter(Boolean).join('・');
-  const out = { stat: '', detail: '', subj: String(b.subj || ''), eta: 0, resumeAt: 0, help: back > 0 ? backTx : (unk > 0 ? ('手伝い 不明 ' + unk + '本') : ''), steps: pend.length, next: first ? first.t : '',
+  // 題（2026-11-19 13:00 本人の枠）：段の台帳に残りがある間は台帳の「仕事:」の行。無ければ窓の合図の題（受けた枠の頭の一行）
+  const out = { stat: '', detail: '', subj: (pend.length && m.job) ? String(m.job) : String(b.subj || ''), eta: 0, resumeAt: 0, help: back > 0 ? backTx : (unk > 0 ? ('手伝い 不明 ' + unk + '本') : ''), steps: pend.length, next: first ? first.t : '',
     // 2026-11-19 12:40 本人の枠：パネルの「すんだ：」「いま：（何分たった）」「これから：」の材料（段の台帳の字そのまま）
     sDone: (steps.filter(r => r.k === 'x').slice(-1)[0] || {}).t || '', sNow: first ? first.t : '', sNowAt: first && m.nowStep && m.nowStep.t === first.t ? (Number(m.nowStep.at) || 0) : 0, sNext: pend[1] ? pend[1].t : '' };
   const kst = String(kw.state || ''), clock = /^clock:([0-9]+)$/.exec(String(kw.workflow || ''));
@@ -64,7 +65,8 @@ function gather(alive) {
   // 「いま」の段が始まった刻を控える（段の字が替わった時に刻を取り直す）。控えは step-now.json
   let ns = null; try { ns = JSON.parse(fs.readFileSync(ROOT + '/step-now.json', 'utf8')); } catch (e) { }
   if (first && (!ns || ns.t !== first.t)) { ns = { t: first.t, at: now }; try { fs.writeFileSync(ROOT + '/step-now.json', JSON.stringify(ns)); } catch (e) { } }
-  return { now: now, alive: alive, busy: busy, kumo: readKv(ROOT + '/kumo-wait.txt'), steps: steps, nowStep: ns };
+  const jm = /^仕事:[ 　]*(.+)$/m.exec(st || '');
+  return { now: now, alive: alive, busy: busy, kumo: readKv(ROOT + '/kumo-wait.txt'), steps: steps, nowStep: ns, job: jm ? jm[1].trim() : '' };
 }
 module.exports = { decide, gather, readSteps };
 if (require.main === module) {
