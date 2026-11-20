@@ -514,6 +514,38 @@ function staticParts() {
     if (html.indexOf('!ntfyCopied[ntfyKeyOf(e)] && !senkoReadCovers(e && e.time)') >= 0) { ok('知らせ（押し通知）の未写しも senko の刻までは落とす'); } else { ng('知らせの側が senko の刻を見ていない'); }
     if (html.indexOf('lastSenkoReadAt = senkoEpoch(d.senkoReadAt);') >= 0) { ok('state.json の senkoReadAt を読む'); } else { ng('state.json の senkoReadAt を読んでいない'); }
   }
+  /* ---- ⑤の十六 panelView（panel-view.js）は panel.html の頭の字と残りの数え方とずれない（橋の枠 十三） ---- */
+  head('⑤の十六 panelView の頭の字・残りは panel.html の headText と同じ（作り値・総当たり）');
+  {
+    const fn = (name) => { const i = html.indexOf('  function ' + name + '('); if (i < 0) { return ''; } const j = html.indexOf(String.fromCharCode(10) + '  }', i); return html.slice(i, j + 4); };
+    const names = ['pad2s', 'newestTime', 'cardsPending', 'cardEtaSec', 'cardLate', 'cardPendText', 'kumoEtaSec', 'isRunning', 'headText'];
+    const src = names.map(fn);
+    if (src.some(s => !s)) { ng('panel.html の関数が拾えない：' + names.filter((n, i) => !src[i]).join('・')); }
+    else {
+      const PV = require(path.join(path.dirname(SRC), 'panel-view.js'));
+      const NOW = 1795200000;
+      const pre = "var WAIT_TEXT='待機中、、、。',POINT_TEXT='まとめて写すヨシ！',WORK_TEXT='作業中、、、。',LOST_TEXT='接続不良、、、。',YOSHI_TEXT='ヨシ待ち、、、。';";
+      const mk = (d, left, rows) => new Function('Date0', 'lastStat', 'lastDetail', 'lastCloud', 'lastHelp', 'lastKumo', 'lastEvAt', 'lastCardOwedAt', 'lastCardOwedEta', 'allRows', 'copyLeft', 'lastLost',
+        'var Date=Date0;' + pre + src.join(String.fromCharCode(10)) + String.fromCharCode(10) + 'return headText();')(
+        class extends global.Date { constructor(...a) { if (a.length) { super(...a); } else { super(NOW * 1000); } } static now() { return NOW * 1000; } },
+        String(d.stat || ''), String(d.detail || ''), String(d.cloud || ''), String(d.help || ''), String(d.kumo || ''), d.evAt || 0, d.cardOwedAt || 0, d.cardOwedEta || 0, rows, left, false);
+      let n = 0, bad0 = 0;
+      const stats = ['', '作業中', '検査中', '待ち', 'ヨシ待ち', '動きなし', '止まり（使用量・13:00 にリセット）', '待機中'];
+      const rowsOf = (t) => t ? [{ time: t, title: 'x', message: 'y' }] : [];
+      stats.forEach(stat => [0, 1].forEach(det => [0, NOW - 60, NOW - 400, NOW - 3000].forEach(owed => [0, 1].forEach(kum => [0, NOW - 3600, NOW - 20].forEach(newest => {
+        const d = { stat, detail: det ? '残りの段 2' : '', cardOwedAt: owed, cardOwedEta: owed ? owed + 150 : 0, kumo: kum ? '雲：検査 見込み 23:59' : '', evAt: NOW - 30, help: '', cloud: '' };
+        const rows = rowsOf(newest);
+        const left = rows.length;   // この組では写していない札は rows の数（senkoReadAt なし）
+        const pv = PV.panelView(d, rows, [], NOW);
+        const want = mk(d, pv.left, rows); n++;
+        if (pv.head !== want) { bad0++; if (bad0 <= 3) { console.log('   差：' + JSON.stringify({ stat, det, owed, kum, newest }) + '／見張り「' + pv.head + '」／panel「' + want + '」'); } }
+      })))));
+      if (bad0 === 0) { ok('頭の字：' + n + '組すべて panel.html の headText と同じ'); } else { ng('頭の字がずれた組 ' + bad0 + '／' + n); }
+      const pvc = PV.panelView({ senkoReadAt: '2026-11-20 21:12:17' }, [{ time: Date.parse('2026-11-20T21:00:00+09:00') / 1000, title: 'a', message: 'b' }, { time: Date.parse('2026-11-20T22:00:00+09:00') / 1000, title: 'c', message: 'd' }, { time: Date.parse('2026-11-20T22:01:00+09:00') / 1000, title: 'e', message: '写せます（2件）' }], [], NOW);
+      if (pvc.left === 1 && pvc.label === 'まとめて写す（残1／1件）') { ok('残り：刻までの札は数えず、刻より新しい札だけ・「写せます（N件）」は数えない'); } else { ng('残りの数え方が違う：' + JSON.stringify(pvc)); }
+      if (/senkoReadAt/.test(pvc.basis)) { ok('中身に「センコの読みだけで数えた」の一言が入る'); } else { ng('basis が無い'); }
+    }
+  }
 }
 
 if (!BROWSER) {

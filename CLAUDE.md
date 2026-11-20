@@ -953,6 +953,11 @@ Windows では `run_in_background` の命令が終わっても完了の知らせ
 - **札まとめ中の印**（`cardOwedAt`）は、控えが最後の札より新しい時だけ立つ（新しい札が出ない止まりでは立たない）。
 - **止まった時の控え**は、`turn-mark.js` が Stop のたびに `note-stop-snap.txt` に写す。Stop の直後に合図で窓がすぐ起き、新しい仕事の控えで上書きされても、`watch-notify.ps1` が毎分の写し（`note-shadow.txt`）より新しく本文の多いこの写しを、退避の元にして札を出す（枠 七の札が一度も出なかった穴を塞いだ）。
 
+**十一、センコが本人の画面を写真なしで読む：state.json の `panelView`**（2026-11-21・橋の枠 十三）：センコは state.json を読めるが、パネルが端末で何と出しているかは見えなかった。見張り（`inbox-watch.ps1`、state.json を書く直前）が、リポジトリ直下の **`panel-view.js`** を道で渡して呼び、`panelView` を足す。中身は `{head（頭の字：待機中、、、。／札まとめ中、、、。（HH:MM ごろ）／まとめて写すヨシ！ 等）, label（まとめて写す（残N／N件）または（0件））, left（残り）, basis, senkoReadAt, at（出した刻）}`。
+- **組む所は `panel-view.js` 一つ。`panel.html` の `headText`・`cardsPending`・`kumoEtaSec`・`mergedTodo` と同じ決まりの写し**。panel.html のそれらを直したら panel-view.js も直す。ずれは `node panel-check.js --static` の **⑤の十六**（panel.html の `headText` を実際に動かして384組を突き合わせる）が見張る。
+- **本人が端末で手で押した「写した」印は端末の中だけ**にあるので、`panelView` は **senkoReadAt だけで数える**（`basis` にその一言が入る）。端末の表示と残りの数が食い違うことがある（本人が手で写していれば、パネルの方が少ない）。
+- 生存の途切れ（`lastLost`）は、見張りが書いている時点では偽。こけても state.json は今までどおり書く（`panelView` が無いだけ）。
+
 ## 45. 仕事を始める時は、段の台帳と控え（見込み）を同じ手で書く（2026-11-20・枠R）
 
 **`job-steps.txt`（段）と `work-note.txt`（件名・枠・印・種類・見込み・待ち）は、一つの命令で一緒に書く。** 段だけ先に書いて見込みを後で書くと、その間（実測で1分ほど）パネルに赤く「見込み未記入」が出る。パネルは着手から90秒以内の見込み未記入を赤くしない（`記入待ち`）が、窓の側でも間を空けない。
