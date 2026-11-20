@@ -388,6 +388,12 @@ head('① 構文');
 
 /* ---- 状態の決め所（state-decide.js）の総当たり（2026-11-19 本人の枠⑥）：ヨシ待ち→止まり→作業中→検査中→待ち→待機中の順と中身 ---- */
 {
+  head('台帳の数え手（orders-count-test.js）');
+  {
+    const r0 = require('child_process').spawnSync(process.execPath, [path.join(path.dirname(SRC), 'orders-count-test.js')], { encoding: 'utf8', timeout: 60000 });
+    const t0 = String(r0.stdout || '').trim().split(String.fromCharCode(10)).slice(-6).join(' ／ ');
+    if (r0.status === 0) { ok(t0); } else { ng('台帳の数え手の作り値が合わない（' + t0.slice(0, 200) + '）'); }
+  }
   head('状態の決め所の総当たり（state-decide-test.js）');
   const r = require('child_process').spawnSync(process.execPath, [path.join(path.dirname(SRC), 'state-decide-test.js')], { encoding: 'utf8', timeout: 60000 });
   const last = String(r.stdout || '').trim().split(/\r?\n/).pop() || '';
@@ -583,11 +589,11 @@ try {
   head('⑤の三 最後の合図と刻・下の数（台帳・起こし直し）');
   {
     const nowE = Math.floor(Date.now() / 1000);
-    let r = run(tmp, { state: Object.assign({}, ST['手待ち'], { ev: 'Stop', evAt: nowE - 125, foot: { ledger: 7, revive: '今日 3回（固まり 1・重さ 1・0本 1）', reviveLast: '04:12' } }), notices: MIX, settle: 1500 }, 390, 844);
+    let r = run(tmp, { state: Object.assign({}, ST['手待ち'], { ev: 'Stop', evAt: nowE - 125, foot: { wait: 3, unlinked: 2, revive: '今日 3回（固まり 1・重さ 1・0本 1）', reviveLast: '04:12' } }), notices: MIX, settle: 1500 }, 390, 844);
     if (!r) { ng('測れない（合図・下の数）'); }
     else {
       if (/最後の合図：Stop（[0-9]{2}:[0-9]{2}:[0-9]{2}・2分前）/.test(r.evTag || '')) { ok('最後の合図と刻をそのまま出す「' + r.evTag + '」'); } else { ng('最後の合図の字が違う（' + (r.evTag || '') + '）'); }
-      if (/台帳 残り7件/.test(r.footTag || '') && /起こし直し 今日 3回/.test(r.footTag || '') && /最後 04:12/.test(r.footTag || '') && !r.footHidden) { ok('下の数が出る「' + r.footTag + '」'); } else { ng('下の数が出ない（' + (r.footTag || '') + '）'); }
+      if (/順番待ち 3件/.test(r.footTag || '') && !/台帳 残り/.test(r.footTag || '') && /起こし直し 今日 3回/.test(r.footTag || '') && /最後 04:12/.test(r.footTag || '') && !r.footHidden) { ok('下の数が出る「' + r.footTag + '」'); } else { ng('下の数が出ない（' + (r.footTag || '') + '）'); }
     }
     r = run(tmp, { state: Object.assign({}, ST['手待ち'], { ev: 'PreToolUse', evAt: nowE - 5 }), notices: MIX, settle: 1500 }, 390, 844);
     if (!r) { ng('測れない（foot なし）'); }
@@ -625,7 +631,7 @@ try {
   head('⑤の五 下の三行が一つのまとまりに詰まっている（iPhone の幅）');
   {
     const nowE = Math.floor(Date.now() / 1000);
-    const stt = Object.assign({}, ST['手待ち'], { ev: 'Stop', evAt: nowE - 30, foot: { ledger: 7, revive: '今日 3回（固まり 1・重さ 1・0本 1）', reviveLast: '04:12' } });
+    const stt = Object.assign({}, ST['手待ち'], { ev: 'Stop', evAt: nowE - 30, foot: { wait: 3, unlinked: 2, revive: '今日 3回（固まり 1・重さ 1・0本 1）', reviveLast: '04:12' } });
     for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
       const r = run(tmp, { state: stt, notices: MIX, usage: U_OK, settle: 1500 }, w, h);
       if (!r) { ng(w + 'x' + h + '：測れない（下の三行）'); continue; }
@@ -645,7 +651,7 @@ try {
   head('⑤の六 並び（HTML の順そのもの）：一覧／様子を写す → 使用量 → 本体の版 → panel の版 → 下の三行');
   {
     const nowE = Math.floor(Date.now() / 1000);
-    const stt = Object.assign({}, ST['手待ち'], { ev: 'Stop', evAt: nowE - 30, foot: { ledger: 7, revive: '今日 3回（固まり 1・重さ 1・0本 1）', reviveLast: '04:12' } });
+    const stt = Object.assign({}, ST['手待ち'], { ev: 'Stop', evAt: nowE - 30, foot: { wait: 3, unlinked: 2, revive: '今日 3回（固まり 1・重さ 1・0本 1）', reviveLast: '04:12' } });
     const WANT = 'btnShots>btnCopyUrl>usageTag>fVer>verTag>footGroup';
     for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
       const r = run(tmp, { state: stt, notices: MIX, usage: U_OK, settle: 1500 }, w, h);
@@ -779,7 +785,7 @@ try {
   /* ---- ⑤の十一 指さす（v191・2026-11-20 本人の枠） ---- */
   head('⑤の十一 指さす（釦の置き場・透明な幕・部品の名とid・写す字・下の釦を動かさない・取り消し・iPhone の幅）');
   {
-    const sc = { state: Object.assign({}, ST['手待ち'], { at: Math.floor(Date.now() / 1000), rcName: 'koushu-handan-93', rcPid: 6308, rcUrl: 'https://claude.ai/code/session_X' }), notices: [], board: { waiting: [], recent: [{ name: '直近その一', result: '済んだ' }] }, usage: U_OK, point: true, settle: 1500 };
+    const sc = { state: Object.assign({}, ST['手待ち'], { at: Math.floor(Date.now() / 1000), rcName: 'koushu-handan-93', rcPid: 6308, rcUrl: 'https://claude.ai/code/session_X', foot: { wait: 3, unlinked: 2 } }), notices: [], board: { waiting: [], recent: [{ name: '直近その一', result: '済んだ' }] }, usage: U_OK, point: true, settle: 1500 };
     for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
       const r = run(tmp, sc, w, h);
       if (!r) { ng(w + 'x' + h + '：測れない（指さす）'); continue; }
@@ -804,6 +810,7 @@ try {
       if (!/部品：様子を写す（id btnCopyUrl／button）/.test(clip)) { why.push('部品の名と id が違う（' + clip.split('\n')[1] + '）'); }
       if (!/出ていた字：様子を写す/.test(clip)) { why.push('その時出ていた字が無い'); }
       if (!/現況：/.test(clip) || !/状態：/.test(clip) || !/押した刻：/.test(clip)) { why.push('「様子を写す」と同じ字が入っていない'); }
+      if (!/札の結び：結べなかった札 2件（今日）／順番待ち 3件/.test(clip)) { why.push('様子を写すに「札の結び：結べなかった札 N件」「順番待ち」が入っていない'); }
       if (r.pVeilHiddenAfter !== true || r.pBodyClsAfter.indexOf('pointing') >= 0 || r.pLabelAfter !== '写した') { why.push('写した後に戻っていない（幕 ' + r.pVeilHiddenAfter + '・釦「' + r.pLabelAfter + '」）'); }
       if (r.pCancelOn !== true || r.pCancelOff !== true) { why.push('釦をもう一度押してもやめられない'); }
       if (why.length) { ng(w + 'x' + h + '：' + why.join('／')); } else { ok(w + 'x' + h + '：指さす→幕と案内→下の釦は動かない→様子を写すの上を押すと「ここがおかしい：／部品：様子を写す（id btnCopyUrl）／出ていた字」＋様子を写すと同じ字が写り、戻る／もう一度押すとやめる（釦は' + (Math.abs(B.point.t - B.url.t) < 2 ? '様子を写すの隣' : '下の一段') + '）'); }

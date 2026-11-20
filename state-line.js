@@ -96,30 +96,12 @@ function clock(st) {
      読めなければ null を返す。**数えられないときに 0 と言わない。** */
 const ORDERS = 'C:\\Users\\user\\.claude\\orders-open.tsv';
 function leftOrders() {
+  /* 2026-11-20 本人の裁定：数え手は orders-count.js 一つ。残り＝状態が「未了」で始まる行だけ（時間切（自動）・済・取消・取下・へ統合・発効・該当せず は閉じた行）。
+     ＊前はここだけ「閉じの字以外すべて」で数え、時間切（自動）129件まで残りに数えて243件と出していた。 */
   let raw;
-  try { raw = fs.readFileSync(ORDERS, 'utf8').replace(/^\uFEFF/, ''); }
+  try { raw = fs.readFileSync(ORDERS, 'utf8'); }
   catch (e) { return null; }
-  const ids = [];
-  const lines = raw.split(/\r?\n/);
-  for (let i = 1; i < lines.length; i++) {
-    const c = lines[i].split('\t');
-    if (c.length < 4) { continue; }
-    const s = c[3];
-    /* 取下（やらないと判じて閉じた件）も落とす（2026-09-07）。
-       ＊2026-09-06 12:36 に「取下：…」で閉じた二件が、ここに無いために
-         残りとして数え続けられていた（先の穴-2-1 と 押し引き表-1の調べ）。
-       ＊作法31 は「できない・やらないと判じた項目を黙って落としてはならない」と決めている。
-         **黙って落とす**のではなく、`取下：理由` を書いて閉じる形なので、ここで落としてよい。 */
-    /* 「該当せず」も閉じ（2026-09-17・台帳の食い違い-1）。
-       ＊条件に当たらず、やる必要が無かったと判じて閉じた行。**やり残しではない**。
-       ＊これが落ちていなかったので、09-08 に閉じた「黒猫の待機-2 ⑥（比が3.0以上なら焼かず
-         数値だけ報告して止める）」が、以後ずっと残り1件として数えられていた。
-       ＊台帳の状態は六通りしかない（済979・取消37・へ統合7・該当せず1・発効中1・未了1）。
-         このうち仕事として残るのは「未了」だけ。 */
-    if (/^済/.test(s) || /^取消/.test(s) || /^取下/.test(s) || /へ統合/.test(s) || /^発効/.test(s) || /^該当せず/.test(s)) { continue; }
-    ids.push(c[1]);
-  }
-  return ids;
+  return require('./orders-count.js').openRows(raw).map(r => r.id);
 }
 
 const leftIds = leftOrders();
