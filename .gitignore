@@ -12,3 +12,6 @@ genba-taiki.png
 
 _site/
 site-size.txt
+
+# 最後の返事（turn-mark.js が書き、turn-push.ps1 が koushu-state へ押す。このリポジトリには入れない・橋の枠 十四）
+last-reply.txt

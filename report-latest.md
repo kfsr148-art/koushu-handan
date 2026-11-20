@@ -1,90 +1,17 @@
-# 枠 十三：state.json に panelView（本人の画面の頭の字・まとめて写すの残り）（枠の印 2026-11-21 04:12:17・y1121-0415）
+# 枠 十四：Stop の最後の返事を koushu-state に置く（枠の印 2026-11-21 04:21:54・y1121-0425）
 
-状態：終わり — 04:17（機械の刻）
+状態：終わり — 04:25（機械の刻）
 
-## 一、panelView を足した
-- 見張り（inbox-watch.ps1）が state.json を書く直前に、リポジトリ直下の panel-view.js を道で渡して呼び、panelView を足す（PowerShell の文字化けを避けて、入出力とも道で渡す）。こけても state.json は今までどおり書く。
-- 中身：head（頭の字）／label（まとめて写す（残N／N件）または（0件））／left／basis／senkoReadAt／at（出した刻）。実物（04:16）：head「作業中、、、。」・label「まとめて写す（0件）」・left 0。
-- 常駐を起こし直した（起動 04:16:42 ＞ 台本更新 04:15:57・本数 1）。写し .bak-20261121 あり・構文誤り 0・BOM 残り。
-## 二、ずれない仕組み
-- panel-view.js は panel.html の headText／cardsPending／cardPendText／kumoEtaSec／isRunning／mergedTodo と同じ決まりの写し。
-- panel-check.js に ⑤の十六 を足した：panel.html の headText（と使う関数）を実際に動かし、状態8×中身2×札の印4×雲2×最新札3＝384組で panelView の頭の字と突き合わせる。384組すべて同じ。残りの数え方（刻までは数えない・刻より新しい札だけ・「写せます（N件）」は数えない）と basis の一言も確かめる。
-## 三、センコの読みだけで数える
-- 本人が端末で押した「写した」印は端末の中だけ。panelView は senkoReadAt だけで数え、basis に一言入れた。本人が手で写した分があると、パネルの方が少なく出る。
-## 四、作法44 に足した（十一）
-- panelView の中身・組む所（panel-view.js）・直す時の決まり（panel.html を直したら panel-view.js も）・⑤の十六。
-- 実測：panel-check --static 全て PASS（⑤の十六 3件）。
-
-
-
----
-
-<!-- 送った知らせ ここから -->
-
-## 送った知らせ
-
-直近に ntfy へ送ったものを、新しい順に五件まで。**要約せず、送った本文をそのまま写しています。**
-
-### 1. ✅ 戻りました（再起動・39分・帯の間に黙らせた物 3件）
-
-```
-この間にまとまった知らせ 3本
-
-［👀 見てください（返事不要）］
-枠 十二：橋の札を済んだ札へ移す・件名のずれ
-一：橋の文書の古い札（枠 六〜一）を末尾の節「済んだ札」へ move で移した（消さない・hash 一致）。作法44 三を「移す」に書き替えた。二：件名が戻った訳＝枠 十一の直しは手番の間に段の台帳を書いた時だけ効き、手すきの窓（01:54〜）では busy.subj に戻った。手すきの間は最後に済んだ仕事の名を出すよう直した。
-ファイル: state-decide.js・state-decide-test.js・CLAUDE.md・reports/y1121-0340.md
-実測: state-decide-test 件名 4件 合い（直す前 NG）・札の印 14件・総当たり 1344組 NG 0件。
-実機: 窓が手すきで仕事が無い時、パネルの件名が「枠 九」でなく最後に済んだ仕事（枠 十二…）の名になる。橋の文書は「窓から（札）」が五枚・末尾に節「済んだ札」。
-
-［✅ 終わりました（返事不要）］
-写せます（6件）
-
-［✅ 戻りました（再起動・39分・帯の間に黙らせた物 3件）］
-再起動の静かな帯が明けました（11-21 03:00〜03:40・39分）。
-帯の間に黙らせた物：healthchecks の /fail・見張りの止まり（#29）・再起動の後の点検の欠け
-＊claude が立ち、hook.log が動き出したのを見て明けとしました。
-```
-
-### 2. 🔗 新しい線
-
-```
-https://claude.ai/code/session_012aGgAFjo8RtLreSR5xKABy
-
-Code タブ：引き継ぎは試していない（claude-loop は新しい会話で立てた。pick-resume.log を見る）
-
-窓の claude（pid 3044）の remote-control の宛先です。
-＊記録は ~/.claude/inbox-watch.log。
-```
-
-### 3. 🪟 窓を起こす待ち手が居ません（窓は手待ち・受信箱の未処理 1件・雲待ち なし）
-
-```
-窓を起こす待ち手が居ません（窓は手待ち・受信箱の未処理 1件・雲待ち なし）
-巡回二回続けて、未処理があるのに rewake の待ちが0本でした。一言を送れない訳があります（使用量の止まり・再起動の帯・入力欄に字がある など）。
-```
-
-### 4. 🔁 落とします（定時）
-
-```
-定時の再起動（枠 2026-11-21 03・11-21 03:00）
-空き 4603MB ／ claude 1本・私用 641MB
-空きメモリ 4603MB ／ 全体 8071MB
-見送り 0/3回
-最後の更新：2026-11-21 02:40:41  claude update：終了コード 0・Claude Code is up to date (2.1.329)（35秒）
-台帳の未了0・走っている道具なし・押し残し0［台帳の未了 40件（訳にしない）・ヨシ待ち 3件（訳にしない）］
-60秒後に落ちる。戻りは「✅ 戻りました（再起動から）」で知らせる。
-```
-
-### 5. ✅ 終わりました（返事不要）
-
-```
-枠 十一：橋の札を消した件・件名のずれ
-見えていた画面が 2 枚から 1 枚になりました。claude のプロセスも 2 本から 1 本へ、同じだけ終わっています。
-閉じられたか、こちらで止めたものです。残っている物は無いので、手は要りません。
-```
-
-<!-- 送った知らせ ここまで -->
+## 一、last-reply.txt
+- turn-mark.js（Stop の合図）が、Stop の入力の last_assistant_message から last-reply.txt を組む。頭に「刻:」「件名:」（控えの件名・無ければ busy の題）、空行、本文。毎回上書き（札になる回もならない回も）。transcript_path は使わない。
+## 二、伏せと長さ
+- 鍵・トークン（sk-／ghp_／github_pat_／xox／AKIA／AIza／JWT）・token=／password= などの値・ntfy の宛先は【伏せ】。4000字を超えたら頭から切り、末尾に「長いので頭から4000字で切った。元は N 字」。空の返事は置かない（前のまま）。
+## 三、押し
+- turn-push.ps1 が Stop の時だけ last-reply.txt を state.json と同じ一回の Git-CommitPush に載せる（押しの数は増えない）。git-push.ps1 の STATE_NAMES に足したので koushu-state（公開の読み口）へ行く。koushu-handan には入れない（.gitignore）。
+## 四、作法44 十二に足した
+## 作り値（本物に書かない：TM_KEY・TM_SJ・TM_NOTE・TM_REPLY を一時の置き場へ）
+- 秘密3種（token=・ghp_・ntfy 宛先）が伏せられ・4500字が4000字＋切り注記になり・空の返事は何も置かない。構文（node --check・PowerShell Parser 0件）通り。写し .bak-20261121（turn-mark.js・turn-push.ps1・git-push.ps1）。
+- 実物で効くのは、次の Stop の後（この手番の Stop で koushu-state の last-reply.txt が出るはず）。
 
 ---
 
@@ -93,11 +20,12 @@ Code タブ：引き継ぎは試していない（claude-loop は新しい会話
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **1015件**ある。
+　ここに出るのは新しい20件。全部で **1016件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y1121-0425.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1121-0425.md) | 11-21 04:25 | 枠 十四：Stop の最後の返事を koushu-state に置く（枠の印 2026-11-21 04:21:54・y1121-0425） |
 | [`y1121-0415.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1121-0415.md) | 11-21 04:17 | 枠 十三：state.json に panelView（本人の画面の頭の字・まとめて写すの残り）（枠の印 2026-11-21 04:12:17・y1121-0415） |
 | [`y1121-0340.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1121-0340.md) | 11-21 03:44 | 枠 十二：橋の札を「済んだ札」へ移す・件名のずれ（枠の印 2026-11-21 03:25:14・y1121-0340） |
 | [`r1121-0334-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1121-0334-2.md) | 11-21 03:34 | 再起動-2（r1121-0334・後の測り） |
@@ -117,6 +45,5 @@ Code タブ：引き継ぎは試していない（claude-loop は新しい会話
 | [`y1120-1945b.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1120-1945b.md) | 11-20 20:23 | 橋の枠 二：15:00 の橋の試しの行を済みとして閉じ、同じ形の行を数える（枠の印 2026-11-20 19:29:27・y1120-1945b） |
 | [`y1120-1945.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1120-1945.md) | 11-20 19:38 | 着手直後の「待ち」と赤い「見込み未記入」を出さない（枠の印 2026-11-20 19:00:26・y1120-1945） |
 | [`cloud-panel-check-20261120-102858.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-panel-check-20261120-102858.md) | 11-20 19:38 | 雲で回した：`panel-check.js` |
-| [`y1120-1915.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1120-1915.md) | 11-20 19:19 | 橋の文書の「窓へ（枠）」の枠 一（枠の印 2026-11-20 18:06:41・y1120-1915） |
 
 <!-- 控えの一覧 ここまで -->
