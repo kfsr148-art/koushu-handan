@@ -74,6 +74,7 @@
     color:var(--ask); letter-spacing:normal; line-height:1.35;
     white-space:normal; overflow-wrap:anywhere;}
   #headWait:empty{display:none;}
+  #headWait.late{color:var(--act); font-weight:700;}   /* v188：札が遅れている */
 
   /* いまの状態の一行。ヨシの釦より上に置く。
      リモートデスクトップを開かずに、動いているか止まっているかを見るため。 */
@@ -540,7 +541,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v187（11月20日）</p>
+  <p class="ver" id="verTag">panel v188（11月20日）</p>
   <div class="foot-group" id="footGroup">
   <p class="usage-when" id="usageWhen" hidden></p>
   <!-- 遠隔で繋がっている会話の名と pid（v127・落ちた後の起こし-2）。state.json の rcName / rcPid。
@@ -570,7 +571,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '187';  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
+  var PANEL_VER = '188';  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
   /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
@@ -638,7 +639,8 @@
   /* v180（2026-11-20）：見込みの生の字（空＝未記入／不明）と、段の数（済み・全体）。作業中の「終わる見込み」「段 N/M」の材料 */
   var lastMikomiRaw = '', lastStepDone = 0, lastStepTotal = 0;
   /* 最後に押した札の刻（v142・古い並びの取り直し-1）。state.json の cardAt をそのまま持つ。 */
-  var lastCardAt = 0;
+  var cardPollTimer = null;
+  var lastCardAt = 0, lastCardOwedAt = 0;   /* v188：lastCardOwedAt＝控えにあるがまだ公開に見えていない札を待ち始めた刻（state.json の cardOwedAt）。0なら無し */
   /* 過去の実測（estimates.json）。見込みが無いときの終了予定を、ここから当てる。 */
   var EST_URL = 'https://kfsr148-art.github.io/koushu-state/estimates.json';
   var est = null;
@@ -1795,6 +1797,22 @@
   var copyLeft = 0;
   /* 待機の猫（genba-taiki-80.png）の横の字（v148）。出すのは待ちの時だけ＝手待ち・写していない札が0件・連絡なしでない。
      場所と字の大きさは、ヨシ待ちの時の「まとめて写すヨシ！」と同じ #headWait（出る時だけ字が入り、空なら畳む）。 */
+  /* v188（2026-11-20 本人の枠）：仕事が済んで窓が止まってから、札が一覧に出るまでの間は「待機中」でなく「札をまとめ中、、、」を出す。
+     ＊印は見張りが state.json の cardOwedAt に立てる（窓が止まる Stop の押しに載る）。パネルは、その刻より新しい札が一覧に出るまで「まとめ中」、出たら今までどおり「まとめて写すヨシ！」。
+     ＊見込みの刻は待ち始めから約2分半（実測 89〜140秒）。3分たっても出なければ赤で「札が遅れている」。10分で印は消える。印が無ければ今までどおり。
+     ＊10秒おきに読み直す（下の cardPoll）。ntfy の EventSource は使わない（宛先の名を公開ページに書くことになり、誰でも送れてしまうため）。 */
+  function cardsPending() {
+    if (!(lastCardOwedAt > 0)) { return false; }
+    var now0 = Math.floor(Date.now() / 1000);
+    if (now0 - lastCardOwedAt > 600) { return false; }
+    return newestTime(allRows || []) < lastCardOwedAt;
+  }
+  function cardLate() { return cardsPending() && (Math.floor(Date.now() / 1000) - lastCardOwedAt) > 180; }
+  function cardPendText() {
+    if (cardLate()) { return '札が遅れている'; }
+    var e = lastCardOwedAt + 150, de = new Date(e * 1000);
+    return '札をまとめ中、、、。（' + ('0' + de.getHours()).slice(-2) + ':' + ('0' + de.getMinutes()).slice(-2) + ' ごろ）';
+  }
   var WAIT_TEXT = '待機中、、、。';
   /* 猫の絵と頭の字は必ず対（v149）。runCatTick の判定の順と同じ順で決める：
        ヨシ待ち → 指差し／連絡なし → 寝姿（字なし）／作業中 → コマ送り（「作業中、、、。」・v150）／写していない札が残る → 指差し／それ以外 → 待機の猫。
@@ -1841,6 +1859,7 @@
        ヨシ待ちの札が立っていても、写す物が0件なら指差しにしない（待機中へ）。 */
     if (lastStat === 'ヨシ待ち') { return YOSHI_TEXT; }   /* v157：作業中の次。isRunning が偽の間（止まって待っている間）だけここへ来る */
     /* v169：本人が次にする事とその刻。雲待ちの見込みの前なら「HH:MM になったら まとめて写すヨシ！」、過ぎたか雲の札が来たら（一行が消えたら）「まとめて写すヨシ！」 */
+    if (cardsPending()) { return cardPendText(); }   /* v188：札が一覧に出るまで（待機中でなく） */
     if (kumoEtaSec() > 0) { var ke = new Date(kumoEtaSec() * 1000); return ('0' + ke.getHours()).slice(-2) + ':' + ('0' + ke.getMinutes()).slice(-2) + ' になったら ' + POINT_TEXT; }
     if (copyLeft > 0) { return POINT_TEXT; }
     if (lastLost) { return LOST_TEXT; }   /* 連絡なしの寝姿（v151：「接続不良、、、。」） */
@@ -1851,6 +1870,7 @@
     if (!hw) { return; }   /* v153：ヨシ待ちでも、字は headText（猫の絵と対）に従う */
     var t = headText();
     if (hw.textContent !== t) { hw.textContent = t; }
+    var lt = cardLate(); if (hw.className !== (lt ? 'late' : '')) { hw.className = lt ? 'late' : ''; }   /* v188：札が遅れている時は赤 */
   }
   (function () {   /* 先読み。読めなくても画面は壊れない（img が出ないだけ） */
     catFrames.concat(['cat-sleep-w.png', 'genba-cat-80.png', 'genba-taiki-80.png', 'yoshi-cat-icon.png'])
@@ -1905,6 +1925,9 @@
     if (timer) { clearInterval(timer); }
     pullNtfyLatest();     /* 押したその場で写せるよう、開いたときに一度取っておく */
     timer = setInterval(tick, 15000);
+    /* v188：札が一覧に出るまでの間（印がある間）は10秒おきに札と状態を読み直す */
+    if (cardPollTimer) { clearInterval(cardPollTimer); }
+    cardPollTimer = setInterval(function () { if (cardsPending()) { tick(); } }, 10000);
     /* 使用量は10分ごとにしか動かないので、取りに行くのも控えめでよい（2分ごと）。 */
     if (usageTimer) { clearInterval(usageTimer); }
     usageTimer = setInterval(pullUsage, 120000);
@@ -3005,6 +3028,7 @@
         try { var ww = $('wakeWarn'); if (ww) { var wt = (typeof d.warn === 'string') ? d.warn : ''; ww.textContent = wt ? ('⚠ ' + wt) : ''; ww.className = wt ? 'pipe' : 'pipe hide'; } } catch (e) { }
         /* 最後に押した札の刻（v142）。一覧が古いかを見分けるのに使う。下の freshen を見よ。 */
         lastCardAt = (typeof d.cardAt === 'number') ? d.cardAt : 0;
+        lastCardOwedAt = (typeof d.cardOwedAt === 'number') ? d.cardOwedAt : 0;   /* v188 */
         /* 生存の途切れと見込みを、ここで一度だけ控える（v124・止まりの見分け-1）。
            ＊下の「連絡なし」の早戻りより前に置く。早戻りの後では猫と黄色の行へ届かない。 */
         lastLost = (sec > STALE_SEC);

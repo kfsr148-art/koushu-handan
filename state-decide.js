@@ -35,7 +35,8 @@ function decide(m) {
   const back = nHelp + nKumo + nCmd;
   const backTx = hc.text;
   // 題（2026-11-19 13:00 本人の枠）：段の台帳に残りがある間は台帳の「仕事:」の行。無ければ窓の合図の題（受けた枠の頭の一行）
-  const out = { stat: '', detail: '', subj: (pend.length && m.job) ? String(m.job) : String(b.subj || ''), eta: 0, resumeAt: 0, help: back > 0 ? backTx : (unk > 0 ? ('手伝い 不明 ' + unk + '本') : ''), steps: pend.length, stepDone: steps.length - pend.length, stepTotal: steps.length, next: first ? first.t : '',
+  const cd = m.cards || { owedAt: 0 };   // 控えにあるがまだ公開に見えていない札の印（panel が「札をまとめ中、、、」を出す）
+  const out = { cardOwedAt: Number(cd.owedAt) || 0, stat: '', detail: '', subj: (pend.length && m.job) ? String(m.job) : String(b.subj || ''), eta: 0, resumeAt: 0, help: back > 0 ? backTx : (unk > 0 ? ('手伝い 不明 ' + unk + '本') : ''), steps: pend.length, stepDone: steps.length - pend.length, stepTotal: steps.length, next: first ? first.t : '',
     // 2026-11-19 12:40 本人の枠：パネルの「すんだ：」「いま：（何分たった）」「これから：」の材料（段の台帳の字そのまま）
     sDone: (steps.filter(r => r.k === 'x').slice(-1)[0] || {}).t || '', sNow: first ? first.t : '', sNowAt: nowAtOf(m, first), sNext: pend[1] ? pend[1].t : '' };
   const kst = String(kw.state || ''), clock = /^clock:([0-9]+)$/.exec(String(kw.workflow || ''));
@@ -69,7 +70,27 @@ function gather(alive) {
   const jm = /^仕事:[ 　]*(.+)$/m.exec(st || ''), job = jm ? jm[1].trim() : '';
   const key = first ? (job + '|' + first.t) : '';   // 仕事の名と段の字の組で覚える（同じ字の段でも仕事が替われば起点を取り直す・2026-11-19 16:20）
   if (first && (!ns || ns.t !== key)) { ns = { t: key, at: now }; try { fs.writeFileSync(ROOT + '/step-now.json', JSON.stringify(ns)); } catch (e) { } }
-  return { now: now, alive: alive, busy: busy, kumo: readKv(ROOT + '/kumo-wait.txt'), steps: steps, nowStep: ns, job: job };
+  // 2026-11-20 本人の枠：「控えにあるがまだ公開に見えていない札がある」印（cardOwedAt＝その札を待ち始めた刻。0なら無し）。パネルは、その札が一覧に出るまで待機中でなく「札をまとめ中、、、」を出す。
+  //   ①先書きの控え（card-outbox.jsonl）で済みでない札（15分以内）がある → 窓が手待ちならその Stop の刻（無ければ積んだ刻）。
+  //   ②窓が手待ちで、段の台帳に残りが無く、控え（work-note.txt）が札になる形（種類が外待ちでない・待ち:なし・完了:がある）で、その Stop より後にまだ札が控えに入っていない → Stop の刻。
+  //   ＊Stop の押し（turn-mark.js が state.json を書いて押す）に間に合わせるため、札が積まれる前の控えからも立てる。10分たっても札が出なければ印は消える（パネルは3分で赤く「札が遅れている」）。
+  let owedAt = 0;
+  try {
+    const IDLE = ['Stop', 'idle_prompt', 'StopFailure', 'Interrupted', 'EndTurn'], idle = IDLE.indexOf(String(busy.ev || '')) >= 0;
+    // 手待ちになった Stop の刻（idle_prompt が後から鳴っても、Stop の刻を使う。busy.stopAt が無ければ evAt）
+    const stopAt = Number(busy.stopAt) || Number(busy.evAt) || 0;
+    const adds = {}, done = {}; try { fs.readFileSync(ROOT + '/card-outbox.jsonl', 'utf8').split(/\r?\n/).forEach(l => { if (!l.trim()) { return; } try { const r = JSON.parse(l); if (r.t === 'add') { adds[r.id] = r; } else if (r.t === 'done') { done[r.id] = true; } } catch (e) { } }); } catch (e) { }
+    const ids = Object.keys(adds).filter(id => !done[id] && now - Number(adds[id].at) <= 900);
+    if (ids.length) { const oldest = ids.reduce((a, id) => (a === 0 || Number(adds[id].at) < a) ? Number(adds[id].at) : a, 0); owedAt = (idle && stopAt > 0 && stopAt <= oldest && oldest - stopAt <= 600) ? stopAt : oldest; }
+    else if (idle && stopAt > 0 && now - stopAt <= 600 && !steps.some(r => r.k !== 'x')) {
+      let note = ''; let nm = 0; try { note = fs.readFileSync(ROOT + '/work-note.txt', 'utf8').replace(/^\uFEFF/, ''); nm = Math.floor(fs.statSync(ROOT + '/work-note.txt').mtimeMs / 1000); } catch (e) { }
+      const kind = (/^種類[:：][ ]*(.*)$/m.exec(note) || [])[1] || '', wait = (/^待ち[:：][ ]*(.*)$/m.exec(note) || [])[1] || '', hasDone = /^完了[:：]/m.test(note);
+      let lastCard = 0; try { fs.readFileSync(ROOT + '/notify-sent.tsv', 'utf8').split(/\r?\n/).slice(-30).forEach(l => { const t = Date.parse(l.replace(/^\uFEFF/, '').slice(0, 19).replace(' ', 'T')); if (t > 0) { lastCard = Math.max(lastCard, Math.floor(t / 1000)); } }); } catch (e) { }
+      if (hasDone && !/外待ち/.test(kind) && /^(なし|無し|—|)$/.test(wait.trim()) && nm >= stopAt - 900 && lastCard < stopAt) { owedAt = stopAt; }
+    }
+  } catch (e) { }
+  const cards = { owedAt: owedAt };
+  return { now: now, alive: alive, busy: busy, kumo: readKv(ROOT + '/kumo-wait.txt'), steps: steps, nowStep: ns, job: job, cards: cards };
 }
 module.exports = { decide, gather, readSteps };
 if (require.main === module) {
