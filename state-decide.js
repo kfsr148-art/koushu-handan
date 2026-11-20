@@ -72,7 +72,7 @@ function gather(alive) {
   if (first && (!ns || ns.t !== key)) { ns = { t: key, at: now }; try { fs.writeFileSync(ROOT + '/step-now.json', JSON.stringify(ns)); } catch (e) { } }
   // 2026-11-20 本人の枠：「控えにあるがまだ公開に見えていない札がある」印（cardOwedAt＝その札を待ち始めた刻。0なら無し）。パネルは、その札が一覧に出るまで待機中でなく「札をまとめ中、、、」を出す。
   //   ①先書きの控え（card-outbox.jsonl）で済みでない札（15分以内）がある → 窓が手待ちならその Stop の刻（無ければ積んだ刻）。
-  //   ②窓が手待ちで、段の台帳に残りが無く、控え（work-note.txt）が札になる形（種類が外待ちでない・待ち:なし・完了:がある）で、その Stop より後にまだ札が控えに入っていない → Stop の刻。
+  //   ②窓が手待ちで、段の台帳に残りが無く、控え（work-note.txt）が札になる形（待ち:なし・完了:がある。2026-11-20 枠 四：種類が外待ちでも、待ち:なし・完了:ありなら札は出る＝印を立てる。実測 20:24:18 に止まった回は、控えの種類が「外待ち」のまま待ち:なしで終わり、印が立たず頭の字が「待機中」になった）で、その Stop より後にまだ札が控えに入っていない → Stop の刻。
   //   ＊Stop の押し（turn-mark.js が state.json を書いて押す）に間に合わせるため、札が積まれる前の控えからも立てる。10分たっても札が出なければ印は消える（パネルは3分で赤く「札が遅れている」）。
   let owedAt = 0, owedEta = 0;
   // 雲の検査を待つ間（kumo-wait.txt が waiting／ack／ready／resumed／failed）は札を控えに置いたまま出さない（watch-notify.ps1）ので、印は長く（1時間まで）残し、見込みの刻は雲の検査の見込み（eta）を使う
@@ -88,7 +88,7 @@ function gather(alive) {
       let note = ''; let nm = 0; try { note = fs.readFileSync(ROOT + '/work-note.txt', 'utf8').replace(/^\uFEFF/, ''); nm = Math.floor(fs.statSync(ROOT + '/work-note.txt').mtimeMs / 1000); } catch (e) { }
       const kind = (/^種類[:：][ ]*(.*)$/m.exec(note) || [])[1] || '', wait = (/^待ち[:：][ ]*(.*)$/m.exec(note) || [])[1] || '', hasDone = /^完了[:：]/m.test(note);
       let lastCard = 0; try { fs.readFileSync(ROOT + '/notify-sent.tsv', 'utf8').split(/\r?\n/).slice(-30).forEach(l => { const t = Date.parse(l.replace(/^\uFEFF/, '').slice(0, 19).replace(' ', 'T')); if (t > 0) { lastCard = Math.max(lastCard, Math.floor(t / 1000)); } }); } catch (e) { }
-      if (hasDone && !/外待ち/.test(kind) && /^(なし|無し|—|)$/.test(wait.trim()) && nm >= stopAt - 900 && lastCard < stopAt) { owedAt = stopAt; }
+      if (hasDone && /^(なし|無し|—|)$/.test(wait.trim()) && nm >= stopAt - 900 && lastCard < stopAt) { owedAt = stopAt; }
     }
   } catch (e) { }
   if (owedAt > 0) { owedEta = (kwHold && (kwv.state === 'waiting' || kwv.state === 'ack') && Number(kwv.eta) > 0) ? Number(kwv.eta) : owedAt + 150; }

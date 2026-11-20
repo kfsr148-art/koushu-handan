@@ -76,7 +76,9 @@ console.log('状態の決め所の総当たり：' + n + '組・NG ' + bad + '�
   r = run({ 'busy.txt': stopBusy, 'job-steps.txt': '仕事: 試し\n[ ] 残り\n', 'work-note.txt': noteDone });
   ck('段の台帳に残りがある途中の止まりでは立てない', r.cardOwedAt === 0);
   r = run({ 'busy.txt': stopBusy, 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone.replace('種類: 終わり', '種類: 外待ち') });
-  ck('種類が外待ちなら立てない', r.cardOwedAt === 0);
+  ck('種類が外待ちでも、待ち:なし・完了:ありなら立てる（札は出る。20:24:18 の「待機中」になった回の再現）', r.cardOwedAt === ago(40));
+  r = run({ 'busy.txt': stopBusy, 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone.replace('種類: 終わり', '種類: 外待ち').replace('待ち: なし', '待ち: 雲の検査（check.yml）') });
+  ck('種類が外待ちで、待ちに中身があれば（本当に外を待っている）立てない', r.cardOwedAt === 0);
   r = run({ 'busy.txt': stopBusy, 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone, 'notify-sent.tsv': iso(10) + '\t✅ 終わりました\tx\n' });
   ck('Stop より後に札が控えに入っていれば立てない', r.cardOwedAt === 0);
   r = run({ 'busy.txt': JSON.stringify({ ev: 'Stop', evAt: ago(900), stopAt: ago(900), startedAt: ago(1200) }), 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone });

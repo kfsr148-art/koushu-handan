@@ -176,7 +176,7 @@ function probeSource(scene) {
       o.halfDump = ['rcLink', 'doneBox', 'doneHead'].map(function (id) { var e = document.getElementById(id); if (!e) { return id + ':無し'; } var s = getComputedStyle(e); return id + '{w' + Math.round(e.getBoundingClientRect().width) + ',pad' + s.paddingLeft + '/' + s.paddingRight + ',bs:' + s.boxSizing + ',flex:' + s.flex + ',mar' + s.marginLeft + '/' + s.marginRight + '}'; }).join(' '); })();
     /* 視野の幅が言った幅より広がった時のために、右端が一番外にある要素を三つ控える（どこが溢れているかを辿る） */
     (function () { var all = [].slice.call(document.body.querySelectorAll('*')).filter(function (e) { var r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).display !== 'none'; }); all.sort(function (a, b) { return b.getBoundingClientRect().right - a.getBoundingClientRect().right; }); o.rightmost = all.slice(0, 3).map(function (e) { return e.tagName.toLowerCase() + (e.id ? '#' + e.id : '') + (e.className && typeof e.className === 'string' ? '.' + e.className.split(' ').join('.') : '') + '@' + Math.round(e.getBoundingClientRect().right) + '/w' + Math.round(e.getBoundingClientRect().width); }); })();
-    /* v188：札をまとめ中の頭の字（#headWait）の class・色・札の取得の数 */
+    /* v188：札まとめ中の頭の字（#headWait）の class・色・札の取得の数 */
     (function () { var hw = document.getElementById('headWait'); o.hwCls = hw ? hw.className : ''; o.hwColor = hw ? getComputedStyle(hw).color : ''; o.hwWeight = hw ? getComputedStyle(hw).fontWeight : ''; o.noticeHits = window.__noticeHits || 0; })();
     o.evTag = txt(document.getElementById('evTag')); o.footTag = txt(document.getElementById('footTag')); o.footHidden = !!(document.getElementById('footTag') || {}).hidden;   /* v181 */
     o.stBad = [].map.call([].concat([].slice.call(pbx ? pbx.querySelectorAll('p.m.bad') : []), [].slice.call(st ? st.querySelectorAll('p.m.bad') : [])), function (x) { return x.textContent; }).join('／');   /* v180：赤の行 */
@@ -418,13 +418,21 @@ function staticParts() {
     const fsrc = (i0 >= 0 && j0 > i0) ? html.slice(i0, j0 + 4) : '';
     if (!fsrc) { ng('nowLine(withEta) が無い'); }
     else {
-      const mk = (stat, kumo, eta, wordv) => new Function('lastStat', 'lastKumo', 'lastState', 'etaLineText', 'honVer', 'stbVer', 'hhmm', fsrc + String.fromCharCode(10) + 'return nowLine;')(stat, kumo, { word: wordv, since: '', at: 1 }, () => eta, '1', '1', () => '00:00');
+      const mk = (stat, kumo, eta, wordv) => new Function('lastStat', 'lastKumo', 'lastState', 'etaLineText', 'honVer', 'stbVer', 'hhmm', 'cardsPending', fsrc + String.fromCharCode(10) + 'return nowLine;')(stat, kumo, { word: wordv, since: '', at: 1 }, () => eta, '1', '1', () => '00:00', () => !!globalThis.__cardsPendingTest);
       const a = mk('作業中', '', '終わる見込み 17:45（あと12分）', '台帳')(true);
       if (a.indexOf('現況：作業中・終わる見込み 17:45（あと12分）') === 0 && a.indexOf('台帳') < 0) { ok('作業中：頭は「現況：作業中・終わる見込み HH:MM」で、件名の頭の一語（台帳）は出ない'); } else { ng('作業中の現況の頭が違う：' + a.slice(0, 60)); }
       const b = mk('手待ち', '検査中：panel v196（見込み 17:30）', '終わる見込み 17:30（あと3分）', '次の指示待ち')(true);
       if (b.indexOf('現況：手待ち（検査中）・終わる見込み 17:30') === 0) { ok('手待ち＋雲待ち：「手待ち（検査中）・終わる見込み」'); } else { ng('手待ち＋雲待ちの現況が違う：' + b.slice(0, 60)); }
       const c2 = mk('手待ち', '', 'なし（作業も待ちも無い）', '次の指示待ち')(true);
       if (c2.indexOf('現況：手待ち ／ ') === 0) { ok('見込みが無い時は見込みの字を足さない'); } else { ng('見込みなしの現況が違う：' + c2.slice(0, 60)); }
+      globalThis.__cardsPendingTest = true;
+      const cp1 = mk('手待ち', '', '終わる見込み 20:30（あと2分）', '次の指示待ち')(true);
+      if (cp1.indexOf('現況：札まとめ中・') === 0) { ok('止まってから札が載るまでの間は、現況も「札まとめ中」（待機中・手待ちでなく）'); } else { ng('札まとめ中の現況が違う：' + cp1.slice(0, 40)); }
+      const cp2 = mk('作業中', '', '終わる見込み 20:30（あと2分）', '台帳')(true);
+      if (cp2.indexOf('現況：作業中') === 0) { ok('作業中は札まとめ中にならない'); } else { ng('作業中の現況が変わった：' + cp2.slice(0, 40)); }
+      globalThis.__cardsPendingTest = false;
+      const cp3 = mk('手待ち', '', 'なし（作業も待ちも無い）', '次の指示待ち')(true);
+      if (cp3.indexOf('現況：手待ち') === 0) { ok('札が載った後（印なし）は今までどおり「手待ち」'); } else { ng('札が載った後の現況が違う：' + cp3.slice(0, 40)); }
       const tk = mk('待ち', '時計：橋の枠 二・起きる刻 19:48', '終わる見込み 19:48（あと0分）', '次の指示待ち')(true);
       if (tk.indexOf('現況：待ち（時計）・') === 0) { ok('時計の待ちの現況は「待ち（時計）」'); } else { ng('時計の待ちの現況が違う：' + tk.slice(0, 40)); }
       const kc = mk('待ち', '雲：検査・見込み 19:48', 'なし（作業も待ちも無い）', '次の指示待ち')(true);
@@ -832,17 +840,17 @@ try {
     else if (/直近に終わった仕事（2件）/.test(String(rp.recBefore || '')) && /^写した$/.test(String(rp.recAfter || '')) && /直近その一/.test(String(rp.recClip || '')) && /直近その二/.test(String(rp.recClip || ''))) { ok('直近に終わった仕事は箱ごと押して全文が写る（押す前「' + rp.recBefore + '」・押した後「' + rp.recAfter + '」）'); }
     else { ng('直近の釦を押しても写らない／字が違う（前「' + rp.recBefore + '」・後「' + rp.recAfter + '」・写し「' + String(rp.recClip || '').slice(0, 30) + '」）'); }
   }
-  /* ---- ⑤の十 札をまとめ中（v188・2026-11-20 本人の枠）：控えにあるがまだ公開に見えていない札の印（cardOwedAt）がある間は待機中でなく「札をまとめ中、、、」・出たら「まとめて写すヨシ！」・3分で赤「札が遅れている」・印が無ければ待機中・10秒おきに読み直す ---- */
-  head('⑤の十 札をまとめ中（待機中でなく・見込みの刻・赤・10秒おき・EventSource を増やさない）');
+  /* ---- ⑤の十 札まとめ中（v188・2026-11-20 本人の枠）：控えにあるがまだ公開に見えていない札の印（cardOwedAt）がある間は待機中でなく「札まとめ中、、、」・出たら「まとめて写すヨシ！」・3分で赤「札が遅れている」・印が無ければ待機中・10秒おきに読み直す ---- */
+  head('⑤の十 札まとめ中（待機中でなく・見込みの刻・赤・10秒おき・EventSource を増やさない）');
   {
     const nf = () => Math.floor(Date.now() / 1000);
     const quiet = Object.assign({}, ST['手待ち']);
     const run1 = (extra, notices, vw, vh, settle) => run(tmp, { state: Object.assign({}, quiet, { at: nf(), statAt: nf() - 100 }, extra), notices: notices, usage: U_OK, settle: settle || 1500 }, vw || 390, vh || 844);
     for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
       const r = run1({ cardOwedAt: nf() - 30 }, MIX, w, h);
-      if (!r) { ng(w + 'x' + h + '：測れない（札をまとめ中）'); continue; }
+      if (!r) { ng(w + 'x' + h + '：測れない（札まとめ中）'); continue; }
       const t = String(r.headWait || '');
-      if (/札をまとめ中、、、。（[0-9]{2}:[0-9]{2} ごろ）/.test(t) && !/待機中/.test(t) && r.hwCls !== 'late') { ok(w + 'x' + h + '：印がある間は待機中でなく「' + t + '」（見込みの刻つき・赤でない）'); } else { ng(w + 'x' + h + '：札をまとめ中が出ない（頭の字「' + t + '」・class「' + r.hwCls + '」）'); }
+      if (/札まとめ中、、、。（[0-9]{2}:[0-9]{2} ごろ）/.test(t) && !/待機中/.test(t) && r.hwCls !== 'late') { ok(w + 'x' + h + '：印がある間は待機中でなく「' + t + '」（見込みの刻つき・赤でない）'); } else { ng(w + 'x' + h + '：札まとめ中が出ない（頭の字「' + t + '」・class「' + r.hwCls + '」）'); }
     }
     let r = run1({ cardOwedAt: nf() - 200 }, MIX);
     if (!r) { ng('測れない（札が遅れている）'); }
@@ -863,13 +871,13 @@ try {
     /* v189：雲の検査を待つ間は、札は控えに置いたまま出さない。見込みの刻は検査の見込み・遅れの赤は見込みの30秒後から */
     r = run1({ cardOwedAt: nf() - 400, cardOwedEta: nf() + 600 }, []);   /* 札の一覧は空：検査の頭の now から離れた MIX の札を「出た札」と数えないため */
     if (!r) { ng('測れない（雲待ちの間）'); }
-    else if (/札をまとめ中、、、。（[0-9]{2}:[0-9]{2} ごろ）/.test(String(r.headWait || '')) && r.hwCls !== 'late') { ok('雲の検査を待つ間は、待ち始めから400秒たっても赤にならず「' + r.headWait + '」（検査の見込みの刻）'); } else { ng('雲待ちの間に遅れの赤が出た／まとめ中が出ない（「' + String(r.headWait) + '」・class「' + r.hwCls + '」）'); }
+    else if (/札まとめ中、、、。（[0-9]{2}:[0-9]{2} ごろ）/.test(String(r.headWait || '')) && r.hwCls !== 'late') { ok('雲の検査を待つ間は、待ち始めから400秒たっても赤にならず「' + r.headWait + '」（検査の見込みの刻）'); } else { ng('雲待ちの間に遅れの赤が出た／まとめ中が出ない（「' + String(r.headWait) + '」・class「' + r.hwCls + '」）'); }
     r = run1({ cardOwedAt: nf() - 900, cardOwedEta: nf() - 60 }, []);
     if (!r) { ng('測れない（検査の見込みを過ぎた）'); }
     else if (/札が遅れている/.test(String(r.headWait || '')) && r.hwCls === 'late') { ok('検査の見込みを30秒過ぎたら赤「札が遅れている」'); } else { ng('検査の見込みを過ぎても赤にならない（「' + String(r.headWait) + '」）'); }
     r = run1({ cardOwedAt: nf() - 900, cardOwedEta: nf() - 10 }, []);
     if (!r) { ng('測れない（見込みの直後）'); }
-    else if (/札をまとめ中/.test(String(r.headWait || '')) && r.hwCls !== 'late') { ok('検査の見込みを過ぎて30秒以内はまだ赤にしない'); } else { ng('見込みの直後に赤になった（「' + String(r.headWait) + '」）'); }
+    else if (/札まとめ中/.test(String(r.headWait || '')) && r.hwCls !== 'late') { ok('検査の見込みを過ぎて30秒以内はまだ赤にしない'); } else { ng('見込みの直後に赤になった（「' + String(r.headWait) + '」）'); }
     const es = (html.match(/new EventSource\(/g) || []).length;
     if (es === 0 && !/koushu-st-/.test(html) && !/STATE_TOPIC|startStateSse/.test(html)) { ok('EventSource は無く、状態の聞き取りの話題名（koushu-st-）も頁に残っていない（v194で外した）'); } else { ng('EventSource か話題名が頁に残っている（EventSource ' + es + '箇所）'); }
   }
