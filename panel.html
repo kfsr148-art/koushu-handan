@@ -548,7 +548,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v191（11月20日）</p>
+  <p class="ver" id="verTag">panel v192（11月20日）</p>
   <div class="foot-group" id="footGroup">
   <p class="usage-when" id="usageWhen" hidden></p>
   <!-- 遠隔で繋がっている会話の名と pid（v127・落ちた後の起こし-2）。state.json の rcName / rcPid。
@@ -582,7 +582,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '191';  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
+  var PANEL_VER = '192';  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
   /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
@@ -1171,7 +1171,7 @@
        現況・最終確認・最後の合図と刻・遠隔の名と pid・赤い行・一番新しい札の刻と題・押した刻。
      ＊v179：頭は「写す」と同じ形——一番新しい notices-<刻>.json の番地（copySrcUrl。巡回のたびに公開の latest-name.txt から取り置く。
        取れない回は notices.json）＋現況の行（nowLine）。その下に残りを足す。新しい札が0件でも写せる。 */
-  var lastEvName = '', lastRcName = '', lastRcPid = 0;
+  var lastEvName = '', lastRcName = '', lastRcPid = 0, lastFoot = {};
   /* v182（2026-11-20 本人の枠）：待ち（検査中・待ち・手待ちの下の雲待ち）にも「終わる見込み HH:MM（あとN分）」を出す。
      ＊刻は見張りが種類別の前5回の中央値で出した物（kumo の「見込み HH:MM」・detail の「終了予定／再開 HH:MM」）をそのまま読む。
      ＊刻が読めなければ赤で「見込み未記入」（「不明」とあれば「見込み不明」）。過ぎていれば赤で「見込みを過ぎた N分」。 */
@@ -1219,6 +1219,7 @@
       '遠隔：' + (lastRcName || '—') + (lastRcPid ? '・pid ' + lastRcPid : ''),
       '見込み：' + (function () { try { return etaLineText(); } catch (e) { return '—'; } })(),
       '赤い行：' + (reds.length ? reds.join('／') : 'なし'),
+      '札の結び：' + ((lastFoot && typeof lastFoot.unlinked === 'number') ? ('結べなかった札 ' + lastFoot.unlinked + '件（今日）') : '数えられていない') + (lastFoot && typeof lastFoot.wait === 'number' ? '／順番待ち ' + lastFoot.wait + '件' : '／順番待ちは言い切れない'),
       '一番新しい札：' + (newest ? f(newest.time) + '「' + (newest.title || '(題なし)') + '」' : 'なし'),
       '押した刻：' + f(Math.floor(Date.now() / 1000))].join(NL);
   }
@@ -3111,8 +3112,9 @@
         /* v164：Claude Code の合図（hook_event_name の英語）をそのまま小さく出す。作業中／手待ちの字は合図の変換表で引いた物（state.json の stat）。 */
         var evEl = $('evTag');
         if (evEl) { var evN = String(d.ev || ''); if (evN) { var evD = new Date((d.evAt || 0) * 1000); evEl.textContent = '最後の合図：' + evN + (d.evAt ? '（' + ('0' + evD.getHours()).slice(-2) + ':' + ('0' + evD.getMinutes()).slice(-2) + ':' + ('0' + evD.getSeconds()).slice(-2) + '・' + Math.max(0, Math.floor((Date.now() / 1000 - d.evAt) / 60)) + '分前）' : '');   /* v181：状態は最後の合図と刻をそのまま出す */ evEl.hidden = false; } else { evEl.textContent = '最後の合図：なし'; evEl.hidden = false; } }
+        lastFoot = d.foot || {};   /* v192：様子を写すの「札の結び」が使う */
         var ftEl = $('footTag');   /* v181 */
-        if (ftEl) { var ft = d.foot || {}, fp = []; if (typeof ft.ledger === 'number') { fp.push('台帳 残り' + ft.ledger + '件'); } if (ft.revive) { fp.push('起こし直し ' + ft.revive + (ft.reviveLast ? '・最後 ' + ft.reviveLast : '')); } ftEl.textContent = fp.join(' ／ '); ftEl.hidden = !fp.length; }
+        if (ftEl) { var ft = d.foot || {}, fp = []; if (typeof ft.wait === 'number') { fp.push('順番待ち ' + ft.wait + '件'); }   /* v192：届いてまだ着手していない枠の数。言い切れない時は見張りが wait を出さず、この行ごと出さない（古い未了は数えない） */ if (ft.revive) { fp.push('起こし直し ' + ft.revive + (ft.reviveLast ? '・最後 ' + ft.reviveLast : '')); } ftEl.textContent = fp.join(' ／ '); ftEl.hidden = !fp.length; }
         var rcEl = $('rcTag');
         if (rcEl) {
           var rcN = String(d.rcName || ''), rcP = (typeof d.rcPid === 'number') ? d.rcPid : 0;
