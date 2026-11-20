@@ -199,8 +199,14 @@
        ほかの .cpall（まとめて写す・お知らせ・箱の表紙）には触れない。 */
   .shotsrow{display:flex; gap:8px; margin:4px 14px 12px;}
   /* v187：写し取り一覧・直近に終わった仕事・様子を写すの三つ並び。幅は等分。狭くても字が折り返して収まる */
-  .shotsrow > .cpall{margin:0; width:auto; flex:1 1 0; min-width:0; display:flex; align-items:center; justify-content:center; text-align:center; font-size:13px; line-height:1.25; padding:6px 4px; min-height:48px; box-sizing:border-box; overflow-wrap:anywhere;}
+  .shotsrow{flex-wrap:wrap;}
+  .shotsrow > .cpall{margin:0; width:auto; flex:1 1 0; min-width:84px; display:flex; align-items:center; justify-content:center; text-align:center; font-size:13px; line-height:1.25; padding:6px 4px; min-height:48px; box-sizing:border-box; overflow-wrap:anywhere;}
   /* v187：遠隔と終わりました N件 の半分ずつの二つ並び */
+  /* v191：指さし。幕は透明で画面いっぱい（下の釦は押せない・スクロールはできる）。案内は上に固定。指さす釦だけ幕より上にして、もう一度押せばやめる */
+  #pointVeil{position:fixed; left:0; top:0; right:0; bottom:0; z-index:10000; background:transparent; touch-action:pan-x pan-y; cursor:crosshair; -webkit-tap-highlight-color:transparent;}
+  #pointVeil[hidden], #pointBanner[hidden]{display:none;}
+  #pointBanner{position:fixed; left:12px; right:12px; top:calc(8px + env(safe-area-inset-top)); z-index:10001; background:rgba(0,0,0,.88); color:#fff; padding:10px 12px; border-radius:10px; text-align:center; font-size:16px; font-weight:700; pointer-events:none; box-sizing:border-box;}
+  body.pointing #btnPoint{position:relative; z-index:10002; outline:2px solid var(--act);}
   .halfrow{display:flex; gap:8px; margin:0 14px; align-items:stretch;}
   .halfrow > .cpall, .halfrow > .done-box{flex:1 1 calc((100% - 8px) / 2); min-width:0; margin:8px 0 0; width:auto; box-sizing:border-box; padding-left:0; padding-right:0;}
   .halfrow > .done-box{display:flex;}
@@ -523,6 +529,7 @@
        target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
     <button type="button" class="cpall" id="btnRecent">直近に終わった仕事（0件）</button>
     <button type="button" class="cpall url" id="btnCopyUrl">様子を写す</button>
+    <button type="button" class="cpall" id="btnPoint">👆 指さす</button>
   </div>
   <!-- v184：HTML の順は 画面の写し取り一覧／様子を写す → 使用量の三本 → 本体の版の行（.facts）→ panel の版の行（#verTag）→ 下の三行（#footGroup）。見た目だけの order ではなく、並びそのものをここで決める。 -->
   <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
@@ -541,7 +548,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v190（11月20日）</p>
+  <p class="ver" id="verTag">panel v191（11月20日）</p>
   <div class="foot-group" id="footGroup">
   <p class="usage-when" id="usageWhen" hidden></p>
   <!-- 遠隔で繋がっている会話の名と pid（v127・落ちた後の起こし-2）。state.json の rcName / rcPid。
@@ -554,6 +561,10 @@
   <!-- ＊使用量の下の断り書き（この機械のローカルの…）は **v71 で消した**。器ごと外している。
        数字の三つと「N分前取得」の行はそのまま。 -->
 </div>
+
+<!-- v191：指さしの幕と案内。body の直下に一度だけ置き、読み直しで張り替わる所（#list・#board など）の中には入れない（読み直しでも幕を消さない）。 -->
+<div id="pointVeil" hidden></div>
+<div id="pointBanner" hidden>おかしい所を押して</div>
 
 <script>
 (function () {
@@ -571,7 +582,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '190';  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
+  var PANEL_VER = '191';  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
   /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
@@ -1221,6 +1232,62 @@
     var ng = function () { fallback(text); btn.textContent = '写せません'; reset(3000); };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       try { navigator.clipboard.writeText(text).then(ok, ng); } catch (e) { ng(); }
+    } else { ng(); }
+  }
+
+  /* v191（2026-11-20 本人の枠）：指さす。釦を押すと「おかしい所を押して」が出て、次に押した所の ①部品の名と id ②その時出ていた字 ③「様子を写す」と同じ字 を、
+     頭に「ここがおかしい：」を付けて一度に写して戻る。
+     ＊指さしの間は透明な幕（#pointVeil）で押しを受け、elementFromPoint で下の部品を取る。下の釦は動かさない（幕が押しを受ける）。幕は body の直下なので読み直しで消えない。
+     ＊幕の上からもスクロールはできる（touch-action: pan-x pan-y・長押しは使わない）。
+     ＊写す字は指さしを始めた時に先に組み、押しの手（click）の中で直に写す（押してから読みに行くと iPhone でコピーが弾かれる）。
+     ＊釦をもう一度押せばやめる。 */
+  var pointing = false, pointText = '';
+  function pointClean(t, n) { t = String(t || '').replace(/[\r\n\t ]+/g, ' ').trim(); return t.length > n ? t.slice(0, n) + '…' : t; }
+  /* 部品の名：画面の見出しの字。釦・札の題・使用量の名・各ブロックの名。無い所は平たい名（タグ名＋class） */
+  function pointName(el) {
+    var e = el, n = '';
+    var b = e.closest ? e.closest('button, a') : null;
+    if (b && b.id !== 'btnPoint') { n = pointClean(b.textContent, 30); if (n) { return n; } }
+    var u = e.closest ? e.closest('.usage .u') : null;
+    if (u) { var un = u.querySelector('.u-name'); return (un ? pointClean(un.textContent, 20) : '使用量') + '（使用量）'; }
+    var li = e.closest ? e.closest('li') : null;
+    if (li) { var tx = li.querySelector('.tx'); if (tx) { return pointClean(tx.textContent, 30); } }
+    var map = [['#progBox', '終わる見込みと手順のゲージの箱'], ['#footGroup', '下の三行（取得の刻・最後の合図・台帳）'], ['#state', '状態の帯'], ['.facts', '版・最終確認の行'], ['#verTag', 'panelの版'], ['#halfRow', '遠隔と終わりましたの並び'], ['.shotsrow', '写し取り一覧・直近・様子を写す・指さすの並び'], ['#stLine', '完了・進行中・予定の行'], ['#usageTag', '使用量の三本'], ['h1', '見出し（返事パネル）']];
+    for (var i = 0; i < map.length; i++) { if (e.closest && e.closest(map[i][0])) { return map[i][1]; } }
+    return (e.tagName || '?').toLowerCase() + (typeof e.className === 'string' && e.className ? '.' + e.className.split(' ')[0] : '');
+  }
+  function pointEnd(msg) {
+    pointing = false; pointText = '';
+    var v = $('pointVeil'), bn = $('pointBanner'), bt = $('btnPoint');
+    if (v) { v.hidden = true; } if (bn) { bn.hidden = true; }
+    document.body.className = document.body.className.replace(/(^| )pointing( |$)/g, ' ').replace(/ +/g, ' ').trim();
+    if (bt) { bt.textContent = msg || '👆 指さす'; bt.className = 'cpall' + (msg ? ' ok' : ''); if (msg) { setTimeout(function () { if (!pointing) { bt.textContent = '👆 指さす'; bt.className = 'cpall'; } }, 2000); } }
+  }
+  function pointStart() {
+    pointText = statusText();   /* 先に組む（押しの手の中では組み直さない） */
+    pointing = true;
+    var v = $('pointVeil'), bn = $('pointBanner'), bt = $('btnPoint');
+    if (v) { v.hidden = false; } if (bn) { bn.hidden = false; }
+    if (document.body.className.indexOf('pointing') < 0) { document.body.className = (document.body.className + ' pointing').trim(); }
+    if (bt) { bt.textContent = '指さし中（もう一度押すとやめる）'; bt.className = 'cpall'; }
+  }
+  function pointToggle() { if (pointing) { pointEnd(''); } else { pointStart(); } }
+  function pointTap(e) {
+    var v = $('pointVeil'); if (!v || !pointing) { return; }
+    var x = (typeof e.clientX === 'number') ? e.clientX : 0, y = (typeof e.clientY === 'number') ? e.clientY : 0;
+    v.style.pointerEvents = 'none';
+    var el = document.elementFromPoint(x, y);
+    v.style.pointerEvents = '';
+    if (!el) { return; }
+    var id = el.id || ''; if (!id && el.closest) { var ip = el.closest('[id]'); id = ip ? ip.id : ''; }
+    var shown = pointClean(el.innerText || el.textContent, 200);
+    if (!shown && el.closest) { var bl = el.closest('li, button, a, p, div'); shown = bl ? pointClean(bl.innerText || bl.textContent, 200) : ''; }
+    var NL = String.fromCharCode(10);
+    var text = 'ここがおかしい：' + NL + '部品：' + pointName(el) + '（id ' + (id || 'なし') + '／' + (el.tagName || '?').toLowerCase() + '）' + NL + '出ていた字：' + (shown || '（字なし）') + NL + NL + pointText;
+    var ok = function () { pointEnd('写した'); };
+    var ng = function () { fallback(text); pointEnd('写せません'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {   /* 押しの手の中で直に写す */
+      try { navigator.clipboard.writeText(text).then(ok, ng); } catch (x2) { ng(); }
     } else { ng(); }
   }
 
@@ -3198,6 +3265,8 @@
   $('btnCopyBoard').addEventListener('click', function () { copyBundle(this); });
   $('btnCopyUrl').addEventListener('click', function () { copyUrl(this); });
   $('btnRecent').addEventListener('click', function () { copyRecent(this); });   /* v187 */
+  $('btnPoint').addEventListener('click', function () { pointToggle(); });   /* v191 */
+  $('pointVeil').addEventListener('click', function (e) { pointTap(e); });   /* v191：幕が押しを受ける */
 
   /* 写す釦と、畳んだ件の開閉。一覧ごと張り替わるので親で受ける。
      ＊v97 で板を #board へ切り離したので、**両方に同じ受けを掛ける**。

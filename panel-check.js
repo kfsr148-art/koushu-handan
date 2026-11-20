@@ -261,6 +261,29 @@ function probeSource(scene) {
         }, 900);
         return;
       }
+      if (S.point) {   /* v191：指さす。押す→幕と案内→下の釦の上を押しても動かない→様子を写すの上を押す→写る→戻る→もう一度押してやめる */
+        var bp = document.getElementById('btnPoint'), cb = document.getElementById('btnCopyBoard'), v = document.getElementById('pointVeil'), clicks = 0;
+        if (cb) { cb.addEventListener('click', function () { clicks++; }); }
+        var rr = function (id) { var e = document.getElementById(id); if (!e) { return null; } var b = e.getBoundingClientRect(); return { l: b.left, r: b.right, t: b.top, b: b.bottom, w: b.width, h: b.height }; };
+        o.pBtn = { shots: rr('btnShots'), rec: rr('btnRecent'), url: rr('btnCopyUrl'), point: rr('btnPoint') }; o.pOver = document.documentElement.scrollWidth > window.innerWidth + 1;
+        if (bp) { bp.click(); }
+        setTimeout(function () {
+          var vr = v.getBoundingClientRect(), cs = getComputedStyle(v);
+          o.pVeil = { hidden: v.hidden, parent: v.parentElement && v.parentElement.tagName, w: vr.width, h: vr.height, pos: cs.position, ta: cs.touchAction, alpha: cs.backgroundColor };
+          o.pBanner = txt(document.getElementById('pointBanner')); o.pBodyCls = document.body.className; o.pLabel = txt(bp);
+          var cr = cb.getBoundingClientRect(); v.dispatchEvent(new MouseEvent('click', { clientX: cr.left + 3, clientY: cr.top + cr.height / 2, bubbles: true }));   /* 下の釦（まとめて写す）の上を押す */
+          o.pBoardClicks1 = clicks; o.pClipAfterBoard = CAP.clip;
+          var ur = document.getElementById('btnCopyUrl').getBoundingClientRect();
+          if (document.getElementById('pointVeil').hidden) { bp.click(); }
+          v.dispatchEvent(new MouseEvent('click', { clientX: ur.left + ur.width / 2, clientY: ur.top + ur.height / 2, bubbles: true }));   /* 様子を写すの上を押す */
+          setTimeout(function () {
+            o.pClip = String(CAP.clip || ''); o.pVeilHiddenAfter = v.hidden; o.pLabelAfter = txt(bp); o.pBodyClsAfter = document.body.className; o.pBoardClicks2 = clicks;
+            bp.click(); o.pCancelOn = !v.hidden; bp.click(); o.pCancelOff = v.hidden;
+            out2(o);
+          }, 400);
+        }, 200);
+        return;
+      }
       if (S.pressRecent) {   /* v187：直近に終わった仕事の釦（箱ごと押して写す） */
         var rbt = document.getElementById('btnRecent'); o.recBefore = txt(rbt); if (rbt) { rbt.click(); }
         setTimeout(function () { o.recAfter = txt(rbt); o.recClip = String(CAP.clip || ''); out2(o); }, 700);
@@ -753,7 +776,41 @@ try {
     const es = (html.match(/new EventSource\(/g) || []).length;
     if (es <= 1) { ok('EventSource を増やしていない（' + es + '箇所＝前からある状態の聞き取りだけ・札のために宛先の名を足していない）'); } else { ng('EventSource が増えている（' + es + '箇所）'); }
   }
+  /* ---- ⑤の十一 指さす（v191・2026-11-20 本人の枠） ---- */
+  head('⑤の十一 指さす（釦の置き場・透明な幕・部品の名とid・写す字・下の釦を動かさない・取り消し・iPhone の幅）');
+  {
+    const sc = { state: Object.assign({}, ST['手待ち'], { at: Math.floor(Date.now() / 1000), rcName: 'koushu-handan-93', rcPid: 6308, rcUrl: 'https://claude.ai/code/session_X' }), notices: [], board: { waiting: [], recent: [{ name: '直近その一', result: '済んだ' }] }, usage: U_OK, point: true, settle: 1500 };
+    for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
+      const r = run(tmp, sc, w, h);
+      if (!r) { ng(w + 'x' + h + '：測れない（指さす）'); continue; }
+      const why = [], B = r.pBtn || {};
+      if (!B.point || !B.url || !B.shots || !B.rec) { why.push('釦が出ていない'); }
+      else {
+        if (B.point.h < 44) { why.push('指さすの当たりが44px未満（' + Math.round(B.point.h) + '）'); }
+        const sameRow = Math.abs(B.point.t - B.url.t) < 2, below = B.point.t >= B.url.b - 1;
+        if (!sameRow && !below) { why.push('指さすが様子を写すの隣でも下の一段でもない'); }
+        if (sameRow && B.point.l < B.url.l) { why.push('指さすが様子を写すの左にある'); }
+        if (B.point.r > w + 1 || B.point.l < -1) { why.push('指さすが横にはみ出す'); }
+      }
+      if (r.pOver) { why.push('画面が横に溢れる'); }
+      const V = r.pVeil || {};
+      if (V.hidden !== false || V.parent !== 'BODY' || V.pos !== 'fixed' || Math.abs(V.w - w) > 1 || Math.abs(V.h - h) > 1) { why.push('幕が画面いっぱいの固定になっていない（' + JSON.stringify(V) + '）'); }
+      if (!/pan-x/.test(String(V.ta || '')) || !/pan-y/.test(String(V.ta || ''))) { why.push('幕の上からスクロールできない作り（touch-action ' + V.ta + '）'); }
+      if (!/rgba\(0, 0, 0, 0\)|transparent/.test(String(V.alpha || ''))) { why.push('幕が透明でない（' + V.alpha + '）'); }
+      if (r.pBanner !== 'おかしい所を押して' || r.pBodyCls.indexOf('pointing') < 0 || !/もう一度押すとやめる/.test(String(r.pLabel || ''))) { why.push('案内・釦の字が違う（' + r.pBanner + '／' + r.pLabel + '）'); }
+      if (r.pBoardClicks1 !== 0) { why.push('幕の間に下の釦が動いた（まとめて写す ' + r.pBoardClicks1 + '回）'); }
+      const clip = String(r.pClip || '');
+      if (clip.indexOf('ここがおかしい：') !== 0) { why.push('写す字の頭が「ここがおかしい：」でない（' + clip.slice(0, 20) + '）'); }
+      if (!/部品：様子を写す（id btnCopyUrl／button）/.test(clip)) { why.push('部品の名と id が違う（' + clip.split('\n')[1] + '）'); }
+      if (!/出ていた字：様子を写す/.test(clip)) { why.push('その時出ていた字が無い'); }
+      if (!/現況：/.test(clip) || !/状態：/.test(clip) || !/押した刻：/.test(clip)) { why.push('「様子を写す」と同じ字が入っていない'); }
+      if (r.pVeilHiddenAfter !== true || r.pBodyClsAfter.indexOf('pointing') >= 0 || r.pLabelAfter !== '写した') { why.push('写した後に戻っていない（幕 ' + r.pVeilHiddenAfter + '・釦「' + r.pLabelAfter + '」）'); }
+      if (r.pCancelOn !== true || r.pCancelOff !== true) { why.push('釦をもう一度押してもやめられない'); }
+      if (why.length) { ng(w + 'x' + h + '：' + why.join('／')); } else { ok(w + 'x' + h + '：指さす→幕と案内→下の釦は動かない→様子を写すの上を押すと「ここがおかしい：／部品：様子を写す（id btnCopyUrl）／出ていた字」＋様子を写すと同じ字が写り、戻る／もう一度押すとやめる（釦は' + (Math.abs(B.point.t - B.url.t) < 2 ? '様子を写すの隣' : '下の一段') + '）'); }
+    }
+  }
   /* ---- ⑥⑦ 終了予定（黄色い帯の刻）：v173 で帯を外したので測る相手が無い ---- */
+
 
 
 
