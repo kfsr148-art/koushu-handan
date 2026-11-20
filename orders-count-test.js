@@ -28,6 +28,19 @@ ck('--list は ASCII の \\u 出しで4件', JSON.parse(run('--list')).length ==
 ck('--wait＝2（作業中・枠:に1枠）', run('--wait') === '2');
 fs.writeFileSync(path.join(d, 'work-note.txt'), note(''));
 ck('--wait は作業中で枠:が無ければ空（出さない）', run('--wait') === '');
+// 枠J：順番待ちの一覧（様子を写す）。数は一覧の行の数と必ず同じ（同じ数え手 waitRows から）
+{
+  const iso2 = n => new Date((now - n) * 1000).toLocaleString('sv-SE');
+  const rr = (ago, id, item, st) => iso2(ago) + '\t' + id + '\t' + item + '\t' + st + '\n';
+  const raw2 = HEAD + rr(5000, 'w1', '（枠）全文は orders-full.jsonl の x・頭：【Codeタブへ】 今の仕事が済んでから。順番待ちを見えるようにせよ。様子を写すに一行ずつ出せ、それから指さすの名を直せ、それからもう少し長く書いておく', '未了：受領') + rr(4000, 'w2', '（枠）全文は orders-full.jsonl の y・頭：【Codeタブへ】 二つ直せ', '未了：受領') + rr(3000, 'w3', '項目', '済（手）');
+  const note2 = '枠: ' + iso2(4000) + '\n';
+  const wr = oc.waitRows(raw2, note2, { ev: 'PreToolUse' }, now), wlst = oc.waitList(raw2, note2, { ev: 'PreToolUse' }, now), wc = oc.waitCount(raw2, note2, { ev: 'PreToolUse' }, now);
+  ck('順番待ちの行＝受け持つ枠（w2）と済（w3）を除いた w1 だけ', wr.length === 1 && wr[0].id === 'w1');
+  ck('数は一覧の行の数と同じ', wc === wr.length && wlst.length === wr.length);
+  ck('一覧の一行は「届いた刻（MM-DD HH:MM）」と件名の頭（【Codeタブへ】と今の仕事が済んでから。を除き40字まで）', /^[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}$/.test(wlst[0].at) && wlst[0].head.indexOf('順番待ちを見えるようにせよ') === 0 && wlst[0].head.length <= 41);
+  ck('言い切れない時（作業中で枠:が無い）は一覧も null', oc.waitList(raw2, '', { ev: 'PreToolUse' }, now) === null && oc.waitCount(raw2, '', { ev: 'PreToolUse' }, now) === null);
+  ck('未了が無ければ空の一覧・数は0', oc.waitList(HEAD, '', {}, now).length === 0 && oc.waitCount(HEAD, '', {}, now) === 0);
+}
 fs.rmSync(d, { recursive: true, force: true });
-console.log('台帳の数え手（orders-count.js）：' + (bad ? 'NG ' + bad + '件' : '10件 合い'));
+console.log('台帳の数え手（orders-count.js）：' + (bad ? 'NG ' + bad + '件' : '15件 合い'));
 process.exit(bad ? 1 : 0);
