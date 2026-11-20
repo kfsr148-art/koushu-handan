@@ -1,5 +1,5 @@
 // state-decide.js — 返事パネルの状態を決める所は、ここ一つ（2026-11-19 11:30 本人の枠「状態の決め方を作り直す」）。
-//   材料：窓の合図（busy.txt の ev・evAt・stat・subj）／雲の台帳（kumo-wait.txt）／裏の仕事（busy.txt の agents・bg）／
+//   材料：窓の合図（busy.txt の ev・evAt・stat・subj）／雲の台帳（kumo-wait.txt）／裏の仕事（busy.txt の bg＝Stop の入力の background_tasks）／
 //         残りの段（job-steps.txt）／ヨシ待ち（job-steps.txt の [決]）／時計の待ち（kumo-wait.txt の workflow=clock:<epoch>）。
 //   上から当てる：ヨシ待ち → 止まり → 作業中 → 検査中 → 待ち → 待機中。待機中は上が全部無く、残りの段が0の時だけ。
 //   中身：作業中＝題・裏でN本／検査中＝雲の題・終了予定（無ければ見込み不明）／待ち＝訳・再開の刻。裏の仕事が走る間は作業中。
@@ -8,6 +8,7 @@
 'use strict';
 const fs = require('fs');
 const ROOT = process.env.SD_ROOT || 'C:/Users/user/.claude';
+const { helpCount } = require('./help-count.js');
 const FOOT = 180, HELP_STALE = 1800;
 function hm(t) { const d = new Date(t * 1000); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
 function readKv(p) { const o = {}; try { fs.readFileSync(p, 'utf8').replace(/^\uFEFF/, '').split(/\r?\n/).forEach(l => { const i = l.indexOf('='); if (i > 0) { o[l.slice(0, i).trim()] = l.slice(i + 1).trim(); } }); } catch (e) { } return o; }
@@ -28,18 +29,11 @@ function nowAtOf(m, first) {
 function decide(m) {
   const now = m.now, b = m.busy || {}, kw = m.kumo || {}, steps = m.steps || [];
   const pend = steps.filter(r => r.k !== 'x'); const first = pend[0] || null;
-  const ag = b.agents || {}; let run = 0, unk = 0; Object.keys(ag).forEach(id => { if (now - (Number(ag[id].at) || 0) > HELP_STALE) { unk++; } else { run++; } });
-  // 裏の仕事の数（2026-11-19 11:40 本人の枠②）：Stop の入力の background_tasks の type から。済んで知らせ待ちの物も数え、teammate は外す。
-  //   Stop が最後の合図（その後に手番が開いていない）の時だけ使う。それ以外（手番の中・Stop の入力に無い）は今朝の数え方（agents）。
-  let nHelp = run, nKumo = 0, nCmd = 0;
-  if (b.bg && Array.isArray(b.bg.items) && Number(b.bg.at) >= (Number(b.evAt) || 0) - 5) {
-    const it = b.bg.items.filter(x => !/teammate/i.test(String(x.type || '')));
-    nHelp = Math.max(run, it.filter(x => /agent/i.test(String(x.type || '')) && !/remote/i.test(String(x.type || ''))).length);
-    nKumo = it.filter(x => /remote/i.test(String(x.type || ''))).length;
-    nCmd = it.filter(x => !/agent|remote/i.test(String(x.type || ''))).length;
-  }
+  // 裏の仕事の数（2026-11-20 本人の枠）：SubagentStart/Stop の足し引きはやめ、Stop の入力の background_tasks（busy.bg）を正にする。数え方は help-count.js 一つ。
+  //   窓が手待ちで一覧が空なら 0。手番が開いている間は数えない（作業中は合図の足跡で決まる）。teammate は数えない。
+  const hc = helpCount(b, now), unk = hc.unk, nHelp = hc.agent, nKumo = hc.remote, nCmd = hc.cmd;
   const back = nHelp + nKumo + nCmd;
-  const backTx = [nHelp ? '裏で手伝い' + nHelp + '本' : '', nKumo ? '雲' + nKumo + '本' : '', nCmd ? '裏の命令' + nCmd + '本' : ''].filter(Boolean).join('・');
+  const backTx = hc.text;
   // 題（2026-11-19 13:00 本人の枠）：段の台帳に残りがある間は台帳の「仕事:」の行。無ければ窓の合図の題（受けた枠の頭の一行）
   const out = { stat: '', detail: '', subj: (pend.length && m.job) ? String(m.job) : String(b.subj || ''), eta: 0, resumeAt: 0, help: back > 0 ? backTx : (unk > 0 ? ('手伝い 不明 ' + unk + '本') : ''), steps: pend.length, stepDone: steps.length - pend.length, stepTotal: steps.length, next: first ? first.t : '',
     // 2026-11-19 12:40 本人の枠：パネルの「すんだ：」「いま：（何分たった）」「これから：」の材料（段の台帳の字そのまま）
