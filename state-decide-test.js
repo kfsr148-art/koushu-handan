@@ -60,6 +60,36 @@ console.log('状態の決め所の総当たり：' + n + '組・NG ' + bad + '�
   hn('help-count：空の一覧は run 0', hc.run === 0 && hc.unk === 0 && hc.text === '');
   console.log('手伝いの数（background_tasks だけ）：' + (hb ? 'NG ' + hb + '件' : '12件 合い'));
 }
+// 2026-11-20 本人の枠：控えにあるがまだ公開に見えていない札の印 cardOwedAt。gather の読み方は一時の置き場（SD_ROOT）で確かめる。
+{
+  const fs = require('fs'), os = require('os'), path = require('path');
+  const mk = (files) => { const d = fs.mkdtempSync(path.join(os.tmpdir(), 'koushu-sd-')); Object.keys(files).forEach(k => fs.writeFileSync(path.join(d, k), files[k])); return d; };
+  const run = (files) => { const d = mk(files); const r = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'state-decide.js'), '--alive', '1'], { env: Object.assign({}, process.env, { SD_ROOT: d }), encoding: 'utf8' }); fs.rmSync(d, { recursive: true, force: true }); try { return JSON.parse(r.stdout); } catch (e) { return {}; } };
+  const t = Math.floor(Date.now() / 1000), ago = n => t - n, iso = n => new Date((t - n) * 1000).toLocaleString('sv-SE');
+  const ck = (nm, ok) => { if (!ok) { bad++; console.log('NG 札の印：' + nm); } };
+  const noteDone = '開始: x\n件名: 試し\n種類: 終わり\n待ち: なし\n完了: 済んだ\n';
+  const stopBusy = JSON.stringify({ ev: 'Stop', evAt: ago(40), stopAt: ago(40), startedAt: ago(300), subj: '題' });
+  let r = run({ 'busy.txt': stopBusy, 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone });
+  ck('済んだ仕事の止まり（台帳が空き・控えが札になる形・まだ札が無い）→ Stop の刻で立つ', r.cardOwedAt === ago(40));
+  r = run({ 'busy.txt': JSON.stringify({ ev: 'idle_prompt', evAt: ago(5), stopAt: ago(65), startedAt: ago(300), subj: '題' }), 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone });
+  ck('Stop の約60秒後に idle_prompt が鳴っても、印は Stop の刻のまま', r.cardOwedAt === ago(65));
+  r = run({ 'busy.txt': stopBusy, 'job-steps.txt': '仕事: 試し\n[ ] 残り\n', 'work-note.txt': noteDone });
+  ck('段の台帳に残りがある途中の止まりでは立てない', r.cardOwedAt === 0);
+  r = run({ 'busy.txt': stopBusy, 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone.replace('種類: 終わり', '種類: 外待ち') });
+  ck('種類が外待ちなら立てない', r.cardOwedAt === 0);
+  r = run({ 'busy.txt': stopBusy, 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone, 'notify-sent.tsv': iso(10) + '\t✅ 終わりました\tx\n' });
+  ck('Stop より後に札が控えに入っていれば立てない', r.cardOwedAt === 0);
+  r = run({ 'busy.txt': JSON.stringify({ ev: 'Stop', evAt: ago(900), stopAt: ago(900), startedAt: ago(1200) }), 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone });
+  ck('10分たっても札が出なければ印は消える', r.cardOwedAt === 0);
+  r = run({ 'busy.txt': JSON.stringify({ ev: 'PreToolUse', evAt: ago(3), stopAt: ago(40), startedAt: ago(10) }), 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone });
+  ck('手番が開いている間（作業中）は立てない', r.cardOwedAt === 0);
+  const cid = 'cT-1', add = JSON.stringify({ t: 'add', id: cid, at: ago(20), title: 'x', body: 'y', state: 'done' }) + '\n';
+  r = run({ 'busy.txt': stopBusy, 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone.replace('完了: 済んだ', '待ち: 何か'), 'card-outbox.jsonl': add });
+  ck('先書きの控えに済みでない札があれば（控えが札の形でなくても）立つ。Stop の刻', r.cardOwedAt === ago(40));
+  r = run({ 'busy.txt': stopBusy, 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone, 'card-outbox.jsonl': add + JSON.stringify({ t: 'done', id: cid, at: ago(10) }) + '\n', 'notify-sent.tsv': iso(10) + '\t✅ 終わりました\tx\n' });
+  ck('先書きの札が済みになり控えに札が入っていれば立てない', r.cardOwedAt === 0);
+  console.log('札の印（cardOwedAt）：' + (bad ? 'NG あり' : '9件 合い'));
+}
 // 2026-11-19 16:20 本人の枠：「▶ 進行中（N分）」の起点は今待っている走りの始まり。二本続けて走らせると二本目は0分から
 {
   const st = [{ k: 'x', t: '一' }, { k: '雲', t: '確かめてから公開している' }];

@@ -94,7 +94,7 @@ function probeSource(scene) {
   window.fetch = function (u) {
     u = String(u);
     if (u.indexOf('panel-ver.txt') >= 0) return J(String(S.panelVer || '104'));
-    if (u.indexOf('notices.json') >= 0)  return J(S.notices || []);
+    if (u.indexOf('notices.json') >= 0)  { window.__noticeHits = (window.__noticeHits || 0) + 1; return J(S.notices || []); }
     if (u.indexOf('board.json') >= 0) {
       /* S.boardFailAfter 回目から先は取得そのものを失敗させる（v113・板の欠け-1）。
          iPhone の「Load failed」と同じ、fetch が転ぶ形を作る。 */
@@ -174,6 +174,8 @@ function probeSource(scene) {
       o.halfDump = ['rcLink', 'doneBox', 'doneHead'].map(function (id) { var e = document.getElementById(id); if (!e) { return id + ':無し'; } var s = getComputedStyle(e); return id + '{w' + Math.round(e.getBoundingClientRect().width) + ',pad' + s.paddingLeft + '/' + s.paddingRight + ',bs:' + s.boxSizing + ',flex:' + s.flex + ',mar' + s.marginLeft + '/' + s.marginRight + '}'; }).join(' '); })();
     /* 視野の幅が言った幅より広がった時のために、右端が一番外にある要素を三つ控える（どこが溢れているかを辿る） */
     (function () { var all = [].slice.call(document.body.querySelectorAll('*')).filter(function (e) { var r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).display !== 'none'; }); all.sort(function (a, b) { return b.getBoundingClientRect().right - a.getBoundingClientRect().right; }); o.rightmost = all.slice(0, 3).map(function (e) { return e.tagName.toLowerCase() + (e.id ? '#' + e.id : '') + (e.className && typeof e.className === 'string' ? '.' + e.className.split(' ').join('.') : '') + '@' + Math.round(e.getBoundingClientRect().right) + '/w' + Math.round(e.getBoundingClientRect().width); }); })();
+    /* v188：札をまとめ中の頭の字（#headWait）の class・色・札の取得の数 */
+    (function () { var hw = document.getElementById('headWait'); o.hwCls = hw ? hw.className : ''; o.hwColor = hw ? getComputedStyle(hw).color : ''; o.hwWeight = hw ? getComputedStyle(hw).fontWeight : ''; o.noticeHits = window.__noticeHits || 0; })();
     o.evTag = txt(document.getElementById('evTag')); o.footTag = txt(document.getElementById('footTag')); o.footHidden = !!(document.getElementById('footTag') || {}).hidden;   /* v181 */
     o.stBad = [].map.call([].concat([].slice.call(pbx ? pbx.querySelectorAll('p.m.bad') : []), [].slice.call(st ? st.querySelectorAll('p.m.bad') : [])), function (x) { return x.textContent; }).join('／');   /* v180：赤の行 */
     /* 黄色の行の色（v108・パネルの色-1）。刻だけ別色にしてあるので、二つ測る。
@@ -710,7 +712,39 @@ try {
     else if (/直近に終わった仕事（2件）/.test(String(rp.recBefore || '')) && /^写した$/.test(String(rp.recAfter || '')) && /直近その一/.test(String(rp.recClip || '')) && /直近その二/.test(String(rp.recClip || ''))) { ok('直近に終わった仕事は箱ごと押して全文が写る（押す前「' + rp.recBefore + '」・押した後「' + rp.recAfter + '」）'); }
     else { ng('直近の釦を押しても写らない／字が違う（前「' + rp.recBefore + '」・後「' + rp.recAfter + '」・写し「' + String(rp.recClip || '').slice(0, 30) + '」）'); }
   }
+  /* ---- ⑤の十 札をまとめ中（v188・2026-11-20 本人の枠）：控えにあるがまだ公開に見えていない札の印（cardOwedAt）がある間は待機中でなく「札をまとめ中、、、」・出たら「まとめて写すヨシ！」・3分で赤「札が遅れている」・印が無ければ待機中・10秒おきに読み直す ---- */
+  head('⑤の十 札をまとめ中（待機中でなく・見込みの刻・赤・10秒おき・EventSource を増やさない）');
+  {
+    const nf = () => Math.floor(Date.now() / 1000);
+    const quiet = Object.assign({}, ST['手待ち']);
+    const run1 = (extra, notices, vw, vh, settle) => run(tmp, { state: Object.assign({}, quiet, { at: nf(), statAt: nf() - 100 }, extra), notices: notices, usage: U_OK, settle: settle || 1500 }, vw || 390, vh || 844);
+    for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
+      const r = run1({ cardOwedAt: nf() - 30 }, MIX, w, h);
+      if (!r) { ng(w + 'x' + h + '：測れない（札をまとめ中）'); continue; }
+      const t = String(r.headWait || '');
+      if (/札をまとめ中、、、。（[0-9]{2}:[0-9]{2} ごろ）/.test(t) && !/待機中/.test(t) && r.hwCls !== 'late') { ok(w + 'x' + h + '：印がある間は待機中でなく「' + t + '」（見込みの刻つき・赤でない）'); } else { ng(w + 'x' + h + '：札をまとめ中が出ない（頭の字「' + t + '」・class「' + r.hwCls + '」）'); }
+    }
+    let r = run1({ cardOwedAt: nf() - 200 }, MIX);
+    if (!r) { ng('測れない（札が遅れている）'); }
+    else if (/札が遅れている/.test(String(r.headWait || '')) && r.hwCls === 'late' && /^rgb\(/.test(String(r.hwColor || '')) && Number(r.hwWeight) >= 600) { ok('3分たっても出なければ赤く太く「札が遅れている」（色 ' + r.hwColor + '）'); } else { ng('「札が遅れている」が赤で出ない（「' + String(r.headWait) + '」・class「' + r.hwCls + '」・色 ' + r.hwColor + '）'); }
+    const fresh = [N(nf() - 5, '✅ 終わりました（返事不要）', '済んだ仕事の本文')];
+    r = run1({ cardOwedAt: nf() - 30 }, MIX.concat(fresh));
+    if (!r) { ng('測れない（札が出た）'); }
+    else if (/まとめて写すヨシ！/.test(String(r.headWait || '')) && !/まとめ中|遅れ/.test(String(r.headWait || ''))) { ok('札が一覧に出たら「まとめて写すヨシ！」へ（頭の字「' + r.headWait + '」）'); } else { ng('札が出ても「まとめて写すヨシ！」にならない（頭の字「' + String(r.headWait) + '」）'); }
+    r = run1({ cardOwedAt: 0 }, []);
+    if (!r) { ng('測れない（印なし）'); }
+    else if (/待機中/.test(String(r.headWait || '')) && !/まとめ中|遅れ/.test(String(r.headWait || ''))) { ok('印が無ければ今までどおり「待機中」'); } else { ng('印が無いのに待機中でない（頭の字「' + String(r.headWait) + '」）'); }
+    r = run1({ cardOwedAt: nf() - 700 }, []);
+    if (!r) { ng('測れない（印が古い）'); }
+    else if (/待機中/.test(String(r.headWait || ''))) { ok('10分たった印は消えて「待機中」に戻る（永久に居座らない）'); } else { ng('10分たった印が居座っている（頭の字「' + String(r.headWait) + '」）'); }
+    const hit1 = run1({ cardOwedAt: nf() - 20 }, MIX, 390, 844, 12500), hit0 = run1({ cardOwedAt: 0 }, MIX, 390, 844, 12500);
+    if (!hit1 || !hit0) { ng('測れない（読み直し）'); }
+    else if (hit1.noticeHits >= hit0.noticeHits + 1) { ok('印がある間は10秒おきに札を読み直す（札の取得 ' + hit1.noticeHits + '回・印なしは ' + hit0.noticeHits + '回）'); } else { ng('印があっても読み直しが増えない（' + hit1.noticeHits + '回・印なし ' + hit0.noticeHits + '回）'); }
+    const es = (html.match(/new EventSource\(/g) || []).length;
+    if (es <= 1) { ok('EventSource を増やしていない（' + es + '箇所＝前からある状態の聞き取りだけ・札のために宛先の名を足していない）'); } else { ng('EventSource が増えている（' + es + '箇所）'); }
+  }
   /* ---- ⑥⑦ 終了予定（黄色い帯の刻）：v173 で帯を外したので測る相手が無い ---- */
+
 
 
 
