@@ -788,6 +788,26 @@ try {
     const es = (html.match(/new EventSource\(/g) || []).length;
     if (es === 0 && !/koushu-st-/.test(html) && !/STATE_TOPIC|startStateSse/.test(html)) { ok('EventSource は無く、状態の聞き取りの話題名（koushu-st-）も頁に残っていない（v194で外した）'); } else { ng('EventSource か話題名が頁に残っている（EventSource ' + es + '箇所）'); }
   }
+  /* ---- ⑤の十二 まとめて写すの頭の現況（v196・枠G）：状態の言葉＋終わる見込みの刻（件名の頭の一語でなく） ---- */
+  head('⑤の十二 まとめて写すの頭の現況は状態の言葉と見込みの刻（作り値・字面）');
+  {
+    const i0 = html.indexOf('  function nowLine(withEta) {');
+    const j0 = i0 >= 0 ? html.indexOf(String.fromCharCode(10) + '  }', i0) : -1;
+    const fsrc = (i0 >= 0 && j0 > i0) ? html.slice(i0, j0 + 4) : '';
+    if (!fsrc) { ng('nowLine(withEta) が無い'); }
+    else {
+      const mk = (stat, kumo, eta, wordv) => new Function('lastStat', 'lastKumo', 'lastState', 'etaLineText', 'honVer', 'stbVer', 'hhmm', fsrc + String.fromCharCode(10) + 'return nowLine;')(stat, kumo, { word: wordv, since: '', at: 1 }, () => eta, '1', '1', () => '00:00');
+      const a = mk('作業中', '', '終わる見込み 17:45（あと12分）', '台帳')(true);
+      if (a.indexOf('現況：作業中・終わる見込み 17:45（あと12分）') === 0 && a.indexOf('台帳') < 0) { ok('作業中：頭は「現況：作業中・終わる見込み HH:MM」で、件名の頭の一語（台帳）は出ない'); } else { ng('作業中の現況の頭が違う：' + a.slice(0, 60)); }
+      const b = mk('手待ち', '検査中：panel v196（見込み 17:30）', '終わる見込み 17:30（あと3分）', '次の指示待ち')(true);
+      if (b.indexOf('現況：手待ち（検査中）・終わる見込み 17:30') === 0) { ok('手待ち＋雲待ち：「手待ち（検査中）・終わる見込み」'); } else { ng('手待ち＋雲待ちの現況が違う：' + b.slice(0, 60)); }
+      const c2 = mk('手待ち', '', 'なし（作業も待ちも無い）', '次の指示待ち')(true);
+      if (c2.indexOf('現況：手待ち ／ ') === 0) { ok('見込みが無い時は見込みの字を足さない'); } else { ng('見込みなしの現況が違う：' + c2.slice(0, 60)); }
+      const d = mk('作業中', '', 'x', '台帳')(false);
+      if (d.indexOf('現況：台帳') === 0) { ok('様子を写す（withEta なし）は今までの形のまま'); } else { ng('様子を写すの形が変わった：' + d.slice(0, 40)); }
+    }
+    if (html.split('nowLine(true)').length === 3) { ok('まとめて写す・全部写すの二箇所が withEta で呼ぶ'); } else { ng('nowLine(true) の呼びが二箇所でない'); }
+  }
   /* ---- ⑤の十一 指さす（v191・2026-11-20 本人の枠） ---- */
   head('⑤の十一 指さす（釦の置き場・透明な幕・部品の名とid・写す字・下の釦を動かさない・取り消し・iPhone の幅）');
   {
