@@ -79,6 +79,8 @@ console.log('状態の決め所の総当たり：' + n + '組・NG ' + bad + '�
   ck('種類が外待ちでも、待ち:なし・完了:ありなら立てる（札は出る。20:24:18 の「待機中」になった回の再現）', r.cardOwedAt === ago(40));
   r = run({ 'busy.txt': stopBusy, 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone.replace('種類: 終わり', '種類: 外待ち').replace('待ち: なし', '待ち: 雲の検査（check.yml）') });
   ck('種類が外待ちで、待ちに中身があれば（本当に外を待っている）立てない', r.cardOwedAt === 0);
+  // 2026-11-20 枠 十：控えが最後の札より古い（札を出した控えのまま・新しい仕事をしていない止まり）なら立てない
+  { const d0 = mk({ 'busy.txt': JSON.stringify({ ev: 'Stop', evAt: ago(40), stopAt: ago(40), startedAt: ago(300), subj: '題' }), 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone, 'notify-sent.tsv': iso(100) + '\t✅ 終わりました\tx\n' }); const old = (t - 400); fs.utimesSync(path.join(d0, 'work-note.txt'), old, old); const rr = (() => { const x = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'state-decide.js'), '--alive', '1'], { env: Object.assign({}, process.env, { SD_ROOT: d0 }), encoding: 'utf8' }); try { return JSON.parse(x.stdout); } catch (e) { return {}; } })(); fs.rmSync(d0, { recursive: true, force: true }); ck('札を出した控えのまま新しい仕事をしない止まり（控えの更新が最後の札より古い）は立てない（22:29:02 の再現）', rr.cardOwedAt === 0); }
   r = run({ 'busy.txt': stopBusy, 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone, 'notify-sent.tsv': iso(10) + '\t✅ 終わりました\tx\n' });
   ck('Stop より後に札が控えに入っていれば立てない', r.cardOwedAt === 0);
   r = run({ 'busy.txt': JSON.stringify({ ev: 'Stop', evAt: ago(900), stopAt: ago(900), startedAt: ago(1200) }), 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone });
@@ -100,7 +102,7 @@ console.log('状態の決め所の総当たり：' + n + '組・NG ' + bad + '�
   ck('雲待ちが無ければ25分前の印は消える（15分）', r.cardOwedAt === 0 && r.cardOwedEta === 0);
   r = run({ 'busy.txt': stopBusy, 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone });
   ck('雲待ちが無い通常の印の見込みの刻は、Stop から150秒', r.cardOwedAt === ago(40) && r.cardOwedEta === ago(40) + 150);
-  console.log('札の印（cardOwedAt・cardOwedEta）：' + (bad ? 'NG あり' : '13件 合い'));
+  console.log('札の印（cardOwedAt・cardOwedEta）：' + (bad ? 'NG あり' : '14件 合い'));
 }
 // 2026-11-19 16:20 本人の枠：「▶ 進行中（N分）」の起点は今待っている走りの始まり。二本続けて走らせると二本目は0分から
 {
