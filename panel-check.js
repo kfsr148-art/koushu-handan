@@ -459,6 +459,27 @@ function staticParts() {
       if (f(fake2) === 'div.zzz') { ok('どの名にも当たらない所だけ平たい名（タグ名.class）に落ちる'); } else { ng('平たい名への落ち方が違う'); }
     }
   }
+  /* ---- ⑤の十四 着手から90秒以内の「見込み未記入」は赤くしない（v198・枠R） ---- */
+  head('⑤の十四 着手の直後は「見込み未記入」を赤くしない（作り値・字面）');
+  {
+    const i0 = html.indexOf('  function etaLineText() {');
+    const j0 = i0 >= 0 ? html.indexOf(String.fromCharCode(10) + '  }', i0) : -1;
+    const fsrc = (i0 >= 0 && j0 > i0) ? html.slice(i0, j0 + 4) : '';
+    if (!fsrc) { ng('etaLineText が無い'); }
+    else {
+      const NOW = Math.floor(Date.now() / 1000);
+      const mk = (started, mikomiMin, raw) => new Function('lastStat', 'lastStartedAt', 'lastMikomiMin', 'lastMikomiRaw', 'pad2s', 'waitEtaRow', fsrc + String.fromCharCode(10) + 'return etaLineText;')('作業中', started, mikomiMin, raw, (e) => '00:00', () => null);
+      const a = mk(NOW - 30, 0, '')();
+      if (/記入待ち/.test(a) && !/未記入/.test(a)) { ok('着手30秒・見込みを書く前：赤い「見込み未記入」でなく「記入待ち」'); } else { ng('着手直後の字が違う：' + a); }
+      const b = mk(NOW - 200, 0, '')();
+      if (b === '見込み未記入') { ok('着手200秒（90秒を過ぎた）でも書かれていなければ「見込み未記入」'); } else { ng('90秒を過ぎた後の字が違う：' + b); }
+      const c = mk(NOW - 30, 0, '不明')();
+      if (c === '見込み不明') { ok('窓が「不明」と書いていれば、着手直後でも「見込み不明」'); } else { ng('「不明」の字が違う：' + c); }
+      const d = mk(NOW - 30, 40, '40分')();
+      if (/^終わる見込み /.test(d)) { ok('見込みが書かれていれば、いつでも「終わる見込み HH:MM」'); } else { ng('見込みありの字が違う：' + d); }
+    }
+    if (html.indexOf("{ t: '見込み 記入待ち（着手から90秒以内）', c: '' }") >= 0) { ok('手順のゲージの箱も、着手から90秒以内は赤くしない（c が空）'); } else { ng('箱の側の記入待ちが無い'); }
+  }
 }
 
 if (!BROWSER) {
