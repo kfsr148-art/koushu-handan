@@ -152,6 +152,10 @@ function probeSource(scene) {
     /* 黄色の行（状態の一行）と、その箱の高さ */
     var st = document.getElementById('stLine');
     o.stText = txt(st);
+    /* v183：下の三行の詰まり。見えている行の上下の座標・包みの高さと並べ方・横溢れ */
+    (function () { var g = document.getElementById('footGroup'); o.footGroup = !!g; if (!g) { return; } var gs = getComputedStyle(g); o.footDisp = gs.display; o.footJust = gs.justifyContent; o.footH = g.getBoundingClientRect().height; o.footFixedH = (g.style.height || '') !== '';
+      o.footLines = [].slice.call(g.children).filter(function (e) { return !e.hidden && e.getBoundingClientRect().height > 0; }).map(function (e) { var r = e.getBoundingClientRect(); return { id: e.id, top: r.top, bottom: r.bottom, h: r.height, w: r.width, mt: parseFloat(getComputedStyle(e).marginTop) || 0, mb: parseFloat(getComputedStyle(e).marginBottom) || 0 }; });
+      o.docOverflow = document.documentElement.scrollWidth > window.innerWidth + 1; })();
     o.evTag = txt(document.getElementById('evTag')); o.footTag = txt(document.getElementById('footTag')); o.footHidden = !!(document.getElementById('footTag') || {}).hidden;   /* v181 */
     o.stBad = [].map.call(st ? st.querySelectorAll('p.m.bad') : [], function (x) { return x.textContent; }).join('／');   /* v180：赤の行 */
     /* 黄色の行の色（v108・パネルの色-1）。刻だけ別色にしてあるので、二つ測る。
@@ -569,7 +573,28 @@ try {
     const si = H2.indexOf('  function statusText() {'), sj = si >= 0 ? H2.indexOf(LF + '  }' + LF, si) : -1, sb = (si >= 0 && sj > si) ? H2.slice(si, sj + 4) : '';
     if (sb.indexOf("'見込み：'") >= 0 && H2.indexOf('function etaLineText()') >= 0) { ok('様子を写すの字に「見込み：」の行がある（作業中は mikomi・待ちは待ちの見込み・無ければ赤と同じ字）'); } else { ng('様子を写すに見込みの行が無い'); }
   }
+  /* ---- ⑤の五 下の三行（取得の刻・最後の合図・台帳と起こし直し）を詰める（v183・2026-11-20 本人の枠） ---- */
+  head('⑤の五 下の三行が一つのまとまりに詰まっている（iPhone の幅）');
+  {
+    const nowE = Math.floor(Date.now() / 1000);
+    const stt = Object.assign({}, ST['手待ち'], { ev: 'Stop', evAt: nowE - 30, foot: { ledger: 7, revive: '今日 3回（固まり 1・重さ 1・0本 1）', reviveLast: '04:12' } });
+    for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
+      const r = run(tmp, { state: stt, notices: MIX, usage: U_OK, settle: 1500 }, w, h);
+      if (!r) { ng(w + 'x' + h + '：測れない（下の三行）'); continue; }
+      const L = r.footLines || [];
+      if (!r.footGroup) { ng(w + 'x' + h + '：下の三行の包み（#footGroup）が無い'); continue; }
+      if (L.length !== 3) { ng(w + 'x' + h + '：見えている行が3本でない（' + L.map(x => x.id).join('・') + '）'); continue; }
+      const gaps = [L[1].top - L[0].bottom, L[2].top - L[1].bottom];
+      const sumH = L.reduce((a, x) => a + x.h, 0);
+      if (gaps.some(g => g > 4 || g < -1)) { ng(w + 'x' + h + '：行の間が空いている／重なっている（' + gaps.map(g => g.toFixed(1)).join('・') + 'px）'); }
+      else if (r.footDisp === 'flex' || r.footDisp === 'grid' || /space-/.test(String(r.footJust || '')) || r.footFixedH) { ng(w + 'x' + h + '：余りを配る作り・高さ決め打ち（' + r.footDisp + '／' + r.footJust + '／固定高=' + r.footFixedH + '）'); }
+      else if (r.footH > sumH + 12) { ng(w + 'x' + h + '：包みの高さが三行より大きい（' + r.footH.toFixed(1) + '＞' + sumH.toFixed(1) + '）'); }
+      else if (r.docOverflow) { ng(w + 'x' + h + '：横に溢れている'); }
+      else { ok(w + 'x' + h + '：三行が詰まっている（行の間 ' + gaps.map(g => g.toFixed(1)).join('・') + 'px・包み ' + r.footH.toFixed(1) + 'px・display=' + r.footDisp + '）'); }
+    }
+  }
   /* ---- ⑥⑦ 終了予定（黄色い帯の刻）：v173 で帯を外したので測る相手が無い ---- */
+
 
   head('⑥⑦ 黄色い帯の終了予定（v173 で外した）');
   note('黄色い帯を外した（v173）。終了予定は検査中の中身だけに出し、状態の決め所の総当たりで見る');
