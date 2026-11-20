@@ -548,7 +548,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v193（11月20日）</p>
+  <p class="ver" id="verTag">panel v194（11月20日）</p>
   <div class="foot-group" id="footGroup">
   <p class="usage-when" id="usageWhen" hidden></p>
   <!-- 遠隔で繋がっている会話の名と pid（v127・落ちた後の起こし-2）。state.json の rcName / rcPid。
@@ -582,7 +582,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '193';  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
+  var PANEL_VER = '194';  /* v194：ntfy の直の聞き取り（STATE_TOPIC）を外した */  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
   /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
@@ -1991,7 +1991,6 @@
     pullBoard();  /* 板の三つ（v44）。一覧が空のときだけ出るが、取得は先に始める */
     pullUsage();
     tick();
-    startStateSse();   /* v155：状態の変わり目を ntfy で直に聞く（届かなければ公開ページの読み取りのまま） */
     if (timer) { clearInterval(timer); }
     pullNtfyLatest();     /* 押したその場で写せるよう、開いたときに一度取っておく */
     timer = setInterval(tick, 15000);
@@ -3038,30 +3037,7 @@
      見張りが commit と push で公開ページへ出す。status.md と同じ道。 */
   var STATE_URL = 'https://kfsr148-art.github.io/koushu-state/state.json';
 
-  /* v155：状態の変わり目を ntfy.sh で直に聞く（公開ページは押してから届くまで約70秒かかる）。
-     ＊聞くのは専用の話題（STATE_TOPIC）。載っているのは状態の記号だけ（stat・startedAt・statAt・cloud・mikomi・at）。件名などは載っていないので、
-       件名・指示・見込みは、公開ページから読んだ最後の写し（lastStateObj）のまま、変わった所だけ重ねる。
-     ＊ntfy が届かない・切れている時は、今までの公開ページの読み取り（15秒ごと）がそのまま働く。
-     ＊新しい方を採る：聞いた状態の方が公開ページの写しより新しい間は、古い写しで巻き戻さない（stateAtMax）。 */
-  var STATE_TOPIC = 'koushu-st-911d32e41f58c7b5b2d77dc3';
-  var stateAtMax = 0, lastStateObj = null, stateEs = null;
-  function startStateSse() {
-    if (stateEs || typeof EventSource === 'undefined' || location.protocol === 'file:') { return; }
-    try {
-      stateEs = new EventSource('https://ntfy.sh/' + STATE_TOPIC + '/sse?since=30s');
-      stateEs.onmessage = function (e) {
-        try {
-          var ev = JSON.parse(e.data);
-          if (!ev || ev.event !== 'message') { return; }
-          var m = JSON.parse(ev.message);
-          if (!m || typeof m.at !== 'number' || !lastStateObj) { return; }   // 公開ページの写しを一度も読めていない間は、重ねる土台が無いので待つ
-          var d = {}; for (var k in lastStateObj) { d[k] = lastStateObj[k]; }
-          d.stat = m.stat; d.startedAt = m.startedAt; d.statAt = m.statAt; d.cloud = m.cloud; d.mikomi = m.mikomi; d.at = m.at; if (m.ev) { d.ev = m.ev; d.evAt = m.evAt; }
-          pullState(d);
-        } catch (x) { }
-      };
-    } catch (e) { stateEs = null; }
-  }
+  /* v194：ntfy の直の聞き取り（v155）は外した。状態は公開ページ（STATE_URL）の読み取りだけで出す。 */
   function pullState(obj) {
     /* 取り置きを避ける。GitHub の配信網は少し遅れるが、状態は「呼ぶもの」ではないので構わない。 */
     (obj ? Promise.resolve(obj) : fetch(STATE_URL + '?_t=' + Date.now(), { cache: 'no-store' })
@@ -3077,9 +3053,6 @@
         if (!d || typeof d !== 'object' || Array.isArray(d) || typeof d.at !== 'number') {
           throw new Error('形が違います（at が数ではありません）');
         }
-        /* v155：聞いた状態より古い公開ページの写しは使わず、新しい方（lastStateObj）で判じ直す（連絡なしの判定も、新しい方の at で続く） */
-        if (!obj && d.at < stateAtMax && lastStateObj) { d = lastStateObj; }
-        if (d.at >= stateAtMax) { stateAtMax = d.at; lastStateObj = d; }
         var sec = Math.floor(Date.now() / 1000) - (d.at || 0);
         var w = String(d.stat || '');
         var subj = String(d.subj || '');

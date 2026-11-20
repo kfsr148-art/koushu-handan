@@ -786,7 +786,7 @@ try {
     if (!r) { ng('測れない（見込みの直後）'); }
     else if (/札をまとめ中/.test(String(r.headWait || '')) && r.hwCls !== 'late') { ok('検査の見込みを過ぎて30秒以内はまだ赤にしない'); } else { ng('見込みの直後に赤になった（「' + String(r.headWait) + '」）'); }
     const es = (html.match(/new EventSource\(/g) || []).length;
-    if (es <= 1) { ok('EventSource を増やしていない（' + es + '箇所＝前からある状態の聞き取りだけ・札のために宛先の名を足していない）'); } else { ng('EventSource が増えている（' + es + '箇所）'); }
+    if (es === 0 && !/koushu-st-/.test(html) && !/STATE_TOPIC|startStateSse/.test(html)) { ok('EventSource は無く、状態の聞き取りの話題名（koushu-st-）も頁に残っていない（v194で外した）'); } else { ng('EventSource か話題名が頁に残っている（EventSource ' + es + '箇所）'); }
   }
   /* ---- ⑤の十一 指さす（v191・2026-11-20 本人の枠） ---- */
   head('⑤の十一 指さす（釦の置き場・透明な幕・部品の名とid・写す字・下の釦を動かさない・取り消し・iPhone の幅）');
