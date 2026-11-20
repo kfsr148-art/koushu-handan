@@ -197,9 +197,15 @@
      ＊.cpall は幅いっぱいの作りなので、この行の中でだけ幅と余白を外す。
        ほかの .cpall（まとめて写す・お知らせ・箱の表紙）には触れない。 */
   .shotsrow{display:flex; gap:8px; margin:4px 14px 12px;}
-  .shotsrow > .cpall{margin:0; width:auto;}
-  .shotsrow > #btnShots{flex:1 1 auto;}
-  .shotsrow > .url{flex:0 0 auto; padding:0 12px; font-size:14px;}
+  /* v187：写し取り一覧・直近に終わった仕事・様子を写すの三つ並び。幅は等分。狭くても字が折り返して収まる */
+  .shotsrow > .cpall{margin:0; width:auto; flex:1 1 0; min-width:0; display:flex; align-items:center; justify-content:center; text-align:center; font-size:13px; line-height:1.25; padding:6px 4px; min-height:48px; box-sizing:border-box; overflow-wrap:anywhere;}
+  /* v187：遠隔と終わりました N件 の半分ずつの二つ並び */
+  .halfrow{display:flex; gap:8px; margin:0 14px; align-items:stretch;}
+  .halfrow > .cpall, .halfrow > .done-box{flex:1 1 calc((100% - 8px) / 2); min-width:0; margin:8px 0 0; width:auto; box-sizing:border-box; padding-left:0; padding-right:0;}
+  .halfrow > .done-box{display:flex;}
+  .halfrow > .done-box.hide{display:none;}
+  .halfrow > .done-box > .cpall{flex:1 1 auto; width:100%; margin:0; font-size:14px; line-height:1.3; padding:6px 6px; box-sizing:border-box; min-height:48px;}
+  #doneList{margin:0;}
   /* あなた待ちの各件に添える一行（v58）。印・立てた時刻・待ちの種類・動く条件。
      ＊件名より一段小さく、色も落とす。読む順が件名 → 添えの一行になるように。 */
   .wmeta{font-size:12px; line-height:1.6; color:var(--dim);}
@@ -261,7 +267,7 @@
   .usage .u-bar i.hot{background:#ff5a4d;}
   .usage .u-bar i.warm{background:#ffa63d;}
   .usage .u-bar i.cool{background:#5ad07a;}
-  .usage .u-reset{display:block; font-size:11px; color:var(--dim); line-height:1.4; white-space:nowrap;}
+  .usage .u-reset{display:block; font-size:11px; color:var(--dim); line-height:1.4; white-space:normal; overflow-wrap:anywhere;}   /* v187：nowrap だと 320px の幅で「11/21 10:00にリセット」が列からはみ出し、画面全体が10px横に広がった（本物の iPhone 幅で初めて検出） */
   .usage .hot{color:#ff5a4d;}
   .usage .warm{color:#ffa63d;}
   .usage .cool{color:#5ad07a;}
@@ -427,7 +433,6 @@
     <!-- いまの線（v144・いまの線-1）。いまの窓の remote-control の宛先。押せばその会話が開く。
          読む元は state.json の rcUrl（inbox-watch.ps1 が sessions/<pid>.json の bridgeSessionId から組む）。
          取れていなければ行ごと畳む。 -->
-    <a class="cpall rc hide" id="rcLink" href="#" target="_blank" rel="noopener"><span class="rc-top">🔗 遠隔</span><span class="rc-sub"></span></a>
     <!-- ＊「受け取った指示 HH:MM「…」」の一行（v61）は **v70 で画面から消した**。
          器ごと外している。値を書く側（inbox-feed.ps1 → last-order.txt → state.json）は
          そのまま動いており、まとめて写しの中には今までどおり入る。
@@ -493,10 +498,12 @@
          **どこでも中身を切らない。**
        ＊写した札の控え（下）とは別物。あちらは「片付けた札の行き先」で、
          こちらは「終わりましたの報告を、写した写さないに関わらず全部残す場所」。 -->
-  <div class="done-box hide" id="doneBox">
-    <button type="button" class="cpall" id="doneHead"></button>
-    <ul id="doneList"></ul>
+  <!-- v187（2026-11-20 本人の枠）：「🔗 遠隔」を見出しの中から下ろし、「✅ 終わりました N件」と半分ずつの二つ並びにした。一覧（#doneList）は並びの下。0件なら終わりましたの箱は出ず、遠隔だけが幅いっぱいに。 -->
+  <div class="halfrow" id="halfRow">
+    <a class="cpall rc hide" id="rcLink" href="#" target="_blank" rel="noopener"><span class="rc-top">🔗 遠隔</span><span class="rc-sub"></span></a>
+    <div class="done-box hide" id="doneBox"><button type="button" class="cpall" id="doneHead"></button></div>
   </div>
+  <ul id="doneList"></ul>
   <!-- 過去の札（v118・先の穴-2 ②）。上限で押し出された札の行き先。
        読む元は notices-archive.json（notify-record.ps1 が押し出す前に移す）。
        ＊開いたときに初めて取りに行く（起動のたびに取ると重い）。 -->
@@ -513,6 +520,7 @@
     <a class="cpall" id="btnShots"
        href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
        target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
+    <button type="button" class="cpall" id="btnRecent">直近に終わった仕事（0件）</button>
     <button type="button" class="cpall url" id="btnCopyUrl">様子を写す</button>
   </div>
   <!-- v184：HTML の順は 画面の写し取り一覧／様子を写す → 使用量の三本 → 本体の版の行（.facts）→ panel の版の行（#verTag）→ 下の三行（#footGroup）。見た目だけの order ではなく、並びそのものをここで決める。 -->
@@ -532,7 +540,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v186（11月20日）</p>
+  <p class="ver" id="verTag">panel v187（11月20日）</p>
   <div class="foot-group" id="footGroup">
   <p class="usage-when" id="usageWhen" hidden></p>
   <!-- 遠隔で繋がっている会話の名と pid（v127・落ちた後の起こし-2）。state.json の rcName / rcPid。
@@ -562,7 +570,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '186';  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
+  var PANEL_VER = '187';  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
   /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
@@ -1036,6 +1044,7 @@
     /* 下段 — 直近に終わった仕事3件。件名と、結果を一行だけ。 */
     var r = (!boardTaken && board.recent && board.recent.length) ? board.recent : [];
     /* 板の枠は札ではないので、決め打ちの鍵を与える（v47）。 */
+    var hMain = h;   /* v187：直近に終わった仕事は板の札でなく、写し取り一覧の隣の釦（#btnRecent）に移した。以下の組み立ては残し、板へは出さない */
     var rk = 'board:recent';
     /* こちらにも写す釦を付ける（v56）。あなた待ちと同じで、表題の行に置く。 */
     /* こちらも、開いた形で組み直すのは中身があるときだけ（v60）。 */
@@ -1064,6 +1073,7 @@
          表紙が「直近に終わった仕事（0件）」と既に言っているので、中身の側で言い直す必要が無い。
          残しておくと、畳んだはずの箱に27pxの空の帯が居座って見えた。 */
     h += '</li>';
+    h = hMain; lastRecentN = r.length;
 
     return h;
   }
@@ -1125,7 +1135,7 @@
 
   /* 写して、字を戻す。**札の写した印には触らない**——これは読み出しであって受け渡しではない。 */
   function copyInto(btn, text, back) {
-    var base = (btn.id === 'btnCopyBoard') ? 'cpall' : 'cp';
+    var base = (btn.id === 'btnCopyBoard' || btn.id === 'btnRecent') ? 'cpall' : 'cp';
     var ok = function () {
       btn.textContent = '写した';
       btn.className = base + ' ok';
@@ -1214,7 +1224,7 @@
 
   function copyWait(btn) { copyInto(btn, waitText(), '写す'); }
   /* 直近に終わった仕事の写す釦（v56）。中身は recentText() の全文で、どこも切らない。 */
-  function copyRecent(btn) { copyInto(btn, recentText(), '写す'); }
+  function copyRecent(btn) { copyInto(btn, recentText(), (btn.id === 'btnRecent') ? recentLabel() : '写す'); }   /* v187：箱ごと押して写す */
 
   /* お知らせ（まだ写していない札）を全文で（v48）。
      ＊件名も本文も括弧の中身も**切らない**。写し取るのは読み返すためで、
@@ -1641,7 +1651,9 @@
       .catch(function () { /* 取れない回は前の控えを残す。空で塗り潰さない */ });
   }
 
-  function paintBoard() { $('board').innerHTML = boardHtml(); }
+  var lastRecentN = 0;
+  function recentLabel() { return '直近に終わった仕事（' + lastRecentN + '件）'; }
+  function paintBoard() { $('board').innerHTML = boardHtml(); var rb = $('btnRecent'); if (rb && rb.className.indexOf('ok') < 0 && rb.textContent.indexOf('写') !== 0 && rb.textContent.indexOf('写せ') !== 0) { rb.textContent = recentLabel(); } }
 
   /* 状態の一行を、固定の置き場（#stLine）へ塗る（v97）。
      ＊お知らせの一覧とも板とも切り離してあるので、**どの回でも同じ場所に出る**。
@@ -3159,6 +3171,7 @@
   $('btnCopyAll').addEventListener('click', function () { copyAll(this); });
   $('btnCopyBoard').addEventListener('click', function () { copyBundle(this); });
   $('btnCopyUrl').addEventListener('click', function () { copyUrl(this); });
+  $('btnRecent').addEventListener('click', function () { copyRecent(this); });   /* v187 */
 
   /* 写す釦と、畳んだ件の開閉。一覧ごと張り替わるので親で受ける。
      ＊v97 で板を #board へ切り離したので、**両方に同じ受けを掛ける**。
