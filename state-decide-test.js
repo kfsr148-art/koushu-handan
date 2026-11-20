@@ -14,24 +14,52 @@ for (const e in EV) for (const a in AG) for (const g in BG) for (const k in KW) 
   const busy = Object.assign({ subj: '題' }, EV[e], { agents: AG[a] }); if (BG[g]) { busy.bg = BG[g]; }
   const r = decide({ now, alive, busy, kumo: KW[k], steps: ST[s] }); n++;
   const c = [e, a, g, k, s, 'alive' + alive].join('・'); seen[r.stat] = (seen[r.stat] || 0) + 1;
-  const bgFresh = !!BG[g] && BG[g].at >= EV[e].evAt - 5;
-  const back = (a === '手伝い1' || (bgFresh)) && alive;
-  const expect = s === '決め待ち' ? 'ヨシ待ち' : e === '止まり使用量' ? '止まり' : (alive && (e === 'UPS3分以内' || back)) ? '作業中' : ((k === '雲・見込みあり' || k === '雲・見込みなし')) ? '検査中' : (k === '時計の待ち' || !alive || e === 'UPS3分以内' || e === 'Post3分超' || a === '手伝い不明1' || s === '段残り') ? '待ち' : '待機中';
+  const bgFresh = !!BG[g] && ['Stop', 'idle_prompt', 'StopFailure', 'Interrupted', 'EndTurn'].indexOf(EV[e].ev) >= 0;   // 2026-11-20：数えるのは窓が手待ちの間の Stop の入力の一覧だけ。足し引きの agents（AG）は数えない
+  const back = bgFresh && alive;
+  const expect = s === '決め待ち' ? 'ヨシ待ち' : e === '止まり使用量' ? '止まり' : (alive && (e === 'UPS3分以内' || back)) ? '作業中' : ((k === '雲・見込みあり' || k === '雲・見込みなし')) ? '検査中' : (k === '時計の待ち' || !alive || e === 'UPS3分以内' || e === 'Post3分超' || s === '段残り') ? '待ち' : '待機中';
   const rs = /^止まり/.test(r.stat) ? '止まり' : r.stat;
   if (rs !== expect) { ng(c, r, '順が違う（当て＝' + expect + '）'); continue; }
   if (rs === '止まり' && e === '止まり使用量' && r.stat !== '止まり（使用量・13:00 にリセット）') { ng(c, r, '止まりの字（リセットの刻）'); }
-  if (r.stat === '作業中' && bgFresh && r.detail !== '裏で手伝い1本・雲1本' && a !== '手伝い1') { ng(c, r, '作業中の数（teammate を外し、手伝い1・雲1）'); }
+  if (r.stat === '作業中' && bgFresh && r.detail !== '裏で手伝い1本・雲1本') { ng(c, r, '作業中の数（teammate を外し、手伝い1・雲1）'); }
   if (r.stat === '作業中' && /teammate|仲間/.test(r.detail)) { ng(c, r, 'teammate を数えた'); }
   if (r.stat === '検査中' && k === '雲・見込みあり' && !/終了予定 [0-9]{2}:[0-9]{2}$/.test(r.detail)) { ng(c, r, '検査中の終了予定'); }
   if (r.stat === '検査中' && k === '雲・見込みなし' && !/見込み不明$/.test(r.detail)) { ng(c, r, '検査中の見込み不明'); }
   if (r.stat === '検査中' && /過ぎ/.test(r.detail)) { ng(c, r, '過ぎた帯'); }
   if (r.stat === '待ち' && k === '時計の待ち' && !/再開 [0-9]{2}:[0-9]{2}$/.test(r.detail)) { ng(c, r, '待ちの再開の刻'); }
   if (r.stat === '待ち' && !r.detail) { ng(c, r, '待ちの訳が空'); }
-  if (r.stat === '待機中' && (s === '段残り' || k !== '雲なし' || a !== '手伝いなし' || bgFresh)) { ng(c, r, '待機中なのに残りがある'); }
+  if (r.stat === '待機中' && (s === '段残り' || k !== '雲なし' || bgFresh)) { ng(c, r, '待機中なのに残りがある'); }
   if (/（なし）/.test(r.detail)) { ng(c, r, '「（なし）」'); }
 }
 console.log('状態の決め所の総当たり：' + n + '組・NG ' + bad + '件・内訳 ' + JSON.stringify(seen));
 // （終わりは下の進行中の起点の確かめの後）
+// 2026-11-20 本人の枠：手伝いの数は Stop の入力の background_tasks だけ（help-count.js）。足し引きの agents は数えず、窓が手待ちで一覧が空なら 0。
+{
+  const { helpCount } = require('./help-count.js');
+  let hb = 0; const hn = (n, ok) => { if (!ok) { hb++; bad++; console.log('NG 手伝いの数：' + n); } };
+  const D = (busy, steps) => decide({ now, alive: 1, busy: Object.assign({ subj: '題' }, busy), kumo: {}, steps: steps || [] });
+  const it = (t) => ({ type: t, status: 'running' });
+  let r = D({ ev: 'Stop', evAt: now - 30, bg: { at: now - 25, items: [] } });
+  hn('一覧が空（Stop・手待ち）→ 0 で待機中', r.stat === '待機中' && r.help === '');
+  r = D({ ev: 'Stop', evAt: now - 30 });
+  hn('一覧が無い（Stop の入力に background_tasks が無い）→ 0 で待機中', r.stat === '待機中' && r.help === '');
+  r = D({ ev: 'Stop', evAt: now - 30, agents: { a1: { at: now - 100 }, a2: { at: now - 4000 } } });
+  hn('足し引きの agents が残っていても数えない（SubagentStop が鳴らなかった跡）→ 待機中', r.stat === '待機中' && r.help === '');
+  r = D({ ev: 'Stop', evAt: now - 30, bg: { at: now - 25, items: [it('local_agent')] } });
+  hn('Stop の一覧に手伝い1本 → 作業中・裏で手伝い1本', r.stat === '作業中' && r.detail === '裏で手伝い1本');
+  r = D({ ev: 'idle_prompt', evAt: now - 5, bg: { at: now - 65, items: [it('local_agent')] } });
+  hn('Stop の約60秒後に idle_prompt が鳴っても数え続ける（evAt が一覧より新しくても）', r.stat === '作業中' && r.detail === '裏で手伝い1本');
+  r = D({ ev: 'idle_prompt', evAt: now - 5, startedAt: now - 20, bg: { at: now - 65, items: [it('local_agent')] } });
+  hn('その後に手番が開いた（startedAt が一覧より新しい）なら、前の一覧は使わない', r.help === '');
+  r = D({ ev: 'PreToolUse', evAt: now - 5, bg: { at: now - 65, items: [it('local_agent')] } });
+  hn('手番の中（PreToolUse）は一覧を数えない（作業中は合図の足跡で決まる）', r.stat === '作業中' && r.help === '' && r.detail === '');
+  r = D({ ev: 'Stop', evAt: now - 2400, bg: { at: now - 2390, items: [it('local_agent')] } });
+  hn('一覧が30分前で次の Stop が無い → 数えず「手伝い 不明 1本」で待ち', r.stat === '待ち' && /手伝い 不明 1本/.test(r.help));
+  r = D({ ev: 'Stop', evAt: now - 30, bg: { at: now - 25, items: [it('in_process_teammate'), it('local_agent'), it('remote_agent'), it('local_bash')] } });
+  hn('teammate は外し、手伝い1・雲1・裏の命令1', r.detail === '裏で手伝い1本・雲1本・裏の命令1本');
+  const hc = helpCount({ ev: 'Stop', evAt: now, bg: { at: now, items: [] } }, now);
+  hn('help-count：空の一覧は run 0', hc.run === 0 && hc.unk === 0 && hc.text === '');
+  console.log('手伝いの数（background_tasks だけ）：' + (hb ? 'NG ' + hb + '件' : '12件 合い'));
+}
 // 2026-11-19 16:20 本人の枠：「▶ 進行中（N分）」の起点は今待っている走りの始まり。二本続けて走らせると二本目は0分から
 {
   const st = [{ k: 'x', t: '一' }, { k: '雲', t: '確かめてから公開している' }];
