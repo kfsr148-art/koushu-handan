@@ -17,7 +17,10 @@ function pick(text) {
   if (files.some(f => PANEL.test(f))) { return { heavy: 1, body: 0 }; }
   return { heavy: 0, body: 0 };
 }
-module.exports = { pick, BODY, PANEL };
+// 2026-11-20 本人の枠：回の「種類」もここで決める（見張り kumo-wait.ps1 は、待っている走りの仕事の名「種類:…」からこれを読む）。
+//   honta＝body=1（本体の検査が入る＝一番長い）／panel＝heavy=1・body=0（パネル・ウィジェットの検査だけ）／report＝heavy=0（控えだけ）。
+function kindOf(r) { return r.body ? 'honta' : (r.heavy ? 'panel' : 'report'); }
+module.exports = { pick, kindOf, BODY, PANEL };
 if (require.main === module) {
-  let buf = ''; process.stdin.on('data', d => { buf += d; }).on('end', () => { const r = pick(buf); process.stdout.write('heavy=' + r.heavy + '\nbody=' + r.body + '\n'); });
+  let buf = ''; process.stdin.on('data', d => { buf += d; }).on('end', () => { const r = pick(buf); process.stdout.write('heavy=' + r.heavy + '\nbody=' + r.body + '\nkind=' + kindOf(r) + '\n'); });
 }
