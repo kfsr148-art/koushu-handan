@@ -151,7 +151,8 @@ function probeSource(scene) {
     var o = { w: window.innerWidth, h: window.innerHeight };
     /* 黄色の行（状態の一行）と、その箱の高さ */
     var st = document.getElementById('stLine');
-    o.stText = txt(st);
+    var pbx = document.getElementById('progBox');   /* v186：見込みとゲージは #progBox へ移った。両方を合わせて読む */
+    o.stText = (txt(pbx) + ' ' + txt(st)).trim();
     /* v183：下の三行の詰まり。見えている行の上下の座標・包みの高さと並べ方・横溢れ */
     (function () { var g = document.getElementById('footGroup'); o.footGroup = !!g; if (!g) { return; } var gs = getComputedStyle(g); o.footDisp = gs.display; o.footJust = gs.justifyContent; o.footH = g.getBoundingClientRect().height; o.footFixedH = (g.style.height || '') !== '';
       o.footLines = [].slice.call(g.children).filter(function (e) { return !e.hidden && e.getBoundingClientRect().height > 0; }).map(function (e) { var r = e.getBoundingClientRect(); return { id: e.id, top: r.top, bottom: r.bottom, h: r.height, w: r.width, mt: parseFloat(getComputedStyle(e).marginTop) || 0, mb: parseFloat(getComputedStyle(e).marginBottom) || 0 }; });
@@ -162,9 +163,11 @@ function probeSource(scene) {
       o.ordCss = els.map(function (e) { return getComputedStyle(e).order !== '0' ? e.id + ':' + getComputedStyle(e).order : ''; }).filter(Boolean).join(','); o.ordTops = els.map(function (e) { return Math.round(e.getBoundingClientRect().top); });
       o.ordOverflow = document.documentElement.scrollWidth > window.innerWidth + 1; })();
     /* v185：手順のゲージ（使用量の三本と同じ見た目か）。区切りの数・済み・今・小さい N/M・高さ・幅・横溢れ */
-    (function () { var g = document.querySelector('#stLine .stg'); if (!g) { return; } var is = [].slice.call(g.querySelectorAll('.stg-bar i')); o.gSegs = is.length; o.gDone = is.filter(function (e) { return e.className === 'd'; }).length; o.gCur = is.map(function (e) { return e.className; }).indexOf('c'); o.gLabel = txt(g.querySelector('.stg-n')); var b = g.querySelector('.stg-bar').getBoundingClientRect(); o.gBarW = b.width; o.gBarH = b.height; o.gBg = is.map(function (e) { return getComputedStyle(e).backgroundColor; }); o.gRad = getComputedStyle(is[0]).borderTopLeftRadius; var ub = document.querySelector('.usage .u-bar'); o.uBarH = ub ? ub.getBoundingClientRect().height : -1; o.uRad = ub ? getComputedStyle(ub).borderTopLeftRadius : ''; o.gOver = g.scrollWidth > g.clientWidth + 1 || document.documentElement.scrollWidth > window.innerWidth + 1; })();
+    (function () { var g = document.querySelector('#progBox .stg'); if (!g) { return; } var is = [].slice.call(g.querySelectorAll('.stg-bar i')); o.gSegs = is.length; o.gDone = is.filter(function (e) { return e.className === 'd'; }).length; o.gCur = is.map(function (e) { return e.className; }).indexOf('c'); o.gLabel = txt(g.querySelector('.stg-n')); var b = g.querySelector('.stg-bar').getBoundingClientRect(); o.gBarW = b.width; o.gBarH = b.height; o.gBg = is.map(function (e) { return getComputedStyle(e).backgroundColor; }); o.gRad = getComputedStyle(is[0]).borderTopLeftRadius; var ub = document.querySelector('.usage .u-bar'); o.uBarH = ub ? ub.getBoundingClientRect().height : -1; o.uRad = ub ? getComputedStyle(ub).borderTopLeftRadius : ''; o.gOver = g.scrollWidth > g.clientWidth + 1 || document.documentElement.scrollWidth > window.innerWidth + 1; })();
+    /* v186：見込みとゲージの箱（#progBox）。見出しの直後・一つの箱・行の数・出る／出ない・iPhone の幅 */
+    (function () { var b = document.getElementById('progBox'); o.pbExists = !!b; if (!b) { return; } var cs = getComputedStyle(b), r = b.getBoundingClientRect(); o.pbShown = cs.display !== 'none' && r.height > 0; o.pbPrev = (b.previousElementSibling && b.previousElementSibling.tagName) || ''; o.pbRows = b.querySelectorAll('.pb').length; o.pbEta = !!b.querySelector('.m.eta'); o.pbGauge = !!b.querySelector('.stg'); o.pbBorder = parseFloat(cs.borderTopWidth) || 0; o.pbW = r.width; o.pbLeft = r.left; o.pbRight = r.right; o.pbTop = r.top; var hd = document.querySelector('header'); o.pbHeadBottom = hd ? hd.getBoundingClientRect().bottom : -1; o.pbOver = document.documentElement.scrollWidth > window.innerWidth + 1 || b.scrollWidth > b.clientWidth + 1; })();
     o.evTag = txt(document.getElementById('evTag')); o.footTag = txt(document.getElementById('footTag')); o.footHidden = !!(document.getElementById('footTag') || {}).hidden;   /* v181 */
-    o.stBad = [].map.call(st ? st.querySelectorAll('p.m.bad') : [], function (x) { return x.textContent; }).join('／');   /* v180：赤の行 */
+    o.stBad = [].map.call([].concat([].slice.call(pbx ? pbx.querySelectorAll('p.m.bad') : []), [].slice.call(st ? st.querySelectorAll('p.m.bad') : [])), function (x) { return x.textContent; }).join('／');   /* v180：赤の行 */
     /* 黄色の行の色（v108・パネルの色-1）。刻だけ別色にしてあるので、二つ測る。
        ＊地の色は、行の箱（li）から取る。CSS の字面ではなく**描かれた実際の色**を見る。 */
     o.stColor = st ? getComputedStyle(st.querySelector('p.m') || st).color : null;
@@ -637,7 +640,33 @@ try {
     if (!r0) { ng('測れない（手順の一覧なし）'); }
     else if (/手順の一覧 未記入/.test(String(r0.stBad || '')) && !r0.gSegs) { ok('手順の一覧が無ければ赤字「手順の一覧 未記入」（ゲージは出さない）'); } else { ng('「手順の一覧 未記入」が赤で出ない（赤「' + String(r0.stBad || '') + '」）'); }
   }
+  /* ---- ⑤の八 見込みとゲージを一つの箱に・見出しのすぐ下・無い時は箱ごと出さない（v186・2026-11-20 本人の枠） ---- */
+  head('⑤の八 見込みとゲージの箱（見出しの直後・一つの箱・無い時は出さない・iPhone の幅）');
+  {
+    const nowE = Math.floor(Date.now() / 1000);
+    const work = Object.assign({}, ST['作業中'], { sNow: '検査', sNowAt: nowE - 300, sDone: '直し', sNext: '札', mikomi: '30分', startedAt: nowE - 300, stepDone: 3, stepTotal: 4 });
+    const hmm = sec => { const d = new Date(sec * 1000); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); };
+    for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
+      const r = run(tmp, { state: work, notices: MIX, usage: U_OK, settle: 1500 }, w, h);
+      if (!r) { ng(w + 'x' + h + '：測れない（箱）'); continue; }
+      if (!r.pbExists) { ng(w + 'x' + h + '：箱（#progBox）が無い'); continue; }
+      if (!r.pbShown) { ng(w + 'x' + h + '：作業中なのに箱が出ない'); }
+      else if (r.pbPrev !== 'HEADER') { ng(w + 'x' + h + '：箱が見出し（header）の直後にない（直前＝' + r.pbPrev + '）'); }
+      else if (r.pbTop < r.pbHeadBottom - 1 || r.pbTop - r.pbHeadBottom > 24) { ng(w + 'x' + h + '：箱が見出しのすぐ下でない（見出しの下端 ' + r.pbHeadBottom + '・箱の上端 ' + r.pbTop + '）'); }
+      else if (r.pbRows !== 2 || !r.pbEta || !r.pbGauge) { ng(w + 'x' + h + '：箱の中が「終わる見込み」と手順のゲージの二行でない（' + r.pbRows + '行・見込み' + r.pbEta + '・ゲージ' + r.pbGauge + '）'); }
+      else if (r.pbBorder < 1) { ng(w + 'x' + h + '：一つの箱に見えない（枠が無い）'); }
+      else if (r.pbOver || r.pbLeft < 0 || r.pbRight > w + 1) { ng(w + 'x' + h + '：箱が横に溢れる（' + Math.round(r.pbLeft) + '〜' + Math.round(r.pbRight) + '）'); }
+      else { ok(w + 'x' + h + '：箱は見出しの直後・二行（見込み＋ゲージ）・枠あり・幅 ' + Math.round(r.pbW) + 'px で溢れない'); }
+    }
+    let r2 = run(tmp, { state: Object.assign({}, ST['手待ち'], { kumo: '雲：パネル替え・見込み ' + hmm(nowE + 420), sNow: '', stepDone: 0, stepTotal: 0 }), notices: MIX, usage: U_OK, settle: 1500 }, 390, 844);
+    if (!r2) { ng('測れない（待ちの箱）'); }
+    else if (r2.pbShown && r2.pbEta && /終わる見込み/.test(String(r2.stText || ''))) { ok('雲待ちの間も箱が出て「終わる見込み」が入る'); } else { ng('雲待ちで箱が出ない／見込みが無い（箱 ' + r2.pbShown + '）'); }
+    r2 = run(tmp, { state: ST['手待ち'], notices: MIX, usage: U_OK, settle: 1500 }, 390, 844);
+    if (!r2) { ng('測れない（何も無い）'); }
+    else if (!r2.pbShown && r2.pbRows === 0) { ok('作業も待ちも無い時は箱ごと出ない'); } else { ng('何も無いのに箱が出ている（行 ' + r2.pbRows + '）'); }
+  }
   /* ---- ⑥⑦ 終了予定（黄色い帯の刻）：v173 で帯を外したので測る相手が無い ---- */
+
 
 
 
