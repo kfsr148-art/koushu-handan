@@ -166,6 +166,14 @@ function probeSource(scene) {
     (function () { var g = document.querySelector('#progBox .stg'); if (!g) { return; } var is = [].slice.call(g.querySelectorAll('.stg-bar i')); o.gSegs = is.length; o.gDone = is.filter(function (e) { return e.className === 'd'; }).length; o.gCur = is.map(function (e) { return e.className; }).indexOf('c'); o.gLabel = txt(g.querySelector('.stg-n')); var b = g.querySelector('.stg-bar').getBoundingClientRect(); o.gBarW = b.width; o.gBarH = b.height; o.gBg = is.map(function (e) { return getComputedStyle(e).backgroundColor; }); o.gRad = getComputedStyle(is[0]).borderTopLeftRadius; var ub = document.querySelector('.usage .u-bar'); o.uBarH = ub ? ub.getBoundingClientRect().height : -1; o.uRad = ub ? getComputedStyle(ub).borderTopLeftRadius : ''; o.gOver = g.scrollWidth > g.clientWidth + 1 || document.documentElement.scrollWidth > window.innerWidth + 1; })();
     /* v186：見込みとゲージの箱（#progBox）。見出しの直後・一つの箱・行の数・出る／出ない・iPhone の幅 */
     (function () { var b = document.getElementById('progBox'); o.pbExists = !!b; if (!b) { return; } var cs = getComputedStyle(b), r = b.getBoundingClientRect(); o.pbShown = cs.display !== 'none' && r.height > 0; o.pbPrev = (b.previousElementSibling && b.previousElementSibling.tagName) || ''; o.pbRows = b.querySelectorAll('.pb').length; o.pbEta = !!b.querySelector('.m.eta'); o.pbGauge = !!b.querySelector('.stg'); o.pbBorder = parseFloat(cs.borderTopWidth) || 0; o.pbW = r.width; o.pbLeft = r.left; o.pbRight = r.right; o.pbTop = r.top; var hd = document.querySelector('header'); o.pbHeadBottom = hd ? hd.getBoundingClientRect().bottom : -1; o.pbOver = document.documentElement.scrollWidth > window.innerWidth + 1 || b.scrollWidth > b.clientWidth + 1; })();
+    /* v187：遠隔と終わりました N件 の二つ並び・写し取り一覧／直近に終わった仕事／様子を写す の三つ並び */
+    (function () { function R(id) { var e = document.getElementById(id); if (!e) { return null; } var r = e.getBoundingClientRect(); var vis = getComputedStyle(e).display !== 'none' && r.width > 0 && r.height > 0; return vis ? { l: r.left, r: r.right, t: r.top, b: r.bottom, w: r.width, h: r.height } : null; }
+      o.rcR = R('rcLink'); o.doneR = R('doneHead'); o.shR = R('btnShots'); o.recR = R('btnRecent'); o.urlR = R('btnCopyUrl');
+      var hr = document.getElementById('halfRow'); o.halfInHeader = !!(document.querySelector('header') && document.querySelector('header').querySelector('#rcLink')); o.halfExists = !!hr;
+      o.btnOver = document.documentElement.scrollWidth > window.innerWidth + 1;
+      o.halfDump = ['rcLink', 'doneBox', 'doneHead'].map(function (id) { var e = document.getElementById(id); if (!e) { return id + ':無し'; } var s = getComputedStyle(e); return id + '{w' + Math.round(e.getBoundingClientRect().width) + ',pad' + s.paddingLeft + '/' + s.paddingRight + ',bs:' + s.boxSizing + ',flex:' + s.flex + ',mar' + s.marginLeft + '/' + s.marginRight + '}'; }).join(' '); })();
+    /* 視野の幅が言った幅より広がった時のために、右端が一番外にある要素を三つ控える（どこが溢れているかを辿る） */
+    (function () { var all = [].slice.call(document.body.querySelectorAll('*')).filter(function (e) { var r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).display !== 'none'; }); all.sort(function (a, b) { return b.getBoundingClientRect().right - a.getBoundingClientRect().right; }); o.rightmost = all.slice(0, 3).map(function (e) { return e.tagName.toLowerCase() + (e.id ? '#' + e.id : '') + (e.className && typeof e.className === 'string' ? '.' + e.className.split(' ').join('.') : '') + '@' + Math.round(e.getBoundingClientRect().right) + '/w' + Math.round(e.getBoundingClientRect().width); }); })();
     o.evTag = txt(document.getElementById('evTag')); o.footTag = txt(document.getElementById('footTag')); o.footHidden = !!(document.getElementById('footTag') || {}).hidden;   /* v181 */
     o.stBad = [].map.call([].concat([].slice.call(pbx ? pbx.querySelectorAll('p.m.bad') : []), [].slice.call(st ? st.querySelectorAll('p.m.bad') : [])), function (x) { return x.textContent; }).join('／');   /* v180：赤の行 */
     /* 黄色の行の色（v108・パネルの色-1）。刻だけ別色にしてあるので、二つ測る。
@@ -251,6 +259,11 @@ function probeSource(scene) {
         }, 900);
         return;
       }
+      if (S.pressRecent) {   /* v187：直近に終わった仕事の釦（箱ごと押して写す） */
+        var rbt = document.getElementById('btnRecent'); o.recBefore = txt(rbt); if (rbt) { rbt.click(); }
+        setTimeout(function () { o.recAfter = txt(rbt); o.recClip = String(CAP.clip || ''); out2(o); }, 700);
+        return;
+      }
       if (S.press) {
         var btn = document.getElementById('btnCopyBoard');
         o.beforeBtn = o.btn;
@@ -281,19 +294,19 @@ function run(tmp, scene, vw, vh) {
   if (!BROWSER) { return null; }
   const f = path.join(tmp, 'p.html');
   fs.writeFileSync(f, html.replace(/<body([^>]*)>/, (m) => m + probeSource(scene)), 'utf8');
+  /* 2026-11-20 本人の枠：幅は --window-size でなく DevTools の Emulation.setDeviceMetricsOverride（mobile:true）で与える（cdp-run.js）。
+     ＊--window-size だと headless の Chrome／Edge は約500pxより狭くできず、iPhone 幅（390・375・320）を一度も試していなかった。 */
   let out = '';
   try {
-    out = execFileSync(BROWSER, ['--headless=new', '--disable-gpu', '--hide-scrollbars',
-      '--force-device-scale-factor=1',
-      '--window-size=' + (vw + padW) + ',' + (vh + padH),
-      '--user-data-dir=' + path.join(tmp, 'prof'), '--no-first-run', '--no-default-browser-check',
-      '--disable-background-networking', '--mute-audio',
-      '--virtual-time-budget=12000', '--dump-dom', 'file:///' + f.replace(/\\/g, '/')],
+    out = execFileSync(process.execPath, [path.join(__dirname, 'cdp-run.js'), BROWSER, f, String(vw), String(vh), tmp, '40'],
       { encoding: 'utf8', maxBuffer: 1 << 26, timeout: 120000, windowsHide: true });
   } catch (e) { out = String((e && e.stdout) || ''); }
   const m = new RegExp(MARK + '([A-Za-z0-9+/=]+)').exec(out);
   if (!m) { return null; }
-  return JSON.parse(Buffer.from(m[1], 'base64').toString('utf8'));
+  const res = JSON.parse(Buffer.from(m[1], 'base64').toString('utf8'));
+  /* 視野の幅が言った幅と合わなければ落とす（2026-11-20）。合わないまま「iPhone 幅で崩れない」と言わないため。 */
+  if (typeof res.w === 'number' && res.w !== vw) { ng('視野の幅が言った幅と合わない（言った ' + vw + '・innerWidth ' + res.w + '・右端の要素 ' + (res.rightmost || []).join(' ／ ') + '）'); }
+  return res;
 }
 
 /* ---- 作り値 ---- */
@@ -366,8 +379,7 @@ if (!BROWSER) {
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'koushu-panelchk-'));
 try {
-  calibrate(tmp);
-  note('額縁の較正 : 幅+' + padW + ' / 高さ+' + padH);
+  note('視野の幅は DevTools の Emulation.setDeviceMetricsOverride（mobile:true）で与える（cdp-run.js）。較正は要らない');
 
   /* ---- ② 六つの状態（v173・2026-11-19 本人の枠）：題の行（#headWait）の字と、黄色い帯が出ないこと ----
      ＊状態は見張りの決め所（state-decide.js）が六つから一つ選び、state.json の stat と detail に書く。パネルは字にするだけ。 */
@@ -483,7 +495,7 @@ try {
     if (!r) { ng('測れない'); }
     else {
       const t = String(r.stText || '');
-      const a = t.indexOf('✅ 完了：パネルの字'), b = t.indexOf('▶ 進行中：声の繋ぎ（10分）'), c = t.indexOf('⏳ 予定：検査と配信');   // v176：頭の字を替えた
+      const a = t.indexOf('✅ 完了：パネルの字'), b = t.indexOf('▶ 進行中：声の繋ぎ（'), c = t.indexOf('⏳ 予定：検査と配信');   // v176：頭の字を替えた
       if (/すんだ|いま：|これから：/.test(t)) { ng('前の頭の字（すんだ・いま・これから）が残っている（' + t.slice(0, 40) + '）'); }
       if (a >= 0 && b > a && c > b) { ok('三行が順に出る（' + t.slice(0, 50) + '）'); } else { ng('三行が違う（' + t.slice(0, 60) + '）'); }
       if (r.headWait && t.indexOf(String(r.headWait)) >= 0) { ng('題の行と同じ字が下にも出ている（' + r.headWait + '）'); } else { ok('題の行と同じ字は下に出ない'); }
@@ -498,7 +510,8 @@ try {
   /* ---- ⑤の二 作業中の「終わる見込み」と「段 N/M」（v180・2026-11-20 本人の枠） ---- */
   head('⑤の二 作業中の終わる見込みと段 N/M（無ければ赤）');
   {
-    const base2 = Object.assign({}, ST['作業中'], { sNow: '声の繋ぎ', sNowAt: now - 600, sDone: 'パネルの字', sNext: '検査と配信', stepDone: 2, stepTotal: 5 });
+    const nowF = Math.floor(Date.now() / 1000);   /* 検査の頭の now から離れていくので、このブロックはその場の時刻から組む */
+    const base2 = Object.assign({}, ST['作業中'], { startedAt: nowF - 300, statAt: nowF - 300, at: nowF, sNow: '声の繋ぎ', sNowAt: nowF - 600, sDone: 'パネルの字', sNext: '検査と配信', stepDone: 2, stepTotal: 5 });
     const mk = extra => run(tmp, { state: Object.assign({}, base2, extra), notices: MIX, settle: 1500 }, 390, 844);
     const T = r => String(r && r.stText || ''), B = r => String(r && r.stBad || '');
     let r = mk({});
@@ -508,7 +521,7 @@ try {
       if (r.gSegs === 5 && r.gDone === 2 && r.gCur === 2 && /^3\/5$/.test(String(r.gLabel || '')) && !/段 [0-9]/.test(T(r))) { ok('段は字でなく横長ゲージ：5区切り・済み2・今の手順3・横に「3/5」（v185）'); } else { ng('手順のゲージが違う（区切り' + r.gSegs + '・済み' + r.gDone + '・今' + r.gCur + '・字「' + r.gLabel + '」）'); }
       if (B(r)) { ng('見込みも段もあるのに赤が出た（' + B(r) + '）'); } else { ok('見込み・段があれば赤は出ない'); }
     }
-    r = mk({ mikomi: '10分', startedAt: now - 1500 });
+    r = mk({ mikomi: '10分', startedAt: nowF - 1500 });
     if (!r) { ng('測れない（過ぎた）'); }
     else if (/見込みを過ぎた (14|15|16)分/.test(B(r))) { ok('見込みを過ぎたら赤「' + B(r) + '」'); } else { ng('「見込みを過ぎた N分」が赤で出ない（赤「' + B(r) + '」）'); }
     r = mk({ mikomi: '' });
@@ -560,14 +573,14 @@ try {
   {
     const hm = sec => { const d = new Date(sec * 1000); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); };
     const T = r => String(r && r.stText || ''), B = r => String(r && r.stBad || '');
-    const mk = st => run(tmp, { state: st, notices: MIX, settle: 1500 }, 390, 844);
-    let r = mk(Object.assign({}, ST['手待ち'], { stat: '検査中', detail: '雲の検査・終了予定 ' + hm(now + 600) }));
+    const mk = st => run(tmp, { state: Object.assign({}, st, { at: Math.floor(Date.now() / 1000), statAt: Math.floor(Date.now() / 1000) - 100 }), notices: MIX, settle: 1500 }, 390, 844);
+    let r = mk(Object.assign({}, ST['手待ち'], { stat: '検査中', detail: '雲の検査・終了予定 ' + hm(Math.floor(Date.now() / 1000) + 600) }));
     if (!r) { ng('測れない（検査中）'); }
     else if (/終わる見込み [0-9]{2}:[0-9]{2}（あと(9|10|11)分）/.test(T(r)) && !B(r)) { ok('検査中：「' + (T(r).match(/終わる見込み[^）]*）/) || [''])[0] + '」（赤なし）'); } else { ng('検査中の見込みが出ない（' + T(r).slice(0, 80) + '・赤「' + B(r) + '」）'); }
-    r = mk(Object.assign({}, ST['手待ち'], { kumo: '雲：パネル替え・見込み ' + hm(now + 420) }));
+    r = mk(Object.assign({}, ST['手待ち'], { kumo: '雲：パネル替え・見込み ' + hm(Math.floor(Date.now() / 1000) + 420) }));
     if (!r) { ng('測れない（手待ち＋雲待ち）'); }
     else if (/終わる見込み [0-9]{2}:[0-9]{2}（あと(6|7|8)分）/.test(T(r))) { ok('手待ちの下の雲待ちにも出る'); } else { ng('雲待ちの見込みが出ない（' + T(r).slice(0, 80) + '）'); }
-    r = mk(Object.assign({}, ST['手待ち'], { kumo: '雲：パネル替え・見込み ' + hm(now - 900) }));
+    r = mk(Object.assign({}, ST['手待ち'], { kumo: '雲：パネル替え・見込み ' + hm(Math.floor(Date.now() / 1000) - 900) }));
     if (!r) { ng('測れない（雲待ちの見込み超過）'); }
     else if (/見込みを過ぎた (14|15|16)分/.test(B(r))) { ok('見込みを過ぎたら赤「' + B(r) + '」'); } else { ng('雲待ちの超過が赤で出ない（赤「' + B(r) + '」）'); }
     r = mk(Object.assign({}, ST['手待ち'], { stat: '検査中', detail: '雲の検査・見込み不明' }));
@@ -665,7 +678,40 @@ try {
     if (!r2) { ng('測れない（何も無い）'); }
     else if (!r2.pbShown && r2.pbRows === 0) { ok('作業も待ちも無い時は箱ごと出ない'); } else { ng('何も無いのに箱が出ている（行 ' + r2.pbRows + '）'); }
   }
+  /* ---- ⑤の九 ボタンの並び（v187・2026-11-20 本人の枠）：遠隔と終わりました N件の二つ並び／写し取り一覧・直近に終わった仕事・様子を写すの三つ並び／直近は箱ごと押して写す ---- */
+  head('⑤の九 ボタンの並び（二つ並び・三つ並び・iPhone の幅）');
+  {
+    const nowE = Math.floor(Date.now() / 1000);
+    const sc = { state: Object.assign({}, ST['手待ち'], { rcName: 'koushu-handan-93', rcPid: 6308, rcUrl: 'https://claude.ai/code/session_X' }), notices: [N(nowE - 500, '✅ 終わりました（返事不要）', '済んだ件の本文')], board: { waiting: [], recent: [{ name: '直近その一', result: '済んだ' }, { name: '直近その二', result: '済んだ' }] }, usage: U_OK, settle: 1500 };
+    for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
+      const r = run(tmp, sc, w, h);
+      if (!r) { ng(w + 'x' + h + '：測れない（並び）'); continue; }
+      const why = [];
+      if (!r.rcR || !r.doneR) { why.push('遠隔か終わりましたの釦が出ていない（' + !!r.rcR + '・' + !!r.doneR + '）'); }
+      else {
+        if (r.halfInHeader) { why.push('遠隔が見出しの中に残っている'); }
+        if (Math.abs(r.rcR.w - r.doneR.w) > 2) { why.push('半分ずつでない（' + Math.round(r.rcR.w) + '・' + Math.round(r.doneR.w) + '）'); }
+        if (Math.abs(r.rcR.t - r.doneR.t) > 1 || Math.abs(r.rcR.b - r.doneR.b) > 1) { why.push('二つが同じ高さに並んでいない（上 ' + Math.round(r.rcR.t) + '/' + Math.round(r.doneR.t) + '・下 ' + Math.round(r.rcR.b) + '/' + Math.round(r.doneR.b) + '）'); }
+        if (!(r.rcR.r <= r.doneR.l + 1) || r.doneR.r > w + 1) { why.push('二つ並びが横に溢れる／重なる'); }
+        if (r.rcR.h < 44 || r.doneR.h < 44) { why.push('当たりが44px未満（' + Math.round(r.rcR.h) + '・' + Math.round(r.doneR.h) + '）'); }
+      }
+      if (!r.shR || !r.recR || !r.urlR) { why.push('三つ並びの釦が出ていない'); }
+      else {
+        if (!(r.shR.l < r.recR.l && r.recR.l < r.urlR.l)) { why.push('順が 写し取り一覧→直近に終わった仕事→様子を写す でない'); }
+        if (Math.max(Math.abs(r.shR.t - r.recR.t), Math.abs(r.recR.t - r.urlR.t)) > 1) { why.push('三つが同じ高さに並んでいない'); }
+        if (r.urlR.r > w + 1 || r.shR.l < -1) { why.push('三つ並びが横に溢れる'); }
+        if (r.shR.h < 44 || r.recR.h < 44 || r.urlR.h < 44) { why.push('三つの当たりが44px未満'); }
+      }
+      if (r.btnOver) { why.push('画面が横に溢れる'); }
+      if (why.length) { ng(w + 'x' + h + '：' + why.join('／') + '［' + r.halfDump + '］'); } else { ok(w + 'x' + h + '：遠隔と終わりました N件は半分ずつの二つ並び（' + Math.round(r.rcR.w) + '・' + Math.round(r.doneR.w) + 'px）／写し取り一覧・直近に終わった仕事・様子を写すは同じ高さの三つ並び（高さ ' + Math.round(r.recR.h) + 'px）'); }
+    }
+    const rp = run(tmp, Object.assign({}, sc, { pressRecent: true }), 390, 844);
+    if (!rp) { ng('測れない（直近の釦を押す）'); }
+    else if (/直近に終わった仕事（2件）/.test(String(rp.recBefore || '')) && /^写した$/.test(String(rp.recAfter || '')) && /直近その一/.test(String(rp.recClip || '')) && /直近その二/.test(String(rp.recClip || ''))) { ok('直近に終わった仕事は箱ごと押して全文が写る（押す前「' + rp.recBefore + '」・押した後「' + rp.recAfter + '」）'); }
+    else { ng('直近の釦を押しても写らない／字が違う（前「' + rp.recBefore + '」・後「' + rp.recAfter + '」・写し「' + String(rp.recClip || '').slice(0, 30) + '」）'); }
+  }
   /* ---- ⑥⑦ 終了予定（黄色い帯の刻）：v173 で帯を外したので測る相手が無い ---- */
+
 
 
 
@@ -904,7 +950,7 @@ try {
   }
 
 } finally {
-  fs.rmSync(tmp, { recursive: true, force: true });
+  try { fs.rmSync(tmp, { recursive: true, force: true }); } catch (e) { /* Windows では Edge の置き場がまだ掴まれていて消せない事がある。検査の結果には関わらない */ }
 }
 
 /* ---- ⑰ v118 で足した三つが、字面のとおり繋がっているか（2026-09-05・先の穴-2）----
