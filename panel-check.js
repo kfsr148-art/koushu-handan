@@ -161,6 +161,8 @@ function probeSource(scene) {
       var sorted = els.slice().sort(function (a, b) { return (a.compareDocumentPosition(b) & 4) ? -1 : 1; }); o.ordDoc = sorted.map(function (e) { return e.id; }).join('>');
       o.ordCss = els.map(function (e) { return getComputedStyle(e).order !== '0' ? e.id + ':' + getComputedStyle(e).order : ''; }).filter(Boolean).join(','); o.ordTops = els.map(function (e) { return Math.round(e.getBoundingClientRect().top); });
       o.ordOverflow = document.documentElement.scrollWidth > window.innerWidth + 1; })();
+    /* v185：手順のゲージ（使用量の三本と同じ見た目か）。区切りの数・済み・今・小さい N/M・高さ・幅・横溢れ */
+    (function () { var g = document.querySelector('#stLine .stg'); if (!g) { return; } var is = [].slice.call(g.querySelectorAll('.stg-bar i')); o.gSegs = is.length; o.gDone = is.filter(function (e) { return e.className === 'd'; }).length; o.gCur = is.map(function (e) { return e.className; }).indexOf('c'); o.gLabel = txt(g.querySelector('.stg-n')); var b = g.querySelector('.stg-bar').getBoundingClientRect(); o.gBarW = b.width; o.gBarH = b.height; o.gBg = is.map(function (e) { return getComputedStyle(e).backgroundColor; }); o.gRad = getComputedStyle(is[0]).borderTopLeftRadius; var ub = document.querySelector('.usage .u-bar'); o.uBarH = ub ? ub.getBoundingClientRect().height : -1; o.uRad = ub ? getComputedStyle(ub).borderTopLeftRadius : ''; o.gOver = g.scrollWidth > g.clientWidth + 1 || document.documentElement.scrollWidth > window.innerWidth + 1; })();
     o.evTag = txt(document.getElementById('evTag')); o.footTag = txt(document.getElementById('footTag')); o.footHidden = !!(document.getElementById('footTag') || {}).hidden;   /* v181 */
     o.stBad = [].map.call(st ? st.querySelectorAll('p.m.bad') : [], function (x) { return x.textContent; }).join('／');   /* v180：赤の行 */
     /* 黄色の行の色（v108・パネルの色-1）。刻だけ別色にしてあるので、二つ測る。
@@ -382,8 +384,8 @@ try {
       if (!r) { ng(k + '：測れない（目印が出ない）'); continue; }
       if (SIX[k][1].test(String(r.headWait || ''))) { ok(k + '：題の行「' + String(r.headWait).slice(0, 34) + '」'); }
       else { ng(k + '：題の行が違う「' + String(r.headWait).slice(0, 40) + '」'); }
-      if (k === '作業中') {   /* v180：作業中は「見込み未記入」「段の台帳 未記入」を赤で出す（下の base は見込み・段の台帳が無い） */
-        if (/見込み未記入/.test(String(r.stBad || '')) && /段の台帳 未記入/.test(String(r.stBad || ''))) { ok(k + '：見込み・段の台帳が無い回は赤で未記入を出す'); } else { ng(k + '：赤の未記入が出ない（赤「' + String(r.stBad || '') + '」）'); }
+      if (k === '作業中') {   /* v180：作業中は「見込み未記入」「手順の一覧 未記入」を赤で出す（下の base は見込み・段の台帳が無い） */
+        if (/見込み未記入/.test(String(r.stBad || '')) && /手順の一覧 未記入/.test(String(r.stBad || ''))) { ok(k + '：見込み・段の台帳が無い回は赤で未記入を出す'); } else { ng(k + '：赤の未記入が出ない（赤「' + String(r.stBad || '') + '」）'); }
       } else if (String(r.stText || '') && !((k === '検査中' || k === '待ち') && /^(終わる見込み|見込み未記入|見込み不明|見込みを過ぎた)/.test(String(r.stText || '')))) {   /* v182：検査中・待ちは見込みの行だけ出る */ ng(k + '：黄色い帯の跡に字が出た「' + String(r.stText).slice(0, 30) + '」'); }
       if (/（なし）/.test(String(r.headWait || ''))) { ng(k + '：「（なし）」が出た'); }
     }
@@ -487,8 +489,8 @@ try {
     const r2 = run(tmp, { state: noNow, notices: MIX, settle: 1500 }, 390, 844);
     if (!r2) { ng('測れない（やる段が無い回）'); }
     else if (/✅ 完了|▶ 進行中|⏳ 予定/.test(String(r2.stText || ''))) { ng('やる段が無いのに三行が出た（' + String(r2.stText).slice(0, 40) + '）'); }
-    else if (!/段の台帳 未記入/.test(String(r2.stBad || ''))) { ng('やる段が無い作業中に赤の「段の台帳 未記入」が出ない（' + String(r2.stText || '').slice(0, 40) + '）'); }
-    else { ok('やる段が無い回は三行を出さず、赤で「段の台帳 未記入」を出す（v180）'); }
+    else if (!/手順の一覧 未記入/.test(String(r2.stBad || ''))) { ng('やる段が無い作業中に赤の「手順の一覧 未記入」が出ない（' + String(r2.stText || '').slice(0, 40) + '）'); }
+    else { ok('やる段が無い回は三行を出さず、赤で「手順の一覧 未記入」を出す（v180）'); }
   }
   /* ---- ⑤の二 作業中の「終わる見込み」と「段 N/M」（v180・2026-11-20 本人の枠） ---- */
   head('⑤の二 作業中の終わる見込みと段 N/M（無ければ赤）');
@@ -500,7 +502,7 @@ try {
     if (!r) { ng('測れない（見込みあり）'); }
     else {
       if (/終わる見込み [0-9]{2}:[0-9]{2}（あと(24|25|26)分）/.test(T(r))) { ok('見込みあり：「' + (T(r).match(/終わる見込み[^\n]*/) || [''])[0] + '」'); } else { ng('見込みありの字が違う（' + T(r).slice(0, 50) + '）'); }
-      if (/段 3\/5/.test(T(r))) { ok('「段 3/5」が出る（済み2・全体5）'); } else { ng('「段 3/5」が出ない（' + T(r).slice(0, 60) + '）'); }
+      if (r.gSegs === 5 && r.gDone === 2 && r.gCur === 2 && /^3\/5$/.test(String(r.gLabel || '')) && !/段 [0-9]/.test(T(r))) { ok('段は字でなく横長ゲージ：5区切り・済み2・今の手順3・横に「3/5」（v185）'); } else { ng('手順のゲージが違う（区切り' + r.gSegs + '・済み' + r.gDone + '・今' + r.gCur + '・字「' + r.gLabel + '」）'); }
       if (B(r)) { ng('見込みも段もあるのに赤が出た（' + B(r) + '）'); } else { ok('見込み・段があれば赤は出ない'); }
     }
     r = mk({ mikomi: '10分', startedAt: now - 1500 });
@@ -514,10 +516,10 @@ try {
     else if (/見込み不明/.test(B(r))) { ok('「不明」と書かれた回は赤「見込み不明」'); } else { ng('「見込み不明」が赤で出ない（赤「' + B(r) + '」）'); }
     r = mk({ sNow: '', sDone: '', sNext: '', stepDone: 0, stepTotal: 0 });
     if (!r) { ng('測れない（台帳なし）'); }
-    else if (/段の台帳 未記入/.test(B(r)) && !/段 [0-9]/.test(T(r))) { ok('台帳が無ければ赤「段の台帳 未記入」（段 N/M は出さない）'); } else { ng('台帳なしの字が違う（赤「' + B(r) + '」／' + T(r).slice(0, 40) + '）'); }
+    else if (/手順の一覧 未記入/.test(B(r)) && !r.gSegs) { ok('台帳が無ければ赤「手順の一覧 未記入」（段 N/M は出さない）'); } else { ng('台帳なしの字が違う（赤「' + B(r) + '」／' + T(r).slice(0, 40) + '）'); }
     r = run(tmp, { state: ST['手待ち'], notices: MIX, settle: 1500 }, 390, 844);
     if (!r) { ng('測れない（手待ち）'); }
-    else if (/終わる見込み|見込み未記入|見込みを過ぎた|段 [0-9]|段の台帳/.test(T(r))) { ng('作業中でないのに見込み・段の行が出た（' + T(r).slice(0, 40) + '）'); } else { ok('作業中でない回（手待ち）には出ない'); }
+    else if (/終わる見込み|見込み未記入|見込みを過ぎた|段 [0-9]|段の台帳|手順の一覧/.test(T(r))) { ng('作業中でないのに見込み・段の行が出た（' + T(r).slice(0, 40) + '）'); } else { ok('作業中でない回（手待ち）には出ない'); }
   }
   /* ---- ⑤の続き 遠隔の釦（v175・2026-11-19 本人の枠）：二行（上に大きく「🔗 遠隔」・下に小さく「名・pid N」）。狭い時は下の行が折り返し、「…」で切らない ---- */
   head('⑤の続き 遠隔の釦（二行・折り返し込みで溢れない）');
@@ -616,7 +618,27 @@ try {
       else { ok(w + 'x' + h + '：HTML の順＝画面の順（' + r.ordDoc + '）・order 不使用・横溢れなし'); }
     }
   }
+  /* ---- ⑤の七 手順のゲージ：使用量の三本と同じ見た目の横長ゲージ（v185・2026-11-20 本人の枠） ---- */
+  head('⑤の七 手順のゲージ（使用量と同じ高さ・角丸・色分け・iPhone の幅）');
+  {
+    const nowE = Math.floor(Date.now() / 1000);
+    const base = Object.assign({}, ST['作業中'], { sNow: '検査', sNowAt: nowE - 300, sDone: '直し', sNext: '札', mikomi: '30分', startedAt: nowE - 300 });
+    for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
+      const r = run(tmp, { state: Object.assign({}, base, { stepDone: 3, stepTotal: 4 }), notices: MIX, usage: U_OK, settle: 1500 }, w, h);
+      if (!r) { ng(w + 'x' + h + '：測れない（ゲージ）'); continue; }
+      const bg = r.gBg || [];
+      if (r.gSegs !== 4 || r.gDone !== 3 || r.gCur !== 3 || r.gLabel !== '4/4') { ng(w + 'x' + h + '：区切り・済み・今・小さい N/M が違う（' + r.gSegs + '・' + r.gDone + '・' + r.gCur + '・「' + r.gLabel + '」）'); }
+      else if (!(bg[0] === bg[1] && bg[1] === bg[2] && bg[2] !== bg[3])) { ng(w + 'x' + h + '：済みと今の色が分かれていない（' + bg.join(' / ') + '）'); }
+      else if (Math.abs(r.gBarH - r.uBarH) > 1 || r.gRad !== r.uRad) { ng(w + 'x' + h + '：使用量の三本と高さ・角丸が違う（ゲージ ' + r.gBarH + '/' + r.gRad + '・使用量 ' + r.uBarH + '/' + r.uRad + '）'); }
+      else if (r.gBarW < 100 || r.gOver) { ng(w + 'x' + h + '：ゲージが狭い／横に溢れる（幅 ' + r.gBarW + '）'); }
+      else { ok(w + 'x' + h + '：4/4 のゲージ（済み緑3・今の手順は別色・使用量と同じ高さ ' + r.gBarH + 'px・幅 ' + Math.round(r.gBarW) + 'px）'); }
+    }
+    const r0 = run(tmp, { state: Object.assign({}, base, { sNow: '', sDone: '', sNext: '', stepDone: 0, stepTotal: 0 }), notices: MIX, usage: U_OK, settle: 1500 }, 390, 844);
+    if (!r0) { ng('測れない（手順の一覧なし）'); }
+    else if (/手順の一覧 未記入/.test(String(r0.stBad || '')) && !r0.gSegs) { ok('手順の一覧が無ければ赤字「手順の一覧 未記入」（ゲージは出さない）'); } else { ng('「手順の一覧 未記入」が赤で出ない（赤「' + String(r0.stBad || '') + '」）'); }
+  }
   /* ---- ⑥⑦ 終了予定（黄色い帯の刻）：v173 で帯を外したので測る相手が無い ---- */
+
 
 
 
