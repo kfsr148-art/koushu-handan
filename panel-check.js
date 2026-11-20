@@ -37,7 +37,9 @@ const path = require('path');
 const vm = require('vm');
 const { execFileSync } = require('child_process');
 
-const SRC = process.argv[2] ? path.resolve(process.argv[2]) : path.join(__dirname, 'panel.html');
+const STATIC = process.argv.indexOf('--static') >= 0;   // 2026-11-20 枠K：ブラウザを使わない部分だけを秒で回す（押す前に手元で。全部＝ブラウザ込みは手元で13〜16分かかるので雲に任せる）
+const ARG_SRC = process.argv.slice(2).filter(a => a.indexOf('--') !== 0)[0];
+const SRC = ARG_SRC ? path.resolve(ARG_SRC) : path.join(__dirname, 'panel.html');
 const MARK = 'PANELCHK-B64:';
 const html = fs.readFileSync(SRC, 'utf8');
 
@@ -55,7 +57,7 @@ function findBrowser() {
   ].filter(p => p && fs.existsSync(p));
   return c[0] || null;
 }
-const BROWSER = findBrowser();
+const BROWSER = STATIC ? null : findBrowser();
 
 /* 窓と視野の差は環境で違う。素の一枚で一度だけ測る（check.js ⑦ と同じ流儀）。 */
 let padW = 24, padH = 92;
@@ -406,9 +408,67 @@ head('① 構文');
   if (r.status === 0) { ok(last); } else { ng(last || ('起こせなかった：' + (r.error ? r.error.message : r.status))); String(r.stdout || '').split(/\r?\n/).filter(l => /^NG/.test(l)).slice(0, 10).forEach(note); }
 }
 
+/* ブラウザを使わない部分（作り値と字面）。通常の回でも --static の回でも同じ物を回す。 */
+function staticParts() {
+  /* ---- ⑤の十二 まとめて写すの頭の現況（v196・枠G）：状態の言葉＋終わる見込みの刻（件名の頭の一語でなく） ---- */
+  head('⑤の十二 まとめて写すの頭の現況は状態の言葉と見込みの刻（作り値・字面）');
+  {
+    const i0 = html.indexOf('  function nowLine(withEta) {');
+    const j0 = i0 >= 0 ? html.indexOf(String.fromCharCode(10) + '  }', i0) : -1;
+    const fsrc = (i0 >= 0 && j0 > i0) ? html.slice(i0, j0 + 4) : '';
+    if (!fsrc) { ng('nowLine(withEta) が無い'); }
+    else {
+      const mk = (stat, kumo, eta, wordv) => new Function('lastStat', 'lastKumo', 'lastState', 'etaLineText', 'honVer', 'stbVer', 'hhmm', fsrc + String.fromCharCode(10) + 'return nowLine;')(stat, kumo, { word: wordv, since: '', at: 1 }, () => eta, '1', '1', () => '00:00');
+      const a = mk('作業中', '', '終わる見込み 17:45（あと12分）', '台帳')(true);
+      if (a.indexOf('現況：作業中・終わる見込み 17:45（あと12分）') === 0 && a.indexOf('台帳') < 0) { ok('作業中：頭は「現況：作業中・終わる見込み HH:MM」で、件名の頭の一語（台帳）は出ない'); } else { ng('作業中の現況の頭が違う：' + a.slice(0, 60)); }
+      const b = mk('手待ち', '検査中：panel v196（見込み 17:30）', '終わる見込み 17:30（あと3分）', '次の指示待ち')(true);
+      if (b.indexOf('現況：手待ち（検査中）・終わる見込み 17:30') === 0) { ok('手待ち＋雲待ち：「手待ち（検査中）・終わる見込み」'); } else { ng('手待ち＋雲待ちの現況が違う：' + b.slice(0, 60)); }
+      const c2 = mk('手待ち', '', 'なし（作業も待ちも無い）', '次の指示待ち')(true);
+      if (c2.indexOf('現況：手待ち ／ ') === 0) { ok('見込みが無い時は見込みの字を足さない'); } else { ng('見込みなしの現況が違う：' + c2.slice(0, 60)); }
+      const d = mk('作業中', '', 'x', '台帳')(false);
+      if (d.indexOf('現況：台帳') === 0) { ok('様子を写す（withEta なし）は今までの形のまま'); } else { ng('様子を写すの形が変わった：' + d.slice(0, 40)); }
+    }
+    if (html.split('nowLine(true)').length === 3) { ok('まとめて写す・全部写すの二箇所が withEta で呼ぶ'); } else { ng('nowLine(true) の呼びが二箇所でない'); }
+  }
+  /* ---- ⑤の十三 様子を写すの順番待ち一覧・指さすの帯の名（v197・枠J） ---- */
+  head('⑤の十三 様子を写すに順番待ちを一行ずつ・指さすは帯の名を読む（作り値・字面）');
+  {
+    const sl = (name) => { const i = html.indexOf('  function ' + name + '('); if (i < 0) { return ''; } const j = html.indexOf(String.fromCharCode(10) + '  }', i); return (j > i) ? html.slice(i, j + 4) : ''; };
+    const wsrc = sl('waitListLines');
+    if (!wsrc) { ng('waitListLines が無い'); }
+    else {
+      const wl = new Function(wsrc + String.fromCharCode(10) + 'return waitListLines;')();
+      const NL = String.fromCharCode(10);
+      const a = wl({ wait: 2, waitList: [{ at: '11-20 14:19', head: '見込みの種類は走りの jobs から' }, { at: '11-20 14:23', head: '順番待ちを見えるようにする' }] });
+      if (a === '順番待ち：11-20 14:19　見込みの種類は走りの jobs から' + NL + '順番待ち：11-20 14:23　順番待ちを見えるようにする') { ok('順番待ち：〈届いた刻〉〈件名〉を一行ずつ'); } else { ng('順番待ちの行の形が違う：' + a.slice(0, 80)); }
+      if (wl({ wait: 0 }) === '順番待ち：なし') { ok('0件は「順番待ち：なし」'); } else { ng('0件の字が違う'); }
+      if (/言い切れない/.test(wl({}))) { ok('数が無い（言い切れない）時はその旨'); } else { ng('言い切れない時の字が無い'); }
+      if (/一覧は state に載っていない/.test(wl({ wait: 3 }))) { ok('数だけ有って一覧が無い時はその旨'); } else { ng('一覧が無い時の字が無い'); }
+      if (/ほか 5件$/.test(wl({ wait: 7, waitList: [{ at: 'a', head: 'b' }, { at: 'c', head: 'd' }], waitMore: 5 }))) { ok('一覧が長い時は「ほか N件」'); } else { ng('「ほか N件」が無い'); }
+    }
+    if (html.indexOf('<header data-pname="見出しの帯">') >= 0) { ok('見出しの帯（header）に名（data-pname）がある'); } else { ng('header に data-pname が無い'); }
+    const pc = sl('pointClean') || '', pn = sl('pointName');
+    const pc1 = html.indexOf('  function pointClean('), pc2 = html.indexOf(String.fromCharCode(10), pc1);
+    if (!pn) { ng('pointName が無い'); }
+    else {
+      const fake = (sel) => ({ id: '', tagName: 'HEADER', className: '', closest: (q) => (q === '[data-pname]' ? { getAttribute: () => '見出しの帯' } : null), textContent: '' });
+      const f = new Function(html.slice(pc1, pc2) + String.fromCharCode(10) + pn + String.fromCharCode(10) + 'return pointName;')();
+      const nm = f(fake());
+      if (nm === '見出しの帯') { ok('指さす：帯の余白（header）を押すと「見出しの帯」と出る（「header」でなく）'); } else { ng('指さすの名が違う：' + nm); }
+      const fake2 = { id: '', tagName: 'DIV', className: 'zzz', closest: () => null, textContent: '' };
+      if (f(fake2) === 'div.zzz') { ok('どの名にも当たらない所だけ平たい名（タグ名.class）に落ちる'); } else { ng('平たい名への落ち方が違う'); }
+    }
+  }
+}
+
 if (!BROWSER) {
   head('まとめ（返事パネルの検査）');
-  note('ブラウザが無いので②〜⑥は測れなかった（落ちとは別）');
+  if (STATIC) {
+    note('--static：ブラウザを使わない部分だけ（①構文・三つの作り値の台・⑤の十二〜十三・⑰）。②〜⑯の画面の実測は雲（check.yml）が回す');
+    staticParts(); part17();
+  } else {
+    note('ブラウザが無いので②〜⑥は測れなかった（落ちとは別）');
+  }
   console.log('');
   console.log(bad === 0 ? '全てPASS（測れなかった項目あり）' : ('FAIL ' + bad + '件'));
   process.exit(bad === 0 ? 0 : 1);
@@ -788,55 +848,7 @@ try {
     const es = (html.match(/new EventSource\(/g) || []).length;
     if (es === 0 && !/koushu-st-/.test(html) && !/STATE_TOPIC|startStateSse/.test(html)) { ok('EventSource は無く、状態の聞き取りの話題名（koushu-st-）も頁に残っていない（v194で外した）'); } else { ng('EventSource か話題名が頁に残っている（EventSource ' + es + '箇所）'); }
   }
-  /* ---- ⑤の十二 まとめて写すの頭の現況（v196・枠G）：状態の言葉＋終わる見込みの刻（件名の頭の一語でなく） ---- */
-  head('⑤の十二 まとめて写すの頭の現況は状態の言葉と見込みの刻（作り値・字面）');
-  {
-    const i0 = html.indexOf('  function nowLine(withEta) {');
-    const j0 = i0 >= 0 ? html.indexOf(String.fromCharCode(10) + '  }', i0) : -1;
-    const fsrc = (i0 >= 0 && j0 > i0) ? html.slice(i0, j0 + 4) : '';
-    if (!fsrc) { ng('nowLine(withEta) が無い'); }
-    else {
-      const mk = (stat, kumo, eta, wordv) => new Function('lastStat', 'lastKumo', 'lastState', 'etaLineText', 'honVer', 'stbVer', 'hhmm', fsrc + String.fromCharCode(10) + 'return nowLine;')(stat, kumo, { word: wordv, since: '', at: 1 }, () => eta, '1', '1', () => '00:00');
-      const a = mk('作業中', '', '終わる見込み 17:45（あと12分）', '台帳')(true);
-      if (a.indexOf('現況：作業中・終わる見込み 17:45（あと12分）') === 0 && a.indexOf('台帳') < 0) { ok('作業中：頭は「現況：作業中・終わる見込み HH:MM」で、件名の頭の一語（台帳）は出ない'); } else { ng('作業中の現況の頭が違う：' + a.slice(0, 60)); }
-      const b = mk('手待ち', '検査中：panel v196（見込み 17:30）', '終わる見込み 17:30（あと3分）', '次の指示待ち')(true);
-      if (b.indexOf('現況：手待ち（検査中）・終わる見込み 17:30') === 0) { ok('手待ち＋雲待ち：「手待ち（検査中）・終わる見込み」'); } else { ng('手待ち＋雲待ちの現況が違う：' + b.slice(0, 60)); }
-      const c2 = mk('手待ち', '', 'なし（作業も待ちも無い）', '次の指示待ち')(true);
-      if (c2.indexOf('現況：手待ち ／ ') === 0) { ok('見込みが無い時は見込みの字を足さない'); } else { ng('見込みなしの現況が違う：' + c2.slice(0, 60)); }
-      const d = mk('作業中', '', 'x', '台帳')(false);
-      if (d.indexOf('現況：台帳') === 0) { ok('様子を写す（withEta なし）は今までの形のまま'); } else { ng('様子を写すの形が変わった：' + d.slice(0, 40)); }
-    }
-    if (html.split('nowLine(true)').length === 3) { ok('まとめて写す・全部写すの二箇所が withEta で呼ぶ'); } else { ng('nowLine(true) の呼びが二箇所でない'); }
-  }
-  /* ---- ⑤の十三 様子を写すの順番待ち一覧・指さすの帯の名（v197・枠J） ---- */
-  head('⑤の十三 様子を写すに順番待ちを一行ずつ・指さすは帯の名を読む（作り値・字面）');
-  {
-    const sl = (name) => { const i = html.indexOf('  function ' + name + '('); if (i < 0) { return ''; } const j = html.indexOf(String.fromCharCode(10) + '  }', i); return (j > i) ? html.slice(i, j + 4) : ''; };
-    const wsrc = sl('waitListLines');
-    if (!wsrc) { ng('waitListLines が無い'); }
-    else {
-      const wl = new Function(wsrc + String.fromCharCode(10) + 'return waitListLines;')();
-      const NL = String.fromCharCode(10);
-      const a = wl({ wait: 2, waitList: [{ at: '11-20 14:19', head: '見込みの種類は走りの jobs から' }, { at: '11-20 14:23', head: '順番待ちを見えるようにする' }] });
-      if (a === '順番待ち：11-20 14:19　見込みの種類は走りの jobs から' + NL + '順番待ち：11-20 14:23　順番待ちを見えるようにする') { ok('順番待ち：〈届いた刻〉〈件名〉を一行ずつ'); } else { ng('順番待ちの行の形が違う：' + a.slice(0, 80)); }
-      if (wl({ wait: 0 }) === '順番待ち：なし') { ok('0件は「順番待ち：なし」'); } else { ng('0件の字が違う'); }
-      if (/言い切れない/.test(wl({}))) { ok('数が無い（言い切れない）時はその旨'); } else { ng('言い切れない時の字が無い'); }
-      if (/一覧は state に載っていない/.test(wl({ wait: 3 }))) { ok('数だけ有って一覧が無い時はその旨'); } else { ng('一覧が無い時の字が無い'); }
-      if (/ほか 5件$/.test(wl({ wait: 7, waitList: [{ at: 'a', head: 'b' }, { at: 'c', head: 'd' }], waitMore: 5 }))) { ok('一覧が長い時は「ほか N件」'); } else { ng('「ほか N件」が無い'); }
-    }
-    if (html.indexOf('<header data-pname="見出しの帯">') >= 0) { ok('見出しの帯（header）に名（data-pname）がある'); } else { ng('header に data-pname が無い'); }
-    const pc = sl('pointClean') || '', pn = sl('pointName');
-    const pc1 = html.indexOf('  function pointClean('), pc2 = html.indexOf(String.fromCharCode(10), pc1);
-    if (!pn) { ng('pointName が無い'); }
-    else {
-      const fake = (sel) => ({ id: '', tagName: 'HEADER', className: '', closest: (q) => (q === '[data-pname]' ? { getAttribute: () => '見出しの帯' } : null), textContent: '' });
-      const f = new Function(html.slice(pc1, pc2) + String.fromCharCode(10) + pn + String.fromCharCode(10) + 'return pointName;')();
-      const nm = f(fake());
-      if (nm === '見出しの帯') { ok('指さす：帯の余白（header）を押すと「見出しの帯」と出る（「header」でなく）'); } else { ng('指さすの名が違う：' + nm); }
-      const fake2 = { id: '', tagName: 'DIV', className: 'zzz', closest: () => null, textContent: '' };
-      if (f(fake2) === 'div.zzz') { ok('どの名にも当たらない所だけ平たい名（タグ名.class）に落ちる'); } else { ng('平たい名への落ち方が違う'); }
-    }
-  }
+  staticParts();   // ⑤の十二・⑤の十三（ブラウザを使わない部分・--static でも回る）
   /* ---- ⑤の十一 指さす（v191・2026-11-20 本人の枠） ---- */
   head('⑤の十一 指さす（釦の置き場・透明な幕・部品の名とid・写す字・下の釦を動かさない・取り消し・iPhone の幅）');
   {
@@ -1119,6 +1131,7 @@ try {
 /* ---- ⑰ v118 で足した三つが、字面のとおり繋がっているか（2026-09-05・先の穴-2）----
      ＊ここは真似た台を立てずに**字面で照合する**。器・読む元・呼び出しの三点が
        揃っていることだけを見る（描き方そのものは⑦の画面の実測が見ている）。 */
+function part17() {
 head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠）');
 {
   /* ＊正規表現は使わない。**字面をそのまま探す**（indexOf）。
@@ -1212,6 +1225,9 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
   else if (vScript !== vTag || vScript !== vFile) { ng('版が揃っていない（PANEL_VER ' + vScript + ' ／ verTag ' + vTag + ' ／ panel-ver.txt ' + vFile + '）'); }
   else { ok('版が三箇所とも v' + vScript); }
 }
+
+}
+part17();   // ⑰（ブラウザを使わない部分・--static でも回る）
 
 head('まとめ（返事パネルの検査）');
 note('真似た台では拾えないもの … 公開側の遅れや詰まり／iOS Safari 固有の描き方（折り返し・字送り・慣性）／');
