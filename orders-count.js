@@ -25,9 +25,13 @@ function openRows(raw) { return parse(raw).filter(r => isOpen(r.state)); }
 function countOpen(raw) { return openRows(raw).length; }
 function epoch(s) { const t = Date.parse(String(s).replace(' ', 'T')); return isNaN(t) ? 0 : Math.floor(t / 1000); }
 // 順番待ち。note＝work-note.txt の中身、busy＝busy.txt の中身（JSON）。
+// 2026-11-20 枠N：順番待ちに数えるのは「枠の印を出し始めた刻（14:19:48 の枠）より後に受けた未了」だけ。印が入る前に受けて結べなかった未了（この一日ぶん）は、待っている枠ではないので数えない（台帳の行には触らない）。
+//   ＊並びは新しい枠から（上から読めば、本当に待っている新しい枠が先に見える）。環境変数 OC_SINCE（作り値用）で刻を差し替えられる。
+const WAIT_SINCE = '2026-11-20 14:19:48';
 function waitRows(raw, note, busy, now) {
   now = Number(now) || Math.floor(Date.now() / 1000);
-  const fresh = openRows(raw).filter(r => { const t = epoch(r.at); return t > 0 && now - t <= 86400; });
+  const since = String(process.env.OC_SINCE || WAIT_SINCE);
+  const fresh = openRows(raw).filter(r => { const t = epoch(r.at); return t > 0 && now - t <= 86400 && String(r.at) >= since; }).sort((a, b) => (String(a.at) < String(b.at) ? 1 : (String(a.at) > String(b.at) ? -1 : 0)));
   if (fresh.length === 0) { return []; }
   const m = /^枠:[ 　]*(.+)$/m.exec(String(note || '').replace(/^\uFEFF/, ''));
   const mine = m ? m[1].split(/[・,、]/).map(s => s.trim()).filter(Boolean) : [];
@@ -43,7 +47,7 @@ function waitList(raw, note, busy, now) {
   const r = waitRows(raw, note, busy, now); if (r === null) { return null; }
   return r.map(x => { let h = String(x.item || ''); const k = h.indexOf('頭：'); if (k >= 0) { h = h.slice(k + 2); } h = h.replace(/^【[^】]*】[ 　]*/, '').replace(/^(今の仕事が済んでから|前の枠と重なれば合わせよ)[。.]?[ 　]*/, '').replace(/[ \t]+/g, ' ').trim(); if (h.length > 40) { h = h.slice(0, 40) + '…'; } return { at: String(x.at).slice(5, 16), head: h }; });
 }
-module.exports = { isOpen, parse, openRows, countOpen, waitRows, waitCount, waitList };
+module.exports = { isOpen, parse, openRows, countOpen, waitRows, waitCount, waitList, WAIT_SINCE };
 if (require.main === module) {
   const arg = process.argv[2] || '--count';
   let raw = null; try { raw = fs.readFileSync(ROOT + '/orders-open.tsv', 'utf8'); } catch (e) { }

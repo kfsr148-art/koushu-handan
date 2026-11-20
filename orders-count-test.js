@@ -1,6 +1,7 @@
 // orders-count-test.js — 台帳の数え手（orders-count.js）の作り値（2026-11-20）。panel-check.js から呼ぶ。終了コード 0＝全部合い。
 'use strict';
 const fs = require('fs'), os = require('os'), path = require('path'), cp = require('child_process');
+process.env.OC_SINCE = '1970-01-01 00:00:00';   // 従来の項目は刻の縛りなしで（刻の縛りは下の枠N の項目で見る）
 const oc = require('./orders-count.js');
 let bad = 0; const ck = (n, ok) => { if (!ok) { bad++; console.log('NG ' + n); } };
 const now = Math.floor(Date.now() / 1000), iso = n => new Date((now - n) * 1000).toLocaleString('sv-SE');
@@ -41,6 +42,23 @@ ck('--wait は作業中で枠:が無ければ空（出さない）', run('--wait
   ck('言い切れない時（作業中で枠:が無い）は一覧も null', oc.waitList(raw2, '', { ev: 'PreToolUse' }, now) === null && oc.waitCount(raw2, '', { ev: 'PreToolUse' }, now) === null);
   ck('未了が無ければ空の一覧・数は0', oc.waitList(HEAD, '', {}, now).length === 0 && oc.waitCount(HEAD, '', {}, now) === 0);
 }
+// 枠N：印より前の未了は数えない・後は数える・新しい枠から並べる
+{
+  const R = (at, id, st) => at + '\t' + id + '\t（枠）全文は orders-full.jsonl の ' + at + '・頭：【Codeタブへ】 ' + id + '\t' + st + '\n';
+  const day = new Date(now * 1000).toLocaleDateString('sv-SE');
+  const rawN = HEAD + R(day + ' 09:00:00', 'before1', '未了：受領') + R(day + ' 13:38:51', 'before2', '未了：受領') + R(day + ' 14:19:48', 'edge', '未了：受領') + R(day + ' 15:00:31', 'mid', '未了：受領') + R(day + ' 17:40:18', 'new1', '未了：受領') + R(day + ' 18:06:41', 'new2', '済（自動）') + R(day + ' 18:30:43', 'mine', '未了：受領');
+  const nowN = Math.floor(new Date(day + 'T20:00:00').getTime() / 1000);
+  const noteN = '枠: ' + day + ' 18:30:43\n';
+  process.env.OC_SINCE = day + ' 14:19:48';
+  const rn = oc.waitRows(rawN, noteN, { ev: 'PreToolUse' }, nowN);
+  ck('印（14:19:48）より前の未了は数えない（before1・before2 は出ない）', rn.every(r => r.id.indexOf('before') < 0));
+  ck('印の刻ちょうど以後は数える（edge・mid・new1）・済は数えない（new2）・いま受け持つ枠（mine）は除く', rn.map(r => r.id).join(',') === 'new1,mid,edge');
+  ck('新しい枠から並べる（new1 → mid → edge）', rn[0].id === 'new1' && rn[2].id === 'edge');
+  ck('数＝行の数（3）・一覧の先頭は新しい枠', oc.waitCount(rawN, noteN, { ev: 'PreToolUse' }, nowN) === 3 && oc.waitList(rawN, noteN, { ev: 'PreToolUse' }, nowN)[0].head.indexOf('new1') === 0);
+  ck('手待ち（受け持つ枠なし）でも印以前は数えない', oc.waitCount(rawN, '', { ev: 'Stop' }, nowN) === 4);
+  delete process.env.OC_SINCE;
+  ck('既定の刻は 2026-11-20 14:19:48（枠の印を出し始めた刻）', oc.WAIT_SINCE === '2026-11-20 14:19:48');
+}
 fs.rmSync(d, { recursive: true, force: true });
-console.log('台帳の数え手（orders-count.js）：' + (bad ? 'NG ' + bad + '件' : '15件 合い'));
+console.log('台帳の数え手（orders-count.js）：' + (bad ? 'NG ' + bad + '件' : '20件 合い'));
 process.exit(bad ? 1 : 0);
