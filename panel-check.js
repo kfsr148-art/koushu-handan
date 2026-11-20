@@ -156,6 +156,11 @@ function probeSource(scene) {
     (function () { var g = document.getElementById('footGroup'); o.footGroup = !!g; if (!g) { return; } var gs = getComputedStyle(g); o.footDisp = gs.display; o.footJust = gs.justifyContent; o.footH = g.getBoundingClientRect().height; o.footFixedH = (g.style.height || '') !== '';
       o.footLines = [].slice.call(g.children).filter(function (e) { return !e.hidden && e.getBoundingClientRect().height > 0; }).map(function (e) { var r = e.getBoundingClientRect(); return { id: e.id, top: r.top, bottom: r.bottom, h: r.height, w: r.width, mt: parseFloat(getComputedStyle(e).marginTop) || 0, mb: parseFloat(getComputedStyle(e).marginBottom) || 0 }; });
       o.docOverflow = document.documentElement.scrollWidth > window.innerWidth + 1; })();
+    /* v184：下の並び（HTML の順そのもの）。見える物の文書順・上端・CSS の order・横溢れ */
+    (function () { var ids = ['btnShots', 'btnCopyUrl', 'usageTag', 'fVer', 'verTag', 'footGroup']; var els = ids.map(function (i) { return document.getElementById(i); }); if (els.some(function (e) { return !e; })) { o.ordMissing = ids.filter(function (i, k) { return !els[k]; }).join('・'); return; }
+      var sorted = els.slice().sort(function (a, b) { return (a.compareDocumentPosition(b) & 4) ? -1 : 1; }); o.ordDoc = sorted.map(function (e) { return e.id; }).join('>');
+      o.ordCss = els.map(function (e) { return getComputedStyle(e).order !== '0' ? e.id + ':' + getComputedStyle(e).order : ''; }).filter(Boolean).join(','); o.ordTops = els.map(function (e) { return Math.round(e.getBoundingClientRect().top); });
+      o.ordOverflow = document.documentElement.scrollWidth > window.innerWidth + 1; })();
     o.evTag = txt(document.getElementById('evTag')); o.footTag = txt(document.getElementById('footTag')); o.footHidden = !!(document.getElementById('footTag') || {}).hidden;   /* v181 */
     o.stBad = [].map.call(st ? st.querySelectorAll('p.m.bad') : [], function (x) { return x.textContent; }).join('／');   /* v180：赤の行 */
     /* 黄色の行の色（v108・パネルの色-1）。刻だけ別色にしてあるので、二つ測る。
@@ -593,7 +598,26 @@ try {
       else { ok(w + 'x' + h + '：三行が詰まっている（行の間 ' + gaps.map(g => g.toFixed(1)).join('・') + 'px・包み ' + r.footH.toFixed(1) + 'px・display=' + r.footDisp + '）'); }
     }
   }
+  /* ---- ⑤の六 下の並び（v184・2026-11-20 本人の枠）：写し取り一覧／様子を写す → 使用量の三本 → 本体の版の行 → panel の版の行 → 下の三行。HTML の順そのもの ---- */
+  head('⑤の六 並び（HTML の順そのもの）：一覧／様子を写す → 使用量 → 本体の版 → panel の版 → 下の三行');
+  {
+    const nowE = Math.floor(Date.now() / 1000);
+    const stt = Object.assign({}, ST['手待ち'], { ev: 'Stop', evAt: nowE - 30, foot: { ledger: 7, revive: '今日 3回（固まり 1・重さ 1・0本 1）', reviveLast: '04:12' } });
+    const WANT = 'btnShots>btnCopyUrl>usageTag>fVer>verTag>footGroup';
+    for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
+      const r = run(tmp, { state: stt, notices: MIX, usage: U_OK, settle: 1500 }, w, h);
+      if (!r) { ng(w + 'x' + h + '：測れない（並び）'); continue; }
+      if (r.ordMissing) { ng(w + 'x' + h + '：要素が無い（' + r.ordMissing + '）'); continue; }
+      const tops = r.ordTops || [];
+      if (r.ordDoc !== WANT) { ng(w + 'x' + h + '：HTML の順が違う（' + r.ordDoc + '）'); }
+      else if (r.ordCss) { ng(w + 'x' + h + '：CSS の order／flex で並べ替えている（' + r.ordCss + '）'); }
+      else if (tops.some((t, i) => i > 0 && t < tops[i - 1])) { ng(w + 'x' + h + '：画面の上下の並びが HTML の順と食い違う（' + tops.join(',') + '）'); }
+      else if (r.ordOverflow) { ng(w + 'x' + h + '：横に溢れている'); }
+      else { ok(w + 'x' + h + '：HTML の順＝画面の順（' + r.ordDoc + '）・order 不使用・横溢れなし'); }
+    }
+  }
   /* ---- ⑥⑦ 終了予定（黄色い帯の刻）：v173 で帯を外したので測る相手が無い ---- */
+
 
 
   head('⑥⑦ 黄色い帯の終了予定（v173 で外した）');
