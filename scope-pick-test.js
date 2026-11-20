@@ -18,5 +18,8 @@ ck('控えだけ（検査に掛けない）', ['state.json', 'notices.json', 'st
 ck('空', '', 0, 0);
 ck('検査を通った印からの差に本体が残っている回（パネルだけの押しでも差に check.js が入る）', ['panel.html', 'check.js', 'panel-check.js'], 1, 1);
 ck('名前が似ているだけの物は本体でない（panel-check.js.bak・koushu-handan.html.bak）', ['panel.html', 'koushu-handan.html.bak', 'check.js.bak-20260914'], 1, 0);
-console.log('雲の検査の振り分け（scope-pick.js）：' + (bad ? 'NG ' + bad + '件' : '16件 合い'));
+const { kindOf } = require('./scope-pick.js');
+const kk = (n, files, want) => { const g = kindOf(pick(files.join('\n'))); if (g !== want) { bad++; console.log('NG 種類 ' + n + '：' + g + '（欲しいのは ' + want + '）'); } };
+kk('本体は honta', ['panel.html', 'check.js'], 'honta'); kk('パネルだけは panel', ['panel.html'], 'panel'); kk('ウィジェットも panel', ['usage-widget.js'], 'panel'); kk('控えだけは report', ['state.json'], 'report'); kk('ALL は honta', ['ALL'], 'honta');
+console.log('雲の検査の振り分け（scope-pick.js）：' + (bad ? 'NG ' + bad + '件' : '16件＋種類5件 合い'));
 process.exit(bad ? 1 : 0);

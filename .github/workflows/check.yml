@@ -51,6 +51,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       heavy: ${{ steps.pick.outputs.heavy }}
+      kind: ${{ steps.pick.outputs.kind }}   # 回の種類（honta／panel／report）。見張りが仕事の名「種類:…」から読んで、見込みと止まっとるかもの敷居を決める（2026-11-20）
       body: ${{ steps.pick.outputs.body }}   # 本体の検査（速い版・フル版）を回すか。差がパネルとウィジェットの物だけなら 0（2026-11-20）
     steps:
       - uses: actions/checkout@v4
@@ -90,6 +91,7 @@ jobs:
 
   # ---- 二段：検査（本体の回だけ）----
   check:
+    name: check（種類:${{ needs.scope.outputs.kind }}）
     needs: scope
     if: needs.scope.outputs.heavy == '1'
     runs-on: ubuntu-latest
@@ -144,6 +146,7 @@ jobs:
   #   ＊控えの回（heavy=0）… check は走らないので skipped。その回はそのまま配信する。
   #   ＊本体の回（heavy=1）… check が success の回だけ配信する。
   deploy:
+    name: deploy（種類:${{ needs.scope.outputs.kind }}）
     needs: [scope, check]
     if: always() && needs.scope.result == 'success' && (needs.scope.outputs.heavy == '0' || needs.check.result == 'success')
     # ---- 打ち切らず、順に通し切る（2026-09-18・配信の譲り-1 乙）----
