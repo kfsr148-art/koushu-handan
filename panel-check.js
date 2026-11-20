@@ -492,6 +492,28 @@ function staticParts() {
     }
     if (html.indexOf("{ t: '見込み 記入待ち（着手から90秒以内）', c: '' }") >= 0) { ok('手順のゲージの箱も、着手から90秒以内は赤くしない（c が空）'); } else { ng('箱の側の記入待ちが無い'); }
   }
+  /* ---- ⑤の十五 センコが読んだ刻までの札と知らせは写した扱い（v200・橋の枠 六） ---- */
+  head('⑤の十五 センコが読んだ刻（senkoReadAt）までの札と知らせは写した扱い（作り値・字面）');
+  {
+    const sl = (name) => { const i = html.indexOf('  function ' + name + '('); if (i < 0) { return ''; } const j = html.indexOf(String.fromCharCode(10), i); return html.slice(i, j); };
+    const e1 = sl('senkoEpoch'), e2 = sl('senkoReadCovers');
+    if (!e1 || !e2) { ng('senkoEpoch／senkoReadCovers が無い'); }
+    else {
+      const mk = (readAt) => new Function(e1 + String.fromCharCode(10) + 'var lastSenkoReadAt = senkoEpoch(' + JSON.stringify(readAt) + ');' + String.fromCharCode(10) + e2 + String.fromCharCode(10) + 'return { cov: senkoReadCovers, ep: lastSenkoReadAt };')();
+      const k = mk('2026-11-20 21:12:17');
+      const T0 = Date.parse('2026-11-20T21:12:17+09:00') / 1000;
+      if (k.ep === T0) { ok('senkoReadAt「2026-11-20 21:12:17」を日本時間の epoch 秒に読む'); } else { ng('epoch が違う：' + k.ep + '／' + T0); }
+      if (k.cov(T0 - 600) && k.cov(T0)) { ok('刻までの札・知らせ（刻ちょうどを含む）は写した扱い'); } else { ng('刻までが写した扱いになっていない'); }
+      if (!k.cov(T0 + 1) && !k.cov(T0 + 3600)) { ok('刻より新しい札は未写しのまま残る'); } else { ng('刻より新しい札まで写した扱いになった'); }
+      const k0 = mk('');
+      if (k0.ep === 0 && !k0.cov(T0 - 600)) { ok('senkoReadAt が無ければ何も写した扱いにしない（今までどおり）'); } else { ng('senkoReadAt なしの扱いが違う'); }
+      const kb = mk('ばらばら');
+      if (kb.ep === 0 && !kb.cov(T0 - 600)) { ok('読めない字は無視する（写した扱いにしない）'); } else { ng('読めない字の扱いが違う'); }
+    }
+    if (html.indexOf("function isCopied(d) { return !!copied[keyOf(d)] || senkoReadCovers(d && d.time); }") >= 0) { ok('札の写した扱い（isCopied）は、端末の印か senko の刻のどちらかで写した'); } else { ng('isCopied が senko の刻を見ていない'); }
+    if (html.indexOf('!ntfyCopied[ntfyKeyOf(e)] && !senkoReadCovers(e && e.time)') >= 0) { ok('知らせ（押し通知）の未写しも senko の刻までは落とす'); } else { ng('知らせの側が senko の刻を見ていない'); }
+    if (html.indexOf('lastSenkoReadAt = senkoEpoch(d.senkoReadAt);') >= 0) { ok('state.json の senkoReadAt を読む'); } else { ng('state.json の senkoReadAt を読んでいない'); }
+  }
 }
 
 if (!BROWSER) {
