@@ -740,6 +740,16 @@ try {
     const hit1 = run1({ cardOwedAt: nf() - 20 }, MIX, 390, 844, 12500), hit0 = run1({ cardOwedAt: 0 }, MIX, 390, 844, 12500);
     if (!hit1 || !hit0) { ng('測れない（読み直し）'); }
     else if (hit1.noticeHits >= hit0.noticeHits + 1) { ok('印がある間は10秒おきに札を読み直す（札の取得 ' + hit1.noticeHits + '回・印なしは ' + hit0.noticeHits + '回）'); } else { ng('印があっても読み直しが増えない（' + hit1.noticeHits + '回・印なし ' + hit0.noticeHits + '回）'); }
+    /* v189：雲の検査を待つ間は、札は控えに置いたまま出さない。見込みの刻は検査の見込み・遅れの赤は見込みの30秒後から */
+    r = run1({ cardOwedAt: nf() - 400, cardOwedEta: nf() + 600 }, MIX);
+    if (!r) { ng('測れない（雲待ちの間）'); }
+    else if (/札をまとめ中、、、。（[0-9]{2}:[0-9]{2} ごろ）/.test(String(r.headWait || '')) && r.hwCls !== 'late') { ok('雲の検査を待つ間は、待ち始めから400秒たっても赤にならず「' + r.headWait + '」（検査の見込みの刻）'); } else { ng('雲待ちの間に遅れの赤が出た／まとめ中が出ない（「' + String(r.headWait) + '」・class「' + r.hwCls + '」）'); }
+    r = run1({ cardOwedAt: nf() - 900, cardOwedEta: nf() - 60 }, MIX);
+    if (!r) { ng('測れない（検査の見込みを過ぎた）'); }
+    else if (/札が遅れている/.test(String(r.headWait || '')) && r.hwCls === 'late') { ok('検査の見込みを30秒過ぎたら赤「札が遅れている」'); } else { ng('検査の見込みを過ぎても赤にならない（「' + String(r.headWait) + '」）'); }
+    r = run1({ cardOwedAt: nf() - 900, cardOwedEta: nf() - 10 }, MIX);
+    if (!r) { ng('測れない（見込みの直後）'); }
+    else if (/札をまとめ中/.test(String(r.headWait || '')) && r.hwCls !== 'late') { ok('検査の見込みを過ぎて30秒以内はまだ赤にしない'); } else { ng('見込みの直後に赤になった（「' + String(r.headWait) + '」）'); }
     const es = (html.match(/new EventSource\(/g) || []).length;
     if (es <= 1) { ok('EventSource を増やしていない（' + es + '箇所＝前からある状態の聞き取りだけ・札のために宛先の名を足していない）'); } else { ng('EventSource が増えている（' + es + '箇所）'); }
   }

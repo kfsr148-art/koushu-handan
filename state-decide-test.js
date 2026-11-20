@@ -88,7 +88,17 @@ console.log('状態の決め所の総当たり：' + n + '組・NG ' + bad + '�
   ck('先書きの控えに済みでない札があれば（控えが札の形でなくても）立つ。Stop の刻', r.cardOwedAt === ago(40));
   r = run({ 'busy.txt': stopBusy, 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone, 'card-outbox.jsonl': add + JSON.stringify({ t: 'done', id: cid, at: ago(10) }) + '\n', 'notify-sent.tsv': iso(10) + '\t✅ 終わりました\tx\n' });
   ck('先書きの札が済みになり控えに札が入っていれば立てない', r.cardOwedAt === 0);
-  console.log('札の印（cardOwedAt）：' + (bad ? 'NG あり' : '9件 合い'));
+  // 雲の検査を待つ間：札は控えに置いたまま出さない（watch-notify）ので印は長く残り、見込みの刻は検査の見込み（eta）
+  const kw = (st, eta) => 'state=' + st + '\nmark=yT\nworkflow=check.yml\nsince=' + ago(900) + '\nat=' + ago(900) + '\neta=' + (t + eta) + '\n';
+  const oldAdd = JSON.stringify({ t: 'add', id: 'cT-2', at: ago(1500), title: 'x', body: 'y', state: 'done' }) + '\n';
+  r = run({ 'busy.txt': JSON.stringify({ ev: 'Stop', evAt: ago(1600), stopAt: ago(1600), startedAt: ago(2000) }), 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone, 'card-outbox.jsonl': oldAdd, 'kumo-wait.txt': kw('waiting', 300) });
+  ck('雲待ちの間は、25分前から置いてある札の印も消えない（普段は15分で消える）', r.cardOwedAt === ago(1600));
+  ck('雲待ちの間の見込みの刻は、検査の見込み（eta）', r.cardOwedEta === t + 300);
+  r = run({ 'busy.txt': JSON.stringify({ ev: 'Stop', evAt: ago(1600), stopAt: ago(1600), startedAt: ago(2000) }), 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone, 'card-outbox.jsonl': oldAdd });
+  ck('雲待ちが無ければ25分前の印は消える（15分）', r.cardOwedAt === 0 && r.cardOwedEta === 0);
+  r = run({ 'busy.txt': stopBusy, 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone });
+  ck('雲待ちが無い通常の印の見込みの刻は、Stop から150秒', r.cardOwedAt === ago(40) && r.cardOwedEta === ago(40) + 150);
+  console.log('札の印（cardOwedAt・cardOwedEta）：' + (bad ? 'NG あり' : '13件 合い'));
 }
 // 2026-11-19 16:20 本人の枠：「▶ 進行中（N分）」の起点は今待っている走りの始まり。二本続けて走らせると二本目は0分から
 {
