@@ -548,7 +548,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v192（11月20日）</p>
+  <p class="ver" id="verTag">panel v193（11月20日）</p>
   <div class="foot-group" id="footGroup">
   <p class="usage-when" id="usageWhen" hidden></p>
   <!-- 遠隔で繋がっている会話の名と pid（v127・落ちた後の起こし-2）。state.json の rcName / rcPid。
@@ -582,7 +582,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '192';  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
+  var PANEL_VER = '193';  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
   /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
@@ -1208,6 +1208,7 @@
       return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
     };
     var head = ''; try { head = headText() || ''; } catch (e) { head = ''; }
+    var LF = {}; try { LF = (typeof lastFoot !== 'undefined' && lastFoot) ? lastFoot : {}; } catch (e) { LF = {}; }   /* v193：検査の statusText 単体の組み立てでは lastFoot が無い（v192 の検査落ち）。無ければ空で組む */
     var reds = [];
     ['pipeWarn', 'wakeWarn'].forEach(function (id) { var el = $(id); if (el && !/(^| )hide( |$)/.test(el.className) && String(el.textContent || '').trim()) { reds.push(String(el.textContent).trim()); } });
     var newest = null;
@@ -1219,7 +1220,7 @@
       '遠隔：' + (lastRcName || '—') + (lastRcPid ? '・pid ' + lastRcPid : ''),
       '見込み：' + (function () { try { return etaLineText(); } catch (e) { return '—'; } })(),
       '赤い行：' + (reds.length ? reds.join('／') : 'なし'),
-      '札の結び：' + ((lastFoot && typeof lastFoot.unlinked === 'number') ? ('結べなかった札 ' + lastFoot.unlinked + '件（今日）') : '数えられていない') + (lastFoot && typeof lastFoot.wait === 'number' ? '／順番待ち ' + lastFoot.wait + '件' : '／順番待ちは言い切れない'),
+      '札の結び：' + ((LF && typeof LF.unlinked === 'number') ? ('結べなかった札 ' + LF.unlinked + '件（今日）') : '数えられていない') + (LF && typeof LF.wait === 'number' ? '／順番待ち ' + LF.wait + '件' : '／順番待ちは言い切れない'),
       '一番新しい札：' + (newest ? f(newest.time) + '「' + (newest.title || '(題なし)') + '」' : 'なし'),
       '押した刻：' + f(Math.floor(Date.now() / 1000))].join(NL);
   }
