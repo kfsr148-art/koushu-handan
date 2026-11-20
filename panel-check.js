@@ -388,6 +388,12 @@ head('① 構文');
 
 /* ---- 状態の決め所（state-decide.js）の総当たり（2026-11-19 本人の枠⑥）：ヨシ待ち→止まり→作業中→検査中→待ち→待機中の順と中身 ---- */
 {
+  head('雲の検査の振り分け（scope-pick-test.js）：差がパネルとウィジェットだけなら本体の検査を飛ばす');
+  {
+    const r1 = require('child_process').spawnSync(process.execPath, [path.join(path.dirname(SRC), 'scope-pick-test.js')], { encoding: 'utf8', timeout: 60000 });
+    const t1 = String(r1.stdout || '').trim().split(String.fromCharCode(10)).slice(-6).join(' ／ ');
+    if (r1.status === 0) { ok(t1); } else { ng('雲の検査の振り分けの作り値が合わない（' + t1.slice(0, 200) + '）'); }
+  }
   head('台帳の数え手（orders-count-test.js）');
   {
     const r0 = require('child_process').spawnSync(process.execPath, [path.join(path.dirname(SRC), 'orders-count-test.js')], { encoding: 'utf8', timeout: 60000 });
