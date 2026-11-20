@@ -51,6 +51,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       heavy: ${{ steps.pick.outputs.heavy }}
+      body: ${{ steps.pick.outputs.body }}   # 本体の検査（速い版・フル版）を回すか。差がパネルとウィジェットの物だけなら 0（2026-11-20）
     steps:
       - uses: actions/checkout@v4
         with:
@@ -81,11 +82,11 @@ jobs:
             FILES=$( (echo "$FILES"; echo "$PASSFILES") | sort -u)
           fi
           echo "変わったもの: $FILES"
-          if echo "$FILES" | grep -qE '^(koushu-handan\.html|check\.js|adv-check\.js|check-all\.js|ver\.txt|panel\.html|panel-check\.js|widget-check\.js|usage-widget(-loader)?\.js|\.github/workflows/check\.yml)$' || echo "$FILES" | grep -qx ALL; then
-            echo "heavy=1" >> "$GITHUB_OUTPUT"; echo "→ 本体の回。検査を回し、通った回だけ配信する"
-          else
-            echo "heavy=0" >> "$GITHUB_OUTPUT"; echo "→ 控えの回。検査に掛けず、そのまま配信する"
-          fi
+          # 2026-11-20 本人の枠「雲の検査を速くする」：どの検査を回すかは scope-pick.js 一つで決める（作り値は scope-pick-test.js）。
+          #   差に本体（koushu-handan.html・ver.txt）・本体の検査台本（check.js・adv-check.js・check-all.js）・この仕組み（check.yml）が一つでも入れば body=1＝今までどおり全部（約10分の本体の検査＋パネル・ウィジェットの検査）。
+          #   差がパネルとウィジェットの物だけなら body=0＝本体の検査を飛ばし、パネルとウィジェットの検査だけで印を進めて配信する。控えだけなら heavy=0（検査に掛けずそのまま配信）。
+          echo "$FILES" | node scope-pick.js >> "$GITHUB_OUTPUT"
+          grep -E '^(heavy|body)=' "$GITHUB_OUTPUT" | tr '\n' ' '; echo
 
   # ---- 二段：検査（本体の回だけ）----
   check:
@@ -111,10 +112,13 @@ jobs:
             echo "playwright の chromium を /usr/bin/chromium へ"
           fi
 
+      # 本体の検査は、差に本体か本体の検査台本が入る回だけ（scope の body）。パネルとウィジェットだけの回は飛ばす（2026-11-20）。
       - name: 速い版（node check-all --fast）
+        if: needs.scope.outputs.body == '1'
         run: node check-all --fast
 
       - name: フル版（node check-all）
+        if: needs.scope.outputs.body == '1'
         run: node check-all
 
       - name: ウィジェットの検査（widget-check.js）
@@ -181,7 +185,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           R="$GITHUB_REPOSITORY"
-          FILES='koushu-handan.html check.js adv-check.js check-all.js ver.txt panel.html panel-check.js widget-check.js usage-widget.js usage-widget-loader.js .github/workflows/check.yml'
+          FILES='koushu-handan.html check.js adv-check.js check-all.js ver.txt panel.html panel-ver.txt panel-check.js widget-check.js usage-widget.js usage-widget-loader.js state-decide.js state-decide-test.js orders-count.js orders-count-test.js help-count.js cdp-run.js scope-pick.js scope-pick-test.js .github/workflows/check.yml'
           TAGSHA=$(gh api "repos/$R/git/refs/tags/check-pass" --jq '.object.sha' 2>/dev/null || echo NONE)
           TAGDATE=""
           [ "$TAGSHA" != "NONE" ] && TAGDATE=$(gh api "repos/$R/git/commits/$TAGSHA" --jq '.committer.date' 2>/dev/null || echo "")

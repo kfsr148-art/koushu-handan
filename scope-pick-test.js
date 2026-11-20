@@ -1,0 +1,22 @@
+// scope-pick-test.js — 雲の検査の「どの検査を回すか」の作り値の差（2026-11-20）。panel-check.js から呼ぶ。終了コード 0＝全部合い。
+'use strict';
+const { pick } = require('./scope-pick.js');
+let bad = 0; const ck = (n, files, heavy, body) => { const r = pick(Array.isArray(files) ? files.join('\n') : files); if (r.heavy !== heavy || r.body !== body) { bad++; console.log('NG ' + n + ' → heavy=' + r.heavy + ' body=' + r.body + '（当て heavy=' + heavy + ' body=' + body + '）'); } };
+ck('パネルだけ', ['panel.html', 'panel-ver.txt', 'panel-check.js'], 1, 0);
+ck('パネル＋パネルの検査が見る物（状態の決め所・数え手・その作り値）', ['panel.html', 'state-decide.js', 'state-decide-test.js', 'orders-count.js', 'orders-count-test.js', 'panel-ver.txt'], 1, 0);
+ck('ウィジェットだけ', ['usage-widget.js', 'usage-widget-loader.js', 'widget-check.js'], 1, 0);
+ck('パネルとウィジェット', ['panel.html', 'panel-ver.txt', 'usage-widget.js'], 1, 0);
+ck('パネル＋報告（reports/・CLAUDE.md は控えの扱い）', ['panel.html', 'panel-ver.txt', 'reports/y1120-1415.md', 'CLAUDE.md', 'report-latest.md'], 1, 0);
+ck('本体が入る（koushu-handan.html）', ['panel.html', 'koushu-handan.html', 'ver.txt'], 1, 1);
+ck('本体の検査台本が一つでも入る（check.js）', ['panel.html', 'check.js'], 1, 1);
+ck('本体の検査台本（adv-check.js）', ['adv-check.js'], 1, 1);
+ck('本体の検査台本（check-all.js）', ['panel-check.js', 'check-all.js'], 1, 1);
+ck('検査の仕組み（check.yml）が入る', ['panel.html', '.github/workflows/check.yml'], 1, 1);
+ck('ver.txt が入る', ['ver.txt'], 1, 1);
+ck('ALL は全部', ['ALL'], 1, 1);
+ck('控えだけ（検査に掛けない）', ['state.json', 'notices.json', 'status.md', 'reports/x.md'], 0, 0);
+ck('空', '', 0, 0);
+ck('検査を通った印からの差に本体が残っている回（パネルだけの押しでも差に check.js が入る）', ['panel.html', 'check.js', 'panel-check.js'], 1, 1);
+ck('名前が似ているだけの物は本体でない（panel-check.js.bak・koushu-handan.html.bak）', ['panel.html', 'koushu-handan.html.bak', 'check.js.bak-20260914'], 1, 0);
+console.log('雲の検査の振り分け（scope-pick.js）：' + (bad ? 'NG ' + bad + '件' : '16件 合い'));
+process.exit(bad ? 1 : 0);
