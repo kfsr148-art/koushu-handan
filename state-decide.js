@@ -36,7 +36,7 @@ function decide(m) {
   const backTx = hc.text;
   // 題（2026-11-19 13:00 本人の枠）：段の台帳に残りがある間は台帳の「仕事:」の行。無ければ窓の合図の題（受けた枠の頭の一行）
   const cd = m.cards || { owedAt: 0, owedEta: 0 };   // 控えにあるがまだ公開に見えていない札の印（panel が「札をまとめ中、、、」を出す）
-  const out = { cardOwedAt: Number(cd.owedAt) || 0, cardOwedEta: Number(cd.owedEta) || 0, stat: '', detail: '', subj: (m.job && (pend.length || (Number(m.jobAt) || 0) >= (Number(b.startedAt) || 0))) ? String(m.job) : String(b.subj || ''),   // 2026-11-20 枠 十一：段が全部済んだ後も、この手番の間に書いた段の台帳の仕事名を件名にする（手番が裏の知らせで始まると busy.subj は直前の人の指示の一行目＝枠 九のままだった）
+  const out = { cardOwedAt: Number(cd.owedAt) || 0, cardOwedEta: Number(cd.owedEta) || 0, stat: '', detail: '', subj: (m.job && (pend.length || (Number(m.jobAt) || 0) >= (Number(b.startedAt) || 0) || ['Stop', 'idle_prompt', 'Interrupted', 'EndTurn'].indexOf(String(b.ev || '')) >= 0)) ? String(m.job) : String(b.subj || ''),   // 2026-11-20 枠 十一：段が全部済んだ後も、この手番の間に書いた段の台帳の仕事名を件名にする（手番が裏の知らせで始まると busy.subj は直前の人の指示の一行目＝枠 九のままだった）
    eta: 0, resumeAt: 0, help: back > 0 ? backTx : (unk > 0 ? ('手伝い 不明 ' + unk + '本') : ''), steps: pend.length, stepDone: steps.length - pend.length, stepTotal: steps.length, next: first ? first.t : '',
     // 2026-11-19 12:40 本人の枠：パネルの「すんだ：」「いま：（何分たった）」「これから：」の材料（段の台帳の字そのまま）
     sDone: (steps.filter(r => r.k === 'x').slice(-1)[0] || {}).t || '', sNow: first ? first.t : '', sNowAt: nowAtOf(m, first), sNext: pend[1] ? pend[1].t : '' };

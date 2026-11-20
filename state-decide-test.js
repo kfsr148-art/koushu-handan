@@ -113,7 +113,11 @@ console.log('状態の決め所の総当たり：' + n + '組・NG ' + bad + '�
     const sj = (jobAt, startedAt) => decide({ now, alive: 1, busy: { ev: 'PreToolUse', evAt: now - 1, subj: '枠 九（古い）', startedAt }, kumo: {}, steps: [], job: '枠 十一：新', jobAt }).subj;
     ck('段が全部済んでも、この手番の間に書いた段の台帳の仕事名が件名（枠 九のままにならない）', sj(now - 100, now - 200) === '枠 十一：新');
     ck('手番より前に書いた段の台帳なら、件名は今の指示（busy.subj）', sj(now - 300, now - 200) === '枠 九（古い）');
-    console.log('件名（段が全部済んだ後）：' + (sbad ? 'NG あり' : '2件 合い')); }
+    // 2026-11-21 枠 十二：手すき（Stop／idle_prompt）の間は、段の台帳が手番より前でも、最後に済んだ仕事の名（03:00 に枠 九が出ていた）
+    const si = (ev, jobAt) => decide({ now, alive: 1, busy: { ev, evAt: now - 1, subj: '枠 九（古い）', startedAt: now - 200 }, kumo: {}, steps: [], job: '枠 十一：新', jobAt }).subj;
+    ck('手すき（idle_prompt）なら、手番より前の段の台帳でも最後の仕事名', si('idle_prompt', now - 5000) === '枠 十一：新');
+    ck('手すき（Stop）も同じ', si('Stop', now - 5000) === '枠 十一：新');
+    console.log('件名（段が全部済んだ後・手すき含む）：' + (sbad ? 'NG あり' : '4件 合い')); }
   const a = decide({ now, alive: 1, busy: { ev: 'Stop', evAt: now - 30 }, kumo: { state: 'waiting', subj: '一本目', workflow: 'check.yml', since: String(now - 700), runid: '1', runat: String(now - 600) }, steps: st, nowStep: old, job: '仕事' });
   const b = decide({ now, alive: 1, busy: { ev: 'Stop', evAt: now - 30 }, kumo: { state: 'waiting', subj: '二本目', workflow: 'check.yml', since: String(now - 20), runid: '2', runat: String(now - 3) }, steps: st, nowStep: old, job: '仕事' });
   if (a.sNowAt !== now - 600) { bad++; console.log('NG 一本目の起点が走りの始まりでない：' + a.sNowAt); }
