@@ -808,6 +808,35 @@ try {
     }
     if (html.split('nowLine(true)').length === 3) { ok('まとめて写す・全部写すの二箇所が withEta で呼ぶ'); } else { ng('nowLine(true) の呼びが二箇所でない'); }
   }
+  /* ---- ⑤の十三 様子を写すの順番待ち一覧・指さすの帯の名（v197・枠J） ---- */
+  head('⑤の十三 様子を写すに順番待ちを一行ずつ・指さすは帯の名を読む（作り値・字面）');
+  {
+    const sl = (name) => { const i = html.indexOf('  function ' + name + '('); if (i < 0) { return ''; } const j = html.indexOf(String.fromCharCode(10) + '  }', i); return (j > i) ? html.slice(i, j + 4) : ''; };
+    const wsrc = sl('waitListLines');
+    if (!wsrc) { ng('waitListLines が無い'); }
+    else {
+      const wl = new Function(wsrc + String.fromCharCode(10) + 'return waitListLines;')();
+      const NL = String.fromCharCode(10);
+      const a = wl({ wait: 2, waitList: [{ at: '11-20 14:19', head: '見込みの種類は走りの jobs から' }, { at: '11-20 14:23', head: '順番待ちを見えるようにする' }] });
+      if (a === '順番待ち：11-20 14:19　見込みの種類は走りの jobs から' + NL + '順番待ち：11-20 14:23　順番待ちを見えるようにする') { ok('順番待ち：〈届いた刻〉〈件名〉を一行ずつ'); } else { ng('順番待ちの行の形が違う：' + a.slice(0, 80)); }
+      if (wl({ wait: 0 }) === '順番待ち：なし') { ok('0件は「順番待ち：なし」'); } else { ng('0件の字が違う'); }
+      if (/言い切れない/.test(wl({}))) { ok('数が無い（言い切れない）時はその旨'); } else { ng('言い切れない時の字が無い'); }
+      if (/一覧は state に載っていない/.test(wl({ wait: 3 }))) { ok('数だけ有って一覧が無い時はその旨'); } else { ng('一覧が無い時の字が無い'); }
+      if (/ほか 5件$/.test(wl({ wait: 7, waitList: [{ at: 'a', head: 'b' }, { at: 'c', head: 'd' }], waitMore: 5 }))) { ok('一覧が長い時は「ほか N件」'); } else { ng('「ほか N件」が無い'); }
+    }
+    if (html.indexOf('<header data-pname="見出しの帯">') >= 0) { ok('見出しの帯（header）に名（data-pname）がある'); } else { ng('header に data-pname が無い'); }
+    const pc = sl('pointClean') || '', pn = sl('pointName');
+    const pc1 = html.indexOf('  function pointClean('), pc2 = html.indexOf(String.fromCharCode(10), pc1);
+    if (!pn) { ng('pointName が無い'); }
+    else {
+      const fake = (sel) => ({ id: '', tagName: 'HEADER', className: '', closest: (q) => (q === '[data-pname]' ? { getAttribute: () => '見出しの帯' } : null), textContent: '' });
+      const f = new Function(html.slice(pc1, pc2) + String.fromCharCode(10) + pn + String.fromCharCode(10) + 'return pointName;')();
+      const nm = f(fake());
+      if (nm === '見出しの帯') { ok('指さす：帯の余白（header）を押すと「見出しの帯」と出る（「header」でなく）'); } else { ng('指さすの名が違う：' + nm); }
+      const fake2 = { id: '', tagName: 'DIV', className: 'zzz', closest: () => null, textContent: '' };
+      if (f(fake2) === 'div.zzz') { ok('どの名にも当たらない所だけ平たい名（タグ名.class）に落ちる'); } else { ng('平たい名への落ち方が違う'); }
+    }
+  }
   /* ---- ⑤の十一 指さす（v191・2026-11-20 本人の枠） ---- */
   head('⑤の十一 指さす（釦の置き場・透明な幕・部品の名とid・写す字・下の釦を動かさない・取り消し・iPhone の幅）');
   {
@@ -1149,7 +1178,8 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     const els = { pipeWarn: { className: 'pipe', textContent: '止まっとるかも：作り値の赤い行' }, wakeWarn: { className: 'pipe hide', textContent: '' } };
     let txt = '';
     try {
-      const fn = new Function('headText', 'lastSubj', 'lastState', 'lastEvName', 'lastEvAt', 'lastRcName', 'lastRcPid', '$', 'allRows', 'PANEL_VER', 'copySrcUrl', 'nowLine', body + '\nreturn statusText();');
+      const wi = H.indexOf('  function waitListLines('), wj = (wi >= 0) ? H.indexOf(String.fromCharCode(10) + '  }', wi) : -1; const wlsrc = (wi >= 0 && wj > wi) ? H.slice(wi, wj + 4) : '';   // v197：statusText が使う waitListLines も一緒に切り出す
+      const fn = new Function('headText', 'lastSubj', 'lastState', 'lastEvName', 'lastEvAt', 'lastRcName', 'lastRcPid', '$', 'allRows', 'PANEL_VER', 'copySrcUrl', 'nowLine', wlsrc + '\n' + body + '\nreturn statusText();');
       const URL1 = 'https://kfsr148-art.github.io/koushu-state/notices-1795089000.json';
       txt = fn(() => '待機中', '作り値の件名', { at: 1795090000 }, 'idle_prompt', 1795089990, 'koushu-handan-93', 6308, id => els[id] || null,
         [{ time: 1795080000, title: '✅ 古い札' }, { time: 1795089000, title: '👀 作り値の新しい札' }], '179', URL1, () => '現況：待機中 ／ 本体v1508 ／ stable v1507 ／ 最終確認23:20');

@@ -25,18 +25,25 @@ function openRows(raw) { return parse(raw).filter(r => isOpen(r.state)); }
 function countOpen(raw) { return openRows(raw).length; }
 function epoch(s) { const t = Date.parse(String(s).replace(' ', 'T')); return isNaN(t) ? 0 : Math.floor(t / 1000); }
 // 順番待ち。note＝work-note.txt の中身、busy＝busy.txt の中身（JSON）。
-function waitCount(raw, note, busy, now) {
+function waitRows(raw, note, busy, now) {
   now = Number(now) || Math.floor(Date.now() / 1000);
   const fresh = openRows(raw).filter(r => { const t = epoch(r.at); return t > 0 && now - t <= 86400; });
-  if (fresh.length === 0) { return 0; }
+  if (fresh.length === 0) { return []; }
   const m = /^枠:[ 　]*(.+)$/m.exec(String(note || '').replace(/^\uFEFF/, ''));
   const mine = m ? m[1].split(/[・,、]/).map(s => s.trim()).filter(Boolean) : [];
   const b = busy || {}, open = ['UserPromptSubmit', 'PreToolUse', 'PostToolUse'].indexOf(String(b.ev || '')) >= 0;
-  if (mine.length) { return fresh.filter(r => mine.indexOf(r.at) < 0).length; }
-  if (!open) { return fresh.length; }
+  if (mine.length) { return fresh.filter(r => mine.indexOf(r.at) < 0); }
+  if (!open) { return fresh; }
   return null;
 }
-module.exports = { isOpen, parse, openRows, countOpen, waitCount };
+// 2026-11-20 枠J：数は行の数。様子を写すの「順番待ち：〈届いた刻〉〈件名〉」の一覧と同じ数え手（waitRows）から出す。
+function waitCount(raw, note, busy, now) { const r = waitRows(raw, note, busy, now); return r === null ? null : r.length; }
+// 一覧の一行＝{at:届いた刻（MM-DD HH:MM）, head:件名（項目の頭の一行・「頭：」があればその後ろ・40字まで）}
+function waitList(raw, note, busy, now) {
+  const r = waitRows(raw, note, busy, now); if (r === null) { return null; }
+  return r.map(x => { let h = String(x.item || ''); const k = h.indexOf('頭：'); if (k >= 0) { h = h.slice(k + 2); } h = h.replace(/^【[^】]*】[ 　]*/, '').replace(/^(今の仕事が済んでから|前の枠と重なれば合わせよ)[。.]?[ 　]*/, '').replace(/[ \t]+/g, ' ').trim(); if (h.length > 40) { h = h.slice(0, 40) + '…'; } return { at: String(x.at).slice(5, 16), head: h }; });
+}
+module.exports = { isOpen, parse, openRows, countOpen, waitRows, waitCount, waitList };
 if (require.main === module) {
   const arg = process.argv[2] || '--count';
   let raw = null; try { raw = fs.readFileSync(ROOT + '/orders-open.tsv', 'utf8'); } catch (e) { }
