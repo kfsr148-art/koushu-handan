@@ -3,7 +3,7 @@
 'use strict';
 const { decide } = require('./state-decide.js');
 const now = 1795050000;
-const EV = { 'UPS3分以内': { ev: 'UserPromptSubmit', evAt: now - 60 }, 'Post3分超': { ev: 'PostToolUse', evAt: now - 400 }, 'Stop': { ev: 'Stop', evAt: now - 30 }, '止まり使用量': { ev: 'StopFailure', evAt: now - 30, stat: '止まり（使用量・13:00 にリセット）' }, 'idle': { ev: 'idle_prompt', evAt: now - 10 } };
+const EV = { 'Post3分以内': { ev: 'PostToolUse', evAt: now - 10 }, 'Pre3分以内': { ev: 'PreToolUse', evAt: now - 100 }, 'UPS3分以内': { ev: 'UserPromptSubmit', evAt: now - 60 }, 'Post3分超': { ev: 'PostToolUse', evAt: now - 400 }, 'Stop': { ev: 'Stop', evAt: now - 30 }, '止まり使用量': { ev: 'StopFailure', evAt: now - 30, stat: '止まり（使用量・13:00 にリセット）' }, 'idle': { ev: 'idle_prompt', evAt: now - 10 } };
 const AG = { '手伝いなし': {}, '手伝い1': { a1: { at: now - 100 } }, '手伝い不明1': { a2: { at: now - 4000 } } };
 const BG = { 'bgなし': null, 'bg手伝い1雲1仲間1': { at: now - 25, items: [{ type: 'local_agent', status: 'running' }, { type: 'remote_agent', status: 'completed' }, { type: 'in_process_teammate', status: 'running' }] } };
 const KW = { '雲なし': {}, '雲・見込みあり': { state: 'waiting', subj: 'v1508 検査と配信', eta: String(now + 600), workflow: 'check.yml' }, '雲・見込みなし': { state: 'waiting', subj: 'v1508 声', workflow: 'voice-m4a.yml' }, '時計の待ち': { state: 'waiting', subj: '使用量のリセット', workflow: 'clock:' + (now + 1800) } };
@@ -16,7 +16,7 @@ for (const e in EV) for (const a in AG) for (const g in BG) for (const k in KW) 
   const c = [e, a, g, k, s, 'alive' + alive].join('・'); seen[r.stat] = (seen[r.stat] || 0) + 1;
   const bgFresh = !!BG[g] && ['Stop', 'idle_prompt', 'StopFailure', 'Interrupted', 'EndTurn'].indexOf(EV[e].ev) >= 0;   // 2026-11-20：数えるのは窓が手待ちの間の Stop の入力の一覧だけ。足し引きの agents（AG）は数えない
   const back = bgFresh && alive;
-  const expect = s === '決め待ち' ? 'ヨシ待ち' : e === '止まり使用量' ? '止まり' : (alive && (e === 'UPS3分以内' || back)) ? '作業中' : ((k === '雲・見込みあり' || k === '雲・見込みなし')) ? '検査中' : (k === '時計の待ち' || !alive || e === 'UPS3分以内' || e === 'Post3分超' || s === '段残り') ? '待ち' : '待機中';
+  const expect = s === '決め待ち' ? 'ヨシ待ち' : e === '止まり使用量' ? '止まり' : (alive && (e === 'UPS3分以内' || e === 'Post3分以内' || e === 'Pre3分以内' || back)) ? '作業中' : ((k === '雲・見込みあり' || k === '雲・見込みなし')) ? '検査中' : (k === '時計の待ち' || !alive || e === 'UPS3分以内' || e === 'Post3分超' || s === '段残り') ? '待ち' : '待機中';
   const rs = /^止まり/.test(r.stat) ? '止まり' : r.stat;
   if (rs !== expect) { ng(c, r, '順が違う（当て＝' + expect + '）'); continue; }
   if (rs === '止まり' && e === '止まり使用量' && r.stat !== '止まり（使用量・13:00 にリセット）') { ng(c, r, '止まりの字（リセットの刻）'); }
