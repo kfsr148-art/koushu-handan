@@ -108,6 +108,12 @@ console.log('状態の決め所の総当たり：' + n + '組・NG ' + bad + '�
 {
   const st = [{ k: 'x', t: '一' }, { k: '雲', t: '確かめてから公開している' }];
   const old = { t: '前の仕事|確かめてから公開している', at: now - 9900 };
+  // 2026-11-20 枠 十一：段が全部済んだ後の件名（手番が裏の知らせで始まり、busy.subj が直前の人の指示の一行目＝枠 九のまま）
+  { let sbad = 0; const ck = (nm, ok) => { if (!ok) { sbad++; console.log('NG 件名：' + nm); } };
+    const sj = (jobAt, startedAt) => decide({ now, alive: 1, busy: { ev: 'PreToolUse', evAt: now - 1, subj: '枠 九（古い）', startedAt }, kumo: {}, steps: [], job: '枠 十一：新', jobAt }).subj;
+    ck('段が全部済んでも、この手番の間に書いた段の台帳の仕事名が件名（枠 九のままにならない）', sj(now - 100, now - 200) === '枠 十一：新');
+    ck('手番より前に書いた段の台帳なら、件名は今の指示（busy.subj）', sj(now - 300, now - 200) === '枠 九（古い）');
+    console.log('件名（段が全部済んだ後）：' + (sbad ? 'NG あり' : '2件 合い')); }
   const a = decide({ now, alive: 1, busy: { ev: 'Stop', evAt: now - 30 }, kumo: { state: 'waiting', subj: '一本目', workflow: 'check.yml', since: String(now - 700), runid: '1', runat: String(now - 600) }, steps: st, nowStep: old, job: '仕事' });
   const b = decide({ now, alive: 1, busy: { ev: 'Stop', evAt: now - 30 }, kumo: { state: 'waiting', subj: '二本目', workflow: 'check.yml', since: String(now - 20), runid: '2', runat: String(now - 3) }, steps: st, nowStep: old, job: '仕事' });
   if (a.sNowAt !== now - 600) { bad++; console.log('NG 一本目の起点が走りの始まりでない：' + a.sNowAt); }
