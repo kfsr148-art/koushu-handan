@@ -88,7 +88,7 @@ function gather(alive) {
       let note = ''; let nm = 0; try { note = fs.readFileSync(ROOT + '/work-note.txt', 'utf8').replace(/^\uFEFF/, ''); nm = Math.floor(fs.statSync(ROOT + '/work-note.txt').mtimeMs / 1000); } catch (e) { }
       const kind = (/^種類[:：][ ]*(.*)$/m.exec(note) || [])[1] || '', wait = (/^待ち[:：][ ]*(.*)$/m.exec(note) || [])[1] || '', hasDone = /^完了[:：]/m.test(note);
       let lastCard = 0; try { fs.readFileSync(ROOT + '/notify-sent.tsv', 'utf8').split(/\r?\n/).slice(-30).forEach(l => { const t = Date.parse(l.replace(/^\uFEFF/, '').slice(0, 19).replace(' ', 'T')); if (t > 0) { lastCard = Math.max(lastCard, Math.floor(t / 1000)); } }); } catch (e) { }
-      if (hasDone && /^(なし|無し|—|)$/.test(wait.trim()) && nm >= stopAt - 900 && lastCard < stopAt) { owedAt = stopAt; }
+      if (hasDone && /^(なし|無し|—|)$/.test(wait.trim()) && nm >= stopAt - 900 && lastCard < stopAt && nm > lastCard) { owedAt = stopAt; }   // 2026-11-20 枠 十：控えが**最後の札より新しい**時だけ（札を出した控えのまま、新しい仕事をしない止まり＝枠 九の札が22:28:35 に出たあとの 22:29:02 の止まりで、控えの更新刻 22:2x が 15分以内で印が立ち、札まとめ中が2分続いた）。新しい札が出ない回（控えを書いていない回）は印を立てない
     }
   } catch (e) { }
   if (owedAt > 0) { owedEta = (kwHold && (kwv.state === 'waiting' || kwv.state === 'ack') && Number(kwv.eta) > 0) ? Number(kwv.eta) : owedAt + 150; }
