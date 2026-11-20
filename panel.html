@@ -548,7 +548,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v199（11月20日）</p>
+  <p class="ver" id="verTag">panel v200（11月20日）</p>
   <div class="foot-group" id="footGroup">
   <p class="usage-when" id="usageWhen" hidden></p>
   <!-- 遠隔で繋がっている会話の名と pid（v127・落ちた後の起こし-2）。state.json の rcName / rcPid。
@@ -582,7 +582,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '199';  /* v199：頭の字を「札まとめ中」に（「を」を取る）・現況も同じ ／ v198：着手から90秒以内の「見込み未記入」は赤くしない ／ v197：様子を写すに順番待ちを一行ずつ・指さすの名を平たい名（見出しの帯）に ／ v196：まとめて写すの頭の現況を状態の言葉と終わる見込みにした ／ v194：ntfy の直の聞き取りを外した */  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
+  var PANEL_VER = '200';  /* v200：センコが読んだ刻（senkoReadAt）までの札と知らせは写した扱い ／ v199：頭の字を「札まとめ中」に（「を」を取る）・現況も同じ ／ v198：着手から90秒以内の「見込み未記入」は赤くしない ／ v197：様子を写すに順番待ちを一行ずつ・指さすの名を平たい名（見出しの帯）に ／ v196：まとめて写すの頭の現況を状態の言葉と終わる見込みにした ／ v194：ntfy の直の聞き取りを外した */  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
   /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
@@ -651,6 +651,7 @@
   var lastMikomiRaw = '', lastStepDone = 0, lastStepTotal = 0;
   /* 最後に押した札の刻（v142・古い並びの取り直し-1）。state.json の cardAt をそのまま持つ。 */
   var cardPollTimer = null;
+  var lastSenkoReadAt = 0;   /* v200（橋の枠 六）：センコが読んだ札の刻（state.json の senkoReadAt・epoch 秒）。この刻までの札と知らせは「まとめて写す」を押したのと同じ扱い */
   var lastCardAt = 0, lastCardOwedAt = 0, lastCardOwedEta = 0;   /* v188：lastCardOwedAt＝控えにあるがまだ公開に見えていない札を待ち始めた刻（state.json の cardOwedAt）。0なら無し */
   /* 過去の実測（estimates.json）。見込みが無いときの終了予定を、ここから当てる。 */
   var EST_URL = 'https://kfsr148-art.github.io/koushu-state/estimates.json';
@@ -1551,7 +1552,7 @@
     });
     (ntfySent || []).forEach(function (e) {
       if (e && e.eid && cardEid[e.eid]) { return; }   /* 札と同じ印の押し通知は札の行にまとめる */
-      if (!ntfyCopied[ntfyKeyOf(e)]) { a.push({ t: e.time || 0, kind: 'ntfy', ntfy: e }); }
+      if (!ntfyCopied[ntfyKeyOf(e)] && !senkoReadCovers(e && e.time)) { a.push({ t: e.time || 0, kind: 'ntfy', ntfy: e }); }
     });
     a.sort(function (x, y) { return y.t - x.t; });
     return a;
@@ -1807,7 +1808,10 @@
      ＊束ねる側は**写した印（copied）だけ**で落とす。押せば全部に印が付くので、
        次の回からは残0。数える側には例外を入れない（あちらは触らない）。
      ＊seenUpto は「ヨシした数」の箱の見せ方に残る。役目を分けた。 */
-  function isCopied(d) { return !!copied[keyOf(d)]; }
+  /* v200（橋の枠 六）：センコが読んだ刻（lastSenkoReadAt）までの札と知らせは、写した扱い。端末の写した印とは、どちらかが写した扱いなら写した。刻より新しい札は未写しのまま。手で押す道は今のまま。 */
+  function senkoEpoch(s) { var m = /^([0-9]{4}-[0-9]{2}-[0-9]{2}) ([0-9]{2}:[0-9]{2}:[0-9]{2})$/.exec(String(s || '')); if (!m) { return 0; } var t = Date.parse(m[1] + 'T' + m[2] + '+09:00'); return isNaN(t) ? 0 : Math.floor(t / 1000); }
+  function senkoReadCovers(t) { return lastSenkoReadAt > 0 && Number(t || 0) > 0 && Number(t) <= lastSenkoReadAt; }
+  function isCopied(d) { return !!copied[keyOf(d)] || senkoReadCovers(d && d.time); }
   /* 最後の更新からこれを超えたら「連絡なし」。
      ＊見張りは「変化があったときだけ」流す作りだったので、**手待ちの間は何も書かない**。
        そこへ v39 で 30分の脈（`$PULSE_SEC`）を入れた。**この閾値は脈と対で決まる**——
@@ -3096,6 +3100,7 @@
         try { var ww = $('wakeWarn'); if (ww) { var wt = (typeof d.warn === 'string') ? d.warn : ''; ww.textContent = wt ? ('⚠ ' + wt) : ''; ww.className = wt ? 'pipe' : 'pipe hide'; } } catch (e) { }
         /* 最後に押した札の刻（v142）。一覧が古いかを見分けるのに使う。下の freshen を見よ。 */
         lastCardAt = (typeof d.cardAt === 'number') ? d.cardAt : 0;
+        lastSenkoReadAt = senkoEpoch(d.senkoReadAt);   /* v200 */
         lastCardOwedAt = (typeof d.cardOwedAt === 'number') ? d.cardOwedAt : 0;   /* v188 */
         lastCardOwedEta = (typeof d.cardOwedEta === 'number') ? d.cardOwedEta : 0;   /* v189：雲の検査を待つ間は検査の見込みの刻 */
         /* 生存の途切れと見込みを、ここで一度だけ控える（v124・止まりの見分け-1）。
