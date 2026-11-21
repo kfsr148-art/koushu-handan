@@ -142,12 +142,46 @@ jobs:
             --data-binary @- \
             "https://ntfy.sh/${{ secrets.NTFY_TOPIC }}" > /dev/null || true
 
+  # ---- 二段半：検査を通った印（check-pass）を進める（2026-11-22・枠 七十で配信の段から外へ出した）----
+  #   ＊前は配信の段（群れ group: pages の中）で進めていた。群れの「待ち」は一本だけで、後から札と状態の配信が並ぶと
+  #     待っていた配信の段は取り下げられる（cancel-in-progress: false でも、待ちの側は取り下げられる）。
+  #     取り下げられると印が進まず、通った panel が古い印の版へ戻されたまま配られ続ける。
+  #   ＊群れの外で先に進めておけば、どの配信が後に走っても、通った版が配られる。
+  pass:
+    name: 印（check-pass）を進める
+    needs: [scope, check]
+    if: needs.scope.outputs.heavy == '1' && needs.check.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write   # 検査を通った印（タグ check-pass）を進める（2026-11-18）
+    steps:
+      # 検査が success の本体の回は、配信したか（先端が進んで飛ばしたか）にかかわらず、その commit まで検査を通ったと印を付ける（前へだけ進める）。
+      - name: 検査を通った印（check-pass）を進める
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          CUR=$(gh api "repos/$GITHUB_REPOSITORY/git/refs/tags/check-pass" --jq '.object.sha' 2>/dev/null || echo NONE)
+          if [ "$CUR" = "NONE" ]; then
+            if gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref=refs/tags/check-pass -f sha="$GITHUB_SHA" >/dev/null 2>&1; then echo "check-pass を新しく作った: $GITHUB_SHA"; else echo "印を作れなかった。印は先端の回が作る"; fi
+          else
+            CD=$(gh api "repos/$GITHUB_REPOSITORY/git/commits/$CUR" --jq '.committer.date' 2>/dev/null || echo "")
+            ND=$(gh api "repos/$GITHUB_REPOSITORY/git/commits/$GITHUB_SHA" --jq '.committer.date' 2>/dev/null || echo "")
+            echo "check-pass $CUR（$CD）→ $GITHUB_SHA（$ND）"
+            if [ -n "$ND" ] && { [ -z "$CD" ] || [ "$ND" \> "$CD" ]; }; then
+              # 2026-11-19 本人の枠：先端で workflows が変わった後に古い回が印を動かすと GITHUB_TOKEN が 403 で断られる。落ちにせず抜ける（印は先端の回が進める）
+              if gh api -X PATCH "repos/$GITHUB_REPOSITORY/git/refs/tags/check-pass" -f sha="$GITHUB_SHA" -F force=true >/dev/null 2>"$RUNNER_TEMP/cp-err.txt"; then echo "check-pass を進めた"; else echo "印を進められなかった（$(head -c 160 "$RUNNER_TEMP/cp-err.txt" | tr '\n' ' ')）。印は先端の回が進める"; fi
+            else
+              echo "印より前か同じ・並びが取れない：進めない"
+            fi
+          fi
+
   # ---- 三段：配信 ----
   #   ＊控えの回（heavy=0）… check は走らないので skipped。その回はそのまま配信する。
   #   ＊本体の回（heavy=1）… check が success の回だけ配信する。
   deploy:
     name: deploy（種類:${{ needs.scope.outputs.kind }}）
-    needs: [scope, check]
+    needs: [scope, check, pass]
     if: always() && needs.scope.result == 'success' && (needs.scope.outputs.heavy == '0' || needs.check.result == 'success')
     # ---- 打ち切らず、順に通し切る（2026-09-18・配信の譲り-1 乙）----
     #   ＊前は cancel-in-progress: true で「最後の一本が配信する」形だった。ところが
@@ -172,7 +206,7 @@ jobs:
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment2.outputs.page_url || steps.deployment3.outputs.page_url }}
     steps:
       # 控えの回でも、**検査を通っていない本体の変更が先端に残っている間**は配信しない（2026-11-18）。
       #   ＊前は「直前の完了した走りが failure か」で見ていたので、①本体の検査が走っている最中（未完了）と、
@@ -289,29 +323,25 @@ jobs:
         if: steps.guard.outputs.skip != '1' && steps.tip.outputs.stale != '1'
         with:
           path: '_site'
+      # 2026-11-22・枠 七十：deploy-pages が上げ終えた直後の荷を「Found 0 artifact(s)」で見つけられずに落ちることがある（荷の一覧の反映待ち）。
+      #   一度目が落ちたら20秒・60秒おいて同じ荷で出し直す（最後の一度は落ちを隠さない）。印（check-pass）は pass の段で先に進めてある。
       - id: deployment
         if: steps.guard.outputs.skip != '1' && steps.tip.outputs.stale != '1'
+        continue-on-error: true
         uses: actions/deploy-pages@v4
-      # 検査が success の本体の回は、配信したか（先端が進んで飛ばしたか）にかかわらず、その commit まで検査を通ったと印を付ける（前へだけ進める）。
-      - name: 検査を通った印（check-pass）を進める
-        if: always() && needs.scope.outputs.heavy == '1' && needs.check.result == 'success'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          CUR=$(gh api "repos/$GITHUB_REPOSITORY/git/refs/tags/check-pass" --jq '.object.sha' 2>/dev/null || echo NONE)
-          if [ "$CUR" = "NONE" ]; then
-            if gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref=refs/tags/check-pass -f sha="$GITHUB_SHA" >/dev/null 2>&1; then echo "check-pass を新しく作った: $GITHUB_SHA"; else echo "印を作れなかった。印は先端の回が作る"; fi
-          else
-            CD=$(gh api "repos/$GITHUB_REPOSITORY/git/commits/$CUR" --jq '.committer.date' 2>/dev/null || echo "")
-            ND=$(gh api "repos/$GITHUB_REPOSITORY/git/commits/$GITHUB_SHA" --jq '.committer.date' 2>/dev/null || echo "")
-            echo "check-pass $CUR（$CD）→ $GITHUB_SHA（$ND）"
-            if [ -n "$ND" ] && { [ -z "$CD" ] || [ "$ND" \> "$CD" ]; }; then
-              # 2026-11-19 本人の枠：先端で workflows が変わった後に古い回が印を動かすと GITHUB_TOKEN が 403 で断られる。落ちにせず抜ける（印は先端の回が進める）
-              if gh api -X PATCH "repos/$GITHUB_REPOSITORY/git/refs/tags/check-pass" -f sha="$GITHUB_SHA" -F force=true >/dev/null 2>"$RUNNER_TEMP/cp-err.txt"; then echo "check-pass を進めた"; else echo "印を進められなかった（$(head -c 160 "$RUNNER_TEMP/cp-err.txt" | tr '\n' ' ')）。印は先端の回が進める"; fi
-            else
-              echo "印より前か同じ・並びが取れない：進めない"
-            fi
-          fi
+      - name: 出し直しの前に待つ（一度目）
+        if: steps.guard.outputs.skip != '1' && steps.tip.outputs.stale != '1' && steps.deployment.outcome == 'failure'
+        run: sleep 20
+      - id: deployment2
+        if: steps.guard.outputs.skip != '1' && steps.tip.outputs.stale != '1' && steps.deployment.outcome == 'failure'
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+      - name: 出し直しの前に待つ（二度目）
+        if: steps.guard.outputs.skip != '1' && steps.tip.outputs.stale != '1' && steps.deployment.outcome == 'failure' && steps.deployment2.outcome == 'failure'
+        run: sleep 60
+      - id: deployment3
+        if: steps.guard.outputs.skip != '1' && steps.tip.outputs.stale != '1' && steps.deployment.outcome == 'failure' && steps.deployment2.outcome == 'failure'
+        uses: actions/deploy-pages@v4
       # 検査が通ったのに先端が進んでいて配りを飛ばした回は、印を進めた後に配りの走り（state-deploy.yml）を呼ぶ（2026-11-19）。
       #   ＊先端は雲の走りの reports/ の押し戻しなど。その押しの配りは印が進む前に走るので、検査の済んだ本体・パネルを古い印の版へ戻して配っていた（v168 が出なかった 02:51）。
       - name: 先端が進んで飛ばした回は、配りの走りを呼ぶ

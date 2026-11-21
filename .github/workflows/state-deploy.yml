@@ -39,12 +39,25 @@ jobs:
     timeout-minutes: 10
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment2.outputs.page_url || steps.deployment3.outputs.page_url }}
     steps:
+      # 2026-11-22・枠 七十：配るのは「走りを起こした時の commit」ではなく、**走り出した時の main の先端**。
+      #   ＊群れ（group: pages）で順番を待つ間に main が進んでも、古い先端（古い panel）を出さない。
+      #   ＊先端のうち検査を通っていない本体・パネルは、下の関門で今までどおり check-pass の版へ戻す（作法18）。
+      - name: いまの main の先端を取る
+        id: head
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          HEAD=$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq '.sha' 2>/dev/null || echo "")
+          [ -z "$HEAD" ] && HEAD="$GITHUB_SHA"
+          echo "sha=$HEAD" >> "$GITHUB_OUTPUT"
+          echo "配る commit: $HEAD（起こした時の commit: $GITHUB_SHA）"
       - name: 検査を通っていない本体の変更が残っていないかを見る
         id: guard
         env:
           GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ steps.head.outputs.sha }}
         run: |
           R="$GITHUB_REPOSITORY"
           FILES='koushu-handan.html check.js adv-check.js check-all.js ver.txt panel.html panel-check.js widget-check.js usage-widget.js usage-widget-loader.js .github/workflows/check.yml'
@@ -57,7 +70,7 @@ jobs:
           else
             NEWER=""
             for F in $FILES; do
-              D=$(gh api "repos/$R/commits?sha=$GITHUB_SHA&path=$F&per_page=1" --jq '.[0].commit.committer.date // empty' 2>/dev/null || echo "")
+              D=$(gh api "repos/$R/commits?sha=$HEAD_SHA&path=$F&per_page=1" --jq '.[0].commit.committer.date // empty' 2>/dev/null || echo "")
               if [ -n "$D" ] && [ "$D" \> "$TAGDATE" ]; then NEWER="$NEWER $F"; fi
             done
             echo "skip=0" >> "$GITHUB_OUTPUT"
@@ -71,6 +84,8 @@ jobs:
           fi
       - uses: actions/checkout@v4
         if: steps.guard.outputs.skip != '1'
+        with:
+          ref: ${{ steps.head.outputs.sha }}
       - name: 検査を通っていない本体・パネルの変更を、検査を通った版へ戻して配る
         if: steps.guard.outputs.skip != '1' && steps.guard.outputs.revert == '1'
         run: |
@@ -93,6 +108,23 @@ jobs:
         if: steps.guard.outputs.skip != '1'
         with:
           path: '_site'
+      # 2026-11-22・枠 七十：deploy-pages が、上げ終えた直後の荷を「Found 0 artifact(s)」で見つけられずに落ちることがある
+      #   （荷の一覧の反映待ち。11-21 15:11・15:46・18:04 の三度。18:04 の落ちで panel v208 が公開に出ず v206 のまま残った）。
+      #   一度目が落ちたら20秒・60秒おいて同じ荷で出し直す（最後の一度は落ちを隠さない）。
       - id: deployment
         if: steps.guard.outputs.skip != '1'
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+      - name: 出し直しの前に待つ（一度目）
+        if: steps.guard.outputs.skip != '1' && steps.deployment.outcome == 'failure'
+        run: sleep 20
+      - id: deployment2
+        if: steps.guard.outputs.skip != '1' && steps.deployment.outcome == 'failure'
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+      - name: 出し直しの前に待つ（二度目）
+        if: steps.guard.outputs.skip != '1' && steps.deployment.outcome == 'failure' && steps.deployment2.outcome == 'failure'
+        run: sleep 60
+      - id: deployment3
+        if: steps.guard.outputs.skip != '1' && steps.deployment.outcome == 'failure' && steps.deployment2.outcome == 'failure'
         uses: actions/deploy-pages@v4
