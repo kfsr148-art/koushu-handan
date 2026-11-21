@@ -21,13 +21,19 @@ function isCountCard(d) { return /^写せます（[0-9]+件）$/.test(String((d 
 function omoteLines(o) {
   o = o || {}; var s = function (v) { return String(v == null ? '' : v); };
   var hm = function (sec) { var d = new Date((Number(sec) + 9 * 3600) * 1000); return ('0' + d.getUTCHours()).slice(-2) + ':' + ('0' + d.getUTCMinutes()).slice(-2); };
-  var subj = s(o.subj).trim(), stat = s(o.stat).trim(), st = Number(o.startedAt) || 0, mk = s(o.mikomi).match(/([0-9]+)/), mn = mk ? parseInt(mk[1], 10) : 0;
+  var subj = s(o.subj).trim(), stat = s(o.stat).trim(), st = Number(o.startedAt) || 0;
   var fm = subj.match(/(?:橋の)?枠[ 　]*[一二三四五六七八九十百〇零0-9A-Za-z]+/);
   var tot = Number(o.stepTotal) || 0, dn = Number(o.stepDone) || 0, now = s(o.sNow).trim();
   return ['表の仕事：' + (subj || 'なし') + (stat ? '（' + stat + '）' : ''),
     '枠：' + (fm ? fm[0] : '件名に枠の番号なし'),
     '段：' + ((now && tot > 0) ? (Math.min(tot, dn + 1) + '/' + tot + '　' + now) : 'なし'),
-    '始まり：' + (st > 0 ? hm(st) : '不明') + '・見込みの終わり：' + ((st > 0 && mn > 0) ? hm(st + mn * 60) : (/不明/.test(s(o.mikomi)) ? '不明' : '未記入'))];
+    '始まり：' + (st > 0 ? hm(st) : '不明')];
+}
+// v203（2026-11-21・本人の枠 五十）：表と裏方の「全部終わる見込み」の一行。E＝{omote, ura}（隣の endat.js が組む。今の枠だけの終わりは出さない）。panel.html の endLine と一字も違わない写し（⑤の十七）。
+function endLine(E, k) {
+  var s = function (v) { return String(v == null ? '' : v); }, nm = (k === 'ura') ? '裏方' : '表の仕事', x = (E && typeof E === 'object') ? E[k] : null;
+  if (!x || typeof x !== 'object' || !('endAt' in x)) { return nm + 'の全部終わる見込み：state.json に載っていない'; }
+  return nm + 'の全部終わる見込み：' + (s(x.endAt) || ((k === 'ura') ? 'なし（動いている物が無い）' : 'なし（残りの仕事が無い）')) + (x.src ? '（' + s(x.src) + '）' : '');
 }
 function uraLines(U) {
   if (!U || typeof U !== 'object') { return ['裏方：state.json に載っていない']; }
@@ -87,10 +93,20 @@ function panelView(d, notices, ntfySent, now) {
     if (left > 0) { return 'まとめて写すヨシ！'; }
     return '待機中、、、。';
   };
-  return { head: head(), label: left > 0 ? ('まとめて写す（残' + left + '／' + left + '件）') : 'まとめて写す（0件）', left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), omote: omoteLines({ stat: d.stat, subj: d.subj, sNow: d.sNow, stepDone: d.stepDone, stepTotal: d.stepTotal, startedAt: d.startedAt, mikomi: d.mikomi }), ura: uraLines(d.ura), at: now };
+  return { head: head(), label: left > 0 ? ('まとめて写す（残' + left + '／' + left + '件）') : 'まとめて写す（0件）', left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), omote: omoteView(d), ura: uraView(d), at: now };
+}
+// v203（枠 五十）：omote／ura は {lines（パネルの箱と同じ字）, endAt（HH:MM・JST）, endSec, src（元の数の一言）, 元の数…}。E は d.eta（endat.js）。
+function omoteView(d) {
+  const E = (d.eta && typeof d.eta === 'object') ? d.eta : null, eo = (E && E.omote) || {};
+  const st = Number(eo.startSec) > 0 ? Number(eo.startSec) : d.startedAt;
+  return Object.assign({ lines: [endLine(E, 'omote')].concat(omoteLines({ stat: d.stat, subj: d.subj, sNow: d.sNow, stepDone: d.stepDone, stepTotal: d.stepTotal, startedAt: st, mikomi: d.mikomi })) }, eo);
+}
+function uraView(d) {
+  const E = (d.eta && typeof d.eta === 'object') ? d.eta : null;
+  return Object.assign({ lines: [endLine(E, 'ura')].concat(uraLines(d.ura)) }, (E && E.ura) || {});
 }
 
-module.exports = { panelView, senkoEpoch, omoteLines, uraLines };
+module.exports = { panelView, senkoEpoch, omoteLines, uraLines, endLine };
 
 if (require.main === module) {
   // 使い方：node panel-view.js <state.json の道> [<出し先の道>]  出し先が無ければ標準出力（PowerShell の文字化けを避けるため、見張りは道を渡す）
@@ -98,6 +114,8 @@ if (require.main === module) {
   let d = {}; try { d = JSON.parse(fs.readFileSync(process.argv[2], 'utf8').replace(/^﻿/, '')); } catch (e) { }
   // v202：見張りは ura（裏方）を panelView の後に足すので、state に ura が無ければ見張りの控え（~/.claude/ura-out.json＝一つ前の巡回の物）を読む
   if (!d.ura) { try { d.ura = JSON.parse(fs.readFileSync(path.join(require('os').homedir(), '.claude', 'ura-out.json'), 'utf8').replace(/^﻿/, '')); } catch (e) { } }
+  // v203（枠 五十）：表と裏方の全部終わる見込みは、隣の endat.js で組む（~/.claude の台帳・段の台帳・下請けと雲の控えを読む）。こけたら eta 無しで今までどおり
+  if (!d.eta) { try { d.eta = require(path.join(ROOT, 'endat.js')).compute(d); } catch (e) { } }
   const out = JSON.stringify(panelView(d, rd('notices.json'), rd('ntfy-sent.json')));
   if (process.argv[3]) { fs.writeFileSync(process.argv[3], out, 'utf8'); } else { process.stdout.write(out); }
 }
