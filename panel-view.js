@@ -35,6 +35,16 @@ function endLine(E, k) {
   if (!x || typeof x !== 'object' || !('endAt' in x)) { return nm + 'の全部終わる見込み：state.json に載っていない'; }
   return nm + 'の全部終わる見込み：' + (s(x.endAt) || ((k === 'ura') ? 'なし（動いている物が無い）' : 'なし（残りの仕事が無い）')) + (x.src ? '（' + s(x.src) + '）' : '');
 }
+// v204（2026-11-22・本人の枠 五十一）：パネルの箱に出す字（「全部終わる見込み HH:MM」の一行だけ）と裏方のゲージの数。panel.html の endShort・uraCount と一字も違わない写し（⑤の十七）。
+function endShort(E, k) {
+  var x = (E && typeof E === 'object') ? E[k] : null;
+  return (x && typeof x === 'object' && x.endAt) ? ('全部終わる見込み ' + String(x.endAt)) : '';
+}
+function uraCount(U) {
+  var a = function (x) { return Array.isArray(x) ? x : []; }; U = (U && typeof U === 'object') ? U : {};
+  var S = U.sub || {}, C = U.cloud || {};
+  return { run: a(S.items).length + a(C.running).length, done: a(S.recent).length + a(C.recent).length };
+}
 function uraLines(U) {
   if (!U || typeof U !== 'object') { return ['裏方：state.json に載っていない']; }
   var o = [], S = U.sub || {}, C = U.cloud || {}, a = function (x) { return Array.isArray(x) ? x : []; }, s = function (v) { return String(v == null ? '' : v); };
@@ -95,18 +105,20 @@ function panelView(d, notices, ntfySent, now) {
   };
   return { head: head(), label: left > 0 ? ('まとめて写す（残' + left + '／' + left + '件）') : 'まとめて写す（0件）', left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), omote: omoteView(d), ura: uraView(d), at: now };
 }
-// v203（枠 五十）：omote／ura は {lines（パネルの箱と同じ字）, endAt（HH:MM・JST）, endSec, src（元の数の一言）, 元の数…}。E は d.eta（endat.js）。
+// v203（枠 五十）：omote／ura は {lines（様子を写すと同じ字。パネルの画面には出さない）, endAt（HH:MM・JST）, endSec, src（元の数の一言）, 元の数…}。E は d.eta（endat.js）。
+// v204（枠 五十一）：panel＝パネルの箱が今出している物だけ（gauge＝ゲージの横の小さい字・end＝「全部終わる見込み HH:MM」の一行。裏方は done／run も）。src・始まり・lines は state.json の中だけ。
 function omoteView(d) {
   const E = (d.eta && typeof d.eta === 'object') ? d.eta : null, eo = (E && E.omote) || {};
   const st = Number(eo.startSec) > 0 ? Number(eo.startSec) : d.startedAt;
-  return Object.assign({ lines: [endLine(E, 'omote')].concat(omoteLines({ stat: d.stat, subj: d.subj, sNow: d.sNow, stepDone: d.stepDone, stepTotal: d.stepTotal, startedAt: st, mikomi: d.mikomi })) }, eo);
+  const tot = Number(d.stepTotal) || 0, dn = Number(d.stepDone) || 0;
+  return Object.assign({ lines: [endLine(E, 'omote')].concat(omoteLines({ stat: d.stat, subj: d.subj, sNow: d.sNow, stepDone: d.stepDone, stepTotal: d.stepTotal, startedAt: st, mikomi: d.mikomi })) }, eo, { panel: { gauge: (String(d.sNow || '').trim() && tot > 0) ? (Math.min(tot, dn + 1) + '/' + tot) : '', end: endShort(E, 'omote') } });
 }
 function uraView(d) {
-  const E = (d.eta && typeof d.eta === 'object') ? d.eta : null;
-  return Object.assign({ lines: [endLine(E, 'ura')].concat(uraLines(d.ura)) }, (E && E.ura) || {});
+  const E = (d.eta && typeof d.eta === 'object') ? d.eta : null, c = uraCount(d.ura), end = endShort(E, 'ura');
+  return Object.assign({ lines: [endLine(E, 'ura')].concat(uraLines(d.ura)) }, (E && E.ura) || {}, { panel: { gauge: (c.run > 0 || end) ? (c.done + '/' + (c.done + c.run)) : '', done: c.done, run: c.run, end: end } });
 }
 
-module.exports = { panelView, senkoEpoch, omoteLines, uraLines, endLine };
+module.exports = { panelView, senkoEpoch, omoteLines, uraLines, endLine, endShort, uraCount };
 
 if (require.main === module) {
   // 使い方：node panel-view.js <state.json の道> [<出し先の道>]  出し先が無ければ標準出力（PowerShell の文字化けを避けるため、見張りは道を渡す）

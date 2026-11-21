@@ -334,13 +334,9 @@
   li.why.stline{min-height:79px; display:flex; align-items:center;}
   /* v173：すんだ・いま・これから（黄色い帯の跡）。地の色は付けず、字だけ一行ずつ */
   #stLine{margin:6px 0 0; padding:0;}
-  /* v202：表の仕事と裏方の箱（三行を畳んだ跡）。見込みの箱（.progbox）と同じ顔つき */
-  .workbox{margin:8px 14px 0; padding:6px 12px; border:1px solid var(--line); border-radius:10px; background:rgba(128,128,128,.08); box-sizing:border-box;}
-  .workbox.hide{display:none;}
-  .workbox .wb-sec + .wb-sec{margin-top:6px; padding-top:6px; border-top:1px solid var(--line);}
-  .workbox .wb-h{margin:0; font-size:14px; font-weight:700; line-height:1.5; color:var(--fg);}
-  .workbox .wb-l{margin:0; font-size:13px; line-height:1.5; color:var(--dim); overflow-wrap:anywhere; word-break:break-word;}
-  .workbox .wb-end{font-weight:700; color:var(--fg);}   /* v203：全部終わる見込み（一つずつだけ） */
+  /* v204（本人の枠 五十一）：v202〜v203 の字だらけの箱（表の仕事と裏方の行）は外し、見込みの箱（#progBox）の中に「表の仕事」と「裏方」のゲージを一本ずつ（v185 の手順のゲージの形）。字は「全部終わる見込み HH:MM」の一行だけ */
+  .progbox .pg-sec + .pg-sec{margin-top:6px; padding-top:6px; border-top:1px solid var(--line);}
+  .stg-k{flex:none; font-size:13px; font-weight:700; color:var(--fg); white-space:nowrap;}
   .cpall.steps-t{margin-top:8px; font-size:14px;}
   .cpall.steps-t.hide{display:none;}
   /* v186：見込みとゲージの箱。.hide のときは箱ごと出さない */
@@ -464,7 +460,8 @@
          このパネルは「見る」ためだけの道具になった。 -->
   </header>
   <!-- v186（2026-11-20 本人の枠）：「終わる見込み HH:MM（あとN分）」と手順のゲージの二行を一つの箱にまとめ、見出しのすぐ下に置く。作業も待ちも無い時は箱ごと出さない（hide）。赤い未記入・過ぎた表示もこの箱の中。 -->
-  <div class="progbox hide" id="progBox"></div>
+  <!-- v204（本人の枠 五十一）：箱の中は二つ——上「表の仕事」（段の台帳の済み/全体のゲージ＋全部終わる見込み）、下「裏方」（下請けと雲：直近に終わった分＝緑・動いている分＝青のゲージ＋全部終わる見込み）。元の数と訳は state.json の panelView にだけ残す。 -->
+  <div class="progbox hide" id="progBox" data-pname="表の仕事と裏方のゲージの箱"></div>
   <!-- ＊区切り線の下の帯（`.bar`）は **v48 で外した**。中身は「HH:MM 更新」の一つだけで、
        それを版の行の右端へ移したので、空の帯だけが残る形になっていた。
        ＊「話題名を入れ直す」は v17 で撤去済み。話題名を使う先はもう無い。 -->
@@ -484,11 +481,7 @@
   <p class="pipe hide" id="wakeWarn"></p>
   <p class="kumo-line hide" id="kumoLine"></p>
   <!-- v202（2026-11-21 本人の枠 四十七・四十八）：完了・進行中・予定の三行はふだん出さず、釦（#btnSteps）を押した時だけ三つとも開く。
-       跡には、上に「表の仕事」（今の枠・段・始まりと見込みの終わり）、下に「裏方」（下請けと雲・それぞれの刻。state.json の ura）。 -->
-  <div class="workbox hide" id="workBox" data-pname="表の仕事と裏方">
-    <div class="wb-sec" id="omoteBox"></div>
-    <div class="wb-sec" id="uraBox"></div>
-  </div>
+       ＊v204（本人の枠 五十一）：跡に出していた「表の仕事」「裏方」の字の箱（#workBox）は外した。二つは見出しのすぐ下の箱（#progBox）にゲージで出す。 -->
   <button class="cpall steps-t hide" id="btnSteps" type="button" aria-expanded="false">完了・進行中・予定を開く</button>
   <ul id="stLine" hidden></ul>
   <button class="cpall" id="btnCopyBoard" type="button">まとめて写す（0件）</button>
@@ -564,7 +557,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v203（11月21日）</p>
+  <p class="ver" id="verTag">panel v204（11月22日）</p>
   <div class="foot-group" id="footGroup">
   <p class="usage-when" id="usageWhen" hidden></p>
   <!-- 遠隔で繋がっている会話の名と pid（v127・落ちた後の起こし-2）。state.json の rcName / rcPid。
@@ -598,7 +591,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '203';  /* v203：表の仕事と裏方の箱に「全部終わる見込み」を一つずつ（endat.js・今の枠だけの終わりは出さない・始まりは付け直さず終わりを延ばす） ／ v202：完了・進行中・予定の三行は釦一つに畳み、跡に「表の仕事」と「裏方」（下請けと雲・state.json の ura）を出す・様子を写すの頭の番地を外し表の仕事と裏方を足す ／ v201：ヨシ待ちの猫を本人の絵（yoshi-machi-240.png・字を山吹色＋黒縁）に ／ v200：センコが読んだ刻（senkoReadAt）までの札と知らせは写した扱い ／ v199：頭の字を「札まとめ中」に（「を」を取る）・現況も同じ ／ v198：着手から90秒以内の「見込み未記入」は赤くしない ／ v197：様子を写すに順番待ちを一行ずつ・指さすの名を平たい名（見出しの帯）に ／ v196：まとめて写すの頭の現況を状態の言葉と終わる見込みにした ／ v194：ntfy の直の聞き取りを外した */  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
+  var PANEL_VER = '204';  /* v204：字だらけの「表の仕事と裏方」の箱を外し、見出しの下の箱に表の仕事と裏方のゲージを一本ずつ（v185 の形）＋「全部終わる見込み HH:MM」の一行だけ ／ v203：表の仕事と裏方の箱に「全部終わる見込み」を一つずつ（endat.js・今の枠だけの終わりは出さない・始まりは付け直さず終わりを延ばす） ／ v202：完了・進行中・予定の三行は釦一つに畳み、跡に「表の仕事」と「裏方」（下請けと雲・state.json の ura）を出す・様子を写すの頭の番地を外し表の仕事と裏方を足す ／ v201：ヨシ待ちの猫を本人の絵（yoshi-machi-240.png・字を山吹色＋黒縁）に ／ v200：センコが読んだ刻（senkoReadAt）までの札と知らせは写した扱い ／ v199：頭の字を「札まとめ中」に（「を」を取る）・現況も同じ ／ v198：着手から90秒以内の「見込み未記入」は赤くしない ／ v197：様子を写すに順番待ちを一行ずつ・指さすの名を平たい名（見出しの帯）に ／ v196：まとめて写すの頭の現況を状態の言葉と終わる見込みにした ／ v194：ntfy の直の聞き取りを外した */  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
   /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
@@ -1212,6 +1205,18 @@
     if (!x || typeof x !== 'object' || !('endAt' in x)) { return nm + 'の全部終わる見込み：state.json に載っていない'; }
     return nm + 'の全部終わる見込み：' + (s(x.endAt) || ((k === 'ura') ? 'なし（動いている物が無い）' : 'なし（残りの仕事が無い）')) + (x.src ? '（' + s(x.src) + '）' : '');
   }
+  /* v204（本人の枠 五十一）：パネルの箱に出す字は「全部終わる見込み HH:MM」の一行だけ（元の数と訳＝src は state.json の panelView にだけ残す）。刻が無ければ空（行を出さない）。
+     ＊panel-view.js に同じ字で写してある（⑤の十七が字面を突き合わせる）。 */
+  function endShort(E, k) {
+    var x = (E && typeof E === 'object') ? E[k] : null;
+    return (x && typeof x === 'object' && x.endAt) ? ('全部終わる見込み ' + String(x.endAt)) : '';
+  }
+  /* v204：裏方のゲージの数。done＝直近に終わった分（下請けと雲の recent）・run＝動いている分（下請けの items と雲の running）。panel-view.js に同じ字で写してある。 */
+  function uraCount(U) {
+    var a = function (x) { return Array.isArray(x) ? x : []; }; U = (U && typeof U === 'object') ? U : {};
+    var S = U.sub || {}, C = U.cloud || {};
+    return { run: a(S.items).length + a(C.running).length, done: a(S.recent).length + a(C.recent).length };
+  }
   /* v202（枠 四十六の三）：裏方の行。state.json の ura（sub＝下請け・cloud＝雲）。刻は state.json の値（日本の時計の HH:MM）をそのまま出す。 */
   function uraLines(U) {
     if (!U || typeof U !== 'object') { return ['裏方：state.json に載っていない']; }
@@ -1228,10 +1233,11 @@
   /* v182（2026-11-20 本人の枠）：待ち（検査中・待ち・手待ちの下の雲待ち）にも「終わる見込み HH:MM（あとN分）」を出す。
      ＊刻は見張りが種類別の前5回の中央値で出した物（kumo の「見込み HH:MM」・detail の「終了予定／再開 HH:MM」）をそのまま読む。
      ＊刻が読めなければ赤で「見込み未記入」（「不明」とあれば「見込み不明」）。過ぎていれば赤で「見込みを過ぎた N分」。 */
-  function gaugeHtml(r, inBox) {   /* v185：手順の数で区切った横長ゲージ。済み＝緑・今の手順＝青・残り＝灰。横に小さく「今の番号/全体」 */
-    var n = Math.max(1, r.total | 0), d = Math.max(0, Math.min(n, r.done | 0)), cur = (d < n) ? d : -1, h = '';
-    for (var i = 0; i < n; i++) { h += '<i class="' + (i < d ? 'd' : (i === cur ? 'c' : '')) + '"></i>'; }
-    var g = '<div class="stg"><span class="stg-bar">' + h + '</span><span class="stg-n">' + Math.min(n, d + 1) + '/' + n + '</span></div>';
+  function gaugeHtml(r, inBox) {   /* v185：手順の数で区切った横長ゲージ。済み＝緑・今の手順＝青・残り＝灰。横に小さく「今の番号/全体」
+                                     v204：r.k＝頭の小さい名（表の仕事／裏方）・r.run＝青にする区切りの数（裏方は動いている本数・無ければ1）・r.lab＝横の小さい字（無ければ今の番号/全体） */
+    var n = Math.max(1, r.total | 0), d = Math.max(0, Math.min(n, r.done | 0)), run = (r.run == null) ? 1 : Math.max(0, r.run | 0), h = '';
+    for (var i = 0; i < n; i++) { h += '<i class="' + (i < d ? 'd' : (i < d + run ? 'c' : '')) + '"></i>'; }
+    var g = '<div class="stg">' + (r.k ? '<span class="stg-k">' + esc(r.k) + '</span>' : '') + '<span class="stg-bar">' + h + '</span><span class="stg-n">' + (r.lab != null ? esc(String(r.lab)) : (Math.min(n, d + 1) + '/' + n)) + '</span></div>';
     return inBox ? ('<div class="pb">' + g + '</div>') : ('<li class="steps">' + g + '</li>');
   }
   function waitEtaRow() {
@@ -1323,7 +1329,7 @@
     if (u) { var un = u.querySelector('.u-name'); return (un ? pointClean(un.textContent, 20) : '使用量') + '（使用量）'; }
     var li = e.closest ? e.closest('li') : null;
     if (li) { var tx = li.querySelector('.tx'); if (tx) { return pointClean(tx.textContent, 30); } }
-    var map = [['#progBox', '終わる見込みと手順のゲージの箱'], ['#footGroup', '下の三行（取得の刻・最後の合図・台帳）'], ['#state', '状態の帯'], ['.facts', '版・最終確認の行'], ['#verTag', 'panelの版'], ['#halfRow', '遠隔と終わりましたの並び'], ['.shotsrow', '写し取り一覧・直近・様子を写す・指さすの並び'], ['#stLine', '完了・進行中・予定の行'], ['#btnSteps', '完了・進行中・予定を開く釦'], ['#workBox', '表の仕事と裏方の箱'], ['#usageTag', '使用量の三本'], ['h1', '見出し（返事パネル）']];
+    var map = [['#progBox', '表の仕事と裏方のゲージの箱'], ['#footGroup', '下の三行（取得の刻・最後の合図・台帳）'], ['#state', '状態の帯'], ['.facts', '版・最終確認の行'], ['#verTag', 'panelの版'], ['#halfRow', '遠隔と終わりましたの並び'], ['.shotsrow', '写し取り一覧・直近・様子を写す・指さすの並び'], ['#stLine', '完了・進行中・予定の行'], ['#btnSteps', '完了・進行中・予定を開く釦'],['#usageTag', '使用量の三本'], ['h1', '見出し（返事パネル）']];
     for (var i = 0; i < map.length; i++) { if (e.closest && e.closest(map[i][0])) { return map[i][1]; } }
     /* v197：帯ごとに名（data-pname）を持たせ、上の一覧に無い所は、いちばん近い名を読む（見出しの帯の余白を押すと「header」と出ていた） */
     var pn = e.closest ? e.closest('[data-pname]') : null; if (pn) { return pn.getAttribute('data-pname'); }
@@ -1825,20 +1831,32 @@
     /* v180（2026-11-20 本人の枠）：作業中は必ず「終わる見込み HH:MM（あとN分）」と「段 N/M」を出す。
        ＊見込みが無ければ空欄にせず赤で「見込み未記入」（窓が「不明」と書いた回は「見込み不明」）。見込みを過ぎたら「見込みを過ぎた N分」。
        ＊段は、済んでいない段があるときだけ「段 N/M」（N＝済み＋1）。台帳が無い・全部済みの回は赤で「段の台帳 未記入」。 */
+    /* v204（本人の枠 五十一）：箱の上＝表の仕事（段の台帳のゲージ＋「全部終わる見込み HH:MM」の一行）、下＝裏方（下請けと雲のゲージ＋一行）。
+       ＊全部終わる見込みは state.json の panelView.omote／ura の endAt（endat.js）。載っていない古い state の時だけ、前の今の枠の見込み（終わる見込み HH:MM（あとN分））を出す。
+       ＊赤（手順の一覧 未記入・見込み未記入・見込み不明・過ぎた）は今までどおり（作法39 ①）。過ぎた時は全部終わる見込みの一行を赤にする（字は増やさない）。 */
+    var E4 = (typeof lastEta !== 'undefined') ? lastEta : null, eo = endShort(E4, 'omote'), eu = endShort(E4, 'ura'), uc = uraCount((typeof lastUra !== 'undefined') ? lastUra : null), ura = [];
+    var hasG = !!(lastSNow && lastStepTotal > 0), gO = { c: 'gauge', k: '表の仕事', done: lastStepDone, total: lastStepTotal };
+    var oEta = function (late) { return { t: eo, c: (late || (E4 && E4.omote && E4.omote.over)) ? 'bad' : 'eta' }; };
     if (lastStat === '作業中') {
-      var nowS = Math.floor(Date.now() / 1000);
+      var nowS = Math.floor(Date.now() / 1000), mRow = null;
       if (lastStartedAt > 0 && lastMikomiMin > 0) {
         var endS = lastStartedAt + lastMikomiMin * 60;
-        if (endS > nowS) { box.push({ t: '終わる見込み ' + pad2s(endS) + '（あと' + Math.ceil((endS - nowS) / 60) + '分）', c: 'eta' }); }
-        else { box.push({ t: '見込みを過ぎた ' + Math.floor((nowS - endS) / 60) + '分', c: 'bad' }); }
-      } else if (/不明/.test(lastMikomiRaw)) { box.push({ t: '見込み不明', c: 'bad' }); }
-      else if (lastStartedAt > 0 && nowS - lastStartedAt < 90 && !/[^ ]/.test(String(lastMikomiRaw || ''))) { box.push({ t: '見込み 記入待ち（着手から90秒以内）', c: '' }); }   /* v198：着手の直後は、窓が見込みを書くまでの間。赤くしない（90秒を過ぎても無ければ赤で未記入） */
-      else { box.push({ t: '見込み未記入', c: 'bad' }); }
-      if (lastSNow && lastStepTotal > 0) { box.push({ c: 'gauge', done: lastStepDone, total: lastStepTotal }); }   /* v185：横長ゲージ＋小さく N/M */
-      else { box.push({ t: '手順の一覧 未記入', c: 'bad' }); }
+        if (endS > nowS) { mRow = { t: '終わる見込み ' + pad2s(endS) + '（あと' + Math.ceil((endS - nowS) / 60) + '分）', c: 'eta' }; }
+        else { mRow = { t: '見込みを過ぎた ' + Math.floor((nowS - endS) / 60) + '分', c: 'bad', late: true }; }
+      } else if (/不明/.test(lastMikomiRaw)) { mRow = { t: '見込み不明', c: 'bad' }; }
+      else if (lastStartedAt > 0 && nowS - lastStartedAt < 90 && !/[^ ]/.test(String(lastMikomiRaw || ''))) { mRow = { t: '見込み 記入待ち（着手から90秒以内）', c: '' }; }   /* v198：着手の直後は、窓が見込みを書くまでの間。赤くしない（90秒を過ぎても無ければ赤で未記入） */
+      else { mRow = { t: '見込み未記入', c: 'bad' }; }
+      box.push(hasG ? gO : { t: '手順の一覧 未記入', c: 'bad' });   /* v185：横長ゲージ＋小さく N/M（v204：頭に小さく「表の仕事」） */
+      if (eo) { box.push(oEta(!!mRow.late)); if (mRow.c === 'bad' && !mRow.late) { box.push(mRow); } }   /* v204：全部終わる見込みの一行。見込みの書き忘れ（未記入・不明）だけ赤で残す */
+      else { box.push(mRow); }
     }
     var wRow = null; try { wRow = waitEtaRow(); } catch (e) { wRow = null; }   /* v182 */
-    if (wRow) { box.push(wRow); if (lastSNow && lastStepTotal > 0) { box.push({ c: 'gauge', done: lastStepDone, total: lastStepTotal }); } }   /* v186：待ちでも段が残っていればゲージ */
+    if (wRow) { if (hasG) { box.push(gO); } box.push(eo ? oEta(false) : wRow); }   /* v186：待ちでも段が残っていればゲージ */
+    else if (lastStat !== '作業中' && eo) { box.push(oEta(false)); }   /* v204：手すきでも順番待ちがあれば全部終わる見込み */
+    if (uc.run > 0 || eu) {   /* v204：裏方のゲージ。済み（直近に終わった分）＝緑・動いている分＝青。横に小さく 済み/全体 */
+      ura.push({ c: 'gauge', k: '裏方', done: uc.done, run: uc.run, total: uc.done + uc.run, lab: uc.done + '/' + (uc.done + uc.run) });
+      if (eu) { ura.push({ t: eu, c: (E4 && E4.ura && E4.ura.over) ? 'bad' : 'eta' }); }
+    }
     if (lastSNow) {
       if (lastSDone) { rows.push('✅ 完了：' + lastSDone); }   /* v176：頭の字を替えた（ひらがなの「すんだ」は「ずんだ」と読み違えるので使わない） */
       var mins = lastSNowAt > 0 ? Math.max(0, Math.floor((Date.now() / 1000 - lastSNowAt) / 60)) : -1;
@@ -1846,23 +1864,15 @@
       if (lastSNext) { rows.push('⏳ 予定：' + lastSNext); }
     }
     var pbEl = $('progBox');   /* v186：箱。行が無い（作業も待ちも無い）時は箱ごと出さない */
-    if (pbEl) { pbEl.innerHTML = box.map(function (r) { if (r.c === 'gauge') { return gaugeHtml(r, true); } return '<div class="pb"><p class="m ' + r.c + '">' + esc(r.t) + '</p></div>'; }).join(''); pbEl.className = box.length ? 'progbox' : 'progbox hide'; }
+    var rowH = function (r) { if (r.c === 'gauge') { return gaugeHtml(r, true); } return '<div class="pb"><p class="m ' + r.c + '">' + esc(r.t) + '</p></div>'; };
+    if (pbEl) { pbEl.innerHTML = (box.length ? '<div class="pg-sec" id="omoteSec">' + box.map(rowH).join('') + '</div>' : '') + (ura.length ? '<div class="pg-sec" id="uraSec">' + ura.map(rowH).join('') + '</div>' : ''); pbEl.className = (box.length || ura.length) ? 'progbox' : 'progbox hide'; }   /* v204：表の仕事と裏方の二つ */
     var stB = $('btnSteps');   /* v202：三行は釦を押した時だけ開く。三行が無い回は釦ごと出さない */
     if (stB) { stB.className = rows.length ? 'cpall steps-t' : 'cpall steps-t hide'; stB.textContent = stepsOpen ? '完了・進行中・予定を閉じる' : '完了・進行中・予定を開く'; stB.setAttribute('aria-expanded', stepsOpen ? 'true' : 'false'); }
     el.hidden = !(stepsOpen && rows.length);
-    try { paintWorkBox(); } catch (e) { }
     el.innerHTML = rows.map(function (r) { if (r && r.c === 'gauge') { return gaugeHtml(r); } var isO = (typeof r !== 'string'); return '<li class="steps"><p class="m' + (isO ? ' ' + r.c : '') + '">' + esc(isO ? r.t : r) + '</p></li>'; }).join('');
   }
 
-  /* v202（枠 四十八）：表の仕事（上）と裏方（下）を箱に塗る。字は様子を写すと同じ omoteLines・uraLines */
-  function paintWorkBox() {
-    var wb = $('workBox'), ob = $('omoteBox'), ub = $('uraBox'); if (!wb || !ob || !ub) { return; }
-    var om = omoteLines(omoteNow()), ur = uraLines(lastUra);
-    var eL = function (k) { return '<p class="wb-l wb-end">' + esc(endLine(lastEta, k)) + '</p>'; };   /* v203：全部終わる見込みは一つずつだけ */
-    ob.innerHTML = om.map(function (t, i) { return '<p class="' + (i ? 'wb-l' : 'wb-h') + '">' + esc(t) + '</p>' + (i ? '' : eL('omote')); }).join('');
-    ub.innerHTML = '<p class="wb-h">裏方</p>' + eL('ura') + ur.map(function (t) { return '<p class="wb-l">' + esc(t) + '</p>'; }).join('');
-    wb.className = 'workbox';
-  }
+  /* ＊v202〜v203 の paintWorkBox（表の仕事と裏方の字の箱）は v204 で外した（本人の枠 五十一：字だらけで分からない）。字は様子を写す（statusText）と state.json の panelView にだけ残す。 */
   /* この札は片付いているか。「写す」を押した／「ここまで読んだ」に含まれる、のどちらか。 */
   function isDone(d) {
     if (copied[keyOf(d)]) { return true; }

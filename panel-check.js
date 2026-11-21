@@ -554,7 +554,7 @@ function staticParts() {
     const norm = (t) => t.split(String.fromCharCode(10)).map(l => l.replace(/^ +/, '')).join(String.fromCharCode(10)).trim();
     const cut = (src, n, ind) => { const a = src.indexOf(ind + 'function ' + n + '('); if (a < 0) { return ''; } const b = src.indexOf(String.fromCharCode(10) + ind + '}', a); return (b > a) ? src.slice(a, b + ind.length + 2) : ''; };
     const PV = require(path.join(path.dirname(SRC), 'panel-view.js'));
-    ['omoteLines', 'uraLines', 'endLine'].forEach(n => { const a = cut(H, n, '  '), b = cut(PVS, n, ''); if (!a || !b) { ng(n + ' が拾えない（panel.html ' + !!a + '／panel-view.js ' + !!b + '）'); } else if (norm(a) !== norm(b)) { ng(n + ' の字面が panel.html と panel-view.js で違う'); } else { ok(n + ' は panel.html と panel-view.js で字面が同じ'); } });
+    ['omoteLines', 'uraLines', 'endLine', 'endShort', 'uraCount'].forEach(n => { const a = cut(H, n, '  '), b = cut(PVS, n, ''); if (!a || !b) { ng(n + ' が拾えない（panel.html ' + !!a + '／panel-view.js ' + !!b + '）'); } else if (norm(a) !== norm(b)) { ng(n + ' の字面が panel.html と panel-view.js で違う'); } else { ok(n + ' は panel.html と panel-view.js で字面が同じ'); } });
     const fo = new Function(cut(H, 'omoteLines', '  ') + String.fromCharCode(10) + 'return omoteLines;')(), fu = new Function(cut(H, 'uraLines', '  ') + String.fromCharCode(10) + 'return uraLines;')();
     const ST0 = Date.parse('2026-11-21T23:42:00+09:00') / 1000;
     const O1 = { stat: '作業中', subj: '枠 四十三：守りの線を本体へ', sNow: '本体の工事', stepDone: 2, stepTotal: 7, startedAt: ST0, mikomi: '150分' };
@@ -570,8 +570,30 @@ function staticParts() {
     const pv = PV.panelView(Object.assign({ ura: U1 }, O1), [], [], 1795280000);
     const ln = (x) => (x && Array.isArray(x.lines)) ? x.lines.slice(1).join('|') : '';
     if (ln(pv.omote) === wantO && ln(pv.ura) === wantU && /^表の仕事の全部終わる見込み：state\.json に載っていない$/.test(pv.omote.lines[0]) && /^裏方の全部終わる見込み：/.test(pv.ura.lines[0])) { ok('panelView の omote・ura は {lines…}：頭に全部終わる見込みの一行・続きは panel.html と同じ字'); } else { ng('panelView の omote・ura が違う：' + JSON.stringify({ omote: pv.omote, ura: pv.ura })); }
-    const iW = H.indexOf('id="workBox"'), iO = H.indexOf('id="omoteBox"'), iU = H.indexOf('id="uraBox"'), iB = H.indexOf('id="btnSteps"'), iS = H.indexOf('<ul id="stLine" hidden>');
-    if (iW > 0 && iO > iW && iU > iO && iB > iU && iS > iB) { ok('並び：表の仕事 → 裏方 → 三行を開く釦 → 三行（ふだんは hidden）'); } else { ng('表の仕事・裏方・釦・三行の並びか hidden が違う（' + [iW, iO, iU, iB, iS].join('・') + '）'); }
+    /* v204（本人の枠 五十一）：字の箱（#workBox）は外し、表の仕事と裏方は見出しの下の箱（#progBox）にゲージで出す */
+    const iP = H.indexOf('id="progBox"'), iB = H.indexOf('id="btnSteps"'), iS = H.indexOf('<ul id="stLine" hidden>');
+    if (iP > 0 && iB > iP && iS > iB && H.indexOf('id="workBox"') < 0 && H.indexOf('paintWorkBox()') < 0) { ok('並び：表の仕事と裏方のゲージの箱 → 三行を開く釦 → 三行（ふだんは hidden）・字の箱（#workBox）は無い'); } else { ng('ゲージの箱・釦・三行の並びか hidden が違う／字の箱が残っている（' + [iP, iB, iS, H.indexOf('id="workBox"')].join('・') + '）'); }
+    /* v204：ゲージ（gaugeHtml を切り出して回す）。表＝段の済み緑・今の段一つ青・横に今の番号/全体／裏方＝済み緑・動いている本数ぶん青・横に済み/全体 */
+    {
+      const fg = new Function('esc', cut(H, 'gaugeHtml', '  ') + String.fromCharCode(10) + 'return gaugeHtml;')(t => String(t));
+      const cls = (h) => (h.match(/<i class="([a-z]*)"><\/i>/g) || []).map(x => x.replace(/<i class="([a-z]*)"><\/i>/, '$1') || '-').join('');
+      const gO = fg({ c: 'gauge', k: '表の仕事', done: 2, total: 5 }, true), gU = fg({ c: 'gauge', k: '裏方', done: 3, run: 2, total: 5, lab: '3/5' }, true), g0 = fg({ c: 'gauge', done: 3, total: 4 }, true);
+      if (cls(gO) === 'ddc--' && /<span class="stg-k">表の仕事<\/span>/.test(gO) && /<span class="stg-n">3\/5<\/span>/.test(gO)) { ok('表の仕事のゲージ：済み緑2・今の段青1・横に 3/5・頭に小さく「表の仕事」'); } else { ng('表の仕事のゲージが違う：' + cls(gO) + ' ' + gO); }
+      if (cls(gU) === 'dddcc' && /<span class="stg-k">裏方<\/span>/.test(gU) && /<span class="stg-n">3\/5<\/span>/.test(gU)) { ok('裏方のゲージ：直近に終わった分 緑3・動いている分 青2・横に 3/5'); } else { ng('裏方のゲージが違う：' + cls(gU) + ' ' + gU); }
+      if (cls(g0) === 'dddc' && /<span class="stg-n">4\/4<\/span>/.test(g0) && g0.indexOf('stg-k') < 0) { ok('名を付けない時は v185 と同じ（済み3・今1・4/4）'); } else { ng('v185 の形が崩れた：' + g0); }
+    }
+    /* v204：箱の字は「全部終わる見込み HH:MM」の一行だけ（src・始まり・元の数は箱に出さない。state.json の panelView にだけ） */
+    {
+      const fe = new Function(cut(H, 'endShort', '  ') + String.fromCharCode(10) + 'return endShort;')(), fc = new Function(cut(H, 'uraCount', '  ') + String.fromCharCode(10) + 'return uraCount;')();
+      const E0 = { omote: { endAt: '23:00', src: '今の仕事 残り3段…' }, ura: { endAt: '', src: '下請け 0本…' } };
+      if (fe(E0, 'omote') === '全部終わる見込み 23:00' && fe(E0, 'ura') === '' && fe(null, 'omote') === '') { ok('箱の一行は「全部終わる見込み 23:00」だけ（src は出さない・刻が無ければ行を出さない）'); } else { ng('箱の一行が違う：' + [fe(E0, 'omote'), fe(E0, 'ura'), fe(null, 'omote')].join('｜')); }
+      const c1 = fc(U1), c0 = fc(null);
+      if (c1.run === 2 && c1.done === 3 && c0.run === 0 && c0.done === 0) { ok('裏方の数：動いている 2（下請け1・雲1）・直近に終わった 3'); } else { ng('裏方の数が違う：' + JSON.stringify([c1, c0])); }
+      const P = cut(H, 'paintStateLine', '  ');
+      if (P.indexOf("k: '表の仕事'") >= 0 && P.indexOf("k: '裏方'") >= 0 && P.indexOf('id="omoteSec"') >= 0 && P.indexOf('id="uraSec"') >= 0 && P.indexOf('endShort(E4') >= 0 && !/endLine|omoteLines|uraLines|\.src/.test(P)) { ok('見出しの下の箱に表の仕事と裏方のゲージ＋一行（箱の中では endLine・omoteLines・uraLines・src を使わない）'); } else { ng('箱の組み立てが新しい形でない'); }
+      const pv4 = PV.panelView(Object.assign({ ura: U1, eta: { omote: { endAt: '23:50', src: 'x' }, ura: { endAt: '23:45', src: 'y' } } }, O1), [], [], 1795280000);
+      if (pv4.omote.panel && pv4.omote.panel.gauge === '3/7' && pv4.omote.panel.end === '全部終わる見込み 23:50' && pv4.ura.panel && pv4.ura.panel.gauge === '3/5' && pv4.ura.panel.run === 2 && pv4.ura.panel.end === '全部終わる見込み 23:45' && pv4.omote.src === 'x' && pv4.ura.src === 'y') { ok('panelView.omote／ura.panel＝箱が出している物（ゲージの小さい字と一行）・src と元の数は state.json の中に残る'); } else { ng('panelView の panel が違う：' + JSON.stringify({ o: pv4.omote.panel, u: pv4.ura.panel })); }
+    }
     if (H.indexOf("el.hidden = !(stepsOpen && rows.length);") >= 0 && H.indexOf("$('btnSteps').addEventListener('click'") >= 0) { ok('三行は釦を押した時だけ開く'); } else { ng('三行の開け閉めの手が無い'); }
     if (H.indexOf("lastUra = (d.ura && typeof d.ura === 'object') ? d.ura : null;") >= 0) { ok('state.json の ura を読む'); } else { ng('state.json の ura を読んでいない'); }
   }
@@ -607,7 +629,7 @@ function staticParts() {
       fs.writeFileSync(env.ENDAT_STEPS, ['仕事: 枠 九：作り値', '[x] 段1', ''].join(LF)); fs.writeFileSync(env.ENDAT_SUBLOG, ''); fs.writeFileSync(env.ENDAT_CLOUD, '{"list":[]}');
       const e4 = EA.compute(Object.assign({}, d1, { foot: { wait: 0, waitList: [] } }), J('22:40')), l4 = PV.endLine(e4, 'omote') + '|' + PV.endLine(e4, 'ura');
       if (l4 === '表の仕事の全部終わる見込み：なし（残りの仕事が無い）（今の仕事なし＋順番待ち 0件×30分（直近24時間の3枠の中央値）・見込みと実測の比 0.5（直近24時間 2組））|裏方の全部終わる見込み：なし（動いている物が無い）（下請け 0本（1本 15分＝直近24時間の実測なし・仮に15分）・雲 0本（1本 10分＝直近24時間の実測なし・仮に10分））') { ok('残りが無い時は「なし」と元の数（空にしない）'); } else { ng('残りが無い時の字が違う：' + l4); }
-      if (html.indexOf("lastEta = (d.panelView && d.panelView.omote") >= 0 && html.indexOf("eL('omote')") >= 0 && html.indexOf("eL('ura')") >= 0) { ok('パネルは state.json の panelView.omote／ura を読み、表の仕事と裏方の箱に一つずつ出す'); } else { ng('パネルが全部終わる見込みを読んでいない／箱に出していない'); }
+      if (html.indexOf("lastEta = (d.panelView && d.panelView.omote") >= 0 && html.indexOf("eo = endShort(E4, 'omote'), eu = endShort(E4, 'ura')") >= 0) { ok('パネルは state.json の panelView.omote／ura を読み、表の仕事と裏方のゲージの下に一行ずつ出す（v204）'); } else { ng('パネルが全部終わる見込みを読んでいない／箱に出していない'); }
     } catch (e) { ng('全部終わる見込みが回らない：' + e.message); }
     finally { Object.keys(keep).forEach(k => { if (keep[k] === undefined) { delete process.env[k]; } else { process.env[k] = keep[k]; } }); try { fs.rmSync(T, { recursive: true, force: true }); } catch (e) { } }
   }
