@@ -1,0 +1,218 @@
+/* panel-core.js — 返事パネルの数え方と字の組み立て（2026-11-22・本人の枠 七十四・panel v210）
+ *
+ * 目的：まとめて写すの残り・頭の字・三つの箱・見込みの字を、パネル（panel.html・端末のブラウザ）と
+ *   VAIO の panelView（panel-view.js・node）が**同じ一つの物**で組む。前は二か所に同じ字の写しがあり、
+ *   片方だけ先に公開されると数が食い違った（11-22 03:41：panelView 0件・本人の画面 残1）。
+ * 読み方：ブラウザは <script src="panel-core.js?_v=<版>"> で読み、window.PanelCore に置く。
+ *   node は require('./panel-core.js')。どちらも同じ関数を返す（UMD の形）。
+ * 決まり：ここには端末だけの物を持たない。今の刻（now）・写した印（端末の localStorage）・センコの印の刻は、
+ *   呼ぶ側が引数で渡す。DOM・fetch・localStorage・Date.now() はここで使わない。
+ *   ＊pad2s と kumoEtaSec だけは「呼ぶ側の時計の帯」で HH:MM を読む（端末は端末の帯・VAIO は日本の帯。どちらも日本で使う）。
+ * 版：VER は panel.html の PANEL_VER・verTag・panel-ver.txt と同じ数（panel-check.js の ⑰ が揃うかを見る）。
+ */
+(function (root, factory) {
+  var m = factory();
+  if (typeof module === 'object' && module && module.exports) { module.exports = m; }
+  else { root.PanelCore = m; }
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+  var VER = '210';
+  var WAIT_TEXT = '待機中、、、。', POINT_TEXT = 'まとめて写すヨシ！', WORK_TEXT = '作業中、、、。', LOST_TEXT = '接続不良、、、。', YOSHI_TEXT = 'ヨシ待ち、、、。', CHECK_TEXT = '検査中、、、。';
+
+  /* ---- 刻 ---- */
+  /* センコが読んだ刻（state.json の senkoReadAt「YYYY-MM-DD HH:mm:ss」・日本の時計）を epoch 秒に。読めなければ 0（v200） */
+  function senkoEpoch(s) { var m = /^([0-9]{4}-[0-9]{2}-[0-9]{2}) ([0-9]{2}:[0-9]{2}:[0-9]{2})$/.exec(String(s || '')); if (!m) { return 0; } var t = Date.parse(m[1] + 'T' + m[2] + '+09:00'); return isNaN(t) ? 0 : Math.floor(t / 1000); }
+  /* 刻を「HH:MM」の字にする（呼ぶ側の時計の帯・v98） */
+  function pad2s(sec) {
+    var t = new Date(sec * 1000);
+    return ('0' + t.getHours()).slice(-2) + ':' + ('0' + t.getMinutes()).slice(-2);
+  }
+  function newestTime(arr) {
+    var t = 0;
+    (arr || []).forEach(function (d) { if (d && (d.time || 0) > t) { t = d.time || 0; } });
+    return t;
+  }
+
+  /* ---- まとめて写すの残り ---- */
+  /* 「写せます（N件）」の札は数にも目次にも入れない（v116） */
+  function isCountCard(d) {
+    return /^写せます（[0-9]+件）$/.test(String((d && d.message) || '').trim());
+  }
+  /* 押し通知が、どれかの札と同じ出来事か（v209）。印（eid）が有れば印で、無ければ同じ題で札の刻の60秒前〜15分後。札は写した物も含めて見る */
+  function ntfyOfCard(e, cards) { if (!e) { return false; } var tt = String(e.title || '').trim(), et = Number(e.time || 0); return (cards || []).some(function (c) { if (!c) { return false; } if (e.eid) { return c.eid === e.eid; } var ct = Number(c.time || 0); return !!tt && String(c.title || '').trim() === tt && et >= ct - 60 && et <= ct + 900; }); }
+  /* 写していない札と押し通知を、刻の新しい順に一本にする（v114・v177・v200・v209 の決まりを一つに）。
+     o.rows＝札の全件（写した物も含む）／o.ntfySent＝押し通知の全件／o.readAt＝センコが読んだ刻（epoch 秒・0 で無し）
+     o.cardCopied(d)・o.ntfyCopied(e)＝端末で本人が押した写した印（端末の中だけ。VAIO は渡さない）。
+     返す物：[{ t, kind: 'card'|'ntfy', card|ntfy, pushed }]。まとめて写すの残りはこの長さ。 */
+  function todoList(o) {
+    o = o || {};
+    var rows = Array.isArray(o.rows) ? o.rows : [], sent = Array.isArray(o.ntfySent) ? o.ntfySent : [], readAt = Number(o.readAt) || 0;
+    var cardCopied = (typeof o.cardCopied === 'function') ? o.cardCopied : function () { return false; };
+    var ntfyCopied = (typeof o.ntfyCopied === 'function') ? o.ntfyCopied : function () { return false; };
+    var covers = function (t) { return readAt > 0 && Number(t || 0) > 0 && Number(t) <= readAt; };
+    var a = [], pushEid = {};
+    sent.forEach(function (e) { if (e && e.eid) { pushEid[e.eid] = 1; } });
+    rows.forEach(function (d) {
+      if (!d || isCountCard(d)) { return; }
+      if (cardCopied(d) || covers(d.time)) { return; }
+      a.push({ t: d.time || 0, kind: 'card', card: d, pushed: !!(d.eid && pushEid[d.eid]) });
+    });
+    sent.forEach(function (e) {
+      if (!e || ntfyOfCard(e, rows)) { return; }   /* 札と同じ出来事の押し通知は札の行にまとめる（写した札も含めて見る） */
+      if (ntfyCopied(e) || covers(e.time)) { return; }
+      a.push({ t: e.time || 0, kind: 'ntfy', ntfy: e });
+    });
+    a.sort(function (x, y) { return y.t - x.t; });
+    return a;
+  }
+  /* 釦の字（v117：M＝N。0件は「（0件）」） */
+  function todoLabel(n) { n = Math.max(0, Number(n) | 0); return n > 0 ? ('まとめて写す（残' + n + '／' + n + '件）') : 'まとめて写す（0件）'; }
+
+  /* ---- 頭の字 ---- */
+  /* 札まとめ中（v188・v189）：止まってから札が一覧に出るまで。o＝{ owedAt, owedEta, rows, now } */
+  function cardsPending(o) {
+    o = o || {}; var owedAt = Number(o.owedAt) || 0, owedEta = Number(o.owedEta) || 0, now = Number(o.now) || 0;
+    if (!(owedAt > 0)) { return false; }
+    if (now - owedAt > Math.max(600, (owedEta > owedAt ? owedEta - owedAt + 900 : 0))) { return false; }   /* v189：雲の検査を待つ間は見込みの後15分まで */
+    return newestTime(o.rows || []) < owedAt;
+  }
+  function cardEtaSec(o) { o = o || {}; var owedAt = Number(o.owedAt) || 0, owedEta = Number(o.owedEta) || 0; return owedEta > owedAt ? owedEta : (owedAt + 150); }
+  function cardLate(o) { o = o || {}; return cardsPending(o) && (Number(o.now) || 0) > Math.max((Number(o.owedAt) || 0) + 180, cardEtaSec(o) + 30); }
+  function cardPendText(o) { return cardLate(o) ? '札が遅れている' : '札まとめ中、、、。'; }   /* v207：短い一言だけ */
+  /* 雲待ちの一行（kumo）の「見込み HH:MM」を秒に。見込みの前なら刻を、過ぎていれば 0（v169） */
+  function kumoEtaSec(kumo, now) {
+    var m = String(kumo || '').match(/見込み[ ]*([0-9]{1,2}):([0-9]{2})/); if (!m) { return 0; }
+    now = Number(now) || 0;
+    var d = new Date(now * 1000); d.setHours(Number(m[1]), Number(m[2]), 0, 0);
+    var sec = Math.floor(d.getTime() / 1000);
+    if (sec < now - 12 * 3600) { sec += 24 * 3600; }
+    return sec > now ? sec : 0;
+  }
+  /* 待ちでも下請けか雲が動いている間の頭の字（v206・v207：括弧と次「…」は付けない。det は使わない） */
+  function uraBusyText(U, det) {
+    var a = function (x) { return Array.isArray(x) ? x : []; }; U = (U && typeof U === 'object') ? U : {};
+    var S = U.sub || {}, C = U.cloud || {};
+    var ns = Math.max(Math.max(0, Number(S.running) | 0), a(S.items).length), nc = Array.isArray(C.running) ? C.running.length : Math.max(0, Number(C.running) | 0);
+    if (!(ns > 0 || nc > 0)) { return ''; }
+    return '裏方作業中、、、。';
+  }
+  /* 頭の字（v207：短い一言だけ）。順は 止まり→動きなし→検査中→待ち→作業中→（走っていて雲の検査中）→走っている→ヨシ待ち→札まとめ中→雲の見込みの前→写す物あり→接続不良→待機中。
+     o＝{ stat, cloud, detail, ura, lost（生存の途切れ）, owedAt, owedEta, rows（札の全件）, kumo, left（まとめて写すの残り）, now } */
+  /* 走る猫の間か（v172：作業中と検査中。生存が途切れていたら走らせない） */
+  function isRunning(stat, lost) { return !lost && (String(stat || '') === '作業中' || String(stat || '') === '検査中'); }
+  function headText(o) {
+    o = o || {};
+    var stat = String(o.stat || ''), lost = !!o.lost, running = isRunning(stat, lost);
+    if (/^止まり/.test(stat)) { return '止まり'; }
+    if (stat === '動きなし') { return '動きなし'; }
+    if (stat === '検査中') { return CHECK_TEXT; }
+    if (stat === '待ち') { var ub = uraBusyText(o.ura || null, o.detail); return ub || WAIT_TEXT; }
+    if (stat === '作業中') { return WORK_TEXT; }
+    if (running && /^検査中：/.test(String(o.cloud || ''))) { return CHECK_TEXT; }
+    if (running) { return WORK_TEXT; }
+    if (stat === 'ヨシ待ち') { return YOSHI_TEXT; }
+    if (cardsPending(o)) { return cardPendText(o); }
+    if (kumoEtaSec(o.kumo, o.now) > 0) { return POINT_TEXT; }
+    if ((Number(o.left) || 0) > 0) { return POINT_TEXT; }
+    if (lost) { return LOST_TEXT; }
+    return WAIT_TEXT;
+  }
+
+  /* ---- 表の仕事と裏方の字（様子を写す・state.json の panelView） ---- */
+  /* 表の仕事の行（v202）。刻は日本の時計。「何分前」は出さない */
+  function omoteLines(o) {
+    o = o || {}; var s = function (v) { return String(v == null ? '' : v); };
+    var hm = function (sec) { var d = new Date((Number(sec) + 9 * 3600) * 1000); return ('0' + d.getUTCHours()).slice(-2) + ':' + ('0' + d.getUTCMinutes()).slice(-2); };
+    var subj = s(o.subj).trim(), stat = s(o.stat).trim(), st = Number(o.startedAt) || 0;
+    var fm = subj.match(/(?:橋の)?枠[ 　]*[一二三四五六七八九十百〇零0-9A-Za-z]+/);
+    var tot = Number(o.stepTotal) || 0, dn = Number(o.stepDone) || 0, now = s(o.sNow).trim();
+    return ['表の仕事：' + (subj || 'なし') + (stat ? '（' + stat + '）' : ''),
+      '枠：' + (fm ? fm[0] : '件名に枠の番号なし'),
+      '段：' + ((now && tot > 0) ? (Math.min(tot, dn + 1) + '/' + tot + '　' + now) : 'なし'),
+      '始まり：' + (st > 0 ? hm(st) : '不明')];
+  }
+  /* 表と裏方の「全部終わる見込み」の一行（v203）。E＝{omote, ura}（endat.js が組む） */
+  function endLine(E, k) {
+    var s = function (v) { return String(v == null ? '' : v); }, nm = (k === 'ura') ? '裏方' : '表の仕事', x = (E && typeof E === 'object') ? E[k] : null;
+    if (!x || typeof x !== 'object' || !('endAt' in x)) { return nm + 'の全部終わる見込み：state.json に載っていない'; }
+    return nm + 'の全部終わる見込み：' + (s(x.endAt) || ((k === 'ura') ? 'なし（動いている物が無い）' : 'なし（残りの仕事が無い）')) + (x.src ? '（' + s(x.src) + '）' : '');
+  }
+  /* 裏方の行（v202）。刻は state.json の値のまま */
+  function uraLines(U) {
+    if (!U || typeof U !== 'object') { return ['裏方：state.json に載っていない']; }
+    var o = [], S = U.sub || {}, C = U.cloud || {}, a = function (x) { return Array.isArray(x) ? x : []; }, s = function (v) { return String(v == null ? '' : v); };
+    var it = a(S.items);
+    if (it.length) { it.forEach(function (x) { o.push('下請け 動作中：' + s(x.start) + '〜　' + s(x.desc) + (x.type ? '（' + s(x.type) + '）' : '')); }); } else { o.push('下請け：動いていない'); }
+    a(S.recent).forEach(function (x) { o.push('下請け ' + (s(x.state) || '済') + '：' + s(x.start) + '〜' + s(x.end) + '　' + s(x.desc)); });
+    var rn = a(C.running);
+    if (rn.length) { rn.forEach(function (x) { o.push('雲 ' + (s(x.state) || '走行中') + '：' + s(x.at) + '〜　' + s(x.name) + ((x.title && x.title !== x.name) ? '「' + s(x.title) + '」' : '')); }); } else { o.push('雲：走っていない'); }
+    a(C.recent).forEach(function (x) { o.push('雲 ' + (s(x.state) || '済') + '：' + s(x.at) + '〜' + s(x.upd) + '　' + s(x.name) + (x.failStep ? '（落ちた段：' + s(x.failStep) + '）' : '')); });
+    return o;
+  }
+
+  /* ---- 箱とゲージ ---- */
+  /* 箱の一行（v204）：「全部終わる見込み HH:MM」だけ。刻が無ければ空 */
+  function endShort(E, k) {
+    var x = (E && typeof E === 'object') ? E[k] : null;
+    return (x && typeof x === 'object' && x.endAt) ? ('全部終わる見込み ' + String(x.endAt)) : '';
+  }
+  /* 裏方のゲージの数（v204）。done＝直近に終わった分・run＝動いている分 */
+  function uraCount(U) {
+    var a = function (x) { return Array.isArray(x) ? x : []; }; U = (U && typeof U === 'object') ? U : {};
+    var S = U.sub || {}, C = U.cloud || {};
+    return { run: a(S.items).length + a(C.running).length, done: a(S.recent).length + a(C.recent).length };
+  }
+  /* 区切りの無い古い state の時の裏方のゲージ（v204）。動いている物も刻も無ければ null */
+  function uraGauge(U, E) {
+    var c = uraCount(U), end = endShort(E, 'ura');
+    if (!(c.run > 0 || end)) { return null; }
+    return { done: c.done, run: c.run, total: c.done + c.run, lab: c.done + '/' + (c.done + c.run), end: end };
+  }
+  /* 手順のゲージの横の小さい字「今の番号/全体」（v185） */
+  function stepLab(done, total) { var n = Math.max(1, total | 0), d = Math.max(0, Math.min(n, done | 0)); return Math.min(n, d + 1) + '/' + n; }
+  /* 表の仕事のゲージの字（今やる段があり、段の台帳がある時だけ・無ければ空） */
+  function omoteGauge(sNow, done, total) { return (String(sNow || '').trim() && (Number(total) || 0) > 0) ? stepLab(Number(done) || 0, Number(total) || 0) : ''; }
+  /* ゲージの箱（全部／表の仕事／裏方）の中身（v205・v207）。E＝{omote, ura, all}（区切り seg は endat.js の束）・U＝state.json の ura。区切りが無い古い state は null */
+  function boxSpec(E, U, k) {
+    var s = function (v) { return String(v == null ? '' : v); }, x = (E && typeof E === 'object') ? E[k] : null;
+    if (!x || typeof x !== 'object' || !x.seg || typeof x.seg !== 'object') { return null; }
+    var tot = Math.max(0, Number(x.seg.total) | 0), dn = Math.max(0, Math.min(tot, Number(x.seg.done) | 0)), run = Math.max(0, Math.min(tot - dn, Number(x.seg.run) | 0));
+    var cut = function (t, n) { t = s(t).split(String.fromCharCode(10)).join(' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; };
+    var left = function (y) { var g = (y && y.seg) || {}; return Math.max(0, (Number(g.total) | 0) - (Number(g.done) | 0)); };
+    var a = function (v) { return Array.isArray(v) ? v : []; }, Uo = (U && typeof U === 'object') ? U : {}, So = Uo.sub || {}, Co = Uo.cloud || {};
+    var ug = (E.ura && E.ura.seg) || {}, uT = Math.max(0, Number(ug.total) | 0), uD = Math.max(0, Math.min(uT, Number(ug.done) | 0));
+    var now = '';
+    if (k === 'omote') { var c = x.cur || {}, w = x.wait || {}; now = c.job ? cut(c.job, 30) : (Number(w.n) > 0 ? '順番待ち ' + Number(w.n) + '件' : ''); }
+    else if (k === 'ura') { var o = []; a(So.items).forEach(function (y) { o.push('下請け・' + (s(y.desc) || '名なし')); }); a(Co.running).forEach(function (y) { o.push('雲・' + (s(y.name) || '名なし')); }); now = cut(o.join('、'), 40); }
+    else { now = '表の仕事 残り' + left(E.omote) + '・裏方 残り' + (uT - uD); }
+    return { k: (k === 'all') ? '全部' : ((k === 'ura') ? '裏方' : '表の仕事'), done: dn, run: run, total: tot, now: now, endSec: Number(x.endSec) || 0, endAt: s(x.endAt), over: !!x.over, lab: (k === 'ura') ? (dn + '/' + tot) : '' };
+  }
+  /* 今の仕事の見込み（開始＋見込みの分）を過ぎたか（v180）。表の仕事と全部の箱の頭を赤にする */
+  function workLate(stat, startedAt, mikomi, now) {
+    var m = String(mikomi == null ? '' : mikomi).match(/([0-9]+)/), min = m ? parseInt(m[1], 10) : 0, st = Number(startedAt) || 0;
+    return String(stat || '') === '作業中' && st > 0 && min > 0 && st + min * 60 <= (Number(now) || 0);
+  }
+  /* 箱の頭（名の右）の「あと N分（HH:MM ごろ）」（v206） */
+  function headEta(b, nowS, late) {
+    var e = (b && b.endSec > 0) ? b.endSec : 0, left = b ? Math.max(0, (b.total | 0) - (b.done | 0)) : 0;
+    if (e > nowS) { return { t: 'あと ' + Math.ceil((e - nowS) / 60) + '分（' + pad2s(e) + ' ごろ）', c: (b.over || late) ? 'bad' : 'eta' }; }
+    if (e > 0 && left > 0) { return { t: '見込みを過ぎた ' + Math.floor((nowS - e) / 60) + '分', c: 'bad' }; }
+    if (left > 0) { return { t: 'あと 未定', c: 'eta' }; }   /* 残りがあるのに刻がまだ無い */
+    return { t: 'あと 0分', c: 'eta' };
+  }
+  /* 箱の終わりの一行（v205）。刻が無ければ null */
+  function etaRow(b, nowS, late) {
+    if (!b || !(b.endSec > 0)) { return null; }
+    if (b.endSec > nowS) { return { t: '全部終わる見込み ' + pad2s(b.endSec) + '（あと' + Math.ceil((b.endSec - nowS) / 60) + '分）', c: (b.over || late) ? 'bad' : 'eta' }; }
+    return { t: '見込みを過ぎた ' + Math.floor((nowS - b.endSec) / 60) + '分', c: 'bad' };
+  }
+
+  return {
+    VER: VER, TEXT: { WAIT: WAIT_TEXT, POINT: POINT_TEXT, WORK: WORK_TEXT, LOST: LOST_TEXT, YOSHI: YOSHI_TEXT, CHECK: CHECK_TEXT },
+    senkoEpoch: senkoEpoch, pad2s: pad2s, newestTime: newestTime,
+    isCountCard: isCountCard, ntfyOfCard: ntfyOfCard, todoList: todoList, todoLabel: todoLabel,
+    cardsPending: cardsPending, cardEtaSec: cardEtaSec, cardLate: cardLate, cardPendText: cardPendText, kumoEtaSec: kumoEtaSec, uraBusyText: uraBusyText, isRunning: isRunning, headText: headText,
+    omoteLines: omoteLines, endLine: endLine, uraLines: uraLines,
+    endShort: endShort, uraCount: uraCount, uraGauge: uraGauge, stepLab: stepLab, omoteGauge: omoteGauge, boxSpec: boxSpec, workLate: workLate, headEta: headEta, etaRow: etaRow
+  };
+});

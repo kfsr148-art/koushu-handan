@@ -38,6 +38,7 @@ on:
       - 'scratchpad/jobs/*.js'
       - 'scratchpad/jobs/*.ps1'
       - 'panel.html'
+      - 'panel-core.js'
       - 'panel-check.js'
       - 'koushu-handan.html'
       - 'check.js'
@@ -97,7 +98,7 @@ jobs:
           FILES=$(git diff --name-only "$BEFORE" "${{ github.sha }}")
           P=""
           for f in $(echo "$FILES" | grep -E '^scratchpad/jobs/[^/]+\.(js|ps1)$' || true); do [ -f "$f" ] && P="$P $(basename "$f")"; done
-          if echo "$FILES" | grep -qE '^(panel\.html|panel-check\.js)$'; then
+          if echo "$FILES" | grep -qE '^(panel\.html|panel-core\.js|panel-check\.js)$'; then
             case " $P " in *" panel-check.js "*) ;; *) P="$P panel-check.js" ;; esac
           fi
           if echo "$FILES" | grep -qE '^(koushu-handan\.html|check\.js|adv-check\.js|check-all\.js)$'; then

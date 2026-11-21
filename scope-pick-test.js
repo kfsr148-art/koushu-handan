@@ -3,6 +3,7 @@
 const { pick } = require('./scope-pick.js');
 let bad = 0; const ck = (n, files, heavy, body) => { const r = pick(Array.isArray(files) ? files.join('\n') : files); if (r.heavy !== heavy || r.body !== body) { bad++; console.log('NG ' + n + ' → heavy=' + r.heavy + ' body=' + r.body + '（当て heavy=' + heavy + ' body=' + body + '）'); } };
 ck('パネルだけ', ['panel.html', 'panel-ver.txt', 'panel-check.js'], 1, 0);
+ck('パネルの部品だけ（panel-core.js・v210）', ['panel-core.js'], 1, 0);
 ck('パネル＋パネルの検査が見る物（状態の決め所・数え手・その作り値）', ['panel.html', 'state-decide.js', 'state-decide-test.js', 'orders-count.js', 'orders-count-test.js', 'panel-ver.txt'], 1, 0);
 ck('ウィジェットだけ', ['usage-widget.js', 'usage-widget-loader.js', 'widget-check.js'], 1, 0);
 ck('パネルとウィジェット', ['panel.html', 'panel-ver.txt', 'usage-widget.js'], 1, 0);

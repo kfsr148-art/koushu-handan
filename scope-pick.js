@@ -7,9 +7,10 @@
 //         差が**パネルとウィジェットの物だけ**なら body=0＝本体の検査を飛ばし、パネルとウィジェットの検査（panel-check・widget-check）だけで印を進めて配信する。
 //   ＊本体の検査（check.js・check-all.js・adv-check.js）がパネルを見ている所は無い（grep で確認済み）ので、パネルの側へ移す物は無い。
 //   ＊安全側：読めない・ALL は body=1。
+//   ＊v210（2026-11-22・本人の枠 七十四）：panel-core.js（パネルの数え方と字の組み立て。panel.html が <script src> で読む）もパネルの物。変われば panel-check を回してから配る。
 'use strict';
 const BODY = /^(koushu-handan\.html|check\.js|adv-check\.js|check-all\.js|ver\.txt|\.github\/workflows\/check\.yml)$/;
-const PANEL = /^(panel\.html|panel-ver\.txt|panel-check\.js|widget-check\.js|usage-widget(-loader)?\.js|state-decide\.js|state-decide-test\.js|orders-count\.js|orders-count-test\.js|help-count\.js|cdp-run\.js|scope-pick\.js|scope-pick-test\.js)$/;
+const PANEL = /^(panel\.html|panel-core\.js|panel-ver\.txt|panel-check\.js|widget-check\.js|usage-widget(-loader)?\.js|state-decide\.js|state-decide-test\.js|orders-count\.js|orders-count-test\.js|help-count\.js|cdp-run\.js|scope-pick\.js|scope-pick-test\.js)$/;
 function pick(text) {
   const files = String(text || '').split(/\r?\n/).map(s => s.trim()).filter(Boolean);
   if (files.indexOf('ALL') >= 0) { return { heavy: 1, body: 1 }; }

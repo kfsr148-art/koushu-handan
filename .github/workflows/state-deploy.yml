@@ -60,7 +60,7 @@ jobs:
           HEAD_SHA: ${{ steps.head.outputs.sha }}
         run: |
           R="$GITHUB_REPOSITORY"
-          FILES='koushu-handan.html check.js adv-check.js check-all.js ver.txt panel.html panel-check.js widget-check.js usage-widget.js usage-widget-loader.js .github/workflows/check.yml'
+          FILES='koushu-handan.html check.js adv-check.js check-all.js ver.txt panel.html panel-core.js panel-check.js widget-check.js usage-widget.js usage-widget-loader.js .github/workflows/check.yml'
           TAGSHA=$(gh api "repos/$R/git/refs/tags/check-pass" --jq '.object.sha' 2>/dev/null || echo NONE)
           TAGDATE=""
           [ "$TAGSHA" != "NONE" ] && TAGDATE=$(gh api "repos/$R/git/commits/$TAGSHA" --jq '.committer.date' 2>/dev/null || echo "")
@@ -91,7 +91,7 @@ jobs:
         run: |
           git fetch --quiet --no-tags --depth=1 origin "refs/tags/check-pass:refs/tags/check-pass"
           NEWER="${{ steps.guard.outputs.newer }}"
-          case " $NEWER " in *" panel.html "*) NEWER="$NEWER panel-ver.txt" ;; esac
+          case " $NEWER " in *" panel.html "*) NEWER="$NEWER panel-ver.txt panel-core.js" ;; esac
           for F in $NEWER; do
             if git cat-file -e "check-pass:$F" 2>/dev/null; then
               git checkout check-pass -- "$F" && echo "戻した: $F"
