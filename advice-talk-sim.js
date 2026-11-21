@@ -44,7 +44,7 @@ function scenarios(vk) {   // 助言の行の場面（頭・終わりを除く�
 function tokens(l, tone) {   // 助言の行の部品 → {t,term} の列
   const out = [];
   l.forEach(t => {
-    if (typeof t === 'string') { out.push(tk(C.advToneText(tone, t))); return; }
+    if (typeof t === 'string') { const o = tk(C.advToneText(tone, t)); o.id = t; out.push(o); return; }   // v1509：部品id（文の種類 ADV_KIND を引くため）
     if (t.sc) {
       const x = t.sc, s = C.ADV_SCENE[tone];
       if (x.scene === 'nashi') { out.push(tk(s.nashi)); }
