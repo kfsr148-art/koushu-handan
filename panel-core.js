@@ -16,7 +16,7 @@
   else { root.PanelCore = m; }
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
-  var VER = '212';
+  var VER = '213';
   var WAIT_TEXT = '待機中、、、。', POINT_TEXT = 'まとめて写すヨシ！', WORK_TEXT = '作業中、、、。', LOST_TEXT = '接続不良、、、。', YOSHI_TEXT = 'ヨシ待ち、、、。', CHECK_TEXT = '検査中、、、。';
 
   /* ---- 刻 ---- */
@@ -206,18 +206,31 @@
     if (k === 'omote') { var c = x.cur || {}, w = x.wait || {}; now = c.job ? cut(c.job, 30) : (Number(w.n) > 0 ? '順番待ち ' + Number(w.n) + '件' : ''); }
     else if (k === 'ura') { var o = []; a(So.items).forEach(function (y) { o.push('下請け・' + (s(y.desc) || '名なし')); }); a(Co.running).forEach(function (y) { o.push('雲・' + (s(y.name) || '名なし')); }); now = cut(o.join('、'), 40); }
     else { now = '表の仕事 残り' + left(E.omote) + '・裏方 残り' + (uT - uD); }
-    return { k: (k === 'all') ? '全部' : ((k === 'ura') ? '裏方' : '表の仕事'), done: dn, run: run, total: tot, now: now, endSec: Number(x.endSec) || 0, endAt: s(x.endAt), over: !!x.over, lab: (k === 'ura') ? (dn + '/' + tot) : '' };
+    return { k: (k === 'all') ? '全部' : ((k === 'ura') ? '裏方' : '表の仕事'), done: dn, run: run, total: tot, now: now, endSec: Number(x.endSec) || 0, endAt: s(x.endAt), over: !!x.over, unk: Number(x.unknown) > 0, lab: (k === 'ura') ? (dn + '/' + tot) : '' };
   }
-  /* 今の仕事の見込み（開始＋見込みの分）を過ぎたか（v180）。表の仕事と全部の箱の頭を赤にする */
-  function workLate(stat, startedAt, mikomi, now) {
-    var m = String(mikomi == null ? '' : mikomi).match(/([0-9]+)/), min = m ? parseInt(m[1], 10) : 0, st = Number(startedAt) || 0;
-    return String(stat || '') === '作業中' && st > 0 && min > 0 && st + min * 60 <= (Number(now) || 0);
+  /* 今の仕事の見込みの終わり（v213・本人の枠 八十三・作法25 の裁定）：数える所はここ一つ。
+     終わり＝見込みを書いた刻（state.json の mikomiAt・書き手は見張りの Publish-Status 一人）＋見込みの分。
+     o＝{ mikomi（「40分」など）, mikomiAt（epoch 秒）, startedAt, curEnd（endat.js の omote.cur.endSec＝増えた段の分も足した刻。有ればこれ） }。
+     ＊見込み（分の数）が無ければ 0（終わりを出さない）。mikomiAt が載っていない古い state だけ startedAt から数える（mikomiAt が 0 と載っていれば 0）。
+     ＊開始（startedAt）は「いつから動いているか」の元で、見込みの数えには使わない。 */
+  function mikomiEnd(o) {
+    o = o || {}; var m = String(o.mikomi == null ? '' : o.mikomi).match(/([0-9]+)/), min = m ? parseInt(m[1], 10) : 0;
+    if (!(min > 0)) { return 0; }
+    if (Number(o.curEnd) > 0) { return Number(o.curEnd); }
+    var has = (o.mikomiAt !== undefined && o.mikomiAt !== null && o.mikomiAt !== ''), at = has ? (Number(o.mikomiAt) || 0) : (Number(o.startedAt) || 0);
+    return at > 0 ? at + min * 60 : 0;
   }
-  /* 箱の頭（名の右）の「あと N分（HH:MM ごろ）」（v206） */
+  /* 今の仕事の見込みを過ぎたか（v180・v213：終わりは mikomiEnd）。表の仕事と全部の箱の頭を赤にする。mikomiAt・curEnd は v213 で足した（無ければ古い state として startedAt から） */
+  function workLate(stat, startedAt, mikomi, now, mikomiAt, curEnd) {
+    var e = mikomiEnd({ mikomi: mikomi, mikomiAt: mikomiAt, startedAt: startedAt, curEnd: curEnd });
+    return String(stat || '') === '作業中' && e > 0 && e <= (Number(now) || 0);
+  }
+  /* 箱の頭（名の右）の「あと N分（HH:MM ごろ）」（v206）。v213（本人の枠 八十四）：記録の無い雲が走っていて刻が出ない箱（b.unk）は「見込み不明」を赤にせず出す */
   function headEta(b, nowS, late) {
     var e = (b && b.endSec > 0) ? b.endSec : 0, left = b ? Math.max(0, (b.total | 0) - (b.done | 0)) : 0;
     if (e > nowS) { return { t: 'あと ' + Math.ceil((e - nowS) / 60) + '分（' + pad2s(e) + ' ごろ）', c: (b.over || late) ? 'bad' : 'eta' }; }
     if (e > 0 && left > 0) { return { t: '見込みを過ぎた ' + Math.floor((nowS - e) / 60) + '分', c: 'bad' }; }
+    if (left > 0 && b && b.unk) { return { t: '見込み不明', c: 'eta' }; }
     if (left > 0) { return { t: 'あと 未定', c: 'eta' }; }   /* 残りがあるのに刻がまだ無い */
     return { t: 'あと 0分', c: 'eta' };
   }
@@ -234,6 +247,6 @@
     isCountCard: isCountCard, ntfyOfCard: ntfyOfCard, todoList: todoList, todoLabel: todoLabel,
     cardsPending: cardsPending, cardEtaSec: cardEtaSec, cardLate: cardLate, cardPendText: cardPendText, kumoEtaSec: kumoEtaSec, uraBusyText: uraBusyText, isRunning: isRunning, headText: headText,
     stepsOf: stepsOf, pubLine: pubLine, omoteLines: omoteLines, endLine: endLine, uraLines: uraLines,
-    endShort: endShort, uraCount: uraCount, uraGauge: uraGauge, stepLab: stepLab, omoteGauge: omoteGauge, boxSpec: boxSpec, workLate: workLate, headEta: headEta, etaRow: etaRow
+    endShort: endShort, uraCount: uraCount, uraGauge: uraGauge, stepLab: stepLab, omoteGauge: omoteGauge, boxSpec: boxSpec, mikomiEnd: mikomiEnd, workLate: workLate, headEta: headEta, etaRow: etaRow
   };
 });

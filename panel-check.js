@@ -499,7 +499,7 @@ function staticParts() {
     if (!fsrc) { ng('etaLineText が無い'); }
     else {
       const NOW = Math.floor(Date.now() / 1000);
-      const mk = (started, mikomiMin, raw) => new Function('lastStat', 'lastStartedAt', 'lastMikomiMin', 'lastMikomiRaw', 'pad2s', 'waitEtaRow', fsrc + String.fromCharCode(10) + 'return etaLineText;')('作業中', started, mikomiMin, raw, (e) => '00:00', () => null);
+      const mk = (started, mikomiMin, raw) => new Function('lastStat', 'lastStartedAt', 'lastMikomiMin', 'lastMikomiRaw', 'pad2s', 'waitEtaRow', 'mkEndSec', fsrc + String.fromCharCode(10) + 'return etaLineText;')('作業中', started, mikomiMin, raw, (e) => '00:00', () => null, () => (mikomiMin > 0 ? started + mikomiMin * 60 : 0));   /* v213：終わりは mkEndSec（見込みを書いた刻＋見込み）一つ */
       const a = mk(NOW - 30, 0, '')();
       if (/記入待ち/.test(a) && !/未記入/.test(a)) { ok('着手30秒・見込みを書く前：赤い「見込み未記入」でなく「記入待ち」'); } else { ng('着手直後の字が違う：' + a); }
       const b = mk(NOW - 200, 0, '')();
@@ -684,22 +684,22 @@ function staticParts() {
       const EA = require(path.join(path.dirname(SRC), 'endat.js')), PV = require(path.join(path.dirname(SRC), 'panel-view.js'));
       const d1 = { stat: '作業中', subj: '枠 九：作り値', sNow: '段2', stepDone: 1, stepTotal: 4, startedAt: J('22:00'), statAt: J('22:00'), mikomi: '60分', foot: { wait: 2, waitList: [{ at: '11-21 22:10', head: '（橋）枠 十（11-21 センコ）d' }, { at: '11-21 22:30', head: '橋（合図 22:30）' }] } };
       const e1 = EA.compute(d1, J('22:40'));
-      // 比 0.5（20/40・40/80）・一枠 30分（20・30・40 の中央値）：今の仕事 22:00＋60分×0.5＝22:30、順番待ち 1件（合図は数えない）×30分 → 23:00
-      if (e1.omote.endAt === '23:00' && e1.omote.ratio.v === 0.5 && e1.omote.ratio.n === 2 && e1.omote.wait.n === 1 && e1.omote.wait.signals === 1 && e1.omote.wait.frameMin === 30 && e1.omote.cur.left === 3) { ok('表：今の仕事の残り＋順番待ち（合図は数えない）×今日の一枠の中央値・見込みと実測の比で 23:00'); } else { ng('表の全部終わる刻が違う：' + JSON.stringify(e1.omote)); }
-      if (/順番待ち 1件×30分/.test(e1.omote.src) && /比 0\.5（直近24時間 2組）/.test(e1.omote.src)) { ok('表の元の数（件・分・比）が src に入る：' + e1.omote.src); } else { ng('表の src が違う：' + e1.omote.src); }
-      // 段が二つ増え、控えの「開始:」が 22:35 に刻み直されても、始まりは 22:00 のまま・終わりだけ 一段15分×2×0.5 延びる → 23:15
+      // v213（枠 八十三）：比 0.5 は参考だけ（今の仕事の終わりに掛けない）。mikomiAt の無い古い state なので見込みは始まり 22:00 から：22:00＋60分＝23:00、順番待ち 1件（合図は数えない）×30分 → 23:30
+      if (e1.omote.endAt === '23:30' && e1.omote.cur.endSec === J('23:00') && e1.omote.ratio.v === 0.5 && e1.omote.ratio.n === 2 && e1.omote.wait.n === 1 && e1.omote.wait.signals === 1 && e1.omote.wait.frameMin === 30 && e1.omote.cur.left === 3) { ok('表：今の仕事（見込みの分のまま・比は掛けない）＋順番待ち（合図は数えない）×今日の一枠の中央値で 23:30'); } else { ng('表の全部終わる刻が違う：' + JSON.stringify(e1.omote)); }
+      if (/順番待ち 1件×30分/.test(e1.omote.src) && /比 0\.5（直近24時間 2組・参考：今の仕事の終わりには掛けない）/.test(e1.omote.src)) { ok('表の元の数（件・分・比）が src に入る：' + e1.omote.src); } else { ng('表の src が違う：' + e1.omote.src); }
+      // 段が二つ増え、控えの「開始:」が 22:35 に刻み直されても、始まりは 22:00 のまま・終わりだけ 一段15分×2 延びる → 今の仕事 23:30・全部 00:00
       fs.appendFileSync(env.ENDAT_STEPS, '[ ] 段5' + LF + '[ ] 段6' + LF);
       const e2 = EA.compute(Object.assign({}, d1, { startedAt: J('22:35'), stepTotal: 6 }), J('22:40'));
-      if (e2.omote.endAt === '23:15' && e2.omote.startSec === J('22:00') && e2.omote.cur.addSteps === 2) { ok('段が増えても始まりは付け直さず（22:00 のまま）、終わりだけ延びる（23:00 → 23:15）'); } else { ng('段が増えた時の終わりが違う：' + JSON.stringify(e2.omote)); }
-      const e3 = EA.compute(Object.assign({}, d1, { startedAt: J('22:35'), stepTotal: 6 }), J('23:31'));
-      if (e3.omote.endAt === '23:35' && e3.omote.over === true) { ok('見込みを過ぎて残っている時は、今を5分刻みに切り上げた刻（23:35）へ延ばす'); } else { ng('過ぎた時の表の刻が違う：' + JSON.stringify(e3.omote)); }
+      if (e2.omote.endAt === '00:00' && e2.omote.cur.endSec === J('23:30') && e2.omote.startSec === J('22:00') && e2.omote.cur.addSteps === 2) { ok('段が増えても始まりは付け直さず（22:00 のまま）、終わりだけ延びる（23:30 → 00:00）'); } else { ng('段が増えた時の終わりが違う：' + JSON.stringify(e2.omote)); }
+      const e3 = EA.compute(Object.assign({}, d1, { startedAt: J('22:35'), stepTotal: 6 }), e2.omote.endSec + 60);
+      if (e3.omote.endAt === '00:05' && e3.omote.over === true) { ok('見込みを過ぎて残っている時は、今を5分刻みに切り上げた刻（00:05）へ延ばす'); } else { ng('過ぎた時の表の刻が違う：' + JSON.stringify(e3.omote)); }
       // 裏方：下請け 1本（22:35〜・今日の済んだ2本 10分と20分の中央値 15分 → 22:50）・雲 1本（22:38〜・流れ A の 6分と4分の中央値 5分 → 22:43）→ 遅い方 22:50
       if (e1.ura.endAt === '22:50' && e1.ura.sub.n === 1 && e1.ura.sub.min === 15 && e1.ura.cloud.n === 1 && e1.ura.cloud.min === 5) { ok('裏方：下請けと雲の全部のうち一番遅い終わり（22:50）・1本あたりは今日の中央値'); } else { ng('裏方の全部終わる刻が違う：' + JSON.stringify(e1.ura)); }
       const pv = PV.panelView(Object.assign({ eta: e1, ura: { sub: {}, cloud: {} } }, d1), [], [], J('22:40'));
-      if (pv.omote.endAt === '23:00' && pv.omote.lines[0].indexOf('表の仕事の全部終わる見込み：23:00（') === 0 && pv.ura.endAt === '22:50' && pv.ura.lines[0].indexOf('裏方の全部終わる見込み：22:50（') === 0 && pv.omote.lines[4] === '始まり：22:00') { ok('panelView.omote／ura に endAt と元の数・頭の一行は一つずつだけ'); } else { ng('panelView の全部終わる見込みが違う：' + JSON.stringify({ o: pv.omote, u: pv.ura })); }
+      if (pv.omote.endAt === '23:30' && pv.omote.lines[0].indexOf('表の仕事の全部終わる見込み：23:30（') === 0 && pv.ura.endAt === '22:50' && pv.ura.lines[0].indexOf('裏方の全部終わる見込み：22:50（') === 0 && pv.omote.lines[4] === '始まり：22:00') { ok('panelView.omote／ura に endAt と元の数・頭の一行は一つずつだけ'); } else { ng('panelView の全部終わる見込みが違う：' + JSON.stringify({ o: pv.omote, u: pv.ura })); }
       fs.writeFileSync(env.ENDAT_STEPS, ['仕事: 枠 九：作り値', '[x] 段1', ''].join(LF)); fs.writeFileSync(env.ENDAT_SUBLOG, ''); fs.writeFileSync(env.ENDAT_CLOUD, '{"list":[]}');
       const e4 = EA.compute(Object.assign({}, d1, { foot: { wait: 0, waitList: [] } }), J('22:40')), l4 = PV.endLine(e4, 'omote') + '|' + PV.endLine(e4, 'ura');
-      if (l4 === '表の仕事の全部終わる見込み：なし（残りの仕事が無い）（今の仕事なし＋順番待ち 0件×30分（直近24時間の3枠の中央値）・見込みと実測の比 0.5（直近24時間 2組））|裏方の全部終わる見込み：なし（動いている物が無い）（下請け 0本（1本 15分＝直近24時間の実測なし・仮に15分）・雲 0本（1本 10分＝直近24時間の実測なし・仮に10分））') { ok('残りが無い時は「なし」と元の数（空にしない）'); } else { ng('残りが無い時の字が違う：' + l4); }
+      if (l4 === '表の仕事の全部終わる見込み：なし（残りの仕事が無い）（今の仕事なし＋順番待ち 0件×30分（直近24時間の3枠の中央値）・見込みと実測の比 0.5（直近24時間 2組・参考：今の仕事の終わりには掛けない））|裏方の全部終わる見込み：なし（動いている物が無い）（下請け 0本（1本 15分＝直近24時間の実測なし・仮に15分）・雲 0本）') { ok('残りが無い時は「なし」と元の数（空にしない）'); } else { ng('残りが無い時の字が違う：' + l4); }
       if (html.indexOf("lastEta = (d.panelView && d.panelView.omote") >= 0 && html.indexOf("eo = endShort(E4, 'omote'), eu = endShort(E4, 'ura')") >= 0) { ok('パネルは state.json の panelView.omote／ura を読み、表の仕事と裏方のゲージの下に一行ずつ出す（v204）'); } else { ng('パネルが全部終わる見込みを読んでいない／箱に出していない'); }
     } catch (e) { ng('全部終わる見込みが回らない：' + e.message); }
     finally { Object.keys(keep).forEach(k => { if (keep[k] === undefined) { delete process.env[k]; } else { process.env[k] = keep[k]; } }); try { fs.rmSync(T, { recursive: true, force: true }); } catch (e) { } }
@@ -748,10 +748,10 @@ function staticParts() {
       const g3 = fg(U3);
       if (g3.run.join('|') === '下請け：台帳の整理（01:12〜）' && g3.wait.join('|') === '雲：札と状態の配信（01:19〜・待ち）' && g3.done.join('|') === '下請け：パネル直し（01:01〜01:20・終）|雲：自動検査と配信（01:12〜01:20・落ちた・落ちた段：速い版）') { ok('裏方の一本ずつ：動作中＝進行中・待ち＝予定・終／落ちた＝完了（落ちた段の名も）'); } else { ng('裏方の分け方が違う：' + JSON.stringify(g3)); }
       /* paintStateLine を偽の器で回す（state.json の panelView を通した値で） */
-      const SRCN = ['core', 'paintStateLine', 'gaugeHtml', 'endShort', 'uraCount', 'boxSpec', 'headEta', 'etaRow', 'uraGroups', 'waitEtaRow', 'pad2s'], src = SRCN.map(n => cutFn(H, n));   /* v210：包み（一行）も切り出す・panel-core.js は window.PanelCore で渡す */
+      const SRCN = ['core', 'paintStateLine', 'gaugeHtml', 'endShort', 'uraCount', 'boxSpec', 'headEta', 'etaRow', 'uraGroups', 'waitEtaRow', 'pad2s', 'mkEndSec'], src = SRCN.map(n => cutFn(H, n));   /* v210：包み（一行）も切り出す・panel-core.js は window.PanelCore で渡す */
       if (src.some(x => !x)) { ng('切り出せない関数がある（' + SRCN.filter((n, i) => !src[i]).join('・') + '）'); }
       else {
-        const VARS = ['lastEta', 'lastUra', 'lastSNow', 'lastStepTotal', 'lastStepDone', 'lastStat', 'lastStartedAt', 'lastMikomiMin', 'lastMikomiRaw', 'lastSDone', 'lastSNowAt', 'lastSNext', 'stepsOpen', 'lastKumo', 'lastDetail'];
+        const VARS = ['lastEta', 'lastUra', 'lastSNow', 'lastStepTotal', 'lastStepDone', 'lastStat', 'lastStartedAt', 'lastMikomiMin', 'lastMikomiRaw', 'lastSDone', 'lastSNowAt', 'lastSNext', 'stepsOpen', 'lastKumo', 'lastDetail', 'lastMikomiAt'];
         const fp = new Function('S', 'var window = S.win, ' + VARS.map(v => v + ' = S.' + v).join(', ') + ';' + LF + 'function $(id) { return S.el[id] || null; }' + LF + "function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }" + LF + "function stateLineText() { return ''; }" + LF + "function headText() { return ''; }" + LF + src.join(LF) + LF + 'paintStateLine();');
         const paint = (d, ura, open, ov) => {
           const el = { progBox: { innerHTML: '', className: '' }, btnSteps: { className: '', textContent: '', setAttribute: function () { } }, stLine: { hidden: true, innerHTML: '' }, headWait: { textContent: '' } };
@@ -763,7 +763,7 @@ function staticParts() {
         const heads = (h) => (h.match(/<b class="pg-k">([^<]*)<\/b>/g) || []).map(x => x.replace(/<[^>]+>/g, '')).join(',');
         const bars = (h) => h.split('<span class="stg-bar">').slice(1).map(x => x.split('</span>')[0].replace(/<i class="([a-z]*)"><\/i>/g, (m, c) => c || '-')).join(' ');
         const labs = (h) => (h.match(/<span class="stg-n">([^<]*)<\/span>/g) || []).map(x => x.replace(/<[^>]+>/g, '')).join(' ');
-        const set = (e, a, o, u) => { e = JSON.parse(JSON.stringify(e)); [a, o, u].forEach((x, i) => { e[['all', 'omote', 'ura'][i]].endSec = x ? nS + x : 0; }); return e; };
+        const set = (e, a, o, u) => { e = JSON.parse(JSON.stringify(e)); [a, o, u].forEach((x, i) => { e[['all', 'omote', 'ura'][i]].endSec = x ? nS + x : 0; }); if (e.omote.cur) { e.omote.cur.endSec = o ? nS + o : 0; } return e; };   /* v213：今の仕事の終わり（cur.endSec＝見込みを書いた刻＋見込み）も同じだけずらす */
         const E4 = set(c4, 2400, 1800, 2400), e4 = paint(E4, U3, false), h4 = e4.progBox.innerHTML;
         if (ids(h4) === 'allSec,omoteSec,uraSec' && heads(h4) === '全部,表の仕事,裏方' && e4.progBox.className === 'progbox') { ok('箱は三つ・上から「全部」「表の仕事」「裏方」・それぞれ頭に名'); } else { ng('箱の並び・名が違う：' + ids(h4) + '／' + heads(h4)); }
         /* v207（枠 六十四）：裏方は束（一塊）の数のまま。ura の本数で足す手（v206 の六十一）は外した。裏方の横の字は 済んだ本数／始まった本数 */
@@ -911,7 +911,7 @@ function staticParts() {
     const own = WR.filter(n => { const a = cutFn(H, n); return !a || a.indexOf(LF) >= 0 || a.indexOf('return core().' + n + '(') < 0; }).concat(Object.keys(WR2).filter(n => { const a = cutFn(H, n); return !a || a.indexOf('core().' + WR2[n] + '(') < 0; }));
     const pvOwn = WR.concat(Object.keys(WR2), ['todoList', 'todoLabel', 'workLate', 'uraGauge', 'stepLab', 'omoteGauge', 'cardArg']).filter(n => PVS.indexOf('function ' + n + '(') >= 0);
     if (!own.length && !pvOwn.length && PVS.indexOf("require(path.join(ROOT, 'panel-core.js'))") >= 0 && PV.core === PCORE) { ok('写しが無い：panel.html の ' + (WR.length + Object.keys(WR2).length) + ' の関数は panel-core.js への包みだけ・panel-view.js は panel-core.js を require して同じ名の関数を持たない'); } else { ng('写しが残っている（panel.html ' + own.join('・') + '／panel-view.js ' + pvOwn.join('・') + '）'); }
-    const lab = H.indexOf('var lab = core().todoLabel(n);') >= 0 && H.indexOf("b.setAttribute('aria-label', lab);") >= 0, ugo = H.indexOf("var ug = core().uraGauge(") >= 0 && H.indexOf('core().workLate(lastStat, lastStartedAt, lastMikomiRaw, nS)') >= 0 && H.indexOf('core().stepLab(d, n)') >= 0;
+    const lab = H.indexOf('var lab = core().todoLabel(n);') >= 0 && H.indexOf("b.setAttribute('aria-label', lab);") >= 0, ugo = H.indexOf("var ug = core().uraGauge(") >= 0 && H.indexOf('core().workLate(lastStat, lastStartedAt, lastMikomiRaw, nS, lastMikomiAt, (lastEta && lastEta.omote && lastEta.omote.cur) ? lastEta.omote.cur.endSec : 0)') >= 0 && H.indexOf('core().stepLab(d, n)') >= 0;
     if (lab && ugo) { ok('釦の字（todoLabel）・裏方のゲージ（uraGauge）・見込みを過ぎた赤（workLate）・段の小さい字（stepLab）もパネルは panel-core.js の物を使う（panelView の label・ura.panel・箱の eta・omote.panel.gauge と同じ）'); } else { ng('釦の字・裏方のゲージ・見込みの赤・段の字のどれかを panel.html が自分で組んでいる（' + [lab, ugo].join('・') + '）'); }
     /* 二、読み込みの道：<script src="panel-core.js?_v=<PANEL_VER>"> が一つ・本の <script> より前・panel-core.js の VER＝PANEL_VER・UMD・読めない時は一度だけ読み直す */
     const pv0 = (H.match(/var PANEL_VER = '([0-9]+)'/) || [])[1] || '', tag = '<script src="panel-core.js?_v=' + pv0 + '"></script>';
@@ -1043,6 +1043,79 @@ function staticParts() {
         if (o) { ok('endat：生の段で数える（[雲] も未済）・段が増えると 最初の見込み÷最初の段数 で延びる（05:40→06:20）・見込みを 05:30 に 20分へ書き替えたら その刻から数え直す（06:20→05:50）・その後の2段は 20分÷残り5段＝4分 で延ばす（05:58）・刻を控えに一度書くだけで次の回も同じ刻'); } else { ng('endat の見込みの書き替えが違う：' + j({ e: [e1, e2, e3, e4, e5].map(e => [e.omote.endAt, e.omote.cur.all, e.omote.cur.left]), b, src: e4.omote.src })); }
       } catch (e) { ng('endat の作り値が回らない：' + e.message); }
       finally { Object.keys(keep).forEach(k => { if (keep[k] === undefined) { delete process.env[k]; } else { process.env[k] = keep[k]; } }); try { fs.rmSync(T, { recursive: true, force: true }); } catch (e) { } } }
+  }
+  /* ---- ⑤の二十八 v213（本人の枠 八十三・八十四）：見込みは「窓が見込みを書いた刻」（state.json の mikomiAt）から数える（panel-core.js の mikomiEnd 一つ）。
+     パネル（mkEndSec・etaLineText・箱の赤）・panelView（jobEnd・箱の eta）・endat.js（cur.endSec）が同じ終わりの刻を返す。雲の一本は、その流れ自身の過去（24時間→7日→30日）だけから・記録が無ければ「見込み不明」で赤にしない ---- */
+  head('⑤の二十八 v213：見込みは書いた刻から（開始 03:00・03:30 に 40分→04:10／04:00 に 20分へ書き替え→04:20／段が増えれば延びる／書いていなければ出さない）・雲は流れ自身の過去だけ（作り値）');
+  {
+    const LF = String.fromCharCode(10), H = html.split(String.fromCharCode(13) + LF).join(LF), dir = path.dirname(SRC), j = (o) => JSON.stringify(o);
+    const J = (t) => Math.floor(Date.parse('2026-11-22T' + t + ':00+09:00') / 1000), hmJ = (x) => { const d = new Date((x + 9 * 3600) * 1000); return ('0' + d.getUTCHours()).slice(-2) + ':' + ('0' + d.getUTCMinutes()).slice(-2); };
+    const ME = PCORE.mikomiEnd;
+    /* 一、mikomiEnd：書いた刻＋見込み／書き替え／見込みが無ければ 0／mikomiAt が 0 と載っていれば 0／載っていない古い state だけ開始から／増えた段の刻（curEnd）が有ればそれ */
+    const m1 = ME({ mikomi: '40分', mikomiAt: J('03:30'), startedAt: J('03:00') }), m2 = ME({ mikomi: '20分', mikomiAt: J('04:00'), startedAt: J('03:00') }), m3 = ME({ mikomi: '', mikomiAt: J('03:30'), startedAt: J('03:00') }), m4 = ME({ mikomi: '不明', mikomiAt: 0, startedAt: J('03:00') }), m5 = ME({ mikomi: '40分', mikomiAt: 0, startedAt: J('03:00') }), m6 = ME({ mikomi: '40分', startedAt: J('03:00') }), m7 = ME({ mikomi: '40分', mikomiAt: J('03:30'), startedAt: J('03:00'), curEnd: J('04:30') });
+    if (m1 === J('04:10') && m2 === J('04:20') && m3 === 0 && m4 === 0 && m5 === 0 && m6 === J('03:40') && m7 === J('04:30')) { ok('mikomiEnd：開始 03:00・03:30 に 40分→04:10／04:00 に 20分→04:20／見込みが無い・不明→出さない（0）／mikomiAt が 0→出さない／mikomiAt の無い古い state だけ開始から（03:40）／増えた段の刻が有ればそれ（04:30）'); } else { ng('mikomiEnd が違う：' + j([m1, m2, m3, m4, m5, m6, m7].map(x => x ? hmJ(x) : 0))); }
+    const wl = PCORE.workLate;
+    if (!wl('作業中', J('03:00'), '40分', J('04:09'), J('03:30')) && wl('作業中', J('03:00'), '40分', J('04:10'), J('03:30')) && !wl('作業中', J('03:00'), '40分', J('03:45'), J('03:30')) && !wl('手待ち', J('03:00'), '40分', J('05:00'), J('03:30')) && !wl('作業中', J('03:00'), '', J('09:00'), 0)) { ok('workLate：開始＋見込み（03:40）では赤にせず、書いた刻＋見込み（04:10）を過ぎてから赤・作業中だけ・見込みが無ければ赤にしない'); } else { ng('workLate が書いた刻から数えていない'); }
+    /* 二、endat.js：作り値の台帳で回す（本物の控えは読まない・書かない） */
+    const os = require('os'), T = fs.mkdtempSync(path.join(os.tmpdir(), 'koushu-mkat-')), W = (n, t) => { const p = path.join(T, n); fs.writeFileSync(p, t); return p; };
+    const env = { ENDAT_ORDERS: W('o.tsv', ''), ENDAT_NOTES: W('n.log', ''), ENDAT_STEPS: path.join(T, 'none.txt'), ENDAT_SUBLOG: W('s.jsonl', ''), ENDAT_CLOUD: W('c.json', '{"list":[]}'), ENDAT_BASE: path.join(T, 'base.json'), ENDAT_BUNDLE: path.join(T, 'bundle.json'), ENDAT_EST: path.join(T, 'none.json') }, keep = {};
+    Object.keys(env).forEach(k => { keep[k] = process.env[k]; process.env[k] = env[k]; });
+    try {
+      delete require.cache[require.resolve(path.join(dir, 'endat.js'))]; delete require.cache[require.resolve(path.join(dir, 'panel-view.js'))];
+      const EA = require(path.join(dir, 'endat.js')), PV = require(path.join(dir, 'panel-view.js'));
+      const rw = (a) => a.map(x => ({ k: x, t: '段' })), base = { stat: '作業中', subj: '枠 八十三：作り値', startedAt: J('03:00'), statAt: J('03:00'), foot: { wait: 0, waitList: [] } };
+      const st = (rows, mk, at) => Object.assign({}, base, { mikomi: mk, mikomiAt: at, steps: { job: '枠 八十三：作り値', rows: rw(rows) } });
+      const R4 = ['x', ' ', ' ', ' '], R6 = R4.concat([' ', ' ']), R6b = ['x', ' ', ' ', ' ', ' ', ' '], R7 = R6b.concat([' ']);
+      const e0 = EA.compute(st(R4, '', 0), J('03:10'));   // 見込みを書く前
+      const e1 = EA.compute(st(R4, '40分', J('03:30')), J('03:35')), e1b = EA.compute(st(R4, '40分', J('03:30')), J('03:50'));
+      const e2 = EA.compute(st(R6, '40分', J('03:30')), J('03:55'));   // 段が二つ増えた（一段＝40÷4＝10分）
+      const e3 = EA.compute(st(R6b, '20分', J('04:00')), J('04:01'));  // 04:00 に 20分へ書き替え
+      const e4 = EA.compute(st(R7, '20分', J('04:00')), J('04:05'));   // その後に一段（20÷残り5＝4分）
+      const c = (e) => e.omote.cur.endSec;
+      const okE = c(e0) === 0 && e0.omote.endAt === '' && c(e1) === J('04:10') && e1.omote.endAt === '04:10' && c(e1b) === c(e1) && c(e2) === J('04:30') && c(e3) === J('04:20') && c(e4) === J('04:24') && e1.omote.startSec === J('03:00') && /見込み 40分（03:30 に書いた）/.test(e1.omote.src) && /見込みを 04:00 に 20分へ書き替え・段\+1×4分/.test(e4.omote.src);
+      if (okE) { ok('endat：書く前は終わり無し・03:30 に 40分→04:10（今の刻が進んでも同じ刻）・段+2（一段10分）→04:30・04:00 に 20分へ書き替え→04:20・その後の段+1（20÷残り5＝4分）→04:24・始まりは 03:00 のまま'); } else { ng('endat の見込みの数えが違う：' + j([e0, e1, e1b, e2, e3, e4].map(e => [e.omote.cur.endAt, e.omote.endAt])) + ' ' + e4.omote.src); }
+      /* 三、panelView（jobEnd・箱の eta）とパネル（mkEndSec・etaLineText）が同じ刻 */
+      const d1 = Object.assign(st(R4, '40分', J('03:30')), { eta: e1 }), pv = PV.panelView(d1, [], [], J('03:35'));
+      const ce = (name) => cutFn(H, name);
+      const fsrc = ['core', 'mkEndSec', 'etaLineText', 'pad2s'].map(ce);
+      if (fsrc.some(x => !x)) { ng('panel.html に core／mkEndSec／etaLineText／pad2s が無い'); }
+      else {
+        const run = (ov) => new Function('window', 'S', 'var lastStat = S.lastStat, lastStartedAt = S.lastStartedAt, lastMikomiMin = S.lastMikomiMin, lastMikomiRaw = S.lastMikomiRaw, lastMikomiAt = S.lastMikomiAt, lastEta = S.lastEta;' + LF + 'function waitEtaRow() { return null; }' + LF + fsrc.join(LF) + LF + 'return { e: mkEndSec(), t: etaLineText() };')(WIN, Object.assign({ lastStat: '作業中', lastStartedAt: J('03:00'), lastMikomiMin: 40, lastMikomiRaw: '40分', lastMikomiAt: J('03:30'), lastEta: { omote: pv.omote, ura: pv.ura, all: pv.all } }, ov || {}));
+        const p1 = run(), p2 = run({ lastEta: null }), p3 = run({ lastMikomiRaw: '', lastMikomiMin: 0, lastMikomiAt: 0, lastStartedAt: Math.floor(Date.now() / 1000) - 200 });
+        if (pv.jobEnd.endSec === J('04:10') && pv.jobEnd.endAt === '04:10' && p1.e === pv.jobEnd.endSec && p2.e === J('04:10') && p3.e === 0 && p3.t === '見込み未記入' && pv.omote.cur.endSec === p1.e) { ok('同じ終わり 04:10：panelView.jobEnd＝パネルの mkEndSec（panelView あり・無し）＝endat の cur.endSec・見込みを書いていなければパネルも「見込み未記入」で刻を出さない'); } else { ng('パネルと panelView の終わりがずれた：' + j({ jobEnd: pv.jobEnd, p1, p2, p3 })); }
+        const late1 = PV.panelView(d1, [], [], J('04:05')).omote.panel.eta, late2 = PV.panelView(d1, [], [], J('04:12')).omote.panel.eta;
+        if (late1 && late2 && late1.c === 'eta' && late2.c === 'bad') { ok('panelView の表の箱の頭：04:05（開始＋見込みの 03:40 は過ぎた）は赤にせず、04:12（書いた刻＋見込みの 04:10 を過ぎた）で赤'); } else { ng('panelView の箱の赤が書いた刻から数えていない：' + j([late1, late2])); }
+      }
+      /* 四、雲の一本（枠 八十四）：較正の対局の過去が 24時間に無い／7日にある／まったく無い */
+      const N = J('07:10'), Z = (t) => new Date(t * 1000).toISOString();
+      const other = [{ databaseId: 1, workflowName: '札と状態の配信', status: 'completed', conclusion: 'success', createdAt: Z(N - 3600), updatedAt: Z(N - 3600 + 156) }, { databaseId: 2, workflowName: '札と状態の配信', status: 'completed', conclusion: 'success', createdAt: Z(N - 7200), updatedAt: Z(N - 7200 + 156) }];
+      const runB = { databaseId: 9, workflowName: '較正の対局', status: 'in_progress', conclusion: '', createdAt: Z(J('07:06')), updatedAt: Z(J('07:06')) };
+      const hist = (ago, mins) => mins.map((m, i) => ({ databaseId: 100 + i, workflowName: '較正の対局', status: 'completed', conclusion: 'success', createdAt: Z(N - ago - i * 86400), updatedAt: Z(N - ago - i * 86400 + m * 60) }));
+      const cl = (h) => { fs.writeFileSync(env.ENDAT_CLOUD, j({ list: other.concat([runB]), hist: h })); return EA.compute({ stat: '待ち', foot: { wait: 0, waitList: [] }, ura: { sub: { items: [] }, cloud: { running: [{ id: 9, name: '較正の対局' }], recent: [] } } }, N); };
+      const many = [40, 42, 44, 46, 48, 50].map((m, i) => ({ databaseId: 300 + i, status: 'completed', createdAt: Z(N - 3600 * (i + 1)), updatedAt: Z(N - 3600 * (i + 1) + m * 60) }));
+      const u0 = cl({}), u7 = cl({ '較正の対局': { at: N, runs: hist(2 * 86400, [100, 110, 120]) } }), u1 = cl({ '較正の対局': { at: N, runs: many } });
+      const f = (u) => u.ura.cloud.flows[0] || {};
+      const b0 = PCORE.boxSpec(u0, null, 'ura'), h0 = PCORE.headEta(b0, N, false), b7 = PCORE.boxSpec(u7, null, 'ura'), h7 = PCORE.headEta(b7, N, false);
+      const okU = u0.ura.endAt === '' && u0.ura.unknown === 1 && f(u0).min === 0 && /較正の対局 見込み不明/.test(u0.ura.src) && h0.t === '見込み不明' && h0.c === 'eta' && PCORE.headEta(PCORE.boxSpec(u0, null, 'all'), N, false).t === '見込み不明' &&
+        f(u7).min === 110 && f(u7).days === 30 && f(u7).n === 3 && u7.ura.endSec === J('07:06') + 110 * 60 && u7.ura.unknown === 0 && h7.c === 'eta' && /^あと 106分/.test(h7.t) &&
+        f(u1).min === 44 && f(u1).days === 1 && f(u1).n === 5;
+      if (okU) { ok('較正の対局：過去がまったく無い→他の流れ（札と状態の配信 2.6分）を借りず「見込み不明」（赤にしない・全部の箱も）／24時間に無く7日に3本ある→5本に満たないので30日まで見て、その流れの3本の中央値 110分（あと106分）／24時間に6本ある→新しい5本の中央値 44分'); } else { ng('雲の流れの所要が違う：' + j({ u0: [u0.ura.endAt, u0.ura.unknown, f(u0), u0.ura.src, h0], u7: [u7.ura.endAt, f(u7), h7], u1: f(u1) })); }
+    } catch (e) { ng('v213 の作り値が回らない：' + e.message); }
+    finally { Object.keys(keep).forEach(k => { if (keep[k] === undefined) { delete process.env[k]; } else { process.env[k] = keep[k]; } }); try { fs.rmSync(T, { recursive: true, force: true }); } catch (e) { } }
+    /* 五、待ちの行（waitEtaRow）：雲の見込みが「不明」なら赤にしない・刻が全く無い「未記入」は今までどおり赤 */
+    const wsrc = cutFn(H, 'waitEtaRow');
+    if (!wsrc) { ng('panel.html に waitEtaRow が無い'); }
+    else {
+      const wr = (st, det, kumo) => new Function('lastStat', 'lastDetail', 'lastKumo', 'pad2s', wsrc + LF + 'return waitEtaRow();')(st, det, kumo, (x) => '00:00');
+      const w1 = wr('検査中', '雲の検査・見込み不明', ''), w2 = wr('待ち', '窓が閉じている', '');
+      if (w1 && w1.t === '見込み不明' && w1.c !== 'bad' && w2 && w2.t === '見込み未記入' && w2.c === 'bad') { ok('待ちの行：雲の見込みが「不明」の間は「見込み不明」を赤にしない／刻の手掛かりが全く無い待ちは今までどおり赤「見込み未記入」'); } else { ng('待ちの行の見込み不明が違う：' + j([w1, w2])); }
+    }
+    /* 六、書き手と読み手（VAIO の ~/.claude にある時だけ字面で見る。雲には無い）：mikomiAt を書くのは inbox-watch.ps1 の Publish-Status 一人・brief・見張りの超過・止まっとるかもは読むだけ */
+    { const HOME = path.join(require('os').homedir(), '.claude'), rdH = (f2) => { try { return fs.readFileSync(path.join(HOME, f2), 'utf8'); } catch (e) { return null; } };
+      const IW = rdH('inbox-watch.ps1'), BM = rdH('brief-make.ps1'), WN = rdH('watch-notify.ps1'), KW = rdH('kumo-wait.ps1'), UR = rdH('ura.js');
+      if (IW == null || BM == null || WN == null || KW == null || UR == null) { note('~/.claude の台本が無い（雲）ので、書き手と読み手の字面は見ない'); }
+      else if (IW.indexOf("'\"mikomiAt\":'  + [string]$mikomiAt") >= 0 && IW.indexOf("mikomi-at.txt") >= 0 && BM.indexOf('jobEnd') >= 0 && WN.indexOf('mikomiAt') >= 0 && KW.indexOf('mikomiAt') >= 0 && UR.indexOf("'--workflow'") >= 0) { ok('書き手と読み手：inbox-watch.ps1 が mikomi-at.txt に控えて state.json の mikomiAt を書く（一人）・brief-make.ps1（jobEnd）・watch-notify.ps1（見込み超過）・kumo-wait.ps1（止まっとるかもの窓の見込み）が読む・ura.js が流れの過去を gh run list --workflow で取る'); }
+      else { ng('書き手と読み手の字面が違う（inbox-watch・brief-make・watch-notify・kumo-wait・ura）'); } }
   }
 }
 
@@ -1268,7 +1341,7 @@ try {
     else if (/見込みを過ぎた (14|15|16)分/.test(B(r))) { ok('見込みを過ぎたら赤「' + B(r) + '」'); } else { ng('雲待ちの超過が赤で出ない（赤「' + B(r) + '」）'); }
     r = mk(Object.assign({}, ST['手待ち'], { stat: '検査中', detail: '雲の検査・見込み不明' }));
     if (!r) { ng('測れない（見込み不明）'); }
-    else if (/見込み不明/.test(B(r))) { ok('検査中で刻が無ければ赤「見込み不明」'); } else { ng('「見込み不明」が赤で出ない（赤「' + B(r) + '」）'); }
+    else if (/見込み不明/.test(T(r)) && !/見込み不明/.test(B(r))) { ok('検査中で刻が無ければ「見込み不明」（v213・枠 八十四：赤にしない）'); } else { ng('「見込み不明」の出し方が違う（字「' + T(r).slice(0, 60) + '」・赤「' + B(r) + '」）'); }
     r = mk(Object.assign({}, ST['手待ち'], { stat: '待ち', detail: '窓が閉じている' }));
     if (!r) { ng('測れない（待ち・刻なし）'); }
     else if (/見込み未記入/.test(B(r))) { ok('待ちで刻が無ければ赤「見込み未記入」'); } else { ng('待ちの「見込み未記入」が赤で出ない（赤「' + B(r) + '」）'); }

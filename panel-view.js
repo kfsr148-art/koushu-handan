@@ -26,12 +26,15 @@ function panelView(d, notices, ntfySent, now) {
   // ---- 頭の字（パネルの headText と同じ PC.headText）----
   const head = PC.headText({ stat: d.stat, cloud: (typeof d.cloud === 'string') ? d.cloud : '', detail: (typeof d.detail === 'string') ? d.detail.replace(/（なし）/g, '') : '', ura: d.ura || null, lost: false,
     owedAt: (typeof d.cardOwedAt === 'number') ? d.cardOwedAt : 0, owedEta: (typeof d.cardOwedEta === 'number') ? d.cardOwedEta : 0, rows: rows, kumo: (typeof d.kumo === 'string') ? d.kumo : '', left: left, now: now });
-  return { head: head, label: PC.todoLabel(left), left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), coreVer: PC.VER, pub: { ver: String(d.pubVer || ''), at: Number(d.pubVerAt) || 0, line: PC.pubLine({ pubVer: d.pubVer, pubVerAt: d.pubVerAt, coreVer: PC.VER }) }, noEstimate: (String(d.stat || '') === '作業中' && !/[0-9]/.test(String(d.mikomi == null ? '' : d.mikomi))), omote: omoteView(d, now), ura: uraView(d, now), all: allView(d, now), at: now };
+  return { head: head, label: PC.todoLabel(left), left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), coreVer: PC.VER, pub: { ver: String(d.pubVer || ''), at: Number(d.pubVerAt) || 0, line: PC.pubLine({ pubVer: d.pubVer, pubVerAt: d.pubVerAt, coreVer: PC.VER }) }, noEstimate: (String(d.stat || '') === '作業中' && !/[0-9]/.test(String(d.mikomi == null ? '' : d.mikomi))), jobEnd: jobEnd(d), omote: omoteView(d, now), ura: uraView(d, now), all: allView(d, now), at: now };
 }
 // v203（枠 五十）：omote／ura は {lines（様子を写すと同じ字。パネルの画面には出さない）, endAt（HH:MM・JST）, endSec, src（元の数の一言）, 元の数…}。E は d.eta（endat.js）。
 // v204（枠 五十一）：panel＝パネルの箱が今出している物だけ（gauge＝ゲージの横の小さい字・end＝「全部終わる見込み HH:MM」の一行。裏方は done／run も）。src・始まり・lines は state.json の中だけ。
 // v210（枠 七十四）：panel.eta＝箱の頭の「あと N分（HH:MM ごろ）」（パネルと同じ PC.headEta。表と全部は今の仕事の見込みを過ぎたら赤＝PC.workLate）。
-function lateOf(d, now) { return PC.workLate(d.stat, d.startedAt, d.mikomi, now); }
+// v213（本人の枠 八十三）：今の仕事の見込みの終わりは PC.mikomiEnd 一つ（見込みを書いた刻 mikomiAt＋見込み・増えた段は endat.js の cur.endSec）
+function curEndOf(d) { const E = (d.eta && typeof d.eta === 'object') ? d.eta : null; return (E && E.omote && E.omote.cur && Number(E.omote.cur.endSec) > 0) ? Number(E.omote.cur.endSec) : 0; }
+function jobEnd(d) { const e = PC.mikomiEnd({ mikomi: d.mikomi, mikomiAt: d.mikomiAt, startedAt: d.startedAt, curEnd: curEndOf(d) }); const hm = (x) => { const t = new Date((x + 9 * 3600) * 1000); return ('0' + t.getUTCHours()).slice(-2) + ':' + ('0' + t.getUTCMinutes()).slice(-2); }; return { mikomi: String(d.mikomi || ''), mikomiAt: Number(d.mikomiAt) || 0, endSec: e, endAt: e > 0 ? hm(e) : '' }; }
+function lateOf(d, now) { return PC.workLate(d.stat, d.startedAt, d.mikomi, now, d.mikomiAt, curEndOf(d)); }
 function etaOf(box, late, now) { const has = !!(box && box.total > 0 && box.total - box.done > 0); return PC.headEta(has ? box : null, now, late); }
 function omoteView(d, now) {
   now = now || Math.floor(Date.now() / 1000);

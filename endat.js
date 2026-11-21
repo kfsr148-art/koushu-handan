@@ -5,7 +5,7 @@
 //
 // 決まり：
 //   ＊表＝今の仕事（job-steps.txt）の残り＋順番待ち（state.json の foot：台帳の未了で控えの「枠:」に載っていない物）。
-//     今の仕事の終わり＝「始まり（その仕事を初めて見た刻・endat-base.json に控える）」＋（見込みの分＋増えた段×一段の分）×比。
+//     今の仕事の終わり＝「見込みを書いた刻（v213・state.json の mikomiAt）」＋（見込みの分＋増えた段×一段の分）。始まり（その仕事を初めて見た刻）は endat-base.json に控えて「始まり」に出すだけ。
 //     ＊始まりは付け直さない。段が増えた・枠が来た時は、終わりだけを足し算で延ばす（控えの「開始:」は読むだけで直さない）。
 //     ＊見込みが書き替えられた時は、書き替えを見た刻から新しい見込みで数え直す（v212・枠 七十七。前は「その時の開始:」からの刻と比べて遅い方）。
 //       その後に増えた段は「新しい見込み÷その時の残りの段」で延ばす。段は state.json の生の段（d.steps）を先に使う（panel-core.js の stepsOf と同じ数え方）。
@@ -15,6 +15,8 @@
 //     全部終わる刻＝その中で一番遅い物。
 //   ＊今の刻は使わない（state.json の指紋が毎分変わらないように）。過ぎた刻もそのまま出す。日付の境（直近24時間）と下請けの打ち切り（30分）だけ今の刻を見る。
 //   ＊v205（本人の枠 五十五・五十六）：ゲージの区切り（seg＝{done,total,run}）を omote／ura に、二つを合わせた all（全部）を足す。区切りの束は endat-bundle.json に控える（bundle() の頭）。
+//   ＊v213（本人の枠 八十三）：今の仕事の終わり＝見込みを書いた刻（state.json の mikomiAt）＋見込みの分（＋増えた段×一段の分）。比は掛けない。見込みが無ければ出さない。
+//     （本人の枠 八十四）：雲の一本の所要は、その流れ自身の直近5本の中央値（24時間→7日→30日と広げる）。記録が無い流れは「見込み不明」（unknown）。
 //   ＊作り値：ENDAT_NOW・ENDAT_STEPS・ENDAT_ORDERS・ENDAT_NOTES・ENDAT_SUBLOG・ENDAT_CLOUD・ENDAT_BASE（控えの置き場）・ENDAT_BUNDLE（束の控え）・ENDAT_EST（estimates.json）。
 'use strict';
 const fs = require('fs'), path = require('path'), os = require('os');
@@ -94,15 +96,24 @@ function curJob(d, now) {
   const all = flags.length, left = flags.filter(f => !f).length;
   const mk = (String(d.mikomi || '').match(/([0-9]+)/) || [])[1]; const mikomi = mk ? Number(mk) : 0;
   const st = Number(d.startedAt) || Number(d.statAt) || 0;
+  // v213（本人の枠 八十三・作法25 の裁定）：見込みは「窓が見込みを書いた刻」（state.json の mikomiAt・書き手は inbox-watch.ps1 の Publish-Status 一人）から数える。
+  //   ＊mikomiAt が載っていない古い state（作り値）だけ、前の決め（最初は始まり・書き替えは見た刻）で数える。
+  const hasAt = typeof d.mikomiAt === 'number', mAt = hasAt ? Math.max(0, Number(d.mikomiAt) || 0) : 0;
   const bp = P('ENDAT_BASE', 'endat-base.json'); let b = rj(bp, null), ch = false;
-  if (!job || !left) { return { job, all, left: 0, base: null, flags }; }
-  if (!b || b.job !== job) { b = { job, start: st, mikomi0: mikomi, steps0: all, mk: mikomi, mkAt: 0 }; ch = true; }
-  if (!(b.mikomi0 > 0) && mikomi > 0) { b.mikomi0 = mikomi; b.mk = mikomi; ch = true; }
-  else if (mikomi > 0 && mikomi !== b.mk) { b.mk = mikomi; b.mkAt = now; b.mkSteps = all; b.mkLeft = left; ch = true; }
-  // ↑ v212（枠 七十七）：見込みを書き替えた刻（見た刻）と、その時の段の数・残りを控えに持つ。今の刻は控えに一度書くだけなので指紋は毎分変わらない。
-  //   前は「その時の開始:」（startedAt）だったが、開始が仕事の始まり（枠: の頭）になったので、書き替えても仕事の始まりから数え直すだけになっていた。
+  if (!job || !left) { return { job, all, left: 0, base: null, flags, mikomi }; }
+  if (!b || b.job !== job) { b = { job, start: st, mikomi0: mikomi, steps0: all, mk: 0, mkAt: 0 }; ch = true; }
+  if (!(b.mikomi0 > 0) && mikomi > 0) { b.mikomi0 = mikomi; ch = true; }
+  if (mikomi > 0) {
+    const first = !(b.mk > 0 && b.mkAt > 0 && b.mkSteps > 0);
+    // 最初の見込みは仕事の全部の段にかかる（一段＝見込み÷その時の段数）・書き替えはその時の残りの段にかかる（一段＝見込み÷残り）
+    const set = (at) => { b.rew = !first; b.mk = mikomi; b.mkAt = at; b.mkSteps = all; b.mkLeft = first ? all : left; ch = true; };
+    if (hasAt) { if (mAt > 0 && (mAt !== b.mkAt || mikomi !== b.mk || first)) { set(mAt); } }
+    else if (first) { set(st); }
+    else if (mikomi !== b.mk) { set(now); }
+  }
+  // ↑ v212（枠 七十七）：書き替えの刻と、その時の段の数・残りを控えに持つ。v213：刻は state.json の mikomiAt（見張りが控える）をそのまま写す。今の刻は使わない（古い state の書き替えだけ見た刻）。
   if (ch) { try { fs.writeFileSync(bp, JSON.stringify(b)); } catch (e) { } }
-  return { job, all, left, base: b, flags };
+  return { job, all, left, base: b, flags, mikomi, hasAt, mAt };
 }
 // ---- 束（v205・本人の枠 五十五・五十六）：ゲージの区切りの集まり。控え＝endat-bundle.json（endat-base.json と同じ流儀・今の刻は指紋に使わない） ----
 //   表＝今の仕事の段（一段一区切り）＋順番待ちの枠（一枠一区切り・合図だけの行は数えない）。裏方＝今の束で動き出した下請けと雲（一本一区切り）。
@@ -162,12 +173,30 @@ function subsNow(now) {
   by.forEach(o => { if (o.end) { if (o.start >= t0 && o.end >= o.start) { dur.push((o.end - o.start) / 60); } } else if (now - o.start <= 30 * 60) { run.push(o.start); } });
   return { run, min: med(dur), n: dur.length };
 }
+// v213（本人の枠 八十四）：雲の一本の所要は、その流れ自身の過去の所要（直近の数回＝最大5本の中央値）だけから出す。
+//   ＊探す幅は 直近24時間 → 7日 → 30日 の順に広げ、5本そろった幅で止める（30日でそろわなければ有る分だけ）。材料は ura-cloud.json の list（直近10本）と hist（ura.js が、
+//     走っている流れの済んだ走りを gh run list --workflow で取って控えた物）。
+//   ＊それでも記録が無い流れは、他の流れの値を借りない（前は24時間の全部の中央値を借りていた）。min＝0 で「見込み不明」（unknown）にする。
+const FLOW_DAYS = [1, 7, 30], FLOW_N = 5;
 function cloudNow(now) {
   const c = rj(P('ENDAT_CLOUD', 'ura-cloud.json'), null), t0 = now - 86400;
-  const L = (c && Array.isArray(c.list)) ? c.list : [], sec = s => (s ? Math.floor(Date.parse(s) / 1000) : 0);
-  const by = {}, all = [];
-  L.forEach(r => { if (r.status === 'completed' && sec(r.createdAt) >= t0) { const m = (sec(r.updatedAt) - sec(r.createdAt)) / 60; if (m >= 0) { const k = r.workflowName || r.name || ''; (by[k] = by[k] || []).push(m); all.push(m); } } });
-  const run = L.filter(r => r.status !== 'completed').map(r => { const k = r.workflowName || r.name || '', mm = by[k] && by[k].length ? med(by[k]) : med(all); return { at: sec(r.createdAt), min: mm, name: k }; });
+  const L = (c && Array.isArray(c.list)) ? c.list : [], HI = (c && c.hist && typeof c.hist === 'object') ? c.hist : {}, sec = s => (s ? Math.floor(Date.parse(s) / 1000) : 0);
+  const done = {}, all = [];
+  const add = (r, k0) => {
+    if (!r || r.status !== 'completed') { return; }
+    const a = sec(r.createdAt), m = (sec(r.updatedAt) - a) / 60, k = k0 || r.workflowName || r.name || ''; if (!(a > 0) || !(m >= 0)) { return; }
+    const M = (done[k] = done[k] || {}), id = String(r.databaseId != null ? r.databaseId : (k + '@' + a));
+    if (!M[id]) { M[id] = { at: a, min: m }; if (a >= t0) { all.push(m); } }
+  };
+  L.forEach(r => add(r));
+  Object.keys(HI).forEach(k => { const h = HI[k], rs = Array.isArray(h) ? h : (h && Array.isArray(h.runs) ? h.runs : []); rs.forEach(r => add(r, k)); });
+  const flow = k => {
+    const arr = Object.keys(done[k] || {}).map(i => done[k][i]).sort((x, y) => y.at - x.at);
+    // 直近の数回：24時間→7日→30日と広げ、5本そろった幅（そろわなければ30日）の新しい方から5本まで。一本も無ければ見込み不明
+    for (const dd of FLOW_DAYS) { const w = arr.filter(x => x.at >= now - dd * 86400).slice(0, FLOW_N); if (w.length >= FLOW_N || (dd === FLOW_DAYS[FLOW_DAYS.length - 1] && w.length)) { return { min: med(w.map(x => x.min)), n: w.length, days: dd }; } }
+    return { min: 0, n: 0, days: 0 };
+  };
+  const run = L.filter(r => r.status !== 'completed').map(r => { const k = r.workflowName || r.name || '', f = flow(k); return { at: sec(r.createdAt), min: f.min, n: f.n, days: f.days, name: k }; });
   return { run, min: med(all), n: all.length, seen: !!c };
 }
 
@@ -177,17 +206,14 @@ function compute(d, now) {
   const O = ordersToday(now), R = ratioToday(now, O.rows), J = curJob(d, now);
   const frameMin = O.frameMin > 0 ? O.frameMin : 30;   // 直近24時間の実測が無ければ30分（その旨を src に書く）
   let curEnd = 0, extra = 0, stepMin = 0, reb = false;
-  if (J.base) {
-    const b = J.base; stepMin = (b.mikomi0 > 0 && b.steps0 > 0) ? b.mikomi0 / b.steps0 : frameMin / R.r;
-    extra = Math.max(0, J.all - b.steps0);
-    const plan = (b.mikomi0 > 0 ? b.mikomi0 : J.left * stepMin) + extra * stepMin;
-    curEnd = b.start + Math.round(plan * R.r * 60);
-    if (b.mkAt > 0 && b.mk > 0 && b.mkSteps > 0) {
-      // v212（枠 七十七）：見込みが書き替えられたら、その刻から新しい見込みで数え直す（前の見込みの延びは捨てる）。
-      //   その後に増えた段は、新しい見込み÷その時の残りの段＝一段の分で延ばす（最初の見込み÷最初の段数を使い続けない）。
-      stepMin = b.mk / Math.max(1, b.mkLeft || J.left); extra = Math.max(0, J.all - b.mkSteps); reb = true;
-      curEnd = b.mkAt + Math.round((b.mk + extra * stepMin) * R.r * 60);
-    } else if (b.mkAt > 0 && b.mk > 0) { curEnd = Math.max(curEnd, b.mkAt + Math.round(b.mk * R.r * 60)); }   // 古い控え（mkSteps が無い）は前のまま
+  if (J.base && J.mikomi > 0 && J.base.mkAt > 0 && J.base.mk > 0 && J.base.mkSteps > 0) {
+    // v213（本人の枠 八十三）：今の仕事の終わり＝見込みを書いた刻（mikomiAt）＋見込みの分＋増えた段×一段の分。
+    //   ＊見込みを書き替えたら、書き替えた刻から新しい見込みで数え直す（v212 と同じ・前の見込みの延びは捨てる）。
+    //   ＊見込みと実測の比は掛けない（パネルの赤・brief・見込み超過の知らせと同じ刻にするため。比は src に参考で出す）。
+    //   ＊見込みを書いていない間は終わりを出さない（枠 六十二の noEstimate）。
+    const b = J.base; reb = !!b.rew;
+    stepMin = b.mk / Math.max(1, b.mkLeft || J.left); extra = Math.max(0, J.all - b.mkSteps);
+    curEnd = b.mkAt + Math.round((b.mk + extra * stepMin) * 60);
   }
   const F = d.foot || {}, wl = Array.isArray(F.waitList) ? F.waitList : [];
   const sig = wl.filter(x => /^橋（合図/.test(String((x && x.head) || ''))).length;
@@ -201,29 +227,31 @@ function compute(d, now) {
   const fl = Math.ceil(now / 300) * 300;
   if (omEnd > 0 && omEnd < now) { omEnd = fl; omOver = true; }
   const omote = {
-    endAt: omEnd ? hm(omEnd) : '', endSec: omEnd, over: omOver, startSec: J.base ? J.base.start : 0, seg: SEG.o,
-    cur: { job: J.job, left: J.left, all: J.all, steps0: J.base ? J.base.steps0 : 0, addSteps: extra, mikomi: J.base ? J.base.mikomi0 : 0, stepMin: r1(stepMin), endAt: curEnd ? hm(curEnd) : '' },
+    endAt: omEnd ? hm(omEnd) : '', endSec: omEnd, over: omOver, startSec: J.base ? J.base.start : 0, mikomiAt: curEnd > 0 ? J.base.mkAt : 0, seg: SEG.o,
+    cur: { job: J.job, left: J.left, all: J.all, steps0: J.base ? J.base.steps0 : 0, addSteps: extra, mikomi: J.base ? J.base.mikomi0 : 0, mk: curEnd > 0 ? J.base.mk : 0, mikomiAt: curEnd > 0 ? J.base.mkAt : 0, stepMin: r1(stepMin), endAt: curEnd ? hm(curEnd) : '', endSec: curEnd },
     wait: { n: waitN, signals: sig, frameMin: r1(frameMin), frameN: O.frameN },
     ratio: { v: Math.round(R.r * 100) / 100, n: R.n },
-    src: (J.base ? ('今の仕事 残り' + J.left + '段（始まり ' + hm(J.base.start) + (reb ? '・見込みを ' + hm(J.base.mkAt) + ' に ' + J.base.mk + '分へ書き替え' : '・見込み ' + (J.base.mikomi0 || '未記入') + '分') + (extra ? '・段+' + extra + '×' + r1(stepMin) + '分' : '') + '）') : '今の仕事なし') +
-      '＋順番待ち ' + waitN + '件×' + r1(frameMin) + '分（直近24時間の' + (O.frameN ? O.frameN + '枠の中央値' : '実測なし・仮に30分') + (sig ? '・合図' + sig + '件は数えない' : '') + '）・見込みと実測の比 ' + (Math.round(R.r * 100) / 100) + '（直近24時間 ' + R.n + '組）' + (omOver ? '・見込みを過ぎて残っているので今から5分刻みで延ばした' : '')
+    src: (J.base ? ('今の仕事 残り' + J.left + '段（始まり ' + hm(J.base.start) + (curEnd > 0 ? (reb ? '・見込みを ' + hm(J.base.mkAt) + ' に ' + J.base.mk + '分へ書き替え' : '・見込み ' + J.base.mk + '分（' + hm(J.base.mkAt) + ' に書いた）') : '・見込み 未記入（終わりは出さない）') + (extra ? '・段+' + extra + '×' + r1(stepMin) + '分' : '') + '）') : '今の仕事なし') +
+      '＋順番待ち ' + waitN + '件×' + r1(frameMin) + '分（直近24時間の' + (O.frameN ? O.frameN + '枠の中央値' : '実測なし・仮に30分') + (sig ? '・合図' + sig + '件は数えない' : '') + '）・見込みと実測の比 ' + (Math.round(R.r * 100) / 100) + '（直近24時間 ' + R.n + '組・参考：今の仕事の終わりには掛けない）' + (omOver ? '・見込みを過ぎて残っているので今から5分刻みで延ばした' : '')
   };
   // 裏方
   const S = subsNow(now), C = cloudNow(now), sMin = S.min > 0 ? S.min : 15, ends = [];
   S.run.forEach(t => ends.push(t + Math.round(sMin * 60)));
-  C.run.forEach(x => ends.push(x.at + Math.round((x.min > 0 ? x.min : 10) * 60)));
-  let uEnd = ends.length ? Math.max.apply(null, ends) : 0, uOver = false;
+  const cUnk = C.run.filter(x => !(x.min > 0));   // v213（枠 八十四）：その流れの記録が30日に一本も無い雲は「見込み不明」（他の流れの値を借りない）
+  C.run.forEach(x => { if (x.min > 0) { ends.push(x.at + Math.round(x.min * 60)); } });
+  let uEnd = (ends.length && !cUnk.length) ? Math.max.apply(null, ends) : 0, uOver = false;   // 見込み不明の雲が一本でも走っていれば、裏方の終わりの刻は出さない
   if (uEnd > 0 && uEnd < now) { uEnd = fl; uOver = true; }
+  const cw = C.run.map(x => x.name + ' ' + (x.min > 0 ? r1(x.min) + '分＝直近' + (x.days === 1 ? '24時間' : x.days + '日') + ' ' + x.n + '本の中央値' : '見込み不明（この流れの記録が30日に無い）'));
   const ura = {
-    endAt: uEnd ? hm(uEnd) : '', endSec: uEnd, over: uOver, seg: SEG.u,
-    sub: { n: S.run.length, min: r1(sMin), done: S.n }, cloud: { n: C.run.length, min: r1(C.min > 0 ? C.min : 10), done: C.n },
-    src: '下請け ' + S.run.length + '本（1本 ' + r1(sMin) + '分＝直近24時間' + (S.n ? ' ' + S.n + '本の中央値' : 'の実測なし・仮に15分') + '）・雲 ' + C.run.length + '本（1本 ' + r1(C.min > 0 ? C.min : 10) + '分＝直近24時間' + (C.n ? ' ' + C.n + '本の中央値（流れの名ごと）' : 'の実測なし・仮に10分') + '）' + (uOver ? '・見込みを過ぎて動いているので今から5分刻みで延ばした' : '')
+    endAt: uEnd ? hm(uEnd) : '', endSec: uEnd, over: uOver, unknown: cUnk.length, seg: SEG.u,
+    sub: { n: S.run.length, min: r1(sMin), done: S.n }, cloud: { n: C.run.length, min: r1(C.min > 0 ? C.min : 0), done: C.n, unknown: cUnk.length, flows: C.run.map(x => ({ name: x.name, min: r1(x.min), n: x.n, days: x.days })) },
+    src: '下請け ' + S.run.length + '本（1本 ' + r1(sMin) + '分＝直近24時間' + (S.n ? ' ' + S.n + '本の中央値' : 'の実測なし・仮に15分') + '）・雲 ' + C.run.length + '本' + (cw.length ? '（流れごと：' + cw.join('、') + '）' : '') + (cUnk.length ? '・見込み不明の雲があるので終わりの刻は出さない' : '') + (uOver ? '・見込みを過ぎて動いているので今から5分刻みで延ばした' : '')
   };
   // 全部（v205・本人の枠 五十六）：表と裏方を合わせる。終わり＝遅い方・区切り＝両方の区切りの和
   const aEnd = Math.max(omEnd, uEnd), all = {
-    endAt: aEnd ? hm(aEnd) : '', endSec: aEnd, over: aEnd > 0 && ((aEnd === omEnd && omOver) || (aEnd === uEnd && uOver)),
+    endAt: aEnd ? hm(aEnd) : '', endSec: aEnd, over: aEnd > 0 && ((aEnd === omEnd && omOver) || (aEnd === uEnd && uOver)), unknown: (!aEnd && cUnk.length) ? cUnk.length : 0,
     seg: { done: SEG.o.done + SEG.u.done, total: SEG.o.total + SEG.u.total, run: SEG.o.run + SEG.u.run },
-    src: '表の仕事 ' + (omote.endAt || 'なし') + '・裏方 ' + (ura.endAt || 'なし') + ' の遅い方'
+    src: '表の仕事 ' + (omote.endAt || 'なし') + '・裏方 ' + (ura.endAt || (cUnk.length ? '見込み不明' : 'なし')) + ' の遅い方'
   };
   return { omote, ura, all };
 }
