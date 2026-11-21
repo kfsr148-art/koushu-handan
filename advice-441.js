@@ -7,14 +7,16 @@
    ＊いま入れ終えた人格（DONE）だけを合否に数え、ほかは「未実装」として別に数える。
    使い方：node advice-441.js [--all]（--all＝未実装・段8待ちの食い違いも全部出す）。入れ終えた人格（DONE）の食い違いが1つでもあれば終了コード1。
    ＊v1511：軍師・ずんだ・お嬢様を DONE へ。三人の幼児の行は「段8待ち」（LATER）で別に数える。
-   ＊v1512：マダム・一姫・先生を DONE へ（幼児は同じく段8待ち）。 */
+   ＊v1512：マダム・一姫・先生を DONE へ（幼児は同じく段8待ち）。
+   ＊v1513：六人の幼児（読み ADV_YOJI_KANA_P・ミント型・ばぶの挟み・大物と惜しむの幼児の字）を入れ、段8待ちを数えに移した。 */
 'use strict';
 const fs = require('fs'), path = require('path');
 global.ADV_TEXT = require('./voice-advice-catalog.js').T;
 const C = require('./advice-tone-core.js');
 const DONE = ['butler', 'strategist', 'blunt', 'lady', 'french', 'ichihime', 'sensei'];
 // v1511 入れた人格のうち、まだ入れていない方言（幼児＝六人分の読み ADV_YOJI_KANA と「ばぶ」の挟みが要る＝段8）。合否に数えず「段8待ち」として別に数える
-const LATER = { strategist: ['yoji'], blunt: ['yoji'], lady: ['yoji'], french: ['yoji'], ichihime: ['yoji'], sensei: ['yoji'] };
+// v1513 六人の幼児（段8）を入れたので空にした（全部 DONE の側で数える）
+const LATER = {};
 const ALL = process.argv.indexOf('--all') >= 0;
 const rows = fs.readFileSync(path.join(__dirname, 'reports', 'kuchou-441.tsv'), 'utf8').split(/\r?\n/).filter(Boolean).map(function (l) { return l.split('\t'); });
 const head = rows.shift(), col = {}; head.forEach(function (h, i) { col[h] = i; });
