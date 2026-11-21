@@ -842,14 +842,15 @@ function advMint(s) {
   return o;
 }
 const ADV_BUTLER_DIAL = {
-  miyazaki: { std: true, k: 'ひとつ申し上げます', fx: function (s) { return s.replace(/てくださいませ|てください/g, 'てくいやんせ').replace(/ございます/g, 'ござんす'); } },
-  hakata: { std: true, k: 'あきんどの勘どころです', fx: function (s) { return s.replace(/てくださいませ|てください/g, 'てんしゃい'); } },
-  kyoto: { std: true, k: 'おそれいります', fx: function (s) { return s.replace(/お([^、。！？\s]{1,6}?)なさいませ/g, 'お$1おくれやす').replace(/([^いますでし])です(?=[。！？])/g, '$1どす'); } },
-  aomori: { std: true, k: '', fx: null },
-  okinawa: { std: true, k: '畏れながら', fx: function (s) { return s.replace(/お願いいたします|お願い申し上げます/g, 'うにげーさびら').replace(/でございます(?=[。！？])/g, 'やいびーん').replace(/([^いますでし])です(?=[。！？])/g, '$1やいびーん'); } },
-  osaka: { std: false, c: 'だんさん', fx: advSenba },
-  bushi: { std: false, c: '', fx: function (s) { return s.replace(/わたくし/g, 'それがし'); } },
-  yoji: { std: true, k: '', yoji: true, fx: function (s) { return advMint(ADV_YOJI_KANA[s] || s); } }
+  std: { big: '銀器も霞むほどの大物でございます！', bigDef: '招待客をお見送りするような名残惜しさでございます。' },   // v1510 標準の行は人物の色の所だけ（口調表 執事①・本人の決め イ）
+  miyazaki: { std: true, k: 'ひとつ申し上げます', fx: function (s) { return s.replace(/てくださいませ|てください/g, 'てくれやんせ').replace(/ございます/g, 'ござんす'); }, big: '大物じゃ！……大物でござんす。', bigDef: '大物じゃ……惜しゅうござんす。' },
+  hakata: { std: true, k: 'あきんどの勘どころです', fx: function (s) { return s.replace(/てくださいませ|てください/g, 'てんしゃい'); }, big: '大物ばい！……大物でございます。', bigDef: '大物ばい……惜しゅうございます。' },
+  kyoto: { std: true, k: 'おそれいります', fx: function (s) { return s.replace(/お([^、。！？\s]{1,6}?)なさいませ/g, 'お$1おくれやす').replace(/([^いますでし])です(?=[。！？])/g, '$1どす'); }, big: '大物や！……大物でござりまする。', bigDef: '大物や……惜しおす。' },
+  aomori: { std: true, k: '', fx: null, big: '大物だ！……大物でございます。', bigDef: '大物だ……惜しゅうございます。' },
+  okinawa: { std: true, k: '畏れながら申し上げます', fx: function (s) { return s.replace(/お願いいたします|お願い申し上げます/g, 'うにげーさびら').replace(/でございます(?=[。！？])/g, 'やびーん').replace(/([^いますでし])です(?=[。！？])/g, '$1やいびーん'); }, big: '大物やん！……大物やびーん。', bigDef: '大物やん……惜しゅうございます。' },
+  osaka: { std: false, c: 'だんさん', fx: advSenba, big: '大物や！……大物でござりまっせ。', bigDef: '大物や……惜しゅうおます。' },
+  bushi: { std: false, c: '', fx: function (s) { return s.replace(/わたくし/g, 'それがし'); }, big: '家中の一大事、大物にござる！', bigDef: '家中の宝を見送るようで、無念にござる。' },
+  yoji: { std: true, k: '', yoji: true, fx: function (s) { return advMint(ADV_YOJI_KANA[s] || s); }, big: 'ばぶっ……！', bigDef: 'ばぶ……。おしゅうごじゃいましゅ。', bigHead: true }   // bigHead＝大物の一言が頭の「ばぶ」を替える（終わりの「ばぶ」はそのまま）
 };
 /* v1509 文の種類（reports/kuchou-hyou.md の7種）：部品id → ①言い切り／②読み（警告）／③誘い／④止め／⑤訳／⑥頼み（指図）／⑦付き合う宣言。
    上から順に見て最初に当たった物。null＝文の切れ端（牌の名・数・「まず」など、種類を持たない）。
@@ -881,7 +882,17 @@ function advKind(id) {
    決めの無い人格・方言・種類は、今までの方言の層へ落とす（今の字を変えない）。中身は段1〜7で入れる。 */
 const ADV_PERSONA_DIAL = { butler: ADV_BUTLER_DIAL, strategist: {}, blunt: {}, lady: {}, french: {}, ichihime: {}, sensei: {} };
 /* v1509 規則で作れない字をそのまま持つ表：ADV_KIND_LIT['方言:人格'（方言なし＝'std:人格'）][部品id か 種類] = 書いた字（方言の層を通さない）。部品idが先。中身は次の段で入れる。 */
-const ADV_KIND_LIT = {};
+const ADV_KIND_LIT = {
+  /* v1510 執事（reports/kuchou-shitsuji.md【二十六】の 7種×9行）。今の組み立てで表の字にならない部品だけ書く（①adva-head・③a-n-0 は表だけ＝本体には出ない・本人の決め ア）。幼児は音を崩した後の字（「ばぶ」は advTalk が挟む）。 */
+  'std:butler': { 'advc-butler-a-d-0': '食事の段どりと同じく、精一杯お供いたします。' },
+  'miyazaki:butler': { 'adva-head': '攻めでござんす。', 'advc-butler-d-t-0': '押せば、網を破った網子のように後悔なさいますよ。', 'advc-butler-a-n-0': '網子の舟出のように、参りましょう。', 'advc-butler-d-t-2': '危ないことは、やめてくれやんせ。', 'advd-kyu': '九種九牌でござんすから、流すのが基本でござんす。', 'advc-butler-d-t-1': 'わたくしの申すことを聞いてくれやんせ。', 'advc-butler-a-d-0': '網主に仕える身として、精一杯お供いたします。' },
+  'hakata:butler': { 'advc-butler-d-t-2': '僭越ながら、危ないことはやめんしゃい。', 'advc-butler-d-t-1': '差し出がましいようですが、わたくしの申すことを聞きんしゃい。' },
+  'osaka:butler': { 'adva-head': '攻めでござりまっせ。', 'advc-butler-d-t-0': '押せば、後悔なさりまっせ。', 'advc-butler-a-n-0': '手代に負けぬよう、参りましょう。', 'advc-butler-d-t-2': '危ないことは、おやめなはれ。', 'advd-kyu': '九種九牌だすよってに、流すのが基本でおます。', 'advc-butler-d-t-1': 'わたくしの申すことをお聞きなはれ。', 'advc-butler-a-d-0': '精一杯お供いたしますわ。' },
+  'kyoto:butler': { 'adva-head': '攻めでござりまする。', 'advc-butler-d-t-0': '押さはったら、悔やまはります。', 'advc-butler-d-t-2': '危ないことは、おやめやしとくれやす。', 'advd-kyu': '九種九牌どすよって、流すのが基本どす。', 'advc-butler-d-t-1': 'わたくしの申すことをお聞きおくれやす。' },
+  'okinawa:butler': { 'adva-head': '攻めやびーん。', 'advc-butler-a-n-0': '女官の列のように、参りましょう。', 'advc-butler-d-t-2': '危ないことは、御嶽の前と同じく、おやめなさいませ。', 'advc-butler-d-t-1': '女官の作法と思って、わたくしの申すことをお聞きなさいませ。', 'advc-butler-a-d-0': '御嶽に誓って、精一杯お供いたします。' },
+  'bushi:butler': { 'adva-head': '攻めにござる。', 'advc-butler-d-t-0': '押せば、後悔なさるぞ。', 'advc-butler-a-n-0': '家中一同、参りましょう。', 'advc-butler-d-t-2': '危ないことは、おやめなされよ。', 'advd-kyu': '九種九牌にござれば、流すのが基本にござる。', 'advc-butler-a-d-0': 'それがし、精一杯お供いたす。' },
+  'yoji:butler': { 'advc-butler-a-n-0': 'まいりましょう。', 'advc-butler-d-t-1': 'わたくちのもうしゅこと、おききなしゃいましぇ。ここはしんちょーに、ひいてまもるのがじょーしゃくでごじゃいましゅ。', 'advc-butler-a-d-0': 'だんなしゃまのごしょーぶ、しぇーいっぱいおともいたちましゅ。' }
+};
 /* v1509 大物手（ドラ・赤・役牌の打点 3 以上）の一言（攻め）／惜しむ一言（守り）。助言の頭（判定の一言の前）に書いた字のまま置く。字が空なら出ない。 */
 function advBigLine(tone, dial, attack) {
   const pd = (ADV_PERSONA_DIAL[tone] || {})[dial || 'std'];
@@ -919,7 +930,7 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
       items.push({ li: li, ti: ti, text: x, v: kfix ? -2 : (v >= 0 ? vv : v), alt: kfix, term: !!tk.term, changed: x !== tk.t }); text += x;
     });
   });
-  if (chara && chara.c && !lines.noAddr) { for (let q = items.length - 1; q >= 0; q--) { const it = items[q]; if (!it.conn && it.term && it.v >= 0) { if (/[。！？]$/.test(it.text)) { it.text = it.text.slice(0, -1) + '、' + chara.c + it.text.slice(-1); it.changed = true; text = ''; } break; } } }
+  if (chara && chara.c && !lines.noAddr) { for (let q = items.length - 1; q >= 0; q--) { const it = items[q]; if (!it.conn && it.term && (it.v >= 0 || it.v === -2)) { if (/[。！？]$/.test(it.text)) { it.text = it.text.slice(0, -1) + '、' + chara.c + it.text.slice(-1); it.changed = true; text = ''; } break; } } }
   // 同じ語尾が三文続いたら、直せる文（付けていない部品の最後の文）の語尾を変えて切る。文ごとに見る（二文を持つ部品の中の文は直せない）。
   for (let it = 0; it < 6; it++) {
     const segs = []; let pos = 0, all = '';
@@ -941,7 +952,8 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
   }
   if (bk && bk.yoji && items.length) {   // 幼児：最初と最後を「ばぶ」で挟む（つなぎと同じ扱いの声）
     const w = advHash(items.map(function (x) { return x.text; }).join('')).charCodeAt(7) % 2;
-    items.unshift({ conn: true, slot: -1, text: w ? 'ばぶばぶ。' : 'ばぶー。' }); items.push({ conn: true, slot: -1, text: w ? 'ばぶー。' : 'ばぶ。' });
+    const bh = bk.bigHead && !items[0].conn && (items[0].text === bk.big || items[0].text === bk.bigDef);   // v1510 大物の一言が頭の「ばぶ」を替える（口調表 執事⑨）
+    if (!bh) { items.unshift({ conn: true, slot: -1, text: w ? 'ばぶばぶ。' : 'ばぶー。' }); } items.push({ conn: true, slot: -1, text: w ? 'ばぶー。' : 'ばぶ。' });
   }
   text = items.map(function (x) { return x.text; }).join('');
   return { items: items, text: text };
