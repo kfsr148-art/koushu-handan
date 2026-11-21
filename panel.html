@@ -337,6 +337,10 @@
   /* v204（本人の枠 五十一）：v202〜v203 の字だらけの箱（表の仕事と裏方の行）は外し、見込みの箱（#progBox）の中に「表の仕事」と「裏方」のゲージを一本ずつ（v185 の手順のゲージの形）。字は「全部終わる見込み HH:MM」の一行だけ */
   .progbox .pg-sec + .pg-sec{margin-top:6px; padding-top:6px; border-top:1px solid var(--line);}
   .stg-k{flex:none; font-size:13px; font-weight:700; color:var(--fg); white-space:nowrap;}
+  /* v205（本人の枠 五十四〜五十六）：三つの箱（全部・表の仕事・裏方）の頭の行＝名（太字）と今動かしている物（一行・はみ出しは「…」） */
+  .progbox .pg-h{display:flex; align-items:baseline; gap:8px; min-width:0;}
+  .progbox .pg-k{flex:none; font-size:14px; font-weight:700; color:var(--fg); white-space:nowrap;}
+  .progbox .pg-now{flex:1 1 0; min-width:0; font-size:13px; color:var(--dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .cpall.steps-t{margin-top:8px; font-size:14px;}
   .cpall.steps-t.hide{display:none;}
   /* v186：見込みとゲージの箱。.hide のときは箱ごと出さない */
@@ -482,7 +486,7 @@
   <p class="kumo-line hide" id="kumoLine"></p>
   <!-- v202（2026-11-21 本人の枠 四十七・四十八）：完了・進行中・予定の三行はふだん出さず、釦（#btnSteps）を押した時だけ三つとも開く。
        ＊v204（本人の枠 五十一）：跡に出していた「表の仕事」「裏方」の字の箱（#workBox）は外した。二つは見出しのすぐ下の箱（#progBox）にゲージで出す。 -->
-  <button class="cpall steps-t hide" id="btnSteps" type="button" aria-expanded="false">完了・進行中・予定を開く</button>
+  <button class="cpall steps-t hide" id="btnSteps" type="button" aria-expanded="false">くわしく</button>
   <ul id="stLine" hidden></ul>
   <button class="cpall" id="btnCopyBoard" type="button">まとめて写す（0件）</button>
   <!-- 写せる札の題を一行ずつ（v115・パネルの見え方-1）。
@@ -557,7 +561,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v204（11月22日）</p>
+  <p class="ver" id="verTag">panel v205（11月22日）</p>
   <div class="foot-group" id="footGroup">
   <p class="usage-when" id="usageWhen" hidden></p>
   <!-- 遠隔で繋がっている会話の名と pid（v127・落ちた後の起こし-2）。state.json の rcName / rcPid。
@@ -591,7 +595,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '204';  /* v204：字だらけの「表の仕事と裏方」の箱を外し、見出しの下の箱に表の仕事と裏方のゲージを一本ずつ（v185 の形）＋「全部終わる見込み HH:MM」の一行だけ ／ v203：表の仕事と裏方の箱に「全部終わる見込み」を一つずつ（endat.js・今の枠だけの終わりは出さない・始まりは付け直さず終わりを延ばす） ／ v202：完了・進行中・予定の三行は釦一つに畳み、跡に「表の仕事」と「裏方」（下請けと雲・state.json の ura）を出す・様子を写すの頭の番地を外し表の仕事と裏方を足す ／ v201：ヨシ待ちの猫を本人の絵（yoshi-machi-240.png・字を山吹色＋黒縁）に ／ v200：センコが読んだ刻（senkoReadAt）までの札と知らせは写した扱い ／ v199：頭の字を「札まとめ中」に（「を」を取る）・現況も同じ ／ v198：着手から90秒以内の「見込み未記入」は赤くしない ／ v197：様子を写すに順番待ちを一行ずつ・指さすの名を平たい名（見出しの帯）に ／ v196：まとめて写すの頭の現況を状態の言葉と終わる見込みにした ／ v194：ntfy の直の聞き取りを外した */  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
+  var PANEL_VER = '205';  /* v205：箱を三つ（全部・表の仕事・裏方）に。どれも v180／v185 の形（頭に名と今動かしている物・区切りのゲージ・全部終わる見込み HH:MM（あとN分））・区切りは endat.js の束（増えたら M が増え・済みは塗る）・裏方の一本ずつは「くわしく」の三行の中へ ／ v204：字だらけの「表の仕事と裏方」の箱を外し、見出しの下の箱に表の仕事と裏方のゲージを一本ずつ（v185 の形）＋「全部終わる見込み HH:MM」の一行だけ ／ v203：表の仕事と裏方の箱に「全部終わる見込み」を一つずつ（endat.js・今の枠だけの終わりは出さない・始まりは付け直さず終わりを延ばす） ／ v202：完了・進行中・予定の三行は釦一つに畳み、跡に「表の仕事」と「裏方」（下請けと雲・state.json の ura）を出す・様子を写すの頭の番地を外し表の仕事と裏方を足す ／ v201：ヨシ待ちの猫を本人の絵（yoshi-machi-240.png・字を山吹色＋黒縁）に ／ v200：センコが読んだ刻（senkoReadAt）までの札と知らせは写した扱い ／ v199：頭の字を「札まとめ中」に（「を」を取る）・現況も同じ ／ v198：着手から90秒以内の「見込み未記入」は赤くしない ／ v197：様子を写すに順番待ちを一行ずつ・指さすの名を平たい名（見出しの帯）に ／ v196：まとめて写すの頭の現況を状態の言葉と終わる見込みにした ／ v194：ntfy の直の聞き取りを外した */  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
   /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
@@ -1217,6 +1221,40 @@
     var S = U.sub || {}, C = U.cloud || {};
     return { run: a(S.items).length + a(C.running).length, done: a(S.recent).length + a(C.recent).length };
   }
+  /* v205（本人の枠 五十四〜五十六）：ゲージの箱（全部／表の仕事／裏方）の中身。E＝{omote, ura, all}（state.json の panelView。区切り seg は endat.js の束）・U＝state.json の ura。
+     名・区切り（済み done・今 run・全体 total）・今動かしている物の一行（now）・終わりの刻（endSec）。区切りが無い（seg が無い）古い state は null。
+     ＊panel-view.js に同じ字で写してある（⑤の十七が字面を突き合わせる）。今の刻は使わない（あとN分はパネルの etaRow が数える）。 */
+  function boxSpec(E, U, k) {
+    var s = function (v) { return String(v == null ? '' : v); }, x = (E && typeof E === 'object') ? E[k] : null;
+    if (!x || typeof x !== 'object' || !x.seg || typeof x.seg !== 'object') { return null; }
+    var tot = Math.max(0, Number(x.seg.total) | 0), dn = Math.max(0, Math.min(tot, Number(x.seg.done) | 0)), run = Math.max(0, Math.min(tot - dn, Number(x.seg.run) | 0));
+    var cut = function (t, n) { t = s(t).split(String.fromCharCode(10)).join(' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; };
+    var left = function (y) { var g = (y && y.seg) || {}; return Math.max(0, (Number(g.total) | 0) - (Number(g.done) | 0)); };
+    var now = '';
+    if (k === 'omote') { var c = x.cur || {}, w = x.wait || {}; now = c.job ? cut(c.job, 30) : (Number(w.n) > 0 ? '順番待ち ' + Number(w.n) + '件' : ''); }
+    else if (k === 'ura') { var a = function (v) { return Array.isArray(v) ? v : []; }, Uo = (U && typeof U === 'object') ? U : {}, o = []; a((Uo.sub || {}).items).forEach(function (y) { o.push('下請け・' + (s(y.desc) || '名なし')); }); a((Uo.cloud || {}).running).forEach(function (y) { o.push('雲・' + (s(y.name) || '名なし')); }); now = cut(o.join('、'), 40); }
+    else { now = '表の仕事 残り' + left(E.omote) + '・裏方 残り' + left(E.ura); }
+    return { k: (k === 'all') ? '全部' : ((k === 'ura') ? '裏方' : '表の仕事'), done: dn, run: run, total: tot, now: now, endSec: Number(x.endSec) || 0, endAt: s(x.endAt), over: !!x.over };
+  }
+  /* v205：箱の終わりの一行。v180 の「終わる見込み HH:MM（あとN分）」と同じ数え方（端末の時計・pad2s・あとは切り上げ・過ぎたら赤の「見込みを過ぎた N分」）。
+     ＊endat.js が見込みを過ぎて延ばした刻（over）・今の仕事の見込みを過ぎた時（late）は赤。刻が無ければ null（行を出さない）。 */
+  function etaRow(b, nowS, late) {
+    if (!b || !(b.endSec > 0)) { return null; }
+    if (b.endSec > nowS) { return { t: '全部終わる見込み ' + pad2s(b.endSec) + '（あと' + Math.ceil((b.endSec - nowS) / 60) + '分）', c: (b.over || late) ? 'bad' : 'eta' }; }
+    return { t: '見込みを過ぎた ' + Math.floor((nowS - b.endSec) / 60) + '分', c: 'bad' };
+  }
+  /* v205（本人の枠 五十二の一）：裏方の一本ずつは箱の上から外し、「くわしく」で開く三行へ分けて入れる。
+     動作中・走っている物＝進行中／終・成功・落ちた物＝完了（落ちた段の名も）／待っている物（雲の待ち・queued）＝予定。刻は state.json の値のまま。 */
+  function uraGroups(U) {
+    var g = { done: [], run: [], wait: [] }, a = function (x) { return Array.isArray(x) ? x : []; }, s = function (v) { return String(v == null ? '' : v); };
+    if (!U || typeof U !== 'object') { return g; }
+    var S = U.sub || {}, C = U.cloud || {};
+    a(S.items).forEach(function (x) { g.run.push('下請け：' + (s(x.desc) || '名なし') + '（' + s(x.start) + '〜）'); });
+    a(C.running).forEach(function (x) { var t = '雲：' + (s(x.name) || '名なし') + ((x.title && x.title !== x.name) ? '「' + s(x.title) + '」' : ''); if (/待|queued|waiting|pending/.test(s(x.state) + ' ' + s(x.status))) { g.wait.push(t + '（' + s(x.at) + '〜・' + (s(x.state) || '待ち') + '）'); } else { g.run.push(t + '（' + s(x.at) + '〜・' + (s(x.state) || '走行中') + '）'); } });
+    a(S.recent).forEach(function (x) { g.done.push('下請け：' + (s(x.desc) || '名なし') + '（' + s(x.start) + '〜' + s(x.end) + '・' + (s(x.state) || '済') + '）'); });
+    a(C.recent).forEach(function (x) { g.done.push('雲：' + (s(x.name) || '名なし') + '（' + s(x.at) + '〜' + s(x.upd) + '・' + (s(x.state) || '済') + (x.failStep ? '・落ちた段：' + s(x.failStep) : '') + '）'); });
+    return g;
+  }
   /* v202（枠 四十六の三）：裏方の行。state.json の ura（sub＝下請け・cloud＝雲）。刻は state.json の値（日本の時計の HH:MM）をそのまま出す。 */
   function uraLines(U) {
     if (!U || typeof U !== 'object') { return ['裏方：state.json に載っていない']; }
@@ -1290,6 +1328,7 @@
       '最後の合図：' + (lastEvName || '—') + '（' + f(lastEvAt) + '）',
       '遠隔：' + (lastRcName || '—') + (lastRcPid ? '・pid ' + lastRcPid : ''),
       '見込み：' + (function () { try { return etaLineText(); } catch (e) { return '—'; } })(),
+      (function () { try { var E5 = (typeof lastEta !== 'undefined') ? lastEta : null, U5 = (typeof lastUra !== 'undefined') ? lastUra : null, o5 = []; ['all', 'omote', 'ura'].forEach(function (k) { var b = boxSpec(E5, U5, k); if (b) { o5.push(b.k + ' ' + b.done + '/' + b.total + (b.endAt ? '（' + b.endAt + '）' : '')); } }); return 'ゲージ：' + (o5.length ? o5.join('・') : '区切りが state.json に載っていない'); } catch (e) { return 'ゲージ：組めない'; } })(),   /* v205：三つの箱の済み/全体 */
       (function () { try { return endLine((typeof lastEta !== 'undefined') ? lastEta : null, 'omote'); } catch (e) { return '表の仕事の全部終わる見込み：組めない'; } })(),   /* v203 */
       OM.join(NL),
       '裏方：' + NL + (function () { try { return endLine((typeof lastEta !== 'undefined') ? lastEta : null, 'ura'); } catch (e) { return '裏方の全部終わる見込み：組めない'; } })() + NL + UR.join(NL),
@@ -1329,7 +1368,7 @@
     if (u) { var un = u.querySelector('.u-name'); return (un ? pointClean(un.textContent, 20) : '使用量') + '（使用量）'; }
     var li = e.closest ? e.closest('li') : null;
     if (li) { var tx = li.querySelector('.tx'); if (tx) { return pointClean(tx.textContent, 30); } }
-    var map = [['#progBox', '表の仕事と裏方のゲージの箱'], ['#footGroup', '下の三行（取得の刻・最後の合図・台帳）'], ['#state', '状態の帯'], ['.facts', '版・最終確認の行'], ['#verTag', 'panelの版'], ['#halfRow', '遠隔と終わりましたの並び'], ['.shotsrow', '写し取り一覧・直近・様子を写す・指さすの並び'], ['#stLine', '完了・進行中・予定の行'], ['#btnSteps', '完了・進行中・予定を開く釦'],['#usageTag', '使用量の三本'], ['h1', '見出し（返事パネル）']];
+    var map = [['#progBox', '表の仕事と裏方のゲージの箱'], ['#footGroup', '下の三行（取得の刻・最後の合図・台帳）'], ['#state', '状態の帯'], ['.facts', '版・最終確認の行'], ['#verTag', 'panelの版'], ['#halfRow', '遠隔と終わりましたの並び'], ['.shotsrow', '写し取り一覧・直近・様子を写す・指さすの並び'], ['#stLine', '完了・進行中・予定の行'], ['#btnSteps', 'くわしく（完了・進行中・予定を開く）釦'],['#usageTag', '使用量の三本'], ['h1', '見出し（返事パネル）']];
     for (var i = 0; i < map.length; i++) { if (e.closest && e.closest(map[i][0])) { return map[i][1]; } }
     /* v197：帯ごとに名（data-pname）を持たせ、上の一覧に無い所は、いちばん近い名を読む（見出しの帯の余白を押すと「header」と出ていた） */
     var pn = e.closest ? e.closest('[data-pname]') : null; if (pn) { return pn.getAttribute('data-pname'); }
@@ -1857,17 +1896,40 @@
       ura.push({ c: 'gauge', k: '裏方', done: uc.done, run: uc.run, total: uc.done + uc.run, lab: uc.done + '/' + (uc.done + uc.run) });
       if (eu) { ura.push({ t: eu, c: (E4 && E4.ura && E4.ura.over) ? 'bad' : 'eta' }); }
     }
+    var UG = uraGroups((typeof lastUra !== 'undefined') ? lastUra : null), rD = [], rR = [], rW = [];   /* v205（枠 五十二の一）：裏方の一本ずつは三行の中へ（進行中・完了・予定に分ける） */
     if (lastSNow) {
-      if (lastSDone) { rows.push('✅ 完了：' + lastSDone); }   /* v176：頭の字を替えた（ひらがなの「すんだ」は「ずんだ」と読み違えるので使わない） */
+      if (lastSDone) { rD.push('✅ 完了：' + lastSDone); }   /* v176：頭の字を替えた（ひらがなの「すんだ」は「ずんだ」と読み違えるので使わない） */
       var mins = lastSNowAt > 0 ? Math.max(0, Math.floor((Date.now() / 1000 - lastSNowAt) / 60)) : -1;
-      rows.push('▶ 進行中：' + lastSNow + (mins >= 0 ? '（' + mins + '分）' : ''));
-      if (lastSNext) { rows.push('⏳ 予定：' + lastSNext); }
+      rR.push('▶ 進行中：' + lastSNow + (mins >= 0 ? '（' + mins + '分）' : ''));
+      if (lastSNext) { rW.push('⏳ 予定：' + lastSNext); }
     }
+    UG.done.forEach(function (t) { rD.push('✅ 完了：' + t); }); UG.run.forEach(function (t) { rR.push('▶ 進行中：' + t); }); UG.wait.forEach(function (t) { rW.push('⏳ 予定：' + t); });
+    rows = rD.concat(rR, rW);
     var pbEl = $('progBox');   /* v186：箱。行が無い（作業も待ちも無い）時は箱ごと出さない */
-    var rowH = function (r) { if (r.c === 'gauge') { return gaugeHtml(r, true); } return '<div class="pb"><p class="m ' + r.c + '">' + esc(r.t) + '</p></div>'; };
-    if (pbEl) { pbEl.innerHTML = (box.length ? '<div class="pg-sec" id="omoteSec">' + box.map(rowH).join('') + '</div>' : '') + (ura.length ? '<div class="pg-sec" id="uraSec">' + ura.map(rowH).join('') + '</div>' : ''); pbEl.className = (box.length || ura.length) ? 'progbox' : 'progbox hide'; }   /* v204：表の仕事と裏方の二つ */
-    var stB = $('btnSteps');   /* v202：三行は釦を押した時だけ開く。三行が無い回は釦ごと出さない */
-    if (stB) { stB.className = rows.length ? 'cpall steps-t' : 'cpall steps-t hide'; stB.textContent = stepsOpen ? '完了・進行中・予定を閉じる' : '完了・進行中・予定を開く'; stB.setAttribute('aria-expanded', stepsOpen ? 'true' : 'false'); }
+    var rowH = function (r) { if (r.c === 'gauge') { return gaugeHtml(r, true); } if (r.c === 'head') { return '<div class="pb pg-h"><b class="pg-k">' + esc(r.k) + '</b>' + (r.t ? '<span class="pg-now">' + esc(r.t) + '</span>' : '') + '</div>'; } return '<div class="pb"><p class="m ' + r.c + '">' + esc(r.t) + '</p></div>'; };
+    /* v205（本人の枠 五十四〜五十六）：箱は三つ——上から「全部」「表の仕事」「裏方」。どれも同じ形（頭に名と今動かしている物の一行・v185 のゲージ・v180 の「…終わる見込み HH:MM（あとN分）」）。
+       ＊区切りは endat.js の束（state.json の panelView の seg）：表＝今の仕事の段＋順番待ちの枠、裏方＝今の束で動き出した下請けと雲、全部＝その和。済みは緑のまま残り、来たら M が増える。
+       ＊赤（手順の一覧 未記入・見込み未記入・見込み不明）は今までどおり表の仕事の箱に（作法39 ①）。今の仕事の見込みを過ぎたら表の仕事の終わりの一行を赤に。
+       ＊区切りの無い古い state（seg が無い）の時だけ、v204 の二つの箱（下の else）で出す。 */
+    var BX = { all: boxSpec(E4, (typeof lastUra !== 'undefined') ? lastUra : null, 'all'), omote: boxSpec(E4, (typeof lastUra !== 'undefined') ? lastUra : null, 'omote'), ura: boxSpec(E4, (typeof lastUra !== 'undefined') ? lastUra : null, 'ura') };
+    var html5 = '';
+    if (BX.omote || BX.ura) {
+      var nS = Math.floor(Date.now() / 1000), oLate = false, oExtra = [];
+      if (lastStat === '作業中') { if (!hasG) { oExtra.push({ t: '手順の一覧 未記入', c: 'bad' }); } if (mRow && mRow.late) { oLate = true; } else if (mRow && (mRow.c === 'bad' || mRow.c === '')) { oExtra.push(mRow); } }
+      var secH = function (id, b, late, extra) {
+        var r = [], has = !!(b && b.total > 0);
+        if (has || (extra && extra.length)) { r.push({ c: 'head', k: b ? b.k : '表の仕事', t: has ? b.now : '' }); }
+        if (has) { r.push({ c: 'gauge', done: b.done, run: b.run, total: b.total }); var e = etaRow(b, nS, late); if (e) { r.push(e); } }
+        (extra || []).forEach(function (x) { r.push(x); });
+        return r.length ? '<div class="pg-sec" id="' + id + '">' + r.map(rowH).join('') + '</div>' : '';
+      };
+      html5 = secH('allSec', BX.all, oLate, []) + secH('omoteSec', BX.omote || { k: '表の仕事', total: 0 }, oLate, oExtra) + secH('uraSec', BX.ura, false, []);
+      if (!html5 && wRow) { html5 = '<div class="pg-sec" id="allSec">' + rowH(wRow) + '</div>'; }   /* 区切りが何も無い待ち（雲待ちだけ等）は待ちの見込みを一行 */
+      if (pbEl) { pbEl.innerHTML = html5; pbEl.className = html5 ? 'progbox' : 'progbox hide'; }
+    }
+    else if (pbEl) { pbEl.innerHTML = (box.length ? '<div class="pg-sec" id="omoteSec">' + box.map(rowH).join('') + '</div>' : '') + (ura.length ? '<div class="pg-sec" id="uraSec">' + ura.map(rowH).join('') + '</div>' : ''); pbEl.className = (box.length || ura.length) ? 'progbox' : 'progbox hide'; }   /* v204：表の仕事と裏方の二つ（区切りの無い古い state の時だけ） */
+    var stB = $('btnSteps');   /* v202：三行は釦を押した時だけ開く。三行が無い回は釦ごと出さない（v205：字は「くわしく」／開いたら「とじる」） */
+    if (stB) { stB.className = rows.length ? 'cpall steps-t' : 'cpall steps-t hide'; stB.textContent = stepsOpen ? 'とじる' : 'くわしく'; stB.setAttribute('aria-expanded', stepsOpen ? 'true' : 'false'); }
     el.hidden = !(stepsOpen && rows.length);
     el.innerHTML = rows.map(function (r) { if (r && r.c === 'gauge') { return gaugeHtml(r); } var isO = (typeof r !== 'string'); return '<li class="steps"><p class="m' + (isO ? ' ' + r.c : '') + '">' + esc(isO ? r.t : r) + '</p></li>'; }).join('');
   }
@@ -3196,7 +3258,7 @@
         /* v164：Claude Code の合図（hook_event_name の英語）をそのまま小さく出す。作業中／手待ちの字は合図の変換表で引いた物（state.json の stat）。 */
         var evEl = $('evTag');
         if (evEl) { var evN = String(d.ev || ''); if (evN) { var evD = new Date((d.evAt || 0) * 1000); evEl.textContent = '最後の合図：' + evN + (d.evAt ? '（' + ('0' + evD.getHours()).slice(-2) + ':' + ('0' + evD.getMinutes()).slice(-2) + ':' + ('0' + evD.getSeconds()).slice(-2) + '・' + Math.max(0, Math.floor((Date.now() / 1000 - d.evAt) / 60)) + '分前）' : '');   /* v181：状態は最後の合図と刻をそのまま出す */ evEl.hidden = false; } else { evEl.textContent = '最後の合図：なし'; evEl.hidden = false; } }
-        lastFoot = d.foot || {};   /* v192：様子を写すの「札の結び」が使う */ lastUra = (d.ura && typeof d.ura === 'object') ? d.ura : null;   /* v202：裏方 */ lastEta = (d.panelView && d.panelView.omote && typeof d.panelView.omote === 'object' && !Array.isArray(d.panelView.omote)) ? { omote: d.panelView.omote, ura: d.panelView.ura } : null;   /* v203：全部終わる見込み */
+        lastFoot = d.foot || {};   /* v192：様子を写すの「札の結び」が使う */ lastUra = (d.ura && typeof d.ura === 'object') ? d.ura : null;   /* v202：裏方 */ lastEta = (d.panelView && d.panelView.omote && typeof d.panelView.omote === 'object' && !Array.isArray(d.panelView.omote)) ? { omote: d.panelView.omote, ura: d.panelView.ura, all: d.panelView.all } : null;   /* v203：全部終わる見込み（v205：全部＝all と区切り seg も） */
         var ftEl = $('footTag');   /* v181 */
         if (ftEl) { var ft = d.foot || {}, fp = []; if (typeof ft.wait === 'number') { fp.push('順番待ち ' + ft.wait + '件'); }   /* v192：届いてまだ着手していない枠の数。言い切れない時は見張りが wait を出さず、この行ごと出さない（古い未了は数えない） */ if (ft.revive) { fp.push('起こし直し ' + ft.revive + (ft.reviveLast ? '・最後 ' + ft.reviveLast : '')); } ftEl.textContent = fp.join(' ／ '); ftEl.hidden = !fp.length; }
         var rcEl = $('rcTag');

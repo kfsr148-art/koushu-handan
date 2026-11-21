@@ -554,7 +554,7 @@ function staticParts() {
     const norm = (t) => t.split(String.fromCharCode(10)).map(l => l.replace(/^ +/, '')).join(String.fromCharCode(10)).trim();
     const cut = (src, n, ind) => { const a = src.indexOf(ind + 'function ' + n + '('); if (a < 0) { return ''; } const b = src.indexOf(String.fromCharCode(10) + ind + '}', a); return (b > a) ? src.slice(a, b + ind.length + 2) : ''; };
     const PV = require(path.join(path.dirname(SRC), 'panel-view.js'));
-    ['omoteLines', 'uraLines', 'endLine', 'endShort', 'uraCount'].forEach(n => { const a = cut(H, n, '  '), b = cut(PVS, n, ''); if (!a || !b) { ng(n + ' が拾えない（panel.html ' + !!a + '／panel-view.js ' + !!b + '）'); } else if (norm(a) !== norm(b)) { ng(n + ' の字面が panel.html と panel-view.js で違う'); } else { ok(n + ' は panel.html と panel-view.js で字面が同じ'); } });
+    ['omoteLines', 'uraLines', 'endLine', 'endShort', 'uraCount', 'boxSpec'].forEach(n => { const a = cut(H, n, '  '), b = cut(PVS, n, ''); if (!a || !b) { ng(n + ' が拾えない（panel.html ' + !!a + '／panel-view.js ' + !!b + '）'); } else if (norm(a) !== norm(b)) { ng(n + ' の字面が panel.html と panel-view.js で違う'); } else { ok(n + ' は panel.html と panel-view.js で字面が同じ'); } });
     const fo = new Function(cut(H, 'omoteLines', '  ') + String.fromCharCode(10) + 'return omoteLines;')(), fu = new Function(cut(H, 'uraLines', '  ') + String.fromCharCode(10) + 'return uraLines;')();
     const ST0 = Date.parse('2026-11-21T23:42:00+09:00') / 1000;
     const O1 = { stat: '作業中', subj: '枠 四十三：守りの線を本体へ', sNow: '本体の工事', stepDone: 2, stepTotal: 7, startedAt: ST0, mikomi: '150分' };
@@ -607,7 +607,7 @@ function staticParts() {
       ENDAT_STEPS: W('steps.txt', ['仕事: 枠 九：作り値', '枠: x', '[x] 段1', '[ ] 段2', '[ ] 段3', '[ ] 段4', ''].join(LF)),
       ENDAT_SUBLOG: W('sub.jsonl', [{ ev: 'start', id: 'a', at: J('22:00') }, { ev: 'stop', id: 'a', at: J('22:10') }, { ev: 'start', id: 'b', at: J('22:20') }, { ev: 'stop', id: 'b', at: J('22:40') }, { ev: 'start', id: 'c', at: J('22:35') }].map(x => JSON.stringify(x)).join(LF) + LF),
       ENDAT_CLOUD: W('cloud.json', JSON.stringify({ list: [{ workflowName: 'A', status: 'completed', conclusion: 'success', createdAt: '2026-11-21T12:00:00Z', updatedAt: '2026-11-21T12:06:00Z' }, { workflowName: 'A', status: 'completed', conclusion: 'success', createdAt: '2026-11-21T12:10:00Z', updatedAt: '2026-11-21T12:14:00Z' }, { workflowName: 'A', status: 'in_progress', conclusion: '', createdAt: '2026-11-21T13:38:00Z', updatedAt: '2026-11-21T13:39:00Z' }] })),
-      ENDAT_BASE: path.join(T, 'base.json'), ENDAT_EST: path.join(T, 'none.json') };
+      ENDAT_BASE: path.join(T, 'base.json'), ENDAT_BUNDLE: path.join(T, 'bundle.json'), ENDAT_EST: path.join(T, 'none.json') };
     Object.keys(env).forEach(k => { keep[k] = process.env[k]; process.env[k] = env[k]; });
     try {
       const EA = require(path.join(path.dirname(SRC), 'endat.js')), PV = require(path.join(path.dirname(SRC), 'panel-view.js'));
@@ -631,6 +631,86 @@ function staticParts() {
       if (l4 === '表の仕事の全部終わる見込み：なし（残りの仕事が無い）（今の仕事なし＋順番待ち 0件×30分（直近24時間の3枠の中央値）・見込みと実測の比 0.5（直近24時間 2組））|裏方の全部終わる見込み：なし（動いている物が無い）（下請け 0本（1本 15分＝直近24時間の実測なし・仮に15分）・雲 0本（1本 10分＝直近24時間の実測なし・仮に10分））') { ok('残りが無い時は「なし」と元の数（空にしない）'); } else { ng('残りが無い時の字が違う：' + l4); }
       if (html.indexOf("lastEta = (d.panelView && d.panelView.omote") >= 0 && html.indexOf("eo = endShort(E4, 'omote'), eu = endShort(E4, 'ura')") >= 0) { ok('パネルは state.json の panelView.omote／ura を読み、表の仕事と裏方のゲージの下に一行ずつ出す（v204）'); } else { ng('パネルが全部終わる見込みを読んでいない／箱に出していない'); }
     } catch (e) { ng('全部終わる見込みが回らない：' + e.message); }
+    finally { Object.keys(keep).forEach(k => { if (keep[k] === undefined) { delete process.env[k]; } else { process.env[k] = keep[k]; } }); try { fs.rmSync(T, { recursive: true, force: true }); } catch (e) { } }
+  }
+  /* ---- ⑤の十九 三つの箱（v205・本人の枠 五十二・五十四〜五十六）：全部／表の仕事／裏方。区切りは endat.js の束（来たら M が増え・済みは塗る・消さない）。
+     作り値（偽の段の台帳・偽の順番待ち・偽の ura）だけで回す。本物の控えは読まない・書かない。paintStateLine は切り出して偽の器で回す ---- */
+  head('⑤の十九 三つの箱（全部・表の仕事・裏方）：区切りが増えたら M が増え・済みは塗り・あとN分が延びる／裏方の一本ずつは「くわしく」の中');
+  {
+    const os = require('os'), T = fs.mkdtempSync(path.join(os.tmpdir(), 'koushu-endat19-')), W = (n, t) => { const p = path.join(T, n); fs.writeFileSync(p, t); return p; };
+    const J = (s) => Math.floor(Date.parse('2026-11-22T' + s + ':00+09:00') / 1000), LF = String.fromCharCode(10);
+    const keep = {}, env = { ENDAT_ORDERS: W('orders.tsv', ''), ENDAT_NOTES: W('notes.log', ''), ENDAT_STEPS: W('steps.txt', ['仕事: 枠 九：ゲージに戻す', '[x] 段1', '[ ] 段2', '[ ] 段3', ''].join(LF)), ENDAT_SUBLOG: W('sub.jsonl', ''), ENDAT_CLOUD: W('cloud.json', '{"list":[]}'), ENDAT_BASE: path.join(T, 'base.json'), ENDAT_BUNDLE: path.join(T, 'bundle.json'), ENDAT_EST: path.join(T, 'none.json') };
+    Object.keys(env).forEach(k => { keep[k] = process.env[k]; process.env[k] = env[k]; });
+    const H = html.split(String.fromCharCode(13) + LF).join(LF);
+    const cut = (n) => { const a = H.indexOf('  function ' + n + '('); if (a < 0) { return ''; } const b = H.indexOf(LF + '  }', a); return (b > a) ? H.slice(a, b + 4) : ''; };
+    try {
+      const EA = require(path.join(path.dirname(SRC), 'endat.js')), PV = require(path.join(path.dirname(SRC), 'panel-view.js'));
+      const seg = (e) => [e.omote.seg, e.ura.seg, e.all.seg].map(g => g.done + '/' + g.total + 'r' + g.run).join(' ');
+      const W1 = { at: '11-22 01:00', head: '（橋）枠 十（センコ）a' }, W2 = { at: '11-22 01:05', head: '（橋）枠 十一（センコ）b' }, SG = { at: '11-22 01:06', head: '橋（合図 01:06）' };
+      const U = (items, running, recent) => ({ sub: { items: items, recent: recent || [] }, cloud: { running: running || [], recent: [] } });
+      const d0 = { stat: '作業中', subj: '枠 九：ゲージに戻す', sNow: '段2', stepDone: 1, stepTotal: 3, startedAt: J('01:00'), statAt: J('01:00'), mikomi: '30分' };
+      const st = (o) => Object.assign({}, d0, o);
+      const c1 = EA.compute(st({ foot: { wait: 2, waitList: [W1, SG] }, ura: U([{ id: 'a', desc: 'パネル直し', start: '01:01' }]) }), J('01:10'));
+      if (seg(c1) === '1/4r1 0/1r1 1/5r2') { ok('始め：表＝段3（済み1）＋順番待ち1（合図は数えない）＝1/4・裏方＝下請け1本 0/1・全部＝1/5'); } else { ng('始めの区切りが違う：' + seg(c1)); }
+      const c2 = EA.compute(st({ foot: { wait: 3, waitList: [W1, W2, SG] }, ura: U([{ id: 'a', desc: 'パネル直し', start: '01:01' }]) }), J('01:11'));
+      if (seg(c2) === '1/5r1 0/1r1 1/6r2' && c2.omote.endSec > c1.omote.endSec && c2.all.endSec >= c1.all.endSec) { ok('枠が来た：表の M が 4→5・全部 5→6・表の終わりが延びた（' + c1.omote.endAt + '→' + c2.omote.endAt + '）'); } else { ng('枠が来た時が違う：' + seg(c2) + '・' + c1.omote.endAt + '→' + c2.omote.endAt); }
+      const c3 = EA.compute(st({ foot: { wait: 3, waitList: [W1, W2, SG] }, ura: { sub: { items: [{ id: 'a', desc: 'パネル直し', start: '01:01' }, { id: 'b', desc: '台帳の整理', start: '01:12' }], recent: [] }, cloud: { running: [{ id: 7, name: '自動検査と配信', at: '01:12', state: '走行中' }], recent: [] } } }), J('01:12'));
+      if (seg(c3) === '1/5r1 0/3r3 1/8r4') { ok('下請けと雲が動き出した：裏方の M が 1→3（動いている3本は青）・全部 6→8'); } else { ng('裏方が増えた時が違う：' + seg(c3)); }
+      fs.writeFileSync(env.ENDAT_STEPS, ['仕事: 枠 九：ゲージに戻す', '[x] 段1', '[x] 段2', '[ ] 段3', ''].join(LF));
+      const c4 = EA.compute(st({ stepDone: 2, foot: { wait: 3, waitList: [W1, W2, SG] }, ura: { sub: { items: [{ id: 'b', desc: '台帳の整理', start: '01:12' }], recent: [{ id: 'a', desc: 'パネル直し', start: '01:01', end: '01:20', state: '終' }] }, cloud: { running: [], recent: [{ id: 7, name: '自動検査と配信', at: '01:12', upd: '01:20', state: '落ちた', failStep: '速い版' }] } } }), J('01:20'));
+      if (seg(c4) === '2/5r1 2/3r1 4/8r2') { ok('段が一つ済み・下請け1本と雲1本が済んだ：済みは塗る（表 2/5・裏方 2/3）・M は減らない（全部 4/8）'); } else { ng('済んだ時が違う：' + seg(c4)); }
+      fs.writeFileSync(env.ENDAT_STEPS, ['仕事: 枠 十：次の仕事', '[ ] 段1', '[ ] 段2', ''].join(LF));
+      const c5 = EA.compute(st({ subj: '枠 十：次の仕事', stepDone: 0, stepTotal: 2, foot: { wait: 1, waitList: [W2] }, ura: U([{ id: 'b', desc: '台帳の整理', start: '01:12' }]) }), J('01:30'));
+      if (seg(c5) === '3/6r1 2/3r1 5/9r2') { ok('前の仕事が済み、順番待ちの枠 十が今の仕事になった：前の段3つは済み・枠 十の区切りは段2つに置き換わる（表 3/6）'); } else { ng('仕事が替わった時が違う：' + seg(c5)); }
+      fs.writeFileSync(env.ENDAT_STEPS, ['仕事: 枠 十：次の仕事', '[x] 段1', '[x] 段2', ''].join(LF));
+      const c6 = EA.compute(st({ stat: '手待ち', foot: { wait: 0, waitList: [] }, ura: U([]) }), J('01:40'));
+      if (seg(c6) === '6/6r0 3/3r0 9/9r0' && c6.all.endAt === '') { ok('全部済んだ：区切りは消さず全部塗る（9/9）・終わりの刻は無し'); } else { ng('全部済んだ時が違う：' + seg(c6) + '・' + c6.all.endAt); }
+      const c7 = EA.compute(st({ stat: '手待ち', foot: { wait: 1, waitList: [W1] }, ura: U([]) }), J('01:45'));
+      if (seg(c7) === '0/1r1 3/3r0 3/4r1') { ok('手すきの後に新しい枠：表の束は始め直す（0/1）・裏方は動き出すまで前の束のまま'); } else { ng('手すきの後の枠が違う：' + seg(c7)); }
+      /* 箱の中身（boxSpec）と終わりの一行（etaRow）・裏方の分け方（uraGroups） */
+      const fb = new Function(cut('boxSpec') + LF + 'return boxSpec;')(), fr = new Function('pad2s', cut('etaRow') + LF + 'return etaRow;')(sec => { const d = new Date(sec * 1000); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }), fg = new Function(cut('uraGroups') + LF + 'return uraGroups;')();
+      const U3 = { sub: { items: [{ id: 'b', desc: '台帳の整理', start: '01:12' }], recent: [{ id: 'a', desc: 'パネル直し', start: '01:01', end: '01:20', state: '終' }] }, cloud: { running: [{ id: 8, name: '札と状態の配信', at: '01:19', state: '待ち' }], recent: [{ id: 7, name: '自動検査と配信', at: '01:12', upd: '01:20', state: '落ちた', failStep: '速い版' }] } };
+      const bA = fb(c4, U3, 'all'), bO = fb(c4, U3, 'omote'), bU = fb(c4, U3, 'ura');
+      if (bA && bA.k === '全部' && bA.now === '表の仕事 残り3・裏方 残り1' && bO.k === '表の仕事' && bO.now === '枠 九：ゲージに戻す' && bU.k === '裏方' && bU.now === '下請け・台帳の整理、雲・札と状態の配信' && fb({ omote: { endAt: '01:00' } }, null, 'omote') === null) { ok('箱の頭：全部「' + bA.now + '」／表の仕事「' + bO.now + '」／裏方「' + bU.now + '」・区切りの無い古い state は null'); } else { ng('箱の中身が違う：' + JSON.stringify([bA, bO, bU])); }
+      const nS = Math.floor(Date.now() / 1000), r1 = fr({ endSec: nS + 1500 }, nS, false), r2 = fr({ endSec: nS + 600, over: true }, nS, false), r3 = fr({ endSec: nS - 960 }, nS, false), r4 = fr({ endSec: 0 }, nS, false);
+      if (/^全部終わる見込み [0-9]{2}:[0-9]{2}（あと25分）$/.test(r1.t) && r1.c === 'eta' && r2.c === 'bad' && /（あと10分）/.test(r2.t) && r3.t === '見込みを過ぎた 16分' && r3.c === 'bad' && r4 === null) { ok('終わりの一行は v180 と同じ数え方：「' + r1.t + '」・延ばした刻は赤・過ぎたら赤「見込みを過ぎた 16分」・刻が無ければ出さない'); } else { ng('終わりの一行が違う：' + JSON.stringify([r1, r2, r3, r4])); }
+      const g3 = fg(U3);
+      if (g3.run.join('|') === '下請け：台帳の整理（01:12〜）' && g3.wait.join('|') === '雲：札と状態の配信（01:19〜・待ち）' && g3.done.join('|') === '下請け：パネル直し（01:01〜01:20・終）|雲：自動検査と配信（01:12〜01:20・落ちた・落ちた段：速い版）') { ok('裏方の一本ずつ：動作中＝進行中・待ち＝予定・終／落ちた＝完了（落ちた段の名も）'); } else { ng('裏方の分け方が違う：' + JSON.stringify(g3)); }
+      /* paintStateLine を偽の器で回す（state.json の panelView を通した値で） */
+      const src = ['paintStateLine', 'gaugeHtml', 'endShort', 'uraCount', 'boxSpec', 'etaRow', 'uraGroups', 'waitEtaRow', 'pad2s'].map(cut);
+      if (src.some(x => !x)) { ng('切り出せない関数がある（' + ['paintStateLine', 'gaugeHtml', 'endShort', 'uraCount', 'boxSpec', 'etaRow', 'uraGroups', 'waitEtaRow', 'pad2s'].filter((n, i) => !src[i]).join('・') + '）'); }
+      else {
+        const VARS = ['lastEta', 'lastUra', 'lastSNow', 'lastStepTotal', 'lastStepDone', 'lastStat', 'lastStartedAt', 'lastMikomiMin', 'lastMikomiRaw', 'lastSDone', 'lastSNowAt', 'lastSNext', 'stepsOpen', 'lastKumo', 'lastDetail'];
+        const fp = new Function('S', 'var ' + VARS.map(v => v + ' = S.' + v).join(', ') + ';' + LF + 'function $(id) { return S.el[id] || null; }' + LF + "function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }" + LF + "function stateLineText() { return ''; }" + LF + "function headText() { return ''; }" + LF + src.join(LF) + LF + 'paintStateLine();');
+        const paint = (d, ura, open) => {
+          const el = { progBox: { innerHTML: '', className: '' }, btnSteps: { className: '', textContent: '', setAttribute: function () { } }, stLine: { hidden: true, innerHTML: '' }, headWait: { textContent: '' } };
+          const pv = d ? PV.panelView(Object.assign({ eta: d, ura: ura }, st({})), [], [], nS) : null;
+          fp({ el: el, lastEta: pv ? { omote: pv.omote, ura: pv.ura, all: pv.all } : null, lastUra: ura, lastSNow: '段3', lastStepTotal: 3, lastStepDone: 2, lastStat: '作業中', lastStartedAt: nS - 300, lastMikomiMin: 30, lastMikomiRaw: '30分', lastSDone: '段2', lastSNowAt: nS - 60, lastSNext: '', stepsOpen: !!open, lastKumo: '', lastDetail: '' });
+          return el;
+        };
+        const ids = (h) => (h.match(/<div class="pg-sec" id="([a-zA-Z]+)">/g) || []).map(x => x.replace(/.*id="([a-zA-Z]+)".*/, '$1')).join(',');
+        const heads = (h) => (h.match(/<b class="pg-k">([^<]*)<\/b>/g) || []).map(x => x.replace(/<[^>]+>/g, '')).join(',');
+        const bars = (h) => h.split('<span class="stg-bar">').slice(1).map(x => x.split('</span>')[0].replace(/<i class="([a-z]*)"><\/i>/g, (m, c) => c || '-')).join(' ');
+        const labs = (h) => (h.match(/<span class="stg-n">([^<]*)<\/span>/g) || []).map(x => x.replace(/<[^>]+>/g, '')).join(' ');
+        const set = (e, a, o, u) => { e = JSON.parse(JSON.stringify(e)); [a, o, u].forEach((x, i) => { e[['all', 'omote', 'ura'][i]].endSec = x ? nS + x : 0; }); return e; };
+        const E4 = set(c4, 2400, 1800, 2400), e4 = paint(E4, U3, false), h4 = e4.progBox.innerHTML;
+        if (ids(h4) === 'allSec,omoteSec,uraSec' && heads(h4) === '全部,表の仕事,裏方' && e4.progBox.className === 'progbox') { ok('箱は三つ・上から「全部」「表の仕事」「裏方」・それぞれ頭に名'); } else { ng('箱の並び・名が違う：' + ids(h4) + '／' + heads(h4)); }
+        if (bars(h4) === 'ddddcc-- ddc-- ddc' && labs(h4) === '5/8 3/5 3/3') { ok('ゲージ：全部 ddddcc--（5/8）・表 ddc--（3/5）・裏方 ddc（3/3）＝済みは緑・今は青・右に N/M（v185 の数え方）'); } else { ng('三つのゲージが違う：' + bars(h4) + '／' + labs(h4)); }
+        const etas = (h4.match(/<p class="m eta">([^<]*)<\/p>/g) || []).map(x => x.replace(/<[^>]+>/g, ''));
+        if (etas.length === 3 && /（あと40分）$/.test(etas[0]) && /（あと30分）$/.test(etas[1]) && /（あと40分）$/.test(etas[2])) { ok('三つとも「全部終わる見込み HH:MM（あとN分）」：' + etas.join('／')); } else { ng('終わりの一行が違う：' + etas.join('／')); }
+        if (h4.indexOf('<span class="pg-now">下請け・台帳の整理、雲・札と状態の配信</span>') >= 0 && h4.indexOf('下請け：') < 0 && h4.indexOf('落ちた段') < 0) { ok('箱の上には今動かしている物の一行だけ（裏方の一本ずつの行は箱に出さない）'); } else { ng('箱の上に裏方の一本ずつが残っている／今動かしている物が無い'); }
+        const sl = e4.stLine.innerHTML;
+        if (e4.stLine.hidden === true && e4.btnSteps.textContent === 'くわしく' && /▶ 進行中：下請け：台帳の整理（01:12〜）/.test(sl) && /⏳ 予定：雲：札と状態の配信/.test(sl) && /✅ 完了：雲：自動検査と配信（01:12〜01:20・落ちた・落ちた段：速い版）/.test(sl) && sl.indexOf('✅ 完了：段2') >= 0 && sl.indexOf('✅') < sl.indexOf('▶') && sl.indexOf('▶') < sl.indexOf('⏳')) { ok('釦は「くわしく」・ふだんは閉じる。中は完了→進行中→予定の順に、段と裏方の一本ずつが分かれて入る'); } else { ng('くわしくの中身が違う：' + e4.btnSteps.textContent + '・hidden=' + e4.stLine.hidden + '・' + sl.replace(/<[^>]+>/g, '|').slice(0, 300)); }
+        const e4o = paint(E4, U3, true);
+        if (e4o.btnSteps.textContent === 'とじる' && e4o.stLine.hidden === false) { ok('押すと開き、字は「とじる」'); } else { ng('開いた時が違う：' + e4o.btnSteps.textContent + '・hidden=' + e4o.stLine.hidden); }
+        const E2 = set(c2, 3000, 3000, 1200), E3 = set(c3, 3000, 3000, 1200), h2 = paint(set(c1, 2400, 2400, 1200), U([{ id: 'a', desc: 'パネル直し', start: '01:01' }]), false).progBox.innerHTML, h2b = paint(E2, U([{ id: 'a', desc: 'パネル直し', start: '01:01' }]), false).progBox.innerHTML, h3 = paint(E3, U([{ id: 'a', desc: 'パネル直し', start: '01:01' }, { id: 'b', desc: '台帳の整理', start: '01:12' }]), false).progBox.innerHTML;
+        if (labs(h2) === '2/5 2/4 1/1' && labs(h2b) === '2/6 2/5 1/1' && labs(h3) === '2/8 2/5 1/3' && bars(h3).split(' ')[2] === 'ccc') { ok('増えた時：枠が来て 2/5→2/6（表 2/4→2/5）・下請けと雲が動き出して裏方 1/1→1/3（三本とも青）'); } else { ng('増えた時のゲージが違う：' + [labs(h2), labs(h2b), labs(h3), bars(h3)].join('／')); }
+        const e0 = paint(null, U3, false), h0 = e0.progBox.innerHTML;
+        if (ids(h0) === 'omoteSec,uraSec' && h0.indexOf('pg-k') < 0) { ok('区切りの無い古い state（panelView が無い）は v204 の二つの箱のまま'); } else { ng('古い state の時の箱が違う：' + ids(h0)); }
+        const fpBad = paint(set(c4, 2400, -600, 2400), U3, false).progBox.innerHTML;
+        if (/<p class="m bad">見込みを過ぎた 10分<\/p>/.test(fpBad)) { ok('表の仕事の終わりを過ぎたら、その箱の一行は赤「見込みを過ぎた 10分」（作法39 ①）'); } else { ng('過ぎた時の赤が出ない'); }
+      }
+    } catch (e) { ng('三つの箱が回らない：' + e.message); }
     finally { Object.keys(keep).forEach(k => { if (keep[k] === undefined) { delete process.env[k]; } else { process.env[k] = keep[k]; } }); try { fs.rmSync(T, { recursive: true, force: true }); } catch (e) { } }
   }
 }

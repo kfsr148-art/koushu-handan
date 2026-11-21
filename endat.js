@@ -13,7 +13,8 @@
 //   ＊裏方＝動いている下請け（subagents.jsonl）と雲の走り（ura-cloud.json）の全部。一本の終わり＝始まり＋直近24時間の済んだ物の中央値（雲は流れの名ごと）。
 //     全部終わる刻＝その中で一番遅い物。
 //   ＊今の刻は使わない（state.json の指紋が毎分変わらないように）。過ぎた刻もそのまま出す。日付の境（直近24時間）と下請けの打ち切り（30分）だけ今の刻を見る。
-//   ＊作り値：ENDAT_NOW・ENDAT_STEPS・ENDAT_ORDERS・ENDAT_NOTES・ENDAT_SUBLOG・ENDAT_CLOUD・ENDAT_BASE（控えの置き場）・ENDAT_EST（estimates.json）。
+//   ＊v205（本人の枠 五十五・五十六）：ゲージの区切り（seg＝{done,total,run}）を omote／ura に、二つを合わせた all（全部）を足す。区切りの束は endat-bundle.json に控える（bundle() の頭）。
+//   ＊作り値：ENDAT_NOW・ENDAT_STEPS・ENDAT_ORDERS・ENDAT_NOTES・ENDAT_SUBLOG・ENDAT_CLOUD・ENDAT_BASE（控えの置き場）・ENDAT_BUNDLE（束の控え）・ENDAT_EST（estimates.json）。
 'use strict';
 const fs = require('fs'), path = require('path'), os = require('os');
 const H = path.join(os.homedir(), '.claude');
@@ -82,15 +83,53 @@ function curJob(d) {
   const tx = rd(P('ENDAT_STEPS', 'job-steps.txt')), m = /^仕事:[ ]*(.+)$/m.exec(tx);
   const job = m ? m[1].trim() : '';
   const all = (tx.match(/^\[[ xX]\]/mg) || []).length, left = (tx.match(/^\[ \]/mg) || []).length;
+  const flags = (tx.match(/^\[[ xX]\]/mg) || []).map(x => x !== '[ ]');   // v205：段ごとの済み（上から順）。束の区切りに使う
   const mk = (String(d.mikomi || '').match(/([0-9]+)/) || [])[1]; const mikomi = mk ? Number(mk) : 0;
   const st = Number(d.startedAt) || Number(d.statAt) || 0;
   const bp = P('ENDAT_BASE', 'endat-base.json'); let b = rj(bp, null), ch = false;
-  if (!job || !left) { return { job, all, left: 0, base: null }; }
+  if (!job || !left) { return { job, all, left: 0, base: null, flags }; }
   if (!b || b.job !== job) { b = { job, start: st, mikomi0: mikomi, steps0: all, mk: mikomi, mkAt: 0 }; ch = true; }
   if (!(b.mikomi0 > 0) && mikomi > 0) { b.mikomi0 = mikomi; b.mk = mikomi; ch = true; }
   else if (mikomi > 0 && mikomi !== b.mk) { b.mk = mikomi; b.mkAt = st; ch = true; }   // 見込みを書き替えた：その時の「開始:」から数える
   if (ch) { try { fs.writeFileSync(bp, JSON.stringify(b)); } catch (e) { } }
-  return { job, all, left, base: b };
+  return { job, all, left, base: b, flags };
+}
+// ---- 束（v205・本人の枠 五十五・五十六）：ゲージの区切りの集まり。控え＝endat-bundle.json（endat-base.json と同じ流儀・今の刻は指紋に使わない） ----
+//   表＝今の仕事の段（一段一区切り）＋順番待ちの枠（一枠一区切り・合図だけの行は数えない）。裏方＝今の束で動き出した下請けと雲（一本一区切り）。
+//   ＊来た区切りは足す（M が増える）。見えなくなった区切りは消さずに済み（塗る）。ただし順番待ちの枠が今の仕事になった（新しい仕事の段が現れた）回は、
+//     その枠の区切りは段に置き換わったので外す。
+//   ＊残りが0になったら束は「手すき」。手すきの後に新しい区切りが来たら束を始め直す（済みを捨てる）。手すきが30分続いたら束を空にする（日付の境と同じく今の刻を見るのはここだけ）。
+//   ＊裏方は state.json の ura（下請けの items・雲の running）が無い回は触らない。
+function bundle(d, J, wl, now) {
+  const bp = P('ENDAT_BUNDLE', 'endat-bundle.json'), b0 = rj(bp, null), was = JSON.stringify(b0);
+  const b = (b0 && typeof b0 === 'object' && b0.o && b0.u) ? b0 : { o: {}, u: {}, oIdle: 0, uIdle: 0 };
+  // 表
+  const live = {};
+  if (J.job) { (J.flags || []).forEach((f, i) => { live['s:' + J.job + '#' + (i + 1)] = f ? 1 : 0; }); }
+  wl.forEach(x => { live['w:' + String((x && x.at) || '') + ' ' + String((x && x.head) || '')] = 0; });
+  let oLeft = Object.keys(live).filter(k => !live[k]).length;
+  if (oLeft > 0 && b.oIdle > 0) { b.o = {}; b.oIdle = 0; }
+  const newJob = Object.keys(live).some(k => /^s:/.test(k) && !(k in b.o));
+  Object.keys(b.o).forEach(k => { if (!(k in live)) { if (/^w:/.test(k) && newJob && !b.o[k]) { delete b.o[k]; } else { b.o[k] = 1; } } });
+  const jobOpen = (J.flags || []).some(f => !f);   // 新しく見えた済みの段は、その仕事に残りの段がある時だけ数える（済んだ仕事の段が次の束に紛れない）
+  Object.keys(live).forEach(k => { if ((k in b.o) || !live[k] || jobOpen) { b.o[k] = live[k]; } });
+  if (oLeft === 0) { if (!(b.oIdle > 0)) { b.oIdle = now; } else if (now - b.oIdle > 1800) { b.o = {}; } }
+  // 裏方
+  const U = (d.ura && typeof d.ura === 'object') ? d.ura : null;
+  if (U) {
+    const A = x => Array.isArray(x) ? x : [], ul = {};
+    A((U.sub || {}).items).forEach(x => { if (x && x.id != null) { ul['sub:' + x.id] = 0; } });
+    A((U.cloud || {}).running).forEach(x => { if (x && x.id != null) { ul['cloud:' + x.id] = 0; } });
+    const uRun = Object.keys(ul).length;
+    if (uRun > 0 && b.uIdle > 0) { b.u = {}; b.uIdle = 0; }
+    Object.keys(b.u).forEach(k => { if (!(k in ul)) { b.u[k] = 1; } });
+    Object.keys(ul).forEach(k => { b.u[k] = 0; });
+    if (uRun === 0) { if (!(b.uIdle > 0)) { b.uIdle = now; } else if (now - b.uIdle > 1800) { b.u = {}; } }
+  }
+  if (JSON.stringify(b) !== was) { try { fs.writeFileSync(bp, JSON.stringify(b)); } catch (e) { } }
+  const cnt = m => { const ks = Object.keys(m); const dn = ks.filter(k => m[k]).length; return { done: dn, total: ks.length, left: ks.length - dn }; };
+  const o = cnt(b.o), u = cnt(b.u);
+  return { o: { done: o.done, total: o.total, run: o.left > 0 ? 1 : 0 }, u: { done: u.done, total: u.total, run: u.left } };
 }
 // ---- 裏方：下請けと雲 ----
 function subsNow(now) {
@@ -131,13 +170,16 @@ function compute(d, now) {
   const F = d.foot || {}, wl = Array.isArray(F.waitList) ? F.waitList : [];
   const sig = wl.filter(x => /^橋（合図/.test(String((x && x.head) || ''))).length;
   const waitN = Math.max(0, (typeof F.wait === 'number' ? F.wait : wl.length) - sig);
+  const wReal = wl.filter(x => !/^橋（合図/.test(String((x && x.head) || '')));
+  for (let i = wReal.length; i < waitN; i++) { wReal.push({ at: 'ほか', head: String(i + 1) }); }   // 一覧に載らない分（waitMore）も一枠一区切り
+  const SEG = bundle(d, J, wReal, now);   // v205：ゲージの区切り（束）
   const base0 = curEnd > 0 ? curEnd : (Number(d.statAt) || 0);
   let omEnd = (curEnd > 0 || waitN > 0) && base0 > 0 ? base0 + Math.round(waitN * frameMin * 60) : 0, omOver = false;
   // 見込みを過ぎてまだ残っている時だけ、今の刻を5分刻みに切り上げた刻へ延ばす（指紋が変わるのは5分に一度まで）
   const fl = Math.ceil(now / 300) * 300;
   if (omEnd > 0 && omEnd < now) { omEnd = fl; omOver = true; }
   const omote = {
-    endAt: omEnd ? hm(omEnd) : '', endSec: omEnd, over: omOver, startSec: J.base ? J.base.start : 0,
+    endAt: omEnd ? hm(omEnd) : '', endSec: omEnd, over: omOver, startSec: J.base ? J.base.start : 0, seg: SEG.o,
     cur: { job: J.job, left: J.left, all: J.all, steps0: J.base ? J.base.steps0 : 0, addSteps: extra, mikomi: J.base ? J.base.mikomi0 : 0, stepMin: r1(stepMin), endAt: curEnd ? hm(curEnd) : '' },
     wait: { n: waitN, signals: sig, frameMin: r1(frameMin), frameN: O.frameN },
     ratio: { v: Math.round(R.r * 100) / 100, n: R.n },
@@ -151,11 +193,17 @@ function compute(d, now) {
   let uEnd = ends.length ? Math.max.apply(null, ends) : 0, uOver = false;
   if (uEnd > 0 && uEnd < now) { uEnd = fl; uOver = true; }
   const ura = {
-    endAt: uEnd ? hm(uEnd) : '', endSec: uEnd, over: uOver,
+    endAt: uEnd ? hm(uEnd) : '', endSec: uEnd, over: uOver, seg: SEG.u,
     sub: { n: S.run.length, min: r1(sMin), done: S.n }, cloud: { n: C.run.length, min: r1(C.min > 0 ? C.min : 10), done: C.n },
     src: '下請け ' + S.run.length + '本（1本 ' + r1(sMin) + '分＝直近24時間' + (S.n ? ' ' + S.n + '本の中央値' : 'の実測なし・仮に15分') + '）・雲 ' + C.run.length + '本（1本 ' + r1(C.min > 0 ? C.min : 10) + '分＝直近24時間' + (C.n ? ' ' + C.n + '本の中央値（流れの名ごと）' : 'の実測なし・仮に10分') + '）' + (uOver ? '・見込みを過ぎて動いているので今から5分刻みで延ばした' : '')
   };
-  return { omote, ura };
+  // 全部（v205・本人の枠 五十六）：表と裏方を合わせる。終わり＝遅い方・区切り＝両方の区切りの和
+  const aEnd = Math.max(omEnd, uEnd), all = {
+    endAt: aEnd ? hm(aEnd) : '', endSec: aEnd, over: aEnd > 0 && ((aEnd === omEnd && omOver) || (aEnd === uEnd && uOver)),
+    seg: { done: SEG.o.done + SEG.u.done, total: SEG.o.total + SEG.u.total, run: SEG.o.run + SEG.u.run },
+    src: '表の仕事 ' + (omote.endAt || 'なし') + '・裏方 ' + (ura.endAt || 'なし') + ' の遅い方'
+  };
+  return { omote, ura, all };
 }
 module.exports = { compute, nums, med };
 if (require.main === module) {

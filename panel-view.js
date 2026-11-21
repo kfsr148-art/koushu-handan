@@ -45,6 +45,19 @@ function uraCount(U) {
   var S = U.sub || {}, C = U.cloud || {};
   return { run: a(S.items).length + a(C.running).length, done: a(S.recent).length + a(C.recent).length };
 }
+// v205（2026-11-22・本人の枠 五十四〜五十六）：ゲージの箱（全部／表の仕事／裏方）の中身。panel.html の boxSpec と一字も違わない写し（⑤の十七）。
+function boxSpec(E, U, k) {
+  var s = function (v) { return String(v == null ? '' : v); }, x = (E && typeof E === 'object') ? E[k] : null;
+  if (!x || typeof x !== 'object' || !x.seg || typeof x.seg !== 'object') { return null; }
+  var tot = Math.max(0, Number(x.seg.total) | 0), dn = Math.max(0, Math.min(tot, Number(x.seg.done) | 0)), run = Math.max(0, Math.min(tot - dn, Number(x.seg.run) | 0));
+  var cut = function (t, n) { t = s(t).split(String.fromCharCode(10)).join(' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; };
+  var left = function (y) { var g = (y && y.seg) || {}; return Math.max(0, (Number(g.total) | 0) - (Number(g.done) | 0)); };
+  var now = '';
+  if (k === 'omote') { var c = x.cur || {}, w = x.wait || {}; now = c.job ? cut(c.job, 30) : (Number(w.n) > 0 ? '順番待ち ' + Number(w.n) + '件' : ''); }
+  else if (k === 'ura') { var a = function (v) { return Array.isArray(v) ? v : []; }, Uo = (U && typeof U === 'object') ? U : {}, o = []; a((Uo.sub || {}).items).forEach(function (y) { o.push('下請け・' + (s(y.desc) || '名なし')); }); a((Uo.cloud || {}).running).forEach(function (y) { o.push('雲・' + (s(y.name) || '名なし')); }); now = cut(o.join('、'), 40); }
+  else { now = '表の仕事 残り' + left(E.omote) + '・裏方 残り' + left(E.ura); }
+  return { k: (k === 'all') ? '全部' : ((k === 'ura') ? '裏方' : '表の仕事'), done: dn, run: run, total: tot, now: now, endSec: Number(x.endSec) || 0, endAt: s(x.endAt), over: !!x.over };
+}
 function uraLines(U) {
   if (!U || typeof U !== 'object') { return ['裏方：state.json に載っていない']; }
   var o = [], S = U.sub || {}, C = U.cloud || {}, a = function (x) { return Array.isArray(x) ? x : []; }, s = function (v) { return String(v == null ? '' : v); };
@@ -103,7 +116,7 @@ function panelView(d, notices, ntfySent, now) {
     if (left > 0) { return 'まとめて写すヨシ！'; }
     return '待機中、、、。';
   };
-  return { head: head(), label: left > 0 ? ('まとめて写す（残' + left + '／' + left + '件）') : 'まとめて写す（0件）', left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), omote: omoteView(d), ura: uraView(d), at: now };
+  return { head: head(), label: left > 0 ? ('まとめて写す（残' + left + '／' + left + '件）') : 'まとめて写す（0件）', left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), omote: omoteView(d), ura: uraView(d), all: allView(d), at: now };
 }
 // v203（枠 五十）：omote／ura は {lines（様子を写すと同じ字。パネルの画面には出さない）, endAt（HH:MM・JST）, endSec, src（元の数の一言）, 元の数…}。E は d.eta（endat.js）。
 // v204（枠 五十一）：panel＝パネルの箱が今出している物だけ（gauge＝ゲージの横の小さい字・end＝「全部終わる見込み HH:MM」の一行。裏方は done／run も）。src・始まり・lines は state.json の中だけ。
@@ -111,14 +124,19 @@ function omoteView(d) {
   const E = (d.eta && typeof d.eta === 'object') ? d.eta : null, eo = (E && E.omote) || {};
   const st = Number(eo.startSec) > 0 ? Number(eo.startSec) : d.startedAt;
   const tot = Number(d.stepTotal) || 0, dn = Number(d.stepDone) || 0;
-  return Object.assign({ lines: [endLine(E, 'omote')].concat(omoteLines({ stat: d.stat, subj: d.subj, sNow: d.sNow, stepDone: d.stepDone, stepTotal: d.stepTotal, startedAt: st, mikomi: d.mikomi })) }, eo, { panel: { gauge: (String(d.sNow || '').trim() && tot > 0) ? (Math.min(tot, dn + 1) + '/' + tot) : '', end: endShort(E, 'omote') } });
+  return Object.assign({ lines: [endLine(E, 'omote')].concat(omoteLines({ stat: d.stat, subj: d.subj, sNow: d.sNow, stepDone: d.stepDone, stepTotal: d.stepTotal, startedAt: st, mikomi: d.mikomi })) }, eo, { panel: { gauge: (String(d.sNow || '').trim() && tot > 0) ? (Math.min(tot, dn + 1) + '/' + tot) : '', end: endShort(E, 'omote'), box: boxSpec(E, d.ura, 'omote') } });
 }
 function uraView(d) {
   const E = (d.eta && typeof d.eta === 'object') ? d.eta : null, c = uraCount(d.ura), end = endShort(E, 'ura');
-  return Object.assign({ lines: [endLine(E, 'ura')].concat(uraLines(d.ura)) }, (E && E.ura) || {}, { panel: { gauge: (c.run > 0 || end) ? (c.done + '/' + (c.done + c.run)) : '', done: c.done, run: c.run, end: end } });
+  return Object.assign({ lines: [endLine(E, 'ura')].concat(uraLines(d.ura)) }, (E && E.ura) || {}, { panel: { gauge: (c.run > 0 || end) ? (c.done + '/' + (c.done + c.run)) : '', done: c.done, run: c.run, end: end, box: boxSpec(E, d.ura, 'ura') } });
+}
+// v205（枠 五十六）：全部＝表と裏方を合わせた箱（endat.js の all）。panel.box＝パネルの一番上の箱が出している物（名・今動かしている物・区切り・刻）
+function allView(d) {
+  const E = (d.eta && typeof d.eta === 'object') ? d.eta : null;
+  return Object.assign({}, (E && E.all) || {}, { panel: { box: boxSpec(E, d.ura, 'all') } });
 }
 
-module.exports = { panelView, senkoEpoch, omoteLines, uraLines, endLine, endShort, uraCount };
+module.exports = { panelView, senkoEpoch, omoteLines, uraLines, endLine, endShort, uraCount, boxSpec };
 
 if (require.main === module) {
   // 使い方：node panel-view.js <state.json の道> [<出し先の道>]  出し先が無ければ標準出力（PowerShell の文字化けを避けるため、見張りは道を渡す）
