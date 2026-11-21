@@ -43,6 +43,9 @@
      猫が白猫と現場猫で入れ替わっても、題字の位置が動かないようにするため。 */
   h1{font-size:19px; margin:0 0 10px; letter-spacing:.05em; min-height:80px;
     display:flex; align-items:center; gap:10px;}
+  /* v207（本人の枠 六十六）：「返事パネル」は折り返さず一行・同じ幅・同じ位置に固定（右の頭の字の長さで縮まない）。行の高さも 80px に固定し、猫（80x80）も縮ませない。 */
+  h1{height:80px; overflow:visible;}
+  #hTitle{flex:0 0 auto; white-space:nowrap; width:6em; overflow:visible;}
   /* RunCat の猫（v103）。題字の右隣に常駐する。
      Cat sprites: RunCat Neo (runcat-dev, Apache-2.0)
      ＊等倍（高さ36px）・背景透過のまま。h1 は 19px の一行なので、猫の 36px が
@@ -208,10 +211,13 @@
   #pointBanner{position:fixed; left:12px; right:12px; top:calc(8px + env(safe-area-inset-top)); z-index:10001; background:rgba(0,0,0,.88); color:#fff; padding:10px 12px; border-radius:10px; text-align:center; font-size:16px; font-weight:700; pointer-events:none; box-sizing:border-box;}
   body.pointing #btnPoint{position:relative; z-index:10002; outline:2px solid var(--act);}
   .halfrow{display:flex; gap:8px; margin:0 14px; align-items:stretch;}
-  .halfrow > .cpall, .halfrow > .done-box{flex:1 1 calc((100% - 8px) / 2); min-width:0; margin:8px 0 0; width:auto; box-sizing:border-box; padding-left:0; padding-right:0;}
+  /* v207（本人の枠 六十三）：「くわしく」（#btnSteps）も同じ段へ。遠隔・終わりました・くわしくの三つ並び（出ている物だけで等分。一つなら幅いっぱい） */
+  .halfrow > .cpall, .halfrow > .done-box{flex:1 1 0; min-width:0; margin:8px 0 0; width:auto; box-sizing:border-box; padding-left:0; padding-right:0;}
   .halfrow > .done-box{display:flex;}
   .halfrow > .done-box.hide{display:none;}
   .halfrow > .done-box > .cpall{flex:1 1 auto; width:100%; margin:0; font-size:14px; line-height:1.3; padding:6px 6px; box-sizing:border-box; min-height:48px;}
+  .halfrow > .cpall.steps-t{display:flex; align-items:center; justify-content:center; text-align:center; font-size:14px; line-height:1.3; padding:6px 4px; min-height:48px; overflow-wrap:anywhere; white-space:normal;}
+  .halfrow > .cpall.steps-t.hide{display:none;}
   #doneList{margin:0;}
   /* あなた待ちの各件に添える一行（v58）。印・立てた時刻・待ちの種類・動く条件。
      ＊件名より一段小さく、色も落とす。読む順が件名 → 添えの一行になるように。 */
@@ -436,7 +442,7 @@
 
 <div id="main" class="hide">
   <header data-pname="見出しの帯">
-    <h1>返事パネル<img id="runcat" src="cat-sleep-w.png" alt="" width="80" height="80"><span id="headWait"></span></h1>
+    <h1><span id="hTitle">返事パネル</span><img id="runcat" src="cat-sleep-w.png" alt="" width="80" height="80"><span id="headWait"></span></h1>
     <div class="state idle" id="state">
       <span class="w" id="stWord">…</span>
       <span class="c">
@@ -471,6 +477,10 @@
   <!-- v186（2026-11-20 本人の枠）：「終わる見込み HH:MM（あとN分）」と手順のゲージの二行を一つの箱にまとめ、見出しのすぐ下に置く。作業も待ちも無い時は箱ごと出さない（hide）。赤い未記入・過ぎた表示もこの箱の中。 -->
   <!-- v204（本人の枠 五十一）：箱の中は二つ——上「表の仕事」（段の台帳の済み/全体のゲージ＋全部終わる見込み）、下「裏方」（下請けと雲：直近に終わった分＝緑・動いている分＝青のゲージ＋全部終わる見込み）。元の数と訳は state.json の panelView にだけ残す。 -->
   <div class="progbox hide" id="progBox" data-pname="表の仕事と裏方のゲージの箱"></div>
+  <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。
+       ＊v207（本人の枠 六十九）：置き場をボタンの下から、ゲージの箱（全部・表の仕事・裏方）のすぐ下へ移した（「くわしく」より上）。見た目と中身は今のまま。箱が隠れている時（枠 六十）も同じ場所に出る。 -->
+  <div class="usage" id="usageTag" hidden></div>
+  <p class="usage-msg" id="usageMsg" hidden></p>
   <!-- ＊区切り線の下の帯（`.bar`）は **v48 で外した**。中身は「HH:MM 更新」の一つだけで、
        それを版の行の右端へ移したので、空の帯だけが残る形になっていた。
        ＊「話題名を入れ直す」は v17 で撤去済み。話題名を使う先はもう無い。 -->
@@ -491,8 +501,7 @@
   <p class="kumo-line hide" id="kumoLine"></p>
   <!-- v202（2026-11-21 本人の枠 四十七・四十八）：完了・進行中・予定の三行はふだん出さず、釦（#btnSteps）を押した時だけ三つとも開く。
        ＊v204（本人の枠 五十一）：跡に出していた「表の仕事」「裏方」の字の箱（#workBox）は外した。二つは見出しのすぐ下の箱（#progBox）にゲージで出す。 -->
-  <button class="cpall steps-t hide" id="btnSteps" type="button" aria-expanded="false">くわしく</button>
-  <ul id="stLine" hidden></ul>
+  <!-- v207（本人の枠 六十三）：釦（#btnSteps）と三行（#stLine）は、下の「遠隔」「終わりました」の段（#halfRow）へ移した。 -->
   <button class="cpall" id="btnCopyBoard" type="button">まとめて写す（0件）</button>
   <!-- 写せる札の題を一行ずつ（v115・パネルの見え方-1）。
        ＊数字（残N／M件）だけでは**何が写せるのか**が分からない。開いた瞬間に読めるようにする。
@@ -527,7 +536,10 @@
   <div class="halfrow" id="halfRow">
     <a class="cpall rc hide" id="rcLink" href="#" target="_blank" rel="noopener"><span class="rc-top">🔗 遠隔</span><span class="rc-sub"></span></a>
     <div class="done-box hide" id="doneBox"><button type="button" class="cpall" id="doneHead"></button></div>
+    <button class="cpall steps-t hide" id="btnSteps" type="button" aria-expanded="false">くわしく</button>
   </div>
+  <!-- v207（本人の枠 六十三）：「くわしく」は遠隔・終わりましたと同じ段の三つ目（一段まるごとは使わない）。押すと開く三行（完了・進行中・予定）は並びのすぐ下。 -->
+  <ul id="stLine" hidden></ul>
   <ul id="doneList"></ul>
   <!-- 過去の札（v118・先の穴-2 ②）。上限で押し出された札の行き先。
        読む元は notices-archive.json（notify-record.ps1 が押し出す前に移す）。
@@ -550,9 +562,7 @@
     <button type="button" class="cpall" id="btnPoint">👆 指さす</button>
   </div>
   <!-- v184：HTML の順は 画面の写し取り一覧／様子を写す → 使用量の三本 → 本体の版の行（.facts）→ panel の版の行（#verTag）→ 下の三行（#footGroup）。見た目だけの order ではなく、並びそのものをここで決める。 -->
-  <!-- 使用量。stop のたびに取る（30分の間合い・一日40回まで）。取れていなければ何も出さない。 -->
-  <div class="usage" id="usageTag" hidden></div>
-  <p class="usage-msg" id="usageMsg" hidden></p>
+  <!-- ＊v207（本人の枠 六十九）：使用量の三本（#usageTag・#usageMsg）は、見出しの下の箱（#progBox）のすぐ下へ移した。 -->
   <!-- 常時出す三つ。どれも既にリポジトリへ書いてある値の見せ方だけで、経路は増やしていない。
        版の並び＝ver.txt（本体）と stable の枝の ver.txt（公開）。
        最終確認＝state.json の at。生存の時刻そのもの。
@@ -566,7 +576,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v206（11月22日）</p>
+  <p class="ver" id="verTag">panel v207（11月22日）</p>
   <div class="foot-group" id="footGroup">
   <p class="usage-when" id="usageWhen" hidden></p>
   <!-- 遠隔で繋がっている会話の名と pid（v127・落ちた後の起こし-2）。state.json の rcName / rcPid。
@@ -600,7 +610,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '206';  /* v206：待ちでも下請けか雲が動いている間は頭の字を「裏方作業中、、、。（下請け N本・雲 N本）」（次「…」は後ろに残す）・三つの箱の頭に「あと N分（HH:MM ごろ）」（何も無ければ「あと 0分」・今動かしている物はゲージの下へ）（枠 五十八・五十九）。 */ /* v205：箱を三つ（全部・表の仕事・裏方）に。どれも v180／v185 の形（頭に名と今動かしている物・区切りのゲージ・全部終わる見込み HH:MM（あとN分））・区切りは endat.js の束（増えたら M が増え・済みは塗る）・裏方の一本ずつは「くわしく」の三行の中へ ／ v204：字だらけの「表の仕事と裏方」の箱を外し、見出しの下の箱に表の仕事と裏方のゲージを一本ずつ（v185 の形）＋「全部終わる見込み HH:MM」の一行だけ ／ v203：表の仕事と裏方の箱に「全部終わる見込み」を一つずつ（endat.js・今の枠だけの終わりは出さない・始まりは付け直さず終わりを延ばす） ／ v202：完了・進行中・予定の三行は釦一つに畳み、跡に「表の仕事」と「裏方」（下請けと雲・state.json の ura）を出す・様子を写すの頭の番地を外し表の仕事と裏方を足す ／ v201：ヨシ待ちの猫を本人の絵（yoshi-machi-240.png・字を山吹色＋黒縁）に ／ v200：センコが読んだ刻（senkoReadAt）までの札と知らせは写した扱い ／ v199：頭の字を「札まとめ中」に（「を」を取る）・現況も同じ ／ v198：着手から90秒以内の「見込み未記入」は赤くしない ／ v197：様子を写すに順番待ちを一行ずつ・指さすの名を平たい名（見出しの帯）に ／ v196：まとめて写すの頭の現況を状態の言葉と終わる見込みにした ／ v194：ntfy の直の聞き取りを外した */  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
+  var PANEL_VER = '207';  /* v207：「くわしく」を遠隔・終わりましたと同じ段の三つ並びに（枠 六十三）／裏方のゲージは一塊（0本から動き出し全部済むまで）で数え、済んだ本数／始まった本数（枠 六十四）／ヨシ待ちの猫を新しい絵 yoshi-machi2-240.png に（枠 六十五）／頭の字は短い一言だけ・「返事パネル」と猫は固定（枠 六十六）／三つの箱のゲージの下の「全部終わる見込み」の行を消し、時間は頭の「あと N分」だけ（枠 六十七）／版の行の右端を「更新 HH:MM」に（枠 六十八）／使用量の三本をゲージの箱のすぐ下へ（枠 六十九） ／ v206：待ちでも下請けか雲が動いている間は頭の字を「裏方作業中、、、。（下請け N本・雲 N本）」（次「…」は後ろに残す）・三つの箱の頭に「あと N分（HH:MM ごろ）」（何も無ければ「あと 0分」・今動かしている物はゲージの下へ）（枠 五十八・五十九）。 */ /* v205：箱を三つ（全部・表の仕事・裏方）に。どれも v180／v185 の形（頭に名と今動かしている物・区切りのゲージ・全部終わる見込み HH:MM（あとN分））・区切りは endat.js の束（増えたら M が増え・済みは塗る）・裏方の一本ずつは「くわしく」の三行の中へ ／ v204：字だらけの「表の仕事と裏方」の箱を外し、見出しの下の箱に表の仕事と裏方のゲージを一本ずつ（v185 の形）＋「全部終わる見込み HH:MM」の一行だけ ／ v203：表の仕事と裏方の箱に「全部終わる見込み」を一つずつ（endat.js・今の枠だけの終わりは出さない・始まりは付け直さず終わりを延ばす） ／ v202：完了・進行中・予定の三行は釦一つに畳み、跡に「表の仕事」と「裏方」（下請けと雲・state.json の ura）を出す・様子を写すの頭の番地を外し表の仕事と裏方を足す ／ v201：ヨシ待ちの猫を本人の絵（yoshi-machi-240.png・字を山吹色＋黒縁）に ／ v200：センコが読んだ刻（senkoReadAt）までの札と知らせは写した扱い ／ v199：頭の字を「札まとめ中」に（「を」を取る）・現況も同じ ／ v198：着手から90秒以内の「見込み未記入」は赤くしない ／ v197：様子を写すに順番待ちを一行ずつ・指さすの名を平たい名（見出しの帯）に ／ v196：まとめて写すの頭の現況を状態の言葉と終わる見込みにした ／ v194：ntfy の直の聞き取りを外した */  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
   /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
@@ -1235,15 +1245,13 @@
     var tot = Math.max(0, Number(x.seg.total) | 0), dn = Math.max(0, Math.min(tot, Number(x.seg.done) | 0)), run = Math.max(0, Math.min(tot - dn, Number(x.seg.run) | 0));
     var cut = function (t, n) { t = s(t).split(String.fromCharCode(10)).join(' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; };
     var left = function (y) { var g = (y && y.seg) || {}; return Math.max(0, (Number(g.total) | 0) - (Number(g.done) | 0)); };
-    /* v206（本人の枠 六十一）：束（endat.js）が動いている裏方を数え損ねても、state.json の ura で今動いている本数（下請け＝sub.running と items の多い方＋雲の running）に足りない分は、青い区切りとして後ろに足し M を増やす。全部の箱の区切りと「裏方 残りN」にも入れる。 */
+    /* v207（本人の枠 六十四・六十一の一を置き替え）：裏方は「一塊」で数える（endat.js の束）。0本から動き出してまた0本に戻るまでに始まった物を全部数え、済んだ物は緑で残す。横の字は 済んだ本数／始まった本数。v206 の足りない分を足す手は外した（取りこぼしは束が下請けと雲の済んだ一覧から拾う）。 */
     var a = function (v) { return Array.isArray(v) ? v : []; }, Uo = (U && typeof U === 'object') ? U : {}, So = Uo.sub || {}, Co = Uo.cloud || {};
-    var uLive = Math.max(Math.max(0, Number(So.running) | 0), a(So.items).length) + a(Co.running).length;
-    var ug = (E.ura && E.ura.seg) || {}, uT = Math.max(0, Number(ug.total) | 0), uD = Math.max(0, Math.min(uT, Number(ug.done) | 0)), uR = Math.max(0, Math.min(uT - uD, Number(ug.run) | 0)), uAdd = Math.max(0, uLive - uR);
-    if (k === 'ura') { tot = uT + uAdd; dn = uD; run = uR + uAdd; } else if (k === 'all') { tot += uAdd; run += uAdd; }
+    var ug = (E.ura && E.ura.seg) || {}, uT = Math.max(0, Number(ug.total) | 0), uD = Math.max(0, Math.min(uT, Number(ug.done) | 0));
     var now = '';
     if (k === 'omote') { var c = x.cur || {}, w = x.wait || {}; now = c.job ? cut(c.job, 30) : (Number(w.n) > 0 ? '順番待ち ' + Number(w.n) + '件' : ''); }
     else if (k === 'ura') { var o = []; a(So.items).forEach(function (y) { o.push('下請け・' + (s(y.desc) || '名なし')); }); a(Co.running).forEach(function (y) { o.push('雲・' + (s(y.name) || '名なし')); }); now = cut(o.join('、'), 40); }
-    else { now = '表の仕事 残り' + left(E.omote) + '・裏方 残り' + (uT + uAdd - uD); }
+    else { now = '表の仕事 残り' + left(E.omote) + '・裏方 残り' + (uT - uD); }
     return { k: (k === 'all') ? '全部' : ((k === 'ura') ? '裏方' : '表の仕事'), done: dn, run: run, total: tot, now: now, endSec: Number(x.endSec) || 0, endAt: s(x.endAt), over: !!x.over, lab: (k === 'ura') ? (dn + '/' + tot) : '' };
   }
   /* v205：箱の終わりの一行。v180 の「終わる見込み HH:MM（あとN分）」と同じ数え方（端末の時計・pad2s・あとは切り上げ・過ぎたら赤の「見込みを過ぎた N分」）。
@@ -1943,7 +1951,8 @@
         if (!has && !(extra && extra.length)) { return ''; }
         var he = headEta(has ? b : null, nS, late);
         r.push({ c: 'head', k: b.k, t: he.t, ec: he.c });
-        if (has) { if (b.now) { r.push({ c: 'now', t: b.now }); } r.push({ c: 'gauge', done: b.done, run: b.run, total: b.total, lab: b.lab || null }); r.push(etaRow(b, nS, late) || { t: '全部終わる見込み 未定', c: 'eta' }); }
+        /* v207（本人の枠 六十七）：時間は頭の「あと N分（HH:MM ごろ）」の一つだけ。ゲージの下の「全部終わる見込み HH:MM（あと N分）」の行は出さない（見込みを過ぎた時・延ばした刻の赤は頭の一行が持つ） */
+        if (has) { if (b.now) { r.push({ c: 'now', t: b.now }); } r.push({ c: 'gauge', done: b.done, run: b.run, total: b.total, lab: b.lab || null }); }
         (extra || []).forEach(function (x) { r.push(x); });
         return '<div class="pg-sec" id="' + id + '">' + r.map(rowH).join('') + '</div>';
       };
@@ -2065,7 +2074,7 @@
   function cardPendText() {
     if (cardLate()) { return '札が遅れている'; }
     var e = cardEtaSec(), de = new Date(e * 1000);
-    return '札まとめ中、、、。（' + ('0' + de.getHours()).slice(-2) + ':' + ('0' + de.getMinutes()).slice(-2) + ' ごろ）';
+    return '札まとめ中、、、。';   /* v207（本人の枠 六十六）：頭の字は短い一言だけ（見込みの刻は付けない） */
   }
   var WAIT_TEXT = '待機中、、、。';
   /* 猫の絵と頭の字は必ず対（v149）。runCatTick の判定の順と同じ順で決める：
@@ -2082,6 +2091,7 @@
     return sec > now ? sec : 0;
   }
   var WORK_TEXT = '作業中、、、。';
+  var CHECK_TEXT = '検査中、、、。';   /* v207（本人の枠 六十六） */
   var LOST_TEXT = '接続不良、、、。';
   /* v157：ヨシ待ちは待機中と別の猫（yoshi-cat-icon.png）と別の字。順は 作業中＞ヨシ待ち＞まとめて写す＞待機中＞接続不良。 */
   var YOSHI_TEXT = 'ヨシ待ち、、、。';
@@ -2103,29 +2113,30 @@
     var S = U.sub || {}, C = U.cloud || {};
     var ns = Math.max(Math.max(0, Number(S.running) | 0), a(S.items).length), nc = Array.isArray(C.running) ? C.running.length : Math.max(0, Number(C.running) | 0);
     if (!(ns > 0 || nc > 0)) { return ''; }
-    var d = String(det || ''), i = d.indexOf('次「');
-    return '裏方作業中、、、。（下請け ' + ns + '本・雲 ' + nc + '本）' + (i >= 0 ? '・' + d.slice(i) : '');
+    return '裏方作業中、、、。';   /* v207（本人の枠 六十六）：括弧（下請け N本・雲 N本）と次「…」は付けない。det は使わない */
   }
   function headText() {
     /* v166（2026-11-19 本人の決め）：手番が開いていても、合図の足跡が3分動いていなければ作業中にしない（見張りが stat＝動きなし を書く） */
-    if (/^止まり/.test(String(lastStat || ''))) { return String(lastStat); }   /* v166：StopFailure（使用量の上限など）は止まり（HH:MM にリセット）をそのまま出す */
-    if (lastStat === '動きなし') { return '動きなし（最後の動き ' + (lastEvAt ? pad2s(lastEvAt) : '不明') + '）'; }
+    /* v207（本人の枠 六十六）：頭の字は短い一言だけ。括弧の中身・次「…」・件名・刻は付けない（見出しの「返事パネル」と猫が字の長さで動かないように）。
+       出し分け＝窓が手を動かしている＝作業中、、、。（裏で下請けが動いていてもこちらが先）／窓は待っているが下請けか雲が動いている＝裏方作業中、、、。／何も動いていない＝待機中、、、。 */
+    if (/^止まり/.test(String(lastStat || ''))) { return '止まり'; }   /* v166：StopFailure（使用量の上限など）は止まり（HH:MM にリセット）をそのまま出す */
+    if (lastStat === '動きなし') { return '動きなし'; }
     /* v152：順は 作業中＞まとめて写す＞待機中＞接続不良。猫の絵と字は必ず対なので、runCatTick と同じ順。
        ＊接続不良は、生存が途切れていて、作業中でも写す物も無いときだけ。 */
     /* v166：雲待ちで「検査中」にする推し量りは外した（雲待ちは手待ちの下の一行・kumo） */
     /* v172（2026-11-19 本人の枠）：状態は見張りの決め所（state-decide.js）が六つから一つ選ぶ。ここは字にするだけ */
-    if (lastStat === '検査中') { return '検査中：' + (lastDetail || '雲の走り'); }
-    if (lastStat === '待ち') { var ub = uraBusyText((typeof lastUra !== 'undefined') ? lastUra : null, lastDetail); return ub || ('待ち：' + (lastDetail || '訳不明')); }   /* v206（枠 五十八）：下請けか雲が動いている間は「裏方作業中、、、。（下請け N本・雲 N本）」・どちらも動いていない時だけ「待ち：…」 */
-    if (lastStat === '作業中') { return lastDetail ? (WORK_TEXT + '（' + lastDetail + '）') : WORK_TEXT; }
-    if (isRunning() && /^検査中：/.test(lastCloud)) { return lastCloud; }   /* v171（2026-11-19 本人の枠）：雲待ちの間は「検査中：〈題〉」 */
-    if (isRunning()) { var wx = [lastCloud, (/^裏で手伝い/.test(lastHelp) ? lastHelp : '')].filter(Boolean).join('・'); return wx ? (WORK_TEXT + '（' + wx + '）') : WORK_TEXT; }   /* v170：裏の手伝いが走っていれば「裏で手伝い N本」を添える */
+    if (lastStat === '検査中') { return CHECK_TEXT; }
+    if (lastStat === '待ち') { var ub = uraBusyText((typeof lastUra !== 'undefined') ? lastUra : null, lastDetail); return ub || WAIT_TEXT; }   /* v206（枠 五十八）：下請けか雲が動いている間は「裏方作業中、、、。（下請け N本・雲 N本）」・どちらも動いていない時だけ「待ち：…」 */
+    if (lastStat === '作業中') { return WORK_TEXT; }
+    if (isRunning() && /^検査中：/.test(lastCloud)) { return CHECK_TEXT; }   /* v171（2026-11-19 本人の枠）：雲待ちの間は「検査中：〈題〉」 */
+    if (isRunning()) { return WORK_TEXT; }   /* v170：裏の手伝いが走っていれば「裏で手伝い N本」を添える */
       /* 走る猫（v150）。雲で作業が回っている間は、進み（何回目・何本）を添える（v154） */
     /* v153：「まとめて写すヨシ！」は、直近に終わった仕事（写していない札）が1件以上ある時だけ。
        ヨシ待ちの札が立っていても、写す物が0件なら指差しにしない（待機中へ）。 */
     if (lastStat === 'ヨシ待ち') { return YOSHI_TEXT; }   /* v157：作業中の次。isRunning が偽の間（止まって待っている間）だけここへ来る */
     /* v169：本人が次にする事とその刻。雲待ちの見込みの前なら「HH:MM になったら まとめて写すヨシ！」、過ぎたか雲の札が来たら（一行が消えたら）「まとめて写すヨシ！」 */
     if (cardsPending()) { return cardPendText(); }   /* v188：札が一覧に出るまで（待機中でなく） */
-    if (kumoEtaSec() > 0) { var ke = new Date(kumoEtaSec() * 1000); return ('0' + ke.getHours()).slice(-2) + ':' + ('0' + ke.getMinutes()).slice(-2) + ' になったら ' + POINT_TEXT; }
+    if (kumoEtaSec() > 0) { return POINT_TEXT; }   /* v207（枠 六十六）：雲の走りの見込みの前も「まとめて写すヨシ！」の一言だけ（前の「HH:MM になったら」は付けない。刻は箱の「終わる見込み」に出る。猫は今までどおり指差し） */
     if (copyLeft > 0) { return POINT_TEXT; }
     if (lastLost) { return LOST_TEXT; }   /* 連絡なしの寝姿（v151：「接続不良、、、。」） */
     return WAIT_TEXT;
@@ -2138,7 +2149,7 @@
     var lt = cardLate(); if (hw.className !== (lt ? 'late' : '')) { hw.className = lt ? 'late' : ''; }   /* v188：札が遅れている時は赤 */
   }
   (function () {   /* 先読み。読めなくても画面は壊れない（img が出ないだけ） */
-    catFrames.concat(['cat-sleep-w.png', 'genba-cat-80.png', 'genba-taiki-80.png', 'yoshi-machi-240.png'])
+    catFrames.concat(['cat-sleep-w.png', 'genba-cat-80.png', 'genba-taiki-80.png', 'yoshi-machi2-240.png'])
       .forEach(function (n) { var im = new Image(); im.src = n; });
   })();
   function runCatTick() {
@@ -2163,7 +2174,7 @@
       el.src = catFrames[catI];
     } else if (lastStat === 'ヨシ待ち') {   /* v157：ヨシ待ちは専用の猫 */
       catAwake = false;
-      if (el.src.indexOf('yoshi-machi-240') < 0) { el.src = 'yoshi-machi-240.png'; }   /* v201（枠 四十五）：本人の絵（IMG_3458）の「ヨシ！待ち。」を山吹色＋黒縁にした絵。前の絵 yoshi-cat-icon.png は消さずに残す */
+      if (el.src.indexOf('yoshi-machi2-240') < 0) { el.src = 'yoshi-machi2-240.png'; }   /* v207（枠 六十五）：本人の新しい絵（IMG_3470・親指を立てた猫。原版 yoshi-machi2_src.jpeg）の黒い「ヨシ！待ち。」を、四十五と同じ山吹色（#FFD54F）＋黒縁にした絵。前の絵 yoshi-machi-240.png は消さずに残す ／ v201（枠 四十五）：本人の絵（IMG_3458）の「ヨシ！待ち。」を山吹色＋黒縁にした絵。前の絵 yoshi-cat-icon.png は消さずに残す */
     } else if (kumoEtaSec() > 0 || copyLeft > 0) {   /* v169：雲待ちの見込みの前も指差しの猫（字は「HH:MM になったら まとめて写すヨシ！」）。v153：写す物が1件以上ある時だけ指差し。ヨシ待ちでも0件なら待機の猫 */
       catAwake = false;
       if (el.src.indexOf('genba-cat-80') < 0) { el.src = 'genba-cat-80.png'; }
@@ -2473,7 +2484,7 @@
   }
 
   function paintBar() {
-    $('stat').textContent = hhmm(Math.floor(Date.now() / 1000)) + ' 更新';
+    $('stat').textContent = '更新 ' + hhmm(Math.floor(Date.now() / 1000));   /* v207（本人の枠 六十八）：「最終確認 HH:MM」と同じく字が前・刻が後ろ */
   }
 
   /* 写しの中身は、相談役のクロードへ貼るためのもの（v9）。

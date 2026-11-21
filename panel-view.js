@@ -52,15 +52,13 @@ function boxSpec(E, U, k) {
   var tot = Math.max(0, Number(x.seg.total) | 0), dn = Math.max(0, Math.min(tot, Number(x.seg.done) | 0)), run = Math.max(0, Math.min(tot - dn, Number(x.seg.run) | 0));
   var cut = function (t, n) { t = s(t).split(String.fromCharCode(10)).join(' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; };
   var left = function (y) { var g = (y && y.seg) || {}; return Math.max(0, (Number(g.total) | 0) - (Number(g.done) | 0)); };
-  /* v206（本人の枠 六十一）：束（endat.js）が動いている裏方を数え損ねても、state.json の ura で今動いている本数（下請け＝sub.running と items の多い方＋雲の running）に足りない分は、青い区切りとして後ろに足し M を増やす。全部の箱の区切りと「裏方 残りN」にも入れる。 */
+  /* v207（本人の枠 六十四・六十一の一を置き替え）：裏方は「一塊」で数える（endat.js の束）。0本から動き出してまた0本に戻るまでに始まった物を全部数え、済んだ物は緑で残す。横の字は 済んだ本数／始まった本数。v206 の足りない分を足す手は外した（取りこぼしは束が下請けと雲の済んだ一覧から拾う）。 */
   var a = function (v) { return Array.isArray(v) ? v : []; }, Uo = (U && typeof U === 'object') ? U : {}, So = Uo.sub || {}, Co = Uo.cloud || {};
-  var uLive = Math.max(Math.max(0, Number(So.running) | 0), a(So.items).length) + a(Co.running).length;
-  var ug = (E.ura && E.ura.seg) || {}, uT = Math.max(0, Number(ug.total) | 0), uD = Math.max(0, Math.min(uT, Number(ug.done) | 0)), uR = Math.max(0, Math.min(uT - uD, Number(ug.run) | 0)), uAdd = Math.max(0, uLive - uR);
-  if (k === 'ura') { tot = uT + uAdd; dn = uD; run = uR + uAdd; } else if (k === 'all') { tot += uAdd; run += uAdd; }
+  var ug = (E.ura && E.ura.seg) || {}, uT = Math.max(0, Number(ug.total) | 0), uD = Math.max(0, Math.min(uT, Number(ug.done) | 0));
   var now = '';
   if (k === 'omote') { var c = x.cur || {}, w = x.wait || {}; now = c.job ? cut(c.job, 30) : (Number(w.n) > 0 ? '順番待ち ' + Number(w.n) + '件' : ''); }
   else if (k === 'ura') { var o = []; a(So.items).forEach(function (y) { o.push('下請け・' + (s(y.desc) || '名なし')); }); a(Co.running).forEach(function (y) { o.push('雲・' + (s(y.name) || '名なし')); }); now = cut(o.join('、'), 40); }
-  else { now = '表の仕事 残り' + left(E.omote) + '・裏方 残り' + (uT + uAdd - uD); }
+  else { now = '表の仕事 残り' + left(E.omote) + '・裏方 残り' + (uT - uD); }
   return { k: (k === 'all') ? '全部' : ((k === 'ura') ? '裏方' : '表の仕事'), done: dn, run: run, total: tot, now: now, endSec: Number(x.endSec) || 0, endAt: s(x.endAt), over: !!x.over, lab: (k === 'ura') ? (dn + '/' + tot) : '' };
 }
 // v206（2026-11-22・本人の枠 五十八）：「待ち」でも下請けか雲が動いている間の頭の字。panel.html の uraBusyText と一字も違わない写し（⑤の十六・⑤の二十）。
@@ -69,8 +67,7 @@ function uraBusyText(U, det) {
   var S = U.sub || {}, C = U.cloud || {};
   var ns = Math.max(Math.max(0, Number(S.running) | 0), a(S.items).length), nc = Array.isArray(C.running) ? C.running.length : Math.max(0, Number(C.running) | 0);
   if (!(ns > 0 || nc > 0)) { return ''; }
-  var d = String(det || ''), i = d.indexOf('次「');
-  return '裏方作業中、、、。（下請け ' + ns + '本・雲 ' + nc + '本）' + (i >= 0 ? '・' + d.slice(i) : '');
+  return '裏方作業中、、、。';   /* v207（本人の枠 六十六）：括弧（下請け N本・雲 N本）と次「…」は付けない。det は使わない */
 }
 function uraLines(U) {
   if (!U || typeof U !== 'object') { return ['裏方：state.json に載っていない']; }
@@ -118,16 +115,17 @@ function panelView(d, notices, ntfySent, now) {
     return sec > now ? sec : 0;
   };
   const head = () => {
-    if (/^止まり/.test(lastStat)) { return lastStat; }
-    if (lastStat === '動きなし') { return '動きなし（最後の動き ' + (lastEvAt ? hm(lastEvAt) : '不明') + '）'; }
-    if (lastStat === '検査中') { return '検査中：' + (lastDetail || '雲の走り'); }
-    if (lastStat === '待ち') { const ub = uraBusyText(d.ura, lastDetail); return ub || ('待ち：' + (lastDetail || '訳不明')); }
-    if (lastStat === '作業中') { return lastDetail ? ('作業中、、、。（' + lastDetail + '）') : '作業中、、、。'; }
-    if (running && /^検査中：/.test(lastCloud)) { return lastCloud; }
-    if (running) { const wx = [lastCloud, (/^裏で手伝い/.test(lastHelp) ? lastHelp : '')].filter(Boolean).join('・'); return wx ? ('作業中、、、。（' + wx + '）') : '作業中、、、。'; }
+    // v207（本人の枠 六十六）：短い一言だけ（括弧・次「…」・件名・刻を付けない）。panel.html の headText と同じ出し分け
+    if (/^止まり/.test(lastStat)) { return '止まり'; }
+    if (lastStat === '動きなし') { return '動きなし'; }
+    if (lastStat === '検査中') { return '検査中、、、。'; }
+    if (lastStat === '待ち') { const ub = uraBusyText(d.ura, lastDetail); return ub || '待機中、、、。'; }
+    if (lastStat === '作業中') { return '作業中、、、。'; }
+    if (running && /^検査中：/.test(lastCloud)) { return '検査中、、、。'; }
+    if (running) { return '作業中、、、。'; }
     if (lastStat === 'ヨシ待ち') { return 'ヨシ待ち、、、。'; }
-    if (cardsPending()) { return late() ? '札が遅れている' : ('札まとめ中、、、。（' + hm(etaSec()) + ' ごろ）'); }
-    if (kumoEta() > 0) { return hm(kumoEta()) + ' になったら まとめて写すヨシ！'; }
+    if (cardsPending()) { return late() ? '札が遅れている' : '札まとめ中、、、。'; }
+    if (kumoEta() > 0) { return 'まとめて写すヨシ！'; }
     if (left > 0) { return 'まとめて写すヨシ！'; }
     return '待機中、、、。';
   };

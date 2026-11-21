@@ -160,7 +160,7 @@ function probeSource(scene) {
       o.footLines = [].slice.call(g.children).filter(function (e) { return !e.hidden && e.getBoundingClientRect().height > 0; }).map(function (e) { var r = e.getBoundingClientRect(); return { id: e.id, top: r.top, bottom: r.bottom, h: r.height, w: r.width, mt: parseFloat(getComputedStyle(e).marginTop) || 0, mb: parseFloat(getComputedStyle(e).marginBottom) || 0 }; });
       o.docOverflow = document.documentElement.scrollWidth > window.innerWidth + 1; })();
     /* v184：下の並び（HTML の順そのもの）。見える物の文書順・上端・CSS の order・横溢れ */
-    (function () { var ids = ['btnShots', 'btnCopyUrl', 'usageTag', 'fVer', 'verTag', 'footGroup']; var els = ids.map(function (i) { return document.getElementById(i); }); if (els.some(function (e) { return !e; })) { o.ordMissing = ids.filter(function (i, k) { return !els[k]; }).join('・'); return; }
+    (function () { var ids = ['progBox', 'usageTag', 'btnSteps', 'btnShots', 'btnCopyUrl', 'fVer', 'verTag', 'footGroup']; var els = ids.map(function (i) { return document.getElementById(i); }); if (els.some(function (e) { return !e; })) { o.ordMissing = ids.filter(function (i, k) { return !els[k]; }).join('・'); return; }
       var sorted = els.slice().sort(function (a, b) { return (a.compareDocumentPosition(b) & 4) ? -1 : 1; }); o.ordDoc = sorted.map(function (e) { return e.id; }).join('>');
       o.ordCss = els.map(function (e) { return getComputedStyle(e).order !== '0' ? e.id + ':' + getComputedStyle(e).order : ''; }).filter(Boolean).join(','); o.ordTops = els.map(function (e) { return Math.round(e.getBoundingClientRect().top); });
       o.ordOverflow = document.documentElement.scrollWidth > window.innerWidth + 1; })();
@@ -170,7 +170,7 @@ function probeSource(scene) {
     (function () { var b = document.getElementById('progBox'); o.pbExists = !!b; if (!b) { return; } var cs = getComputedStyle(b), r = b.getBoundingClientRect(); o.pbShown = cs.display !== 'none' && r.height > 0; o.pbPrev = (b.previousElementSibling && b.previousElementSibling.tagName) || ''; o.pbRows = b.querySelectorAll('.pb').length; o.pbEta = !!b.querySelector('.m.eta'); o.pbGauge = !!b.querySelector('.stg'); o.pbBorder = parseFloat(cs.borderTopWidth) || 0; o.pbW = r.width; o.pbLeft = r.left; o.pbRight = r.right; o.pbTop = r.top; var hd = document.querySelector('header'); o.pbHeadBottom = hd ? hd.getBoundingClientRect().bottom : -1; o.pbOver = document.documentElement.scrollWidth > window.innerWidth + 1 || b.scrollWidth > b.clientWidth + 1; })();
     /* v187：遠隔と終わりました N件 の二つ並び・写し取り一覧／直近に終わった仕事／様子を写す の三つ並び */
     (function () { function R(id) { var e = document.getElementById(id); if (!e) { return null; } var r = e.getBoundingClientRect(); var vis = getComputedStyle(e).display !== 'none' && r.width > 0 && r.height > 0; return vis ? { l: r.left, r: r.right, t: r.top, b: r.bottom, w: r.width, h: r.height } : null; }
-      o.rcR = R('rcLink'); o.doneR = R('doneHead'); o.shR = R('btnShots'); o.recR = R('btnRecent'); o.urlR = R('btnCopyUrl');
+      o.rcR = R('rcLink'); o.doneR = R('doneHead'); o.stepsR = R('btnSteps'); o.stepsIn = !!document.querySelector('#halfRow > #btnSteps'); (function () { var e = document.getElementById('btnSteps'), d = document.getElementById('doneHead'); o.stepsSpill = !!(e && (e.scrollWidth > e.clientWidth + 1 || e.scrollHeight > e.clientHeight + 1)); o.doneSpill = !!(d && d.scrollWidth > d.clientWidth + 1); })(); o.hTitleR = R('hTitle'); o.statR = R('stat'); o.seenR = R('fSeen'); o.statTxt = (document.getElementById('stat') || {}).textContent || ''; o.catR = R('runcat'); o.hTitleSpill = (function () { var e = document.getElementById('hTitle'); return !!(e && (e.scrollWidth > e.clientWidth + 1 || e.getBoundingClientRect().height > 40)); })(); o.shR = R('btnShots'); o.recR = R('btnRecent'); o.urlR = R('btnCopyUrl');
       var hr = document.getElementById('halfRow'); o.halfInHeader = !!(document.querySelector('header') && document.querySelector('header').querySelector('#rcLink')); o.halfExists = !!hr;
       o.btnOver = document.documentElement.scrollWidth > window.innerWidth + 1;
       o.halfDump = ['rcLink', 'doneBox', 'doneHead'].map(function (id) { var e = document.getElementById(id); if (!e) { return id + ':無し'; } var s = getComputedStyle(e); return id + '{w' + Math.round(e.getBoundingClientRect().width) + ',pad' + s.paddingLeft + '/' + s.paddingRight + ',bs:' + s.boxSizing + ',flex:' + s.flex + ',mar' + s.marginLeft + '/' + s.marginRight + '}'; }).join(' '); })();
@@ -524,7 +524,7 @@ function staticParts() {
     else {
       const PV = require(path.join(path.dirname(SRC), 'panel-view.js'));
       const NOW = 1795200000;
-      const pre = "var WAIT_TEXT='待機中、、、。',POINT_TEXT='まとめて写すヨシ！',WORK_TEXT='作業中、、、。',LOST_TEXT='接続不良、、、。',YOSHI_TEXT='ヨシ待ち、、、。';";
+      const pre = "var WAIT_TEXT='待機中、、、。',POINT_TEXT='まとめて写すヨシ！',WORK_TEXT='作業中、、、。',LOST_TEXT='接続不良、、、。',YOSHI_TEXT='ヨシ待ち、、、。',CHECK_TEXT='検査中、、、。';";
       const mk = (d, left, rows) => new Function('Date0', 'lastStat', 'lastDetail', 'lastCloud', 'lastHelp', 'lastKumo', 'lastEvAt', 'lastCardOwedAt', 'lastCardOwedEta', 'allRows', 'copyLeft', 'lastLost', 'lastUra',
         'var Date=Date0;' + pre + src.join(String.fromCharCode(10)) + String.fromCharCode(10) + 'return headText();')(
         class extends global.Date { constructor(...a) { if (a.length) { super(...a); } else { super(NOW * 1000); } } static now() { return NOW * 1000; } },
@@ -545,7 +545,7 @@ function staticParts() {
       /* v206（枠 五十八）：待ちでも下請けか雲が動いていれば「裏方作業中、、、。（下請け N本・雲 N本）」＋次「…」・どちらも動いていない時だけ「待ち：…」 */
       const hw = (ura, det) => PV.panelView({ stat: '待ち', detail: det, ura: ura }, [], [], NOW).head;
       const w1 = hw(URAS[1], '残りの段 2・次「作り値の段」'), w2 = hw(URAS[2], '残りの段 1・次「x」'), w3 = hw(URAS[2], '窓が閉じている'), w4 = hw(null, '残りの段 2・次「作り値の段」'), w5 = hw({ sub: { running: 0, items: [], recent: [{ id: 'z' }] }, cloud: { running: [], recent: [{ id: 2 }] } }, '残りの段 2');
-      if (w1 === '裏方作業中、、、。（下請け 2本・雲 0本）・次「作り値の段」' && w2 === '裏方作業中、、、。（下請け 0本・雲 1本）・次「x」' && w3 === '裏方作業中、、、。（下請け 0本・雲 1本）' && w4 === '待ち：残りの段 2・次「作り値の段」' && w5 === '待ち：残りの段 2') { ok('待ちの頭の字：動いていれば「' + w1 + '」・動いていなければ「' + w4 + '」（済んだ物だけでは待ちのまま）'); } else { ng('待ちの頭の字が違う：' + [w1, w2, w3, w4, w5].join('｜')); }
+      if (w1 === '裏方作業中、、、。' && w2 === '裏方作業中、、、。' && w3 === '裏方作業中、、、。' && w4 === '待機中、、、。' && w5 === '待機中、、、。') { ok('待ちの頭の字（v207・枠 六十六）：下請けか雲が動いていれば「' + w1 + '」・何も動いていなければ「' + w4 + '」（括弧・次「…」は付けない・済んだ物だけでは裏方作業中にしない）'); } else { ng('待ちの頭の字が違う：' + [w1, w2, w3, w4, w5].join('｜')); }
       const pvc = PV.panelView({ senkoReadAt: '2026-11-20 21:12:17' }, [{ time: Date.parse('2026-11-20T21:00:00+09:00') / 1000, title: 'a', message: 'b' }, { time: Date.parse('2026-11-20T22:00:00+09:00') / 1000, title: 'c', message: 'd' }, { time: Date.parse('2026-11-20T22:01:00+09:00') / 1000, title: 'e', message: '写せます（2件）' }], [], NOW);
       if (pvc.left === 1 && pvc.label === 'まとめて写す（残1／1件）') { ok('残り：刻までの札は数えず、刻より新しい札だけ・「写せます（N件）」は数えない'); } else { ng('残りの数え方が違う：' + JSON.stringify(pvc)); }
       if (/senkoReadAt/.test(pvc.basis)) { ok('中身に「センコの読みだけで数えた」の一言が入る'); } else { ng('basis が無い'); }
@@ -576,8 +576,8 @@ function staticParts() {
     const ln = (x) => (x && Array.isArray(x.lines)) ? x.lines.slice(1).join('|') : '';
     if (ln(pv.omote) === wantO && ln(pv.ura) === wantU && /^表の仕事の全部終わる見込み：state\.json に載っていない$/.test(pv.omote.lines[0]) && /^裏方の全部終わる見込み：/.test(pv.ura.lines[0])) { ok('panelView の omote・ura は {lines…}：頭に全部終わる見込みの一行・続きは panel.html と同じ字'); } else { ng('panelView の omote・ura が違う：' + JSON.stringify({ omote: pv.omote, ura: pv.ura })); }
     /* v204（本人の枠 五十一）：字の箱（#workBox）は外し、表の仕事と裏方は見出しの下の箱（#progBox）にゲージで出す */
-    const iP = H.indexOf('id="progBox"'), iB = H.indexOf('id="btnSteps"'), iS = H.indexOf('<ul id="stLine" hidden>');
-    if (iP > 0 && iB > iP && iS > iB && H.indexOf('id="workBox"') < 0 && H.indexOf('paintWorkBox()') < 0) { ok('並び：表の仕事と裏方のゲージの箱 → 三行を開く釦 → 三行（ふだんは hidden）・字の箱（#workBox）は無い'); } else { ng('ゲージの箱・釦・三行の並びか hidden が違う／字の箱が残っている（' + [iP, iB, iS, H.indexOf('id="workBox"')].join('・') + '）'); }
+    const iP = H.indexOf('id="progBox"'), iU = H.indexOf('id="usageTag"'), iB = H.indexOf('id="btnSteps"'), iS = H.indexOf('<ul id="stLine" hidden>');
+    if (iP > 0 && iU > iP && iB > iU && iS > iB && H.slice(iP, iU).split('<div').length === 2 && H.indexOf('id="workBox"') < 0 && H.indexOf('paintWorkBox()') < 0) { ok('並び（v207）：ゲージの箱 → すぐ下に使用量の三本 → くわしく → 三行（ふだんは hidden）・字の箱（#workBox）は無い'); } else { ng('ゲージの箱・釦・三行の並びか hidden が違う／字の箱が残っている（' + [iP, iB, iS, H.indexOf('id="workBox"')].join('・') + '）'); }
     /* v204：ゲージ（gaugeHtml を切り出して回す）。表＝段の済み緑・今の段一つ青・横に今の番号/全体／裏方＝済み緑・動いている本数ぶん青・横に済み/全体 */
     {
       const fg = new Function('esc', cut(H, 'gaugeHtml', '  ') + String.fromCharCode(10) + 'return gaugeHtml;')(t => String(t));
@@ -676,7 +676,7 @@ function staticParts() {
       const fb = new Function(cut('boxSpec') + LF + 'return boxSpec;')(), fr = new Function('pad2s', cut('etaRow') + LF + 'return etaRow;')(sec => { const d = new Date(sec * 1000); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }), fg = new Function(cut('uraGroups') + LF + 'return uraGroups;')();
       const U3 = { sub: { items: [{ id: 'b', desc: '台帳の整理', start: '01:12' }], recent: [{ id: 'a', desc: 'パネル直し', start: '01:01', end: '01:20', state: '終' }] }, cloud: { running: [{ id: 8, name: '札と状態の配信', at: '01:19', state: '待ち' }], recent: [{ id: 7, name: '自動検査と配信', at: '01:12', upd: '01:20', state: '落ちた', failStep: '速い版' }] } };
       const bA = fb(c4, U3, 'all'), bO = fb(c4, U3, 'omote'), bU = fb(c4, U3, 'ura');
-      if (bA && bA.k === '全部' && bA.now === '表の仕事 残り3・裏方 残り2' && bA.total === 9 && bA.run === 3 && bU.done === 2 && bU.total === 4 && bU.run === 2 && bU.lab === '2/4' && bO.k === '表の仕事' && bO.now === '枠 九：ゲージに戻す' && bU.k === '裏方' && bU.now === '下請け・台帳の整理、雲・札と状態の配信' && fb({ omote: { endAt: '01:00' } }, null, 'omote') === null) { ok('箱の頭：全部「' + bA.now + '」／表の仕事「' + bO.now + '」／裏方「' + bU.now + '」・区切りの無い古い state は null'); } else { ng('箱の中身が違う：' + JSON.stringify([bA, bO, bU])); }
+      if (bA && bA.k === '全部' && bA.now === '表の仕事 残り3・裏方 残り1' && bA.total === 8 && bA.run === 2 && bU.done === 2 && bU.total === 3 && bU.run === 1 && bU.lab === '2/3' && bO.k === '表の仕事' && bO.now === '枠 九：ゲージに戻す' && bU.k === '裏方' && bU.now === '下請け・台帳の整理、雲・札と状態の配信' && fb({ omote: { endAt: '01:00' } }, null, 'omote') === null) { ok('箱の頭：全部「' + bA.now + '」／表の仕事「' + bO.now + '」／裏方「' + bU.now + '」・区切りの無い古い state は null'); } else { ng('箱の中身が違う：' + JSON.stringify([bA, bO, bU])); }
       const nS = Math.floor(Date.now() / 1000), r1 = fr({ endSec: nS + 1500 }, nS, false), r2 = fr({ endSec: nS + 600, over: true }, nS, false), r3 = fr({ endSec: nS - 960 }, nS, false), r4 = fr({ endSec: 0 }, nS, false);
       if (/^全部終わる見込み [0-9]{2}:[0-9]{2}（あと25分）$/.test(r1.t) && r1.c === 'eta' && r2.c === 'bad' && /（あと10分）/.test(r2.t) && r3.t === '見込みを過ぎた 16分' && r3.c === 'bad' && r4 === null) { ok('終わりの一行は v180 と同じ数え方：「' + r1.t + '」・延ばした刻は赤・過ぎたら赤「見込みを過ぎた 16分」・刻が無ければ出さない'); } else { ng('終わりの一行が違う：' + JSON.stringify([r1, r2, r3, r4])); }
       const g3 = fg(U3);
@@ -700,13 +700,14 @@ function staticParts() {
         const set = (e, a, o, u) => { e = JSON.parse(JSON.stringify(e)); [a, o, u].forEach((x, i) => { e[['all', 'omote', 'ura'][i]].endSec = x ? nS + x : 0; }); return e; };
         const E4 = set(c4, 2400, 1800, 2400), e4 = paint(E4, U3, false), h4 = e4.progBox.innerHTML;
         if (ids(h4) === 'allSec,omoteSec,uraSec' && heads(h4) === '全部,表の仕事,裏方' && e4.progBox.className === 'progbox') { ok('箱は三つ・上から「全部」「表の仕事」「裏方」・それぞれ頭に名'); } else { ng('箱の並び・名が違う：' + ids(h4) + '／' + heads(h4)); }
-        /* v206（枠 六十一）：束が裏方を1本しか数えていなくても、ura で動いている2本（下請け1・雲1）に足りない1本を青で足す（裏方 2/3→2/4・全部 4/8→4/9）。裏方の横の字は 済み/全体 */
-        if (bars(h4) === 'ddddccc-- ddc-- ddcc' && labs(h4) === '5/9 3/5 2/4') { ok('ゲージ：全部 ddddccc--（5/9）・表 ddc--（3/5）・裏方 ddcc（済み2/全体4）＝済みは緑・今は青・まだは灰'); } else { ng('三つのゲージが違う：' + bars(h4) + '／' + labs(h4)); }
+        /* v207（枠 六十四）：裏方は束（一塊）の数のまま。ura の本数で足す手（v206 の六十一）は外した。裏方の横の字は 済んだ本数／始まった本数 */
+        if (bars(h4) === 'ddddcc-- ddc-- ddc' && labs(h4) === '5/8 3/5 2/3') { ok('ゲージ：全部 ddddcc--（5/8）・表 ddc--（3/5）・裏方 ddc（済んだ2／始まった3）＝済みは緑・今は青・まだは灰（ura の本数で足さない）'); } else { ng('三つのゲージが違う：' + bars(h4) + '／' + labs(h4)); }
         /* v206（枠 五十九の一・六十）：三つの箱の頭（名の右）に「あと N分（HH:MM ごろ）」・ゲージの下に「全部終わる見込み HH:MM（あと N分）」（裏方の箱にも必ず） */
         const etas = (h4.match(/<div class="pb pg-h"><b class="pg-k">[^<]*<\/b><span class="pg-eta eta">([^<]*)<\/span>/g) || []).map(x => x.replace(/<b class="pg-k">[^<]*<\/b>/, '').replace(/<[^>]+>/g, ''));
         const ends = (h4.match(/<p class="m eta">全部終わる見込み [^<]*<\/p>/g) || []).map(x => x.replace(/<[^>]+>/g, ''));
         if (etas.length === 3 && /^あと 40分（[0-9]{2}:[0-9]{2} ごろ）$/.test(etas[0]) && /^あと 30分（[0-9]{2}:[0-9]{2} ごろ）$/.test(etas[1]) && /^あと 40分（[0-9]{2}:[0-9]{2} ごろ）$/.test(etas[2])) { ok('三つの箱の頭に「あと N分（HH:MM ごろ）」：' + etas.join('／')); } else { ng('箱の頭のあと N分が違う：' + etas.join('／')); }
-        if (ends.length === 3 && /（あと40分）$/.test(ends[0]) && /（あと30分）$/.test(ends[1]) && /（あと40分）$/.test(ends[2]) && h4.indexOf('id="uraSec"') < h4.lastIndexOf('全部終わる見込み')) { ok('三つの箱とも（裏方も）ゲージの下に「全部終わる見込み HH:MM（あと N分）」：' + ends.join('／')); } else { ng('全部終わる見込みの行が違う：' + ends.join('／')); }
+        /* v207（本人の枠 六十七）：時間は頭の「あと N分（HH:MM ごろ）」だけ。ゲージの下の「全部終わる見込み」の行は三つの箱とも出さない */
+        if (ends.length === 0 && h4.indexOf('全部終わる見込み') < 0 && (h4.match(/<div class="pb pg-n">/g) || []).length === 3) { ok('三つの箱ともゲージの下の「全部終わる見込み」の行は無い（時間は頭の一つだけ・今動かしている物の一行は残る）'); } else { ng('ゲージの下に時間の行が残っている：' + ends.join('／')); }
         /* v206（枠 六十）：動いている物も待っている物も無く全部済んだ箱は出さない・全部済めば箱ごと隠す・動き出したらまた出る */
         const E0b = JSON.parse(JSON.stringify(E4)); E0b.ura.seg = { done: 4, total: 4, run: 0 }; E0b.ura.endSec = 0; E0b.all.seg = { done: 6, total: 9, run: 1 };
         const h0b = paint(E0b, U([]), false).progBox.innerHTML;
@@ -714,13 +715,13 @@ function staticParts() {
         const E6 = JSON.parse(JSON.stringify(E4)); ['all', 'omote', 'ura'].forEach(k => { E6[k].seg = { done: 3, total: 3, run: 0 }; E6[k].endSec = 0; });
         const e6 = paint(E6, U([]), false);
         if (e6.progBox.innerHTML === '' && e6.progBox.className === 'progbox hide') { ok('三つとも全部済んだ：箱ごと出さない'); } else { ng('全部済んだのに箱が出ている：' + e6.progBox.innerHTML.replace(/<[^>]+>/g, '|').slice(0, 160)); }
-        const E61 = JSON.parse(JSON.stringify(E0b)); E61.ura.endSec = nS + 900;
+        const E61 = JSON.parse(JSON.stringify(E0b)); E61.ura.endSec = nS + 900; E61.ura.seg = { done: 0, total: 2, run: 2 };   /* v207（枠 六十四）：済んだ一塊の後に動き出したら束は 0 から（0/2） */
         const h61 = paint(E61, U([{ id: 'p', desc: '下請けの名', start: '01:47' }, { id: 'q', desc: '', start: '01:47' }]), false).progBox.innerHTML, u61 = h61.slice(h61.indexOf('id="uraSec"'));
-        if (ids(h61) === 'allSec,omoteSec,uraSec' && bars(u61).split(' ')[0] === 'ddddcc' && labs(u61).split(' ')[0] === '4/6' && /あと 15分（[0-9]{2}:[0-9]{2} ごろ）/.test(u61) && /全部終わる見込み [0-9]{2}:[0-9]{2}（あと15分）/.test(u61) && h61.indexOf('裏方 残り2') >= 0 && /<span class="pg-now">下請け・下請けの名、下請け・名なし<\/span>/.test(u61)) { ok('裏方 4/4 のまま下請け2本が動き出した：裏方の箱がまた出て ddddcc（4/6）・あと15分・全部の箱は「裏方 残り2」'); } else { ng('動き出した裏方が違う：' + ids(h61) + '／' + bars(u61) + '／' + labs(u61) + '／' + u61.replace(/<[^>]+>/g, '|').slice(0, 200)); }
+        if (ids(h61) === 'allSec,omoteSec,uraSec' && bars(u61).split(' ')[0] === 'cc' && labs(u61).split(' ')[0] === '0/2' && /あと 15分（[0-9]{2}:[0-9]{2} ごろ）/.test(u61) && u61.indexOf('全部終わる見込み') < 0 && h61.indexOf('裏方 残り2') >= 0 && /<span class="pg-now">下請け・下請けの名、下請け・名なし<\/span>/.test(u61)) { ok('一塊が済んだ後に下請け2本が動き出した：裏方の箱がまた出て 0 から cc（0/2）・頭に あと15分・全部の箱は「裏方 残り2」'); } else { ng('動き出した裏方が違う：' + ids(h61) + '／' + bars(u61) + '／' + labs(u61) + '／' + u61.replace(/<[^>]+>/g, '|').slice(0, 200)); }
         /* v206（枠 六十二）：作業中で見込みが書かれていなくても、箱に赤い「見込み未記入」「見込み不明」は出さない。panelView.noEstimate にだけ残す */
         const h62 = paint(E4, U3, false, { lastMikomiMin: 0, lastMikomiRaw: '' }).progBox.innerHTML, h62b = paint(E4, U3, false, { lastMikomiMin: 0, lastMikomiRaw: '不明' }).progBox.innerHTML;
         const ne1 = PV.panelView({ stat: '作業中', mikomi: '' }, [], [], nS).noEstimate, ne2 = PV.panelView({ stat: '作業中', mikomi: '30分' }, [], [], nS).noEstimate, ne3 = PV.panelView({ stat: '待ち', mikomi: '' }, [], [], nS).noEstimate;
-        if (h62.indexOf('見込み未記入') < 0 && h62b.indexOf('見込み不明') < 0 && /全部終わる見込み/.test(h62) && ne1 === true && ne2 === false && ne3 === false) { ok('見込みを書いていない作業中：箱に赤い「見込み未記入／不明」は出ず、state.json の panelView.noEstimate=true に残る（書いてあれば false）'); } else { ng('見込み未記入の扱いが違う：' + [h62.indexOf('見込み未記入'), h62b.indexOf('見込み不明'), ne1, ne2, ne3].join('｜')); }
+        if (h62.indexOf('見込み未記入') < 0 && h62b.indexOf('見込み不明') < 0 && /あと [0-9]+分/.test(h62) && ne1 === true && ne2 === false && ne3 === false) { ok('見込みを書いていない作業中：箱に赤い「見込み未記入／不明」は出ず、state.json の panelView.noEstimate=true に残る（書いてあれば false）'); } else { ng('見込み未記入の扱いが違う：' + [h62.indexOf('見込み未記入'), h62b.indexOf('見込み不明'), ne1, ne2, ne3].join('｜')); }
         if (h4.indexOf('<span class="pg-now">下請け・台帳の整理、雲・札と状態の配信</span>') >= 0 && h4.indexOf('下請け：') < 0 && h4.indexOf('落ちた段') < 0) { ok('箱の上には今動かしている物の一行だけ（裏方の一本ずつの行は箱に出さない）'); } else { ng('箱の上に裏方の一本ずつが残っている／今動かしている物が無い'); }
         const sl = e4.stLine.innerHTML;
         if (e4.stLine.hidden === true && e4.btnSteps.textContent === 'くわしく' && /▶ 進行中：下請け：台帳の整理（01:12〜）/.test(sl) && /⏳ 予定：雲：札と状態の配信/.test(sl) && /✅ 完了：雲：自動検査と配信（01:12〜01:20・落ちた・落ちた段：速い版）/.test(sl) && sl.indexOf('✅ 完了：段2') >= 0 && sl.indexOf('✅') < sl.indexOf('▶') && sl.indexOf('▶') < sl.indexOf('⏳')) { ok('釦は「くわしく」・ふだんは閉じる。中は完了→進行中→予定の順に、段と裏方の一本ずつが分かれて入る'); } else { ng('くわしくの中身が違う：' + e4.btnSteps.textContent + '・hidden=' + e4.stLine.hidden + '・' + sl.replace(/<[^>]+>/g, '|').slice(0, 300)); }
@@ -734,6 +735,81 @@ function staticParts() {
         if (/<b class="pg-k">表の仕事<\/b><span class="pg-eta bad">見込みを過ぎた 10分<\/span>/.test(fpBad)) { ok('表の仕事の終わりを過ぎたら、その箱の頭は赤「見込みを過ぎた 10分」（作法39 ①）'); } else { ng('過ぎた時の赤が出ない'); }
       }
     } catch (e) { ng('三つの箱が回らない：' + e.message); }
+    finally { Object.keys(keep).forEach(k => { if (keep[k] === undefined) { delete process.env[k]; } else { process.env[k] = keep[k]; } }); try { fs.rmSync(T, { recursive: true, force: true }); } catch (e) { } }
+  }
+  /* ---- ⑤の二十一 v207（本人の枠 六十三〜六十七）：くわしくの三つ並び・裏方の一塊・ヨシ待ちの新しい絵・頭の字は短い一言で見出しは固定・時間は箱の頭だけ。
+     静かな部分（字面と作り値）。画面の実寸（iPhone の幅で字がはみ出さないか・見出しが動かないか）は ⑤の九・⑤の二十二（ブラウザ・雲）が測る ---- */
+  head('⑤の二十一 v207：三つ並び・一塊・新しい絵・短い一言と固定の見出し・時間は頭だけ（字面・作り値）');
+  {
+    const LF = String.fromCharCode(10), H = html.split(String.fromCharCode(13) + LF).join(LF);
+    /* 六十三：くわしくは遠隔・終わりましたと同じ段の三つ目。三行（#stLine）は並びのすぐ下。flex の指定で等分・字は折り返して収まる */
+    const iH = H.indexOf('<div class="halfrow" id="halfRow">'), iE = H.indexOf('</div>', H.indexOf('id="doneBox"')), iB = H.indexOf('id="btnSteps"'), iC = H.indexOf(LF + '  </div>', iE), iS = H.indexOf('<ul id="stLine" hidden>'), iD = H.indexOf('<ul id="doneList">');
+    if (iH > 0 && iB > iE && iB < iC && iS > iC && iD > iS && (H.match(/id="btnSteps"/g) || []).length === 1) { ok('くわしく（#btnSteps）は #halfRow の中の三つ目（遠隔→終わりました→くわしく）・三行は並びのすぐ下・一段まるごとの釦は無い'); } else { ng('くわしくの置き場が違う（' + [iH, iE, iB, iC, iS, iD].join('・') + '）'); }
+    const cssOk = H.indexOf('.halfrow > .cpall, .halfrow > .done-box{flex:1 1 0; min-width:0;') >= 0 && /\.halfrow > \.cpall\.steps-t\{display:flex;[^}]*min-height:48px;[^}]*overflow-wrap:anywhere;[^}]*\}/.test(H) && H.indexOf('.halfrow > .cpall.steps-t.hide{display:none;}') >= 0;
+    if (cssOk) { ok('三つ並びの CSS：出ている物で等分（flex:1 1 0・min-width:0）・くわしくは高さ48px以上・字は折り返す（overflow-wrap:anywhere）・隠す時は消える'); } else { ng('三つ並びの CSS が無い／違う'); }
+    /* 字数の見積もり：320px の視野で一つの釦の幅＝(320−左右の余白28−隙間8×2)÷3＝92px。「くわしく」「とじる」は14px×4字＝56px＋左右4pxで収まる */
+    const bw = Math.floor((320 - 28 - 16) / 3), lw = Math.max('くわしく'.length, 'とじる'.length) * 14 + 8;
+    if (lw <= bw && H.indexOf("stB.textContent = stepsOpen ? 'とじる' : 'くわしく';") >= 0) { ok('320px でも「くわしく」（' + lw + 'px）は釦の幅（' + bw + 'px）に一行で収まる見積もり（390・375 はもっと広い）'); } else { ng('くわしくの字が釦の幅に収まらない見積もり（' + lw + '／' + bw + '）'); }
+    if (H.indexOf("$('btnSteps').addEventListener('click', function () { stepsOpen = !stepsOpen; paintStateLine(); });") >= 0 && H.indexOf('el.hidden = !(stepsOpen && rows.length);') >= 0) { ok('押した時の動き（完了・進行中・予定が開く／とじる）は今のまま'); } else { ng('くわしくの押した時の動きが変わった'); }
+    /* 六十五：ヨシ待ちの絵は yoshi-machi2-240.png（新しい名）。原版と前の絵は残す */
+    const dir = path.dirname(SRC), ex = (n) => { try { return fs.statSync(path.join(dir, n)).size; } catch (e) { return 0; } };
+    const png = (n) => { try { const b = fs.readFileSync(path.join(dir, n)); return b.readUInt32BE(16) + 'x' + b.readUInt32BE(20); } catch (e) { return ''; } };
+    if (H.indexOf("if (el.src.indexOf('yoshi-machi2-240') < 0) { el.src = 'yoshi-machi2-240.png'; }") >= 0 && H.indexOf("'genba-taiki-80.png', 'yoshi-machi2-240.png']") >= 0 && png('yoshi-machi2-240.png') === '240x240' && ex('yoshi-machi2_src.jpeg') > 0 && ex('yoshi-machi-240.png') > 0 && ex('yoshi-machi_src.jpeg') > 0) { ok('ヨシ待ちの絵は yoshi-machi2-240.png（240x240・' + ex('yoshi-machi2-240.png') + 'バイト）・原版 yoshi-machi2_src.jpeg と前の絵 yoshi-machi-240.png は残る'); } else { ng('ヨシ待ちの絵の置き方が違う（' + png('yoshi-machi2-240.png') + '・原版 ' + ex('yoshi-machi2_src.jpeg') + '・前の絵 ' + ex('yoshi-machi-240.png') + '）'); }
+    if (H.indexOf("el.src = 'genba-cat-80.png'") >= 0 && H.indexOf("'cat-sleep-w.png', 'genba-cat-80.png', 'genba-taiki-80.png'") >= 0) { ok('ほかの猫（作業中・待ち・指差し）の絵は今のまま'); } else { ng('ほかの猫の絵が変わった'); }
+    /* 六十六：見出しの「返事パネル」は一行・固定幅・猫は 80x80 で縮まない・行の高さは 80px 固定 */
+    const hOk = H.indexOf('<h1><span id="hTitle">返事パネル</span><img id="runcat"') >= 0 && /#hTitle\{flex:0 0 auto; white-space:nowrap; width:6em;/.test(H) && H.indexOf('h1{height:80px;') >= 0 && /#runcat\{width:80px; height:80px; flex:0 0 auto;/.test(H);
+    if (hOk) { ok('見出し：「返事パネル」は white-space:nowrap・幅 6em 固定・縮まない（flex:0 0 auto）／猫は 80x80・縮まない／行の高さ 80px 固定'); } else { ng('見出しの固定の指定が無い／違う'); }
+    /* 頭の字は短い一言だけ：総当たりで出る字の種類を数え、括弧・次「・刻が一つも無いこと */
+    {
+      const PV = require(path.join(dir, 'panel-view.js')), NOW = 1795200000, seen = {};
+      const URAS = [null, { sub: { running: 1, items: [{ id: 'a' }], recent: [] }, cloud: { running: [], recent: [] } }, { sub: { items: [], recent: [] }, cloud: { running: [{ id: 1 }], recent: [] } }];
+      ['', '作業中', '検査中', '待ち', 'ヨシ待ち', '動きなし', '止まり（使用量・13:00 にリセット）', '待機中', '手待ち'].forEach(st => URAS.forEach(u => [0, NOW - 60, NOW - 400].forEach(ow => [0, 1].forEach(k => [0, 1].forEach(rw => {
+        const h = PV.panelView({ stat: st, detail: '残りの段 2・次「作り値」', ura: u, cardOwedAt: ow, cardOwedEta: ow ? ow + 150 : 0, kumo: k ? '雲：検査 見込み 23:59' : '', cloud: st === '' ? '検査中：v1 の走り' : '', help: '裏で手伝い 1本', evAt: NOW - 30 }, rw ? [{ time: NOW - 20, title: 'x', message: 'y' }] : [], [], NOW).head;
+        seen[h] = 1;
+      })))));
+      const ks = Object.keys(seen), badK = ks.filter(t => /[（(「：:]|[0-9]/.test(t) || t.length > 10);
+      if (!badK.length) { ok('頭の字は短い一言だけ（' + ks.length + '種：' + ks.join('／') + '）・括弧・次「…」・件名・刻は付かない'); } else { ng('頭の字に括弧・刻などが残る：' + badK.join('／')); }
+      const h1 = PV.panelView({ stat: '作業中', ura: URAS[1] }, [], [], NOW).head, h2 = PV.panelView({ stat: '待ち', ura: URAS[1] }, [], [], NOW).head, h3 = PV.panelView({ stat: '待ち', ura: null }, [], [], NOW).head;
+      if (h1 === '作業中、、、。' && h2 === '裏方作業中、、、。' && h3 === '待機中、、、。') { ok('出し分け：窓が手を動かす＝「' + h1 + '」（下請けが動いていてもこちらが先）／窓は待つが裏方が動く＝「' + h2 + '」／何も動かない＝「' + h3 + '」'); } else { ng('出し分けが違う：' + [h1, h2, h3].join('｜')); }
+    }
+    /* 六十八：版の行の右端は「更新 HH:MM」（字が前・刻が後ろ）。行は今までどおり flex-wrap（版の字が長いので「版…」の下の行に「最終確認 HH:MM」と並ぶ）。下の行の見積もり：最終確認 HH:MM（4字×13px＋5字×7px）＋隙間14px＋更新 HH:MM（2字×13px＋6字×7px）≦ 320px の行幅 292px */
+    {
+      const lw2 = (4 * 13 + 6 * 7) + 14 + (2 * 13 + 6 * 7);
+      if (H.indexOf("$('stat').textContent = '更新 ' + hhmm(Math.floor(Date.now() / 1000));") >= 0 && H.indexOf("+ ' 更新'") < 0 && H.indexOf("s.textContent = '最終確認 ' + (atSec ? hhmm(atSec) : '—');") >= 0 && H.indexOf('.facts .upd{margin-left:auto;}') >= 0 && lw2 <= 292) { ok('版の行の右端は「更新 HH:MM」（最終確認と同じく字が前）・行の CSS は今のまま・最終確認と並ぶ行は約' + lw2 + 'px で 320px の行幅 292px に一行で収まる見積もり（実寸は ⑤の二十二・雲）'); } else { ng('「更新 HH:MM」の字面か行の指定が違う'); }
+    }
+    /* 六十九：使用量の三本（#usageTag・#usageMsg）はゲージの箱（#progBox）のすぐ下の兄弟（箱の中ではないので、箱が隠れても同じ場所に出る）・くわしくより上。見た目（.usage の CSS）は今のまま */
+    {
+      const a = H.indexOf('<div class="progbox hide" id="progBox" data-pname="表の仕事と裏方のゲージの箱"></div>'), u = H.indexOf('<div class="usage" id="usageTag" hidden></div>'), m = H.indexOf('<p class="usage-msg" id="usageMsg" hidden></p>'), k = H.indexOf('id="btnSteps"'), sh = H.indexOf('<div class="shotsrow">');
+      const between = (a >= 0 && u > a) ? H.slice(a, u).split('<!--').map((x, i) => i ? x.slice(x.indexOf('-->') + 3) : x).join('').split('<div class="progbox hide" id="progBox" data-pname="表の仕事と裏方のゲージの箱"></div>').join('').trim() : 'x';
+      if (a >= 0 && u > a && m > u && k > m && sh > m && between === '' && (H.match(/id="usageTag"/g) || []).length === 1 && H.indexOf('.usage{display:flex; gap:8px; justify-content:center; align-items:flex-end;') >= 0) { ok('使用量の三本はゲージの箱のすぐ下（間に何も無い・箱の外なので箱が隠れても同じ場所）→ くわしく・ボタンの段より上・.usage の見た目は今のまま'); } else { ng('使用量の置き場が違う（' + [a, u, m, k, sh, JSON.stringify(between.slice(0, 40))].join('・') + '）'); }
+    }
+    /* 六十七：箱の組み立てにゲージの下の「全部終わる見込み」の行が無い（時間は頭の headEta だけ） */
+    const P = (function () { const a = H.indexOf('  function paintStateLine('); const b = H.indexOf(LF + '  }', a); return a >= 0 ? H.slice(a, b) : ''; })(), sh = P.slice(P.indexOf('var secH = function'), P.indexOf('html5 = secH('));
+    if (sh && sh.indexOf('etaRow(') < 0 && sh.indexOf('全部終わる見込み 未定') < 0 && sh.indexOf('headEta(') >= 0) { ok('三つの箱の組み立て（secH）は頭の「あと N分」（headEta）だけで、ゲージの下の終わりの行を積まない（過ぎた時の赤も頭の一行）'); } else { ng('箱の組み立てにゲージの下の終わりの行が残っている'); }
+  }
+  /* ---- ⑤の二十三 一塊の数え方（v207・本人の枠 六十四）：endat.js の束を作り値で回す。本物の控えは読まない・書かない ---- */
+  head('⑤の二十三 裏方の一塊（0本から動き出し全部済んで0本に戻るまで・済んだ物は緑で残す・次は0から）');
+  {
+    const os = require('os'), T = fs.mkdtempSync(path.join(os.tmpdir(), 'koushu-endat23-')), LF = String.fromCharCode(10), W = (n, t) => { const p = path.join(T, n); fs.writeFileSync(p, t); return p; };
+    const J = (x) => Math.floor(Date.parse('2026-11-22T' + x + ':00+09:00') / 1000);
+    const keep = {}, env = { ENDAT_ORDERS: W('orders.tsv', ''), ENDAT_NOTES: W('notes.log', ''), ENDAT_STEPS: W('steps.txt', ''), ENDAT_SUBLOG: W('sub.jsonl', ''), ENDAT_CLOUD: W('cloud.json', '{"list":[]}'), ENDAT_BASE: path.join(T, 'base.json'), ENDAT_BUNDLE: path.join(T, 'bundle.json'), ENDAT_EST: path.join(T, 'none.json') };
+    Object.keys(env).forEach(k => { keep[k] = process.env[k]; process.env[k] = env[k]; });
+    try {
+      const EA = require(path.join(path.dirname(SRC), 'endat.js')), PV = require(path.join(path.dirname(SRC), 'panel-view.js'));
+      const U = (items, recent, cl, cr) => ({ sub: { items: items, recent: recent || [] }, cloud: { running: cl || [], recent: cr || [] } });
+      const g = (ura, t) => { const e = EA.compute({ stat: '手待ち', ura: ura }, J(t)); const b = PV.boxSpec(e, ura, 'ura'); return { s: e.ura.seg.done + '/' + e.ura.seg.total + 'r' + e.ura.seg.run, lab: b ? b.lab : '', shown: !!(b && b.total - b.done > 0) }; };
+      const old = { id: 'old', desc: '前の塊', start: '01:00', end: '01:05' };
+      const r0 = g(U([], [old]), '02:00');
+      const r1 = g(U([{ id: 'a', desc: 'A', start: '02:01' }, { id: 'b', desc: 'B', start: '02:01' }], [old]), '02:02');
+      const r2 = g(U([{ id: 'b', desc: 'B', start: '02:01' }], [{ id: 'a', desc: 'A', start: '02:01', end: '02:05' }, old]), '02:06');
+      const r2b = g(U([{ id: 'b', desc: 'B', start: '02:01' }], [{ id: 'c', desc: 'C', start: '02:07', end: '02:08' }, { id: 'a' }, old], [], [{ id: 9, name: '雲の速い走り', at: '02:07', upd: '02:08' }]), '02:09');
+      const r3 = g(U([], [{ id: 'b' }, { id: 'c' }, { id: 'a' }, old], [], [{ id: 9 }]), '02:15');
+      const r4 = g(U([{ id: 'd', desc: 'D', start: '02:20' }], [{ id: 'b' }, { id: 'c' }, { id: 'a' }, old], [], [{ id: 9 }]), '02:20');
+      const seq = [r0, r1, r2, r2b, r3, r4].map(x => x.s + '(' + x.lab + (x.shown ? '' : '・箱なし') + ')').join(' → ');
+      if (r0.s === '0/0r0' && !r0.shown && r1.s === '0/2r2' && r1.lab === '0/2' && r1.shown && r2.s === '1/2r1' && r2.lab === '1/2' && r2b.s === '3/4r1' && r2b.lab === '3/4' && r3.s === '4/4r0' && !r3.shown && r4.s === '0/1r1' && r4.lab === '0/1' && r4.shown) { ok('一塊：' + seq + '（巡回の合間に始まって済んだ下請け C と雲 9 も数える・塊の前に済んだ「old」は数えない・全部済めば箱は消え・次は 0/1 から）'); } else { ng('一塊の数え方が違う：' + seq); }
+      const all4 = EA.compute({ stat: '手待ち', ura: U([{ id: 'd' }], [{ id: 'b' }]) }, J('02:21')).all.seg;
+      if (all4.total >= 1 && all4.run === 1) { ok('全部の箱は表と裏方の束の和のまま（枠 五十五の数え方は崩さない）'); } else { ng('全部の箱の数えが違う：' + JSON.stringify(all4)); }
+    } catch (e) { ng('一塊が回らない：' + e.message); }
     finally { Object.keys(keep).forEach(k => { if (keep[k] === undefined) { delete process.env[k]; } else { process.env[k] = keep[k]; } }); try { fs.rmSync(T, { recursive: true, force: true }); } catch (e) { } }
   }
 }
@@ -761,11 +837,12 @@ try {
   {
     const base = { subj: '題', mikomi: '', startedAt: now - 300, statAt: now - 60, at: now };
     const SIX = {
-      '作業中': [{ stat: '作業中', detail: '裏で手伝い1本・雲1本' }, /^作業中、、、。（裏で手伝い1本・雲1本）$/],
-      '検査中': [{ stat: '検査中', detail: 'v1508 検査と配信・終了予定 12:30' }, /^検査中：v1508 検査と配信・終了予定 12:30$/],
-      '待ち':   [{ stat: '待ち', detail: '残りの段 2・次「声の繋ぎ」' }, /^待ち：残りの段 2・次「声の繋ぎ」$/],
+      '作業中': [{ stat: '作業中', detail: '裏で手伝い1本・雲1本' }, /^作業中、、、。$/],   /* v207（本人の枠 六十六）：頭の字は短い一言だけ */
+      '検査中': [{ stat: '検査中', detail: 'v1508 検査と配信・終了予定 12:30' }, /^検査中、、、。$/],
+      '待ち':   [{ stat: '待ち', detail: '残りの段 2・次「声の繋ぎ」' }, /^待機中、、、。$/],
+      '裏方':   [{ stat: '待ち', detail: '残りの段 2・次「声の繋ぎ」', ura: { sub: { running: 1, items: [{ id: 'a', desc: 'x', start: '02:00' }], recent: [] }, cloud: { running: [], recent: [] } } }, /^裏方作業中、、、。$/],
       'ヨシ待ち': [{ stat: 'ヨシ待ち', detail: 'まとめ札' }, /ヨシ待ち、、、。/],
-      '止まり': [{ stat: '止まり（使用量・13:00 にリセット）', detail: '' }, /^止まり（使用量・13:00 にリセット）$/],
+      '止まり': [{ stat: '止まり（使用量・13:00 にリセット）', detail: '' }, /^止まり$/],
       '待機中': [{ stat: '待機中', detail: '' }, /待機中、、、。|まとめて写すヨシ/]
     };
     for (const k of Object.keys(SIX)) {
@@ -991,11 +1068,11 @@ try {
     }
   }
   /* ---- ⑤の六 下の並び（v184・2026-11-20 本人の枠）：写し取り一覧／様子を写す → 使用量の三本 → 本体の版の行 → panel の版の行 → 下の三行。HTML の順そのもの ---- */
-  head('⑤の六 並び（HTML の順そのもの）：一覧／様子を写す → 使用量 → 本体の版 → panel の版 → 下の三行');
+  head('⑤の六 並び（HTML の順そのもの）：ゲージの箱 → 使用量 → くわしく → 一覧／様子を写す → 本体の版 → panel の版 → 下の三行');
   {
     const nowE = Math.floor(Date.now() / 1000);
     const stt = Object.assign({}, ST['手待ち'], { ev: 'Stop', evAt: nowE - 30, foot: { wait: 3, unlinked: 2, revive: '今日 3回（固まり 1・重さ 1・0本 1）', reviveLast: '04:12' } });
-    const WANT = 'btnShots>btnCopyUrl>usageTag>fVer>verTag>footGroup';
+    const WANT = 'progBox>usageTag>btnSteps>btnShots>btnCopyUrl>fVer>verTag>footGroup';   /* v207（本人の枠 六十九）：使用量はゲージの箱のすぐ下・くわしくの上 */
     for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
       const r = run(tmp, { state: stt, notices: MIX, usage: U_OK, settle: 1500 }, w, h);
       if (!r) { ng(w + 'x' + h + '：測れない（並び）'); continue; }
@@ -1003,7 +1080,7 @@ try {
       const tops = r.ordTops || [];
       if (r.ordDoc !== WANT) { ng(w + 'x' + h + '：HTML の順が違う（' + r.ordDoc + '）'); }
       else if (r.ordCss) { ng(w + 'x' + h + '：CSS の order／flex で並べ替えている（' + r.ordCss + '）'); }
-      else if (tops.some((t, i) => i > 0 && t < tops[i - 1])) { ng(w + 'x' + h + '：画面の上下の並びが HTML の順と食い違う（' + tops.join(',') + '）'); }
+      else if (tops.filter(t => t > 0).some((t, i, a) => i > 0 && t < a[i - 1])) { ng(w + 'x' + h + '：画面の上下の並びが HTML の順と食い違う（' + tops.join(',') + '）'); }
       else if (r.ordOverflow) { ng(w + 'x' + h + '：横に溢れている'); }
       else { ok(w + 'x' + h + '：HTML の順＝画面の順（' + r.ordDoc + '）・order 不使用・横溢れなし'); }
     }
@@ -1056,7 +1133,7 @@ try {
   head('⑤の九 ボタンの並び（二つ並び・三つ並び・iPhone の幅）');
   {
     const nowE = Math.floor(Date.now() / 1000);
-    const sc = { state: Object.assign({}, ST['手待ち'], { rcName: 'koushu-handan-93', rcPid: 6308, rcUrl: 'https://claude.ai/code/session_X' }), notices: [N(nowE - 500, '✅ 終わりました（返事不要）', '済んだ件の本文')], board: { waiting: [], recent: [{ name: '直近その一', result: '済んだ' }, { name: '直近その二', result: '済んだ' }] }, usage: U_OK, settle: 1500 };
+    const sc = { state: Object.assign({}, ST['手待ち'], { rcName: 'koushu-handan-93', rcPid: 6308, rcUrl: 'https://claude.ai/code/session_X', ura: { sub: { running: 1, items: [{ id: 'a', desc: '作り値の下請け', start: '02:00' }], recent: [] }, cloud: { running: [], recent: [] } } }), notices: [N(nowE - 500, '✅ 終わりました（返事不要）', '済んだ件の本文')], board: { waiting: [], recent: [{ name: '直近その一', result: '済んだ' }, { name: '直近その二', result: '済んだ' }] }, usage: U_OK, settle: 1500 };
     for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
       const r = run(tmp, sc, w, h);
       if (!r) { ng(w + 'x' + h + '：測れない（並び）'); continue; }
@@ -1068,6 +1145,15 @@ try {
         if (Math.abs(r.rcR.t - r.doneR.t) > 1 || Math.abs(r.rcR.b - r.doneR.b) > 1) { why.push('二つが同じ高さに並んでいない（上 ' + Math.round(r.rcR.t) + '/' + Math.round(r.doneR.t) + '・下 ' + Math.round(r.rcR.b) + '/' + Math.round(r.doneR.b) + '）'); }
         if (!(r.rcR.r <= r.doneR.l + 1) || r.doneR.r > w + 1) { why.push('二つ並びが横に溢れる／重なる'); }
         if (r.rcR.h < 44 || r.doneR.h < 44) { why.push('当たりが44px未満（' + Math.round(r.rcR.h) + '・' + Math.round(r.doneR.h) + '）'); }
+        /* v207（本人の枠 六十三）：「くわしく」は同じ段の三つ目・同じ高さ・同じ幅・字が溢れない */
+        if (!r.stepsR || !r.stepsIn) { why.push('くわしくが遠隔・終わりましたの段に出ていない'); }
+        else {
+          if (Math.abs(r.stepsR.w - r.doneR.w) > 2) { why.push('三つが等分でない（' + Math.round(r.rcR.w) + '・' + Math.round(r.doneR.w) + '・' + Math.round(r.stepsR.w) + '）'); }
+          if (Math.abs(r.stepsR.t - r.doneR.t) > 1 || Math.abs(r.stepsR.b - r.doneR.b) > 1) { why.push('くわしくが同じ高さに並んでいない'); }
+          if (!(r.doneR.r <= r.stepsR.l + 1) || r.stepsR.r > w + 1) { why.push('三つ並びが横に溢れる／重なる'); }
+          if (r.stepsR.h < 44) { why.push('くわしくの当たりが44px未満'); }
+          if (r.stepsSpill || r.doneSpill) { why.push('釦の中で字がはみ出す（くわしく ' + r.stepsSpill + '・終わりました ' + r.doneSpill + '）'); }
+        }
       }
       if (!r.shR || !r.recR || !r.urlR) { why.push('三つ並びの釦が出ていない'); }
       else {
@@ -1077,12 +1163,34 @@ try {
         if (r.shR.h < 44 || r.recR.h < 44 || r.urlR.h < 44) { why.push('三つの当たりが44px未満'); }
       }
       if (r.btnOver) { why.push('画面が横に溢れる'); }
-      if (why.length) { ng(w + 'x' + h + '：' + why.join('／') + '［' + r.halfDump + '］'); } else { ok(w + 'x' + h + '：遠隔と終わりました N件は半分ずつの二つ並び（' + Math.round(r.rcR.w) + '・' + Math.round(r.doneR.w) + 'px）／写し取り一覧・直近に終わった仕事・様子を写すは同じ高さの三つ並び（高さ ' + Math.round(r.recR.h) + 'px）'); }
+      if (why.length) { ng(w + 'x' + h + '：' + why.join('／') + '［' + r.halfDump + '］'); } else { ok(w + 'x' + h + '：遠隔・終わりました N件・くわしくは同じ段の三つ並び（' + Math.round(r.rcR.w) + '・' + Math.round(r.doneR.w) + '・' + Math.round(r.stepsR.w) + 'px・字ははみ出さない）／写し取り一覧・直近に終わった仕事・様子を写すは同じ高さの三つ並び（高さ ' + Math.round(r.recR.h) + 'px）'); }
     }
     const rp = run(tmp, Object.assign({}, sc, { pressRecent: true }), 390, 844);
     if (!rp) { ng('測れない（直近の釦を押す）'); }
     else if (/直近に終わった仕事（2件）/.test(String(rp.recBefore || '')) && /^写した$/.test(String(rp.recAfter || '')) && /直近その一/.test(String(rp.recClip || '')) && /直近その二/.test(String(rp.recClip || ''))) { ok('直近に終わった仕事は箱ごと押して全文が写る（押す前「' + rp.recBefore + '」・押した後「' + rp.recAfter + '」）'); }
     else { ng('直近の釦を押しても写らない／字が違う（前「' + rp.recBefore + '」・後「' + rp.recAfter + '」・写し「' + String(rp.recClip || '').slice(0, 30) + '」）'); }
+  }
+  /* ---- ⑤の二十二 見出しが動かない（v207・本人の枠 六十六）：どの一言の時も「返事パネル」と猫の位置・大きさが同じ（iPhone の幅・ブラウザ） ---- */
+  head('⑤の二十二 見出しの「返事パネル」と猫は、頭の字がどの一言でも同じ位置・同じ大きさ（iPhone の幅）');
+  {
+    const nh = Math.floor(Date.now() / 1000), UR = { sub: { running: 1, items: [{ id: 'a', desc: 'x', start: '02:00' }], recent: [] }, cloud: { running: [], recent: [] } };
+    const CASES = [['作業中', Object.assign({}, ST['作業中'], { ura: UR }), []], ['裏方作業中', Object.assign({}, ST['手待ち'], { stat: '待ち', detail: '残りの段 2・次「長い長い段の名前」', ura: UR }), []], ['待機中', Object.assign({}, ST['手待ち']), []], ['札まとめ中', Object.assign({}, ST['手待ち'], { cardOwedAt: nh - 30 }), MIX], ['ヨシ待ち', Object.assign({}, ST['ヨシ待ち']), MIX], ['まとめて写す', Object.assign({}, ST['手待ち']), MIX]];
+    for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
+      let base = null; const why = [], words = [];
+      for (const [nm, st, nt] of CASES) {
+        const r = run(tmp, { state: Object.assign({}, st, { at: nh }), notices: nt, usage: U_OK, settle: 1500 }, w, h);
+        if (!r || !r.hTitleR || !r.catR) { why.push(nm + '：測れない'); continue; }
+        words.push(String(r.headWait || ''));
+        if (r.hTitleSpill) { why.push(nm + '：「返事パネル」が折り返す／はみ出す'); }
+        if (Math.round(r.catR.w) !== 80 || Math.round(r.catR.h) !== 80) { why.push(nm + '：猫が80x80でない（' + Math.round(r.catR.w) + 'x' + Math.round(r.catR.h) + '）'); }
+        const k = [r.hTitleR.l, r.hTitleR.t, r.hTitleR.w, r.hTitleR.h, r.catR.l, r.catR.t].map(x => Math.round(x)).join(',');
+        if (base === null) { base = k; } else if (k !== base) { why.push(nm + '：見出しか猫が動いた（' + base + ' → ' + k + '）'); }
+        /* v207（枠 六十八）：版の行の右端は「更新 HH:MM」。最終確認と同じ行に一行で収まる */
+        if (!/^更新 [0-9]{2}:[0-9]{2}$/.test(r.statTxt)) { why.push(nm + '：右端が「更新 HH:MM」でない（' + r.statTxt + '）'); }
+        else if (!r.statR || !r.seenR || Math.abs(r.statR.t - r.seenR.t) > 1 || r.statR.h > 24 || r.statR.r > w - 13) { why.push(nm + '：「' + r.statTxt + '」が最終確認と同じ一行に収まらない'); }
+      }
+      if (why.length) { ng(w + 'x' + h + '：' + why.join('／')); } else { ok(w + 'x' + h + '：' + words.length + 'つの一言（' + words.join('／') + '）で「返事パネル」と猫は同じ位置・同じ大きさ（' + base + '）'); }
+    }
   }
   /* ---- ⑤の十 札まとめ中（v188・2026-11-20 本人の枠）：控えにあるがまだ公開に見えていない札の印（cardOwedAt）がある間は待機中でなく「札まとめ中、、、」・出たら「まとめて写すヨシ！」・3分で赤「札が遅れている」・印が無ければ待機中・10秒おきに読み直す ---- */
   head('⑤の十 札まとめ中（待機中でなく・見込みの刻・赤・10秒おき・EventSource を増やさない）');
@@ -1094,7 +1202,7 @@ try {
       const r = run1({ cardOwedAt: nf() - 30 }, MIX, w, h);
       if (!r) { ng(w + 'x' + h + '：測れない（札まとめ中）'); continue; }
       const t = String(r.headWait || '');
-      if (/札まとめ中、、、。（[0-9]{2}:[0-9]{2} ごろ）/.test(t) && !/待機中/.test(t) && r.hwCls !== 'late') { ok(w + 'x' + h + '：印がある間は待機中でなく「' + t + '」（見込みの刻つき・赤でない）'); } else { ng(w + 'x' + h + '：札まとめ中が出ない（頭の字「' + t + '」・class「' + r.hwCls + '」）'); }
+      if (t === '札まとめ中、、、。' && r.hwCls !== 'late') { ok(w + 'x' + h + '：印がある間は待機中でなく「' + t + '」（v207：刻は付けない一言・赤でない）'); } else { ng(w + 'x' + h + '：札まとめ中が出ない（頭の字「' + t + '」・class「' + r.hwCls + '」）'); }
     }
     let r = run1({ cardOwedAt: nf() - 200 }, MIX);
     if (!r) { ng('測れない（札が遅れている）'); }
@@ -1115,7 +1223,7 @@ try {
     /* v189：雲の検査を待つ間は、札は控えに置いたまま出さない。見込みの刻は検査の見込み・遅れの赤は見込みの30秒後から */
     r = run1({ cardOwedAt: nf() - 400, cardOwedEta: nf() + 600 }, []);   /* 札の一覧は空：検査の頭の now から離れた MIX の札を「出た札」と数えないため */
     if (!r) { ng('測れない（雲待ちの間）'); }
-    else if (/札まとめ中、、、。（[0-9]{2}:[0-9]{2} ごろ）/.test(String(r.headWait || '')) && r.hwCls !== 'late') { ok('雲の検査を待つ間は、待ち始めから400秒たっても赤にならず「' + r.headWait + '」（検査の見込みの刻）'); } else { ng('雲待ちの間に遅れの赤が出た／まとめ中が出ない（「' + String(r.headWait) + '」・class「' + r.hwCls + '」）'); }
+    else if (String(r.headWait || '') === '札まとめ中、、、。' && r.hwCls !== 'late') { ok('雲の検査を待つ間は、待ち始めから400秒たっても赤にならず「' + r.headWait + '」'); } else { ng('雲待ちの間に遅れの赤が出た／まとめ中が出ない（「' + String(r.headWait) + '」・class「' + r.hwCls + '」）'); }
     r = run1({ cardOwedAt: nf() - 900, cardOwedEta: nf() - 60 }, []);
     if (!r) { ng('測れない（検査の見込みを過ぎた）'); }
     else if (/札が遅れている/.test(String(r.headWait || '')) && r.hwCls === 'late') { ok('検査の見込みを30秒過ぎたら赤「札が遅れている」'); } else { ng('検査の見込みを過ぎても赤にならない（「' + String(r.headWait) + '」）'); }

@@ -120,11 +120,18 @@ function bundle(d, J, wl, now) {
     const A = x => Array.isArray(x) ? x : [], ul = {};
     A((U.sub || {}).items).forEach(x => { if (x && x.id != null) { ul['sub:' + x.id] = 0; } });
     A((U.cloud || {}).running).forEach(x => { if (x && x.id != null) { ul['cloud:' + x.id] = 0; } });
+    // v207（本人の枠 六十四）：一塊＝0本から動き出し、また全部済んで0本に戻るまで。その間に始まった物は全部数え（巡回の合間に始まって済んだ物も、
+    //   下請けと雲の済んだ一覧＝recent に新しく現れた id から拾う）、済んだ物は消さず済み（緑）で残す。塊の前から済んだ一覧にあった id（uPre）は数えない。
+    const rIds = [];
+    A((U.sub || {}).recent).forEach(x => { if (x && x.id != null) { rIds.push('sub:' + x.id); } });
+    A((U.cloud || {}).recent).forEach(x => { if (x && x.id != null) { rIds.push('cloud:' + x.id); } });
+    if (!Array.isArray(b.uPre)) { b.uPre = rIds.filter(k => !(k in b.u)); }   // 古い控え（uPre が無い）：今ある済みの物は前の塊の物とみなす
     const uRun = Object.keys(ul).length;
     if (uRun > 0 && b.uIdle > 0) { b.u = {}; b.uIdle = 0; }
     Object.keys(b.u).forEach(k => { if (!(k in ul)) { b.u[k] = 1; } });
     Object.keys(ul).forEach(k => { b.u[k] = 0; });
-    if (uRun === 0) { if (!(b.uIdle > 0)) { b.uIdle = now; } else if (now - b.uIdle > 1800) { b.u = {}; } }
+    if (uRun > 0 || (!(b.uIdle > 0) && Object.keys(b.u).length)) { rIds.forEach(k => { if (!(k in b.u) && b.uPre.indexOf(k) < 0) { b.u[k] = 1; } }); }
+    if (uRun === 0) { b.uPre = rIds; if (!(b.uIdle > 0)) { b.uIdle = now; } else if (now - b.uIdle > 1800) { b.u = {}; } }
   }
   if (JSON.stringify(b) !== was) { try { fs.writeFileSync(bp, JSON.stringify(b)); } catch (e) { } }
   const cnt = m => { const ks = Object.keys(m); const dn = ks.filter(k => m[k]).length; return { done: dn, total: ks.length, left: ks.length - dn }; };
