@@ -15,6 +15,7 @@ function senkoEpoch(s) { const m = /^([0-9]{4}-[0-9]{2}-[0-9]{2}) ([0-9]{2}:[0-9
 function pad2(n) { return ('0' + n).slice(-2); }
 function hm(sec) { const d = new Date(sec * 1000); return pad2(d.getHours()) + ':' + pad2(d.getMinutes()); }
 function newestTime(arr) { let t = 0; (arr || []).forEach(d => { if ((d.time || 0) > t) { t = d.time || 0; } }); return t; }
+function ntfyOfCard(e, cards) { if (!e) { return false; } var tt = String(e.title || '').trim(), et = Number(e.time || 0); return (cards || []).some(function (c) { if (!c) { return false; } if (e.eid) { return c.eid === e.eid; } var ct = Number(c.time || 0); return !!tt && String(c.title || '').trim() === tt && et >= ct - 60 && et <= ct + 900; }); }
 function isCountCard(d) { return /^写せます（[0-9]+件）$/.test(String((d && d.message) || '').trim()); }
 
 // v202（2026-11-21・枠 四十六の三・四十八）：表の仕事と裏方の行。panel.html の omoteLines・uraLines と一字も違わない写し（⑤の十七が字面を突き合わせる）。
@@ -90,10 +91,10 @@ function panelView(d, notices, ntfySent, now) {
   // ---- 残り（mergedTodo と同じ数え方。端末の写した印は使わない）----
   const rows = (Array.isArray(notices) ? notices : []);
   const shown = rows.filter(r => !covers(r && r.time));
-  const cardEid = {}; shown.forEach(r => { if (r && r.eid) { cardEid[r.eid] = 1; } });
   let left = 0;
   shown.forEach(r => { if (!isCountCard(r)) { left++; } });
-  (Array.isArray(ntfySent) ? ntfySent : []).forEach(e => { if (e && e.eid && cardEid[e.eid]) { return; } if (!covers(e && e.time)) { left++; } });
+  // v209（本人の枠 七十一）：札と同じ出来事の押し通知は数えない。札は印より前の物も含めて見る（rows）・印（eid）の無い札は同じ題と刻で（panel.html の ntfyOfCard と同じ字）
+  (Array.isArray(ntfySent) ? ntfySent : []).forEach(e => { if (ntfyOfCard(e, rows)) { return; } if (!covers(e && e.time)) { left++; } });
   // ---- 頭の字（headText と同じ順）----
   const lastStat = String(d.stat || ''), lastDetail = (typeof d.detail === 'string') ? d.detail.replace(/（なし）/g, '') : '';
   const lastCloud = (typeof d.cloud === 'string') ? d.cloud : '', lastHelp = (typeof d.help === 'string') ? d.help : '';
@@ -149,7 +150,7 @@ function allView(d) {
   return Object.assign({}, (E && E.all) || {}, { panel: { box: boxSpec(E, d.ura, 'all') } });
 }
 
-module.exports = { panelView, senkoEpoch, omoteLines, uraLines, endLine, endShort, uraCount, boxSpec, uraBusyText };
+module.exports = { panelView, senkoEpoch, omoteLines, uraLines, endLine, endShort, uraCount, boxSpec, uraBusyText, ntfyOfCard };
 
 if (require.main === module) {
   // 使い方：node panel-view.js <state.json の道> [<出し先の道>]  出し先が無ければ標準出力（PowerShell の文字化けを避けるため、見張りは道を渡す）

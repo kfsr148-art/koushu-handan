@@ -551,6 +551,50 @@ function staticParts() {
       if (/senkoReadAt/.test(pvc.basis)) { ok('中身に「センコの読みだけで数えた」の一言が入る'); } else { ng('basis が無い'); }
     }
   }
+  /* ---- ⑤の二十四 印（eid）の無い札の押し通知も、印より前の札なら写した扱い（v209・本人の枠 七十一） ---- */
+  head('⑤の二十四 印の無い札（見張りの札）の押し通知は札の行にまとめる・センコの印より前の札は押し通知ごと写した（作り値）');
+  {
+    const NL = String.fromCharCode(10);
+    const line = (name) => { const i = html.indexOf('  function ' + name + '('); if (i < 0) { return ''; } const j = html.indexOf(NL, i); return html.slice(i, j).replace(/\r$/, ''); };
+    const blk = (name) => { const i = html.indexOf('  function ' + name + '('); if (i < 0) { return ''; } const j = html.indexOf(NL + '  }', i); return html.slice(i, j + 4); };
+    const PV = require(path.join(path.dirname(SRC), 'panel-view.js'));
+    const PVS = fs.readFileSync(path.join(path.dirname(SRC), 'panel-view.js'), 'utf8');
+    const nh = line('ntfyOfCard').trim(), mt = blk('mergedTodo'), ic = blk('isCountCard'), se = line('senkoEpoch'), sc = line('senkoReadCovers'), cp = line('isCopied');
+    if (!nh || !mt || !ic || !se || !sc || !cp) { ng('panel.html の関数が拾えない（ntfyOfCard・mergedTodo・isCountCard・senkoEpoch・senkoReadCovers・isCopied）'); }
+    else {
+      if (PVS.split(/\r?\n/).some(l => l.trim() === nh)) { ok('ntfyOfCard は panel.html と panel-view.js で同じ字'); } else { ng('ntfyOfCard の字が panel.html と panel-view.js でずれた'); }
+      if (mt.indexOf('ntfyOfCard(e, allRows || [])') >= 0) { ok('mergedTodo は写した札も含めて（allRows）押し通知の持ち主を探す'); } else { ng('mergedTodo が allRows で ntfyOfCard を呼んでいない'); }
+      // 本物の二枚の形（notices.json：eid 空・pushedAt 0／ntfy-sent.json：同じ題・eid 空・札の 59秒後と10秒後に送った）
+      const C1 = { title: '⏭ 定時の再起動は見送った（点検・返事不要）', time: 1795284621, message: '再起動の10分後の通し点検（11-22 03:10）', eid: '', pushedAt: 0 };
+      const C2 = { title: '🪟 自動の続きが止まった（起こした）', time: 1795281728, message: '使用量の枠は 02:20 にリセットされたが…', eid: '', pushedAt: 0 };
+      const N1 = { time: 1795284680, at: '2026-11-22 03:11:20', title: C1.title, parts: 1, body: '', eid: '' };
+      const N2 = { time: 1795281738, at: '2026-11-22 02:22:18', title: C2.title, parts: 1, body: '', eid: '' };
+      const run = (readAt, cards, ntfys, copiedKeys) => {
+        const keyOf = (d) => String(d.time) + '|' + String(d.title);
+        const copied = {}; (copiedKeys || []).forEach(k => { copied[k] = 1; });
+        const f = new Function('allRows', 'ntfySent', 'copied', 'ntfyCopied', 'keyOf', 'ntfyKeyOf',
+          se + NL + 'var lastSenkoReadAt = senkoEpoch(' + JSON.stringify(readAt) + ');' + NL + sc + NL + cp + NL + ic + NL + nh + NL + 'var shown = allRows.filter(function (d) { return !isCopied(d); });' + NL + mt + NL + 'return mergedTodo();');
+        const m = f(cards, ntfys, copied, {}, keyOf, keyOf).length;
+        const p = PV.panelView({ senkoReadAt: readAt }, cards, ntfys, 1795285000).left;
+        return [m, p];
+      };
+      const eq = (r, w) => r[0] === w && r[1] === w;
+      const a = run('2026-11-22 03:10:22', [C1, C2], [N1, N2]);
+      if (eq(a, 0)) { ok('本人の画面（印 03:10:22）：札 03:10:21＋押し通知 03:11:20、札 02:22:08＋押し通知 02:22:18 → 残り0（panel・panelView とも）'); } else { ng('印 03:10:22 の残りが0でない：panel ' + a[0] + '／panelView ' + a[1]); }
+      const b = run('2026-11-22 02:22:10', [C2], [N2]);
+      if (eq(b, 0)) { ok('02:22 の形（印 02:22:10・押し通知 02:22:18 は印より後）→ 残り0'); } else { ng('02:22 の形の残りが0でない：' + b.join('／')); }
+      const c = run('', [C2], [N2]);
+      if (eq(c, 1)) { ok('印が無ければ、札と押し通知は一行（2件でなく1件）'); } else { ng('印なしで札と押し通知が一行にならない：' + c.join('／')); }
+      const d0 = run('', [C2], [N2], [String(C2.time) + '|' + C2.title]);
+      if (d0[0] === 0) { ok('端末で写した札の押し通知も残らない（panel）'); } else { ng('写した札の押し通知が残った：' + d0[0]); }
+      const e1 = run('2026-11-22 03:10:22', [C1], [N1, { time: 1795284700, title: '☁️ 雲の走りが落ちた（x）', eid: '' }]);
+      if (eq(e1, 1)) { ok('印より後の、どの札にも当たらない押し通知は今までどおり残る'); } else { ng('札に当たらない押し通知の扱いが違う：' + e1.join('／')); }
+      const f1 = run('2026-11-22 03:10:22', [C1], [Object.assign({}, N1, { time: C1.time + 1200 })]);
+      if (eq(f1, 1)) { ok('同じ題でも札から15分より後の押し通知は別の出来事として残る'); } else { ng('15分より後の押し通知の扱いが違う：' + f1.join('／')); }
+      const g1 = run('2026-11-22 03:10:22', [{ title: '✅ 終わりました（返事不要）', time: 1795284370, message: 'x', eid: 'e1795284367', pushedAt: 0 }], [{ time: 1795284800, title: '😽 終わったにゃ、写して', eid: 'e1795284367' }]);
+      if (eq(g1, 0)) { ok('印（eid）の有る札は今までどおり印で結ぶ（押し通知が印の後でも残らない）'); } else { ng('eid の有る札の押し通知が残った：' + g1.join('／')); }
+    }
+  }
   /* ---- ⑤の十七 表の仕事と裏方（v202・枠 四十六の三・四十七・四十八）：三行は釦に畳む・跡に表の仕事と裏方・panel-view.js と同じ字 ---- */
   head('⑤の十七 表の仕事と裏方（三行は釦に畳む・panel-view.js と字面も出す字も同じ）');
   {
