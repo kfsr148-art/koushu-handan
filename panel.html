@@ -203,27 +203,32 @@
   /* 写し取り一覧と「URLを写す」を横並びにする（v64）。
      ＊.cpall は幅いっぱいの作りなので、この行の中でだけ幅と余白を外す。
        ほかの .cpall（まとめて写す・お知らせ・箱の表紙）には触れない。 */
-  .shotsrow{display:flex; gap:8px; margin:4px 14px 12px;}
-  /* v187：写し取り一覧・直近に終わった仕事・様子を写すの三つ並び。幅は等分。狭くても字が折り返して収まる */
-  .shotsrow{flex-wrap:wrap;}
-  .shotsrow > .cpall{margin:0; width:auto; flex:1 1 0; min-width:84px; display:flex; align-items:center; justify-content:center; text-align:center; font-size:13px; line-height:1.25; padding:6px 4px; min-height:48px; box-sizing:border-box; overflow-wrap:anywhere;}
+  /* v211（本人の枠 七十八）：底のボタンは四つ×二段の八つ。上の段（#halfRow）＝遠隔・終わりました・くわしく・まとめて写す、下の段（.shotsrow）＝写し取り一覧・直近に終わった仕事・様子を写す・指さす。
+     ＊両方の段を同じ一つの決め（.btn4row）で作る：四つ並び・折り返さない・同じ幅（flex:1 1 25%・box-sizing:border-box・padding と縁は同じ）・同じ高さ（min-height）・同じ字の大きさ（13px）。
+     ＊隠す物（遠隔が無い・終わりました0件・くわしくの中身が無い）は visibility:hidden で場所だけ取っておく。数や出し入れが変わっても、ほかの釦の場所は動かない。
+     ＊高さは字が一番多い釦（直近に終わった仕事（N件）・遠隔の名と pid）が折り返しても収まる値。 */
+  .btn4row{display:flex; flex-wrap:nowrap; gap:8px; margin:8px 14px 0; align-items:stretch;}
+  .btn4row > .cpall, .btn4row > .done-box{flex:1 1 25%; min-width:0; width:auto; margin:0; box-sizing:border-box; min-height:72px;}
+  .btn4row > .cpall, .btn4row > .done-box > .cpall{display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; font-size:13px; line-height:1.25; padding:6px 4px; overflow-wrap:anywhere; word-break:break-word; white-space:normal; text-decoration:none; box-sizing:border-box;}
+  .btn4row > .done-box{display:flex; padding:0;}
+  .btn4row > .done-box > .cpall{flex:1 1 auto; width:100%; margin:0; min-height:0;}
+  .btn4row > a.cpall.rc{display:flex; padding:6px 4px; line-height:1.25;}
+  .btn4row > a.cpall.rc .rc-top{font-size:13px; line-height:1.25;}
+  .btn4row > a.cpall.rc .rc-sub{font-size:11px; line-height:14px;}
+  .btn4row > .cpall.steps-t{margin:0; font-size:13px;}
+  .btn4row > .cpall.hide, .btn4row > a.cpall.rc.hide, .btn4row > .cpall.steps-t.hide, .btn4row > .done-box.hide{display:flex; visibility:hidden;}
+  .shotsrow.btn4row{margin-bottom:12px;}
+  @media (max-width: 359px) { .btn4row > .cpall, .btn4row > .done-box{min-height:88px;} }
+  /* まとめて写すの二行：上＝「まとめて写す」・下＝小さく「N件」。0件の時も下の行の高さと幅（二桁が入る3字分）を取っておく */
+  #btnCopyBoard .cb-top{display:block;}
+  #btnCopyBoard .cb-sub{display:block; font-size:11px; line-height:14px; min-height:14px; min-width:3em;}
   /* v187：遠隔と終わりました N件 の半分ずつの二つ並び */
   /* v191：指さし。幕は透明で画面いっぱい（下の釦は押せない・スクロールはできる）。案内は上に固定。指さす釦だけ幕より上にして、もう一度押せばやめる */
   #pointVeil{position:fixed; left:0; top:0; right:0; bottom:0; z-index:10000; background:transparent; touch-action:pan-x pan-y; cursor:crosshair; -webkit-tap-highlight-color:transparent;}
   #pointVeil[hidden], #pointBanner[hidden]{display:none;}
   #pointBanner{position:fixed; left:12px; right:12px; top:calc(8px + env(safe-area-inset-top)); z-index:10001; background:rgba(0,0,0,.88); color:#fff; padding:10px 12px; border-radius:10px; text-align:center; font-size:16px; font-weight:700; pointer-events:none; box-sizing:border-box;}
   body.pointing #btnPoint{position:relative; z-index:10002; outline:2px solid var(--act);}
-  .halfrow{display:flex; gap:8px; margin:0 14px; align-items:stretch;}
-  /* v207（本人の枠 六十三）：「くわしく」（#btnSteps）も同じ段へ。遠隔・終わりました・くわしくの三つ並び（出ている物だけで等分。一つなら幅いっぱい） */
-  /* v208：flex-basis を 0 にすると、遠隔（a.cpall.rc の左右 padding 10px＋縁）と終わりましたの箱（padding 0・縁なし）とくわしく（padding 4px＋縁）で、
-     padding と縁の分だけ幅が違った（雲の ⑤の九：390px で 127・105・115）。basis を同じ割合（30%・box-sizing:border-box なので padding と縁を含む）にして、
-     伸びる分も等しく配るので、出ている物の数に依らず等分になる（3つ＝三等分・2つ＝半分ずつ・1つ＝幅いっぱい）。 */
-  .halfrow > .cpall, .halfrow > .done-box{flex:1 1 30%; min-width:0; margin:8px 0 0; width:auto; box-sizing:border-box; padding-left:0; padding-right:0;}
-  .halfrow > .done-box{display:flex;}
-  .halfrow > .done-box.hide{display:none;}
-  .halfrow > .done-box > .cpall{flex:1 1 auto; width:100%; margin:0; font-size:14px; line-height:1.3; padding:6px 6px; box-sizing:border-box; min-height:48px;}
-  .halfrow > .cpall.steps-t{display:flex; align-items:center; justify-content:center; text-align:center; font-size:14px; line-height:1.3; padding:6px 4px; min-height:48px; overflow-wrap:anywhere; white-space:normal;}
-  .halfrow > .cpall.steps-t.hide{display:none;}
+  /* ＊v207〜v210 の三つ並び（.halfrow の flex:1 1 30%・出ている物だけで等分）は、v211 で上の .btn4row（四つ並び・隠す物も場所を取る）に置き換えた。 */
   #doneList{margin:0;}
   /* あなた待ちの各件に添える一行（v58）。印・立てた時刻・待ちの種類・動く条件。
      ＊件名より一段小さく、色も落とす。読む順が件名 → 添えの一行になるように。 */
@@ -239,8 +244,9 @@
   /* 作業中の札があるあいだは押せなくする（v78）。青を落として、押せないと目で分かる形に。
      ＊上の #btnCopyBoard より弱いと青のままなので、同じ id に :disabled を足して勝たせる。
      ＊個別の「写す」釦（.cp）には掛けない。あちらは作業中でも押せる。 */
-  #btnCopyBoard:disabled{background:var(--card); color:var(--dim);
-    border-color:var(--line); opacity:.55; cursor:default;}
+  /* v211（本人の枠 七十八）：0件の時は隠さず、押せないまま普段の字と色（ほかの釦と同じ）で出す。青は1件以上の時だけ */
+  #btnCopyBoard:disabled{background:var(--card); color:var(--fg);
+    border-color:var(--line); opacity:1; cursor:default;}
   #btnCopyBoard:disabled:active{background:var(--card); border-color:var(--line); filter:none;}
   /* 個別の「写す」も、作業中のあいだは押せなくする（v81）。見た目はまとめて写すと同じ薄さ。
      ＊掛けるのは .cp だけ。.cpall（まとめて写す・お知らせ・箱の表紙・URLを写す・写し取り一覧）
@@ -305,6 +311,9 @@
   /* お知らせの釦と一覧は画面から消す（v97）。**中身と記録はそのまま**で、見せ方だけ止める。
      ＊まとめて写す（#btnCopyBoard）と、終わりました／ヨシした数の箱は今までどおり出る。 */
   #btnCopyAll, #list{display:none !important;}
+  /* v211（本人の枠 七十九）：板（あなた待ちの一行・読めない時の断り）も画面に出さない。ヨシ待ちは頭の字と猫で分かる。器と中身（写しに入る分）はそのまま。
+     押し通知が来ても、まとめて写すの下・ボタンの上に行が足されて釦の場所がずれないようにする。 */
+  #board{display:none !important;}
   /* 一番上の状態の札は画面から消す（v102）。**器と塗る処理はそのまま**で、見せ方だけ止める。
      ＊中身は下で全部賄えている——状態と時間は黄色の行、終わった題は
        「直近に終わった仕事」の箱。**いま動いている枠の印**は黄色の行の頭へ移した。
@@ -508,11 +517,8 @@
   <!-- v202（2026-11-21 本人の枠 四十七・四十八）：完了・進行中・予定の三行はふだん出さず、釦（#btnSteps）を押した時だけ三つとも開く。
        ＊v204（本人の枠 五十一）：跡に出していた「表の仕事」「裏方」の字の箱（#workBox）は外した。二つは見出しのすぐ下の箱（#progBox）にゲージで出す。 -->
   <!-- v207（本人の枠 六十三）：釦（#btnSteps）と三行（#stLine）は、下の「遠隔」「終わりました」の段（#halfRow）へ移した。 -->
-  <button class="cpall" id="btnCopyBoard" type="button">まとめて写す（0件）</button>
-  <!-- 写せる札の題を一行ずつ（v115・パネルの見え方-1）。
-       ＊数字（残N／M件）だけでは**何が写せるのか**が分からない。開いた瞬間に読めるようにする。
-       ＊器だけ置いて、中身は setCopyBoardLabel が塗る（数と同じ一回の走査から作る）。 -->
-  <ul id="todoList" class="todoList"></ul>
+  <!-- v211（本人の枠 七十八）：まとめて写す（#btnCopyBoard）は、底の四つ並びの上の段（#halfRow）の四つ目へ移した（ここには置かない・二つ作らない）。
+       写せる札の目次（#todoList）は、底の八つの下へ移した（札が増えても八つの場所が動かない）。 -->
   <!-- ＊「通知の本文を写す」の釦は **v114 で畳んだ**（写しの一本化-1）。
        まとめて写すが札と通知の両方を数え、刻の順で一枚に並べて写すようになったので、
        押す所を二つ持つ要が無くなった。**器は残さない**——押せない釦は用が無い。
@@ -539,11 +545,31 @@
        ＊写した札の控え（下）とは別物。あちらは「片付けた札の行き先」で、
          こちらは「終わりましたの報告を、写した写さないに関わらず全部残す場所」。 -->
   <!-- v187（2026-11-20 本人の枠）：「🔗 遠隔」を見出しの中から下ろし、「✅ 終わりました N件」と半分ずつの二つ並びにした。一覧（#doneList）は並びの下。0件なら終わりましたの箱は出ず、遠隔だけが幅いっぱいに。 -->
-  <div class="halfrow" id="halfRow">
+  <!-- v211（本人の枠 七十八）：底のボタンは四つ×二段の八つ。上の段＝遠隔・終わりました・くわしく・まとめて写す（この #halfRow）、そのすぐ下の段＝写し取り一覧・直近・様子を写す・指さす（.shotsrow）。
+       両方とも .btn4row の一つの決め（同じ幅・同じ高さ・同じ字の大きさ）。隠す物も場所を取るので、数や出し入れが変わっても八つの場所は動かない。
+       まとめて写すは隠さない（0件＝「まとめて写す」の字だけ・普段の色／1件以上＝下に小さく「N件」・青）。開く物（目次・三行・終わりましたの一覧）は八つの下に開く。 -->
+  <div class="halfrow btn4row" id="halfRow">
     <a class="cpall rc hide" id="rcLink" href="#" target="_blank" rel="noopener"><span class="rc-top">🔗 遠隔</span><span class="rc-sub"></span></a>
     <div class="done-box hide" id="doneBox"><button type="button" class="cpall" id="doneHead"></button></div>
     <button class="cpall steps-t hide" id="btnSteps" type="button" aria-expanded="false">くわしく</button>
+    <button class="cpall" id="btnCopyBoard" type="button" disabled aria-label="まとめて写す"><span class="cb-top">まとめて写す</span><span class="cb-sub"></span></button>
   </div>
+  <!-- 写し取り一覧への口（v30 で足した・並びは v49 でいちばん下へ）。
+       本体の全画面を撮った PNG を並べたシート。組み直すのは node shot-all.js。
+       ここは開くだけで、パネル側は何も持たない。 -->
+  <!-- 様子を写す小さな釦（v178・前は v64 の「URLを写す」）。写し取り一覧の隣に横並びで置く。
+       ＊番地ではなく、パネルが今持つ様子を字で写す（statusText）。 -->
+  <div class="shotsrow btn4row">
+    <a class="cpall" id="btnShots"
+       href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
+       target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
+    <button type="button" class="cpall" id="btnRecent">直近に終わった仕事（0件）</button>
+    <button type="button" class="cpall url" id="btnCopyUrl">様子を写す</button>
+    <button type="button" class="cpall" id="btnPoint">👆 指さす</button>
+  </div>
+  <!-- 写せる札の題を一行ずつ（v115・パネルの見え方-1）。v211：底の八つの下へ移した。押し通知（📣）の行は出さない（枠 七十九：押し通知が来てもパネルに行を足さない）。
+       ＊器だけ置いて、中身は setCopyBoardLabel が塗る（数と同じ一回の走査から作る）。 -->
+  <ul id="todoList" class="todoList"></ul>
   <!-- v207（本人の枠 六十三）：「くわしく」は遠隔・終わりましたと同じ段の三つ目（一段まるごとは使わない）。押すと開く三行（完了・進行中・予定）は並びのすぐ下。 -->
   <ul id="stLine" hidden></ul>
   <ul id="doneList"></ul>
@@ -553,19 +579,6 @@
   <div class="done-box hide" id="arcBox" hidden style="display:none">
     <button type="button" class="cpall" id="arcHead">🗄 過去の札 ▼</button>
     <ul id="arcList"></ul>
-  </div>
-  <!-- 写し取り一覧への口（v30 で足した・並びは v49 でいちばん下へ）。
-       本体の全画面を撮った PNG を並べたシート。組み直すのは node shot-all.js。
-       ここは開くだけで、パネル側は何も持たない。 -->
-  <!-- 様子を写す小さな釦（v178・前は v64 の「URLを写す」）。写し取り一覧の隣に横並びで置く。
-       ＊番地ではなく、パネルが今持つ様子を字で写す（statusText）。 -->
-  <div class="shotsrow">
-    <a class="cpall" id="btnShots"
-       href="https://kfsr148-art.github.io/koushu-handan/shots/index.html"
-       target="_blank" rel="noopener">🖼 画面の写し取り一覧</a>
-    <button type="button" class="cpall" id="btnRecent">直近に終わった仕事（0件）</button>
-    <button type="button" class="cpall url" id="btnCopyUrl">様子を写す</button>
-    <button type="button" class="cpall" id="btnPoint">👆 指さす</button>
   </div>
   <!-- v184：HTML の順は 画面の写し取り一覧／様子を写す → 使用量の三本 → 本体の版の行（.facts）→ panel の版の行（#verTag）→ 下の三行（#footGroup）。見た目だけの order ではなく、並びそのものをここで決める。 -->
   <!-- ＊v207（本人の枠 六十九）：使用量の三本（#usageTag・#usageMsg）は、見出しの下の箱（#progBox）のすぐ下へ移した。 -->
@@ -582,7 +595,7 @@
     <span id="stat" class="upd">読み込み中…</span>
   </div>
   <!-- 版の印。直すたびに数字を上げる。古い写しを見ていないかの目印。 -->
-  <p class="ver" id="verTag">panel v210（11月22日）</p>
+  <p class="ver" id="verTag">panel v211（11月22日）</p>
   <div class="foot-group" id="footGroup">
   <p class="usage-when" id="usageWhen" hidden></p>
   <!-- 遠隔で繋がっている会話の名と pid（v127・落ちた後の起こし-2）。state.json の rcName / rcPid。
@@ -601,7 +614,7 @@
 <div id="pointBanner" hidden>おかしい所を押して</div>
 <!-- v210（本人の枠 七十四）：数え方と字の組み立て（まとめて写すの残り・頭の字・三つの箱・見込みの字）は panel-core.js 一つ。VAIO の panelView（panel-view.js）も同じ物を require する。
      ?_v= はこのパネルの版（PANEL_VER と同じ数・panel-check.js の ⑰ が揃うかを見る）。版が変われば道が変わるので、古い取り置きを掴まない。読めない・古い時は下の checkCore が一度だけ読み直す -->
-<script src="panel-core.js?_v=210"></script>
+<script src="panel-core.js?_v=211"></script>
 
 <script>
 (function () {
@@ -626,7 +639,7 @@
   /* 終了予定が、いまからこの秒数より先なら数字を出さない（v107・走り出しの時刻ずれ-1）。
      押し送りの側（watch-notify.ps1 の $START_FAR_H）と同じ12時間。二箇所で違う物差しを使わない。 */
   var FAR_SEC = 12 * 3600;
-  var PANEL_VER = '210';  /* v210（本人の枠 七十四）：まとめて写すの残り・頭の字・三つの箱・見込みの字を panel-core.js 一つに（VAIO の panelView と同じ物）。同じ札・印・state なら必ず同じ数と字になる。 ／ v209（本人の枠 七十一）：印（eid）の無い札（見張りが書いた札）の押し通知は、同じ題で札の刻から15分以内なら札と同じ出来事として札の行にまとめる。センコの印より前の札の押し通知が印の後に送られても、別の行として残らない。v208：雲のブラウザ検査で落ちた三つを前へ直した——遠隔・終わりました・くわしくの三つを等分に（flex:1 1 30%）／320px で版の字を一段まるごとにし「最終確認」と「更新」を一行に／② の裏方（待ち）の検査の期待を待ちと同じに ／ v207：「くわしく」を遠隔・終わりましたと同じ段の三つ並びに（枠 六十三）／裏方のゲージは一塊（0本から動き出し全部済むまで）で数え、済んだ本数／始まった本数（枠 六十四）／ヨシ待ちの猫を新しい絵 yoshi-machi2-240.png に（枠 六十五）／頭の字は短い一言だけ・「返事パネル」と猫は固定（枠 六十六）／三つの箱のゲージの下の「全部終わる見込み」の行を消し、時間は頭の「あと N分」だけ（枠 六十七）／版の行の右端を「更新 HH:MM」に（枠 六十八）／使用量の三本をゲージの箱のすぐ下へ（枠 六十九） ／ v206：待ちでも下請けか雲が動いている間は頭の字を「裏方作業中、、、。（下請け N本・雲 N本）」（次「…」は後ろに残す）・三つの箱の頭に「あと N分（HH:MM ごろ）」（何も無ければ「あと 0分」・今動かしている物はゲージの下へ）（枠 五十八・五十九）。 */ /* v205：箱を三つ（全部・表の仕事・裏方）に。どれも v180／v185 の形（頭に名と今動かしている物・区切りのゲージ・全部終わる見込み HH:MM（あとN分））・区切りは endat.js の束（増えたら M が増え・済みは塗る）・裏方の一本ずつは「くわしく」の三行の中へ ／ v204：字だらけの「表の仕事と裏方」の箱を外し、見出しの下の箱に表の仕事と裏方のゲージを一本ずつ（v185 の形）＋「全部終わる見込み HH:MM」の一行だけ ／ v203：表の仕事と裏方の箱に「全部終わる見込み」を一つずつ（endat.js・今の枠だけの終わりは出さない・始まりは付け直さず終わりを延ばす） ／ v202：完了・進行中・予定の三行は釦一つに畳み、跡に「表の仕事」と「裏方」（下請けと雲・state.json の ura）を出す・様子を写すの頭の番地を外し表の仕事と裏方を足す ／ v201：ヨシ待ちの猫を本人の絵（yoshi-machi-240.png・字を山吹色＋黒縁）に ／ v200：センコが読んだ刻（senkoReadAt）までの札と知らせは写した扱い ／ v199：頭の字を「札まとめ中」に（「を」を取る）・現況も同じ ／ v198：着手から90秒以内の「見込み未記入」は赤くしない ／ v197：様子を写すに順番待ちを一行ずつ・指さすの名を平たい名（見出しの帯）に ／ v196：まとめて写すの頭の現況を状態の言葉と終わる見込みにした ／ v194：ntfy の直の聞き取りを外した */  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
+  var PANEL_VER = '211';  /* v211（本人の枠 七十三・七十八・七十九）：ヨシ待ちの猫は二枚（こぶし・親指）を0.5秒ごとに交互に（YOSHI_FLIP_MS）／底のボタンを四つ×二段の八つに一つの決め（.btn4row）で並べ、まとめて写すは上の段の四つ目に隠さず出す（0件＝字だけ・普段の色／1件以上＝N件・青）／押し通知の行と板の一行は画面に足さない（目次は八つの下・札だけ）。 ／ v210（本人の枠 七十四）：まとめて写すの残り・頭の字・三つの箱・見込みの字を panel-core.js 一つに（VAIO の panelView と同じ物）。同じ札・印・state なら必ず同じ数と字になる。 ／ v209（本人の枠 七十一）：印（eid）の無い札（見張りが書いた札）の押し通知は、同じ題で札の刻から15分以内なら札と同じ出来事として札の行にまとめる。センコの印より前の札の押し通知が印の後に送られても、別の行として残らない。v208：雲のブラウザ検査で落ちた三つを前へ直した——遠隔・終わりました・くわしくの三つを等分に（flex:1 1 30%）／320px で版の字を一段まるごとにし「最終確認」と「更新」を一行に／② の裏方（待ち）の検査の期待を待ちと同じに ／ v207：「くわしく」を遠隔・終わりましたと同じ段の三つ並びに（枠 六十三）／裏方のゲージは一塊（0本から動き出し全部済むまで）で数え、済んだ本数／始まった本数（枠 六十四）／ヨシ待ちの猫を新しい絵 yoshi-machi2-240.png に（枠 六十五）／頭の字は短い一言だけ・「返事パネル」と猫は固定（枠 六十六）／三つの箱のゲージの下の「全部終わる見込み」の行を消し、時間は頭の「あと N分」だけ（枠 六十七）／版の行の右端を「更新 HH:MM」に（枠 六十八）／使用量の三本をゲージの箱のすぐ下へ（枠 六十九） ／ v206：待ちでも下請けか雲が動いている間は頭の字を「裏方作業中、、、。（下請け N本・雲 N本）」（次「…」は後ろに残す）・三つの箱の頭に「あと N分（HH:MM ごろ）」（何も無ければ「あと 0分」・今動かしている物はゲージの下へ）（枠 五十八・五十九）。 */ /* v205：箱を三つ（全部・表の仕事・裏方）に。どれも v180／v185 の形（頭に名と今動かしている物・区切りのゲージ・全部終わる見込み HH:MM（あとN分））・区切りは endat.js の束（増えたら M が増え・済みは塗る）・裏方の一本ずつは「くわしく」の三行の中へ ／ v204：字だらけの「表の仕事と裏方」の箱を外し、見出しの下の箱に表の仕事と裏方のゲージを一本ずつ（v185 の形）＋「全部終わる見込み HH:MM」の一行だけ ／ v203：表の仕事と裏方の箱に「全部終わる見込み」を一つずつ（endat.js・今の枠だけの終わりは出さない・始まりは付け直さず終わりを延ばす） ／ v202：完了・進行中・予定の三行は釦一つに畳み、跡に「表の仕事」と「裏方」（下請けと雲・state.json の ura）を出す・様子を写すの頭の番地を外し表の仕事と裏方を足す ／ v201：ヨシ待ちの猫を本人の絵（yoshi-machi-240.png・字を山吹色＋黒縁）に ／ v200：センコが読んだ刻（senkoReadAt）までの札と知らせは写した扱い ／ v199：頭の字を「札まとめ中」に（「を」を取る）・現況も同じ ／ v198：着手から90秒以内の「見込み未記入」は赤くしない ／ v197：様子を写すに順番待ちを一行ずつ・指さすの名を平たい名（見出しの帯）に ／ v196：まとめて写すの頭の現況を状態の言葉と終わる見込みにした ／ v194：ntfy の直の聞き取りを外した */  /* v180：作業中に「終わる見込み HH:MM（あとN分）」と「段 N/M」を必ず出す（無ければ赤で未記入・過ぎたら「見込みを過ぎた N分」）／ v179：様子を写すの頭を「写す」と同じ形（notices-<刻>.json の番地＋現況の行）に ／ v178：「URLを写す」を「様子を写す」へ（番地でなく、パネルが持つ様子を同期で字にして写す） */
   /* v160：済んでいないヨシ待ちの札は過去の札へ落とさず notices.json の先頭に残す（notify-record.ps1 側の直し・パネルの読み方は変えていない） */
   var PANEL_VER_URL = 'https://kfsr148-art.github.io/koushu-handan/panel-ver.txt';
 
@@ -1446,20 +1459,13 @@
   function paintTodoList() {
     var el = $('todoList');
     if (!el) { return; }
-    var a = mergedTodo();
+    var a = mergedTodo().filter(function (m) { return m.kind === 'card'; });   /* v211（本人の枠 七十九）：押し通知（📣）の行は出さない。数（まとめて写すの N件）と写す中身は今のまま */
     if (!a.length) { el.innerHTML = ''; el.hidden = true; return; }
     el.hidden = false;
     el.innerHTML = a.map(function (m) {
-      var name, mark, t;
-      if (m.kind === 'card') {
-        name = plain(headOf(m.card)) || '（件名なし）';
-        mark = (m.pushed ? '😽' : '') + kindMark(m.card.title);   /* v177：同じ印の押し通知を送った札は頭に 😽 */
-        t = hhmm(m.card.time);
-      } else {
-        name = String(m.ntfy.title || '（題なし）');
-        mark = '📣';
-        t = hhmm(m.ntfy.time);
-      }
+      var name = plain(headOf(m.card)) || '（件名なし）';
+      var mark = (m.pushed ? '😽' : '') + kindMark(m.card.title);   /* v177：同じ印の押し通知を送った札は頭に 😽 */
+      var t = hhmm(m.card.time);
       return '<li><span class="tt">' + esc(name) + '</span>'
            + '<span class="tm">' + esc(mark + ' ' + t) + '</span></li>';
     }).join('');
@@ -1517,18 +1523,14 @@
        ＊知らせのあとに札が増えると N が M を超えることがある。そのときも N に揃える。
          **M が N より小さい字は出さない**（残のほうが多い、という読めない形になるため）。 */
     if (m < n) { m = n; }
-    if (n > 0) {
-      b.textContent = core().todoLabel(n);   /* v210：字は panel-core.js（VAIO の panelView.label と同じ）。m は n と同じ（v117） */
-      b.disabled = false;
-      b.hidden = false;
-    } else {
-      /* 写せる札が無い。作業中かどうかに関わらず畳む。
-         ＊字は残しておく。出し直したときに元の姿へ戻る。
-         ＊状態（作業中／手待ち／ヨシ待ち）は、板の跡地の一行が受け持つ。 */
-      b.textContent = core().todoLabel(0);
-      b.disabled = true;
-      b.hidden = true;
-    }
+    /* v211（本人の枠 七十八）：釦は隠さず、いつも底の上の段の四つ目に出す。上に「まとめて写す」、下に小さく「N件」（0件の時は下の行を空のまま高さだけ取る）。
+       ＊1件以上＝青・押せる／0件＝普段の字と色・押せない（CSS の #btnCopyBoard:disabled）。数や色が変わっても釦の幅と高さは変わらない（.btn4row の決め）。
+       ＊字の元は panel-core.js の todoLabel（VAIO の panelView.label と同じ）。釦の aria-label に入れる。m は n と同じ（v117） */
+    var lab = core().todoLabel(n);
+    b.innerHTML = '<span class="cb-top">まとめて写す</span><span class="cb-sub">' + (n > 0 ? esc(n + '件') : '') + '</span>';
+    b.setAttribute('aria-label', lab);
+    b.disabled = !(n > 0);
+    b.hidden = false;
     /* 個別の「写す」は**常に押せる**（v84）。
        ＊v81〜v83 は作業中のあいだ全部 disabled にしていた。済んだ札まで写せなくなるので外した。
        ＊body.busy の class も付けない。掛ける先（CSS）を v84 で外した。
@@ -2054,8 +2056,14 @@
     if (hw.textContent !== t) { hw.textContent = t; }
     var lt = cardLate(); if (hw.className !== (lt ? 'late' : '')) { hw.className = lt ? 'late' : ''; }   /* v188：札が遅れている時は赤 */
   }
+  /* v211（本人の枠 七十三）：ヨシ待ちの猫は二枚を交互に。こぶしの絵（IMG_3458・yoshi-machi-240.png）と親指を立てた絵（IMG_3470）。
+     ＊親指の絵は、字の所（左上 67x65）だけこぶしの絵と同じ画素にした新しい名の絵（yoshi-machi2-soroe-240.png）。二枚とも 240x240・猫の位置と大きさは画素で同じ（差は手の所だけ）なので、切り替えても字も猫もずれない。
+       前の絵 yoshi-machi2-240.png と原版（yoshi-machi_src.jpeg・yoshi-machi2_src.jpeg）は消さずに残す。
+     ＊切り替えの間合いは YOSHI_FLIP_MS（始めの値 500ms）。ほかの猫（作業中・指差し・待機・寝姿）は今のまま。 */
+  var YOSHI_FLIP_MS = 500;
+  var YOSHI_FRAMES = ['yoshi-machi2-soroe-240.png', 'yoshi-machi-240.png'];
   (function () {   /* 先読み。読めなくても画面は壊れない（img が出ないだけ） */
-    catFrames.concat(['cat-sleep-w.png', 'genba-cat-80.png', 'genba-taiki-80.png', 'yoshi-machi2-240.png'])
+    catFrames.concat(['cat-sleep-w.png', 'genba-cat-80.png', 'genba-taiki-80.png'], YOSHI_FRAMES)
       .forEach(function (n) { var im = new Image(); im.src = n; });
   })();
   function runCatTick() {
@@ -2080,7 +2088,8 @@
       el.src = catFrames[catI];
     } else if (lastStat === 'ヨシ待ち') {   /* v157：ヨシ待ちは専用の猫 */
       catAwake = false;
-      if (el.src.indexOf('yoshi-machi2-240') < 0) { el.src = 'yoshi-machi2-240.png'; }   /* v207（枠 六十五）：本人の新しい絵（IMG_3470・親指を立てた猫。原版 yoshi-machi2_src.jpeg）の黒い「ヨシ！待ち。」を、四十五と同じ山吹色（#FFD54F）＋黒縁にした絵。前の絵 yoshi-machi-240.png は消さずに残す ／ v201（枠 四十五）：本人の絵（IMG_3458）の「ヨシ！待ち。」を山吹色＋黒縁にした絵。前の絵 yoshi-cat-icon.png は消さずに残す */
+      var yf = YOSHI_FRAMES[Math.floor(Date.now() / YOSHI_FLIP_MS) % YOSHI_FRAMES.length];   /* v211（本人の枠 七十三）：二枚を YOSHI_FLIP_MS ごとに交互に。刻から選ぶので、runCatTick（100ms）の回り方に依らず同じ間隔。画面が隠れている時は端末が時計を緩めるので切り替えも休む */
+      if (el.src.indexOf(yf) < 0) { el.src = yf; }   /* v207（枠 六十五）：本人の新しい絵（IMG_3470・親指を立てた猫。原版 yoshi-machi2_src.jpeg）の黒い「ヨシ！待ち。」を、四十五と同じ山吹色（#FFD54F）＋黒縁にした絵。前の絵 yoshi-machi-240.png は消さずに残す ／ v201（枠 四十五）：本人の絵（IMG_3458）の「ヨシ！待ち。」を山吹色＋黒縁にした絵。前の絵 yoshi-cat-icon.png は消さずに残す */
     } else if (kumoEtaSec() > 0 || copyLeft > 0) {   /* v169：雲待ちの見込みの前も指差しの猫（字は「HH:MM になったら まとめて写すヨシ！」）。v153：写す物が1件以上ある時だけ指差し。ヨシ待ちでも0件なら待機の猫 */
       catAwake = false;
       if (el.src.indexOf('genba-cat-80') < 0) { el.src = 'genba-cat-80.png'; }

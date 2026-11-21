@@ -16,7 +16,7 @@
   else { root.PanelCore = m; }
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
-  var VER = '210';
+  var VER = '211';
   var WAIT_TEXT = '待機中、、、。', POINT_TEXT = 'まとめて写すヨシ！', WORK_TEXT = '作業中、、、。', LOST_TEXT = '接続不良、、、。', YOSHI_TEXT = 'ヨシ待ち、、、。', CHECK_TEXT = '検査中、、、。';
 
   /* ---- 刻 ---- */
@@ -65,8 +65,8 @@
     a.sort(function (x, y) { return y.t - x.t; });
     return a;
   }
-  /* 釦の字（v117：M＝N。0件は「（0件）」） */
-  function todoLabel(n) { n = Math.max(0, Number(n) | 0); return n > 0 ? ('まとめて写す（残' + n + '／' + n + '件）') : 'まとめて写す（0件）'; }
+  /* 釦の字（v117：M＝N。v211（本人の枠 七十八）：0件は「まとめて写す」の字だけ（0件とは書かない）。パネルの釦は上に「まとめて写す」・下に小さく「N件」を出し、この字は釦の aria-label と panelView.label に入る） */
+  function todoLabel(n) { n = Math.max(0, Number(n) | 0); return n > 0 ? ('まとめて写す（残' + n + '／' + n + '件）') : 'まとめて写す'; }
 
   /* ---- 頭の字 ---- */
   /* 札まとめ中（v188・v189）：止まってから札が一覧に出るまで。o＝{ owedAt, owedEta, rows, now } */

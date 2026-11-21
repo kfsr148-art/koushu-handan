@@ -243,7 +243,9 @@ function probeSource(scene) {
     }
     /* 釦の字 */
     var btn = document.getElementById('btnCopyBoard');
-    o.btn = txt(btn);
+    o.btn = btn ? (btn.getAttribute('aria-label') || txt(btn)) : '';   /* v211：見える字は二行（まとめて写す／N件）。字（todoLabel）は aria-label に入る */
+    o.cbTop = btn ? txt(btn.querySelector('.cb-top')) : ''; o.cbSub = btn ? txt(btn.querySelector('.cb-sub')) : ''; o.cbDisabled = btn ? !!btn.disabled : null; o.cbBg = btn ? getComputedStyle(btn).backgroundColor : '';
+    o.b8 = ['rcLink', 'doneBox', 'btnSteps', 'btnCopyBoard', 'btnShots', 'btnRecent', 'btnCopyUrl', 'btnPoint'].map(function (id) { var e = document.getElementById(id); if (!e) { return null; } var r = e.getBoundingClientRect(), cs = getComputedStyle(e); return { id: id, l: Math.round(r.left * 10) / 10, t: Math.round((r.top + window.scrollY) * 10) / 10, w: Math.round(r.width * 10) / 10, h: Math.round(r.height * 10) / 10, disp: cs.display, vis: cs.visibility, fs: cs.fontSize }; });   /* v211：底の八つの場所（文書の上からの座標） */
     o.btnRest = num(o.btn, /残(\d+)/);
     o.btnAll  = num(o.btn, /／(?:全)?(\d+)件/);
     /* 溢れと重なり */
@@ -813,19 +815,32 @@ function staticParts() {
   head('⑤の二十一 v207：三つ並び・一塊・新しい絵・短い一言と固定の見出し・時間は頭だけ（字面・作り値）');
   {
     const LF = String.fromCharCode(10), H = html.split(String.fromCharCode(13) + LF).join(LF);
-    /* 六十三：くわしくは遠隔・終わりましたと同じ段の三つ目。三行（#stLine）は並びのすぐ下。flex の指定で等分・字は折り返して収まる */
-    const iH = H.indexOf('<div class="halfrow" id="halfRow">'), iE = H.indexOf('</div>', H.indexOf('id="doneBox"')), iB = H.indexOf('id="btnSteps"'), iC = H.indexOf(LF + '  </div>', iE), iS = H.indexOf('<ul id="stLine" hidden>'), iD = H.indexOf('<ul id="doneList">');
-    if (iH > 0 && iB > iE && iB < iC && iS > iC && iD > iS && (H.match(/id="btnSteps"/g) || []).length === 1) { ok('くわしく（#btnSteps）は #halfRow の中の三つ目（遠隔→終わりました→くわしく）・三行は並びのすぐ下・一段まるごとの釦は無い'); } else { ng('くわしくの置き場が違う（' + [iH, iE, iB, iC, iS, iD].join('・') + '）'); }
-    const cssOk = H.indexOf('.halfrow > .cpall, .halfrow > .done-box{flex:1 1 30%; min-width:0;') >= 0 && /\.halfrow > \.cpall\.steps-t\{display:flex;[^}]*min-height:48px;[^}]*overflow-wrap:anywhere;[^}]*\}/.test(H) && H.indexOf('.halfrow > .cpall.steps-t.hide{display:none;}') >= 0;
-    if (cssOk) { ok('三つ並びの CSS：出ている物で等分（v208：flex:1 1 30%＝padding と縁の違いに依らず同じ基準の幅・min-width:0）・くわしくは高さ48px以上・字は折り返す（overflow-wrap:anywhere）・隠す時は消える'); } else { ng('三つ並びの CSS が無い／違う'); }
-    /* 字数の見積もり：320px の視野で一つの釦の幅＝(320−左右の余白28−隙間8×2)÷3＝92px。「くわしく」「とじる」は14px×4字＝56px＋左右4pxで収まる */
-    const bw = Math.floor((320 - 28 - 16) / 3), lw = Math.max('くわしく'.length, 'とじる'.length) * 14 + 8;
-    if (lw <= bw && H.indexOf("stB.textContent = stepsOpen ? 'とじる' : 'くわしく';") >= 0) { ok('320px でも「くわしく」（' + lw + 'px）は釦の幅（' + bw + 'px）に一行で収まる見積もり（390・375 はもっと広い）'); } else { ng('くわしくの字が釦の幅に収まらない見積もり（' + lw + '／' + bw + '）'); }
+    /* 六十三 → v211（本人の枠 七十八）：くわしくは上の段（#halfRow）の三つ目。三行（#stLine）・終わりましたの一覧（#doneList）は底の八つの下に開く */
+    const iH = H.indexOf('<div class="halfrow btn4row" id="halfRow">'), iE = H.indexOf('</div>', H.indexOf('id="doneBox"')), iB = H.indexOf('id="btnSteps"'), iC = H.indexOf(LF + '  </div>', iE), iSh = H.indexOf('<div class="shotsrow btn4row">'), iS = H.indexOf('<ul id="stLine" hidden>'), iD = H.indexOf('<ul id="doneList">');
+    if (iH > 0 && iB > iE && iB < iC && iSh > iC && iS > iSh && iD > iS && (H.match(/id="btnSteps"/g) || []).length === 1) { ok('くわしく（#btnSteps）は #halfRow の中の三つ目（遠隔→終わりました→くわしく→まとめて写す）・三行と一覧は底の八つの下・一段まるごとの釦は無い'); } else { ng('くわしくの置き場が違う（' + [iH, iE, iB, iC, iSh, iS, iD].join('・') + '）'); }
+    const cssOk = H.indexOf('.btn4row > .cpall, .btn4row > .done-box{flex:1 1 25%; min-width:0; width:auto; margin:0; box-sizing:border-box; min-height:72px;}') >= 0 && H.indexOf('.btn4row > .cpall.steps-t{margin:0; font-size:13px;}') >= 0 && /\.btn4row > \.cpall, \.btn4row > \.done-box > \.cpall\{display:flex;[^}]*font-size:13px;[^}]*overflow-wrap:anywhere;[^}]*\}/.test(H);
+    if (cssOk) { ok('四つ並びの CSS（v211）：flex:1 1 25%・min-width:0・box-sizing:border-box で四つ等分・高さ72px以上（359px 以下は88px）・字は13pxで折り返す（overflow-wrap:anywhere）・くわしくも同じ字の大きさ'); } else { ng('四つ並びの CSS が無い／違う'); }
+    /* 字数の見積もり：320px の視野で一つの釦の幅＝(320−左右の余白28−隙間8×3)÷4＝67px。「くわしく」「とじる」は13px×4字＝52px＋左右8pxで収まる */
+    const bw = Math.floor((320 - 28 - 24) / 4), lw = Math.max('くわしく'.length, 'とじる'.length) * 13 + 8;
+    if (lw <= bw && H.indexOf("stB.textContent = stepsOpen ? 'とじる' : 'くわしく';") >= 0) { ok('320px でも「くわしく」（' + lw + 'px）は四つ並びの釦の幅（' + bw + 'px）に一行で収まる見積もり（390・375 はもっと広い）'); } else { ng('くわしくの字が釦の幅に収まらない見積もり（' + lw + '／' + bw + '）'); }
     if (H.indexOf("$('btnSteps').addEventListener('click', function () { stepsOpen = !stepsOpen; paintStateLine(); });") >= 0 && H.indexOf('el.hidden = !(stepsOpen && rows.length);') >= 0) { ok('押した時の動き（完了・進行中・予定が開く／とじる）は今のまま'); } else { ng('くわしくの押した時の動きが変わった'); }
-    /* 六十五：ヨシ待ちの絵は yoshi-machi2-240.png（新しい名）。原版と前の絵は残す */
     const dir = path.dirname(SRC), ex = (n) => { try { return fs.statSync(path.join(dir, n)).size; } catch (e) { return 0; } };
     const png = (n) => { try { const b = fs.readFileSync(path.join(dir, n)); return b.readUInt32BE(16) + 'x' + b.readUInt32BE(20); } catch (e) { return ''; } };
-    if (H.indexOf("if (el.src.indexOf('yoshi-machi2-240') < 0) { el.src = 'yoshi-machi2-240.png'; }") >= 0 && H.indexOf("'genba-taiki-80.png', 'yoshi-machi2-240.png']") >= 0 && png('yoshi-machi2-240.png') === '240x240' && ex('yoshi-machi2_src.jpeg') > 0 && ex('yoshi-machi-240.png') > 0 && ex('yoshi-machi_src.jpeg') > 0) { ok('ヨシ待ちの絵は yoshi-machi2-240.png（240x240・' + ex('yoshi-machi2-240.png') + 'バイト）・原版 yoshi-machi2_src.jpeg と前の絵 yoshi-machi-240.png は残る'); } else { ng('ヨシ待ちの絵の置き方が違う（' + png('yoshi-machi2-240.png') + '・原版 ' + ex('yoshi-machi2_src.jpeg') + '・前の絵 ' + ex('yoshi-machi-240.png') + '）'); }
+    /* 六十五 → v211（本人の枠 七十三）：ヨシ待ちの猫は二枚を交互に（こぶし＝yoshi-machi-240.png・親指＝yoshi-machi2-soroe-240.png）。前の絵 yoshi-machi2-240.png と原版は残す */
+    if (H.indexOf('var YOSHI_FLIP_MS = 500;') >= 0 && H.indexOf("var YOSHI_FRAMES = ['yoshi-machi2-soroe-240.png', 'yoshi-machi-240.png'];") >= 0 && H.indexOf('var yf = YOSHI_FRAMES[Math.floor(Date.now() / YOSHI_FLIP_MS) % YOSHI_FRAMES.length];') >= 0 && H.indexOf('if (el.src.indexOf(yf) < 0) { el.src = yf; }') >= 0 && H.indexOf("'genba-taiki-80.png'], YOSHI_FRAMES)") >= 0 && png('yoshi-machi2-soroe-240.png') === '240x240' && png('yoshi-machi-240.png') === '240x240' && ex('yoshi-machi2-240.png') > 0 && ex('yoshi-machi2_src.jpeg') > 0 && ex('yoshi-machi_src.jpeg') > 0) { ok('ヨシ待ちの猫は二枚（yoshi-machi2-soroe-240.png・yoshi-machi-240.png・どちらも 240x240）を YOSHI_FLIP_MS＝500ms ごとに交互に・二枚とも先読み・前の絵と原版は残る'); } else { ng('ヨシ待ちの二枚の置き方が違う（' + png('yoshi-machi2-soroe-240.png') + '・' + png('yoshi-machi-240.png') + '・前の絵 ' + ex('yoshi-machi2-240.png') + '・原版 ' + ex('yoshi-machi2_src.jpeg') + '/' + ex('yoshi-machi_src.jpeg') + '）'); }
+    /* 二枚の揃い（画素）：RGB の差の和が60を超える画素が、手の所（x 25〜100・y 70〜140）の外に一つも無い＝字も猫の位置と大きさも同じ。切り替えて動くのは手だけ */
+    {
+      const zlib = require('zlib');
+      const dec = (n) => { const b = fs.readFileSync(path.join(dir, n)); let p = 8, w = 0, h = 0, ct = 0; const id = []; while (p < b.length) { const L = b.readUInt32BE(p), t = b.toString('ascii', p + 4, p + 8), d = b.slice(p + 8, p + 8 + L); if (t === 'IHDR') { w = d.readUInt32BE(0); h = d.readUInt32BE(4); ct = d[9]; if (d[8] !== 8 || d[12]) { throw new Error(n + '：8bit の非インタレースでない'); } } if (t === 'IDAT') { id.push(d); } p += 12 + L; }
+        const ch = { 2: 3, 6: 4 }[ct]; if (!ch) { throw new Error(n + '：色の型 ' + ct); } const raw = zlib.inflateSync(Buffer.concat(id)), st = w * ch, out = Buffer.alloc(h * st); let prev = Buffer.alloc(st);
+        for (let y = 0; y < h; y++) { const ft = raw[y * (st + 1)], cur = Buffer.alloc(st); for (let x = 0; x < st; x++) { const a = x >= ch ? cur[x - ch] : 0, u = prev[x], c = x >= ch ? prev[x - ch] : 0; let v = raw[y * (st + 1) + 1 + x]; if (ft === 1) { v += a; } else if (ft === 2) { v += u; } else if (ft === 3) { v += (a + u) >> 1; } else if (ft === 4) { const pp = a + u - c, pa = Math.abs(pp - a), pb = Math.abs(pp - u), pc = Math.abs(pp - c); v += (pa <= pb && pa <= pc) ? a : (pb <= pc ? u : c); } cur[x] = v & 255; } cur.copy(out, y * st); prev = cur; }
+        return { w, h, ch, d: out }; };
+      try {
+        const A = dec('yoshi-machi-240.png'), B = dec('yoshi-machi2-soroe-240.png'); let outN = 0, inN = 0;
+        for (let y = 0; y < A.h; y++) { for (let x = 0; x < A.w; x++) { const i = (y * A.w + x) * A.ch, j = (y * B.w + x) * B.ch; const df = Math.abs(A.d[i] - B.d[j]) + Math.abs(A.d[i + 1] - B.d[j + 1]) + Math.abs(A.d[i + 2] - B.d[j + 2]); if (df > 60) { if (x >= 25 && x <= 100 && y >= 70 && y <= 140) { inN++; } else { outN++; } } } }
+        if (A.w === B.w && A.h === B.h && outN === 0 && inN > 0) { ok('二枚の揃い（画素）：手の所の外で違う画素は 0（字・猫の位置・大きさが同じ）・手の所は ' + inN + ' 画素違う（こぶしと親指）'); } else { ng('二枚がずれている：手の所の外で違う画素 ' + outN + '（手の所 ' + inN + '・' + A.w + 'x' + A.h + '／' + B.w + 'x' + B.h + '）'); }
+      } catch (e) { ng('二枚の画素が読めない：' + e.message); }
+    }
     if (H.indexOf("el.src = 'genba-cat-80.png'") >= 0 && H.indexOf("'cat-sleep-w.png', 'genba-cat-80.png', 'genba-taiki-80.png'") >= 0) { ok('ほかの猫（作業中・待ち・指差し）の絵は今のまま'); } else { ng('ほかの猫の絵が変わった'); }
     /* 六十六：見出しの「返事パネル」は一行・固定幅・猫は 80x80 で縮まない・行の高さは 80px 固定 */
     const hOk = H.indexOf('<h1><span id="hTitle">返事パネル</span><img id="runcat"') >= 0 && /#hTitle\{flex:0 0 auto; white-space:nowrap; width:6em;/.test(H) && H.indexOf('h1{height:80px;') >= 0 && /#runcat\{width:80px; height:80px; flex:0 0 auto;/.test(H);
@@ -850,7 +865,7 @@ function staticParts() {
     }
     /* 六十九：使用量の三本（#usageTag・#usageMsg）はゲージの箱（#progBox）のすぐ下の兄弟（箱の中ではないので、箱が隠れても同じ場所に出る）・くわしくより上。見た目（.usage の CSS）は今のまま */
     {
-      const a = H.indexOf('<div class="progbox hide" id="progBox" data-pname="表の仕事と裏方のゲージの箱"></div>'), u = H.indexOf('<div class="usage" id="usageTag" hidden></div>'), m = H.indexOf('<p class="usage-msg" id="usageMsg" hidden></p>'), k = H.indexOf('id="btnSteps"'), sh = H.indexOf('<div class="shotsrow">');
+      const a = H.indexOf('<div class="progbox hide" id="progBox" data-pname="表の仕事と裏方のゲージの箱"></div>'), u = H.indexOf('<div class="usage" id="usageTag" hidden></div>'), m = H.indexOf('<p class="usage-msg" id="usageMsg" hidden></p>'), k = H.indexOf('id="btnSteps"'), sh = H.indexOf('<div class="shotsrow btn4row">');
       const between = (a >= 0 && u > a) ? H.slice(a, u).split('<!--').map((x, i) => i ? x.slice(x.indexOf('-->') + 3) : x).join('').split('<div class="progbox hide" id="progBox" data-pname="表の仕事と裏方のゲージの箱"></div>').join('').trim() : 'x';
       if (a >= 0 && u > a && m > u && k > m && sh > m && between === '' && (H.match(/id="usageTag"/g) || []).length === 1 && H.indexOf('.usage{display:flex; gap:8px; justify-content:center; align-items:flex-end;') >= 0) { ok('使用量の三本はゲージの箱のすぐ下（間に何も無い・箱の外なので箱が隠れても同じ場所）→ くわしく・ボタンの段より上・.usage の見た目は今のまま'); } else { ng('使用量の置き場が違う（' + [a, u, m, k, sh, JSON.stringify(between.slice(0, 40))].join('・') + '）'); }
     }
@@ -896,7 +911,7 @@ function staticParts() {
     const own = WR.filter(n => { const a = cutFn(H, n); return !a || a.indexOf(LF) >= 0 || a.indexOf('return core().' + n + '(') < 0; }).concat(Object.keys(WR2).filter(n => { const a = cutFn(H, n); return !a || a.indexOf('core().' + WR2[n] + '(') < 0; }));
     const pvOwn = WR.concat(Object.keys(WR2), ['todoList', 'todoLabel', 'workLate', 'uraGauge', 'stepLab', 'omoteGauge', 'cardArg']).filter(n => PVS.indexOf('function ' + n + '(') >= 0);
     if (!own.length && !pvOwn.length && PVS.indexOf("require(path.join(ROOT, 'panel-core.js'))") >= 0 && PV.core === PCORE) { ok('写しが無い：panel.html の ' + (WR.length + Object.keys(WR2).length) + ' の関数は panel-core.js への包みだけ・panel-view.js は panel-core.js を require して同じ名の関数を持たない'); } else { ng('写しが残っている（panel.html ' + own.join('・') + '／panel-view.js ' + pvOwn.join('・') + '）'); }
-    const lab = H.indexOf('b.textContent = core().todoLabel(n);') >= 0 && H.indexOf('b.textContent = core().todoLabel(0);') >= 0, ugo = H.indexOf("var ug = core().uraGauge(") >= 0 && H.indexOf('core().workLate(lastStat, lastStartedAt, lastMikomiRaw, nS)') >= 0 && H.indexOf('core().stepLab(d, n)') >= 0;
+    const lab = H.indexOf('var lab = core().todoLabel(n);') >= 0 && H.indexOf("b.setAttribute('aria-label', lab);") >= 0, ugo = H.indexOf("var ug = core().uraGauge(") >= 0 && H.indexOf('core().workLate(lastStat, lastStartedAt, lastMikomiRaw, nS)') >= 0 && H.indexOf('core().stepLab(d, n)') >= 0;
     if (lab && ugo) { ok('釦の字（todoLabel）・裏方のゲージ（uraGauge）・見込みを過ぎた赤（workLate）・段の小さい字（stepLab）もパネルは panel-core.js の物を使う（panelView の label・ura.panel・箱の eta・omote.panel.gauge と同じ）'); } else { ng('釦の字・裏方のゲージ・見込みの赤・段の字のどれかを panel.html が自分で組んでいる（' + [lab, ugo].join('・') + '）'); }
     /* 二、読み込みの道：<script src="panel-core.js?_v=<PANEL_VER>"> が一つ・本の <script> より前・panel-core.js の VER＝PANEL_VER・UMD・読めない時は一度だけ読み直す */
     const pv0 = (H.match(/var PANEL_VER = '([0-9]+)'/) || [])[1] || '', tag = '<script src="panel-core.js?_v=' + pv0 + '"></script>';
@@ -937,6 +952,37 @@ function staticParts() {
       const cpd = panelOf({ stat: '手待ち' }, [C4], [], [keyOf(C4)]), cpv = PV.panelView({ stat: '手待ち' }, [C4], [], NOW);
       if (cpd.left === 0 && cpv.left === 1 && /写した」印は含まない/.test(cpv.basis)) { ok('端末の写した印だけは端末の中（パネル 0件／panelView 1件）。panelView の basis にその旨が載る'); } else { ng('端末の写した印の扱いが違う：' + cpd.left + '／' + cpv.left); }
     }
+  }
+  /* ---- ⑤の二十六 v211（本人の枠 七十八・七十九）：底のボタンは四つ×二段の八つを一つの決め（.btn4row）で並べる／まとめて写すは隠さず上の段の四つ目／押し通知や板の行をボタンの上に足さない。
+     静かな部分（字面）。0件・1件・10件以上と押し通知の有無で八つの場所が動かないかは ⑤の二十六の二（ブラウザ・雲）が 390・375・320 で測る ---- */
+  head('⑤の二十六 v211：底の八つ（四つ×二段・同じ決め）・まとめて写すは常に出る・ボタンの上に知らせの行を足さない（字面）');
+  {
+    const LF = String.fromCharCode(10), H = html.split(String.fromCharCode(13) + LF).join(LF);
+    const blk = (open) => { const a = H.indexOf(open); if (a < 0) { return ''; } const b = H.indexOf(LF + '  </div>', a); return b > a ? H.slice(a, b) : ''; };
+    const ids = (t) => (t.match(/ id="[A-Za-z]+"/g) || []).map(x => x.slice(5, -1));
+    const hb = blk('<div class="halfrow btn4row" id="halfRow">'), sb = blk('<div class="shotsrow btn4row">');
+    const hi = ids(hb).filter(x => x !== 'halfRow'), si = ids(sb);
+    /* 一、八つの並び：上の段＝遠隔・終わりました（箱）・くわしく・まとめて写す、下の段＝写し取り一覧・直近・様子を写す・指さす。二つの段は続けて並ぶ（間は注だけ） */
+    const iHe = H.indexOf(LF + '  </div>', H.indexOf('<div class="halfrow btn4row" id="halfRow">')), iS = H.indexOf('<div class="shotsrow btn4row">');
+    const gap = (iHe > 0 && iS > iHe) ? H.slice(iHe + 9, iS).replace(/<!--[\s\S]*?-->/g, '').trim() : 'x';
+    if (hi.join(',') === 'rcLink,doneBox,doneHead,btnSteps,btnCopyBoard' && si.join(',') === 'btnShots,btnRecent,btnCopyUrl,btnPoint' && gap === '') { ok('八つ：上の段 遠隔→終わりました→くわしく→まとめて写す ／ すぐ下の段 写し取り一覧→直近に終わった仕事→様子を写す→指さす（二つの段の間に何も無い）'); } else { ng('八つの並びが違う（上 ' + hi.join(',') + '／下 ' + si.join(',') + '／間 ' + JSON.stringify(gap.slice(0, 40)) + '）'); }
+    /* 二、一つの決め：二つの段とも class に btn4row・中の四つは同じ指定（25%・border-box・min-height・13px）・折り返さない・隠す物は場所を取る */
+    const css = ['.btn4row{display:flex; flex-wrap:nowrap; gap:8px; margin:8px 14px 0; align-items:stretch;}', '.btn4row > .cpall, .btn4row > .done-box{flex:1 1 25%; min-width:0; width:auto; margin:0; box-sizing:border-box; min-height:72px;}', '.btn4row > a.cpall.rc{display:flex; padding:6px 4px; line-height:1.25;}', '.btn4row > .cpall.hide, .btn4row > a.cpall.rc.hide, .btn4row > .cpall.steps-t.hide, .btn4row > .done-box.hide{display:flex; visibility:hidden;}', '@media (max-width: 359px) { .btn4row > .cpall, .btn4row > .done-box{min-height:88px;} }'];
+    const missC = css.filter(c => H.indexOf(c) < 0);
+    const oldC = ['.halfrow > .cpall, .halfrow > .done-box{', '.shotsrow > .cpall{', '.shotsrow{flex-wrap:wrap;}'].filter(c => H.indexOf(c) >= 0);
+    if (!missC.length && !oldC.length && (H.match(/class="[^"]*btn4row[^"]*"/g) || []).length === 2) { ok('二つの段は同じ一つの決め（.btn4row：四つ等分 flex:1 1 25%・border-box・高さ72px以上（359px 以下は88px）・折り返さない・隠す物は visibility:hidden で場所を取る）・前の段ごとの指定（.halfrow／.shotsrow）は残っていない'); } else { ng('四つ並びの決めが揃っていない（無い ' + missC.length + '件：' + missC.map(c => c.slice(0, 30)).join('｜') + '／残る前の指定 ' + oldC.join('｜') + '）'); }
+    /* 三、まとめて写す：id は一つだけ・隠さない（hidden を立てない）・上「まとめて写す」下「N件」（0件は空で高さを取る）・0件は押せない普段の色・1件以上は青 */
+    const sc = cutFn(H, 'setCopyBoardLabel');
+    const cbOk = (H.match(/id="btnCopyBoard"/g) || []).length === 1 && sc.indexOf('b.hidden = true') < 0 && sc.indexOf('b.hidden = false;') >= 0 && sc.indexOf("b.innerHTML = '<span class=\"cb-top\">まとめて写す</span><span class=\"cb-sub\">' + (n > 0 ? esc(n + '件') : '') + '</span>';") >= 0 && sc.indexOf('b.disabled = !(n > 0);') >= 0
+      && H.indexOf('#btnCopyBoard .cb-sub{display:block; font-size:11px; line-height:14px; min-height:14px; min-width:3em;}') >= 0 && /#btnCopyBoard:disabled\{background:var\(--card\); color:var\(--fg\);\s*border-color:var\(--line\); opacity:1;/.test(H) && H.indexOf('#btnCopyBoard{background:#1e6fd9;') >= 0;
+    const l0 = PCORE.todoLabel(0), l1 = PCORE.todoLabel(1), l12 = PCORE.todoLabel(12);
+    if (cbOk && l0 === 'まとめて写す' && /^まとめて写す（残1／1件）$/.test(l1) && /残12／12件/.test(l12)) { ok('まとめて写す：一つだけ・隠さない・上「まとめて写す」下「N件」（0件は下の行を空のまま14pxの高さと3字の幅を取る）・0件は押せない普段の色／1件以上は青・字（aria-label・panelView.label）は todoLabel（0件「' + l0 + '」・1件「' + l1 + '」）'); } else { ng('まとめて写すの出し方が違う（字面 ' + cbOk + '・0件「' + l0 + '」・1件「' + l1 + '」）'); }
+    /* 四、押し通知と板の行をボタンの上に足さない（枠 七十九）：見出しの下の箱からボタンの段までの間に有るのは、決まった器だけ。目次（#todoList）は八つの下で、押し通知の行は塗らない。板・お知らせの一覧は画面に出さない */
+    const iP = H.indexOf('<div class="progbox hide" id="progBox"'), iHr = H.indexOf('<div class="halfrow btn4row" id="halfRow">');
+    const above = (iP > 0 && iHr > iP) ? ids(H.slice(iP, iHr).replace(/<!--[\s\S]*?-->/g, '')) : [];
+    const pt = cutFn(H, 'paintTodoList');
+    const t9 = above.join(',') === 'progBox,usageTag,usageMsg,pipeWarn,wakeWarn,kumoLine,btnCopyAll,list,board' && H.indexOf('#btnCopyAll, #list{display:none !important;}') >= 0 && H.indexOf('#board{display:none !important;}') >= 0 && H.indexOf('<ul id="todoList" class="todoList"></ul>') > iS && pt.indexOf("var a = mergedTodo().filter(function (m) { return m.kind === 'card'; });") >= 0 && pt.indexOf("'📣'") < 0;
+    if (t9) { ok('ボタンの上に知らせの行を足さない：見出しの下の箱からボタンの段までの器は ' + above.length + ' 個（決まった物だけ）・板（あなた待ち）とお知らせの一覧は画面に出さない・目次は八つの下で押し通知（📣）の行を塗らない'); } else { ng('ボタンの上に行が足され得る（間の器 ' + above.join(',') + '・目次の塗り ' + (pt.indexOf("m.kind === 'card'") >= 0) + '）'); }
   }
 }
 
@@ -1295,6 +1341,38 @@ try {
     if (!rp) { ng('測れない（直近の釦を押す）'); }
     else if (/直近に終わった仕事（2件）/.test(String(rp.recBefore || '')) && /^写した$/.test(String(rp.recAfter || '')) && /直近その一/.test(String(rp.recClip || '')) && /直近その二/.test(String(rp.recClip || ''))) { ok('直近に終わった仕事は箱ごと押して全文が写る（押す前「' + rp.recBefore + '」・押した後「' + rp.recAfter + '」）'); }
     else { ng('直近の釦を押しても写らない／字が違う（前「' + rp.recBefore + '」・後「' + rp.recAfter + '」・写し「' + String(rp.recClip || '').slice(0, 30) + '」）'); }
+  }
+  /* ---- ⑤の二十六の二 v211（本人の枠 七十八・七十九）：底の八つは、まとめて写すが0件・1件・10件以上の時も、押し通知が有る時も無い時も、場所が少しも動かない（390・375・320） ---- */
+  head('⑤の二十六の二 底の八つの場所は 0件・1件・10件以上・押し通知の有無で動かない（四つ×二段・同じ幅と高さ・iPhone の幅）');
+  {
+    const nE = Math.floor(Date.now() / 1000);
+    const base = Object.assign({}, ST['手待ち'], { at: nE, rcName: 'koushu-handan-93', rcPid: 6308, rcUrl: 'https://claude.ai/code/session_X' });
+    const cards = (k) => Array.from({ length: k }, (_, i) => N(nE - 900 + i * 10, '🔎 調べました', '作り値の札その' + (i + 1)));
+    const pushes = [{ time: nE - 300, at: '2026-11-22 04:00:00', title: '🪟 使用量の敷居（作り値）', parts: 1, body: '使用量の作り値' }, { time: nE - 200, at: '2026-11-22 04:01:40', title: '🙋 ヨシ待ち（作り値）', parts: 1, body: 'ヨシ待ちの作り値' }];
+    const CASES = [['0件', cards(0), [], ''], ['1件', cards(1), [], '1件'], ['12件', cards(12), [], '12件'], ['押し通知だけ', cards(0), pushes, '2件'], ['1件＋押し通知', cards(1), pushes, '3件']];
+    const near = (a, b) => Math.abs(a - b) <= 0.6;
+    for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
+      let first = null; const why = [];
+      for (const [nm, nt, pu, sub] of CASES) {
+        const r = run(tmp, { state: base, notices: nt, ntfy: pu, usage: U_OK, settle: 1500 }, w, h);
+        if (!r || !r.b8) { why.push(nm + '：測れない'); continue; }
+        if (r.b8.some(x => !x)) { why.push(nm + '：八つのどれかが無い'); continue; }
+        const b = r.b8, top = b.slice(0, 4), bot = b.slice(4);
+        if (r.cbTop !== 'まとめて写す' || r.cbSub !== sub) { why.push(nm + '：まとめて写すの字が違う（「' + r.cbTop + '」「' + r.cbSub + '」・期待「' + sub + '」）'); }
+        if (b[3].disp === 'none' || b[3].vis === 'hidden' || b[3].w < 1) { why.push(nm + '：まとめて写すが隠れた'); }
+        if (sub === '' && r.cbDisabled !== true) { why.push(nm + '：0件なのに押せる'); }
+        if (sub !== '' && (r.cbDisabled !== false || !/^rgb\(30, 111, 217/.test(String(r.cbBg)))) { why.push(nm + '：1件以上なのに青くない／押せない（' + r.cbBg + '）'); }
+        if (b.some(x => Math.abs(x.w - b[0].w) > 1)) { why.push(nm + '：八つの幅が揃わない（' + b.map(x => x.w).join('・') + '）'); }
+        if (top.some(x => !near(x.t, top[0].t) || !near(x.h, top[0].h)) || bot.some(x => !near(x.t, bot[0].t) || !near(x.h, bot[0].h))) { why.push(nm + '：段の中で高さが揃わない（上 ' + top.map(x => x.t + '/' + x.h).join('・') + '／下 ' + bot.map(x => x.t + '/' + x.h).join('・') + '）'); }
+        if (Math.abs(top[0].h - bot[0].h) > 1) { why.push(nm + '：上の段と下の段の高さが違う（' + top[0].h + '・' + bot[0].h + '）'); }
+        if (Math.abs((top[0].t + top[0].h + 8) - bot[0].t) > 1) { why.push(nm + '：二つの段が続いていない（上の段の下 ' + (top[0].t + top[0].h) + '・下の段の上 ' + bot[0].t + '）'); }
+        if (top[0].h < 44 || b.some(x => x.w < 44)) { why.push(nm + '：当たりが44px未満'); }
+        if (b.some(x => x.id !== 'doneBox' && x.fs !== '13px')) { why.push(nm + '：字の大きさが揃わない（' + b.map(x => x.fs).join('・') + '）'); }
+        if (r.btnOver) { why.push(nm + '：画面が横に溢れる'); }
+        if (!first) { first = { nm, b }; } else { const mv = b.filter((x, i) => !near(x.l, first.b[i].l) || !near(x.t, first.b[i].t) || !near(x.w, first.b[i].w) || !near(x.h, first.b[i].h)); if (mv.length) { why.push(nm + '：' + first.nm + 'の時から動いた（' + mv.map(x => x.id + ' ' + [x.l, x.t, x.w, x.h].join(',')).join('｜') + '）'); } }
+      }
+      if (why.length) { ng(w + 'x' + h + '：' + why.join('／')); } else { ok(w + 'x' + h + '：' + CASES.map(c => c[0]).join('・') + ' の五つで、八つの場所と大きさが同じ（幅 ' + first.b[0].w + 'px・高さ ' + first.b[0].h + 'px・上の段の上 ' + first.b[0].t + '・下の段の上 ' + first.b[4].t + '）・まとめて写すは常に出て 0件は字だけ／1件以上は N件と青'); }
+    }
   }
   /* ---- ⑤の二十二 見出しが動かない（v207・本人の枠 六十六）：どの一言の時も「返事パネル」と猫の位置・大きさが同じ（iPhone の幅・ブラウザ） ---- */
   head('⑤の二十二 見出しの「返事パネル」と猫は、頭の字がどの一言でも同じ位置・同じ大きさ（iPhone の幅）');
