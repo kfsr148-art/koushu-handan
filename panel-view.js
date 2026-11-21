@@ -52,11 +52,25 @@ function boxSpec(E, U, k) {
   var tot = Math.max(0, Number(x.seg.total) | 0), dn = Math.max(0, Math.min(tot, Number(x.seg.done) | 0)), run = Math.max(0, Math.min(tot - dn, Number(x.seg.run) | 0));
   var cut = function (t, n) { t = s(t).split(String.fromCharCode(10)).join(' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; };
   var left = function (y) { var g = (y && y.seg) || {}; return Math.max(0, (Number(g.total) | 0) - (Number(g.done) | 0)); };
+  /* v206（本人の枠 六十一）：束（endat.js）が動いている裏方を数え損ねても、state.json の ura で今動いている本数（下請け＝sub.running と items の多い方＋雲の running）に足りない分は、青い区切りとして後ろに足し M を増やす。全部の箱の区切りと「裏方 残りN」にも入れる。 */
+  var a = function (v) { return Array.isArray(v) ? v : []; }, Uo = (U && typeof U === 'object') ? U : {}, So = Uo.sub || {}, Co = Uo.cloud || {};
+  var uLive = Math.max(Math.max(0, Number(So.running) | 0), a(So.items).length) + a(Co.running).length;
+  var ug = (E.ura && E.ura.seg) || {}, uT = Math.max(0, Number(ug.total) | 0), uD = Math.max(0, Math.min(uT, Number(ug.done) | 0)), uR = Math.max(0, Math.min(uT - uD, Number(ug.run) | 0)), uAdd = Math.max(0, uLive - uR);
+  if (k === 'ura') { tot = uT + uAdd; dn = uD; run = uR + uAdd; } else if (k === 'all') { tot += uAdd; run += uAdd; }
   var now = '';
   if (k === 'omote') { var c = x.cur || {}, w = x.wait || {}; now = c.job ? cut(c.job, 30) : (Number(w.n) > 0 ? '順番待ち ' + Number(w.n) + '件' : ''); }
-  else if (k === 'ura') { var a = function (v) { return Array.isArray(v) ? v : []; }, Uo = (U && typeof U === 'object') ? U : {}, o = []; a((Uo.sub || {}).items).forEach(function (y) { o.push('下請け・' + (s(y.desc) || '名なし')); }); a((Uo.cloud || {}).running).forEach(function (y) { o.push('雲・' + (s(y.name) || '名なし')); }); now = cut(o.join('、'), 40); }
-  else { now = '表の仕事 残り' + left(E.omote) + '・裏方 残り' + left(E.ura); }
-  return { k: (k === 'all') ? '全部' : ((k === 'ura') ? '裏方' : '表の仕事'), done: dn, run: run, total: tot, now: now, endSec: Number(x.endSec) || 0, endAt: s(x.endAt), over: !!x.over };
+  else if (k === 'ura') { var o = []; a(So.items).forEach(function (y) { o.push('下請け・' + (s(y.desc) || '名なし')); }); a(Co.running).forEach(function (y) { o.push('雲・' + (s(y.name) || '名なし')); }); now = cut(o.join('、'), 40); }
+  else { now = '表の仕事 残り' + left(E.omote) + '・裏方 残り' + (uT + uAdd - uD); }
+  return { k: (k === 'all') ? '全部' : ((k === 'ura') ? '裏方' : '表の仕事'), done: dn, run: run, total: tot, now: now, endSec: Number(x.endSec) || 0, endAt: s(x.endAt), over: !!x.over, lab: (k === 'ura') ? (dn + '/' + tot) : '' };
+}
+// v206（2026-11-22・本人の枠 五十八）：「待ち」でも下請けか雲が動いている間の頭の字。panel.html の uraBusyText と一字も違わない写し（⑤の十六・⑤の二十）。
+function uraBusyText(U, det) {
+  var a = function (x) { return Array.isArray(x) ? x : []; }; U = (U && typeof U === 'object') ? U : {};
+  var S = U.sub || {}, C = U.cloud || {};
+  var ns = Math.max(Math.max(0, Number(S.running) | 0), a(S.items).length), nc = Array.isArray(C.running) ? C.running.length : Math.max(0, Number(C.running) | 0);
+  if (!(ns > 0 || nc > 0)) { return ''; }
+  var d = String(det || ''), i = d.indexOf('次「');
+  return '裏方作業中、、、。（下請け ' + ns + '本・雲 ' + nc + '本）' + (i >= 0 ? '・' + d.slice(i) : '');
 }
 function uraLines(U) {
   if (!U || typeof U !== 'object') { return ['裏方：state.json に載っていない']; }
@@ -70,6 +84,7 @@ function uraLines(U) {
   return o;
 }
 
+// v206（本人の枠 六十二）：noEstimate＝作業中なのに窓が見込み（分の数）を書いていない。パネルの箱には赤い「見込み未記入」を出さず、ここ（state.json の panelView）にだけ残す。
 // 材料 d＝state.json の中身、notices＝notices.json（配列）、ntfySent＝ntfy-sent.json（配列）、now＝epoch 秒
 function panelView(d, notices, ntfySent, now) {
   d = d || {}; now = now || Math.floor(Date.now() / 1000);
@@ -106,7 +121,7 @@ function panelView(d, notices, ntfySent, now) {
     if (/^止まり/.test(lastStat)) { return lastStat; }
     if (lastStat === '動きなし') { return '動きなし（最後の動き ' + (lastEvAt ? hm(lastEvAt) : '不明') + '）'; }
     if (lastStat === '検査中') { return '検査中：' + (lastDetail || '雲の走り'); }
-    if (lastStat === '待ち') { return '待ち：' + (lastDetail || '訳不明'); }
+    if (lastStat === '待ち') { const ub = uraBusyText(d.ura, lastDetail); return ub || ('待ち：' + (lastDetail || '訳不明')); }
     if (lastStat === '作業中') { return lastDetail ? ('作業中、、、。（' + lastDetail + '）') : '作業中、、、。'; }
     if (running && /^検査中：/.test(lastCloud)) { return lastCloud; }
     if (running) { const wx = [lastCloud, (/^裏で手伝い/.test(lastHelp) ? lastHelp : '')].filter(Boolean).join('・'); return wx ? ('作業中、、、。（' + wx + '）') : '作業中、、、。'; }
@@ -116,7 +131,7 @@ function panelView(d, notices, ntfySent, now) {
     if (left > 0) { return 'まとめて写すヨシ！'; }
     return '待機中、、、。';
   };
-  return { head: head(), label: left > 0 ? ('まとめて写す（残' + left + '／' + left + '件）') : 'まとめて写す（0件）', left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), omote: omoteView(d), ura: uraView(d), all: allView(d), at: now };
+  return { head: head(), label: left > 0 ? ('まとめて写す（残' + left + '／' + left + '件）') : 'まとめて写す（0件）', left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), noEstimate: (lastStat === '作業中' && !/[0-9]/.test(String(d.mikomi == null ? '' : d.mikomi))), omote: omoteView(d), ura: uraView(d), all: allView(d), at: now };
 }
 // v203（枠 五十）：omote／ura は {lines（様子を写すと同じ字。パネルの画面には出さない）, endAt（HH:MM・JST）, endSec, src（元の数の一言）, 元の数…}。E は d.eta（endat.js）。
 // v204（枠 五十一）：panel＝パネルの箱が今出している物だけ（gauge＝ゲージの横の小さい字・end＝「全部終わる見込み HH:MM」の一行。裏方は done／run も）。src・始まり・lines は state.json の中だけ。
@@ -136,7 +151,7 @@ function allView(d) {
   return Object.assign({}, (E && E.all) || {}, { panel: { box: boxSpec(E, d.ura, 'all') } });
 }
 
-module.exports = { panelView, senkoEpoch, omoteLines, uraLines, endLine, endShort, uraCount, boxSpec };
+module.exports = { panelView, senkoEpoch, omoteLines, uraLines, endLine, endShort, uraCount, boxSpec, uraBusyText };
 
 if (require.main === module) {
   // 使い方：node panel-view.js <state.json の道> [<出し先の道>]  出し先が無ければ標準出力（PowerShell の文字化けを避けるため、見張りは道を渡す）
