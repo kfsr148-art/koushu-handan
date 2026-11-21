@@ -1,0 +1,11 @@
+'use strict';
+process.env.QS = process.env.QS || '0,1';
+const fs = require('fs');
+const S = require('./sim1514.js');
+const R = 'C:/Users/user/Desktop/mahjong/koushu-handan';
+const C = require(R + '/advice-tone-core.js');
+const names = {};
+S.each(function (r, c) { r.items.forEach(function (x) { const p = c.lines[x.li] && c.lines[x.li][x.ti]; if (x.conn || x.changed || (p && p.lit)) names[C.advDialVoice(x.text)] = x.text; }); });
+const root = new Set(fs.readdirSync(R).filter(f => /^advy-.*\.m4a$/.test(f)).map(f => f.slice(0, -4)));
+const miss = Object.keys(names).filter(k => !root.has(k));
+console.log(process.env.TONE, process.env.DIAL, 'full miss', miss.length, miss.reduce((a, k) => a + names[k].length, 0));
