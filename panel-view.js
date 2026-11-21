@@ -17,6 +17,30 @@ function hm(sec) { const d = new Date(sec * 1000); return pad2(d.getHours()) + '
 function newestTime(arr) { let t = 0; (arr || []).forEach(d => { if ((d.time || 0) > t) { t = d.time || 0; } }); return t; }
 function isCountCard(d) { return /^写せます（[0-9]+件）$/.test(String((d && d.message) || '').trim()); }
 
+// v202（2026-11-21・枠 四十六の三・四十八）：表の仕事と裏方の行。panel.html の omoteLines・uraLines と一字も違わない写し（⑤の十七が字面を突き合わせる）。
+function omoteLines(o) {
+  o = o || {}; var s = function (v) { return String(v == null ? '' : v); };
+  var hm = function (sec) { var d = new Date((Number(sec) + 9 * 3600) * 1000); return ('0' + d.getUTCHours()).slice(-2) + ':' + ('0' + d.getUTCMinutes()).slice(-2); };
+  var subj = s(o.subj).trim(), stat = s(o.stat).trim(), st = Number(o.startedAt) || 0, mk = s(o.mikomi).match(/([0-9]+)/), mn = mk ? parseInt(mk[1], 10) : 0;
+  var fm = subj.match(/(?:橋の)?枠[ 　]*[一二三四五六七八九十百〇零0-9A-Za-z]+/);
+  var tot = Number(o.stepTotal) || 0, dn = Number(o.stepDone) || 0, now = s(o.sNow).trim();
+  return ['表の仕事：' + (subj || 'なし') + (stat ? '（' + stat + '）' : ''),
+    '枠：' + (fm ? fm[0] : '件名に枠の番号なし'),
+    '段：' + ((now && tot > 0) ? (Math.min(tot, dn + 1) + '/' + tot + '　' + now) : 'なし'),
+    '始まり：' + (st > 0 ? hm(st) : '不明') + '・見込みの終わり：' + ((st > 0 && mn > 0) ? hm(st + mn * 60) : (/不明/.test(s(o.mikomi)) ? '不明' : '未記入'))];
+}
+function uraLines(U) {
+  if (!U || typeof U !== 'object') { return ['裏方：state.json に載っていない']; }
+  var o = [], S = U.sub || {}, C = U.cloud || {}, a = function (x) { return Array.isArray(x) ? x : []; }, s = function (v) { return String(v == null ? '' : v); };
+  var it = a(S.items);
+  if (it.length) { it.forEach(function (x) { o.push('下請け 動作中：' + s(x.start) + '〜　' + s(x.desc) + (x.type ? '（' + s(x.type) + '）' : '')); }); } else { o.push('下請け：動いていない'); }
+  a(S.recent).forEach(function (x) { o.push('下請け ' + (s(x.state) || '済') + '：' + s(x.start) + '〜' + s(x.end) + '　' + s(x.desc)); });
+  var rn = a(C.running);
+  if (rn.length) { rn.forEach(function (x) { o.push('雲 ' + (s(x.state) || '走行中') + '：' + s(x.at) + '〜　' + s(x.name) + ((x.title && x.title !== x.name) ? '「' + s(x.title) + '」' : '')); }); } else { o.push('雲：走っていない'); }
+  a(C.recent).forEach(function (x) { o.push('雲 ' + (s(x.state) || '済') + '：' + s(x.at) + '〜' + s(x.upd) + '　' + s(x.name) + (x.failStep ? '（落ちた段：' + s(x.failStep) + '）' : '')); });
+  return o;
+}
+
 // 材料 d＝state.json の中身、notices＝notices.json（配列）、ntfySent＝ntfy-sent.json（配列）、now＝epoch 秒
 function panelView(d, notices, ntfySent, now) {
   d = d || {}; now = now || Math.floor(Date.now() / 1000);
@@ -63,15 +87,17 @@ function panelView(d, notices, ntfySent, now) {
     if (left > 0) { return 'まとめて写すヨシ！'; }
     return '待機中、、、。';
   };
-  return { head: head(), label: left > 0 ? ('まとめて写す（残' + left + '／' + left + '件）') : 'まとめて写す（0件）', left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), at: now };
+  return { head: head(), label: left > 0 ? ('まとめて写す（残' + left + '／' + left + '件）') : 'まとめて写す（0件）', left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), omote: omoteLines({ stat: d.stat, subj: d.subj, sNow: d.sNow, stepDone: d.stepDone, stepTotal: d.stepTotal, startedAt: d.startedAt, mikomi: d.mikomi }), ura: uraLines(d.ura), at: now };
 }
 
-module.exports = { panelView, senkoEpoch };
+module.exports = { panelView, senkoEpoch, omoteLines, uraLines };
 
 if (require.main === module) {
   // 使い方：node panel-view.js <state.json の道> [<出し先の道>]  出し先が無ければ標準出力（PowerShell の文字化けを避けるため、見張りは道を渡す）
   const rd = (f) => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, f), 'utf8').replace(/^﻿/, '')); } catch (e) { return []; } };
   let d = {}; try { d = JSON.parse(fs.readFileSync(process.argv[2], 'utf8').replace(/^﻿/, '')); } catch (e) { }
+  // v202：見張りは ura（裏方）を panelView の後に足すので、state に ura が無ければ見張りの控え（~/.claude/ura-out.json＝一つ前の巡回の物）を読む
+  if (!d.ura) { try { d.ura = JSON.parse(fs.readFileSync(path.join(require('os').homedir(), '.claude', 'ura-out.json'), 'utf8').replace(/^﻿/, '')); } catch (e) { } }
   const out = JSON.stringify(panelView(d, rd('notices.json'), rd('ntfy-sent.json')));
   if (process.argv[3]) { fs.writeFileSync(process.argv[3], out, 'utf8'); } else { process.stdout.write(out); }
 }

@@ -546,6 +546,34 @@ function staticParts() {
       if (/senkoReadAt/.test(pvc.basis)) { ok('中身に「センコの読みだけで数えた」の一言が入る'); } else { ng('basis が無い'); }
     }
   }
+  /* ---- ⑤の十七 表の仕事と裏方（v202・枠 四十六の三・四十七・四十八）：三行は釦に畳む・跡に表の仕事と裏方・panel-view.js と同じ字 ---- */
+  head('⑤の十七 表の仕事と裏方（三行は釦に畳む・panel-view.js と字面も出す字も同じ）');
+  {
+    const H = html.split(String.fromCharCode(13) + String.fromCharCode(10)).join(String.fromCharCode(10));
+    const PVS = fs.readFileSync(path.join(path.dirname(SRC), 'panel-view.js'), 'utf8').split(String.fromCharCode(13) + String.fromCharCode(10)).join(String.fromCharCode(10));
+    const norm = (t) => t.split(String.fromCharCode(10)).map(l => l.replace(/^ +/, '')).join(String.fromCharCode(10)).trim();
+    const cut = (src, n, ind) => { const a = src.indexOf(ind + 'function ' + n + '('); if (a < 0) { return ''; } const b = src.indexOf(String.fromCharCode(10) + ind + '}', a); return (b > a) ? src.slice(a, b + ind.length + 2) : ''; };
+    const PV = require(path.join(path.dirname(SRC), 'panel-view.js'));
+    ['omoteLines', 'uraLines'].forEach(n => { const a = cut(H, n, '  '), b = cut(PVS, n, ''); if (!a || !b) { ng(n + ' が拾えない（panel.html ' + !!a + '／panel-view.js ' + !!b + '）'); } else if (norm(a) !== norm(b)) { ng(n + ' の字面が panel.html と panel-view.js で違う'); } else { ok(n + ' は panel.html と panel-view.js で字面が同じ'); } });
+    const fo = new Function(cut(H, 'omoteLines', '  ') + String.fromCharCode(10) + 'return omoteLines;')(), fu = new Function(cut(H, 'uraLines', '  ') + String.fromCharCode(10) + 'return uraLines;')();
+    const ST0 = Date.parse('2026-11-21T23:42:00+09:00') / 1000;
+    const O1 = { stat: '作業中', subj: '枠 四十三：守りの線を本体へ', sNow: '本体の工事', stepDone: 2, stepTotal: 7, startedAt: ST0, mikomi: '150分' };
+    const U1 = { sub: { running: 1, items: [{ id: 'a', type: 'general-purpose', desc: 'パネルを一度で仕上げる', start: '23:39' }], recent: [{ id: 'b', desc: '裏方の進み', start: '23:38', end: '23:38', state: '終' }] }, cloud: { running: [{ id: 1, name: '自動検査と配信', title: '声の台帳', at: '23:37', upd: '23:37', state: '走行中' }], recent: [{ id: 2, name: '自動検査と配信', title: '自動検査と配信', at: '23:28', upd: '23:32', state: '落ちた', failStep: '速い版' }, { id: 3, name: '声をm4aで作る', title: '声をm4aで作る', at: '23:01', upd: '23:06', state: '成功' }] } };
+    const o1 = fo(O1).join('|'), u1 = fu(U1).join('|');
+    const wantO = '表の仕事：枠 四十三：守りの線を本体へ（作業中）|枠：枠 四十三|段：3/7　本体の工事|始まり：23:42・見込みの終わり：02:12';
+    if (o1 === wantO) { ok('表の仕事：枠・段 N/M・始まりと見込みの終わり（日本の時計）'); } else { ng('表の仕事の字が違う：' + o1); }
+    const wantU = '下請け 動作中：23:39〜　パネルを一度で仕上げる（general-purpose）|下請け 終：23:38〜23:38　裏方の進み|雲 走行中：23:37〜　自動検査と配信「声の台帳」|雲 落ちた：23:28〜23:32　自動検査と配信（落ちた段：速い版）|雲 成功：23:01〜23:06　声をm4aで作る';
+    if (u1 === wantU) { ok('裏方：下請けと雲を一本ずつ、state.json の刻のまま'); } else { ng('裏方の字が違う：' + u1); }
+    const e1 = fu(null).join('|'), e2 = fu({ sub: {}, cloud: {} }).join('|'), e3 = fo({}).join('|');
+    if (/載っていない/.test(e1) && e2 === '下請け：動いていない|雲：走っていない' && /表の仕事：なし\|枠：件名に枠の番号なし\|段：なし\|始まり：不明・見込みの終わり：未記入/.test(e3)) { ok('材料が無い時はその旨（空にしない）'); } else { ng('材料が無い時の字が違う：' + [e1, e2, e3].join(' ／ ')); }
+    if (/分前|Date\.now/.test(cut(H, 'uraLines', '  ') + cut(H, 'omoteLines', '  '))) { ng('表の仕事・裏方に「何分前」や今の刻が入っている（state.json の指紋が変わる）'); } else { ok('表の仕事・裏方は今の刻を使わない（何分前を出さない）'); }
+    const pv = PV.panelView(Object.assign({ ura: U1 }, O1), [], [], 1795280000);
+    if (Array.isArray(pv.omote) && pv.omote.join('|') === wantO && Array.isArray(pv.ura) && pv.ura.join('|') === wantU) { ok('panelView に omote・ura が入り、panel.html と同じ字'); } else { ng('panelView の omote・ura が違う：' + JSON.stringify({ omote: pv.omote, ura: pv.ura })); }
+    const iW = H.indexOf('id="workBox"'), iO = H.indexOf('id="omoteBox"'), iU = H.indexOf('id="uraBox"'), iB = H.indexOf('id="btnSteps"'), iS = H.indexOf('<ul id="stLine" hidden>');
+    if (iW > 0 && iO > iW && iU > iO && iB > iU && iS > iB) { ok('並び：表の仕事 → 裏方 → 三行を開く釦 → 三行（ふだんは hidden）'); } else { ng('表の仕事・裏方・釦・三行の並びか hidden が違う（' + [iW, iO, iU, iB, iS].join('・') + '）'); }
+    if (H.indexOf("el.hidden = !(stepsOpen && rows.length);") >= 0 && H.indexOf("$('btnSteps').addEventListener('click'") >= 0) { ok('三行は釦を押した時だけ開く'); } else { ng('三行の開け閉めの手が無い'); }
+    if (H.indexOf("lastUra = (d.ura && typeof d.ura === 'object') ? d.ura : null;") >= 0) { ok('state.json の ura を読む'); } else { ng('state.json の ura を読んでいない'); }
+  }
 }
 
 if (!BROWSER) {
@@ -1279,21 +1307,25 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     let txt = '';
     try {
       const wi = H.indexOf('  function waitListLines('), wj = (wi >= 0) ? H.indexOf(String.fromCharCode(10) + '  }', wi) : -1; const wlsrc = (wi >= 0 && wj > wi) ? H.slice(wi, wj + 4) : '';   // v197：statusText が使う waitListLines も一緒に切り出す
-      const fn = new Function('headText', 'lastSubj', 'lastState', 'lastEvName', 'lastEvAt', 'lastRcName', 'lastRcPid', '$', 'allRows', 'PANEL_VER', 'copySrcUrl', 'nowLine', wlsrc + '\n' + body + '\nreturn statusText();');
+      const cutF = (n) => { const a = H.indexOf('  function ' + n + '('), b = (a >= 0) ? H.indexOf(String.fromCharCode(10) + '  }', a) : -1; return (a >= 0 && b > a) ? H.slice(a, b + 4) : ''; };   // v202：表の仕事と裏方の組み立ても一緒に切り出す
+      const oml = H.slice(H.indexOf('  function omoteNow('), H.indexOf(String.fromCharCode(10), H.indexOf('  function omoteNow(')));
+      const fn0 = new Function('headText', 'lastSubj', 'lastState', 'lastEvName', 'lastEvAt', 'lastRcName', 'lastRcPid', '$', 'allRows', 'PANEL_VER', 'copySrcUrl', 'nowLine', 'lastStat', 'lastSNow', 'lastStepDone', 'lastStepTotal', 'lastStartedAt', 'lastMikomiRaw', 'lastUra', wlsrc + '\n' + cutF('omoteLines') + '\n' + cutF('uraLines') + '\n' + oml + '\n' + body + '\nreturn statusText();');
+      const URA0 = { sub: { running: 1, items: [{ id: 'a1', type: 'general-purpose', desc: '作り値の下請け', start: '23:39' }], recent: [] }, cloud: { running: [], recent: [{ id: 9, name: '自動検査と配信', title: '自動検査と配信', at: '23:28', upd: '23:32', state: '落ちた', failStep: '速い版' }] } };
+      const fn = function () { const a = [].slice.call(arguments); return fn0.apply(null, a.concat(['作業中', '作り値の段', 1, 4, 1795089000, '30分', URA0])); };
       const URL1 = 'https://kfsr148-art.github.io/koushu-state/notices-1795089000.json';
       txt = fn(() => '待機中', '作り値の件名', { at: 1795090000 }, 'idle_prompt', 1795089990, 'koushu-handan-93', 6308, id => els[id] || null,
         [{ time: 1795080000, title: '✅ 古い札' }, { time: 1795089000, title: '👀 作り値の新しい札' }], '179', URL1, () => '現況：待機中 ／ 本体v1508 ／ stable v1507 ／ 最終確認23:20');
-      if (txt.split(String.fromCharCode(10))[0] !== URL1 || txt.split(String.fromCharCode(10))[1].indexOf('現況：') !== 0) { ng('様子を写す … 頭が「写す」と同じ形（notices-<刻>.json の番地＋現況の行）でない'); return; }
+      if (txt.split(String.fromCharCode(10))[0].indexOf('現況：') !== 0 || txt.indexOf('notices-') >= 0) { ng('様子を写す … 頭が現況の行でない／番地（notices-<刻>.json）が残っている（v202 で外した）'); return; }
       const txt0 = fn(() => '待機中', '', { at: 1795090000 }, '', 0, '', 0, () => null, [], '179', URL1, () => '現況：待機中');
       if (txt0.indexOf('一番新しい札：なし') < 0) { ng('様子を写す … 札が0件の時に写せない'); return; }
     } catch (e) { ng('様子を写す … statusText が回らない：' + e.message); return; }
-    const want = [['番地', 'notices-1795089000.json'], ['現況の行', '現況：待機中 ／ 本体v'], ['状態', '状態：待機中／作り値の件名'], ['最終確認', '最終確認23:20'], ['最後の合図と刻', '最後の合図：idle_prompt（'], ['遠隔の名と pid', '遠隔：koushu-handan-93・pid 6308'], ['赤い行', '赤い行：止まっとるかも：作り値の赤い行'], ['一番新しい札の刻と題', '「👀 作り値の新しい札」'], ['押した刻', '押した刻：']];
+    const want = [['表の仕事', '表の仕事：作り値の件名（作業中）'], ['段', '段：2/4　作り値の段'], ['始まりと見込みの終わり', '始まり：'], ['裏方の下請け', '下請け 動作中：23:39〜　作り値の下請け'], ['裏方の雲', '雲 落ちた：23:28〜23:32　自動検査と配信（落ちた段：速い版）'], ['現況の行', '現況：待機中 ／ 本体v'], ['状態', '状態：待機中／作り値の件名'], ['最終確認', '最終確認23:20'], ['最後の合図と刻', '最後の合図：idle_prompt（'], ['遠隔の名と pid', '遠隔：koushu-handan-93・pid 6308'], ['赤い行', '赤い行：止まっとるかも：作り値の赤い行'], ['一番新しい札の刻と題', '「👀 作り値の新しい札」'], ['押した刻', '押した刻：']];
     const miss = want.filter(w => txt.indexOf(w[1]) < 0).map(w => w[0]);
     const cp = H.slice(H.indexOf('  function copyUrl(btn) {'), H.indexOf('  function copyWait(btn)'));
     if (miss.length) { ng('様子を写す … 字に無い：' + miss.join('・')); }
     else if (cp.indexOf('var text = statusText();') < 0 || cp.indexOf('writeText(text)') < 0) { ng('様子を写す … 写す手が押した直後に statusText() を組んで写していない'); }
     else if (/raw\.githubusercontent|notices\.json/.test(cp) || H.indexOf('>URLを写す<') >= 0 || H.indexOf('>様子を写す<') < 0) { ng('様子を写す … 固定名の番地か前の釦の名が残っている'); }
-    else { ok('様子を写すは番地＋現況の行＋六つを同期で字にして写す（札0件でも写せる）'); }
+    else { ok('様子を写すは現況の行（番地なし）＋表の仕事＋裏方＋六つを同期で字にして写す（札0件でも写せる）'); }
   })();
   /* 版の三箇所（作法4）。ここも字面で切り出す。 */
   function pick(src, head, tail) {
