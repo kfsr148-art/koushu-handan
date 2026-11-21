@@ -1,0 +1,568 @@
+人格	方言	種類	部品id	字	元の有無	標準を残す印	入れる字	注
+butler	std	①	adva-head	攻めでございます。	元あり	残す	攻めでございます。	
+butler	std	②	advc-butler-d-t-0	押せば、後悔なさいますよ。	元あり	残す	押せば、後悔なさいますよ。	
+butler	std	③	advc-butler-a-n-0	参りましょう。	元あり	残す	参りましょう。	
+butler	std	④	advc-butler-d-t-2	危ないことはおやめなさいませ。	元あり	残す	危ないことはおやめなさいませ。	
+butler	std	⑤	advd-kyu	九種九牌でございますから、流すのが基本でございます。	元あり	残す	九種九牌でございますから、流すのが基本でございます。	
+butler	std	⑥	advc-butler-d-t-1	わたくしの申すことをお聞きなさいませ。	元あり	残す	わたくしの申すことをお聞きなさいませ。	
+butler	std	⑦	advc-butler-a-d-0	食事の段どりと同じく、精一杯お供いたします。	色	替える	食事の段どりと同じく、精一杯お供いたします。	枠二十九の三
+butler	std	大物	-	銀器も霞むほどの大物でございます！	色	替える	銀器も霞むほどの大物でございます！	
+butler	std	惜しむ	-	招待客をお見送りするような名残惜しさでございます。	色	替える	招待客をお見送りするような名残惜しさでございます。	
+butler	miyazaki	①	adva-head	攻めでござんす。	元あり	-	攻めでござんす。	
+butler	miyazaki	②	advc-butler-d-t-0	押せば、網を破った網子のように後悔なさいますよ。	色	-	押せば、網を破った網子のように後悔なさいますよ。	
+butler	miyazaki	③	advc-butler-a-n-0	網子の舟出のように、参りましょう。	色	-	網子の舟出のように、参りましょう。	
+butler	miyazaki	④	advc-butler-d-t-2	危ないことは、やめてくれやんせ。	元あり	-	危ないことは、やめてくれやんせ。	
+butler	miyazaki	⑤	advd-kyu	九種九牌でござんすから、流すのが基本でござんす。	元あり	-	九種九牌でござんすから、流すのが基本でござんす。	
+butler	miyazaki	⑥	advc-butler-d-t-1	わたくしの申すことを聞いてくれやんせ。	元あり	-	わたくしの申すことを聞いてくれやんせ。	枠二十七の二
+butler	miyazaki	⑦	advc-butler-a-d-0	網主に仕える身として、精一杯お供いたします。	色	-	網主に仕える身として、精一杯お供いたします。	
+butler	miyazaki	大物	-	大物じゃ！……大物でござんす。	元あり	-	大物じゃ！……大物でござんす。	
+butler	miyazaki	惜しむ	-	大物じゃ……惜しゅうござんす。	元あり	-	大物じゃ……惜しゅうござんす。	
+butler	hakata	①	adva-head	攻めでございます。	元なし	-	攻めでございます。	
+butler	hakata	②	advc-butler-d-t-0	押せば、後悔なさいますよ。	元なし	-	押せば、後悔なさいますよ。	
+butler	hakata	③	advc-butler-a-n-0	参りましょう。	元なし	-	参りましょう。	
+butler	hakata	④	advc-butler-d-t-2	僭越ながら、危ないことはやめんしゃい。	元あり	-	僭越ながら、危ないことはやめんしゃい。	枠三十
+butler	hakata	⑤	advd-kyu	九種九牌でございますから、流すのが基本でございます。	元なし	-	九種九牌でございますから、流すのが基本でございます。	
+butler	hakata	⑥	advc-butler-d-t-1	差し出がましいようですが、わたくしの申すことを聞きんしゃい。	元あり	-	差し出がましいようですが、わたくしの申すことを聞きんしゃい。	枠三十
+butler	hakata	⑦	advc-butler-a-d-0	精一杯お供いたします。	元なし	-	精一杯お供いたします。	
+butler	hakata	大物	-	大物ばい！……大物でございます。	元あり	-	大物ばい！……大物でございます。	
+butler	hakata	惜しむ	-	大物ばい……惜しゅうございます。	元あり	-	大物ばい……惜しゅうございます。	
+butler	osaka	①	adva-head	攻めでござりまっせ。	元あり	-	攻めでござりまっせ。	
+butler	osaka	②	advc-butler-d-t-0	押せば、後悔なさりまっせ。	元あり	-	押せば、後悔なさりまっせ。	
+butler	osaka	③	advc-butler-a-n-0	手代に負けぬよう、参りましょう。	色	-	手代に負けぬよう、参りましょう。	
+butler	osaka	④	advc-butler-d-t-2	危ないことは、おやめなはれ。	元あり	-	危ないことは、おやめなはれ。	
+butler	osaka	⑤	advd-kyu	九種九牌だすよってに、流すのが基本でおます。	元あり	-	九種九牌だすよってに、流すのが基本でおます。	
+butler	osaka	⑥	advc-butler-d-t-1	わたくしの申すことをお聞きなはれ、だんさん。	元あり	-	わたくしの申すことをお聞きなはれ、だんさん。	
+butler	osaka	⑦	advc-butler-a-d-0	精一杯お供いたしますわ、だんさん。	元あり	-	精一杯お供いたしますわ、だんさん。	
+butler	osaka	大物	-	大物や！……大物でござりまっせ。	元あり	-	大物や！……大物でござりまっせ。	
+butler	osaka	惜しむ	-	大物や……惜しゅうおます。	元あり	-	大物や……惜しゅうおます。	
+butler	kyoto	①	adva-head	攻めでござりまする。	元あり	-	攻めでござりまする。	
+butler	kyoto	②	advc-butler-d-t-0	押さはったら、悔やまはります。	元あり	-	押さはったら、悔やまはります。	
+butler	kyoto	③	advc-butler-a-n-0	参りましょう。	元なし	-	参りましょう。	
+butler	kyoto	④	advc-butler-d-t-2	危ないことは、おやめやしとくれやす。	元あり	-	危ないことは、おやめやしとくれやす。	
+butler	kyoto	⑤	advd-kyu	九種九牌どすよって、流すのが基本どす。	元あり	-	九種九牌どすよって、流すのが基本どす。	
+butler	kyoto	⑥	advc-butler-d-t-1	わたくしの申すことをお聞きおくれやす。	元あり	-	わたくしの申すことをお聞きおくれやす。	
+butler	kyoto	⑦	advc-butler-a-d-0	精一杯お供いたします。	元なし	-	精一杯お供いたします。	枠二十四
+butler	kyoto	大物	-	大物や！……大物でござりまする。	元あり	-	大物や！……大物でござりまする。	
+butler	kyoto	惜しむ	-	大物や……惜しおす。	元あり	-	大物や……惜しおす。	
+butler	aomori	①	adva-head	攻めでございます。	元なし	-	攻めでございます。	乙
+butler	aomori	②	advc-butler-d-t-0	押せば、後悔なさいますよ。	元なし	-	押せば、後悔なさいますよ。	乙
+butler	aomori	③	advc-butler-a-n-0	参りましょう。	元なし	-	参りましょう。	乙
+butler	aomori	④	advc-butler-d-t-2	危ないことはおやめなさいませ。	元なし	-	危ないことはおやめなさいませ。	乙
+butler	aomori	⑤	advd-kyu	九種九牌でございますから、流すのが基本でございます。	元なし	-	九種九牌でございますから、流すのが基本でございます。	乙
+butler	aomori	⑥	advc-butler-d-t-1	わたくしの申すことをお聞きなさいませ。	元なし	-	わたくしの申すことをお聞きなさいませ。	乙
+butler	aomori	⑦	advc-butler-a-d-0	精一杯お供いたします。	元なし	-	精一杯お供いたします。	乙
+butler	aomori	大物	-	大物だ！……大物でございます。	元あり	-	大物だ！……大物でございます。	枠二十九の二
+butler	aomori	惜しむ	-	大物だ……惜しゅうございます。	元あり	-	大物だ……惜しゅうございます。	
+butler	okinawa	①	adva-head	攻めやびーん。	元あり	-	攻めやびーん。	
+butler	okinawa	②	advc-butler-d-t-0	押せば、後悔なさいますよ。	元なし	-	押せば、後悔なさいますよ。	
+butler	okinawa	③	advc-butler-a-n-0	女官の列のように、参りましょう。	色	-	女官の列のように、参りましょう。	
+butler	okinawa	④	advc-butler-d-t-2	危ないことは、御嶽の前と同じく、おやめなさいませ。	色	-	危ないことは、御嶽の前と同じく、おやめなさいませ。	
+butler	okinawa	⑤	advd-kyu	九種九牌でございますから、流すのが基本でございます。	元なし	-	九種九牌でございますから、流すのが基本でございます。	
+butler	okinawa	⑥	advc-butler-d-t-1	女官の作法と思って、わたくしの申すことをお聞きなさいませ。	色	-	女官の作法と思って、わたくしの申すことをお聞きなさいませ。	
+butler	okinawa	⑦	advc-butler-a-d-0	御嶽に誓って、精一杯お供いたします。	色	-	御嶽に誓って、精一杯お供いたします。	
+butler	okinawa	大物	-	大物やん！……大物やびーん。	元あり	-	大物やん！……大物やびーん。	枠二十九の四
+butler	okinawa	惜しむ	-	大物やん……惜しゅうございます。	元あり	-	大物やん……惜しゅうございます。	
+butler	bushi	①	adva-head	攻めにござる。	元あり	-	攻めにござる。	型の当てはめ
+butler	bushi	②	advc-butler-d-t-0	押せば、後悔なさるぞ。	元あり	-	押せば、後悔なさるぞ。	型の当てはめ
+butler	bushi	③	advc-butler-a-n-0	家中一同、参りましょう。	色	-	家中一同、参りましょう。	
+butler	bushi	④	advc-butler-d-t-2	危ないことは、おやめなされよ。	元あり	-	危ないことは、おやめなされよ。	
+butler	bushi	⑤	advd-kyu	九種九牌にござれば、流すのが基本にござる。	元あり	-	九種九牌にござれば、流すのが基本にござる。	型の当てはめ
+butler	bushi	⑥	advc-butler-d-t-1	それがしの申すことをお聞きなされよ。	元あり	-	それがしの申すことをお聞きなされよ。	
+butler	bushi	⑦	advc-butler-a-d-0	それがし、精一杯お供いたす。	元あり	-	それがし、精一杯お供いたす。	
+butler	bushi	大物	-	家中の一大事、大物にござる！	色	-	家中の一大事、大物にござる！	
+butler	bushi	惜しむ	-	家中の宝を見送るようで、無念にござる。	色	-	家中の宝を見送るようで、無念にござる。	
+butler	yoji	①	adva-head	ばぶ。しぇめでごじゃいましゅ。ばぶ。	元あり	-	ばぶ。しぇめでごじゃいましゅ。ばぶ。	
+butler	yoji	②	advc-butler-d-t-0	ばぶ。おしぇば、こうかいなしゃいましゅよ。ばぶ。	元あり	-	ばぶ。おしぇば、こうかいなしゃいましゅよ。ばぶ。	
+butler	yoji	③	advc-butler-a-n-0	ばぶ。まいりましょう。ばぶ。	元あり	-	ばぶ。まいりましょう。ばぶ。	
+butler	yoji	④	advc-butler-d-t-2	ばぶ。あぶないことはおやめなしゃいましぇ。ばぶ。	元あり	-	ばぶ。あぶないことはおやめなしゃいましぇ。ばぶ。	
+butler	yoji	⑤	advd-kyu	ばぶ。きゅうしゅきゅうはいでごじゃいましゅから、ながしゅのがきほんでごじゃいましゅ。ばぶ。	元あり	-	ばぶ。きゅうしゅきゅうはいでごじゃいましゅから、ながしゅのがきほんでごじゃいましゅ。ばぶ。	
+butler	yoji	⑥	advc-butler-d-t-1	ばぶばぶ。わたくちのもうしゅこと、おききなしゃいましぇ。ここはしんちょーに、ひいてまもるのがじょーしゃくでごじゃいましゅ。ばぶー。	元あり	-	ばぶばぶ。わたくちのもうしゅこと、おききなしゃいましぇ。ここはしんちょーに、ひいてまもるのがじょーしゃくでごじゃいましゅ。ばぶー。	本人の例(B)
+butler	yoji	⑦	advc-butler-a-d-0	ばぶー。だんなしゃまのごしょーぶ、しぇーいっぱいおともいたちましゅ。ばぶ。	元あり	-	ばぶー。だんなしゃまのごしょーぶ、しぇーいっぱいおともいたちましゅ。ばぶ。	本人の例(A)
+butler	yoji	大物	-	ばぶっ……！	元あり	-	ばぶっ……！	頭のばぶを替える
+butler	yoji	惜しむ	-	ばぶ……。おしゅうごじゃいましゅ。ばぶ。	元あり	-	ばぶ……。おしゅうごじゃいましゅ。ばぶ。	頭のばぶを替える
+strategist	std	①	adva-ikk-a	あと一枚で聴牌だ。	元あり	残す	あと一枚で聴牌だ。	枠26・本体の字
+strategist	std	②	advc-strategist-d-t-0	押せば、後悔するぞ。	元あり	残す	押せば、後悔するぞ。	枠26・本体の字
+strategist	std	③	advc-strategist-a-n-0	進むぞ。	元あり	残す	進むぞ。	枠26・本体の字
+strategist	std	④	advc-strategist-d-t-2	危ういことはやめよ。	元あり	残す	危ういことはやめよ。	枠26・本体の字
+strategist	std	⑤	advd-kyu	九種九牌だから、流すのが基本だ。	元あり	残す	九種九牌だから、流すのが基本だ。	枠26・本体の字
+strategist	std	⑥	advc-strategist-d-t-1	わしの言うことを聞くといい。	元あり	残す	わが言うことを聞け。	(B)・一人称わしは仮・本体は「わが言うことを聞け。」
+strategist	std	⑦	advc-strategist-a-d-1	最後まで付き合うぞ。	元あり	残す	私がついているぞ。	(A)・本体は「私がついているぞ。」
+strategist	std	大物	-	そなた、鶴翼で押し包めるほどの大物だ！	元あり+色	替える	そなた、鶴翼で押し包めるほどの大物だ！	枠29三で色「鶴翼」
+strategist	std	惜しむ	-	そなた、惜しい大物だ。	元あり	残す	そなた、惜しい大物だ。	枠29七・色は元なしで外した
+strategist	miyazaki	①	adva-ikk-a	あと一枚で聴牌じゃ。	元あり	-	あと一枚で聴牌じゃ。	枠26
+strategist	miyazaki	②	advc-strategist-d-t-0	押せば、後悔するど。	元あり	-	押せば、後悔するど。	枠26
+strategist	miyazaki	③	advc-strategist-a-n-0	進もーや。	元あり	-	進もーや。	枠26
+strategist	miyazaki	④	advc-strategist-d-t-2	危ういことはすんな。	元あり	-	危ういことはすんな。	枠26
+strategist	miyazaki	⑤	advd-kyu	九種九牌じゃけー、流すのが基本じゃ。	元あり	-	九種九牌じゃけー、流すのが基本じゃ。	枠26
+strategist	miyazaki	⑥	advc-strategist-d-t-1	おれの言うこと、よう聞かんか。	元あり	-	おれの言うこと、よう聞かんか。	枠27・型の当てはめ・仮
+strategist	miyazaki	⑦	advc-strategist-a-d-1	おれが最後まで付き合うが。	元あり	-	おれが最後まで付き合うが。	
+strategist	miyazaki	大物	-	大物じゃ！	元あり	-	大物じゃ！	枠28
+strategist	miyazaki	惜しむ	-	惜しい大物じゃ。	元あり	-	惜しい大物じゃ。	枠29七
+strategist	hakata	①	adva-ikk-a	あと一枚で聴牌ばい。	元あり	-	あと一枚で聴牌ばい。	枠26
+strategist	hakata	②	advc-strategist-d-t-0	押したら、後悔するばい。	元あり	-	押したら、後悔するばい。	枠26
+strategist	hakata	③	advc-strategist-a-n-0	進むばい。	元あり	-	進むばい。	枠26見直し（色の案を外した）
+strategist	hakata	④	advc-strategist-d-t-2	危ういことはやめれ。	元あり	-	危ういことはやめれ。	枠26・型の当てはめ
+strategist	hakata	⑤	advd-kyu	九種九牌やけん、流すのが基本ばい。	元あり	-	九種九牌やけん、流すのが基本ばい。	枠26・型の当てはめ
+strategist	hakata	⑥	advc-strategist-d-t-1	おれの言うことば聞きー。	元あり	-	おれの言うことば聞きー。	枠24・仮
+strategist	hakata	⑦	advc-strategist-a-d-1	おれが最後まで付き合うばい。	元あり	-	おれが最後まで付き合うばい。	
+strategist	hakata	大物	-	おまえ、大物ばい！	元あり	-	おまえ、大物ばい！	枠28
+strategist	hakata	惜しむ	-	大物やけん、惜しか。	元あり	-	大物やけん、惜しか。	枠29七
+strategist	osaka	①	adva-ikk-a	あと一枚で聴牌や。	元あり	-	あと一枚で聴牌や。	枠26・京都①と同じ字
+strategist	osaka	②	advc-strategist-d-t-0	押したら、後悔するやろ。	元あり	-	押したら、後悔するやろ。	枠26
+strategist	osaka	③	advc-strategist-a-n-0	進もか。	元あり	-	進もか。	枠26
+strategist	osaka	④	advc-strategist-d-t-2	危ういことはしたらあかん。	元あり	-	危ういことはしたらあかん。	枠26
+strategist	osaka	⑤	advd-kyu	九種九牌やよって、流すのが基本や。	元あり	-	九種九牌やよって、流すのが基本や。	枠26・型の当てはめ
+strategist	osaka	⑥	advc-strategist-d-t-1	わしの言うこと聞きや。	元あり	-	わしの言うこと聞きや。	
+strategist	osaka	⑦	advc-strategist-a-d-1	わしが最後まで付き合うわ。	元あり	-	わしが最後まで付き合うわ。	
+strategist	osaka	大物	-	大物や！	元あり	-	大物や！	枠28
+strategist	osaka	惜しむ	-	惜しい大物や。	元あり	-	惜しい大物や。	枠29七
+strategist	kyoto	①	adva-ikk-a	あと一枚で聴牌や。	元あり	-	あと一枚で聴牌や。	枠26・大阪①と同じ字
+strategist	kyoto	②	advc-strategist-d-t-0	押したら、後悔するえ。	元あり	-	押したら、後悔するえ。	枠26
+strategist	kyoto	③	advc-strategist-a-n-0	進むえ。	元あり	-	進むえ。	枠26見直し（進もか→進むえ）
+strategist	kyoto	④	advc-strategist-d-t-2	危ういことはやめときよし。	元あり	-	危ういことはやめときよし。	枠26
+strategist	kyoto	⑤	advd-kyu	九種九牌やし、流すのが基本や。	元あり	-	九種九牌やし、流すのが基本や。	枠26
+strategist	kyoto	⑥	advc-strategist-d-t-1	わたしの言うこと、聞き。	元あり	-	わたしの言うこと、聞き。	仮・一人称わたしは元なし
+strategist	kyoto	⑦	advc-strategist-a-d-1	わたしが最後まで付き合うえ。	元あり	-	わたしが最後まで付き合うえ。	一人称わたしは元なし
+strategist	kyoto	大物	-	大物やな！	元あり	-	大物やな！	枠28
+strategist	kyoto	惜しむ	-	惜しい大物やな。	元あり	-	惜しい大物やな。	枠29七
+strategist	aomori	①	adva-ikk-a	あと一枚で聴牌だ。	元あり	-	あと一枚で聴牌だ。	枠26・決め「だ」・標準と同じ字
+strategist	aomori	②	advc-strategist-d-t-0	押せば、後悔するびょん。	元あり	-	押せば、後悔するびょん。	枠26
+strategist	aomori	③	advc-strategist-a-n-0	進むべ。	元あり	-	進むべ。	枠26
+strategist	aomori	④	advc-strategist-d-t-2	年貢を納めそこなうような、危ういことはやめよ。	色	-	年貢を納めそこなうような、危ういことはやめよ。	枠25・色＝年貢
+strategist	aomori	⑤	advd-kyu	九種九牌になったはんで、流すのが基本だ。	元あり	-	九種九牌になったはんで、流すのが基本だ。	枠29八
+strategist	aomori	⑥	advc-strategist-d-t-1	わしの言うことを聞くといい。	元なし	-	わしの言うことを聞くといい。	枠24・乙で標準
+strategist	aomori	⑦	advc-strategist-a-d-1	最後まで付き合うべ。	元あり	-	最後まで付き合うべ。	枠22二
+strategist	aomori	大物	-	大物だじゃ！	元あり	-	大物だじゃ！	枠28・枠29で確かめ
+strategist	aomori	惜しむ	-	惜しい大物だじゃ。	元あり	-	惜しい大物だじゃ。	枠29七
+strategist	okinawa	①	adva-ikk-a	あと一枚で聴牌やん。	元あり	-	あと一枚で聴牌やん。	枠29四
+strategist	okinawa	②	advc-strategist-d-t-0	押せば、後悔するぞ。	元なし	-	押せば、後悔するぞ。	乙・標準・色も元なし
+strategist	okinawa	③	advc-strategist-a-n-0	進むぞ。	元なし	-	進むぞ。	乙・標準・色も元なし
+strategist	okinawa	④	advc-strategist-d-t-2	危ういことはやめよ。	元なし	-	危ういことはやめよ。	乙・標準・色も元なし
+strategist	okinawa	⑤	advd-kyu	九種九牌だから、流すのが基本だ。	元なし	-	九種九牌だから、流すのが基本だ。	乙・標準・色も元なし
+strategist	okinawa	⑥	advc-strategist-d-t-1	わしの言うことを聞くといい。	元なし	-	わしの言うことを聞くといい。	乙・標準（枠24でも取れず）
+strategist	okinawa	⑦	advc-strategist-a-d-1	最後まで付き合うぞ。	元なし	-	最後まで付き合うぞ。	乙・標準
+strategist	okinawa	大物	-	っやー、大物やん！	元あり	-	っやー、大物やん！	枠28
+strategist	okinawa	惜しむ	-	っやー、惜しい大物やん。	元あり	-	っやー、惜しい大物やん。	枠29七
+strategist	bushi	①	adva-ikk-a	あと一枚で聴牌でござる。	元あり	-	あと一枚で聴牌でござる。	枠26
+strategist	bushi	②	advc-strategist-d-t-0	押せば、後悔のもとでござる。	元あり	-	押せば、後悔のもとでござる。	枠26・言い換え・仮
+strategist	bushi	③	advc-strategist-a-n-0	いざ、進もう。	元あり	-	いざ、進もう。	枠26・口癖を頭に置く時は「進もう。」
+strategist	bushi	④	advc-strategist-d-t-2	陣を乱すような、危ういことはやめよ。	色	-	陣を乱すような、危ういことはやめよ。	枠25・色＝陣
+strategist	bushi	⑤	advd-kyu	九種九牌ゆえ、流すのが基本でござる。	元あり	-	九種九牌ゆえ、流すのが基本でござる。	枠26
+strategist	bushi	⑥	advc-strategist-d-t-1	それがしの申すことを聞くが良い。	元あり	-	それがしの申すことを聞くが良い。	枠27四（拙者→それがし）
+strategist	bushi	⑦	advc-strategist-a-d-1	最後まで付き合うのが、それがしの務めでござる。	元あり	-	最後まで付き合うのが、それがしの務めでござる。	枠27四・言い換え・仮
+strategist	bushi	大物	-	陣を揺るがす大物でござる！	元あり+色	-	陣を揺るがす大物でござる！	枠28・色＝陣
+strategist	bushi	惜しむ	-	陣を退くには惜しい大物でござる。	元あり+色	-	陣を退くには惜しい大物でござる。	枠29七・色＝陣
+strategist	yoji	①	adva-ikk-a	あといちまいで、てんぱいだ。	元あり	-	あといちまいで、てんぱいだ。	本人の決め（ミント型）・ばぶ挟みは別
+strategist	yoji	②	advc-strategist-d-t-0	おしぇば、こーかいしゅるじょ。	元あり	-	おしぇば、こーかいしゅるじょ。	枠22音の決まり・ばぶ挟みは別
+strategist	yoji	③	advc-strategist-a-n-0	しゅしゅむじょ。	元あり	-	しゅしゅむじょ。	読みにくい語として挙げてある
+strategist	yoji	④	advc-strategist-d-t-2	あやういことは、やめよ。	元あり	-	あやういことは、やめよ。	ばぶ挟みは別
+strategist	yoji	⑤	advd-kyu	きゅーしゅきゅーはいだから、ながしゅのが、きほんだ。	元あり	-	きゅーしゅきゅーはいだから、ながしゅのが、きほんだ。	ばぶ挟みは別
+strategist	yoji	⑥	advc-strategist-d-t-1	わちのいうことを、きくといい。	元あり	-	わちのいうことを、きくといい。	直した字(B)はばぶばぶ…長い一言…ばぶー付き
+strategist	yoji	⑦	advc-strategist-a-d-1	しゃいごまで、ちゅきあうじょ。	元あり	-	しゃいごまで、ちゅきあうじょ。	枠22一・直した字(A)はばぶー…ばぶ付き
+strategist	yoji	大物	-	ばぶむっ！ しょなた、かくよくでおしちゅちゅめるほどの、おーものだ！	元あり	-	ばぶむっ！ しょなた、かくよくでおしちゅちゅめるほどの、おーものだ！	枠29六
+strategist	yoji	惜しむ	-	ばぶむ……。しょなた、おちいおーものだ。ばぶ。	元あり	-	ばぶむ……。しょなた、おちいおーものだ。ばぶ。	枠29七
+blunt	std	①	adva-head	攻めなのだ。	元あり	残す	攻めなのだ。	
+blunt	std	②	advc-blunt-d-t-0	押したら後悔するのだ。	元あり	残す	押したら後悔するのだ。	
+blunt	std	③	advc-blunt-a-n-0	お盆のずんだ餅を分けるように、いっしょに守りに回るのだ。	色	替える	お盆のずんだ餅を分けるように、いっしょに守りに回るのだ。	枠二十九の三・本体に字なし
+blunt	std	④	advc-blunt-d-t-2	えだまめを茹ですぎないように、危ないことはやめるのだ。	色	替える	えだまめを茹ですぎないように、危ないことはやめるのだ。	枠二十九の三
+blunt	std	⑤	advd-kyu	九種九牌だから、流すのが基本なのだ。	元あり	残す	九種九牌だから、流すのが基本なのだ。	
+blunt	std	⑥	advc-blunt-d-t-1	えだまめの薄皮をていねいにむくように、ボクの言うことを聞くのだ。	色	替える	えだまめの薄皮をていねいにむくように、ボクの言うことを聞くのだ。	枠二十九の三
+blunt	std	⑦	advc-blunt-a-d-1	ずんだ餅の餡と餅みたいに、ボクがついているのだ。	色	替える	ずんだ餅の餡と餅みたいに、ボクがついているのだ。	枠二十九の三
+blunt	std	大物	-	お盆のずんだ餅より大物なのだ！	色	替える	お盆のずんだ餅より大物なのだ！	枠二十九の三
+blunt	std	惜しむ	-	お盆のずんだ餅をおあずけみたいで、もったいないのだ……。	色	替える	お盆のずんだ餅をおあずけみたいで、もったいないのだ……。	枠二十九の七
+blunt	miyazaki	①	adva-head	攻めやっちゃ。	元あり	-	攻めやっちゃ。	
+blunt	miyazaki	②	advc-blunt-d-t-0	押したら後悔するっちゃ。	元あり	-	押したら後悔するっちゃ。	
+blunt	miyazaki	③	advc-blunt-a-n-0	漁港へ帰る船のように、いっしょに守りに回るのだ。	色	-	漁港へ帰る船のように、いっしょに守りに回るのだ。	誘いの元なし
+blunt	miyazaki	④	advc-blunt-d-t-2	危ないことはやめねよ。	元あり	-	危ないことはやめねよ。	
+blunt	miyazaki	⑤	advd-kyu	九種九牌やかい、流すとが基本やっちゃ。	元あり	-	九種九牌やかい、流すとが基本やっちゃ。	
+blunt	miyazaki	⑥	advc-blunt-d-t-1	ボクの言うことを聞きねよ。	元あり	-	ボクの言うことを聞きねよ。	枠二十七の二
+blunt	miyazaki	⑦	advc-blunt-a-d-1	ボクがついちょるっちゃ。	元あり	-	ボクがついちょるっちゃ。	
+blunt	miyazaki	大物	-	ほんじゃまこち、大物やっちゃ！	元あり	-	ほんじゃまこち、大物やっちゃ！	枠二十八
+blunt	miyazaki	惜しむ	-	カツオの大物を逃がすみたいで、もったいないっちゃ……。	元あり+色	-	カツオの大物を逃がすみたいで、もったいないっちゃ……。	枠二十九の七
+blunt	hakata	①	adva-head	攻めや。	元あり	-	攻めや。	
+blunt	hakata	②	advc-blunt-d-t-0	押したら後悔するっちゃん。	元あり	-	押したら後悔するっちゃん。	
+blunt	hakata	③	advc-blunt-a-n-0	いっしょに降りろう。	元あり	-	いっしょに降りろう。	回る→降りる
+blunt	hakata	④	advc-blunt-d-t-2	危ないことはやめやい。	元あり	-	危ないことはやめやい。	
+blunt	hakata	⑤	advd-kyu	九種九牌やけん、流すとが基本や。	元あり	-	九種九牌やけん、流すとが基本や。	
+blunt	hakata	⑥	advc-blunt-d-t-1	ボクの言うことば聞きやい。	元あり	-	ボクの言うことば聞きやい。	
+blunt	hakata	⑦	advc-blunt-a-d-1	ボクがついとーっちゃん。	元あり	-	ボクがついとーっちゃん。	
+blunt	hakata	大物	-	ふてえがってえ、大物や！	元あり	-	ふてえがってえ、大物や！	枠二十八
+blunt	hakata	惜しむ	-	もったいなか……。	元あり	-	もったいなか……。	枠二十九の七・当てはめ
+blunt	osaka	①	adva-head	攻めやねん。	元あり	-	攻めやねん。	
+blunt	osaka	②	advc-blunt-d-t-0	押したら後悔するねん。	元あり	-	押したら後悔するねん。	
+blunt	osaka	③	advc-blunt-a-n-0	いっしょに守りに回ろか。	元あり	-	いっしょに守りに回ろか。	
+blunt	osaka	④	advc-blunt-d-t-2	危ないことはやめな。	元あり	-	危ないことはやめな。	
+blunt	osaka	⑤	advd-kyu	九種九牌やから、流すのが基本やねん。	元あり	-	九種九牌やから、流すのが基本やねん。	
+blunt	osaka	⑥	advc-blunt-d-t-1	ぼくの言うことを聞きな。	元あり	-	ぼくの言うことを聞きな。	枠二十四
+blunt	osaka	⑦	advc-blunt-a-d-1	ぼくがついてるねん。	元あり	-	ぼくがついてるねん。	
+blunt	osaka	大物	-	千枚通しも落とすほどの大物やねん！	元あり+色	-	千枚通しも落とすほどの大物やねん！	枠二十八
+blunt	osaka	惜しむ	-	大物やけど、もったいないねん……。	元あり	-	大物やけど、もったいないねん……。	枠二十九の七
+blunt	kyoto	①	adva-head	攻めなのや。	元あり	-	攻めなのや。	
+blunt	kyoto	②	advc-blunt-d-t-0	押したら後悔するのや。	元あり	-	押したら後悔するのや。	
+blunt	kyoto	③	advc-blunt-a-n-0	おくどさんの火を落とすように、いっしょに守りに回るのだ。	色	-	おくどさんの火を落とすように、いっしょに守りに回るのだ。	誘いの元なし
+blunt	kyoto	④	advc-blunt-d-t-2	危ないことはやめおし。	元あり	-	危ないことはやめおし。	
+blunt	kyoto	⑤	advd-kyu	九種九牌やさかい、流すのが基本なのや。	元あり	-	九種九牌やさかい、流すのが基本なのや。	
+blunt	kyoto	⑥	advc-blunt-d-t-1	ボクの言うことを聞きおし。	元あり	-	ボクの言うことを聞きおし。	枠二十四
+blunt	kyoto	⑦	advc-blunt-a-d-1	ボクがついてるのや。	元あり	-	ボクがついてるのや。	
+blunt	kyoto	大物	-	うれこい、大物なのや！	元あり	-	うれこい、大物なのや！	枠二十八
+blunt	kyoto	惜しむ	-	大物なのに、もったいないのや……。	元あり	-	大物なのに、もったいないのや……。	枠二十九の七
+blunt	aomori	①	adva-head	攻めだ。	元あり	-	攻めだ。	標準と同じ字
+blunt	aomori	②	advc-blunt-d-t-0	押したら後悔するびょん。	元あり	-	押したら後悔するびょん。	
+blunt	aomori	③	advc-blunt-a-n-0	いっしょに守りに回るべ。	元あり	-	いっしょに守りに回るべ。	
+blunt	aomori	④	advc-blunt-d-t-2	そり遊びで急な坂をよけるように、危ないことはやめるのだ。	色	-	そり遊びで急な坂をよけるように、危ないことはやめるのだ。	禁止の元なし
+blunt	aomori	⑤	advd-kyu	九種九牌だ。だはんで、流すのが基本だ。	元あり	-	九種九牌だ。だはんで、流すのが基本だ。	枠二十九の八
+blunt	aomori	⑥	advc-blunt-d-t-1	ボクの言うことを聞くべ。	元あり	-	ボクの言うことを聞くべ。	枠二十二の二
+blunt	aomori	⑦	advc-blunt-a-d-1	雪上運動会の応援のように、ボクがついているのだ。	色	-	雪上運動会の応援のように、ボクがついているのだ。	乙・色付きの案
+blunt	aomori	大物	-	そりがひっくり返るほどの大物だ！	元あり+色	-	そりがひっくり返るほどの大物だ！	枠二十八
+blunt	aomori	惜しむ	-	そり遊びの日に雪がとけたみたいで、もったいないのだ……。	色	-	そり遊びの日に雪がとけたみたいで、もったいないのだ……。	枠二十九の七
+blunt	okinawa	①	adva-head	攻めやん。	元あり	-	攻めやん。	
+blunt	okinawa	②	advc-blunt-d-t-0	沖へ出すぎた海人（ウミンチュ）のように、押したら後悔するのだ。	色	-	沖へ出すぎた海人（ウミンチュ）のように、押したら後悔するのだ。	動詞の元なし
+blunt	okinawa	③	advc-blunt-a-n-0	港へ戻る海人のように、いっしょに守りに回るのだ。	色	-	港へ戻る海人のように、いっしょに守りに回るのだ。	
+blunt	okinawa	④	advc-blunt-d-t-2	嵐の海をよける島人（シマンチュ）のように、危ないことはやめるのだ。	色	-	嵐の海をよける島人（シマンチュ）のように、危ないことはやめるのだ。	
+blunt	okinawa	⑤	advd-kyu	海人が潮を見て船を出さないのと同じで、九種九牌だから、流すのが基本なのだ。	色	-	海人が潮を見て船を出さないのと同じで、九種九牌だから、流すのが基本なのだ。	
+blunt	okinawa	⑥	advc-blunt-d-t-1	島人の言い伝えを聞くように、ボクの言うことを聞くのだ。	色	-	島人の言い伝えを聞くように、ボクの言うことを聞くのだ。	乙・色付きの案
+blunt	okinawa	⑦	advc-blunt-a-d-1	海人の船にいっしょに乗るように、ボクがついているのだ。	色	-	海人の船にいっしょに乗るように、ボクがついているのだ。	乙・色付きの案
+blunt	okinawa	大物	-	島人（シマンチュ）みんなが浜に集まるような大物やん！	元あり+色	-	島人（シマンチュ）みんなが浜に集まるような大物やん！	枠二十九の四
+blunt	okinawa	惜しむ	-	港へ戻る海人も振り返る、もったいない大物やん……。	元あり+色	-	港へ戻る海人も振り返る、もったいない大物やん……。	枠二十九の七
+blunt	bushi	①	adva-head	攻めでござる。	元あり	-	攻めでござる。	
+blunt	bushi	②	advc-blunt-d-t-0	押したら後悔するのでござる。	元あり	-	押したら後悔するのでござる。	
+blunt	bushi	③	advc-blunt-a-n-0	いっしょに守りに回るのでござる。	元あり	-	いっしょに守りに回るのでござる。	誘いの形は元なし・色の語なし
+blunt	bushi	④	advc-blunt-d-t-2	危ないことはやめるのでござる。	元あり	-	危ないことはやめるのでござる。	
+blunt	bushi	⑤	advd-kyu	九種九牌でござるから、流すのが基本でござる。	元あり	-	九種九牌でござるから、流すのが基本でござる。	
+blunt	bushi	⑥	advc-blunt-d-t-1	拙者の言うことを聞くのでござる。	元あり	-	拙者の言うことを聞くのでござる。	枠二十七の四
+blunt	bushi	⑦	advc-blunt-a-d-1	拙者がついているのでござる。	元あり	-	拙者がついているのでござる。	
+blunt	bushi	大物	-	拙者、腰を抜かすほどの大物でござる！	元あり	-	拙者、腰を抜かすほどの大物でござる！	枠二十八
+blunt	bushi	惜しむ	-	拙者、無念でござる……。	元あり	-	拙者、無念でござる……。	枠二十九の七
+blunt	yoji	①	adva-head	ばぶ。しぇめなのだ。ばぶ。	元あり	-	ばぶ。しぇめなのだ。ばぶ。	ミント型
+blunt	yoji	②	advc-blunt-d-t-0	ばぶ。おちたらこーかいしゅるのだ。ばぶ。	元あり	-	ばぶ。おちたらこーかいしゅるのだ。ばぶ。	ミント型
+blunt	yoji	③	advc-blunt-a-n-0	ばぶ。いっしょにまもりにまわるのだ。ばぶ。	元あり	-	ばぶ。いっしょにまもりにまわるのだ。ばぶ。	ミント型
+blunt	yoji	④	advc-blunt-d-t-2	ばぶ。あぶないことはやめるのだ。ばぶ。	元あり	-	ばぶ。あぶないことはやめるのだ。ばぶ。	ミント型
+blunt	yoji	⑤	advd-kyu	ばぶ。きゅーしゅきゅーはいだから、ながしゅのがきほんなのだ。ばぶ。	元あり	-	ばぶ。きゅーしゅきゅーはいだから、ながしゅのがきほんなのだ。ばぶ。	ミント型
+blunt	yoji	⑥	advc-blunt-d-t-1	ばぶばぶ。ぼくのいうことを、きくのだ。にどうけのかたちは、まちがかしゃなっていて、みかけほどあがりやしゅくならないのだ。ばぶー。	元あり	-	ばぶばぶ。ぼくのいうことを、きくのだ。にどうけのかたちは、まちがかしゃなっていて、みかけほどあがりやしゅくならないのだ。ばぶー。	枠二十四
+blunt	yoji	⑦	advc-blunt-a-d-1	ばぶー。ぼくが、ちゅいているのだ。しょーはいのゆくえを、しゃいごまでみとどけるかくごなのだ。ばぶ。	元あり	-	ばぶー。ぼくが、ちゅいているのだ。しょーはいのゆくえを、しゃいごまでみとどけるかくごなのだ。ばぶ。	枠二十一
+blunt	yoji	大物	-	ばぶぶぶっ！おおものなのだ！	元あり	-	ばぶぶぶっ！おおものなのだ！	枠二十九の六
+blunt	yoji	惜しむ	-	ばぶぅ……。おおものなのに、もったいないのだ。ばぶ。	元あり	-	ばぶぅ……。おおものなのに、もったいないのだ。ばぶ。	枠二十九の七
+lady	std	①	adva-head	攻めですわ。	元あり	残す	攻めですわ。	枠二十六
+lady	std	②	advc-lady-d-t-0	押したら、後悔しますわ。	元あり	残す	押したら、後悔なさいますわよ。	枠二十六
+lady	std	③	advc-lady-a-n-0	守りを固めましょう。	元あり	残す	参りますわ。	枠二十六・本体に誘いの字なし・仮
+lady	std	④	advc-lady-d-t-2	危ないことは、おやめあそばせ。	元あり	残す	危ないことはおやめなさいな。	枠二十六・仮
+lady	std	⑤	advd-kyu	九種九牌ですから、流すのが基本ですわ。	元あり	残す	九種九牌ですから、流すのが基本ですわ。	枠二十六・部品id記載なし
+lady	std	⑥	advc-lady-d-t-1	わたくしの申すことを、お聞きあそばせ。	元あり	残す	わたくしの言うことをお聞きなさいな。	(B)・仮
+lady	std	⑦	advc-lady-a-d-0	わたくし、精一杯お付き合いいたしますわ。	元あり	残す	あなたのために頑張りますわ。	(A)
+lady	std	大物	-	大物ですわ！	元あり	残す	大物ですわ！	枠二十八・色は元なしで入れない
+lady	std	惜しむ	-	大物ですのに……もったいのうございますわ。	元あり	残す	大物ですのに……もったいのうございますわ。	枠二十九
+lady	miyazaki	①	adva-head	攻めぢゃす。	元あり	-	攻めぢゃす。	枠二十六
+lady	miyazaki	②	advc-lady-d-t-0	網子を沖へ出しすぎるように押したら、後悔します。	色	-	網子を沖へ出しすぎるように押したら、後悔します。	枠二十六
+lady	miyazaki	③	advc-lady-a-n-0	網子を浜へ呼び戻すように、守りを固めましょう。	色	-	網子を浜へ呼び戻すように、守りを固めましょう。	枠二十六
+lady	miyazaki	④	advc-lady-d-t-2	危ないことは、やめてくいやんせ。	元あり	-	危ないことは、やめてくいやんせ。	枠二十六
+lady	miyazaki	⑤	advd-kyu	九種九牌なので、流すのが基本ぢゃす。	元あり	-	九種九牌なので、流すのが基本ぢゃす。	枠二十六・つなぎは標準
+lady	miyazaki	⑥	advc-lady-d-t-1	わたくしの申すことを、聞きやんせ。	元あり	-	わたくしの申すことを、聞きやんせ。	枠二十七・型の当てはめ
+lady	miyazaki	⑦	advc-lady-a-d-0	網元が網子を見守るように、わたくし、精一杯お付き合いいたします。	色	-	網元が網子を見守るように、わたくし、精一杯お付き合いいたします。	枠二十五
+lady	miyazaki	大物	-	大物じゃわ！	元あり	-	大物じゃわ！	枠二十八
+lady	miyazaki	惜しむ	-	もったいない大物じゃわ……	元あり	-	もったいない大物じゃわ……	枠二十九
+lady	hakata	①	adva-head	攻めですね。	元あり	-	攻めですね。	枠二十六
+lady	hakata	②	advc-lady-d-t-0	反物に鋏を入れ違えるように押したら、後悔します。	色	-	反物に鋏を入れ違えるように押したら、後悔します。	枠二十六
+lady	hakata	③	advc-lady-a-n-0	着尺を畳んで仕舞うように、守りを固めましょう。	色	-	着尺を畳んで仕舞うように、守りを固めましょう。	枠二十六
+lady	hakata	④	advc-lady-d-t-2	危ないことは、やめてつかあざっせい。	元あり	-	危ないことは、やめてつかあざっせい。	枠二十六・元は個人ブログで弱い
+lady	hakata	⑤	advd-kyu	九種九牌ですけん、流すのが基本ですね。	元あり	-	九種九牌ですけん、流すのが基本ですね。	枠二十六・です＋けんは元なし
+lady	hakata	⑥	advc-lady-d-t-1	わたくしの申すことを、聞いてつかあざっせい。	元あり	-	わたくしの申すことを、聞いてつかあざっせい。	枠二十七
+lady	hakata	⑦	advc-lady-a-d-0	反物を一針ずつ仕立てるように、わたくし、精一杯お付き合いいたします。	色	-	反物を一針ずつ仕立てるように、わたくし、精一杯お付き合いいたします。	枠二十五
+lady	hakata	大物	-	大物やっちゃん！	元あり	-	大物やっちゃん！	枠二十八
+lady	hakata	惜しむ	-	もったいない大物やっちゃん……	元あり	-	もったいない大物やっちゃん……	枠二十九
+lady	osaka	①	adva-head	攻めでごわす。	元あり	-	攻めでごわす。	枠二十六・決め五
+lady	osaka	②	advc-lady-d-t-0	丁稚の使いのように慌てて押したら、後悔します。	色	-	丁稚の使いのように慌てて押したら、後悔します。	枠二十六
+lady	osaka	③	advc-lady-a-n-0	番頭が店を閉めるように、守りを固めましょう。	色	-	番頭が店を閉めるように、守りを固めましょう。	枠二十六
+lady	osaka	④	advc-lady-d-t-2	危ないことは、おおきやす。	元あり	-	危ないことは、おおきやす。	枠二十六
+lady	osaka	⑤	advd-kyu	九種九牌でごあっさかい、流すのが基本でごわす。	元あり	-	九種九牌でごあっさかい、流すのが基本でごわす。	枠二十六
+lady	osaka	⑥	advc-lady-d-t-1	わたくしの申すこと、お聞きやしとくれやす。	元あり	-	わたくしの申すこと、お聞きやしとくれやす。	枠二十七・型の当てはめ
+lady	osaka	⑦	advc-lady-a-d-0	番頭が店を預かるように、わたくし、精一杯お付き合いいたします。	色	-	番頭が店を預かるように、わたくし、精一杯お付き合いいたします。	枠二十五
+lady	osaka	大物	-	丁稚が走り出す大物やわ！	元あり+色	-	丁稚が走り出す大物やわ！	枠二十九で色を足した
+lady	osaka	惜しむ	-	もったいない大物やわ……	元あり	-	もったいない大物やわ……	枠二十九
+lady	kyoto	①	adva-head	攻めどすえ。	元あり	-	攻めどすえ。	枠二十九で攻めどすから替えた
+lady	kyoto	②	advc-lady-d-t-0	押さはったら、後悔しはりますえ。	元あり	-	押さはったら、後悔しはりますえ。	枠二十六・型の当てはめ
+lady	kyoto	③	advc-lady-a-n-0	おひやを一口いただくように、落ち着いて守りを固めましょう。	色	-	おひやを一口いただくように、落ち着いて守りを固めましょう。	枠二十六
+lady	kyoto	④	advc-lady-d-t-2	危ないことは、やめておくれやす。	元あり	-	危ないことは、やめておくれやす。	枠二十六
+lady	kyoto	⑤	advd-kyu	九種九牌どすから、流すのが基本どす。	元あり	-	九種九牌どすから、流すのが基本どす。	枠二十六
+lady	kyoto	⑥	advc-lady-d-t-1	わたくしの申すこと、聞いておくれやす。	元あり	-	わたくしの申すこと、聞いておくれやす。	(B)
+lady	kyoto	⑦	advc-lady-a-d-0	わたくし、精一杯お付き合いいたしますえ。	元あり	-	わたくし、精一杯お付き合いいたしますえ。	(A)
+lady	kyoto	大物	-	大物やえ！	元あり	-	大物やえ！	枠二十八
+lady	kyoto	惜しむ	-	もったいない大物やえ……	元あり	-	もったいない大物やえ……	枠二十九
+lady	aomori	①	adva-head	攻めでごす。	元あり	-	攻めでごす。	枠二十六・体言は型の当てはめ
+lady	aomori	②	advc-lady-d-t-0	押したら、後悔するでごす。	元あり	-	押したら、後悔するでごす。	枠二十六
+lady	aomori	③	advc-lady-a-n-0	年貢の米を蔵に納めるように、守りを固めましょう。	色	-	年貢の米を蔵に納めるように、守りを固めましょう。	枠二十六
+lady	aomori	④	advc-lady-d-t-2	庄屋が田を休ませるように、危ないことはおやめあそばせ。	色	-	庄屋が田を休ませるように、危ないことはおやめあそばせ。	枠二十六
+lady	aomori	⑤	advd-kyu	九種九牌なので、流すのが基本でごす。	元あり	-	九種九牌なので、流すのが基本でごす。	枠二十六・つなぎは標準
+lady	aomori	⑥	advc-lady-d-t-1	わたくしの申すことを、肝煎の言い渡しのように、お聞きあそばせ。	色	-	わたくしの申すことを、肝煎の言い渡しのように、お聞きあそばせ。	枠二十五
+lady	aomori	⑦	advc-lady-a-d-0	わたくし、精一杯お付き合いするでごす。	元あり	-	わたくし、精一杯お付き合いするでごす。	枠二十
+lady	aomori	大物	-	年貢の米俵が跳ねる大物だびょん！	元あり+色	-	年貢の米俵が跳ねる大物だびょん！	枠二十九
+lady	aomori	惜しむ	-	もったいない大物だ……もったいなごす。	元あり	-	もったいない大物だ……もったいなごす。	枠三十・型の当てはめ
+lady	okinawa	①	adva-head	攻めやいびーん。	元あり	-	攻めやいびーん。	枠二十六
+lady	okinawa	②	advc-lady-d-t-0	御嶽への道を外れるように押したら、後悔します。	色	-	御嶽への道を外れるように押したら、後悔します。	枠二十六
+lady	okinawa	③	advc-lady-a-n-0	女官が御内原の門を閉めるように、守りを固めましょう。	色	-	女官が御内原の門を閉めるように、守りを固めましょう。	枠二十六
+lady	okinawa	④	advc-lady-d-t-2	やみみそーり。	元あり	-	やみみそーり。	枠二十六・目的語なし
+lady	okinawa	⑤	advd-kyu	九種九牌なので、流すのが基本やいびーん。	元あり	-	九種九牌なので、流すのが基本やいびーん。	枠二十六・つなぎは標準
+lady	okinawa	⑥	advc-lady-d-t-1	わたくしの申すことを、御内原の言伝のように、お聞きあそばせ。	色	-	わたくしの申すことを、御内原の言伝のように、お聞きあそばせ。	枠二十五
+lady	okinawa	⑦	advc-lady-a-d-0	女官が御嶽をお守りするように、わたくし、精一杯お付き合いいたします。	色	-	女官が御嶽をお守りするように、わたくし、精一杯お付き合いいたします。	枠二十五
+lady	okinawa	大物	-	御内原じゅうが騒ぐ大物やん！	元あり+色	-	御内原じゅうが騒ぐ大物やん！	枠二十九
+lady	okinawa	惜しむ	-	御内原じゅうが惜しむ大物やん……	元あり+色	-	御内原じゅうが惜しむ大物やん……	枠二十九
+lady	bushi	①	adva-head	攻めにございます。	元なし	-	攻めにございます。	枠二十六
+lady	bushi	②	advc-lady-d-t-0	書の筆を滑らせるように押されたら、後悔なさいます。	色	-	書の筆を滑らせるように押されたら、後悔なさいます。	枠二十六
+lady	bushi	③	advc-lady-a-n-0	茶の湯の一服のように、心を鎮めて守りを固めましょう。	色	-	茶の湯の一服のように、心を鎮めて守りを固めましょう。	枠二十六
+lady	bushi	④	advc-lady-d-t-2	華を活けるように、危ないことはおやめなさいませ。	色	-	華を活けるように、危ないことはおやめなさいませ。	枠二十六
+lady	bushi	⑤	advd-kyu	九種九牌でございますから、流すのが基本にございます。	元なし	-	九種九牌でございますから、流すのが基本にございます。	枠二十六・色なし
+lady	bushi	⑥	advc-lady-d-t-1	わらわの申すことを、書の手本のように、お聞きなさいませ。	色	-	わらわの申すことを、書の手本のように、お聞きなさいませ。	枠二十五・わらわは元あり
+lady	bushi	⑦	advc-lady-a-d-0	茶の湯でお客をもてなすように、わらわ、精一杯お付き合いいたします。	色	-	茶の湯でお客をもてなすように、わらわ、精一杯お付き合いいたします。	枠二十五・わらわは元あり
+lady	bushi	大物	-	大物でござる！	元あり	-	大物でござる！	枠二十八
+lady	bushi	惜しむ	-	惜しい大物でござる……	元あり	-	惜しい大物でござる……	枠二十九
+lady	yoji	①	adva-head	しぇめでしゅわ。	元あり	-	しぇめでしゅわ。	枠二十六・ばぶは助言の頭と終わりだけ
+lady	yoji	②	advc-lady-d-t-0	おちたら、こーかいちましゅわ。	元あり	-	おちたら、こーかいちましゅわ。	枠二十六
+lady	yoji	③	advc-lady-a-n-0	まもりをかためましょう。	元あり	-	まもりをかためましょう。	枠二十六・標準と同じ字
+lady	yoji	④	advc-lady-d-t-2	あぶないことは、おやめあしょばしぇ。	元あり	-	あぶないことは、おやめあしょばしぇ。	枠二十六
+lady	yoji	⑤	advd-kyu	きゅーしゅきゅーはいでしゅから、ながしゅのがきほんでしゅわ。	元あり	-	きゅーしゅきゅーはいでしゅから、ながしゅのがきほんでしゅわ。	枠二十六
+lady	yoji	⑥	advc-lady-d-t-1	わたくちのもうしゅことを、おききあしょばしぇ。	元あり	-	わたくちのもうしゅことを、おききあしょばしぇ。	枠二十六の短い形
+lady	yoji	⑦	advc-lady-a-d-0	わたくち、しぇーいっぱいおちゅきあいいたちましゅわ。	元あり	-	わたくち、しぇーいっぱいおちゅきあいいたちましゅわ。	枠二十六の短い形
+lady	yoji	大物	-	ばぶ〜っ！	元あり	-	ばぶ〜っ！	枠二十九・頭のばぶー。を替える
+lady	yoji	惜しむ	-	ばぶ〜……	元あり	-	ばぶ〜……	枠二十九・頭のばぶー。を替える
+french	std	①	adva-ikk-a	あと一枚で聴牌ですの。	元あり	残す	あと一枚で聴牌ですわ。	枠二十六
+french	std	②	adva-tc	伸びなければ、早めに守りに回りますの。	元あり	残す	期限は引けませんの。伸びなければ、早めに守りに回りますわ。	枠二十六
+french	std	③	advc-french-a-n-0	進みましょう。	元あり	残す	行くわよ、ウィ。	枠二十六・部品id記載なし(終わりの一言の字)
+french	std	④	advc-french-d-t-2	危ないことはおやめなさいな。	元あり	残す	危ないことはおやめなさい。	枠二十六
+french	std	⑤	advd-kyu	九種九牌ですから、流すのが基本ですの。	元あり	残す	九種九牌ですから、流すのが基本ですの。	枠二十六・部品id記載なし(本体のマダムの字)
+french	std	⑥	advc-french-d-t-1	わたくしの言うことをお聞きなさいな。	元あり	残す	わたくしの言うことを聞きなさい。	(B)
+french	std	⑦	advc-french-a-d-1	わたくしがついていますの。	元あり	残す	わたくしがついているわ。	(A)
+french	std	大物	-	モナミ、大物ですわ！	色	替える	モナミ、大物ですわ！	枠二十九 三
+french	std	惜しむ	-	モナミ、惜しい大物ですわ。	色	替える	モナミ、惜しい大物ですわ。	枠二十九 七
+french	miyazaki	①	adva-ikk-a	あと一枚で聴牌ぢゃす。	元あり	-	あと一枚で聴牌ぢゃす。	枠二十六
+french	miyazaki	②	adva-tc	伸びなければ、お見送りの支度のように、早めに守りに回りますの。	色	-	伸びなければ、お見送りの支度のように、早めに守りに回りますの。	枠二十六
+french	miyazaki	③	advc-french-a-n-0	お出迎えに出るように、進みましょう。	色	-	お出迎えに出るように、進みましょう。	枠二十六
+french	miyazaki	④	advc-french-d-t-2	危ないことはやめっくいやんせ。	元あり	-	危ないことはやめっくいやんせ。	枠二十六・型の当てはめ
+french	miyazaki	⑤	advd-kyu	九種九牌ですから、お膳を下げるように、流すのが基本ですの。	色	-	九種九牌ですから、お膳を下げるように、流すのが基本ですの。	枠二十六
+french	miyazaki	⑥	advc-french-d-t-1	わたくしの言うことを聞いてくいやんせ。	元あり	-	わたくしの言うことを聞いてくいやんせ。	(B)・執事と同じ字(枠二十七 二)
+french	miyazaki	⑦	advc-french-a-d-1	女将のわたくしがついていますの。	色	-	女将のわたくしがついていますの。	(A)・枠二十五
+french	miyazaki	大物	-	お膳を取り落としそうな、大物じゃわ！	元あり+色	-	お膳を取り落としそうな、大物じゃわ！	枠二十八
+french	miyazaki	惜しむ	-	お見送りするには惜しい大物じゃわ。	元あり+色	-	お見送りするには惜しい大物じゃわ。	枠二十九 七
+french	hakata	①	adva-ikk-a	あと一枚で聴牌ですね。	元あり	-	あと一枚で聴牌ですね。	枠二十六
+french	hakata	②	adva-tc	伸びなければ、常連さんを見送るように、早めに守りに回りますの。	色	-	伸びなければ、常連さんを見送るように、早めに守りに回りますの。	枠二十六
+french	hakata	③	advc-french-a-n-0	スナックの扉を開けるように、進みましょう。	色	-	スナックの扉を開けるように、進みましょう。	枠二十六
+french	hakata	④	advc-french-d-t-2	危ないことはやめてんしゃい。	元あり	-	危ないことはやめてんしゃい。	枠二十六
+french	hakata	⑤	advd-kyu	九種九牌ですから、中洲の夜の決まりのように、流すのが基本ですの。	色	-	九種九牌ですから、中洲の夜の決まりのように、流すのが基本ですの。	枠二十六
+french	hakata	⑥	advc-french-d-t-1	わたくしの言うことを聞いてんしゃい。	元あり	-	わたくしの言うことを聞いてんしゃい。	(B)
+french	hakata	⑦	advc-french-a-d-1	ママのわたくしがついていますの。	色	-	ママのわたくしがついていますの。	(A)・枠二十五
+french	hakata	大物	-	中洲のママも目を丸くする、大物やっちゃん！	元あり+色	-	中洲のママも目を丸くする、大物やっちゃん！	枠二十八
+french	hakata	惜しむ	-	常連さんを帰すような、惜しか大物やっちゃん。	元あり+色	-	常連さんを帰すような、惜しか大物やっちゃん。	枠二十九 七
+french	osaka	①	adva-ikk-a	あと一枚で聴牌になりまっせ。	元あり	-	あと一枚で聴牌になりまっせ。	枠二十六
+french	osaka	②	adva-tc	伸びなければ、早めに守りに回りまっせ。	元あり	-	伸びなければ、早めに守りに回りまっせ。	枠二十六
+french	osaka	③	advc-french-a-n-0	進みまひょ。	元あり	-	進みまひょ。	枠二十六
+french	osaka	④	advc-french-d-t-2	危ないことはやめとくなはれ。	元あり	-	危ないことはやめとくなはれ。	枠二十六
+french	osaka	⑤	advd-kyu	九種九牌やさかい、流すのが基本になりまっせ。	元あり	-	九種九牌やさかい、流すのが基本になりまっせ。	枠二十六
+french	osaka	⑥	advc-french-d-t-1	うちの言うことを聞いとくなはれ。	元あり	-	うちの言うことを聞いとくなはれ。	(B)・枠二十四
+french	osaka	⑦	advc-french-a-d-1	うちがついてまっせ。	元あり	-	うちがついてまっせ。	(A)
+french	osaka	大物	-	鉄板の上でひっくり返りそうな、大物やわ！	元あり+色	-	鉄板の上でひっくり返りそうな、大物やわ！	枠二十八
+french	osaka	惜しむ	-	千枚通しで返しそびれたような、惜しい大物やわ。	元あり+色	-	千枚通しで返しそびれたような、惜しい大物やわ。	枠二十九 七
+french	kyoto	①	adva-ikk-a	あと一枚で聴牌どす。	元あり	-	あと一枚で聴牌どす。	枠二十六
+french	kyoto	②	adva-tc	伸びなければ、早めに守りに回りますえ。	元あり	-	伸びなければ、早めに守りに回りますえ。	枠二十六
+french	kyoto	③	advc-french-a-n-0	お座敷へ上がるように、進みましょう。	色	-	お座敷へ上がるように、進みましょう。	枠二十六
+french	kyoto	④	advc-french-d-t-2	危ないことはやめとぉくれやす。	元あり	-	危ないことはやめとぉくれやす。	枠二十六
+french	kyoto	⑤	advd-kyu	九種九牌やさけ、流すのが基本どす。	元あり	-	九種九牌やさけ、流すのが基本どす。	枠二十六
+french	kyoto	⑥	advc-french-d-t-1	うちの言うことを聞いとぉくれやす。	元あり	-	うちの言うことを聞いとぉくれやす。	(B)・枠二十四
+french	kyoto	⑦	advc-french-a-d-1	うちがついてますえ。	元あり	-	うちがついてますえ。	(A)
+french	kyoto	大物	-	お座敷がどよめく、大物やえ！	元あり+色	-	お座敷がどよめく、大物やえ！	枠二十八
+french	kyoto	惜しむ	-	お座敷を前に引き下がる、惜しい大物やえ。	元あり+色	-	お座敷を前に引き下がる、惜しい大物やえ。	枠二十九 七
+french	aomori	①	adva-ikk-a	あと一枚で聴牌でごす。	元あり	-	あと一枚で聴牌でごす。	枠二十六
+french	aomori	②	adva-tc	伸びなければ、早めに守りに回るねは。	元あり	-	伸びなければ、早めに守りに回るねは。	枠二十六
+french	aomori	③	advc-french-a-n-0	ヒバ千人風呂へ向かうように、進みましょう。	色	-	ヒバ千人風呂へ向かうように、進みましょう。	枠二十六
+french	aomori	④	advc-french-d-t-2	湯治と同じで、危ないことはおやめなさいな。	色	-	湯治と同じで、危ないことはおやめなさいな。	枠二十六
+french	aomori	⑤	advd-kyu	九種九牌ですから、流すのが基本でごす。	元あり	-	九種九牌ですから、流すのが基本でごす。	枠二十六
+french	aomori	⑥	advc-french-d-t-1	湯治の宿のわたくしの言うことを、お聞きなさいな。	色	-	湯治の宿のわたくしの言うことを、お聞きなさいな。	(B)・枠二十五
+french	aomori	⑦	advc-french-a-d-1	ついでらねさ。	元あり	-	ついでらねさ。	(A)・枠二十四
+french	aomori	大物	-	ヒバ千人風呂も沸き立つ、大物だ！	元あり+色	-	ヒバ千人風呂も沸き立つ、大物だ！	枠二十九 二
+french	aomori	惜しむ	-	ヒバ千人風呂を前に引き返す大物だ……惜しいねさ。	元あり+色	-	ヒバ千人風呂を前に引き返す大物だ……惜しいねさ。	枠三十
+french	okinawa	①	adva-ikk-a	あと一枚で聴牌やいびーん。	元あり	-	あと一枚で聴牌やいびーん。	枠二十六
+french	okinawa	②	adva-tc	伸びなければ、ゆんたくーの長話も切り上げて、早めに守りに回りますの。	色	-	伸びなければ、ゆんたくーの長話も切り上げて、早めに守りに回りますの。	枠二十六
+french	okinawa	③	advc-french-a-n-0	ゆんたくーのおしゃべりはひと休みして、進みましょう。	色	-	ゆんたくーのおしゃべりはひと休みして、進みましょう。	枠二十六
+french	okinawa	④	advc-french-d-t-2	ゆんたくーの小言と思って、危ないことはおやめなさいな。	色	-	ゆんたくーの小言と思って、危ないことはおやめなさいな。	枠二十六
+french	okinawa	⑤	advd-kyu	九種九牌ですから、ゆんたくーのわたくしも迷わず、流すのが基本ですの。	色	-	九種九牌ですから、ゆんたくーのわたくしも迷わず、流すのが基本ですの。	枠二十六
+french	okinawa	⑥	advc-french-d-t-1	ゆんたくーのわたくしの言うことを、お聞きなさいな。	色	-	ゆんたくーのわたくしの言うことを、お聞きなさいな。	(B)・枠二十五
+french	okinawa	⑦	advc-french-a-d-1	ゆんたくーのわたくしがついていますの。	色	-	ゆんたくーのわたくしがついていますの。	(A)・枠二十五
+french	okinawa	大物	-	ゆんたくーも黙る、大物やん！	元あり+色	-	ゆんたくーも黙る、大物やん！	枠二十九 四
+french	okinawa	惜しむ	-	ゆんたくーがため息をつく、惜しい大物やん。	元あり+色	-	ゆんたくーがため息をつく、惜しい大物やん。	枠二十九 七
+french	bushi	①	adva-ikk-a	奥女中が見ても分かるほど、あと一枚で聴牌でございます。	色	-	奥女中が見ても分かるほど、あと一枚で聴牌でございます。	枠二十六
+french	bushi	②	adva-tc	伸びなければ、奥女中が戸締まりをするように、早めに守りに回ります。	色	-	伸びなければ、奥女中が戸締まりをするように、早めに守りに回ります。	枠二十六
+french	bushi	③	advc-french-a-n-0	奥女中の先導で参るように、進みましょう。	色	-	奥女中の先導で参るように、進みましょう。	枠二十六
+french	bushi	④	advc-french-d-t-2	奥女中にも申し付けるように、危ないことはおやめなさいな。	色	-	奥女中にも申し付けるように、危ないことはおやめなさいな。	枠二十六
+french	bushi	⑤	advd-kyu	九種九牌でございますから、奥女中の作法と同じく、流すのが基本でございます。	色	-	九種九牌でございますから、奥女中の作法と同じく、流すのが基本でございます。	枠二十六
+french	bushi	⑥	advc-french-d-t-1	奥女中を従えるわたくしの申すことを、お聞きなさいな。	色	-	奥女中を従えるわたくしの申すことを、お聞きなさいな。	(B)・枠二十五
+french	bushi	⑦	advc-french-a-d-1	奥女中ともども、わたくしがついております。	色	-	奥女中ともども、わたくしがついております。	(A)・枠二十五
+french	bushi	大物	-	奥女中も腰を抜かす、大物でござる！	元あり+色	-	奥女中も腰を抜かす、大物でござる！	枠二十八
+french	bushi	惜しむ	-	奥女中も袖を濡らす、惜しい大物でござる。	元あり+色	-	奥女中も袖を濡らす、惜しい大物でござる。	枠二十九 七
+french	yoji	①	adva-ikk-a	あといちまいで、てんぱいでしゅの。	元あり	-	あといちまいで、てんぱいでしゅの。	枠二十六・ミント型
+french	yoji	②	adva-tc	のびなければ、はやめにまもりにまわりましゅの。	元あり	-	のびなければ、はやめにまもりにまわりましゅの。	枠二十六・ミント型
+french	yoji	③	advc-french-a-n-0	しゅしゅみましょう。	元あり	-	しゅしゅみましょう。	枠二十六・ミント型
+french	yoji	④	advc-french-d-t-2	あぶないことは、おやめなしゃいな。	元あり	-	あぶないことは、おやめなしゃいな。	枠二十六・ミント型
+french	yoji	⑤	advd-kyu	きゅーしゅきゅーはいでしゅから、ながしゅのが、きほんでしゅの。	元あり	-	きゅーしゅきゅーはいでしゅから、ながしゅのが、きほんでしゅの。	枠二十六・ミント型
+french	yoji	⑥	advc-french-d-t-1	ばぶばぶ。わたくちのいうことを、おききなしゃいな。うきはいをしゃきにしぇーりしゅるのが、ゆーがなたちなみでしゅの。ばぶー。	元あり	-	ばぶばぶ。わたくちのいうことを、おききなしゃいな。うきはいをしゃきにしぇーりしゅるのが、ゆーがなたちなみでしゅの。ばぶー。	(B)・ミント型
+french	yoji	⑦	advc-french-a-d-1	ばぶー。わたくちが、ちゅいていましゅの。しゃいごまでごいっしょしゅるのが、しゃこーかいのれいぎでしゅの。ばぶ。	元あり	-	ばぶー。わたくちが、ちゅいていましゅの。しゃいごまでごいっしょしゅるのが、しゃこーかいのれいぎでしゅの。ばぶ。	(A)・ミント型
+french	yoji	大物	-	ばぶばぶ〜ん！	元あり	-	ばぶばぶ〜ん！	枠二十九 六・頭のばぶを替える
+french	yoji	惜しむ	-	ばぶばぶ〜ん……	元あり	-	ばぶばぶ〜ん……	枠二十九 七・頭のばぶを替える
+ichihime	std	①	adva-ikk-a	あと一枚で聴牌だにゃ。	元あり	残す	あと一枚で聴牌だにゃ。	本体の字
+ichihime	std	②	advc-ichihime-d-t-0	押したら後悔するにゃ。	元あり	残す	押したら後悔するにゃ。	本体の字
+ichihime	std	③	advc-ichihime-a-n-2	進もうにゃ。	元あり	残す	進むにゃ。	本体に誘いの字無し・a-n-2「進むにゃ。」を〜う形に
+ichihime	std	④	advc-ichihime-d-t-2	危ないことはやめるにゃ。	元あり	残す	危ないことはやめるにゃ。	本体の字
+ichihime	std	⑤	advd-kyu	九種九牌だから、流すのが基本だにゃ。	元あり	残す	九種九牌だから、流すのが基本だにゃ。	本体の字
+ichihime	std	⑥	advc-ichihime-d-t-1	一姫の言うことを聞くにゃ。	元あり	残す	一姫の言うことを聞くにゃ。	(B)
+ichihime	std	⑦	advc-ichihime-a-d-1	一姫がついてるにゃ。	元あり	残す	一姫がついてるにゃ。	(A)・表は a-d-1 と記す
+ichihime	std	大物	-	招き猫の右手が上がる大物にゃ！	色	替える	招き猫の右手が上がる大物にゃ！	枠28・枠29の三でそのまま
+ichihime	std	惜しむ	-	招き猫の右手が下がる、惜しい大物にゃ……	色	替える	招き猫の右手が下がる、惜しい大物にゃ……	枠29の七
+ichihime	miyazaki	①	adva-ikk-a	あと一枚で聴牌じゃわにゃ。	元あり	-	あと一枚で聴牌じゃわにゃ。	枠26
+ichihime	miyazaki	②	advc-ichihime-d-t-0	押したら後悔するっちゃがにゃ。	元あり	-	押したら後悔するっちゃがにゃ。	枠26
+ichihime	miyazaki	③	advc-ichihime-a-n-2	カツオ船みたいに、進もうにゃ。	色	-	カツオ船みたいに、進もうにゃ。	枠26・色＝カツオ
+ichihime	miyazaki	④	advc-ichihime-d-t-2	危ないこたーすんなにゃ。	元あり	-	危ないこたーすんなにゃ。	枠26・椎葉村
+ichihime	miyazaki	⑤	advd-kyu	九種九牌じゃかい、流すのが基本じゃにゃ。	元あり	-	九種九牌じゃかい、流すのが基本じゃにゃ。	枠26
+ichihime	miyazaki	⑥	advc-ichihime-d-t-1	一姫の言うこと聞いてくれんのにゃ。	元あり	-	一姫の言うこと聞いてくれんのにゃ。	枠27の二
+ichihime	miyazaki	⑦	advc-ichihime-a-d-1	一姫がついちょるよにゃ。	元あり	-	一姫がついちょるよにゃ。	枠24
+ichihime	miyazaki	大物	-	大物じゃわにゃ！	元あり	-	大物じゃわにゃ！	枠28
+ichihime	miyazaki	惜しむ	-	惜しい大物じゃわにゃ……	元あり	-	惜しい大物じゃわにゃ……	枠29の七
+ichihime	hakata	①	adva-ikk-a	あと一枚で聴牌やっちゃんにゃ。	元あり	-	あと一枚で聴牌やっちゃんにゃ。	枠26
+ichihime	hakata	②	advc-ichihime-d-t-0	押したら後悔するとよにゃ。	元あり	-	押したら後悔するとよにゃ。	枠26
+ichihime	hakata	③	advc-ichihime-a-n-2	屋台の灯がともるみたいに、進もうにゃ。	色	-	屋台の灯がともるみたいに、進もうにゃ。	枠26・色＝屋台
+ichihime	hakata	④	advc-ichihime-d-t-2	危ないことはやめりーにゃ。	元あり	-	危ないことはやめりーにゃ。	枠26
+ichihime	hakata	⑤	advd-kyu	九種九牌やけん、流すのが基本やっちゃんにゃ。	元あり	-	九種九牌やけん、流すのが基本やっちゃんにゃ。	枠26
+ichihime	hakata	⑥	advc-ichihime-d-t-1	一姫の言うことば聞いてにゃ。	元あり	-	一姫の言うことば聞いてにゃ。	枠24
+ichihime	hakata	⑦	advc-ichihime-a-d-1	一姫がついとーとよにゃ。	元あり	-	一姫がついとーとよにゃ。	
+ichihime	hakata	大物	-	大物やっちゃんにゃ！	元あり	-	大物やっちゃんにゃ！	枠28
+ichihime	hakata	惜しむ	-	惜しい大物やっちゃんにゃ……	元あり	-	惜しい大物やっちゃんにゃ……	枠29の七
+ichihime	osaka	①	adva-ikk-a	あと一枚で聴牌やわにゃ。	元あり	-	あと一枚で聴牌やわにゃ。	枠26
+ichihime	osaka	②	advc-ichihime-d-t-0	押したら後悔するでにゃ。	元あり	-	押したら後悔するでにゃ。	枠26
+ichihime	osaka	③	advc-ichihime-a-n-2	通天閣みたいにまっすぐ、進もうにゃ。	色	-	通天閣みたいにまっすぐ、進もうにゃ。	枠26・色＝通天閣
+ichihime	osaka	④	advc-ichihime-d-t-2	危ないことはやめんとあかんにゃ。	元あり	-	危ないことはやめんとあかんにゃ。	枠26
+ichihime	osaka	⑤	advd-kyu	九種九牌やさかい、流すのが基本やわにゃ。	元あり	-	九種九牌やさかい、流すのが基本やわにゃ。	枠26
+ichihime	osaka	⑥	advc-ichihime-d-t-1	一姫の言うこと聞いてえなにゃ。	元あり	-	一姫の言うこと聞いてえなにゃ。	枠24
+ichihime	osaka	⑦	advc-ichihime-a-d-1	一姫がついてるわにゃ。	元あり	-	一姫がついてるわにゃ。	枠24
+ichihime	osaka	大物	-	大物やわにゃ！	元あり	-	大物やわにゃ！	枠28
+ichihime	osaka	惜しむ	-	惜しい大物やわにゃ……	元あり	-	惜しい大物やわにゃ……	枠29の七
+ichihime	kyoto	①	adva-ikk-a	あと一枚で聴牌やえにゃ。	元あり	-	あと一枚で聴牌やえにゃ。	枠26
+ichihime	kyoto	②	advc-ichihime-d-t-0	押したら後悔するわにゃ。	元あり	-	押したら後悔するわにゃ。	枠26
+ichihime	kyoto	③	advc-ichihime-a-n-2	見世出しの日みたいに、進もうにゃ。	色	-	見世出しの日みたいに、進もうにゃ。	枠26・色＝見世出し
+ichihime	kyoto	④	advc-ichihime-d-t-2	危ないことはおしなにゃ。	元あり	-	危ないことはおしなにゃ。	枠26
+ichihime	kyoto	⑤	advd-kyu	九種九牌やよって、流すのが基本やえにゃ。	元あり	-	九種九牌やよって、流すのが基本やえにゃ。	枠26
+ichihime	kyoto	⑥	advc-ichihime-d-t-1	一姫の言うこと聞きよしにゃ。	元あり	-	一姫の言うこと聞きよしにゃ。	
+ichihime	kyoto	⑦	advc-ichihime-a-d-1	一姫がついてるえにゃ。	元あり	-	一姫がついてるえにゃ。	
+ichihime	kyoto	大物	-	大物やえにゃ！	元あり	-	大物やえにゃ！	枠28
+ichihime	kyoto	惜しむ	-	惜しい大物やえにゃ……	元あり	-	惜しい大物やえにゃ……	枠29の七
+ichihime	aomori	①	adva-ikk-a	ヤーヤドーの掛け声が近いみたいに、あと一枚で聴牌だにゃ。	色	-	ヤーヤドーの掛け声が近いみたいに、あと一枚で聴牌だにゃ。	枠26・津軽の「だ」は標準と同字
+ichihime	aomori	②	advc-ichihime-d-t-0	押しだら後悔するびょんにゃ。	元あり	-	押しだら後悔するびょんにゃ。	枠26
+ichihime	aomori	③	advc-ichihime-a-n-2	進むべにゃ。	元あり	-	進むべにゃ。	枠26
+ichihime	aomori	④	advc-ichihime-d-t-2	危ないことはまいねにゃ。	元あり	-	危ないことはまいねにゃ。	枠26
+ichihime	aomori	⑤	advd-kyu	九種九牌だはんで、流すのが基本だにゃ。	元あり	-	九種九牌だはんで、流すのが基本だにゃ。	枠26・ずんだと残る被り
+ichihime	aomori	⑥	advc-ichihime-d-t-1	一姫の言うこと聞ぐべにゃ。	元あり	-	一姫の言うこと聞ぐべにゃ。	枠24
+ichihime	aomori	⑦	advc-ichihime-a-d-1	一姫がついてらにゃ。	元あり	-	一姫がついてらにゃ。	枠24で据え置き
+ichihime	aomori	大物	-	扇ねぷたみたいな大物だにゃ！	色	-	扇ねぷたみたいな大物だにゃ！	枠28
+ichihime	aomori	惜しむ	-	扇ねぷたを見送るみたいな、惜しい大物だにゃ……	色	-	扇ねぷたを見送るみたいな、惜しい大物だにゃ……	枠29の七
+ichihime	okinawa	①	adva-ikk-a	ご主人、あと一枚で聴牌やんにゃ。	元あり	-	ご主人、あと一枚で聴牌やんにゃ。	枠29の四
+ichihime	okinawa	②	advc-ichihime-d-t-0	押したら後悔するにゃ。	元なし	-	押したら後悔するにゃ。	色なし・標準のまま
+ichihime	okinawa	③	advc-ichihime-a-n-2	港を出る舟みたいに、進もうにゃ。	色	-	港を出る舟みたいに、進もうにゃ。	枠26・色＝港
+ichihime	okinawa	④	advc-ichihime-d-t-2	危ないことはやめるにゃ。	元なし	-	危ないことはやめるにゃ。	色なし・標準のまま
+ichihime	okinawa	⑤	advd-kyu	九種九牌だから、流すのが基本だにゃ。	元なし	-	九種九牌だから、流すのが基本だにゃ。	色なし・標準のまま
+ichihime	okinawa	⑥	advc-ichihime-d-t-1	一姫の言うことを聞くにゃ。	元なし	-	一姫の言うことを聞くにゃ。	裁定・標準と同字
+ichihime	okinawa	⑦	advc-ichihime-a-d-1	一姫がついてるにゃ。	元なし	-	一姫がついてるにゃ。	裁定・標準と同字
+ichihime	okinawa	大物	-	ご主人、大物やんにゃ！	元あり	-	ご主人、大物やんにゃ！	枠29の四
+ichihime	okinawa	惜しむ	-	ご主人、惜しい大物やんにゃ……	元あり	-	ご主人、惜しい大物やんにゃ……	枠29の七
+ichihime	bushi	①	adva-ikk-a	招き猫が手を上げたみたいに、あと一枚で聴牌だにゃ。	色	-	招き猫が手を上げたみたいに、あと一枚で聴牌だにゃ。	枠26・色＝招き猫
+ichihime	bushi	②	advc-ichihime-d-t-0	今戸焼が割れるみたいに、押したら後悔するにゃ。	色	-	今戸焼が割れるみたいに、押したら後悔するにゃ。	枠26・色＝今戸焼
+ichihime	bushi	③	advc-ichihime-a-n-2	浅草へ繰り出すみたいに、進もうにゃ。	色	-	浅草へ繰り出すみたいに、進もうにゃ。	枠26・色＝浅草
+ichihime	bushi	④	advc-ichihime-d-t-2	危ないことはやめねえにゃ。	元あり	-	危ないことはやめねえにゃ。	枠26・男の用例中心
+ichihime	bushi	⑤	advd-kyu	九種九牌だから、流すのが基本だにゃ。	元なし	-	九種九牌だから、流すのが基本だにゃ。	色なし・標準のまま
+ichihime	bushi	⑥	advc-ichihime-d-t-1	一姫の言うことを聞きねえにゃ。	元あり	-	一姫の言うことを聞きねえにゃ。	男の用例中心
+ichihime	bushi	⑦	advc-ichihime-a-d-1	一姫がついてるにゃ。	元なし	-	一姫がついてるにゃ。	裁定・標準と同字
+ichihime	bushi	大物	-	浅草じゅうが沸く大物にゃ！	色	-	浅草じゅうが沸く大物にゃ！	枠28
+ichihime	bushi	惜しむ	-	招き猫が手を下ろすみたいな、惜しい大物にゃ……	色	-	招き猫が手を下ろすみたいな、惜しい大物にゃ……	枠29の七
+ichihime	yoji	①	adva-ikk-a	ばぶ。あといちまいでてんぱいだにゃ。ばぶ。	元あり	-	ばぶ。あといちまいでてんぱいだにゃ。ばぶ。	枠26・音の決まり
+ichihime	yoji	②	advc-ichihime-d-t-0	ばぶ。おちたらこーかいしゅるにゃ。ばぶ。	元あり	-	ばぶ。おちたらこーかいしゅるにゃ。ばぶ。	枠26・「落ちたら」と紛れる
+ichihime	yoji	③	advc-ichihime-a-n-2	ばぶ。しゅしゅもーにゃ。ばぶ。	元あり	-	ばぶ。しゅしゅもーにゃ。ばぶ。	枠26
+ichihime	yoji	④	advc-ichihime-d-t-2	ばぶ。あぶないことはやめるにゃ。ばぶ。	元あり	-	ばぶ。あぶないことはやめるにゃ。ばぶ。	枠26
+ichihime	yoji	⑤	advd-kyu	ばぶ。きゅーしゅきゅーはいだから、ながしゅのがきほんだにゃ。ばぶ。	元あり	-	ばぶ。きゅーしゅきゅーはいだから、ながしゅのがきほんだにゃ。ばぶ。	枠26
+ichihime	yoji	⑥	advc-ichihime-d-t-1	ばぶばぶ。いちひめのいうことをきくにゃ。きけんはいのけはいをしゃっちたら、ひげのかんかくにちたがってひくのが、ねこのほんぶんにゃ。ばぶー。	元あり	-	ばぶばぶ。いちひめのいうことをきくにゃ。きけんはいのけはいをしゃっちたら、ひげのかんかくにちたがってひくのが、ねこのほんぶんにゃ。ばぶー。	枠24・(B)
+ichihime	yoji	⑦	advc-ichihime-a-d-1	ばぶー。いちひめがちゅいてるにゃ。ごしゅじんのてのよんれんけーとなかぶくれは、うけいれのひろいちゅよいかたちだから、こわしゃじゅだいじにしょだてるのが、ねこのりゅーぎにゃ。ばぶ。	元あり	-	ばぶー。いちひめがちゅいてるにゃ。ごしゅじんのてのよんれんけーとなかぶくれは、うけいれのひろいちゅよいかたちだから、こわしゃじゅだいじにしょだてるのが、ねこのりゅーぎにゃ。ばぶ。	枠24・(A)
+ichihime	yoji	大物	-	ばぶにゃっ！	元あり	-	ばぶにゃっ！	枠29の六・頭の「ばぶー」を替える
+ichihime	yoji	惜しむ	-	ばぶにゃ……。おちいおーものにゃ。ばぶ。	元あり	-	ばぶにゃ……。おちいおーものにゃ。ばぶ。	枠29の七
+sensei	std	①	adva-head	攻めです。	元あり	残す	攻めです。	判定の頭の字（id書かれず）
+sensei	std	②	advc-sensei-d-t-0	押したら、後悔しますよ。	元あり	残す	押したら、後悔しますよ。	枠二十六
+sensei	std	③	advc-sensei-a-n-0	進みましょう。	元あり	残す	進みましょう。	枠二十六
+sensei	std	④	advc-sensei-d-t-2	危ないことはやめなさい。	元あり	残す	危ないことはやめなさい。	枠二十六
+sensei	std	⑤	advd-kyu	九種九牌ですから、流すのが基本です。	元あり	残す	九種九牌ですから、流すのが基本です。	枠二十六
+sensei	std	⑥	advc-sensei-d-t-1	先生の言うことを聞きなさい。	元あり	残す	先生の言うことを聞きなさい。	(B)
+sensei	std	⑦	advc-sensei-a-d-1	先生がついています。	元あり	残す	先生がついています。	(A)・色は元なしで入れない
+sensei	std	大物	-	先生もびっくり、大物です！	元なし	残す	先生もびっくり、大物です！	枠二十九で替えない
+sensei	std	惜しむ	-	惜しい大物です。	元なし	残す	惜しい大物です。	枠二十九の七
+sensei	miyazaki	①	adva-head	攻めぢゃす。	元あり	-	攻めぢゃす。	枠二十六
+sensei	miyazaki	②	advc-sensei-d-t-0	押したら、後悔しますよ。	元なし	-	押したら、後悔しますよ。	標準のまま
+sensei	miyazaki	③	advc-sensei-a-n-0	進もうかなせぇ。	元あり	-	進もうかなせぇ。	型の当てはめ
+sensei	miyazaki	④	advc-sensei-d-t-2	危ないことは、やめてくんない。	元あり	-	危ないことは、やめてくんない。	枠二十六
+sensei	miyazaki	⑤	advd-kyu	九種九牌ぢゃかい、流すのが基本ぢゃす。	元あり	-	九種九牌ぢゃかい、流すのが基本ぢゃす。	枠二十六
+sensei	miyazaki	⑥	advc-sensei-d-t-1	先生の言うこと、聞いてくんない。	元あり	-	先生の言うこと、聞いてくんない。	枠二十七
+sensei	miyazaki	⑦	advc-sensei-a-d-1	先生がついちょるなせぇ。	元あり	-	先生がついちょるなせぇ。	枠二十七
+sensei	miyazaki	大物	-	大物じゃが！	元あり	-	大物じゃが！	枠二十八
+sensei	miyazaki	惜しむ	-	惜しい大物ぢゃす。	元あり	-	惜しい大物ぢゃす。	枠二十九の七
+sensei	hakata	①	adva-head	攻めです。	元なし	-	攻めです。	標準のまま
+sensei	hakata	②	advc-sensei-d-t-0	押したら、後悔しますよ。	元なし	-	押したら、後悔しますよ。	標準のまま
+sensei	hakata	③	advc-sensei-a-n-0	進みましょう。	元なし	-	進みましょう。	標準のまま
+sensei	hakata	④	advc-sensei-d-t-2	危ないことは、やめてごぢゃい。	元あり	-	危ないことは、やめてごぢゃい。	枠二十七
+sensei	hakata	⑤	advd-kyu	九種九牌やけん、流すのが基本です。	元あり	-	九種九牌やけん、流すのが基本です。	枠二十六
+sensei	hakata	⑥	advc-sensei-d-t-1	先生の言うこと、聞いてごぢゃい。	元あり	-	先生の言うこと、聞いてごぢゃい。	枠二十七
+sensei	hakata	⑦	advc-sensei-a-d-1	先生がついています。	元なし	-	先生がついています。	枠二十四で探し元なし
+sensei	hakata	大物	-	大物たい！	元あり	-	大物たい！	枠二十八
+sensei	hakata	惜しむ	-	大物たい。惜しいです。	元あり	-	大物たい。惜しいです。	二文・枠二十九の七
+sensei	osaka	①	adva-head	往来物の手本どおり、攻めです。	色	-	往来物の手本どおり、攻めです。	枠二十六
+sensei	osaka	②	advc-sensei-d-t-0	押したら、後悔しますよ。	元なし	-	押したら、後悔しますよ。	色も入れず
+sensei	osaka	③	advc-sensei-a-n-0	手習いと同じく、進みましょう。	色	-	手習いと同じく、進みましょう。	枠二十六
+sensei	osaka	④	advc-sensei-d-t-2	危ないことは、やめなはれ。	元あり	-	危ないことは、やめなはれ。	枠二十六
+sensei	osaka	⑤	advd-kyu	九種九牌やさかい、流すのが基本です。	元あり	-	九種九牌やさかい、流すのが基本です。	枠二十六
+sensei	osaka	⑥	advc-sensei-d-t-1	先生の言うことを聞きなはれ。	元あり	-	先生の言うことを聞きなはれ。	(B)
+sensei	osaka	⑦	advc-sensei-a-d-1	師弟は三世の契り、先生がついています。	色	-	師弟は三世の契り、先生がついています。	枠二十四で標準へ・枠二十六で色
+sensei	osaka	大物	-	大物やがな！	元あり	-	大物やがな！	型の当てはめ
+sensei	osaka	惜しむ	-	惜しい大物やがな。	元あり	-	惜しい大物やがな。	枠二十九の七
+sensei	kyoto	①	adva-head	攻めどす。	元あり	-	攻めどす。	枠三十で戻した
+sensei	kyoto	②	advc-sensei-d-t-0	押さはったら、後悔しはります。	元あり	-	押さはったら、後悔しはります。	枠二十六
+sensei	kyoto	③	advc-sensei-a-n-0	進みまひょ。	元あり	-	進みまひょ。	枠二十六
+sensei	kyoto	④	advc-sensei-d-t-2	危ないことは、おやめやす。	元あり	-	危ないことは、おやめやす。	枠二十六
+sensei	kyoto	⑤	advd-kyu	九種九牌やさかい、流すのが基本どす。	元あり	-	九種九牌やさかい、流すのが基本どす。	枠三十・被りは本人に訊く所
+sensei	kyoto	⑥	advc-sensei-d-t-1	先生の言うことを、お聞きやす。	元あり	-	先生の言うことを、お聞きやす。	(B)
+sensei	kyoto	⑦	advc-sensei-a-d-1	薄茶の席でも濃茶の席でも、先生がついています。	色	-	薄茶の席でも濃茶の席でも、先生がついています。	枠二十六
+sensei	kyoto	大物	-	大物やわ！	元あり	-	大物やわ！	一姫×大阪例と同じ字のおそれ
+sensei	kyoto	惜しむ	-	大物やのに、惜しゅうおす。	元あり	-	大物やのに、惜しゅうおす。	枠二十九の七
+sensei	aomori	①	adva-head	攻めです。	元あり	-	攻めです。	津軽の丁寧形＝です
+sensei	aomori	②	advc-sensei-d-t-0	押したら、後悔するでごし。	元あり	-	押したら、後悔するでごし。	型の当てはめ
+sensei	aomori	③	advc-sensei-a-n-0	進みましょう。	元なし	-	進みましょう。	標準のまま
+sensei	aomori	④	advc-sensei-d-t-2	危ないことは、やめへ。	元あり	-	危ないことは、やめへ。	型の当てはめ
+sensei	aomori	⑤	advd-kyu	九種九牌だはんで、流すのが基本です。	元あり	-	九種九牌だはんで、流すのが基本です。	枠二十六
+sensei	aomori	⑥	advc-sensei-d-t-1	先生の言うこと、聞ぎへ。	元あり	-	先生の言うこと、聞ぎへ。	枠二十
+sensei	aomori	⑦	advc-sensei-a-d-1	先生がついています。	元なし	-	先生がついています。	枠二十四で探し元なし
+sensei	aomori	大物	-	大物になるびょん！	元あり	-	大物になるびょん！	枠二十九
+sensei	aomori	惜しむ	-	大物だ……惜しごす。	元あり	-	大物だ……惜しごす。	枠三十
+sensei	okinawa	①	adva-head	みんな、攻めやん。	元あり	-	みんな、攻めやん。	枠二十九
+sensei	okinawa	②	advc-sensei-d-t-0	押したら、後悔しますよ。	元なし	-	押したら、後悔しますよ。	乙・標準
+sensei	okinawa	③	advc-sensei-a-n-0	進みましょう。	元なし	-	進みましょう。	乙・標準
+sensei	okinawa	④	advc-sensei-d-t-2	危ないことはやめなさい。	元なし	-	危ないことはやめなさい。	乙・標準
+sensei	okinawa	⑤	advd-kyu	九種九牌ですから、流すのが基本です。	元なし	-	九種九牌ですから、流すのが基本です。	乙・標準
+sensei	okinawa	⑥	advc-sensei-d-t-1	先生の言うことを聞きなさい。	元なし	-	先生の言うことを聞きなさい。	乙・標準
+sensei	okinawa	⑦	advc-sensei-a-d-1	先生がついています。	元なし	-	先生がついています。	乙・標準
+sensei	okinawa	大物	-	みんな、大物やん！	元あり	-	みんな、大物やん！	枠二十九
+sensei	okinawa	惜しむ	-	みんな、惜しい大物やん。	元あり	-	みんな、惜しい大物やん。	枠二十九の七
+sensei	bushi	①	adva-head	攻めでござる。	元あり	-	攻めでござる。	枠二十六
+sensei	bushi	②	advc-sensei-d-t-0	押したら、間合を見誤って後悔しますよ。	色	-	押したら、間合を見誤って後悔しますよ。	枠二十六
+sensei	bushi	③	advc-sensei-a-n-0	送り足で、進みましょう。	色	-	送り足で、進みましょう。	枠二十六
+sensei	bushi	④	advc-sensei-d-t-2	危ないことは、やめなされ。	元あり	-	危ないことは、やめなされ。	枠二十六
+sensei	bushi	⑤	advd-kyu	九種九牌でござるから、流すのが基本でござる。	元あり	-	九種九牌でござるから、流すのが基本でござる。	枠二十六
+sensei	bushi	⑥	advc-sensei-d-t-1	身共の言うことを聞きなされ。	元あり	-	身共の言うことを聞きなされ。	枠二十七（身共）
+sensei	bushi	⑦	advc-sensei-a-d-1	身共がついてござる。	元あり	-	身共がついてござる。	枠二十七（身共）
+sensei	bushi	大物	-	一足一刀の間合に、大物！	色	-	一足一刀の間合に、大物！	枠二十八
+sensei	bushi	惜しむ	-	大物でござるが、ここは残心でござる。	元あり+色	-	大物でござるが、ここは残心でござる。	枠二十九の七
+sensei	yoji	①	adva-head	しぇめでしゅ。	元あり	-	しぇめでしゅ。	間の字のみ・頭と終わりにばぶ
+sensei	yoji	②	advc-sensei-d-t-0	おちたら、こーかいちましゅよ。	元あり	-	おちたら、こーかいちましゅよ。	間の字のみ・読みにくい語
+sensei	yoji	③	advc-sensei-a-n-0	しゅしゅみましょー。	元あり	-	しゅしゅみましょー。	間の字のみ・読みにくい語
+sensei	yoji	④	advc-sensei-d-t-2	あぶないことは、やめなしゃい。	元あり	-	あぶないことは、やめなしゃい。	間の字のみ
+sensei	yoji	⑤	advd-kyu	きゅーしゅきゅーはいでしゅから、ながしゅのがきほんでしゅ。	元あり	-	きゅーしゅきゅーはいでしゅから、ながしゅのがきほんでしゅ。	間の字のみ
+sensei	yoji	⑥	advc-sensei-d-t-1	ばぶばぶ。しぇんしぇーのいうことを、ききなしゃい。きたいちとほーじゅーりちゅをくらべてから、おちひきをきめなしゃい。ばぶー。	元あり	-	ばぶばぶ。しぇんしぇーのいうことを、ききなしゃい。きたいちとほーじゅーりちゅをくらべてから、おちひきをきめなしゃい。ばぶー。	枠二十一
+sensei	yoji	⑦	advc-sensei-a-d-1	ばぶー。しぇんしぇーが、ちゅいていましゅ。たいきょくてきにみれば、てんぱいまでのみちのりは、うけいれのひろしゃで、ほぼきまるのでしゅ。ばぶ。	元あり	-	ばぶー。しぇんしぇーが、ちゅいていましゅ。たいきょくてきにみれば、てんぱいまでのみちのりは、うけいれのひろしゃで、ほぼきまるのでしゅ。ばぶ。	枠二十一
+sensei	yoji	大物	-	ばぶっ、ばぶっ！	元あり	-	ばぶっ、ばぶっ！	枠二十九・頭のばぶを替える
+sensei	yoji	惜しむ	-	ばぶぅ……。おーものでしゅが、おちいでしゅ。ばぶ。	元あり	-	ばぶぅ……。おーものでしゅが、おちいでしゅ。ばぶ。	枠二十九の七
