@@ -3,6 +3,8 @@
 //         node scratchpad/kaburi.js --list     … 集計と被りの一覧（番号は reports/kuchou-kaburi.md の番号と同じ）
 //         node scratchpad/kaburi.js --rows     … 63行の取り出し結果（(A)(B)・口癖・一人称・述語・語尾）と一覧
 //         node scratchpad/kaburi.js --json     … 全部を JSON で出す
+//         node scratchpad/kaburi.js --rules    … 7種の字の拾い方の決まりを出す（TYPE_RULES）
+// 枠 二十五〜二十七の後：各行の「文の種類ごとの字」（①言い切り〜⑦付き合う宣言）も拾い、⑥「同じ種類どうし」で突き合わせる。
 // 読むのは reports/kuchou-hyou.md だけ（各人の kuchou-<人格>.md は同じ中身の写し＝2026-11-21 に行ごと突き合わせて確かめた）。
 // 書き換えはしない。字を直した後にもう一度回せば、被りが減ったかが分かる。
 'use strict';
@@ -71,17 +73,88 @@ function personaBlocks() {
   return out;
 }
 
+// 行の塊：「### ①標準」〜「### ⑨幼児」。人格の節の中で「#### …文の種類…」の見出しより後の ### は、
+// 種類の節（ずんだ・お嬢様）の塊として別に返す（枠 二十六で足された形）。
 function rowBlocks(pb) {
-  const rows = [];
+  const rows = [], types = [];
+  let inType = false;
   for (let i = pb.start; i < pb.end; i++) {
+    if (/^#### .*文の種類/.test(lines[i])) { inType = true; continue; }
     const m = lines[i].match(/^### (?:仮 )?([①-⑨])/);
     if (m) {
       let j = i + 1;
       while (j < pb.end && !/^(###|## |#### |---)/.test(lines[j])) j++;
-      rows.push({ dial: DIALS[CIRC.indexOf(m[1])], from: i, to: j, body: lines.slice(i + 1, j) });
+      (inType ? types : rows).push({ dial: DIALS[CIRC.indexOf(m[1])], from: i, to: j, body: lines.slice(i + 1, j) });
     }
   }
-  return rows;
+  return { rows, types };
+}
+
+// ---------- 文の種類（枠 二十五〜二十七）の取り出し ----------
+// 拾い方の決まり（一行ずつ）：
+const TYPE_RULES = [
+  '一）拾う場所：ずんだ・お嬢様は人格の節の「#### …文の種類…」より後の「### ①〜⑨」の塊まるごと。ほかの五人は各行の塊のうち、「文の種類」「種類ごとの字」「七種の字」を含む最初の行から塊の終わりまで。',
+  '二）番号の当て方：場所の中に「①言い切り：」のように番号＋種類の名（言い切り・読み・誘い・止め・訳・頼み・付き合う宣言）＋区切り（（：「【・＝ ** 空白）が一つでもあれば、名の付いた番号だけを見る。無ければ（ずんだ・お嬢様・執事×青森）名の無い①〜⑦を見る。',
+  '三）名の無い番号の除き：前が「元・例・案・被・仮・前・上・下・行・枠・数字」の物（元①など）と、後ろが「〜・の・と・が・方言の名」の物（①〜⑤・①標準・⑦の色付き など）は番号として数えない。',
+  '四）一つの番号の字＝その番号から、同じ行の次の番号までの切れ端。同じ番号が二度出たら先の物を採る。',
+  '五）切れ端の掃除：** を外す／頭の（警告）（指図）・指図 と【…】（【色】【元なし＝標準＋色】など）と「：」を外す。',
+  '六）頭が「＝(A)／(B)」「(A)／(B)」の物は、後ろに文があればその文、無ければ（「本人の例 (B)」「上の…のまま」も）その行の (A)(B) を使う（⑦＝(A)・⑥＝(B)）。',
+  '七）頭が「元なし」の物は、（…）を外した後の最初の「…」の中身。頭が「「」の物は最初の「…」の中身。「→」がある物は → の後ろ（先生×幼児の 元の字 → 崩した字）。',
+  '八）それ以外は、頭の「ばぶ。」を外して最初の「。」まで。最後に頭と尾の「ばぶ。」を外す（幼児は ばぶ の挟みを除いた間の字で比べる）。',
+  '九）⑥⑦が書かれていない行（ずんだの②〜⑨）と、「＝(B)「聞ぐべにゃ」」のように「。」で終わらない切れ端だけを添えた物は、その行の (B)(A) を使う。幼児は ばぶ を外した最初の一文（後ろの小難しい一言は外す）。',
+];
+const TNAME = ['言い切り', '読み', '誘い', '止め', '訳', '頼み', '付き合う宣言'];
+const TCIRC = '①②③④⑤⑥⑦';
+const RE_NAMED = /([①-⑦])(言い切り|読み|誘い|止め|訳|頼み|付き合う宣言)(?=[（：:「【・＝*\s])/g;
+const RE_ANY = /(?<![元例案被仮前上下行枠0-9])([①-⑦])(?![〜～のとが標宮博大京青沖武幼])/g;
+const finT = t => clean(t).replace(/^(ばぶ[ーばぶ]*。\s*)+/, '').replace(/(\s*ばぶ[ー]?。)+$/, '').trim();
+function parseSeg(seg0) {
+  let s = seg0.replace(/\*\*/g, '');
+  s = s.replace(/^（[^）]*）/, '').replace(/^・指図/, '');
+  s = s.replace(/^[\s　]*【[^】]*】/, '').replace(/^[\s　：:]+/, '');
+  let use = null;
+  const mab = s.match(/^＝?\s*\(([AB])\)\s*[：:]?\s*/);
+  if (mab) { use = mab[1].toLowerCase(); s = s.slice(mab[0].length); }
+  const mrei = s.match(/^本人の例\s*\(([AB])\)/);
+  if (mrei) return { use: mrei[1].toLowerCase(), how: '本人の例→行の(' + mrei[1] + ')' };
+  s = s.replace(/^[\s　]*【[^】]*】/, '').trim();
+  if (!s || /^(上の|[・／。、])/.test(s)) return use ? { use, how: '＝(' + use.toUpperCase() + ')→行の字' } : null;
+  // ＝(B)「聞ぐべにゃ」のように、語尾だけの切れ端（「。」で終わらない）を添えた物は行の字を使う
+  if (use && s.startsWith('「')) { const q = s.match(/^「([^」]+)」/); if (q && !/。$/.test(q[1])) return { use, how: '＝(' + use.toUpperCase() + ')＋切れ端→行の字' }; }
+  if (/^元なし/.test(s)) {
+    let t = s; let prev; do { prev = t; t = t.replace(/（[^（）]*）/g, ''); } while (t !== prev);
+    const q = t.match(/「([^」]+)」/);
+    return q ? { s: finT(q[1]), how: '元なしの段の「」' } : null;
+  }
+  if (s.startsWith('「')) { const q = s.match(/^「([^」]+)」/); return q ? { s: finT(q[1]), how: '「」の中' } : null; }
+  let how = '「。」まで';
+  const ar = s.match(/^[^。]*?\s→\s*(.*)$/);
+  if (ar) { s = ar[1]; how = '→ の後ろ'; }
+  s = s.replace(/^(ばぶ[ーばぶ]*。\s*)+/, '');
+  const k = s.indexOf('。');
+  s = k >= 0 ? s.slice(0, k + 1) : s.split(/[（／　]/)[0];
+  const out = finT(s);
+  return out ? { s: out, how: use ? '(' + use.toUpperCase() + ') の後ろの文' : how } : null;
+}
+function extractTypes(lns) {
+  const named = lns.some(l => new RegExp(RE_NAMED.source).test(l));
+  const re = named ? RE_NAMED : RE_ANY;
+  const out = {};
+  for (const ln of lns) {
+    const ms = [...ln.matchAll(new RegExp(re.source, 'g'))];
+    ms.forEach((m, i) => {
+      const k = TCIRC.indexOf(m[1]) + 1;
+      if (out[k]) return;
+      const seg = ln.slice(m.index + m[0].length, i + 1 < ms.length ? ms[i + 1].index : ln.length);
+      const r = parseSeg(seg);
+      if (r) out[k] = r;
+    });
+  }
+  return out;
+}
+function typeRegion(r) {
+  const i = r.body.findIndex(x => /文の種類|種類ごとの字|七種の字/.test(x));
+  return i >= 0 ? r.body.slice(i) : [];
 }
 
 // (A)(B) を一つの塊から拾う。(A) の後ろがすぐ「(」のもの（「(A)(B) は…」の説明）は飛ばす。
@@ -103,7 +176,7 @@ function pickAB(chunk, isYoji) {
   return { a, b };
 }
 function cutSentence(raw, isYoji) {
-  let t = raw.replace(/^元なし＝標準のまま：/, '').replace(/^[\s：:]+/, '');
+  let t = raw.replace(/^\s*元なし[^：。]*：/, '').replace(/^[\s：:]+/, '').replace(/^「/, '');
   if (isYoji) {
     t = t.split('\n')[0];
     t = t.replace(/（[^）]*）/g, '').replace(/\s*\(B\)[\s\S]*$/, '');
@@ -230,21 +303,42 @@ function ending(pred) {
 const ROWS = [];
 for (const pb of personaBlocks()) {
   const p = (PERSONAS.find(x => pb.name.startsWith(x[0])) || [pb.name, pb.name])[1];
-  for (const r of rowBlocks(pb)) {
+  const { rows, types } = rowBlocks(pb);
+  for (const r of rows) {
     const e = extractRow(r);
-    ROWS.push({ p, dial: r.dial, line: r.from + 1, a: e.a, b: e.b, kuse: e.kuse, how: e.how });
+    const tb = types.find(x => x.dial === r.dial);
+    const traw = tb ? extractTypes(tb.body) : extractTypes(typeRegion(r));
+    ROWS.push({ p, dial: r.dial, line: r.from + 1, tline: tb ? tb.from + 1 : null, a: e.a, b: e.b, kuse: e.kuse, how: e.how, traw });
   }
 }
-// 拾えなかった行は手で読んで補う（今は 0 件。字を直して拾えなくなったらここへ足す）
+// 拾えなかった行・古い字を拾う行は手で読んで補う（字を直して拾えなくなったらここへ足す）
 const MANUAL = {
   // '執事|博多': { a: '…', b: '…', note: '拾い方' },
+  // 先生の宮崎・博多は【二十七】で口癖を替えたが、最初の口癖の行（枠 十九の字）が先に当たる。後ろの行を採ると他の行（ずんだ×京都・軍師×宮崎）が古い字になるので、ここで補う。
+  '先生|宮崎': { kuse: 'よう聞いてくんない。', note: '口癖は【二十七】の字（kuchou-hyou.md 1765行）' },
+  '先生|博多': { kuse: 'ちゃんと聞いてごぢゃい。', note: '口癖は【二十七】の字（kuchou-hyou.md 1803行）' },
 };
 for (const r of ROWS) {
   const m = MANUAL[r.p + '|' + r.dial];
   if (m) { if (m.a) r.a = m.a; if (m.b) r.b = m.b; if (m.kuse !== undefined) r.kuse = m.kuse; r.how.push('手で補った：' + m.note); }
   r.fp = firstPerson(r); r.pa = predA(r); r.pb = predB(r); r.ea = ending(r.pa); r.eb = ending(r.pb);
 }
+// 7種の字を決める（traw の字／＝(A)(B)／書いていない⑥⑦は行の (B)(A)）
+// 行の字を使う時、幼児は ばぶ を外した最初の一文（人格の文。後ろの小難しい一言は③の幼児で見る）
+const rowT = (r, f) => { const t = finT(r[f]); if (r.dial !== '幼児') return t; const k = t.indexOf('。'); return k >= 0 ? t.slice(0, k + 1) : t; };
+for (const r of ROWS) {
+  r.t = {}; r.thow = {};
+  for (let k = 1; k <= 7; k++) {
+    const x = r.traw[k];
+    if (x && x.s) { r.t[k] = x.s; r.thow[k] = x.how; }
+    else if (x && x.use) { r.t[k] = rowT(r, x.use); r.thow[k] = x.how; }
+    else if (k === 6 && r.b) { r.t[k] = rowT(r, 'b'); r.thow[k] = '書いていない→行の(B)'; }
+    else if (k === 7 && r.a) { r.t[k] = rowT(r, 'a'); r.thow[k] = '書いていない→行の(A)'; }
+  }
+}
 const missing = ROWS.filter(r => !r.a || !r.b).map(r => `${r.p}×${r.dial}（${r.line}行）：${!r.a ? '(A)' : ''}${!r.b ? '(B)' : ''}`);
+const missingT = [];
+for (const r of ROWS) { const ks = [1, 2, 3, 4, 5, 6, 7].filter(k => !r.t[k]); if (ks.length) missingT.push(`${r.p}×${r.dial}：${ks.map(k => TCIRC[k - 1]).join('')}`); }
 const id = r => `${r.p}×${r.dial}`;
 const std = p => ROWS.find(r => r.p === p && r.dial === '標準');
 
@@ -405,20 +499,68 @@ pairs(ROWS.filter(r => r.kuse), (x, y) => {
   }
 }
 
+// ⑥ 同じ種類どうし（枠 二十五〜二十七）：種類ごと（①〜⑦）に、
+//   (a) 人格どうし＝同じ方言の別の人格／(b) 方言どうし＝同じ人格の別の方言 で、同じ字・ほぼ同じ字（likeS）の塊。
+//   比べる字は (A)(B) と同じく、呼び名（だんさん）と一姫の「にゃ」を外す。幼児は ばぶ の挟みを外した間の字。
+//   (c) 人格も方言も違う組は参考として別に数える（合わせての数には入れない）。
+K[6] = []; const K6ref = [];
+const cmpT = (r, k) => stripNya(stripYobina(clean(r.t[k])), r.p);
+// 種類の字の「ほぼ同じ」は狭く取る：norm（句読点・長音・記号を外す）に加えて「う」を外すと一致する物だけ（しゅしゅみましょう／しゅしゅみましょー）。
+// 末尾が一字・二字違う物（攻めです／攻めですわ・聴牌じゃ／聴牌じゃわ・やめな／やめなはれ・やめなさい／やめなされ）は、
+// 違う所がその人格・方言の語尾の印なので、書き手が分けた字として数えない（一姫の節「聴牌じゃにゃ→じゃわにゃ」で分けた、等の書き手の決めに合わせた）。
+function likeT(a, b) {
+  const x = norm(a), y = norm(b);
+  if (!x || !y) return null;
+  if (x === y) return '同じ';
+  if (x.replace(/う/g, '') === y.replace(/う/g, '')) return 'ほぼ同じ';
+  return null;
+}
+for (let k = 1; k <= 7; k++) {
+  const tag = TCIRC[k - 1] + TNAME[k - 1];
+  for (const d of DIALS) {
+    const items = ROWS.filter(r => r.dial === d && r.t[k]).map(r => ({ r, s: cmpT(r, k) }));
+    for (const g of group(items, likeT)) K[6].push({ type: k, field: tag + '・人格どうし（' + d + '）', ...g });
+  }
+  for (const p of PERSONAS.map(x => x[1])) {
+    const items = ROWS.filter(r => r.p === p && r.t[k]).map(r => ({ r, s: cmpT(r, k) }));
+    for (const g of group(items, likeT)) K[6].push({ type: k, field: tag + '・方言どうし（' + p + '）', ...g });
+  }
+  pairs(ROWS.filter(r => r.t[k]), (x, y) => {
+    if (x.p === y.p || x.dial === y.dial) return;
+    const L = likeT(cmpT(x, k), cmpT(y, k));
+    if (L) K6ref.push({ type: k, field: tag + '・人格も方言も違う', kind: L, rows: [id(x), id(y)], words: [...new Set([clean(x.t[k]), clean(y.t[k])])] });
+  });
+}
+
 // ---------- 出力 ----------
 const arg = process.argv.slice(2);
-if (arg.includes('--json')) { console.log(JSON.stringify({ rows: ROWS, kaburi: K, missing }, null, 1)); process.exit(0); }
+if (arg.includes('--json')) { console.log(JSON.stringify({ rows: ROWS, kaburi: K, ref6: K6ref, missing, missingT }, null, 1)); process.exit(0); }
+if (arg.includes('--rules')) { TYPE_RULES.forEach(x => console.log(x)); console.log(''); }
 if (arg.includes('--rows')) {
-  for (const r of ROWS) console.log([id(r), 'A=' + r.a, 'B=' + r.b, '口癖=' + (r.kuse || '—'), '一人称=' + r.fp, '述語A=' + r.pa + '〔' + r.ea + '〕', '命令B=' + r.pb + '〔' + r.eb + '〕'].join(' | '));
+  for (const r of ROWS) {
+    console.log([id(r), 'A=' + r.a, 'B=' + r.b, '口癖=' + (r.kuse || '—'), '一人称=' + r.fp, '述語A=' + r.pa + '〔' + r.ea + '〕', '命令B=' + r.pb + '〔' + r.eb + '〕'].join(' | '));
+    console.log('  ' + [1, 2, 3, 4, 5, 6, 7].map(k => TCIRC[k - 1] + (r.t[k] || '（拾えず）') + '〔' + (r.thow[k] || '') + '〕').join(' | '));
+  }
   console.log('');
 }
-const NAME = { 1: '① (A)(B) の文が同じ・ほぼ同じ', 2: '② 同じ人格の方言どうし', 3: '③ 同じ方言の人格どうし', 4: '④ 標準と同じ字のまま', 5: '⑤ 口癖・語尾・一人称が行をまたいで同じ' };
-console.log(`取り出した行：${ROWS.length}（人格 ${new Set(ROWS.map(r => r.p)).size} × 方言 ${new Set(ROWS.map(r => r.dial)).size}）`);
+const NAME = { 1: '① (A)(B) の文が同じ・ほぼ同じ', 2: '② 同じ人格の方言どうし', 3: '③ 同じ方言の人格どうし', 4: '④ 標準と同じ字のまま', 5: '⑤ 口癖・語尾・一人称が行をまたいで同じ', 6: '⑥ 同じ種類どうし（枠 二十五〜二十七の7種）' };
+const nT = ROWS.reduce((s, r) => s + Object.keys(r.t).length, 0);
+console.log(`取り出した行：${ROWS.length}（人格 ${new Set(ROWS.map(r => r.p)).size} × 方言 ${new Set(ROWS.map(r => r.dial)).size}）／7種の字：${nT}（${ROWS.length}×7＝${ROWS.length * 7}）`);
 console.log(`拾えなかった行：${missing.length ? missing.join('／') : '0'}`);
+console.log(`拾えなかった種類の字：${missingT.length ? missingT.join('／') : '0'}`);
 let total = 0;
-for (const k of [1, 2, 3, 4, 5]) { total += K[k].length; console.log(`${NAME[k]}：${K[k].length}`); }
+for (const k of [1, 2, 3, 4, 5, 6]) { total += K[k].length; console.log(`${NAME[k]}：${K[k].length}`); }
 console.log(`合わせて：${total}`);
-if (arg.includes('--list') || arg.includes('--rows')) for (const k of [1, 2, 3, 4, 5]) {
-  console.log(`\n## ${NAME[k]}`);
-  K[k].forEach((c, i) => console.log(`${k}-${i + 1}\t${c.field}\t${c.kind}\t${c.rows.join('・')}\t${c.words.join(' ／ ')}`));
+{
+  const by = k => K[6].filter(c => c.type === k);
+  console.log('⑥の種類別（人格どうし／方言どうし）：' + [1, 2, 3, 4, 5, 6, 7].map(k => `${TCIRC[k - 1]}${TNAME[k - 1]} ${by(k).length}（${by(k).filter(c => /人格どうし/.test(c.field)).length}／${by(k).filter(c => /方言どうし/.test(c.field)).length}）`).join('・'));
+  console.log(`⑥の参考（人格も方言も違う組・合わせてに入れない）：${K6ref.length}`);
+}
+if (arg.includes('--list') || arg.includes('--rows')) {
+  for (const k of [1, 2, 3, 4, 5, 6]) {
+    console.log(`\n## ${NAME[k]}`);
+    K[k].forEach((c, i) => console.log(`${k}-${i + 1}\t${c.field}\t${c.kind}\t${c.rows.join('・')}\t${c.words.join(' ／ ')}`));
+  }
+  console.log('\n## ⑥の参考（人格も方言も違う組）');
+  K6ref.forEach((c, i) => console.log(`6r-${i + 1}\t${c.field}\t${c.kind}\t${c.rows.join('・')}\t${c.words.join(' ／ ')}`));
 }
