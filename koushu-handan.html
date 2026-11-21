@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1511">
+<html lang="ja" data-ver="1512">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1396,7 +1396,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1511</div>
+  <div id="verTag">v1512</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -2932,7 +2932,37 @@ const ADV_PERSONA_DIAL = { butler: ADV_BUTLER_DIAL,
     okinawa: { big: '御内原じゅうが騒ぐ大物やん！', bigDef: '御内原じゅうが惜しむ大物やん……' },
     bushi: { big: '大物でござる！', bigDef: '惜しい大物でござる……' }
   },
-  french: {}, ichihime: {}, sensei: {} };
+  /* v1512 マダム・一姫・先生も大物の一言・惜しむ一言だけ（口調表 reports/kuchou-441.tsv。std・k・fx は持たない＝方言の層は今のまま）。幼児は六人分の読みの段（段8）で入れる。 */
+  french: {
+    std: { big: 'モナミ、大物ですわ！', bigDef: 'モナミ、惜しい大物ですわ。' },
+    miyazaki: { big: 'お膳を取り落としそうな、大物じゃわ！', bigDef: 'お見送りするには惜しい大物じゃわ。' },
+    hakata: { big: '中洲のママも目を丸くする、大物やっちゃん！', bigDef: '常連さんを帰すような、惜しか大物やっちゃん。' },
+    osaka: { big: '鉄板の上でひっくり返りそうな、大物やわ！', bigDef: '千枚通しで返しそびれたような、惜しい大物やわ。' },
+    kyoto: { big: 'お座敷がどよめく、大物やえ！', bigDef: 'お座敷を前に引き下がる、惜しい大物やえ。' },
+    aomori: { big: 'ヒバ千人風呂も沸き立つ、大物だ！', bigDef: 'ヒバ千人風呂を前に引き返す大物だ……惜しいねさ。' },
+    okinawa: { big: 'ゆんたくーも黙る、大物やん！', bigDef: 'ゆんたくーがため息をつく、惜しい大物やん。' },
+    bushi: { big: '奥女中も腰を抜かす、大物でござる！', bigDef: '奥女中も袖を濡らす、惜しい大物でござる。' }
+  },
+  ichihime: {
+    std: { big: '招き猫の右手が上がる大物にゃ！', bigDef: '招き猫の右手が下がる、惜しい大物にゃ……' },
+    miyazaki: { big: '大物じゃわにゃ！', bigDef: '惜しい大物じゃわにゃ……' },
+    hakata: { big: '大物やっちゃんにゃ！', bigDef: '惜しい大物やっちゃんにゃ……' },
+    osaka: { big: '大物やわにゃ！', bigDef: '惜しい大物やわにゃ……' },
+    kyoto: { big: '大物やえにゃ！', bigDef: '惜しい大物やえにゃ……' },
+    aomori: { big: '扇ねぷたみたいな大物だにゃ！', bigDef: '扇ねぷたを見送るみたいな、惜しい大物だにゃ……' },
+    okinawa: { big: 'ご主人、大物やんにゃ！', bigDef: 'ご主人、惜しい大物やんにゃ……' },
+    bushi: { big: '浅草じゅうが沸く大物にゃ！', bigDef: '招き猫が手を下ろすみたいな、惜しい大物にゃ……' }
+  },
+  sensei: {
+    std: { big: '先生もびっくり、大物です！', bigDef: '惜しい大物です。' },
+    miyazaki: { big: '大物じゃが！', bigDef: '惜しい大物ぢゃす。' },
+    hakata: { big: '大物たい！', bigDef: '大物たい。惜しいです。' },
+    osaka: { big: '大物やがな！', bigDef: '惜しい大物やがな。' },
+    kyoto: { big: '大物やわ！', bigDef: '大物やのに、惜しゅうおす。' },
+    aomori: { big: '大物になるびょん！', bigDef: '大物だ……惜しごす。' },
+    okinawa: { big: 'みんな、大物やん！', bigDef: 'みんな、惜しい大物やん。' },
+    bushi: { big: '一足一刀の間合に、大物！', bigDef: '大物でござるが、ここは残心でござる。' }
+  } };
 /* v1509 規則で作れない字をそのまま持つ表：ADV_KIND_LIT['方言:人格'（方言なし＝'std:人格'）][部品id か 種類] = 書いた字（方言の層を通さない）。部品idが先。中身は次の段で入れる。 */
 const ADV_KIND_LIT = {
   /* v1510 執事（reports/kuchou-shitsuji.md【二十六】の 7種×9行）。今の組み立てで表の字にならない部品だけ書く（①adva-head・③a-n-0 は表だけ＝本体には出ない・本人の決め ア）。幼児は音を崩した後の字（「ばぶ」は advTalk が挟む）。 */
@@ -2966,7 +2996,29 @@ const ADV_KIND_LIT = {
   'kyoto:lady': { 'advc-lady-d-t-0': '押さはったら、後悔しはりますえ。', 'advc-lady-a-n-0': 'おひやを一口いただくように、落ち着いて守りを固めましょう。', 'advc-lady-d-t-2': '危ないことは、やめておくれやす。', 'advd-kyu': '九種九牌どすから、流すのが基本どす。', 'advc-lady-d-t-1': 'わたくしの申すこと、聞いておくれやす。', 'advc-lady-a-d-0': 'わたくし、精一杯お付き合いいたしますえ。' },
   'aomori:lady': { 'adva-head': '攻めでごす。', 'advc-lady-d-t-0': '押したら、後悔するでごす。', 'advc-lady-a-n-0': '年貢の米を蔵に納めるように、守りを固めましょう。', 'advc-lady-d-t-2': '庄屋が田を休ませるように、危ないことはおやめあそばせ。', 'advd-kyu': '九種九牌なので、流すのが基本でごす。', 'advc-lady-d-t-1': 'わたくしの申すことを、肝煎の言い渡しのように、お聞きあそばせ。', 'advc-lady-a-d-0': 'わたくし、精一杯お付き合いするでごす。' },
   'okinawa:lady': { 'adva-head': '攻めやいびーん。', 'advc-lady-d-t-0': '御嶽への道を外れるように押したら、後悔します。', 'advc-lady-a-n-0': '女官が御内原の門を閉めるように、守りを固めましょう。', 'advc-lady-d-t-2': 'やみみそーり。', 'advd-kyu': '九種九牌なので、流すのが基本やいびーん。', 'advc-lady-d-t-1': 'わたくしの申すことを、御内原の言伝のように、お聞きあそばせ。', 'advc-lady-a-d-0': '女官が御嶽をお守りするように、わたくし、精一杯お付き合いいたします。' },
-  'bushi:lady': { 'adva-head': '攻めにございます。', 'advc-lady-d-t-0': '書の筆を滑らせるように押されたら、後悔なさいます。', 'advc-lady-a-n-0': '茶の湯の一服のように、心を鎮めて守りを固めましょう。', 'advc-lady-d-t-2': '華を活けるように、危ないことはおやめなさいませ。', 'advd-kyu': '九種九牌でございますから、流すのが基本にございます。', 'advc-lady-d-t-1': 'わらわの申すことを、書の手本のように、お聞きなさいませ。', 'advc-lady-a-d-0': '茶の湯でお客をもてなすように、わらわ、精一杯お付き合いいたします。' }
+  'bushi:lady': { 'adva-head': '攻めにございます。', 'advc-lady-d-t-0': '書の筆を滑らせるように押されたら、後悔なさいます。', 'advc-lady-a-n-0': '茶の湯の一服のように、心を鎮めて守りを固めましょう。', 'advc-lady-d-t-2': '華を活けるように、危ないことはおやめなさいませ。', 'advd-kyu': '九種九牌でございますから、流すのが基本にございます。', 'advc-lady-d-t-1': 'わらわの申すことを、書の手本のように、お聞きなさいませ。', 'advc-lady-a-d-0': '茶の湯でお客をもてなすように、わらわ、精一杯お付き合いいたします。' },
+  /* v1512 マダム・一姫・先生（reports/kuchou-441.tsv の「入れる字」）。同じく、今の組み立てで表の字にならない代表の部品だけ書く（①adva-head・③a-n-0／一姫の a-n-2 は表だけ・本人の決め ア）。三人の標準の行は全部「残す」＝今の字のまま一致。マダムの adva-tc は二文の部品で、表は二文目だけ＝一文目は本体の今の字を残した。幼児は段8。 */
+  'miyazaki:french': { 'adva-ikk-a': 'あと一枚で聴牌ぢゃす。', 'adva-tc': '期限は引けませんとよ。伸びなければ、お見送りの支度のように、早めに守りに回りますの。', 'advc-french-a-n-0': 'お出迎えに出るように、進みましょう。', 'advc-french-d-t-2': '危ないことはやめっくいやんせ。', 'advd-kyu': '九種九牌ですから、お膳を下げるように、流すのが基本ですの。', 'advc-french-d-t-1': 'わたくしの言うことを聞いてくいやんせ。', 'advc-french-a-d-1': '女将のわたくしがついていますの。' },
+  'hakata:french': { 'adva-ikk-a': 'あと一枚で聴牌ですね。', 'adva-tc': '期限は引けませんけん。伸びなければ、常連さんを見送るように、早めに守りに回りますの。', 'advc-french-a-n-0': 'スナックの扉を開けるように、進みましょう。', 'advc-french-d-t-2': '危ないことはやめてんしゃい。', 'advd-kyu': '九種九牌ですから、中洲の夜の決まりのように、流すのが基本ですの。', 'advc-french-d-t-1': 'わたくしの言うことを聞いてんしゃい。', 'advc-french-a-d-1': 'ママのわたくしがついていますの。' },
+  'osaka:french': { 'adva-ikk-a': 'あと一枚で聴牌になりまっせ。', 'adva-tc': '期限は引けませんわ。伸びなければ、早めに守りに回りまっせ。', 'advc-french-a-n-0': '進みまひょ。', 'advc-french-d-t-2': '危ないことはやめとくなはれ。', 'advd-kyu': '九種九牌やさかい、流すのが基本になりまっせ。', 'advc-french-d-t-1': 'うちの言うことを聞いとくなはれ。', 'advc-french-a-d-1': 'うちがついてまっせ。' },
+  'kyoto:french': { 'adva-ikk-a': 'あと一枚で聴牌どす。', 'advc-french-a-n-0': 'お座敷へ上がるように、進みましょう。', 'advc-french-d-t-2': '危ないことはやめとぉくれやす。', 'advd-kyu': '九種九牌やさけ、流すのが基本どす。', 'advc-french-d-t-1': 'うちの言うことを聞いとぉくれやす。', 'advc-french-a-d-1': 'うちがついてますえ。' },
+  'aomori:french': { 'adva-ikk-a': 'あと一枚で聴牌でごす。', 'adva-tc': '期限は引けませんびょん。伸びなければ、早めに守りに回るねは。', 'advc-french-a-n-0': 'ヒバ千人風呂へ向かうように、進みましょう。', 'advc-french-d-t-2': '湯治と同じで、危ないことはおやめなさいな。', 'advd-kyu': '九種九牌ですから、流すのが基本でごす。', 'advc-french-d-t-1': '湯治の宿のわたくしの言うことを、お聞きなさいな。', 'advc-french-a-d-1': 'ついでらねさ。' },
+  'okinawa:french': { 'adva-ikk-a': 'あと一枚で聴牌やいびーん。', 'adva-tc': '期限は引けませんさー。伸びなければ、ゆんたくーの長話も切り上げて、早めに守りに回りますの。', 'advc-french-a-n-0': 'ゆんたくーのおしゃべりはひと休みして、進みましょう。', 'advc-french-d-t-2': 'ゆんたくーの小言と思って、危ないことはおやめなさいな。', 'advd-kyu': '九種九牌ですから、ゆんたくーのわたくしも迷わず、流すのが基本ですの。', 'advc-french-d-t-1': 'ゆんたくーのわたくしの言うことを、お聞きなさいな。', 'advc-french-a-d-1': 'ゆんたくーのわたくしがついていますの。' },
+  'bushi:french': { 'adva-ikk-a': '奥女中が見ても分かるほど、あと一枚で聴牌でございます。', 'adva-tc': '期限は引けません。伸びなければ、奥女中が戸締まりをするように、早めに守りに回ります。', 'advc-french-a-n-0': '奥女中の先導で参るように、進みましょう。', 'advc-french-d-t-2': '奥女中にも申し付けるように、危ないことはおやめなさいな。', 'advd-kyu': '九種九牌でございますから、奥女中の作法と同じく、流すのが基本でございます。', 'advc-french-d-t-1': '奥女中を従えるわたくしの申すことを、お聞きなさいな。', 'advc-french-a-d-1': '奥女中ともども、わたくしがついております。' },
+  'miyazaki:ichihime': { 'adva-ikk-a': 'あと一枚で聴牌じゃわにゃ。', 'advc-ichihime-d-t-0': '押したら後悔するっちゃがにゃ。', 'advc-ichihime-a-n-2': 'カツオ船みたいに、進もうにゃ。', 'advc-ichihime-d-t-2': '危ないこたーすんなにゃ。', 'advd-kyu': '九種九牌じゃかい、流すのが基本じゃにゃ。', 'advc-ichihime-d-t-1': '一姫の言うこと聞いてくれんのにゃ。', 'advc-ichihime-a-d-1': '一姫がついちょるよにゃ。' },
+  'hakata:ichihime': { 'adva-ikk-a': 'あと一枚で聴牌やっちゃんにゃ。', 'advc-ichihime-d-t-0': '押したら後悔するとよにゃ。', 'advc-ichihime-a-n-2': '屋台の灯がともるみたいに、進もうにゃ。', 'advc-ichihime-d-t-2': '危ないことはやめりーにゃ。', 'advd-kyu': '九種九牌やけん、流すのが基本やっちゃんにゃ。', 'advc-ichihime-d-t-1': '一姫の言うことば聞いてにゃ。', 'advc-ichihime-a-d-1': '一姫がついとーとよにゃ。' },
+  'osaka:ichihime': { 'adva-ikk-a': 'あと一枚で聴牌やわにゃ。', 'advc-ichihime-d-t-0': '押したら後悔するでにゃ。', 'advc-ichihime-a-n-2': '通天閣みたいにまっすぐ、進もうにゃ。', 'advc-ichihime-d-t-2': '危ないことはやめんとあかんにゃ。', 'advd-kyu': '九種九牌やさかい、流すのが基本やわにゃ。', 'advc-ichihime-d-t-1': '一姫の言うこと聞いてえなにゃ。', 'advc-ichihime-a-d-1': '一姫がついてるわにゃ。' },
+  'kyoto:ichihime': { 'adva-ikk-a': 'あと一枚で聴牌やえにゃ。', 'advc-ichihime-d-t-0': '押したら後悔するわにゃ。', 'advc-ichihime-a-n-2': '見世出しの日みたいに、進もうにゃ。', 'advc-ichihime-d-t-2': '危ないことはおしなにゃ。', 'advd-kyu': '九種九牌やよって、流すのが基本やえにゃ。', 'advc-ichihime-d-t-1': '一姫の言うこと聞きよしにゃ。', 'advc-ichihime-a-d-1': '一姫がついてるえにゃ。' },
+  'aomori:ichihime': { 'adva-ikk-a': 'ヤーヤドーの掛け声が近いみたいに、あと一枚で聴牌だにゃ。', 'advc-ichihime-d-t-0': '押しだら後悔するびょんにゃ。', 'advc-ichihime-a-n-2': '進むべにゃ。', 'advc-ichihime-d-t-2': '危ないことはまいねにゃ。', 'advd-kyu': '九種九牌だはんで、流すのが基本だにゃ。', 'advc-ichihime-d-t-1': '一姫の言うこと聞ぐべにゃ。', 'advc-ichihime-a-d-1': '一姫がついてらにゃ。' },
+  'okinawa:ichihime': { 'adva-ikk-a': 'ご主人、あと一枚で聴牌やんにゃ。', 'advc-ichihime-d-t-0': '押したら後悔するにゃ。', 'advc-ichihime-a-n-2': '港を出る舟みたいに、進もうにゃ。', 'advc-ichihime-d-t-2': '危ないことはやめるにゃ。', 'advd-kyu': '九種九牌だから、流すのが基本だにゃ。', 'advc-ichihime-d-t-1': '一姫の言うことを聞くにゃ。', 'advc-ichihime-a-d-1': '一姫がついてるにゃ。' },
+  'bushi:ichihime': { 'adva-ikk-a': '招き猫が手を上げたみたいに、あと一枚で聴牌だにゃ。', 'advc-ichihime-d-t-0': '今戸焼が割れるみたいに、押したら後悔するにゃ。', 'advc-ichihime-a-n-2': '浅草へ繰り出すみたいに、進もうにゃ。', 'advc-ichihime-d-t-2': '危ないことはやめねえにゃ。', 'advd-kyu': '九種九牌だから、流すのが基本だにゃ。', 'advc-ichihime-d-t-1': '一姫の言うことを聞きねえにゃ。', 'advc-ichihime-a-d-1': '一姫がついてるにゃ。' },
+  'miyazaki:sensei': { 'adva-head': '攻めぢゃす。', 'advc-sensei-d-t-0': '押したら、後悔しますよ。', 'advc-sensei-a-n-0': '進もうかなせぇ。', 'advc-sensei-d-t-2': '危ないことは、やめてくんない。', 'advd-kyu': '九種九牌ぢゃかい、流すのが基本ぢゃす。', 'advc-sensei-d-t-1': '先生の言うこと、聞いてくんない。', 'advc-sensei-a-d-1': '先生がついちょるなせぇ。' },
+  'hakata:sensei': { 'adva-head': '攻めです。', 'advc-sensei-d-t-0': '押したら、後悔しますよ。', 'advc-sensei-a-n-0': '進みましょう。', 'advc-sensei-d-t-2': '危ないことは、やめてごぢゃい。', 'advd-kyu': '九種九牌やけん、流すのが基本です。', 'advc-sensei-d-t-1': '先生の言うこと、聞いてごぢゃい。', 'advc-sensei-a-d-1': '先生がついています。' },
+  'osaka:sensei': { 'adva-head': '往来物の手本どおり、攻めです。', 'advc-sensei-d-t-0': '押したら、後悔しますよ。', 'advc-sensei-a-n-0': '手習いと同じく、進みましょう。', 'advc-sensei-d-t-2': '危ないことは、やめなはれ。', 'advd-kyu': '九種九牌やさかい、流すのが基本です。', 'advc-sensei-a-d-1': '師弟は三世の契り、先生がついています。' },
+  'kyoto:sensei': { 'advc-sensei-d-t-0': '押さはったら、後悔しはります。', 'advc-sensei-a-n-0': '進みまひょ。', 'advc-sensei-d-t-2': '危ないことは、おやめやす。', 'advd-kyu': '九種九牌やさかい、流すのが基本どす。', 'advc-sensei-d-t-1': '先生の言うことを、お聞きやす。', 'advc-sensei-a-d-1': '薄茶の席でも濃茶の席でも、先生がついています。' },
+  'aomori:sensei': { 'adva-head': '攻めです。', 'advc-sensei-d-t-0': '押したら、後悔するでごし。', 'advc-sensei-a-n-0': '進みましょう。', 'advc-sensei-d-t-2': '危ないことは、やめへ。', 'advd-kyu': '九種九牌だはんで、流すのが基本です。', 'advc-sensei-d-t-1': '先生の言うこと、聞ぎへ。', 'advc-sensei-a-d-1': '先生がついています。' },
+  'okinawa:sensei': { 'adva-head': 'みんな、攻めやん。', 'advc-sensei-d-t-0': '押したら、後悔しますよ。', 'advc-sensei-a-n-0': '進みましょう。', 'advc-sensei-d-t-2': '危ないことはやめなさい。', 'advd-kyu': '九種九牌ですから、流すのが基本です。', 'advc-sensei-d-t-1': '先生の言うことを聞きなさい。', 'advc-sensei-a-d-1': '先生がついています。' },
+  'bushi:sensei': { 'advc-sensei-d-t-0': '押したら、間合を見誤って後悔しますよ。', 'advc-sensei-a-n-0': '送り足で、進みましょう。', 'advc-sensei-d-t-2': '危ないことは、やめなされ。', 'advd-kyu': '九種九牌でござるから、流すのが基本でござる。', 'advc-sensei-d-t-1': '身共の言うことを聞きなされ。', 'advc-sensei-a-d-1': '身共がついてござる。' }
 };
 /* v1509 大物手（ドラ・赤・役牌の打点 3 以上）の一言（攻め）／惜しむ一言（守り）。助言の頭（判定の一言の前）に書いた字のまま置く。字が空なら出ない。 */
 function advBigLine(tone, dial, attack) {
