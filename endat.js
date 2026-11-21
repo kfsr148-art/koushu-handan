@@ -7,7 +7,8 @@
 //   ＊表＝今の仕事（job-steps.txt）の残り＋順番待ち（state.json の foot：台帳の未了で控えの「枠:」に載っていない物）。
 //     今の仕事の終わり＝「始まり（その仕事を初めて見た刻・endat-base.json に控える）」＋（見込みの分＋増えた段×一段の分）×比。
 //     ＊始まりは付け直さない。段が増えた・枠が来た時は、終わりだけを足し算で延ばす（控えの「開始:」は読むだけで直さない）。
-//     ＊見込みが書き替えられた時だけ、その時の「開始:」から新しい見込みを足した刻とも比べ、遅い方を取る。
+//     ＊見込みが書き替えられた時は、書き替えを見た刻から新しい見込みで数え直す（v212・枠 七十七。前は「その時の開始:」からの刻と比べて遅い方）。
+//       その後に増えた段は「新しい見込み÷その時の残りの段」で延ばす。段は state.json の生の段（d.steps）を先に使う（panel-core.js の stepsOf と同じ数え方）。
 //     ＊比＝直近24時間の「実測÷見込み」の中央値。見込みは note-missed-dropped.log の控えの写し（開始・件名・見込み）、実測は台帳の「終わりの札 HH:MM」まで。
 //     順番待ち一件＝直近24時間の台帳の一枠あたりの実測（前の枠の終わりか受領の遅い方から、終わりの札まで）の中央値。合図だけの行（橋（合図 …））は数えない。
 //   ＊裏方＝動いている下請け（subagents.jsonl）と雲の走り（ura-cloud.json）の全部。一本の終わり＝始まり＋直近24時間の済んだ物の中央値（雲は流れの名ごと）。
@@ -79,18 +80,27 @@ function ratioToday(now, rows) {
   return { r: r > 0 ? r : 1, n: rs.length };
 }
 // ---- 今の仕事（job-steps.txt）と、その始まりの控え（endat-base.json） ----
-function curJob(d) {
-  const tx = rd(P('ENDAT_STEPS', 'job-steps.txt')), m = /^仕事:[ ]*(.+)$/m.exec(tx);
-  const job = m ? m[1].trim() : '';
-  const all = (tx.match(/^\[[ xX]\]/mg) || []).length, left = (tx.match(/^\[ \]/mg) || []).length;
-  const flags = (tx.match(/^\[[ xX]\]/mg) || []).map(x => x !== '[ ]');   // v205：段ごとの済み（上から順）。束の区切りに使う
+function curJob(d, now) {
+  // v212（本人の枠 七十七）：段は state.json の生の段（d.steps＝{job, rows:[{k,t}]}・見張りが job-steps.txt から写す）を先に使う（panel-core.js の stepsOf と同じ数え方：
+  //   済みは k が 'x' の段だけ・[雲]／[決] は未済）。生の段が無い時（古い state・作り値）は job-steps.txt を同じ決まりで読む（行を詰めて頭が [ ]・[x]・[雲]・[決]）。
+  let job = '', flags = [];
+  const SR = (d.steps && typeof d.steps === 'object' && Array.isArray(d.steps.rows)) ? d.steps.rows : null;
+  if (SR) { job = String(d.steps.job || '').trim(); flags = SR.filter(x => x && typeof x === 'object').map(x => String(x.k) === 'x'); }
+  else {
+    const tx = rd(P('ENDAT_STEPS', 'job-steps.txt')), m = /^仕事:[ 　]*(.+)$/m.exec(tx);
+    job = m ? m[1].trim() : '';
+    tx.split(/\r?\n/).forEach(l => { const z = /^\[( |x|雲|決)\]/.exec(l.trim()); if (z) { flags.push(z[1] === 'x'); } });   // v205：段ごとの済み（上から順）。束の区切りに使う
+  }
+  const all = flags.length, left = flags.filter(f => !f).length;
   const mk = (String(d.mikomi || '').match(/([0-9]+)/) || [])[1]; const mikomi = mk ? Number(mk) : 0;
   const st = Number(d.startedAt) || Number(d.statAt) || 0;
   const bp = P('ENDAT_BASE', 'endat-base.json'); let b = rj(bp, null), ch = false;
   if (!job || !left) { return { job, all, left: 0, base: null, flags }; }
   if (!b || b.job !== job) { b = { job, start: st, mikomi0: mikomi, steps0: all, mk: mikomi, mkAt: 0 }; ch = true; }
   if (!(b.mikomi0 > 0) && mikomi > 0) { b.mikomi0 = mikomi; b.mk = mikomi; ch = true; }
-  else if (mikomi > 0 && mikomi !== b.mk) { b.mk = mikomi; b.mkAt = st; ch = true; }   // 見込みを書き替えた：その時の「開始:」から数える
+  else if (mikomi > 0 && mikomi !== b.mk) { b.mk = mikomi; b.mkAt = now; b.mkSteps = all; b.mkLeft = left; ch = true; }
+  // ↑ v212（枠 七十七）：見込みを書き替えた刻（見た刻）と、その時の段の数・残りを控えに持つ。今の刻は控えに一度書くだけなので指紋は毎分変わらない。
+  //   前は「その時の開始:」（startedAt）だったが、開始が仕事の始まり（枠: の頭）になったので、書き替えても仕事の始まりから数え直すだけになっていた。
   if (ch) { try { fs.writeFileSync(bp, JSON.stringify(b)); } catch (e) { } }
   return { job, all, left, base: b, flags };
 }
@@ -164,15 +174,20 @@ function cloudNow(now) {
 function compute(d, now) {
   d = d || {}; now = now || Number(process.env.ENDAT_NOW) || Math.floor(Date.now() / 1000);
   // 表
-  const O = ordersToday(now), R = ratioToday(now, O.rows), J = curJob(d);
+  const O = ordersToday(now), R = ratioToday(now, O.rows), J = curJob(d, now);
   const frameMin = O.frameMin > 0 ? O.frameMin : 30;   // 直近24時間の実測が無ければ30分（その旨を src に書く）
-  let curEnd = 0, extra = 0, stepMin = 0;
+  let curEnd = 0, extra = 0, stepMin = 0, reb = false;
   if (J.base) {
     const b = J.base; stepMin = (b.mikomi0 > 0 && b.steps0 > 0) ? b.mikomi0 / b.steps0 : frameMin / R.r;
     extra = Math.max(0, J.all - b.steps0);
     const plan = (b.mikomi0 > 0 ? b.mikomi0 : J.left * stepMin) + extra * stepMin;
     curEnd = b.start + Math.round(plan * R.r * 60);
-    if (b.mkAt > 0 && b.mk > 0) { curEnd = Math.max(curEnd, b.mkAt + Math.round(b.mk * R.r * 60)); }
+    if (b.mkAt > 0 && b.mk > 0 && b.mkSteps > 0) {
+      // v212（枠 七十七）：見込みが書き替えられたら、その刻から新しい見込みで数え直す（前の見込みの延びは捨てる）。
+      //   その後に増えた段は、新しい見込み÷その時の残りの段＝一段の分で延ばす（最初の見込み÷最初の段数を使い続けない）。
+      stepMin = b.mk / Math.max(1, b.mkLeft || J.left); extra = Math.max(0, J.all - b.mkSteps); reb = true;
+      curEnd = b.mkAt + Math.round((b.mk + extra * stepMin) * R.r * 60);
+    } else if (b.mkAt > 0 && b.mk > 0) { curEnd = Math.max(curEnd, b.mkAt + Math.round(b.mk * R.r * 60)); }   // 古い控え（mkSteps が無い）は前のまま
   }
   const F = d.foot || {}, wl = Array.isArray(F.waitList) ? F.waitList : [];
   const sig = wl.filter(x => /^橋（合図/.test(String((x && x.head) || ''))).length;
@@ -190,7 +205,7 @@ function compute(d, now) {
     cur: { job: J.job, left: J.left, all: J.all, steps0: J.base ? J.base.steps0 : 0, addSteps: extra, mikomi: J.base ? J.base.mikomi0 : 0, stepMin: r1(stepMin), endAt: curEnd ? hm(curEnd) : '' },
     wait: { n: waitN, signals: sig, frameMin: r1(frameMin), frameN: O.frameN },
     ratio: { v: Math.round(R.r * 100) / 100, n: R.n },
-    src: (J.base ? ('今の仕事 残り' + J.left + '段（始まり ' + hm(J.base.start) + '・見込み ' + (J.base.mikomi0 || '未記入') + '分' + (extra ? '・段+' + extra + '×' + r1(stepMin) + '分' : '') + '）') : '今の仕事なし') +
+    src: (J.base ? ('今の仕事 残り' + J.left + '段（始まり ' + hm(J.base.start) + (reb ? '・見込みを ' + hm(J.base.mkAt) + ' に ' + J.base.mk + '分へ書き替え' : '・見込み ' + (J.base.mikomi0 || '未記入') + '分') + (extra ? '・段+' + extra + '×' + r1(stepMin) + '分' : '') + '）') : '今の仕事なし') +
       '＋順番待ち ' + waitN + '件×' + r1(frameMin) + '分（直近24時間の' + (O.frameN ? O.frameN + '枠の中央値' : '実測なし・仮に30分') + (sig ? '・合図' + sig + '件は数えない' : '') + '）・見込みと実測の比 ' + (Math.round(R.r * 100) / 100) + '（直近24時間 ' + R.n + '組）' + (omOver ? '・見込みを過ぎて残っているので今から5分刻みで延ばした' : '')
   };
   // 裏方

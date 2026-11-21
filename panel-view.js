@@ -8,6 +8,8 @@
 //   ＊生存の途切れ（lastLost）は見張りが今書いている時点では偽。
 //   ＊coreVer＝この panelView を組んだ panel-core.js の版。公開のパネルの版（panel-ver.txt）と違う間は、数え方が違い得る
 //     （VAIO はリポジトリの panel-core.js をすぐ読むが、公開のパネルは検査を通って配られてから替わる）。
+//   ＊pub＝公開のパネルの版（v212・枠 七十七）：state.json の pubVer（見張りが compare-dest.js の控えから運ぶ実物）。段の字からは読まない。
+//   ＊omote.panel.steps＝段の数と今の段（v212）：panel-core.js の stepsOf で生の段（state.json の steps.rows）から数えた物。パネルの段 N/M と同じ。
 // 使い方：node panel-view.js <state.json の道> [<出し先>]   → panelView の JSON（notices.json・ntfy-sent.json は同じ場所から読む）
 'use strict';
 const fs = require('fs'), path = require('path');
@@ -24,7 +26,7 @@ function panelView(d, notices, ntfySent, now) {
   // ---- 頭の字（パネルの headText と同じ PC.headText）----
   const head = PC.headText({ stat: d.stat, cloud: (typeof d.cloud === 'string') ? d.cloud : '', detail: (typeof d.detail === 'string') ? d.detail.replace(/（なし）/g, '') : '', ura: d.ura || null, lost: false,
     owedAt: (typeof d.cardOwedAt === 'number') ? d.cardOwedAt : 0, owedEta: (typeof d.cardOwedEta === 'number') ? d.cardOwedEta : 0, rows: rows, kumo: (typeof d.kumo === 'string') ? d.kumo : '', left: left, now: now });
-  return { head: head, label: PC.todoLabel(left), left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), coreVer: PC.VER, noEstimate: (String(d.stat || '') === '作業中' && !/[0-9]/.test(String(d.mikomi == null ? '' : d.mikomi))), omote: omoteView(d, now), ura: uraView(d, now), all: allView(d, now), at: now };
+  return { head: head, label: PC.todoLabel(left), left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), coreVer: PC.VER, pub: { ver: String(d.pubVer || ''), at: Number(d.pubVerAt) || 0, line: PC.pubLine({ pubVer: d.pubVer, pubVerAt: d.pubVerAt, coreVer: PC.VER }) }, noEstimate: (String(d.stat || '') === '作業中' && !/[0-9]/.test(String(d.mikomi == null ? '' : d.mikomi))), omote: omoteView(d, now), ura: uraView(d, now), all: allView(d, now), at: now };
 }
 // v203（枠 五十）：omote／ura は {lines（様子を写すと同じ字。パネルの画面には出さない）, endAt（HH:MM・JST）, endSec, src（元の数の一言）, 元の数…}。E は d.eta（endat.js）。
 // v204（枠 五十一）：panel＝パネルの箱が今出している物だけ（gauge＝ゲージの横の小さい字・end＝「全部終わる見込み HH:MM」の一行。裏方は done／run も）。src・始まり・lines は state.json の中だけ。
@@ -36,7 +38,8 @@ function omoteView(d, now) {
   const E = (d.eta && typeof d.eta === 'object') ? d.eta : null, eo = (E && E.omote) || {};
   const st = Number(eo.startSec) > 0 ? Number(eo.startSec) : d.startedAt;
   const box = PC.boxSpec(E, d.ura, 'omote');
-  return Object.assign({ lines: [PC.endLine(E, 'omote')].concat(PC.omoteLines({ stat: d.stat, subj: d.subj, sNow: d.sNow, stepDone: d.stepDone, stepTotal: d.stepTotal, startedAt: st, mikomi: d.mikomi })) }, eo, { panel: { gauge: PC.omoteGauge(d.sNow, d.stepDone, d.stepTotal), end: PC.endShort(E, 'omote'), box: box, eta: box ? etaOf(box, lateOf(d, now), now) : null } });
+  const so = PC.stepsOf(d);   // v212（枠 七十七）：段は生の段（d.steps.rows）から毎回数える。無い古い state は stepTotal/stepDone/sNow
+  return Object.assign({ lines: [PC.endLine(E, 'omote')].concat(PC.omoteLines({ stat: d.stat, subj: d.subj, steps: d.steps, sNow: d.sNow, stepDone: d.stepDone, stepTotal: d.stepTotal, startedAt: st, mikomi: d.mikomi })) }, eo, { panel: { gauge: PC.omoteGauge(so.now, so.done, so.total), steps: { from: so.from, done: so.done, total: so.total, now: so.now }, end: PC.endShort(E, 'omote'), box: box, eta: box ? etaOf(box, lateOf(d, now), now) : null } });
 }
 function uraView(d, now) {
   now = now || Math.floor(Date.now() / 1000);

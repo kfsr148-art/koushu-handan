@@ -984,6 +984,66 @@ function staticParts() {
     const t9 = above.join(',') === 'progBox,usageTag,usageMsg,pipeWarn,wakeWarn,kumoLine,btnCopyAll,list,board' && H.indexOf('#btnCopyAll, #list{display:none !important;}') >= 0 && H.indexOf('#board{display:none !important;}') >= 0 && H.indexOf('<ul id="todoList" class="todoList"></ul>') > iS && pt.indexOf("var a = mergedTodo().filter(function (m) { return m.kind === 'card'; });") >= 0 && pt.indexOf("'📣'") < 0;
     if (t9) { ok('ボタンの上に知らせの行を足さない：見出しの下の箱からボタンの段までの器は ' + above.length + ' 個（決まった物だけ）・板（あなた待ち）とお知らせの一覧は画面に出さない・目次は八つの下で押し通知（📣）の行を塗らない'); } else { ng('ボタンの上に行が足され得る（間の器 ' + above.join(',') + '・目次の塗り ' + (pt.indexOf("m.kind === 'card'") >= 0) + '）'); }
   }
+  /* ---- ⑤の二十七 v212（本人の枠 七十七）：段は state.json の生の段（steps.rows）から毎回数える（panel-core.js の stepsOf 一つ）。
+     生の段が無い古い state は stepTotal・stepDone・sNow へ落ちる。パネル（applySteps）と panelView が同じ段の数・今の段を返す。公開の版は pubVer（実物）から。
+     endat.js も生の段を使い、見込みの書き替えはその刻から数え直す（作り値の台帳・本物の控えは読まない） ---- */
+  head('⑤の二十七 v212：段は生の段から stepsOf で毎回数える（rows あり／なし・k が x／雲／決）・パネルと panelView が同じ・公開の版は pubVer・endat の見込みの書き替え');
+  {
+    const LF = String.fromCharCode(10), H = html.split(String.fromCharCode(13) + LF).join(LF), dir = path.dirname(SRC), SO = PCORE.stepsOf;
+    const PV = require(path.join(dir, 'panel-view.js')), SD = require(path.join(dir, 'state-decide.js'));
+    const rw = (a) => a.map(x => ({ k: x[0], t: x[1] }));
+    const R1 = rw([['x', '一'], [' ', '二'], ['雲', '三'], ['決', '四']]), R2 = rw([['x', '一'], ['雲', '雲を待つ'], [' ', '次']]), R3 = rw([['x', '一'], ['決', 'ヨシを待つ']]), R4 = rw([['x', '一'], ['x', '二']]);
+    const OLD = { stepTotal: 7, stepDone: 2, sNow: '古い字', sDone: '古い済み', sNext: '古い次' };
+    const j = (o) => JSON.stringify(o);
+    /* 一、stepsOf：rows があれば rows だけで数える（古い欄が食い違っていても rows が勝つ）・無ければ古い欄 */
+    const a1 = SO(Object.assign({ steps: { job: '枠 九十', rows: R1 } }, OLD)), a2 = SO({ steps: { job: 'j', rows: R2 } }), a3 = SO({ steps: { job: 'j', rows: R3 } }), a4 = SO({ steps: { job: 'j', rows: R4 } }), a5 = SO(Object.assign({ steps: { job: 'j', rows: [] } }, OLD)), a6 = SO(OLD), a7 = SO(Object.assign({ steps: null }, OLD)), a8 = SO({});
+    const s1 = a1.from === 'rows' && a1.job === '枠 九十' && a1.total === 4 && a1.done === 1 && a1.now === '二' && a1.nowK === ' ' && a1.last === '一' && a1.next === '三';
+    const s2 = a2.total === 3 && a2.done === 1 && a2.now === '雲を待つ' && a2.nowK === '雲' && a2.next === '次' && a3.total === 2 && a3.done === 1 && a3.now === 'ヨシを待つ' && a3.nowK === '決' && a4.total === 2 && a4.done === 2 && a4.now === '' && a4.last === '二';
+    const s3 = a5.from === 'rows' && a5.total === 0 && a5.now === '' && a6.from === 'old' && a6.total === 7 && a6.done === 2 && a6.now === '古い字' && a6.last === '古い済み' && a6.next === '古い次' && j(a7) === j(a6) && a8.total === 0 && a8.now === '';
+    if (s1 && s2 && s3) { ok('stepsOf：rows あり＝rows だけで数える（済みは x だけ・[雲]［決］は未済・古い欄が食い違っても rows が勝つ・空の rows は0段）／rows なし（無い・null）＝古い欄（stepTotal・stepDone・sNow・sDone・sNext）'); } else { ng('stepsOf が違う：' + j({ a1, a2, a3, a4, a5, a6, a7 })); }
+    /* 二、state-decide.js（見張りの決め所）と同じ数え方：同じ段で stepDone・stepTotal・sNow・sDone・sNext が揃う */
+    let sdOk = true; [R1, R2, R3, R4, []].forEach(R => { const d = SD.decide({ now: 1795290000, alive: 1, busy: {}, kumo: {}, steps: R }), s = SO({ steps: { job: '', rows: R } }); if (d.stepDone !== s.done || d.stepTotal !== s.total || d.sNow !== s.now || d.sDone !== s.last || d.sNext !== s.next) { sdOk = false; note('差：' + j({ d: [d.stepDone, d.stepTotal, d.sNow, d.sDone, d.sNext], s })); } });
+    if (sdOk) { ok('stepsOf は state-decide.js の decide と同じ数え方（5通りで stepDone・stepTotal・sNow・sDone・sNext が揃う）'); } else { ng('stepsOf と state-decide.js の数え方がずれた'); }
+    /* 三、パネル（applySteps を切り出して回す）と panelView が同じ段の数・今の段・ゲージの字・段の行 */
+    const ap = cutFn(H, 'applySteps'), om = H.slice(H.indexOf('  function omoteNow('), H.indexOf(LF, H.indexOf('  function omoteNow(')));
+    if (!ap || !om) { ng('panel.html に applySteps／omoteNow が無い'); }
+    else {
+      const pf = new Function('window', 'd', 'var lastStepTotal = 0, lastStepDone = 0, lastSNow = \'\', lastSDone = \'\', lastSNext = \'\', lastStat = \'作業中\', lastSubj = \'枠 九十：作り値\', lastStartedAt = 1795290000, lastMikomiRaw = \'30分\', lastEta = null;' + LF + cutFn(H, 'core') + LF + ap + LF + om + LF + 'applySteps(d); var c = core(); return { total: lastStepTotal, done: lastStepDone, now: lastSNow, last: lastSDone, next: lastSNext, gauge: c.omoteGauge(lastSNow, lastStepDone, lastStepTotal), dan: c.omoteLines(omoteNow())[2] };');
+      const CASES = [Object.assign({ steps: { job: 'j', rows: R1 } }, OLD), { steps: { job: 'j', rows: R2 }, sNow: '雲を待つ', stepDone: 0, stepTotal: 0 }, { steps: { job: 'j', rows: R3 } }, { steps: { job: 'j', rows: R4 } }, Object.assign({ steps: { job: 'j', rows: [] } }, OLD), OLD, Object.assign({ steps: null }, OLD), {}];
+      let bad = 0, n = 0;
+      CASES.forEach(c0 => { const d = Object.assign({ stat: '作業中', subj: '枠 九十：作り値', startedAt: 1795290000, mikomi: '30分' }, c0), p = pf(WIN, d), v = PV.panelView(d, [], [], 1795290600), vs = v.omote.panel.steps, vd = v.omote.lines.filter(l => /^段：/.test(l))[0];
+        n++; if (p.total !== vs.total || p.done !== vs.done || p.now !== vs.now || p.gauge !== v.omote.panel.gauge || p.dan !== vd) { bad++; note('差：' + j({ c0, p, v: { vs, gauge: v.omote.panel.gauge, vd } })); } });
+      const p1 = pf(WIN, CASES[0]);
+      if (bad === 0 && p1.gauge === '2/4' && p1.dan === '段：2/4　二' && p1.last === '一' && p1.next === '三' && pf(WIN, OLD).dan === '段：3/7　古い字') { ok('パネル（applySteps）と panelView：同じ state ' + n + '通りで段の数・今の段・ゲージの字（rows あり 2/4・古い欄 3/7）・様子を写すの段の行が同じ（rows があれば古い欄の食い違いは出ない）'); } else { ng('パネルと panelView の段がずれた（' + bad + '／' + n + '）'); }
+      const wW = (() => { try { return new Function('window', 'd', 'var lastStepTotal = 0, lastStepDone = 0, lastSNow = \'\', lastSDone = \'\', lastSNext = \'\';' + LF + 'function core() { throw new Error(\'x\'); }' + LF + ap + LF + 'applySteps(d); return [lastStepDone, lastStepTotal, lastSNow].join(\'|\');')({}, OLD); } catch (e) { return 'err ' + e.message; } })();
+      if (wW === '2|7|古い字' && H.indexOf('applySteps(d);   /* v180・v212') >= 0 && H.indexOf('lastStepDone = (typeof d.stepDone') < 0) { ok('パネルは読み込みのたびに applySteps(d) で数える（前の stepDone/stepTotal の直の写しは無い）・部品が読めない時は古い欄へ落ちる'); } else { ng('パネルの段の読み方が違う（部品なし ' + wW + '）'); }
+    }
+    /* 四、公開の版：state.json の pubVer（見張りが compare-dest.js の控えから運ぶ）を panelView.pub に。段の字からは読まない */
+    const vp1 = PV.panelView({ pubVer: '211', pubVerAt: Date.parse('2026-11-22T05:15:00+09:00') / 1000 }, [], [], 1795290600).pub, vp2 = PV.panelView({ pubVer: PCORE.VER }, [], [], 1795290600).pub, vp3 = PV.panelView({ steps: { job: 'j', rows: rw([[' ', 'v208 を公開し直す']]) } }, [], [], 1795290600).pub;
+    const okP = vp1.ver === '211' && vp1.line === '公開のパネル：v211（05:15 から）' + (PCORE.VER !== '211' ? '・手元の部品は v' + PCORE.VER + '（まだ公開されていない）' : '') && vp2.line === '公開のパネル：v' + PCORE.VER && vp3.ver === '' && vp3.line === '';
+    if (okP) { ok('公開の版は state.json の pubVer から（「' + vp1.line + '」・手元と同じなら版だけ・pubVer が無ければ空で、段の字「v208 を公開し直す」からは出さない）'); } else { ng('公開の版の一行が違う：' + j([vp1, vp2, vp3])); }
+    /* 五、運ぶ手（VAIO の ~/.claude にある時だけ字面で見る。雲には無い）：inbox-watch.ps1 が steps と pubVer を足す・compare-dest.js が pub を控える・turn-mark.js は段の欄を書かない */
+    { const HOME = path.join(require('os').homedir(), '.claude'), rdH = (f) => { try { return fs.readFileSync(path.join(HOME, f), 'utf8'); } catch (e) { return null; } };
+      const IW = rdH('inbox-watch.ps1'), CD = rdH('compare-dest.js'), TM = rdH('turn-mark.js');
+      if (IW == null || CD == null || TM == null) { note('~/.claude の台本が無い（雲）ので、運ぶ手の字面は見ない'); }
+      else if (IW.indexOf("'\"steps\":'     + $stepsJson") >= 0 && IW.indexOf("'\"pubVer\":'    + (ToJson $pubVer)") >= 0 && IW.indexOf("Join-Path $Root 'compare-dest-state.json'") >= 0 && IW.indexOf("-cmatch '^\\[( |x|雲|決)\\]") >= 0 && /mem\.pub = \{ ver: String\(r\.pubPanel\), since: NOW/.test(CD) && !/s\.sNow = d\.sNow/.test(TM)) { ok('運ぶ手：inbox-watch.ps1 が state.json に steps（readSteps と同じ読み方）と pubVer／pubVerAt を足す・compare-dest.js が公開の版を pub に控える（版が替わった時だけ since を打つ）・turn-mark.js は段の欄を書かない'); }
+      else { ng('運ぶ手の字面が違う（inbox-watch.ps1・compare-dest.js・turn-mark.js）'); } }
+    /* 六、endat.js：生の段（[雲] も未済の段に数える）・見込みの書き替えはその刻から数え直す（前の見込みの延びを捨てる）・その後の段は 新しい見込み÷その時の残り で延ばす */
+    { const os = require('os'), T = fs.mkdtempSync(path.join(os.tmpdir(), 'koushu-steps-')), W = (n, t) => { const p = path.join(T, n); fs.writeFileSync(p, t); return p; };
+      const env = { ENDAT_ORDERS: W('o.tsv', ''), ENDAT_NOTES: W('n.log', ''), ENDAT_STEPS: path.join(T, 'none.txt'), ENDAT_SUBLOG: W('s.jsonl', ''), ENDAT_CLOUD: W('c.json', '{"list":[]}'), ENDAT_BASE: path.join(T, 'base.json'), ENDAT_BUNDLE: path.join(T, 'bundle.json'), ENDAT_EST: path.join(T, 'none.json') }, keep = {};
+      Object.keys(env).forEach(k => { keep[k] = process.env[k]; process.env[k] = env[k]; });
+      try {
+        delete require.cache[require.resolve(path.join(dir, 'endat.js'))]; const EA = require(path.join(dir, 'endat.js'));
+        const J0 = Date.parse('2026-11-22T05:00:00+09:00') / 1000, M = (m) => J0 + m * 60, base = { stat: '作業中', subj: '枠 九十：作り値', startedAt: J0, statAt: J0, foot: { wait: 0, waitList: [] } };
+        const st = (rows, mk) => Object.assign({}, base, { mikomi: mk, steps: { job: '枠 九十：作り値', rows: rw(rows) } });
+        const r3 = [['x', '一'], [' ', '二'], ['雲', '三']], r6 = r3.concat([[' ', '四'], [' ', '五'], [' ', '六']]), r8 = r6.concat([[' ', '七'], [' ', '八']]);
+        const e1 = EA.compute(st(r3, '40分'), M(1)), e2 = EA.compute(st(r6, '40分'), M(20)), e3 = EA.compute(st(r6, '20分'), M(30)), e4 = EA.compute(st(r8, '20分'), M(35)), e5 = EA.compute(st(r8, '20分'), M(40));
+        const b = JSON.parse(fs.readFileSync(env.ENDAT_BASE, 'utf8'));
+        const o = e1.omote.cur.all === 3 && e1.omote.cur.left === 2 && e1.omote.endSec === M(40) && e2.omote.endSec === M(80) && e3.omote.endSec === M(50) && e4.omote.endSec === M(58) && e5.omote.endSec === M(58) && b.mkAt === M(30) && b.mkSteps === 6 && b.mkLeft === 5 && /見込みを 05:30 に 20分へ書き替え・段\+2×4分/.test(e4.omote.src);
+        if (o) { ok('endat：生の段で数える（[雲] も未済）・段が増えると 最初の見込み÷最初の段数 で延びる（05:40→06:20）・見込みを 05:30 に 20分へ書き替えたら その刻から数え直す（06:20→05:50）・その後の2段は 20分÷残り5段＝4分 で延ばす（05:58）・刻を控えに一度書くだけで次の回も同じ刻'); } else { ng('endat の見込みの書き替えが違う：' + j({ e: [e1, e2, e3, e4, e5].map(e => [e.omote.endAt, e.omote.cur.all, e.omote.cur.left]), b, src: e4.omote.src })); }
+      } catch (e) { ng('endat の作り値が回らない：' + e.message); }
+      finally { Object.keys(keep).forEach(k => { if (keep[k] === undefined) { delete process.env[k]; } else { process.env[k] = keep[k]; } }); try { fs.rmSync(T, { recursive: true, force: true }); } catch (e) { } } }
+  }
 }
 
 if (!BROWSER) {

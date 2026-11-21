@@ -16,7 +16,7 @@
   else { root.PanelCore = m; }
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
-  var VER = '211';
+  var VER = '212';
   var WAIT_TEXT = '待機中、、、。', POINT_TEXT = 'まとめて写すヨシ！', WORK_TEXT = '作業中、、、。', LOST_TEXT = '接続不良、、、。', YOSHI_TEXT = 'ヨシ待ち、、、。', CHECK_TEXT = '検査中、、、。';
 
   /* ---- 刻 ---- */
@@ -118,14 +118,35 @@
     return WAIT_TEXT;
   }
 
+  /* ---- 段（v212・本人の枠 七十七）：段の数・今の段は state.json の生の段（steps＝{job, rows:[{k, t}]}・見張りが job-steps.txt から写す）から毎回数える ----
+     k は ' '（まだ）・'x'（済み）・'雲'（雲待ち）・'決'（ヨシ待ち）。済みは 'x' だけ（state-decide.js の readSteps・decide と同じ数え方）。
+     返す物：{ from: 'rows'|'old', job, total, done, now（最初の未済の段の字）, nowK（その k）, last（最後の済みの段の字）, next（二つ目の未済の段の字） }。
+     生の段が無い古い state.json は、今までの欄（stepTotal・stepDone・sNow・sDone・sNext）へ落ちる（from: 'old'）。 */
+  function stepsOf(o) {
+    o = o || {}; var s = function (v) { return String(v == null ? '' : v); };
+    var S = (o.steps && typeof o.steps === 'object') ? o.steps : null, r = (S && Array.isArray(S.rows)) ? S.rows : null;
+    if (!r) { return { from: 'old', job: '', total: Math.max(0, Number(o.stepTotal) || 0), done: Math.max(0, Number(o.stepDone) || 0), now: s(o.sNow).trim(), nowK: '', last: s(o.sDone).trim(), next: s(o.sNext).trim() }; }
+    var rows = r.filter(function (x) { return x && typeof x === 'object'; });
+    var pend = rows.filter(function (x) { return s(x.k) !== 'x'; }), dn = rows.filter(function (x) { return s(x.k) === 'x'; });
+    return { from: 'rows', job: s(S.job).trim(), total: rows.length, done: dn.length, now: pend[0] ? s(pend[0].t).trim() : '', nowK: pend[0] ? s(pend[0].k) : '', last: dn.length ? s(dn[dn.length - 1].t).trim() : '', next: pend[1] ? s(pend[1].t).trim() : '' };
+  }
+  /* 公開の版の一行（v212・本人の枠 七十七）：state.json の pubVer（見張りが compare-dest.js の控えから運ぶ・公開の panel-ver.txt の実物）。
+     段の字（「v208 を公開し直す」）からは読まない。o＝{ pubVer, pubVerAt（その版を初めて見た刻）, coreVer（手元の部品の版） }。pubVer が無ければ空 */
+  function pubLine(o) {
+    o = o || {}; var v = String(o.pubVer == null ? '' : o.pubVer).trim(), at = Number(o.pubVerAt) || 0, cv = String(o.coreVer == null ? '' : o.coreVer).trim();
+    if (!v) { return ''; }
+    var hm = function (sec) { var d = new Date((Number(sec) + 9 * 3600) * 1000); return ('0' + d.getUTCHours()).slice(-2) + ':' + ('0' + d.getUTCMinutes()).slice(-2); };
+    return '公開のパネル：v' + v + (at > 0 ? '（' + hm(at) + ' から）' : '') + ((cv && cv !== v) ? '・手元の部品は v' + cv + '（まだ公開されていない）' : '');
+  }
+
   /* ---- 表の仕事と裏方の字（様子を写す・state.json の panelView） ---- */
-  /* 表の仕事の行（v202）。刻は日本の時計。「何分前」は出さない */
+  /* 表の仕事の行（v202）。刻は日本の時計。「何分前」は出さない。段は stepsOf（v212） */
   function omoteLines(o) {
     o = o || {}; var s = function (v) { return String(v == null ? '' : v); };
     var hm = function (sec) { var d = new Date((Number(sec) + 9 * 3600) * 1000); return ('0' + d.getUTCHours()).slice(-2) + ':' + ('0' + d.getUTCMinutes()).slice(-2); };
     var subj = s(o.subj).trim(), stat = s(o.stat).trim(), st = Number(o.startedAt) || 0;
     var fm = subj.match(/(?:橋の)?枠[ 　]*[一二三四五六七八九十百〇零0-9A-Za-z]+/);
-    var tot = Number(o.stepTotal) || 0, dn = Number(o.stepDone) || 0, now = s(o.sNow).trim();
+    var so = stepsOf(o), tot = so.total, dn = so.done, now = so.now;
     return ['表の仕事：' + (subj || 'なし') + (stat ? '（' + stat + '）' : ''),
       '枠：' + (fm ? fm[0] : '件名に枠の番号なし'),
       '段：' + ((now && tot > 0) ? (Math.min(tot, dn + 1) + '/' + tot + '　' + now) : 'なし'),
@@ -212,7 +233,7 @@
     senkoEpoch: senkoEpoch, pad2s: pad2s, newestTime: newestTime,
     isCountCard: isCountCard, ntfyOfCard: ntfyOfCard, todoList: todoList, todoLabel: todoLabel,
     cardsPending: cardsPending, cardEtaSec: cardEtaSec, cardLate: cardLate, cardPendText: cardPendText, kumoEtaSec: kumoEtaSec, uraBusyText: uraBusyText, isRunning: isRunning, headText: headText,
-    omoteLines: omoteLines, endLine: endLine, uraLines: uraLines,
+    stepsOf: stepsOf, pubLine: pubLine, omoteLines: omoteLines, endLine: endLine, uraLines: uraLines,
     endShort: endShort, uraCount: uraCount, uraGauge: uraGauge, stepLab: stepLab, omoteGauge: omoteGauge, boxSpec: boxSpec, workLate: workLate, headEta: headEta, etaRow: etaRow
   };
 });
