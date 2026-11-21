@@ -5,12 +5,15 @@
    ＊大物・惜しむの行：advBigLine の字を頭に置いた一行を advTalk に通した字と比べる。幼児は、大物の一言が頭の「ばぶ」を替えているか（頭に「ばぶー。」等が残らないか）も見る。
    ＊呼び名（大阪の執事の「、だんさん」等）は話の最後の文に一度だけ付くので、比べる時は外す。
    ＊いま入れ終えた人格（DONE）だけを合否に数え、ほかは「未実装」として別に数える。
-   使い方：node advice-441.js [--all]（--all＝未実装の食い違いも全部出す）。執事の食い違いが1つでもあれば終了コード1。 */
+   使い方：node advice-441.js [--all]（--all＝未実装・段8待ちの食い違いも全部出す）。入れ終えた人格（DONE）の食い違いが1つでもあれば終了コード1。
+   ＊v1511：軍師・ずんだ・お嬢様を DONE へ。三人の幼児の行は「段8待ち」（LATER）で別に数える。 */
 'use strict';
 const fs = require('fs'), path = require('path');
 global.ADV_TEXT = require('./voice-advice-catalog.js').T;
 const C = require('./advice-tone-core.js');
-const DONE = ['butler'];
+const DONE = ['butler', 'strategist', 'blunt', 'lady'];
+// v1511 入れた人格のうち、まだ入れていない方言（幼児＝六人分の読み ADV_YOJI_KANA と「ばぶ」の挟みが要る＝段8）。合否に数えず「段8待ち」として別に数える
+const LATER = { strategist: ['yoji'], blunt: ['yoji'], lady: ['yoji'] };
 const ALL = process.argv.indexOf('--all') >= 0;
 const rows = fs.readFileSync(path.join(__dirname, 'reports', 'kuchou-441.tsv'), 'utf8').split(/\r?\n/).filter(Boolean).map(function (l) { return l.split('\t'); });
 const head = rows.shift(), col = {}; head.forEach(function (h, i) { col[h] = i; });
@@ -38,9 +41,9 @@ rows.forEach(function (r) {
   const addr = [pdx.c, ch.c].filter(Boolean);
   const unaddr = function (s) { addr.forEach(function (a) { s = s.replace(new RegExp('、' + a + '(?=[。！？]$)'), ''); }); return s; };
   const ok = !note && unaddr(strip(got)) === unaddr(strip(want));
-  const grp = DONE.indexOf(tone) >= 0 ? tone : '未実装';
+  const grp = (LATER[tone] && LATER[tone].indexOf(r[col['方言']]) >= 0) ? '段8待ち' : DONE.indexOf(tone) >= 0 ? tone : '未実装';
   const s = stat[grp] || (stat[grp] = { n: 0, ok: 0 }); s.n++; if (ok) { s.ok++; }
-  if (!ok && (grp !== '未実装' || ALL)) { bad.push([grp, tone, r[col['方言']], kind, id, want, got, note].join(' | ')); }
+  if (!ok && ((grp !== '未実装' && grp !== '段8待ち') || ALL)) { bad.push([grp, tone, r[col['方言']], kind, id, want, got, note].join(' | ')); }
 });
 // 未実装の人格の内訳（人格ごとの一致数）
 const per = {};
