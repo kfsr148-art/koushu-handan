@@ -745,8 +745,8 @@ function staticParts() {
     /* 六十三：くわしくは遠隔・終わりましたと同じ段の三つ目。三行（#stLine）は並びのすぐ下。flex の指定で等分・字は折り返して収まる */
     const iH = H.indexOf('<div class="halfrow" id="halfRow">'), iE = H.indexOf('</div>', H.indexOf('id="doneBox"')), iB = H.indexOf('id="btnSteps"'), iC = H.indexOf(LF + '  </div>', iE), iS = H.indexOf('<ul id="stLine" hidden>'), iD = H.indexOf('<ul id="doneList">');
     if (iH > 0 && iB > iE && iB < iC && iS > iC && iD > iS && (H.match(/id="btnSteps"/g) || []).length === 1) { ok('くわしく（#btnSteps）は #halfRow の中の三つ目（遠隔→終わりました→くわしく）・三行は並びのすぐ下・一段まるごとの釦は無い'); } else { ng('くわしくの置き場が違う（' + [iH, iE, iB, iC, iS, iD].join('・') + '）'); }
-    const cssOk = H.indexOf('.halfrow > .cpall, .halfrow > .done-box{flex:1 1 0; min-width:0;') >= 0 && /\.halfrow > \.cpall\.steps-t\{display:flex;[^}]*min-height:48px;[^}]*overflow-wrap:anywhere;[^}]*\}/.test(H) && H.indexOf('.halfrow > .cpall.steps-t.hide{display:none;}') >= 0;
-    if (cssOk) { ok('三つ並びの CSS：出ている物で等分（flex:1 1 0・min-width:0）・くわしくは高さ48px以上・字は折り返す（overflow-wrap:anywhere）・隠す時は消える'); } else { ng('三つ並びの CSS が無い／違う'); }
+    const cssOk = H.indexOf('.halfrow > .cpall, .halfrow > .done-box{flex:1 1 30%; min-width:0;') >= 0 && /\.halfrow > \.cpall\.steps-t\{display:flex;[^}]*min-height:48px;[^}]*overflow-wrap:anywhere;[^}]*\}/.test(H) && H.indexOf('.halfrow > .cpall.steps-t.hide{display:none;}') >= 0;
+    if (cssOk) { ok('三つ並びの CSS：出ている物で等分（v208：flex:1 1 30%＝padding と縁の違いに依らず同じ基準の幅・min-width:0）・くわしくは高さ48px以上・字は折り返す（overflow-wrap:anywhere）・隠す時は消える'); } else { ng('三つ並びの CSS が無い／違う'); }
     /* 字数の見積もり：320px の視野で一つの釦の幅＝(320−左右の余白28−隙間8×2)÷3＝92px。「くわしく」「とじる」は14px×4字＝56px＋左右4pxで収まる */
     const bw = Math.floor((320 - 28 - 16) / 3), lw = Math.max('くわしく'.length, 'とじる'.length) * 14 + 8;
     if (lw <= bw && H.indexOf("stB.textContent = stepsOpen ? 'とじる' : 'くわしく';") >= 0) { ok('320px でも「くわしく」（' + lw + 'px）は釦の幅（' + bw + 'px）に一行で収まる見積もり（390・375 はもっと広い）'); } else { ng('くわしくの字が釦の幅に収まらない見積もり（' + lw + '／' + bw + '）'); }
@@ -775,7 +775,7 @@ function staticParts() {
     /* 六十八：版の行の右端は「更新 HH:MM」（字が前・刻が後ろ）。行は今までどおり flex-wrap（版の字が長いので「版…」の下の行に「最終確認 HH:MM」と並ぶ）。下の行の見積もり：最終確認 HH:MM（4字×13px＋5字×7px）＋隙間14px＋更新 HH:MM（2字×13px＋6字×7px）≦ 320px の行幅 292px */
     {
       const lw2 = (4 * 13 + 6 * 7) + 14 + (2 * 13 + 6 * 7);
-      if (H.indexOf("$('stat').textContent = '更新 ' + hhmm(Math.floor(Date.now() / 1000));") >= 0 && H.indexOf("+ ' 更新'") < 0 && H.indexOf("s.textContent = '最終確認 ' + (atSec ? hhmm(atSec) : '—');") >= 0 && H.indexOf('.facts .upd{margin-left:auto;}') >= 0 && lw2 <= 292) { ok('版の行の右端は「更新 HH:MM」（最終確認と同じく字が前）・行の CSS は今のまま・最終確認と並ぶ行は約' + lw2 + 'px で 320px の行幅 292px に一行で収まる見積もり（実寸は ⑤の二十二・雲）'); } else { ng('「更新 HH:MM」の字面か行の指定が違う'); }
+      if (H.indexOf("$('stat').textContent = '更新 ' + hhmm(Math.floor(Date.now() / 1000));") >= 0 && H.indexOf("+ ' 更新'") < 0 && H.indexOf("s.textContent = '最終確認 ' + (atSec ? hhmm(atSec) : '—');") >= 0 && H.indexOf('.facts .upd{margin-left:auto;}') >= 0 && H.indexOf('@media (max-width: 359px) { .facts #fVer{flex:0 0 100%;} }') >= 0 && lw2 <= 292) { ok('版の行の右端は「更新 HH:MM」（最終確認と同じく字が前）・359px 以下では版の字を一段まるごとにし（v208）、最終確認と並ぶ下の段は約' + lw2 + 'px で 320px の行幅 292px に一行で収まる見積もり（実寸は ⑤の二十二・雲）'); } else { ng('「更新 HH:MM」の字面か行の指定が違う'); }
     }
     /* 六十九：使用量の三本（#usageTag・#usageMsg）はゲージの箱（#progBox）のすぐ下の兄弟（箱の中ではないので、箱が隠れても同じ場所に出る）・くわしくより上。見た目（.usage の CSS）は今のまま */
     {
@@ -852,7 +852,7 @@ try {
       else { ng(k + '：題の行が違う「' + String(r.headWait).slice(0, 40) + '」'); }
       if (k === '作業中') {   /* v180：作業中は「見込み未記入」「手順の一覧 未記入」を赤で出す（下の base は見込み・段の台帳が無い） */
         if (/見込み未記入/.test(String(r.stBad || '')) && /手順の一覧 未記入/.test(String(r.stBad || ''))) { ok(k + '：見込み・段の台帳が無い回は赤で未記入を出す'); } else { ng(k + '：赤の未記入が出ない（赤「' + String(r.stBad || '') + '」）'); }
-      } else if (String(r.stText || '') && !((k === '検査中' || k === '待ち') && /^(終わる見込み|見込み未記入|見込み不明|見込みを過ぎた)/.test(String(r.stText || '')))) {   /* v182：検査中・待ちは見込みの行だけ出る */ ng(k + '：黄色い帯の跡に字が出た「' + String(r.stText).slice(0, 30) + '」'); }
+      } else if (String(r.stText || '') && !((k === '検査中' || k === '待ち' || k === '裏方') && /^(終わる見込み|見込み未記入|見込み不明|見込みを過ぎた)/.test(String(r.stText || '')))) {   /* v182：検査中・待ちは見込みの行だけ出る */ ng(k + '：黄色い帯の跡に字が出た「' + String(r.stText).slice(0, 30) + '」'); }
       if (/（なし）/.test(String(r.headWait || ''))) { ng(k + '：「（なし）」が出た'); }
     }
   }
