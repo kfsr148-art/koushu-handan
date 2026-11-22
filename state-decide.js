@@ -42,11 +42,17 @@ function decide(m) {
     sDone: (steps.filter(r => r.k === 'x').slice(-1)[0] || {}).t || '', sNow: first ? first.t : '', sNowAt: nowAtOf(m, first), sNext: pend[1] ? pend[1].t : '' };
   const kst = String(kw.state || ''), clock = /^clock:([0-9]+)$/.exec(String(kw.workflow || ''));
   // 一、ヨシ待ち：残りの段の先頭が [決]
-  if (first && first.k === '決') { out.stat = 'ヨシ待ち'; out.detail = cut(first.t, 60); return out; }
+  //   2026-11-22 枠 九十三（見直し役の狭めた案）：[決] でも、手番が開いて合図の足跡（evAt・toolAt の新しい方）が3分以内の間だけは「作業中（許可待ちの段が残っている）」。
+  //   動きが止まれば（Stop・足跡が3分を超える）ヨシ待ちに戻る。材料は busy.txt の既存の欄だけ（user-activity.json は使わない）。
+  const turnOpen = ['UserPromptSubmit', 'PreToolUse', 'PostToolUse'].indexOf(String(b.ev || '')) >= 0;
+  const footAt = Math.max(Number(b.evAt) || 0, Number(b.toolAt) || 0);
+  if (first && first.k === '決') {
+    if (m.alive > 0 && turnOpen && now - footAt <= FOOT) { out.stat = '作業中'; out.detail = '許可待ちの段が残っている' + (back > 0 ? '・' + backTx : ''); return out; }
+    out.stat = 'ヨシ待ち'; out.detail = cut(first.t, 60); return out;
+  }
   // 二、止まり：窓の合図が StopFailure（使用量なら「止まり（使用量・HH:MM にリセット）」を busy が持つ）
   if (b.ev === 'StopFailure') { out.stat = /^止まり/.test(String(b.stat || '')) ? String(b.stat) : '止まり'; out.detail = ''; return out; }
   // 三、作業中：手番が開いて合図の足跡が3分以内、または裏の仕事が走っている
-  const turnOpen = ['UserPromptSubmit', 'PreToolUse', 'PostToolUse'].indexOf(String(b.ev || '')) >= 0;
   if (m.alive > 0 && ((turnOpen && now - (Number(b.evAt) || 0) <= FOOT) || back > 0)) { out.stat = '作業中'; out.detail = back > 0 ? backTx : ''; return out; }   // 「作業中（裏で手伝い1本・雲1本）」の括弧の中身。題は subj で別に渡す
   // 四、検査中：雲の走りを待っている（時計の待ちは除く）
   if (!clock && (kst === 'waiting' || kst === 'ack')) {

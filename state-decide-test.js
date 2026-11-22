@@ -16,10 +16,11 @@ for (const e in EV) for (const a in AG) for (const g in BG) for (const k in KW) 
   const c = [e, a, g, k, s, 'alive' + alive].join('・'); seen[r.stat] = (seen[r.stat] || 0) + 1;
   const bgFresh = !!BG[g] && ['Stop', 'idle_prompt', 'StopFailure', 'Interrupted', 'EndTurn'].indexOf(EV[e].ev) >= 0;   // 2026-11-20：数えるのは窓が手待ちの間の Stop の入力の一覧だけ。足し引きの agents（AG）は数えない
   const back = bgFresh && alive;
-  const expect = s === '決め待ち' ? 'ヨシ待ち' : e === '止まり使用量' ? '止まり' : (alive && (e === 'UPS3分以内' || e === 'Post3分以内' || e === 'Pre3分以内' || back)) ? '作業中' : ((k === '雲・見込みあり' || k === '雲・見込みなし')) ? '検査中' : (k === '時計の待ち' || !alive || e === 'UPS3分以内' || e === 'Post3分超' || s === '段残り') ? '待ち' : '待機中';
+  const expect = s === '決め待ち' ? ((alive && (e === 'UPS3分以内' || e === 'Post3分以内' || e === 'Pre3分以内')) ? '作業中' : 'ヨシ待ち') : e === '止まり使用量' ? '止まり' : (alive && (e === 'UPS3分以内' || e === 'Post3分以内' || e === 'Pre3分以内' || back)) ? '作業中' : ((k === '雲・見込みあり' || k === '雲・見込みなし')) ? '検査中' : (k === '時計の待ち' || !alive || e === 'UPS3分以内' || e === 'Post3分超' || s === '段残り') ? '待ち' : '待機中';
   const rs = /^止まり/.test(r.stat) ? '止まり' : r.stat;
   if (rs !== expect) { ng(c, r, '順が違う（当て＝' + expect + '）'); continue; }
   if (rs === '止まり' && e === '止まり使用量' && r.stat !== '止まり（使用量・13:00 にリセット）') { ng(c, r, '止まりの字（リセットの刻）'); }
+  if (r.stat === '作業中' && s === '決め待ち' && r.detail !== '許可待ちの段が残っている') { ng(c, r, '[決] の手番中の作業中の訳（許可待ちの段が残っている）'); }
   if (r.stat === '作業中' && bgFresh && r.detail !== '裏で手伝い1本・雲1本') { ng(c, r, '作業中の数（teammate を外し、手伝い1・雲1）'); }
   if (r.stat === '作業中' && /teammate|仲間/.test(r.detail)) { ng(c, r, 'teammate を数えた'); }
   if (r.stat === '検査中' && k === '雲・見込みあり' && !/終了予定 [0-9]{2}:[0-9]{2}$/.test(r.detail)) { ng(c, r, '検査中の終了予定'); }
@@ -103,6 +104,31 @@ console.log('状態の決め所の総当たり：' + n + '組・NG ' + bad + '�
   r = run({ 'busy.txt': stopBusy, 'job-steps.txt': '仕事: 試し\n[x] 一\n', 'work-note.txt': noteDone });
   ck('雲待ちが無い通常の印の見込みの刻は、Stop から150秒', r.cardOwedAt === ago(40) && r.cardOwedEta === ago(40) + 150);
   console.log('札の印（cardOwedAt・cardOwedEta）：' + (bad ? 'NG あり' : '14件 合い'));
+}
+// 2026-11-22 枠 九十三（見直し役の狭めた案）：[決] でも手番が開いて足跡が3分以内の間だけ「作業中（許可待ちの段が残っている）」。止まればヨシ待ちに戻る
+{
+  let yb = 0; const ck = (nm, ok) => { if (!ok) { yb++; bad++; console.log('NG [決] の手番：' + nm); } };
+  const KS = [{ k: 'x', t: '測る' }, { k: '決', t: '履歴の書き換え（本人の許可待ち）' }];
+  const Y = (busy, steps, alive) => decide({ now, alive: alive === undefined ? 1 : alive, busy: Object.assign({ subj: '題' }, busy), kumo: {}, steps: steps || KS, job: '仕事' });
+  let r = Y({ ev: 'Stop', evAt: now - 30, stopAt: now - 30 });
+  ck('ヨシ待ちで止まっている（Stop）→ ヨシ待ち', r.stat === 'ヨシ待ち' && /履歴の書き換え/.test(r.detail));
+  r = Y({ ev: 'PostToolUse', evAt: now - 20, toolAt: now - 20 });
+  ck('許可の後に道具が動いている（足跡20秒）→ 作業中（許可待ちの段が残っている）', r.stat === '作業中' && r.detail === '許可待ちの段が残っている');
+  r = Y({ ev: 'UserPromptSubmit', evAt: now - 170 });
+  ck('指示を受けた直後（足跡170秒）→ 作業中', r.stat === '作業中');
+  r = Y({ ev: 'PostToolUse', evAt: now - 400, toolAt: now - 60 });
+  ck('合図の刻は古いが最後の道具（toolAt）が60秒前 → 作業中', r.stat === '作業中');
+  r = Y({ ev: 'PreToolUse', evAt: now - 181, toolAt: now - 200 });
+  ck('足跡が3分を超えた（181秒）→ ヨシ待ちへ戻る', r.stat === 'ヨシ待ち');
+  r = Y({ ev: 'PostToolUse', evAt: now - 20, toolAt: now - 20 }, KS, 0);
+  ck('窓が閉じている（alive 0）なら足跡が新しくてもヨシ待ち', r.stat === 'ヨシ待ち');
+  r = Y({ ev: 'idle_prompt', evAt: now - 5, stopAt: now - 40, bg: { at: now - 40, items: [{ type: 'local_agent', status: 'running' }] } });
+  ck('手待ちで裏の手伝いだけが走る（手番は閉じている）→ ヨシ待ちのまま', r.stat === 'ヨシ待ち');
+  r = Y({ ev: 'PostToolUse', evAt: now - 20 }, [{ k: 'x', t: '測る' }, { k: ' ', t: '書き換え' }]);
+  ck('[決] が無い → 今まで通り（作業中・訳は空）', r.stat === '作業中' && r.detail === '');
+  r = Y({ ev: 'Stop', evAt: now - 30 }, [{ k: 'x', t: '測る' }, { k: ' ', t: '書き換え' }]);
+  ck('[決] が無く止まっている → 今まで通り（待ち・残りの段）', r.stat === '待ち' && /^残りの段 1/.test(r.detail));
+  console.log('[決] の手番（作業中／ヨシ待ちへ戻る）：' + (yb ? 'NG あり' : '9件 合い'));
 }
 // 2026-11-19 16:20 本人の枠：「▶ 進行中（N分）」の起点は今待っている走りの始まり。二本続けて走らせると二本目は0分から
 {
