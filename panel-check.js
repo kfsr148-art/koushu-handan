@@ -175,7 +175,7 @@ function probeSource(scene) {
       o.footLines = [].slice.call(g.children).filter(function (e) { return !e.hidden && e.getBoundingClientRect().height > 0; }).map(function (e) { var r = e.getBoundingClientRect(); return { id: e.id, top: r.top, bottom: r.bottom, h: r.height, w: r.width, mt: parseFloat(getComputedStyle(e).marginTop) || 0, mb: parseFloat(getComputedStyle(e).marginBottom) || 0 }; });
       o.docOverflow = document.documentElement.scrollWidth > window.innerWidth + 1; })();
     /* v184：下の並び（HTML の順そのもの）。見える物の文書順・上端・CSS の order・横溢れ */
-    (function () { var ids = ['progBox', 'usageTag', 'btnSteps', 'btnShots', 'btnCopyUrl', 'fVer', 'verTag', 'footGroup']; var els = ids.map(function (i) { return document.getElementById(i); }); if (els.some(function (e) { return !e; })) { o.ordMissing = ids.filter(function (i, k) { return !els[k]; }).join('・'); return; }
+    (function () { var ids = ['usageTag', 'progBox', 'btnSteps', 'btnShots', 'btnCopyUrl', 'fVer', 'verTag', 'footGroup']; var els = ids.map(function (i) { return document.getElementById(i); }); if (els.some(function (e) { return !e; })) { o.ordMissing = ids.filter(function (i, k) { return !els[k]; }).join('・'); return; }
       var sorted = els.slice().sort(function (a, b) { return (a.compareDocumentPosition(b) & 4) ? -1 : 1; }); o.ordDoc = sorted.map(function (e) { return e.id; }).join('>');
       o.ordCss = els.map(function (e) { return getComputedStyle(e).order !== '0' ? e.id + ':' + getComputedStyle(e).order : ''; }).filter(Boolean).join(','); o.ordTops = els.map(function (e) { return Math.round(e.getBoundingClientRect().top); });
       o.ordOverflow = document.documentElement.scrollWidth > window.innerWidth + 1; })();
@@ -643,7 +643,7 @@ function staticParts() {
     if (ln(pv.omote) === wantO && ln(pv.ura) === wantU && /^表の仕事の全部終わる見込み：state\.json に載っていない$/.test(pv.omote.lines[0]) && /^裏方の全部終わる見込み：/.test(pv.ura.lines[0])) { ok('panelView の omote・ura は {lines…}：頭に全部終わる見込みの一行・続きは panel.html と同じ字'); } else { ng('panelView の omote・ura が違う：' + JSON.stringify({ omote: pv.omote, ura: pv.ura })); }
     /* v204（本人の枠 五十一）：字の箱（#workBox）は外し、表の仕事と裏方は見出しの下の箱（#progBox）にゲージで出す */
     const iP = H.indexOf('id="progBox"'), iU = H.indexOf('id="usageTag"'), iB = H.indexOf('id="btnSteps"'), iS = H.indexOf('<ul id="stLine" hidden>');
-    if (iP > 0 && iU > iP && iB > iU && iS > iB && H.slice(iP, iU).split('<div').length === 2 && H.indexOf('id="workBox"') < 0 && H.indexOf('paintWorkBox()') < 0) { ok('並び（v207）：ゲージの箱 → すぐ下に使用量の三本 → くわしく → 三行（ふだんは hidden）・字の箱（#workBox）は無い'); } else { ng('ゲージの箱・釦・三行の並びか hidden が違う／字の箱が残っている（' + [iP, iB, iS, H.indexOf('id="workBox"')].join('・') + '）'); }
+    if (iU > 0 && iP > iU && iB > iP && iS > iB && H.slice(iU, iP).split('<div').length === 2 && H.indexOf('id="workBox"') < 0 && H.indexOf('paintWorkBox()') < 0) { ok('並び（v220）：使用量の三本（見出しのすぐ下）→ ゲージの箱 → くわしく → 三行（ふだんは hidden）・字の箱（#workBox）は無い'); } else { ng('ゲージの箱・釦・三行の並びか hidden が違う／字の箱が残っている（' + [iP, iB, iS, H.indexOf('id="workBox"')].join('・') + '）'); }
     /* v204：ゲージ（gaugeHtml を切り出して回す）。表＝段の済み緑・今の段一つ青・横に今の番号/全体／裏方＝済み緑・動いている本数ぶん青・横に済み/全体 */
     {
       const fg = new Function('esc', 'window', cutFn(H, 'core') + String.fromCharCode(10) + cut(H, 'gaugeHtml', '  ') + String.fromCharCode(10) + 'return gaugeHtml;')(t => String(t), WIN);
@@ -895,9 +895,9 @@ function staticParts() {
     }
     /* 六十九：使用量の三本（#usageTag・#usageMsg）はゲージの箱（#progBox）のすぐ下の兄弟（箱の中ではないので、箱が隠れても同じ場所に出る）・くわしくより上。見た目（.usage の CSS）は今のまま */
     {
-      const a = H.indexOf('<div class="progbox hide" id="progBox" data-pname="表の仕事と裏方のゲージの箱"></div>'), u = H.indexOf('<div class="usage" id="usageTag" hidden></div>'), m = H.indexOf('<p class="usage-msg" id="usageMsg" hidden></p>'), k = H.indexOf('id="btnSteps"'), sh = H.indexOf('<div class="shotsrow btn4row">');
-      const between = (a >= 0 && u > a) ? H.slice(a, u).split('<!--').map((x, i) => i ? x.slice(x.indexOf('-->') + 3) : x).join('').split('<div class="progbox hide" id="progBox" data-pname="表の仕事と裏方のゲージの箱"></div>').join('').trim() : 'x';
-      if (a >= 0 && u > a && m > u && k > m && sh > m && between === '' && (H.match(/id="usageTag"/g) || []).length === 1 && H.indexOf('.usage{display:flex; gap:8px; justify-content:center; align-items:flex-end;') >= 0) { ok('使用量の三本はゲージの箱のすぐ下（間に何も無い・箱の外なので箱が隠れても同じ場所）→ くわしく・ボタンの段より上・.usage の見た目は今のまま'); } else { ng('使用量の置き場が違う（' + [a, u, m, k, sh, JSON.stringify(between.slice(0, 40))].join('・') + '）'); }
+      const a = H.indexOf('<div class="progbox hide" id="progBox" data-pname="表の仕事と裏方のゲージの箱"></div>'), u = H.indexOf('<div class="usage" id="usageTag" hidden></div>'), m = H.indexOf('<p class="usage-msg" id="usageMsg" hidden></p>'), k = H.indexOf('id="btnSteps"'), hd = H.indexOf('</header>'), sh = H.indexOf('<div class="shotsrow btn4row">');
+      const between = (hd >= 0 && u > hd) ? H.slice(hd + 9, u).split('<!--').map((x, i) => i ? x.slice(x.indexOf('-->') + 3) : x).join('').trim() : 'x';   /* v220：見出し（</header>）と使用量の間に何も無い */
+      if (hd >= 0 && u > hd && m > u && a > m && k > a && sh > a && between === '' && (H.match(/id="usageTag"/g) || []).length === 1 && H.indexOf('.usage{display:flex; gap:8px; justify-content:center; align-items:flex-end;') >= 0) { ok('使用量の三本は見出しのすぐ下＝一番上（間に何も無い・箱の外）→ ゲージの箱 → くわしく・ボタンの段・.usage の見た目は今のまま（v220）'); } else { ng('使用量の置き場が違う（' + [a, u, m, k, sh, JSON.stringify(between.slice(0, 40))].join('・') + '）'); }
     }
     /* 六十七：箱の組み立てにゲージの下の「全部終わる見込み」の行が無い（時間は頭の headEta だけ） */
     const P = (function () { const a = H.indexOf('  function paintStateLine('); const b = H.indexOf(LF + '  }', a); return a >= 0 ? H.slice(a, b) : ''; })(), sh = P.slice(P.indexOf('var secH = function'), P.indexOf('html5 = secH('));
@@ -1008,10 +1008,10 @@ function staticParts() {
     const l0 = PCORE.todoLabel(0), l1 = PCORE.todoLabel(1), l12 = PCORE.todoLabel(12);
     if (cbOk && l0 === 'まとめて写す' && /^まとめて写す（残1／1件）$/.test(l1) && /残12／12件/.test(l12)) { ok('まとめて写す：一つだけ・隠さない・上「まとめて写す」下「N件」（0件は下の行を空のまま14pxの高さと3字の幅を取る）・0件は押せない普段の色／1件以上は青・字（aria-label・panelView.label）は todoLabel（0件「' + l0 + '」・1件「' + l1 + '」）'); } else { ng('まとめて写すの出し方が違う（字面 ' + cbOk + '・0件「' + l0 + '」・1件「' + l1 + '」）'); }
     /* 四、押し通知と板の行をボタンの上に足さない（枠 七十九）：見出しの下の箱からボタンの段までの間に有るのは、決まった器だけ。目次（#todoList）は八つの下で、押し通知の行は塗らない。板・お知らせの一覧は画面に出さない */
-    const iP = H.indexOf('<div class="progbox hide" id="progBox"'), iHr = H.indexOf('<div class="halfrow btn4row" id="halfRow">');
+    const iP = H.indexOf('<div class="usage" id="usageTag"'), iHr = H.indexOf('<div class="halfrow btn4row" id="halfRow">');
     const above = (iP > 0 && iHr > iP) ? ids(H.slice(iP, iHr).replace(/<!--[\s\S]*?-->/g, '')) : [];
     const pt = cutFn(H, 'paintTodoList');
-    const t9 = above.join(',') === 'progBox,usageTag,usageMsg,pipeWarn,wakeWarn,kumoLine,btnCopyAll,list,board' && H.indexOf('#btnCopyAll, #list{display:none !important;}') >= 0 && H.indexOf('#board{display:none !important;}') >= 0 && H.indexOf('<ul id="todoList" class="todoList"></ul>') > iS && pt.indexOf("var a = mergedTodo().filter(function (m) { return m.kind === 'card'; });") >= 0 && pt.indexOf("'📣'") < 0;
+    const t9 = above.join(',') === 'usageTag,usageMsg,progBox,pipeWarn,wakeWarn,kumoLine,btnCopyAll,list,board' && H.indexOf('#btnCopyAll, #list{display:none !important;}') >= 0 && H.indexOf('#board{display:none !important;}') >= 0 && H.indexOf('<ul id="todoList" class="todoList"></ul>') > iS && pt.indexOf("var a = mergedTodo().filter(function (m) { return m.kind === 'card'; });") >= 0 && pt.indexOf("'📣'") < 0;
     /* v216（本人の枠 九十二・百十二）：目次（#todoList）と雲の一行（#kumoLine）は画面に出さない（器と中身は残す＝数・写す中身は変わらない） */
     if (H.indexOf('#todoList{display:none !important;}') >= 0 && H.indexOf('#kumoLine{display:none !important;}') >= 0 && H.indexOf('<p class="kumo-line hide" id="kumoLine"></p>') >= 0) { ok('目次（#todoList）と雲の一行（#kumoLine）は display:none で画面に出さない（器は残す・まとめて写すの中身と N件はそのまま）'); } else { ng('目次か雲の一行が画面に出得る（#todoList・#kumoLine の display:none が無い）'); }
     if (t9) { ok('ボタンの上に知らせの行を足さない：見出しの下の箱からボタンの段までの器は ' + above.length + ' 個（決まった物だけ）・板（あなた待ち）とお知らせの一覧は画面に出さない・目次は八つの下で押し通知（📣）の行を塗らない'); } else { ng('ボタンの上に行が足され得る（間の器 ' + above.join(',') + '・目次の塗り ' + (pt.indexOf("m.kind === 'card'") >= 0) + '）'); }
@@ -1409,7 +1409,7 @@ try {
   {
     const nowE = Math.floor(Date.now() / 1000);
     const stt = Object.assign({}, ST['手待ち'], { ev: 'Stop', evAt: nowE - 30, foot: { wait: 3, unlinked: 2, revive: '今日 3回（固まり 1・重さ 1・0本 1）', reviveLast: '04:12' } });
-    const WANT = 'progBox>usageTag>btnSteps>btnShots>btnCopyUrl>fVer>verTag>footGroup';   /* v207（本人の枠 六十九）：使用量はゲージの箱のすぐ下・くわしくの上 */
+    const WANT = 'usageTag>progBox>btnSteps>btnShots>btnCopyUrl>fVer>verTag>footGroup';   /* v207（本人の枠 六十九）：使用量はゲージの箱のすぐ下・くわしくの上 */
     for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
       const r = run(tmp, { state: stt, notices: MIX, usage: U_OK, settle: 1500 }, w, h);
       if (!r) { ng(w + 'x' + h + '：測れない（並び）'); continue; }
