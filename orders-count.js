@@ -31,7 +31,7 @@ const WAIT_SINCE = '2026-11-20 14:19:48';
 function waitRows(raw, note, busy, now) {
   now = Number(now) || Math.floor(Date.now() / 1000);
   const since = String(process.env.OC_SINCE || WAIT_SINCE);
-  const fresh = openRows(raw).filter(r => { const t = epoch(r.at); return t > 0 && now - t <= 86400 && String(r.at) >= since; }).sort((a, b) => (String(a.at) < String(b.at) ? 1 : (String(a.at) > String(b.at) ? -1 : 0)));
+  const fresh = openRows(raw).filter(r => { const t = epoch(r.at); return t > 0 && now - t <= 86400 && String(r.at) >= since && !/引き継ぎ先/.test(String(r.state || '')); })   /* 枠 百三十五：後の枠が引き継いだ行（状態が「未了：引き継ぎ先 <刻>」）は順番待ちに数えない（その枠の札で一緒に済になる） */.sort((a, b) => (String(a.at) < String(b.at) ? 1 : (String(a.at) > String(b.at) ? -1 : 0)));
   if (fresh.length === 0) { return []; }
   const m = /^枠:[ 　]*(.+)$/m.exec(String(note || '').replace(/^\uFEFF/, ''));
   const mine = m ? m[1].split(/[・,、]/).map(s => s.trim()).filter(Boolean) : [];
