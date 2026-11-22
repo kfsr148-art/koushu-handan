@@ -1,4 +1,4 @@
-# 枠 九十・九十一：ヨシ待ちの猫を枠に収める／版の行の「更新」を右端へ寄せない（panel v214）
+# 枠 九十・九十一：ヨシ待ちの猫を枠に収める／版の行の「更新」を右端へ寄せない（panel v214 → v215）
 
 状態：終わり（commit・push は親）— 09:10
 
@@ -33,3 +33,17 @@
 ## 実機
 - ヨシ待ちの時、頭の猫の枠（80x80）に、字「ヨシ！待ち。」と猫の全身が切れずに収まっている。猫の周りに白い四角が無く、パネルと同じ黒い地。0.5秒ごとに、こぶしと親指が入れ替わっても字・猫は動かず、手だけ変わる。
 - 下の版の行で、「更新 HH:MM」が「最終確認 HH:MM」のすぐ後ろに並び、間に大きなすき間が無い（390・375）。320 では版の字が一段、下の段に最終確認・更新。版の字が panel v214。
+
+## 追補 v215：雲の ⑤の二十二の落ち（commit 2a141bf2・3件）を前へ直す — 09:25
+
+**六値の中身**：panel-check.js 1553 行の `k = [hTitleR.l, hTitleR.t, hTitleR.w, hTitleR.h, catR.l, catR.t]`（probe は 188 行の `o.catR = R('runcat')`＝getBoundingClientRect）。最後の値は**猫（#runcat）の上端**。ヨシ待ちの一言の時だけ 10 → 5 に上がった。
+
+**原因**：v214 で付けた `class="yoshi"` が、panel.html 130〜132 行の**ヨシの釦の決まり** `.yoshi{display:block; width:100%; min-height:76px; … margin:0 0 10px;}` にも当たった。width は `#runcat` の 80px が勝つが、margin-bottom 10px は残る。h1 は flex・`align-items:center`・高さ 80px なので、猫の余白の箱が 90px として真ん中に置かれ、**上へ 5px** ずれた。object-fit・box-sizing・background は原因ではない（猫に padding も border も無い）。
+
+**直し（v215）**
+- class の名を `yoshi-fit` に替え、`#runcat.yoshi-fit{object-fit:contain; background:var(--bg);}` だけにした（panel.html 75 行）。box-sizing も外し、箱の寸法・位置・余白は何も持たない。付け外しは 2097 行。
+- panel-check の静かな部分に一項を足した：#runcat に付ける class に当たる CSS を全部拾い、①その名だけの決まり（`.名{…}`）が無い、②`#runcat.名` は描き方（object-fit・background・image-rendering）だけ、を字面で見る。これで、ヨシ待ちの一言とほかの一言で六値が揃う。v214 の panel.html に掛けると `.yoshi{display:block;…}`・`.yoshi:active`・box-sizing を拾って落ちることも確かめた。
+- 見本の写しの台本（panel-yoshi-shot.js）の class の確かめも `yoshi-fit` に直した。
+- 版は v215 に上げた：PANEL_VER・verTag・panel-ver.txt・`panel-core.js?_v=215`・panel-core.js の VER。
+- `node panel-check.js --static`：**168 件 PASS・FAIL 0**。node --check は panel.html の script・panel-core.js・panel-check.js・台本のどれも通った。台本の `--dry` も PASS。
+- 実機で見る所は上と同じ。加えて、ヨシ待ちになっても猫の枠が上下に動かない。版の字は panel v215。

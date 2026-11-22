@@ -829,8 +829,31 @@ function staticParts() {
     /* 六十五 → v211（本人の枠 七十三）：ヨシ待ちの猫は二枚を交互に（こぶし＝yoshi-machi-240.png・親指＝yoshi-machi2-soroe-240.png）。前の絵 yoshi-machi2-240.png と原版は残す */
     /* v214（本人の枠 九十）：二枚は縁から繋がる外側の白だけを透明にした新しい名の絵（yoshi-machi2-t-240.png・yoshi-machi-t-240.png）。前の絵（soroe・240）と原版は残す */
     if (H.indexOf('var YOSHI_FLIP_MS = 500;') >= 0 && H.indexOf("var YOSHI_FRAMES = ['yoshi-machi2-t-240.png', 'yoshi-machi-t-240.png'];") >= 0 && H.indexOf('var yf = YOSHI_FRAMES[Math.floor(Date.now() / YOSHI_FLIP_MS) % YOSHI_FRAMES.length];') >= 0 && H.indexOf('if (el.src.indexOf(yf) < 0) { el.src = yf; }') >= 0 && H.indexOf("'genba-taiki-80.png'], YOSHI_FRAMES)") >= 0 && png('yoshi-machi2-t-240.png') === '240x240' && png('yoshi-machi-t-240.png') === '240x240' && ex('yoshi-machi2-soroe-240.png') > 0 && ex('yoshi-machi-240.png') > 0 && ex('yoshi-machi2-240.png') > 0 && ex('yoshi-machi2_src.jpeg') > 0 && ex('yoshi-machi_src.jpeg') > 0) { ok('ヨシ待ちの猫は二枚（yoshi-machi2-t-240.png・yoshi-machi-t-240.png・どちらも 240x240）を YOSHI_FLIP_MS＝500ms ごとに交互に・二枚とも先読み・前の絵（soroe・240）と原版は残る'); } else { ng('ヨシ待ちの二枚の置き方が違う（' + png('yoshi-machi2-t-240.png') + '・' + png('yoshi-machi-t-240.png') + '・前の絵 ' + ex('yoshi-machi2-soroe-240.png') + '/' + ex('yoshi-machi-240.png') + '・原版 ' + ex('yoshi-machi2_src.jpeg') + '/' + ex('yoshi-machi_src.jpeg') + '）'); }
-    /* v214（本人の枠 九十）：絵の全体を枠に収める（contain）・箱の地はパネルの黒い地（--bg）・ヨシ待ちの間だけ class="yoshi"・枠の 80x80 は今のまま */
-    if (H.indexOf('#runcat.yoshi{object-fit:contain; box-sizing:border-box; background:var(--bg);}') >= 0 && H.indexOf("var yoshiNow = !isRunning() && lastStat === 'ヨシ待ち';") >= 0 && H.indexOf("if (el.className !== (yoshiNow ? 'yoshi' : '')) { el.className = yoshiNow ? 'yoshi' : ''; }") >= 0 && /html,body\{margin:0; background:var\(--bg\);/.test(H) && /#runcat\{width:80px; height:80px; flex:0 0 auto;/.test(H)) { ok('ヨシ待ちの絵は object-fit:contain で全体が 80x80 の枠に収まる・箱の地は body と同じ --bg・class="yoshi" はヨシ待ちの間だけ（ほかの猫は object-fit:none のまま）'); } else { ng('ヨシ待ちの絵の収め方（contain・地の色・class の付け外し）が無い／違う'); }
+    /* v214（本人の枠 九十）・v215：絵の全体を枠に収める（contain）・箱の地はパネルの黒い地（--bg）・ヨシ待ちの間だけ class="yoshi-fit"・枠の 80x80 は今のまま */
+    if (H.indexOf('#runcat.yoshi-fit{object-fit:contain; background:var(--bg);}') >= 0 && H.indexOf("var yoshiNow = !isRunning() && lastStat === 'ヨシ待ち';") >= 0 && H.indexOf("if (el.className !== (yoshiNow ? 'yoshi-fit' : '')) { el.className = yoshiNow ? 'yoshi-fit' : ''; }") >= 0 && /html,body\{margin:0; background:var\(--bg\);/.test(H) && /#runcat\{width:80px; height:80px; flex:0 0 auto;/.test(H)) { ok('ヨシ待ちの絵は object-fit:contain で全体が 80x80 の枠に収まる・箱の地は body と同じ --bg・class="yoshi-fit" はヨシ待ちの間だけ（ほかの猫は object-fit:none のまま）'); } else { ng('ヨシ待ちの絵の収め方（contain・地の色・class の付け外し）が無い／違う'); }
+    /* v215（雲の ⑤の二十二で落ちた：ヨシ待ちだけ猫の上端が 10 → 5）：v214 の class="yoshi" はヨシの釦の .yoshi（display:block・min-height:76px・margin:0 0 10px）にも当たり、
+       h1（flex・align-items:center・高さ 80px）の中で猫の余白の箱が 90px になって 5px 上へずれた。#runcat に付ける class に当たる CSS の決まりを全部拾い、
+       ①その名だけの決まり（.名{…}）が無い ②#runcat.名 の決まりは描き方（object-fit・background・image-rendering）だけで、箱の寸法・位置・余白を持たない、を字面で見る。
+       これで、ヨシ待ちの一言とほかの一言で、⑤の二十二の六値（題の左・上・幅・高さ、猫の左・上）は同じになる。 */
+    {
+      const css = (H.match(/<style[^>]*>([\s\S]*?)<\/style>/g) || []).join(LF).replace(/\/\*[\s\S]*?\*\//g, '');
+      const names = Array.from(new Set((H.match(/el\.className = yoshiNow \? '([A-Za-z0-9_-]+)'/g) || []).map(x => x.replace(/^.*\? '([^']+)'$/, '$1'))));
+      const why = [];
+      if (!names.length) { why.push('#runcat に付ける class の名が読めない'); }
+      names.forEach(nm => {
+        const re = new RegExp('([^{}]*)\\{([^{}]*)\\}', 'g'); let m;
+        while ((m = re.exec(css))) {
+          const sels = m[1].split(',').map(x => x.trim()).filter(x => new RegExp('\\.' + nm + '(?![A-Za-z0-9_-])').test(x));
+          sels.forEach(sel => {
+            if (sel !== '#runcat.' + nm) { why.push('「' + sel + '」の決まりにも当たる（' + m[2].trim().slice(0, 60) + '）'); return; }
+            const props = m[2].split(';').map(x => x.split(':')[0].trim()).filter(Boolean);
+            const badP = props.filter(p => ['object-fit', 'background', 'background-color', 'image-rendering'].indexOf(p) < 0);
+            if (badP.length) { why.push('#runcat.' + nm + ' が箱を変える指定を持つ（' + badP.join('・') + '）'); }
+          });
+        }
+      });
+      if (!why.length) { ok('ヨシ待ちの class（' + names.join('・') + '）に当たる CSS は #runcat.' + names.join('/') + ' だけで、描き方（contain・地の色）しか持たない＝猫の箱の位置・大きさ・余白はほかの一言と同じ（⑤の二十二の六値が揃う。v214 は釦の .yoshi の margin:0 0 10px で上端が 5px ずれた）'); } else { ng('ヨシ待ちの class が猫の箱を変える：' + why.join('／')); }
+    }
     /* 二枚の揃い（画素）：RGB の差の和が60を超える画素が、手の所（x 25〜100・y 70〜140）の外に一つも無い＝字も猫の位置と大きさも同じ。切り替えて動くのは手だけ */
     {
       const zlib = require('zlib');

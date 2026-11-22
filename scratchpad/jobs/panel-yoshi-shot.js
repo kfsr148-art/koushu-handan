@@ -148,7 +148,7 @@ function shoot(browser, htmlPath, tmp, frame, vw, vh) {
       const i = r.info || {};
       console.log('  写し ' + path.relative(ROOT, out) + '：' + JSON.stringify(i));
       const want = FRAMES[fr];
-      if (i.src === want && i.cls === 'yoshi' && i.fit === 'contain' && i.w === 80 && i.h === 80 && i.nw === 240 && i.nh === 240 && i.bg === i.bodyBg && i.iw === VW) { ok('FRAME ' + fr + '：' + want + '・class yoshi・object-fit contain・枠 80x80・絵 240x240・箱の地＝body の地（' + i.bg + '）・頭の字「' + i.head + '」'); }
+      if (i.src === want && i.cls === 'yoshi-fit' && i.fit === 'contain' && i.w === 80 && i.h === 80 && i.nw === 240 && i.nh === 240 && i.bg === i.bodyBg && i.iw === VW) { ok('FRAME ' + fr + '：' + want + '・class yoshi-fit・object-fit contain・枠 80x80・絵 240x240・箱の地＝body の地（' + i.bg + '）・頭の字「' + i.head + '」'); }
       else { ng('FRAME ' + fr + '：出方が違う（' + JSON.stringify(i) + '）'); }
     }
     /* 本人の枠 九十一：版の行（.facts）の写しを 390・375・320 の幅で。「更新 HH:MM」は「最終確認 HH:MM」のすぐ後ろ（間 14px）・右の端へ寄せない */
