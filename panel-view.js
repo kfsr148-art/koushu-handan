@@ -18,14 +18,21 @@ const PC = require(path.join(ROOT, 'panel-core.js'));
 
 // v206（本人の枠 六十二）：noEstimate＝作業中なのに窓が見込み（分の数）を書いていない。パネルの箱には赤い「見込み未記入」を出さず、ここ（state.json の panelView）にだけ残す。
 // 材料 d＝state.json の中身、notices＝notices.json（配列）、ntfySent＝ntfy-sent.json（配列）、now＝epoch 秒
-// v223（枠 百五十二）：影の走り（百四十九の設計の段1）の様子を一行で。材料は ~/.claude/shadow-last.json（shadow-run.js が書く）。無ければ空（パネルは行を出さない）。
-function shadowLine() {
+// v224（枠 百五十六）：影の仕事の箱。材料は ~/.claude/shadow-last.json（走り手 shadow-run.js が書く）。影が走っている間（状態『走行中』・始まりから10分以内）だけ載せる。済んだら null（パネルは箱ごと出さない）。金額は載せない。
+function shadowBox(now) {
   try {
-    const s = JSON.parse(fs.readFileSync(path.join(process.env.SHADOW_HOME || path.join(require('os').homedir(), '.claude'), 'shadow-last.json'), 'utf8').replace(/^﻿/, ''));
-    if (!s || !s.state || s.state === '空') { return ''; }
-    const hm = String(s.at || '').slice(11, 16);
-    return '影の走り：' + s.state + (s.issue ? '（課題 #' + s.issue + (s.sec ? '・' + s.sec + '秒' : '') + (s.cost ? '・$' + s.cost.toFixed(2) : '') + '）' : '') + (s.why ? ' ' + s.why : '') + (hm ? '・' + hm : '');
-  } catch (e) { return ''; }
+    const home = process.env.SHADOW_HOME || path.join(require('os').homedir(), '.claude');
+    const rd = f => JSON.parse(fs.readFileSync(path.join(home, f), 'utf8').replace(/^﻿/, ''));
+    const s = rd('shadow-last.json');
+    now = now || Math.floor(Date.now() / 1000);
+    if (!s || s.state !== '走行中' || !(Number(s.startSec) > 0) || now - Number(s.startSec) > 600) { return null; }
+    let day = {}; try { day = rd('shadow-day.json'); } catch (e) { }
+    const tot = Math.max(1, Number(day.total) || 1), dn = Math.max(0, Math.min(tot - 1, Number(day.done) || 0));
+    const end = Number(s.endSec) > 0 ? Number(s.endSec) : 0;
+    const d = new Date((end || now) * 1000 + 9 * 3600 * 1000), p2 = n => String(n).padStart(2, '0');
+    const t = String(s.title || '').split(String.fromCharCode(10)).join(' ').trim();
+    return { k: '影の仕事', done: dn, run: 1, total: tot, now: t.length > 30 ? t.slice(0, 29) + '…' : t, endSec: end, endAt: end ? p2(d.getUTCHours()) + ':' + p2(d.getUTCMinutes()) : '', over: false, unk: false, lab: dn + '/' + tot };
+  } catch (e) { return null; }
 }
 function panelView(d, notices, ntfySent, now) {
   d = d || {}; now = now || Math.floor(Date.now() / 1000);
@@ -35,7 +42,7 @@ function panelView(d, notices, ntfySent, now) {
   // ---- 頭の字（パネルの headText と同じ PC.headText）----
   const head = PC.headText({ stat: d.stat, cloud: (typeof d.cloud === 'string') ? d.cloud : '', detail: (typeof d.detail === 'string') ? d.detail.replace(/（なし）/g, '') : '', ura: d.ura || null, lost: false,
     owedAt: (typeof d.cardOwedAt === 'number') ? d.cardOwedAt : 0, owedEta: (typeof d.cardOwedEta === 'number') ? d.cardOwedEta : 0, rows: rows, kumo: ((typeof d.kumo === 'string') && d.kumo) ? d.kumo : ((typeof d.temoto === 'string') ? d.temoto : ''), left: left, now: now });
-  return { shadow: shadowLine(), head: head, label: PC.todoLabel(left), left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), coreVer: PC.VER, pub: { ver: String(d.pubVer || ''), at: Number(d.pubVerAt) || 0, line: PC.pubLine({ pubVer: d.pubVer, pubVerAt: d.pubVerAt, coreVer: PC.VER }) }, noEstimate: (String(d.stat || '') === '作業中' && !/[0-9]/.test(String(d.mikomi == null ? '' : d.mikomi))), jobEnd: jobEnd(d), omote: omoteView(d, now), ura: uraView(d, now), all: allView(d, now), at: now };
+  return { shadowBox: shadowBox(now), head: head, label: PC.todoLabel(left), left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), coreVer: PC.VER, pub: { ver: String(d.pubVer || ''), at: Number(d.pubVerAt) || 0, line: PC.pubLine({ pubVer: d.pubVer, pubVerAt: d.pubVerAt, coreVer: PC.VER }) }, noEstimate: (String(d.stat || '') === '作業中' && !/[0-9]/.test(String(d.mikomi == null ? '' : d.mikomi))), jobEnd: jobEnd(d), omote: omoteView(d, now), ura: uraView(d, now), all: allView(d, now), at: now };
 }
 // v203（枠 五十）：omote／ura は {lines（様子を写すと同じ字。パネルの画面には出さない）, endAt（HH:MM・JST）, endSec, src（元の数の一言）, 元の数…}。E は d.eta（endat.js）。
 // v204（枠 五十一）：panel＝パネルの箱が今出している物だけ（gauge＝ゲージの横の小さい字・end＝「全部終わる見込み HH:MM」の一行。裏方は done／run も）。src・始まり・lines は state.json の中だけ。

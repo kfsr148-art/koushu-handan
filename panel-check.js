@@ -751,7 +751,7 @@ function staticParts() {
       const SRCN = ['core', 'paintStateLine', 'gaugeHtml', 'endShort', 'uraCount', 'boxSpec', 'headEta', 'etaRow', 'uraGroups', 'waitEtaRow', 'pad2s', 'mkEndSec'], src = SRCN.map(n => cutFn(H, n));   /* v210：包み（一行）も切り出す・panel-core.js は window.PanelCore で渡す */
       if (src.some(x => !x)) { ng('切り出せない関数がある（' + SRCN.filter((n, i) => !src[i]).join('・') + '）'); }
       else {
-        const VARS = ['lastEta', 'lastUra', 'lastSNow', 'lastStepTotal', 'lastStepDone', 'lastStat', 'lastStartedAt', 'lastMikomiMin', 'lastMikomiRaw', 'lastSDone', 'lastSNowAt', 'lastSNext', 'stepsOpen', 'lastKumo', 'lastDetail', 'lastMikomiAt'];
+        const VARS = ['lastEta', 'lastUra', 'lastSNow', 'lastStepTotal', 'lastStepDone', 'lastStat', 'lastStartedAt', 'lastMikomiMin', 'lastMikomiRaw', 'lastSDone', 'lastSNowAt', 'lastSNext', 'stepsOpen', 'lastKumo', 'lastDetail', 'lastMikomiAt', 'lastShadowBox'];
         const fp = new Function('S', 'var window = S.win, ' + VARS.map(v => v + ' = S.' + v).join(', ') + ';' + LF + 'function $(id) { return S.el[id] || null; }' + LF + "function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }" + LF + "function stateLineText() { return ''; }" + LF + "function headText() { return ''; }" + LF + src.join(LF) + LF + 'paintStateLine();');
         const paint = (d, ura, open, ov) => {
           const el = { progBox: { innerHTML: '', className: '' }, btnSteps: { className: '', textContent: '', setAttribute: function () { } }, stLine: { hidden: true, innerHTML: '' }, headWait: { textContent: '' } };
@@ -1011,7 +1011,7 @@ function staticParts() {
     const iP = H.indexOf('<div class="usage" id="usageTag"'), iHr = H.indexOf('<div class="halfrow btn4row" id="halfRow">');
     const above = (iP > 0 && iHr > iP) ? ids(H.slice(iP, iHr).replace(/<!--[\s\S]*?-->/g, '')) : [];
     const pt = cutFn(H, 'paintTodoList');
-    const t9 = above.join(',') === 'usageTag,usageMsg,shadowLine,progBox,pipeWarn,kumoLine,btnCopyAll,list,board' && H.indexOf('#btnCopyAll, #list{display:none !important;}') >= 0 && H.indexOf('#board{display:none !important;}') >= 0 && H.indexOf('<ul id="todoList" class="todoList"></ul>') > iS && pt.indexOf("var a = mergedTodo().filter(function (m) { return m.kind === 'card'; });") >= 0 && pt.indexOf("'📣'") < 0;
+    const t9 = above.join(',') === 'usageTag,usageMsg,progBox,pipeWarn,kumoLine,btnCopyAll,list,board' && H.indexOf('#btnCopyAll, #list{display:none !important;}') >= 0 && H.indexOf('#board{display:none !important;}') >= 0 && H.indexOf('<ul id="todoList" class="todoList"></ul>') > iS && pt.indexOf("var a = mergedTodo().filter(function (m) { return m.kind === 'card'; });") >= 0 && pt.indexOf("'📣'") < 0;
     /* v216（本人の枠 九十二・百十二）：目次（#todoList）と雲の一行（#kumoLine）は画面に出さない（器と中身は残す＝数・写す中身は変わらない） */
     if (H.indexOf('#todoList{display:none !important;}') >= 0 && H.indexOf('#kumoLine{display:none !important;}') >= 0 && H.indexOf('<p class="kumo-line hide" id="kumoLine"></p>') >= 0) { ok('目次（#todoList）と雲の一行（#kumoLine）は display:none で画面に出さない（器は残す・まとめて写すの中身と N件はそのまま）'); } else { ng('目次か雲の一行が画面に出得る（#todoList・#kumoLine の display:none が無い）'); }
     if (t9) { ok('ボタンの上に知らせの行を足さない：見出しの下の箱からボタンの段までの器は ' + above.length + ' 個（決まった物だけ）・板（あなた待ち）とお知らせの一覧は画面に出さない・目次は八つの下で押し通知（📣）の行を塗らない'); } else { ng('ボタンの上に行が足され得る（間の器 ' + above.join(',') + '・目次の塗り ' + (pt.indexOf("m.kind === 'card'") >= 0) + '）'); }
@@ -1999,6 +1999,27 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
   if (!vScript || !vTag || !vFile) { ng('版の三箇所のどれかが読めない（PANEL_VER「' + vScript + '」／verTag「' + vTag + '」／panel-ver.txt「' + vFile + '」）'); }
   else if (vScript !== vTag || vScript !== vFile) { ng('版が揃っていない（PANEL_VER ' + vScript + ' ／ verTag ' + vTag + ' ／ panel-ver.txt ' + vFile + '）'); }
   else { ok('版が三箇所とも v' + vScript); }
+  /* v224（枠 百五十六）：影の仕事の箱（panelView.shadowBox）。走っている間だけ載る・済んだら null・金額の字が無い・パネルが箱を出す字面がある */
+  {
+    const os = require('os'), fsx = require('fs'), pth = require('path');
+    const dir = fsx.mkdtempSync(pth.join(os.tmpdir(), 'koushu-shbox-')), keep = process.env.SHADOW_HOME;
+    try {
+      process.env.SHADOW_HOME = dir;
+      const nowS = Math.floor(Date.now() / 1000), PV = require(pth.join(path.dirname(SRC), 'panel-view.js'));
+      fsx.writeFileSync(pth.join(dir, 'shadow-last.json'), JSON.stringify({ state: '走行中', issue: 3, title: '影の枠 3', startSec: nowS - 5, endSec: nowS + 40, cost: 0.06 }));
+      fsx.writeFileSync(pth.join(dir, 'shadow-day.json'), JSON.stringify({ total: 4, done: 3 }));
+      const b1 = PV.panelView({}, [], [], nowS).shadowBox;
+      fsx.writeFileSync(pth.join(dir, 'shadow-last.json'), JSON.stringify({ state: '済', issue: 3 }));
+      const b2 = PV.panelView({}, [], [], nowS).shadowBox;
+      fsx.writeFileSync(pth.join(dir, 'shadow-last.json'), JSON.stringify({ state: '走行中', issue: 3, title: 'x', startSec: nowS - 3600, endSec: nowS - 3500 }));
+      const b3 = PV.panelView({}, [], [], nowS).shadowBox;
+      const good = b1 && b1.k === '影の仕事' && b1.done === 3 && b1.total === 4 && b1.run === 1 && b1.lab === '3/4' && b1.now === '影の枠 3' && !/[$＄]|cost|ドル/.test(JSON.stringify(b1));
+      if (good && b2 === null && b3 === null) { ok('影の仕事の箱：走っている間だけ載る（3/4・金額なし）・済んだら null・10分より古い走行中も null'); }
+      else { ng('影の仕事の箱が違う：走行中 ' + JSON.stringify(b1) + '／済 ' + JSON.stringify(b2) + '／古い ' + JSON.stringify(b3)); }
+    } finally { if (keep === undefined) { delete process.env.SHADOW_HOME; } else { process.env.SHADOW_HOME = keep; } try { fsx.rmSync(dir, { recursive: true, force: true }); } catch (e) { } }
+    if (html.indexOf("secH('shadowSec'") >= 0 && html.indexOf('lastShadowBox') >= 0 && html.indexOf('id="shadowLine"') < 0) { ok('パネルは三つ目の箱 shadowSec を出す字面がある（影の一行 #shadowLine は無い）'); }
+    else { ng('パネルの影の仕事の箱の字面が無い／古い #shadowLine が残っている'); }
+  }
   /* v210：panel-core.js の指定（?_v=）と中の VER も同じ数（違うと古い取り置きを掴むか、部品と本の版がずれる） */
   { const vSrc = pick(html, '<script src="panel-core.js?_v=', '"'); if (vSrc && vSrc === vScript && PCORE.VER === vScript) { ok('panel-core.js の指定（?_v=' + vSrc + '）と中の VER（' + PCORE.VER + '）も同じ版'); } else { ng('panel-core.js の版がずれた（?_v=' + vSrc + '・VER ' + PCORE.VER + '・PANEL_VER ' + vScript + '）'); } }
 }
