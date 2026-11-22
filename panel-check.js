@@ -765,25 +765,25 @@ function staticParts() {
         const labs = (h) => (h.match(/<span class="stg-n">([^<]*)<\/span>/g) || []).map(x => x.replace(/<[^>]+>/g, '')).join(' ');
         const set = (e, a, o, u) => { e = JSON.parse(JSON.stringify(e)); [a, o, u].forEach((x, i) => { e[['all', 'omote', 'ura'][i]].endSec = x ? nS + x : 0; }); if (e.omote.cur) { e.omote.cur.endSec = o ? nS + o : 0; } return e; };   /* v213：今の仕事の終わり（cur.endSec＝見込みを書いた刻＋見込み）も同じだけずらす */
         const E4 = set(c4, 2400, 1800, 2400), e4 = paint(E4, U3, false), h4 = e4.progBox.innerHTML;
-        if (ids(h4) === 'allSec,omoteSec,uraSec' && heads(h4) === '全部,表の仕事,裏方' && e4.progBox.className === 'progbox') { ok('箱は三つ・上から「全部」「表の仕事」「裏方」・それぞれ頭に名'); } else { ng('箱の並び・名が違う：' + ids(h4) + '／' + heads(h4)); }
+        if (ids(h4) === 'omoteSec,uraSec' && heads(h4) === '表の仕事,裏方' && e4.progBox.className === 'progbox') { ok('箱は二つ（v219：「全部」の箱は外した）・上から「表の仕事」「裏方」・それぞれ頭に名'); } else { ng('箱の並び・名が違う：' + ids(h4) + '／' + heads(h4)); }
         /* v207（枠 六十四）：裏方は束（一塊）の数のまま。ura の本数で足す手（v206 の六十一）は外した。裏方の横の字は 済んだ本数／始まった本数 */
-        if (bars(h4) === 'ddddcc-- ddc-- ddc' && labs(h4) === '5/8 3/5 2/3') { ok('ゲージ：全部 ddddcc--（5/8）・表 ddc--（3/5）・裏方 ddc（済んだ2／始まった3）＝済みは緑・今は青・まだは灰（ura の本数で足さない）'); } else { ng('三つのゲージが違う：' + bars(h4) + '／' + labs(h4)); }
+        if (bars(h4) === 'ddc-- ddc' && labs(h4) === '3/5 2/3') { ok('ゲージ：表 ddc--（3/5）・裏方 ddc（済んだ2／始まった3）＝済みは緑・今は青・まだは灰（ura の本数で足さない）'); } else { ng('三つのゲージが違う：' + bars(h4) + '／' + labs(h4)); }
         /* v206（枠 五十九の一・六十）：三つの箱の頭（名の右）に「あと N分（HH:MM ごろ）」・ゲージの下に「全部終わる見込み HH:MM（あと N分）」（裏方の箱にも必ず） */
         const etas = (h4.match(/<div class="pb pg-h"><b class="pg-k">[^<]*<\/b><span class="pg-eta eta">([^<]*)<\/span>/g) || []).map(x => x.replace(/<b class="pg-k">[^<]*<\/b>/, '').replace(/<[^>]+>/g, ''));
         const ends = (h4.match(/<p class="m eta">全部終わる見込み [^<]*<\/p>/g) || []).map(x => x.replace(/<[^>]+>/g, ''));
-        if (etas.length === 3 && /^あと 40分（[0-9]{2}:[0-9]{2} ごろ）$/.test(etas[0]) && /^あと 30分（[0-9]{2}:[0-9]{2} ごろ）$/.test(etas[1]) && /^あと 40分（[0-9]{2}:[0-9]{2} ごろ）$/.test(etas[2])) { ok('三つの箱の頭に「あと N分（HH:MM ごろ）」：' + etas.join('／')); } else { ng('箱の頭のあと N分が違う：' + etas.join('／')); }
+        if (etas.length === 2 && /^あと 30分（[0-9]{2}:[0-9]{2} ごろ）$/.test(etas[0]) && /^あと 40分（[0-9]{2}:[0-9]{2} ごろ）$/.test(etas[1])) { ok('二つの箱の頭に「あと N分（HH:MM ごろ）」：' + etas.join('／')); } else { ng('箱の頭のあと N分が違う：' + etas.join('／')); }
         /* v207（本人の枠 六十七）：時間は頭の「あと N分（HH:MM ごろ）」だけ。ゲージの下の「全部終わる見込み」の行は三つの箱とも出さない */
-        if (ends.length === 0 && h4.indexOf('全部終わる見込み') < 0 && (h4.match(/<div class="pb pg-n">/g) || []).length === 3) { ok('三つの箱ともゲージの下の「全部終わる見込み」の行は無い（時間は頭の一つだけ・今動かしている物の一行は残る）'); } else { ng('ゲージの下に時間の行が残っている：' + ends.join('／')); }
+        if (ends.length === 0 && h4.indexOf('全部終わる見込み') < 0 && (h4.match(/<div class="pb pg-n">/g) || []).length === 2) { ok('三つの箱ともゲージの下の「全部終わる見込み」の行は無い（時間は頭の一つだけ・今動かしている物の一行は残る）'); } else { ng('ゲージの下に時間の行が残っている：' + ends.join('／')); }
         /* v206（枠 六十）：動いている物も待っている物も無く全部済んだ箱は出さない・全部済めば箱ごと隠す・動き出したらまた出る */
         const E0b = JSON.parse(JSON.stringify(E4)); E0b.ura.seg = { done: 4, total: 4, run: 0 }; E0b.ura.endSec = 0; E0b.all.seg = { done: 6, total: 9, run: 1 };
         const h0b = paint(E0b, U([]), false).progBox.innerHTML;
-        if (ids(h0b) === 'allSec,omoteSec' && h0b.indexOf('裏方 残り0') >= 0) { ok('裏方 4/4（全部済み・動いている物なし）は箱ごと出さない：' + ids(h0b)); } else { ng('済んだ裏方の箱が残っている：' + ids(h0b)); }
+        if (ids(h0b) === 'omoteSec' && h0b.indexOf('裏方') < 0) { ok('裏方 4/4（全部済み・動いている物なし）は箱ごと出さない：' + ids(h0b)); } else { ng('済んだ裏方の箱が残っている：' + ids(h0b)); }
         const E6 = JSON.parse(JSON.stringify(E4)); ['all', 'omote', 'ura'].forEach(k => { E6[k].seg = { done: 3, total: 3, run: 0 }; E6[k].endSec = 0; });
         const e6 = paint(E6, U([]), false);
         if (e6.progBox.innerHTML === '' && e6.progBox.className === 'progbox hide') { ok('三つとも全部済んだ：箱ごと出さない'); } else { ng('全部済んだのに箱が出ている：' + e6.progBox.innerHTML.replace(/<[^>]+>/g, '|').slice(0, 160)); }
         const E61 = JSON.parse(JSON.stringify(E0b)); E61.ura.endSec = nS + 900; E61.ura.seg = { done: 0, total: 2, run: 2 };   /* v207（枠 六十四）：済んだ一塊の後に動き出したら束は 0 から（0/2） */
         const h61 = paint(E61, U([{ id: 'p', desc: '下請けの名', start: '01:47' }, { id: 'q', desc: '', start: '01:47' }]), false).progBox.innerHTML, u61 = h61.slice(h61.indexOf('id="uraSec"'));
-        if (ids(h61) === 'allSec,omoteSec,uraSec' && bars(u61).split(' ')[0] === 'cc' && labs(u61).split(' ')[0] === '0/2' && /あと 15分（[0-9]{2}:[0-9]{2} ごろ）/.test(u61) && u61.indexOf('全部終わる見込み') < 0 && h61.indexOf('裏方 残り2') >= 0 && /<span class="pg-now">下請け・下請けの名、下請け・名なし<\/span>/.test(u61)) { ok('一塊が済んだ後に下請け2本が動き出した：裏方の箱がまた出て 0 から cc（0/2）・頭に あと15分・全部の箱は「裏方 残り2」'); } else { ng('動き出した裏方が違う：' + ids(h61) + '／' + bars(u61) + '／' + labs(u61) + '／' + u61.replace(/<[^>]+>/g, '|').slice(0, 200)); }
+        if (ids(h61) === 'omoteSec,uraSec' && bars(u61).split(' ')[0] === 'cc' && labs(u61).split(' ')[0] === '0/2' && /あと 15分（[0-9]{2}:[0-9]{2} ごろ）/.test(u61) && u61.indexOf('全部終わる見込み') < 0 && /<span class="pg-now">下請け・下請けの名、下請け・名なし<\/span>/.test(u61)) { ok('一塊が済んだ後に下請け2本が動き出した：裏方の箱がまた出て 0 から cc（0/2）・頭に あと15分・全部の箱は「裏方 残り2」'); } else { ng('動き出した裏方が違う：' + ids(h61) + '／' + bars(u61) + '／' + labs(u61) + '／' + u61.replace(/<[^>]+>/g, '|').slice(0, 200)); }
         /* v206（枠 六十二）：作業中で見込みが書かれていなくても、箱に赤い「見込み未記入」「見込み不明」は出さない。panelView.noEstimate にだけ残す */
         const h62 = paint(E4, U3, false, { lastMikomiMin: 0, lastMikomiRaw: '' }).progBox.innerHTML, h62b = paint(E4, U3, false, { lastMikomiMin: 0, lastMikomiRaw: '不明' }).progBox.innerHTML;
         const ne1 = PV.panelView({ stat: '作業中', mikomi: '' }, [], [], nS).noEstimate, ne2 = PV.panelView({ stat: '作業中', mikomi: '30分' }, [], [], nS).noEstimate, ne3 = PV.panelView({ stat: '待ち', mikomi: '' }, [], [], nS).noEstimate;
@@ -794,12 +794,12 @@ function staticParts() {
         const e4o = paint(E4, U3, true);
         if (e4o.btnSteps.textContent === 'とじる' && e4o.stLine.hidden === false) { ok('押すと開き、字は「とじる」'); } else { ng('開いた時が違う：' + e4o.btnSteps.textContent + '・hidden=' + e4o.stLine.hidden); }
         const E2 = set(c2, 3000, 3000, 1200), E3 = set(c3, 3000, 3000, 1200), h2 = paint(set(c1, 2400, 2400, 1200), U([{ id: 'a', desc: 'パネル直し', start: '01:01' }]), false).progBox.innerHTML, h2b = paint(E2, U([{ id: 'a', desc: 'パネル直し', start: '01:01' }]), false).progBox.innerHTML, h3 = paint(E3, U([{ id: 'a', desc: 'パネル直し', start: '01:01' }, { id: 'b', desc: '台帳の整理', start: '01:12' }]), false).progBox.innerHTML;
-        if (labs(h2) === '2/5 2/4 0/1' && labs(h2b) === '2/6 2/5 0/1' && labs(h3) === '2/8 2/5 0/3' && bars(h3).split(' ')[2] === 'ccc') { ok('増えた時：枠が来て 2/5→2/6（表 2/4→2/5）・下請けと雲が動き出して裏方 0/1→0/3（三本とも青・裏方の横の字は済み/全体）'); } else { ng('増えた時のゲージが違う：' + [labs(h2), labs(h2b), labs(h3), bars(h3)].join('／')); }
+        if (labs(h2) === '2/4 0/1' && labs(h2b) === '2/5 0/1' && labs(h3) === '2/5 0/3' && bars(h3).split(' ')[1] === 'ccc') { ok('増えた時：枠が来て 2/5→2/6（表 2/4→2/5）・下請けと雲が動き出して裏方 0/1→0/3（三本とも青・裏方の横の字は済み/全体）'); } else { ng('増えた時のゲージが違う：' + [labs(h2), labs(h2b), labs(h3), bars(h3)].join('／')); }
         /* v210（本人の枠 七十四）：箱の頭の「あと N分（HH:MM ごろ）」と赤は、パネルの塗り（paintStateLine）と panelView の panel.eta で同じ（同じ state・同じ今の刻） */
         {
           const SD = st({ eta: E4, ura: U3 }), pvE = PV.panelView(SD, [], [], nS), eP = paint(E4, U3, false, { lastStat: SD.stat, lastStartedAt: SD.startedAt, lastMikomiRaw: SD.mikomi, lastMikomiMin: 30 }).progBox.innerHTML;
           const got = (eP.match(/<span class="pg-eta (eta|bad)">[^<]*<\/span>/g) || []).map(x => x.replace(/<span class="pg-eta (eta|bad)">([^<]*)<\/span>/, '$2|$1')).join(' ／ ');
-          const want = ['all', 'omote', 'ura'].map(k => pvE[k].panel.eta ? pvE[k].panel.eta.t + '|' + pvE[k].panel.eta.c : '').join(' ／ ');
+          const want = ['omote', 'ura'].map(k => pvE[k].panel.eta ? pvE[k].panel.eta.t + '|' + pvE[k].panel.eta.c : '').join(' ／ ');
           if (got && got === want) { ok('箱の頭：パネル「' + got + '」＝ panelView の panel.eta（今の仕事の見込みを過ぎた赤も同じ）'); } else { ng('箱の頭がパネルと panelView でずれた：パネル「' + got + '」／panelView「' + want + '」'); }
         }
         const e0 = paint(null, U3, false), h0 = e0.progBox.innerHTML;
@@ -1188,7 +1188,7 @@ try {
       if (SIX[k][1].test(String(r.headWait || ''))) { ok(k + '：題の行「' + String(r.headWait).slice(0, 34) + '」'); }
       else { ng(k + '：題の行が違う「' + String(r.headWait).slice(0, 40) + '」'); }
       if (k === '作業中') {   /* v180：作業中は「見込み未記入」「手順の一覧 未記入」を赤で出す（下の base は見込み・段の台帳が無い） */
-        if (/見込み未記入/.test(String(r.stBad || '')) && /手順の一覧 未記入/.test(String(r.stBad || ''))) { ok(k + '：見込み・段の台帳が無い回は赤で未記入を出す'); } else { ng(k + '：赤の未記入が出ない（赤「' + String(r.stBad || '') + '」）'); }
+        if (!/手順の一覧 未記入/.test(String(r.stBad || ''))) { ok(k + '：段の台帳が無い回でも赤の「手順の一覧 未記入」は出さない（v219）'); } else { ng(k + '：赤の「手順の一覧 未記入」が出ている（赤「' + String(r.stBad || '') + '」）'); }
       } else if (String(r.stText || '') && !((k === '検査中' || k === '待ち' || k === '裏方') && /^(終わる見込み|見込み未記入|見込み不明|見込みを過ぎた)/.test(String(r.stText || '')))) {   /* v182：検査中・待ちは見込みの行だけ出る */ ng(k + '：黄色い帯の跡に字が出た「' + String(r.stText).slice(0, 30) + '」'); }
       if (/（なし）/.test(String(r.headWait || ''))) { ng(k + '：「（なし）」が出た'); }
     }
@@ -1292,8 +1292,8 @@ try {
     const r2 = run(tmp, { state: noNow, notices: MIX, settle: 1500 }, 390, 844);
     if (!r2) { ng('測れない（やる段が無い回）'); }
     else if (/✅ 完了|▶ 進行中|⏳ 予定/.test(String(r2.stText || ''))) { ng('やる段が無いのに三行が出た（' + String(r2.stText).slice(0, 40) + '）'); }
-    else if (!/手順の一覧 未記入/.test(String(r2.stBad || ''))) { ng('やる段が無い作業中に赤の「手順の一覧 未記入」が出ない（' + String(r2.stText || '').slice(0, 40) + '）'); }
-    else { ok('やる段が無い回は三行を出さず、赤で「手順の一覧 未記入」を出す（v180）'); }
+    else if (/手順の一覧 未記入/.test(String(r2.stBad || ''))) { ng('やる段が無い作業中に赤の「手順の一覧 未記入」が出ている（' + String(r2.stText || '').slice(0, 40) + '）'); }
+    else { ok('やる段が無い回は三行も赤の「手順の一覧 未記入」も出さない（v219）'); }
   }
   /* ---- ⑤の二 作業中の「終わる見込み」と「段 N/M」（v180・2026-11-20 本人の枠） ---- */
   head('⑤の二 作業中の終わる見込みと段 N/M（無ければ赤）');
@@ -1320,7 +1320,7 @@ try {
     else if (/見込み不明/.test(B(r))) { ok('「不明」と書かれた回は赤「見込み不明」'); } else { ng('「見込み不明」が赤で出ない（赤「' + B(r) + '」）'); }
     r = mk({ sNow: '', sDone: '', sNext: '', stepDone: 0, stepTotal: 0 });
     if (!r) { ng('測れない（台帳なし）'); }
-    else if (/手順の一覧 未記入/.test(B(r)) && !r.gSegs) { ok('台帳が無ければ赤「手順の一覧 未記入」（段 N/M は出さない）'); } else { ng('台帳なしの字が違う（赤「' + B(r) + '」／' + T(r).slice(0, 40) + '）'); }
+    else if (!/手順の一覧 未記入/.test(B(r)) && !r.gSegs) { ok('台帳が無ければ赤「手順の一覧 未記入」もゲージも出さない（v219）'); } else { ng('台帳なしの字が違う（赤「' + B(r) + '」／' + T(r).slice(0, 40) + '）'); }
     r = run(tmp, { state: ST['手待ち'], notices: MIX, settle: 1500 }, 390, 844);
     if (!r) { ng('測れない（手待ち）'); }
     else if (/終わる見込み|見込み未記入|見込みを過ぎた|段 [0-9]|段の台帳|手順の一覧/.test(T(r))) { ng('作業中でないのに見込み・段の行が出た（' + T(r).slice(0, 40) + '）'); } else { ok('作業中でない回（手待ち）には出ない'); }
@@ -1439,7 +1439,7 @@ try {
     }
     const r0 = run(tmp, { state: Object.assign({}, base, { sNow: '', sDone: '', sNext: '', stepDone: 0, stepTotal: 0 }), notices: MIX, usage: U_OK, settle: 1500 }, 390, 844);
     if (!r0) { ng('測れない（手順の一覧なし）'); }
-    else if (/手順の一覧 未記入/.test(String(r0.stBad || '')) && !r0.gSegs) { ok('手順の一覧が無ければ赤字「手順の一覧 未記入」（ゲージは出さない）'); } else { ng('「手順の一覧 未記入」が赤で出ない（赤「' + String(r0.stBad || '') + '」）'); }
+    else if (!/手順の一覧 未記入/.test(String(r0.stBad || '')) && !r0.gSegs) { ok('手順の一覧が無ければ赤字も出さず、ゲージも出さない（v219）'); } else { ng('「手順の一覧 未記入」が赤で出ない（赤「' + String(r0.stBad || '') + '」）'); }
   }
   /* ---- ⑤の八 見込みとゲージを一つの箱に・見出しのすぐ下・無い時は箱ごと出さない（v186・2026-11-20 本人の枠） ---- */
   head('⑤の八 見込みとゲージの箱（見出しの直後・一つの箱・無い時は出さない・iPhone の幅）');
