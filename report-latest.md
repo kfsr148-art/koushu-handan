@@ -1,15 +1,15 @@
-﻿# 再起動-2（r1122-1558・後の測り）
+﻿# 再起動-2（r1123-0336・後の測り）
 
-**終わり** — 2026-11-22 15:58（VAIO）。毎週土曜の起こしで再起動し、起き上がった。
+**終わり** — 2026-11-23 03:36（VAIO）。毎週土曜の起こしで再起動し、起き上がった。
 
 | | 前 | 後 | 差 |
 |---|---|---|---|
-| 空き物理メモリ | 4252MB | **4382MB** | +130MB |
-| claude | 868MB | **109MB** | -759MB |
+| 空き物理メモリ | 4738MB | **4095MB** | -643MB |
+| claude | 671MB | **19MB** | -652MB |
 
-起き上がった刻 … 11/22/2026 15:32:13
-claude が起きた刻 … 2026-11-22 15:54:30（1本）
-前の測りの刻 … 2026-11-22 15:30:09
+起き上がった刻 … 11/23/2026 03:02:03
+claude が起きた刻 … 2026-11-23 03:25:37（1本）
+前の測りの刻 … 2026-11-23 03:00:11
 
 ---
 
@@ -18,30 +18,30 @@ claude が起きた刻 … 2026-11-22 15:54:30（1本）
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **1124件**ある。
+　ここに出るのは新しい20件。全部で **1163件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
-| [`r1122-1558-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1122-1558-2.md) | 11-22 15:58 | 再起動-2（r1122-1558・後の測り） |
-| [`r1122-1555-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1122-1555-2.md) | 11-22 15:55 | 再起動-2（r1122-1555・後の測り） |
-| [`y1121-2125.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1121-2125.md) | 11-22 14:57 | 枠 三十三：口調表を本体に入れた（Opus・y1121-2230） |
-| [`y1122-1600-statedecide.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1600-statedecide.md) | 11-22 14:57 | 枠 九十三・九十四・九十七：乗り換え前の三つ（job-sync.js・frame-work.ps1）／state-decide.js の [決] の狭めた判じ／CLAUDE.md 作法45 の一段 |
-| [`cloud-check-fast-20261122-044154.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-check-fast-20261122-044154.md) | 11-22 14:57 | 雲で回した：`check-fast.js` |
-| [`y1122-1500-stop-continue.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1500-stop-continue.md) | 11-22 14:47 | 枠 百二十三：順番待ちがある間は Stop フックで窓を止めずに続けさせる |
-| [`y1122-1520-quiz-kokushi.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1520-quiz-kokushi.md) | 11-22 13:40 | v1515：見張り台に国士の見立ての問い（枠 百十八） |
-| [`y1122-1520-kuitan.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1520-kuitan.md) | 11-22 13:38 | 喰いタンで速い手を、道具が弱く見ていないか（枠 百二十二・数えただけ） |
-| [`y1122-1500-type-wording.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1500-type-wording.md) | 11-22 13:38 | 打ち手の型の言い方を、見立て行と助言に借りる（文案・本体には入れていない） |
-| [`cloud-panel-check-20261122-042007.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-panel-check-20261122-042007.md) | 11-22 13:36 | 雲で回した：`panel-check.js` |
-| [`y1122-1500-haipai-shanten.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1500-haipai-shanten.md) | 11-22 13:30 | 較正の1万局：子の配牌13枚の平均向聴数（枠 百二十一） |
-| [`y1122-1430-tenhou-terms.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1430-tenhou-terms.md) | 11-22 13:27 | 天鳳 鳳凰卓の牌譜を判定の裏づけに使えるか（枠 百二十の①・調べだけ） |
-| [`y1122-1400-uke-mannaka.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1400-uke-mannaka.md) | 11-22 13:20 | 受けが真ん中に偏る手は「見た目ほど引けない」か（枠 百十九・測りと文案だけ） |
-| [`y1122-1330-panel-v216.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1330-panel-v216.md) | 11-22 13:18 | panel v216：目次（#todoList）と雲の一行（#kumoLine）を画面から外す（枠 九十二・百十二） |
-| [`y1122-1330-mamori-chiitoi-honitsu.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1330-mamori-chiitoi-honitsu.md) | 11-22 13:11 | 守りの助言に「七対子・混一色の形を守りに使う」種を足す：文案18と元（y1122-1330） |
-| [`y1122-1330-mortal-survey.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1330-mortal-survey.md) | 11-22 13:07 | 較正の打ち手を Mortal に替えられるか（調べだけ・枠 百十五） |
-| [`y1122-1330-kokushi-suuankou-ronbun.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1330-kokushi-suuankou-ronbun.md) | 11-22 13:00 | 国士・四暗刻の論文（豊山 2016）の条件と、こちらで測り直す時の設計案（枠 百十三・百十四 ①） |
-| [`y1122-1300-tori-place.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1300-tori-place.md) | 11-22 12:43 | 鳥（アプリの顔）の居場所の案 — 枠 百十一（案だけ・本体は直していない） |
-| [`y1122-1100-advice-polish.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1100-advice-polish.md) | 11-22 12:43 | 助言の仕上げ二つ（文案だけ・本体と声は直していない）— 枠 百八 |
-| [`y1122-1100-zentai2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1100-zentai2.md) | 11-22 12:41 | 全体の二つ：麻雀の中身の食い違い探し／審判の重みの確かめ（y1122-1100-zentai2・枠 百九） |
+| [`r1123-0336-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1123-0336-2.md) | 11-23 03:36 | 再起動-2（r1123-0336・後の測り） |
+| [`r1123-0334-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1123-0334-2.md) | 11-23 03:34 | 再起動-2（r1123-0334・後の測り） |
+| [`r1123-0326-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1123-0326-2.md) | 11-23 03:26 | 再起動-2（r1123-0326・後の測り） |
+| [`y1122-2255-yakuman-rate.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-2255-yakuman-rate.md) | 11-22 21:53 | 枠 百十三・百十四 ②③：国士・四暗刻の和了率を雲で測り、解説の文案に数を入れた |
+| [`cloud-yakuman-suuankou-rate-20261122-125018.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-yakuman-suuankou-rate-20261122-125018.md) | 11-22 21:53 | 雲で回した：`yakuman-suuankou-rate.js` |
+| [`cloud-yakuman-kokushi-rate-20261122-125007.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-yakuman-kokushi-rate-20261122-125007.md) | 11-22 21:53 | 雲で回した：`yakuman-kokushi-rate.js` |
+| [`y1122-2215-recalib.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-2215-recalib.md) | 11-22 21:43 | 枠 百三十六：較正の記録（裏づけの1万局）を v1516 のシャンテン数で雲で測り直した |
+| [`y1122-2200-run-design.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-2200-run-design.md) | 11-22 21:38 | 枠 百四十九・百五十・百五十一：枠を回す土台を作り替える設計と、枠一つでの試し |
+| [`y1122-2145-type-kotoba.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-2145-type-kotoba.md) | 11-22 21:31 | 枠 百三十八：型の言い方 12案を麻雀の言葉の帳面に足し、代表三人の文案を出す |
+| [`y1122-1100-mahjong-kotoba.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1100-mahjong-kotoba.md) | 11-22 21:30 | 麻雀の言葉の帳面（文案・本体には入れていない） |
+| [`y1122-2130-kuitan-line.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-2130-kuitan-line.md) | 11-22 21:28 | 枠 百三十九：「喰いタンで速い手」の一言の線は、么九牌 2 枚以下に絞る |
+| [`cloud-check-fast-20261122-120309.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-check-fast-20261122-120309.md) | 11-22 21:28 | 雲で回した：`check-fast.js` |
+| [`y1122-2115-fix-apply.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-2115-fix-apply.md) | 11-22 21:02 | 枠 百四十一：百三十一の推す案で進める（v1518）— 入れた物と、本人が選ぶ言葉の候補 |
+| [`y1122-2100-ask-card.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-2100-ask-card.md) | 11-22 20:56 | 枠 百四十五：訊く事が「終わりました」の札に埋もれる |
+| [`cloud-panel-check-20261122-114022.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-panel-check-20261122-114022.md) | 11-22 20:56 | 雲で回した：`panel-check.js` |
+| [`y1122-2045-panel-warn.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-2045-panel-warn.md) | 11-22 20:39 | 枠 百四十六：パネルの赤い警告の行（warn）を出さない（panel v222） |
+| [`y1122-2036-card-decouple.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-2036-card-decouple.md) | 11-22 20:34 | 枠 百四十八：次の枠への着手を札の公開から切り離す |
+| [`y1122-2030-queue-next.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-2030-queue-next.md) | 11-22 20:29 | 枠 百四十七：窓が待機のまま止まった訳と、続けさせる手を一本に |
+| [`cloud-check-fast-20261122-103240.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-check-fast-20261122-103240.md) | 11-22 20:29 | 雲で回した：`check-fast.js` |
+| [`y1122-1935-kokushi-buttons.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1935-kokushi-buttons.md) | 11-22 19:31 | 枠 百三十七：見張り台の国士の問いの釦の字を三つに（v1517） |
 
 <!-- 控えの一覧 ここまで -->
