@@ -1012,6 +1012,8 @@ function staticParts() {
     const above = (iP > 0 && iHr > iP) ? ids(H.slice(iP, iHr).replace(/<!--[\s\S]*?-->/g, '')) : [];
     const pt = cutFn(H, 'paintTodoList');
     const t9 = above.join(',') === 'progBox,usageTag,usageMsg,pipeWarn,wakeWarn,kumoLine,btnCopyAll,list,board' && H.indexOf('#btnCopyAll, #list{display:none !important;}') >= 0 && H.indexOf('#board{display:none !important;}') >= 0 && H.indexOf('<ul id="todoList" class="todoList"></ul>') > iS && pt.indexOf("var a = mergedTodo().filter(function (m) { return m.kind === 'card'; });") >= 0 && pt.indexOf("'📣'") < 0;
+    /* v216（本人の枠 九十二・百十二）：目次（#todoList）と雲の一行（#kumoLine）は画面に出さない（器と中身は残す＝数・写す中身は変わらない） */
+    if (H.indexOf('#todoList{display:none !important;}') >= 0 && H.indexOf('#kumoLine{display:none !important;}') >= 0 && H.indexOf('<p class="kumo-line hide" id="kumoLine"></p>') >= 0) { ok('目次（#todoList）と雲の一行（#kumoLine）は display:none で画面に出さない（器は残す・まとめて写すの中身と N件はそのまま）'); } else { ng('目次か雲の一行が画面に出得る（#todoList・#kumoLine の display:none が無い）'); }
     if (t9) { ok('ボタンの上に知らせの行を足さない：見出しの下の箱からボタンの段までの器は ' + above.length + ' 個（決まった物だけ）・板（あなた待ち）とお知らせの一覧は画面に出さない・目次は八つの下で押し通知（📣）の行を塗らない'); } else { ng('ボタンの上に行が足され得る（間の器 ' + above.join(',') + '・目次の塗り ' + (pt.indexOf("m.kind === 'card'") >= 0) + '）'); }
   }
   /* ---- ⑤の二十七 v212（本人の枠 七十七）：段は state.json の生の段（steps.rows）から毎回数える（panel-core.js の stepsOf 一つ）。
