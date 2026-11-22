@@ -1963,7 +1963,8 @@ section('㉒', '向聴の写しが無く、持ち上げた shanten が元のま�
 
   /* 持ち上げた shanten の字面が、移す前と一字も違わない。
      指紋は v1437 の analyze() の中にあった shanten を、名を X に換えて空白を畳んだ字面の sha256。 */
-  const SHANTEN_SHA = 'caee8a3dfbb2c564be1c18628f914e4994fe22e6a51635fcaada482aae0f7f4c';
+  /* v1516（枠 百二十八）：shanten の雀頭の見方を直した（選んだ分解に雀頭になれる対子が在るか・ライブラリと 40,000手で食い違い 0）。指紋は直した後の字面。v1437 の字面の指紋 caee8a3d… は廃した。 */
+  const SHANTEN_SHA = '01717a5661b7c339046e0820c74992e7e16a8fa8db98ecd01753aa25f8075284';
   const body = grab('shanten');
   if (!body) { ng('shanten が見つからない'); }
   else {
