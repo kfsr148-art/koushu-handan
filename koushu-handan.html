@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1514">
+<html lang="ja" data-ver="1515">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -727,6 +727,8 @@
   .watch-btn.atk { border: 1px solid rgba(192,57,43,0.8); background: linear-gradient(165deg, rgba(192,57,43,0.55), rgba(150,43,32,0.35)); }
   .watch-btn.def { border: 1px solid rgba(58,157,120,0.8); background: linear-gradient(165deg, rgba(58,157,120,0.5), rgba(31,92,71,0.3)); }
   .watch-btn.next { border: 1px solid var(--gold); background: rgba(212,175,55,0.12); color: var(--gold); font-size: 16px; padding: 10px 30px; }
+  /* 国士の見立て（枠 百十八）の三択。三つ並べても狭い横幅に収まるよう字と横の詰めだけ小さく、高さは44px以上 */
+  .watch-btn.yao { font-size: 18px; padding: 12px 16px; min-height: 44px; }
   .watch-tones { display: flex; flex-direction: column; gap: 4px; padding: 0 10px 2px; }
   .watch-tone-row { display: flex; gap: 5px; justify-content: center; align-items: center; flex-wrap: wrap; }
   .watch-tones .tone-btn, .watch-tones .dialect-btn { font-size: 10px; padding: 3px 9px; border-radius: 11px; }
@@ -1396,7 +1398,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1514</div>
+  <div id="verTag">v1515</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1575,6 +1577,7 @@
         <button type="button" class="tone-btn" id="watchModeCat" onclick="window.watchSetMode('cat')">猫牌</button>
         <button type="button" class="tone-btn" id="watchModeEda" onclick="window.watchSetMode('eda')">枝豆</button>
         <button type="button" class="tone-btn" id="watchModeSh" onclick="window.watchSetMode('ai')">AI</button>
+        <button type="button" class="tone-btn" id="watchModeYao" onclick="window.watchSetMode('yao')">国士</button>
         <button type="button" class="tone-btn" id="watchGrayBtn" onclick="window.watchToggleGray()">猫：OFF</button>
         <button type="button" class="tone-btn" id="watchCatEdaBtn" onclick="window.watchToggleCatEda()">枝豆：OFF</button>
         <button type="button" class="tone-btn" id="watchAiBandBtn" onclick="window.watchToggleAiBand()">AI：OFF</button>
@@ -1623,6 +1626,9 @@
       <button type="button" id="watchDef" class="watch-btn def" onclick="window.watchAnswer('defend')">守</button>
       <button type="button" id="watchCatOk" class="watch-btn atk" onclick="window.watchCatKey('ok')" style="display:none">枚数</button>
       <button type="button" id="watchCatClr" class="watch-btn def" onclick="window.watchCatKey('clear')" style="display:none">リセット</button>
+      <button type="button" id="watchYaoUnder" class="watch-btn def yao" onclick="window.watchYaoAnswer('under')" style="display:none">9種未満</button>
+      <button type="button" id="watchYaoNine" class="watch-btn next yao" onclick="window.watchYaoAnswer('nine')" style="display:none">9種以上</button>
+      <button type="button" id="watchYaoKok" class="watch-btn atk yao" onclick="window.watchYaoAnswer('kokushi')" style="display:none">国士</button>
             <button type="button" id="watchNext" class="watch-btn next" onclick="window.watchDeal()" style="display:none">次の配牌 ▶️</button>
     </div>
   </div>
@@ -7220,6 +7226,7 @@ function advDecodeWav(ab) {
   }
   window.watchDeal = function(){
     if(watchMode === 'cat' || watchMode === 'eda' || watchMode === 'ai'){ window.watchCatDeal(); return; }
+    if(watchMode === 'yao'){ window.watchYaoDeal(); return; }
     const target = Math.random() < 0.5 ? 'attack' : 'defend';   // 正解の目標をコイントスで五分五分に
     const r = watchGenBand(target);
     watchTiles = watchSortHand(r.tiles);
@@ -7338,6 +7345,13 @@ function advDecodeWav(ab) {
     if(bC) bC.classList.toggle('on', watchMode === 'cat');
     if(bE) bE.classList.toggle('on', watchMode === 'eda');
     if(bS) bS.classList.toggle('on', watchMode === 'ai');
+    const bY = document.getElementById('watchModeYao');
+    if(bY) bY.classList.toggle('on', watchMode === 'yao');
+    const yao = (watchMode === 'yao');
+    ['watchYaoUnder', 'watchYaoNine', 'watchYaoKok'].forEach(function(id){
+      const b = document.getElementById(id);
+      if(b) b.style.display = yao ? '' : 'none';
+    });
     const counting = (watchMode === 'cat' || watchMode === 'eda' || watchMode === 'ai');
     const atk = document.getElementById('watchAtk');
     const def = document.getElementById('watchDef');
@@ -7352,7 +7366,7 @@ function advDecodeWav(ab) {
     if(clrB) clrB.style.display = counting ? '' : 'none';
     // 人柄・方言は攻守モードの寸劇でしか使わない。猫牌モードでは畳んで縦を空ける
     const tones = document.getElementById('watchTones');
-    if(tones) tones.style.display = counting ? 'none' : '';
+    if(tones) tones.style.display = (counting || yao) ? 'none' : '';
   }
   window.watchSetMode = function(m){
     if(watchMode === m) return;
@@ -7493,6 +7507,91 @@ function advDecodeWav(ab) {
     const clrA = document.getElementById('watchCatClr');
     if(okA) okA.style.display = 'none';
     if(clrA) clrA.style.display = 'none';
+    const nx = document.getElementById('watchNext');
+    if(nx) nx.style.display = '';
+  };
+  // ── 国士の見立て（枠 百十八）：么九牌の種類を数えて三択で当てる。数は analyze() の kokushiKinds をそのまま使う ──
+  //    kokushiSeen（10種以上）とは別の線。こちらは「9種未満／9種以上／国士を狙う」の三つに分ける。
+  const KOKUSHI_QUIZ_LINE = 11;   // 国士を狙う線（仮）。枠 百十三の測りで決める——それまでは近畿大学の研究の「么九牌11個以上」で置く
+  let watchYaoAns = null;         // 今の問いの正解（'under'/'nine'/'kokushi'）。答え合わせ済みは null
+  let watchYaoKinds = 0;          // 今の問いの么九牌の種類の数
+  function watchYaoQuizAns(kinds){
+    if(kinds >= KOKUSHI_QUIZ_LINE) return 'kokushi';
+    if(kinds >= 9) return 'nine';
+    return 'under';
+  }
+  function watchGenYao(lo, hi){
+    // 么九・字牌13種のうち lo〜hi 種を仕込み、残りを山から補う（watchGenKokushi と同じ仕込み方）
+    const wall = watchShuffle(watchBuildWall());
+    const want = lo + Math.floor(Math.random() * (hi - lo + 1));
+    const seen = {};
+    const seed = [];
+    for(let i = wall.length - 1; i >= 0 && seed.length < want; i--){
+      const t = wall[i];
+      const isYao = t.suit === 'honor' || t.num === 1 || t.num === 9;
+      if(!isYao || seen[t.code]) continue;
+      seen[t.code] = 1;
+      seed.push(wall.splice(i, 1)[0]);
+    }
+    return seed.concat(wall.slice(0, 13 - seed.length));
+  }
+  window.watchYaoDeal = function(){
+    // 三つの答えが同じくらい出るよう、正解の目標を三等分で引き、合う手が出るまで作り直す（上限30回）
+    const r = Math.random();
+    const target = (r < 1/3) ? 'under' : (r < 2/3) ? 'nine' : 'kokushi';
+    let tiles = null, a = null;
+    for(let i = 0; i < 30; i++){
+      tiles = (target === 'under') ? watchGenRandom()
+            : (target === 'nine') ? watchGenYao(9, KOKUSHI_QUIZ_LINE - 1)
+            : watchGenYao(KOKUSHI_QUIZ_LINE, 13);
+      a = watchAnalyzeTiles(tiles);
+      if(a && typeof a.kokushiKinds === 'number' && watchYaoQuizAns(a.kokushiKinds) === target) break;
+    }
+    watchTiles = watchSortHand(tiles);
+    watchRenderHand(watchTiles);
+    watchYaoKinds = (a && typeof a.kokushiKinds === 'number') ? a.kokushiKinds : 0;
+    watchYaoAns = watchYaoQuizAns(watchYaoKinds);
+    watchCatAns = null;
+    watchVerdict = null;
+    const msg = document.getElementById('watchMsg');
+    if(msg) msg.textContent = 'この配牌、么九牌は何種？（一九牌と字牌の種類の数）';
+    const nx = document.getElementById('watchNext');
+    if(nx) nx.style.display = 'none';
+    watchModeButtons();
+  };
+  window.watchYaoAnswer = function(pick){
+    if(watchYaoAns === null) return;
+    const ok = (pick === watchYaoAns);
+    if(ok){ watchCatStreak++; } else { watchCatStreak = 0; }
+    // 数えた么九牌をその場で光らせる
+    const box = document.getElementById('watchHand');
+    if(box && watchTiles){
+      Array.from(box.children).forEach(function(el, i){
+        const t = watchTiles[i];
+        if(!t) return;
+        if(t.suit === 'honor' || t.num === 1 || t.num === 9){
+          el.style.outline = '2px solid rgba(243,236,224,0.9)';
+          el.style.boxShadow = '0 0 9px rgba(243,236,224,0.5)';
+        }
+      });
+    }
+    const stance = (watchYaoAns === 'kokushi')
+      ? '——' + KOKUSHI_QUIZ_LINE + '種以上。国士を狙う。'
+      : (watchYaoAns === 'nine')
+      ? '——9種以上。九種九牌で流せる。'
+      : '——9種未満。ふつうの手で進める。';
+    const body = '么九牌は' + watchYaoKinds + '種';
+    const head = ok
+      ? ('正解。' + body + '。' + (watchCatStreak >= 3 ? '（' + watchCatStreak + '問連続、ヨシ）' : ''))
+      : ('外れ。' + body + '。');
+    const msg = document.getElementById('watchMsg');
+    if(msg) msg.textContent = head + stance;
+    if(ok && watchCatStreak % 3 === 0){ playVoice('yoshi', 'ヨシ', 1.05); }
+    watchYaoAns = null;
+    ['watchYaoUnder', 'watchYaoNine', 'watchYaoKok'].forEach(function(id){
+      const b = document.getElementById(id);
+      if(b) b.style.display = 'none';
+    });
     const nx = document.getElementById('watchNext');
     if(nx) nx.style.display = '';
   };
