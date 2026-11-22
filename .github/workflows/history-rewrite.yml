@@ -1,0 +1,332 @@
+# 履歴の書き換え（甲：過去にだけ在る声を抜く）を雲で一回きり回す（2026-11-22・枠 八十八の二〜四／橋の枠 九十五）
+#
+#   ＊**この流れは押さない。** 書き換え済みの丸ごと（rewritten-all.bundle）・元の丸ごと（original-all.bundle）・
+#     検証の結果（verify-report.md など）を成果物として残すだけ。押すのは、成果物を VAIO に取って確かめた後、VAIO の鍵で行う。
+#   ＊GITHUB_TOKEN は読みだけ（contents: read）。workflows の書き物に触れる押しは GITHUB_TOKEN では断られるので、押しに使わない。
+#   ＊起こすのは手だけ（workflow_dispatch）。push でも予定でも起きない。
+#   ＊甲の定義：履歴（全部の枝とタグ）に一度でも現れた声（.m4a・.wav・.wav.wav・.ogg）のパスのうち、
+#     守る ref（既定 main・stable・check-pass）の先端の tree に無いパスを、全部の枝とタグから抜く。
+#     守る ref の先端の tree は一字も変わらない（検証 a）。reports/y1122-0810-history-size.md の「過去にだけ在る声」。
+#   ＊台本は全部この一つのファイルに書く（.github/ の下にファイルを足すと workflows の権限が要る押しになるため）。
+#   ＊作り値での確かめ：reports/y1122-1010-rewrite-workflow.md
+name: 履歴の書き換え（甲・押さない）
+
+on:
+  workflow_dispatch:
+    inputs:
+      keep_refs:
+        description: '先端の tree を守る ref（空白区切り）。ここの tree に在る声は抜かない'
+        required: false
+        default: 'main stable check-pass'
+      prune_empty:
+        description: '声を抜いて空になった commit を落とすか（never＝落とさない＝commit 数が元と同じ／auto）'
+        required: false
+        default: 'never'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: history-rewrite
+  cancel-in-progress: false
+
+jobs:
+  rewrite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    defaults:
+      run:
+        shell: bash
+    env:
+      LC_ALL: C
+      W: /mnt/rw
+      OUT: /mnt/rw/out
+      REPO_URL: https://github.com/${{ github.repository }}.git
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      KEEP_REFS: ${{ inputs.keep_refs }}
+      PRUNE_EMPTY: ${{ inputs.prune_empty }}
+    steps:
+      # ---- 置き場を空ける（雲だけ。元から入っている大物を消す）----
+      - name: 置き場を空ける
+        id: disk
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL || true
+          sudo mkdir -p "$W" && sudo chown "$(id -u):$(id -g)" "$W"
+          df -h / "$W"
+
+      # ---- 共通の道具（報告の書き方・失敗の数え方）----
+      - name: 共通の道具
+        id: lib
+        run: |
+          set -euo pipefail
+          mkdir -p "$W" "$OUT"
+          rm -f "$OUT/fails.txt" "$W"/done-*
+          cat > "$W/lib.sh" <<'LIB'
+          set -euo pipefail
+          export LC_ALL=C
+          KEEP_REFS="${KEEP_REFS:-main stable check-pass}"
+          PRUNE_EMPTY="${PRUNE_EMPTY:-never}"
+          R="$OUT/verify-report.md"
+          say()  { printf '%s\n' "$*" | tee -a "$R"; }
+          ok()   { printf -- '- PASS：%s\n' "$*" | tee -a "$R"; }
+          fail() { printf -- '- **FAIL**：%s\n' "$*" | tee -a "$R"; printf '%s\n' "$*" >> "$OUT/fails.txt"; }
+          mb()   { awk -v b="$1" 'BEGIN{printf "%.1f", b/1000000}'; }
+          nl_count() { if [ -s "$1" ]; then wc -l < "$1" | tr -d ' '; else echo 0; fi; }
+          # 置き場の大きさ（散らばった物＋pack、バイト）
+          packsize() { git -C "$1" count-objects -v | awk '/^size:/{l=$2} /^size-pack:/{s=$2} END{print (l+s)*1024}'; }
+          # 親の tree と同じ tree の commit（＝中身の変わらない commit）の数
+          empties() { git -C "$1" log --all --format='%H %T %P' | awk '{t[$1]=$2; p[$1]=$3} END{n=0; for(h in p) if(p[h]!="" && (p[h] in t) && t[p[h]]==t[h]) n++; print n}'; }
+          # 全部の枝とタグの一覧（hash・種類・名・タグの指す先）
+          reflist() { git -C "$1" for-each-ref --format='%(objectname) %(objecttype) %(refname)%(if)%(*objectname)%(then) peeled=%(*objectname)%(end)' refs/heads refs/tags; }
+          # 履歴に現れた blob と パス（全部の枝とタグ・merge は親ごと）
+          histblobs() { git -C "$1" -c core.quotePath=false log --all -m --no-renames --raw --no-abbrev --diff-filter=ACMRT --format= | awk -F'\t' 'NF>=2 { split($1,a," "); print a[4] "\t" $2 }' | sort -u; }
+          isvoice() { grep -Ei '[.](m4a|wav|ogg)$' || true; }
+          LIB
+          {
+            echo "# 履歴の書き換え（甲）の検証"
+            echo
+            echo "- 走り：${GITHUB_RUN_ID:-手元}（$(date -u '+%Y-%m-%d %H:%M') UTC）"
+            echo "- 守る ref：${KEEP_REFS:-main stable check-pass}／空の commit：${PRUNE_EMPTY:-never}"
+            echo
+          } > "$OUT/verify-report.md"
+          touch "$W/done-lib"
+
+      # ---- ① 全部の ref を mirror で取る ----
+      - name: ① 全部の ref を mirror で取る
+        id: mirror
+        run: |
+          source "$W/lib.sh"
+          say "## ① 取る"
+          AUTH=$(printf 'x-access-token:%s' "${GH_TOKEN:-none}" | base64 -w0)
+          rm -rf "$W/mirror.git"
+          git -c http.extraheader="AUTHORIZATION: basic $AUTH" clone --mirror "$REPO_URL" "$W/mirror.git"
+          cd "$W/mirror.git"
+          git for-each-ref --format='%(refname)' > "$OUT/refs-cloned-all.txt"
+          grep -Ev '^refs/(heads|tags)/' "$OUT/refs-cloned-all.txt" > "$W/drop.txt" || true
+          while IFS= read -r r; do git update-ref -d "$r"; done < "$W/drop.txt"
+          say "- 取った ref $(nl_count "$OUT/refs-cloned-all.txt") 本。heads・tags 以外（refs/pull など）$(nl_count "$W/drop.txt") 本は書き換えと押しの対象外なので外した"
+          touch "$W/done-mirror"
+
+      # ---- ② 元の ref の名と先端 ----
+      - name: ② 元の ref の一覧
+        id: before
+        run: |
+          source "$W/lib.sh"
+          cd "$W/mirror.git"
+          { echo "HEAD -> $(git symbolic-ref HEAD 2>/dev/null || echo '(detached)')"; reflist . ; } > "$OUT/refs-before.txt"
+          git rev-list --all --count > "$W/commits-before"
+          git for-each-ref refs/heads --format=x | wc -l | tr -d ' ' > "$W/heads-before"
+          git for-each-ref refs/tags  --format=x | wc -l | tr -d ' ' > "$W/tags-before"
+          empties . > "$W/empties-before"
+          packsize . > "$W/pack-mirror"
+          : > "$W/keep-trees-before.txt"
+          for r in $KEEP_REFS; do
+            t=$(git rev-parse --verify -q "$r^{tree}" || echo MISSING)
+            echo "$r $t" >> "$W/keep-trees-before.txt"
+            if [ "$t" = MISSING ]; then fail "守る ref $r が見つからない"; fi
+          done
+          say "## ② 元"
+          say "- 枝 $(cat "$W/heads-before")・タグ $(cat "$W/tags-before")・commit $(cat "$W/commits-before")（うち中身の変わらない commit $(cat "$W/empties-before")）・置き場 $(mb "$(cat "$W/pack-mirror")")MB"
+          say ""
+          say '```'
+          cat "$OUT/refs-before.txt" | tee -a "$R"
+          say '```'
+          touch "$W/done-before"
+
+      # ---- ③ 元の丸ごとの写し ----
+      - name: ③ 元の丸ごとの写し（bundle --all）
+        id: bundle_orig
+        run: |
+          source "$W/lib.sh"
+          cd "$W/mirror.git"
+          say "## ③ 元の丸ごとの写し"
+          git bundle create "$OUT/original-all.bundle" --all
+          if git bundle verify "$OUT/original-all.bundle" > "$W/bv-orig.txt" 2>&1; then ok "original-all.bundle の verify（$(mb "$(stat -c %s "$OUT/original-all.bundle")")MB）"; else fail "original-all.bundle の verify"; tail -5 "$W/bv-orig.txt" | tee -a "$R"; fi
+          git bundle list-heads "$OUT/original-all.bundle" | grep -Ev ' HEAD$' | awk '{print $1, $2}' | sort -k2 > "$W/bh-orig.txt"
+          git for-each-ref --format='%(objectname) %(refname)' refs/heads refs/tags | sort -k2 > "$W/rf-orig.txt"
+          if cmp -s "$W/bh-orig.txt" "$W/rf-orig.txt"; then ok "写しの頭が元の枝とタグ $(nl_count "$W/rf-orig.txt") 本と一致"; else fail "写しの頭が元の枝とタグと合わない"; fi
+          touch "$W/done-bundle_orig"
+
+      # ---- ④ 抜くパスの一覧 ----
+      - name: ④ 甲の一覧（抜く声のパス）
+        id: plan
+        run: |
+          source "$W/lib.sh"
+          cd "$W/mirror.git"
+          say "## ④ 甲の一覧"
+          histblobs . > "$W/hist-blobs.tsv"
+          cut -f2 "$W/hist-blobs.tsv" | isvoice | sort -u > "$W/hist-voice-paths.txt"
+          git -c core.quotePath=false ls-tree -r --name-only main | sort -u > "$W/main-paths.txt"
+          : > "$W/keep-paths-raw.txt"
+          for r in $KEEP_REFS; do git -c core.quotePath=false ls-tree -r --name-only "$r" >> "$W/keep-paths-raw.txt" || true; done
+          sort -u "$W/keep-paths-raw.txt" > "$W/keep-paths.txt"
+          comm -23 "$W/hist-voice-paths.txt" "$W/keep-paths.txt" > "$OUT/paths-to-remove.txt"
+          comm -23 "$W/hist-voice-paths.txt" "$W/main-paths.txt" > "$W/kou-vs-main.txt"
+          comm -23 "$W/kou-vs-main.txt" "$OUT/paths-to-remove.txt" > "$OUT/kept-for-other-refs.txt"
+          X1=$(comm -12 "$OUT/paths-to-remove.txt" "$W/main-paths.txt" | wc -l | tr -d ' ')
+          X2=$(comm -12 "$OUT/paths-to-remove.txt" "$W/keep-paths.txt" | wc -l | tr -d ' ')
+          if [ "$X1" = 0 ] && [ "$X2" = 0 ]; then ok "抜く一覧と main の先端の tree の共通部分 0・守る ref の tree との共通部分 0"; else fail "抜く一覧が今の tree と重なる（main $X1・守る ref $X2）"; fi
+          # 抜いて届かなくなる blob（抜くパスにだけ現れ、ほかのパスに一度も現れない blob）
+          awk -F'\t' 'NR==FNR{rm[$0]=1; next} { if ($2 in rm) r[$1]=1; else k[$1]=1 } END{ for (o in r) if (!(o in k)) print o }' "$OUT/paths-to-remove.txt" "$W/hist-blobs.tsv" > "$W/freed-oids.txt"
+          read -r FN FU FD < <(git cat-file --batch-check='%(objectsize) %(objectsize:disk)' < "$W/freed-oids.txt" | awk '{n++; u+=$1; d+=$2} END{printf "%d %d %d\n", n, u, d}')
+          echo "$FD" > "$W/freed-disk"
+          say "- 履歴の声のパス $(nl_count "$W/hist-voice-paths.txt")・main の tree に無い声のパス $(nl_count "$W/kou-vs-main.txt")"
+          say "- **抜くパス $(nl_count "$OUT/paths-to-remove.txt")**（守る ref の stable・check-pass 等が持つので残すパス $(nl_count "$OUT/kept-for-other-refs.txt")＝kept-for-other-refs.txt）"
+          say "- 抜いて届かなくなる blob $FN 個・未圧縮 $(mb "$FU")MB・pack 上 $(mb "$FD")MB（見込み。0810 の測りでは約 793MB）"
+          say "- 拡張子ごと（抜くパス）：$(awk '{p=tolower($0); if (p ~ /[.]wav[.]wav$/) e=".wav.wav"; else { sub(/.*[.]/, ".", p); e=p } c[e]++} END{for (e in c) printf "%s %d本　", e, c[e]}' "$OUT/paths-to-remove.txt")"
+          sed 's/^/literal:/' "$OUT/paths-to-remove.txt" > "$W/paths-to-remove.filter"
+          touch "$W/done-plan"
+
+      # ---- ⑤ git-filter-repo を入れる（雲だけ）----
+      - name: ⑤ git-filter-repo を入れる
+        id: tool
+        run: |
+          set -euo pipefail
+          pipx install git-filter-repo==2.47.0 || pipx install git-filter-repo || python3 -m pip install --user --break-system-packages git-filter-repo
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.local/bin:$PATH"
+          git filter-repo --version
+
+      # ---- ⑥ 書き換え（全部の枝とタグ）----
+      - name: ⑥ 書き換え
+        id: rewrite
+        run: |
+          source "$W/lib.sh"
+          say "## ⑥ 書き換え"
+          rm -rf "$W/work.git"
+          # 作業用の写し。mirror（bare）の写しなので、枝とタグはそのまま refs/heads・refs/tags に入る（追跡枝を作り直す手が要らない）
+          git clone --mirror --no-local "$W/mirror.git" "$W/work.git"
+          cd "$W/work.git"
+          if cmp -s <(reflist "$W/mirror.git") <(reflist .); then ok "作業用の写しの枝とタグが元と一致（$(reflist . | wc -l | tr -d ' ') 本）"; else fail "作業用の写しの枝とタグが元と合わない"; fi
+          packsize . > "$W/pack-work-before"
+          if [ -s "$W/paths-to-remove.filter" ]; then
+            git filter-repo --invert-paths --paths-from-file "$W/paths-to-remove.filter" \
+              --prune-empty "$PRUNE_EMPTY" --prune-degenerate "$PRUNE_EMPTY" --force
+          else
+            say "- 抜くパスが0本なので書き換えない"
+          fi
+          for f in commit-map ref-map; do if [ -f "filter-repo/$f" ]; then cp "filter-repo/$f" "$OUT/$f.txt"; fi; done
+          touch "$W/done-rewrite"
+
+      # ---- ⑦ 検証 a〜e ----
+      - name: ⑦ 検証
+        id: verify
+        run: |
+          source "$W/lib.sh"
+          cd "$W/work.git"
+          { echo "HEAD -> $(git symbolic-ref HEAD 2>/dev/null || echo '(detached)')"; reflist . ; } > "$OUT/refs-after.txt"
+
+          say "## ⑦ 検証"
+          say "### (a) 先端の tree"
+          while read -r r tb; do
+            ta=$(git rev-parse --verify -q "$r^{tree}" || echo MISSING)
+            if [ "$ta" = "$tb" ] && [ "$ta" != MISSING ]; then ok "$r の tree 同一（$ta）"; else fail "$r の tree が変わった（前 $tb／後 $ta）"; fi
+          done < "$W/keep-trees-before.txt"
+          CH=0; TC=0
+          while read -r ref; do
+            hb=$(git -C "$W/mirror.git" rev-parse --verify -q "$ref" || echo MISSING)
+            ha=$(git rev-parse --verify -q "$ref" || echo MISSING)
+            if [ "$hb" != "$ha" ]; then
+              CH=$((CH+1))
+              tb=$(git -C "$W/mirror.git" rev-parse --verify -q "$ref^{tree}" || echo MISSING)
+              ta=$(git rev-parse --verify -q "$ref^{tree}" || echo MISSING)
+              if [ "$tb" = "$ta" ]; then why="歴史に抜いた声を含む commit があり hash が変わった（先端の tree は同一）"; else TC=$((TC+1)); why="先端の tree に抜いた声が在った（守る ref の外）ので tree も変わった：$(comm -3 <(git -C "$W/mirror.git" -c core.quotePath=false ls-tree -r --name-only "$tb" | sort) <(git -c core.quotePath=false ls-tree -r --name-only "$ta" | sort) | wc -l | tr -d ' ') パス"; fi
+              say "- $ref：${hb:0:10} → ${ha:0:10}　$why"
+            fi
+          done < <(git -C "$W/mirror.git" for-each-ref --format='%(refname)' refs/heads refs/tags)
+          say "- 先端の hash が変わった ref $CH 本（うち先端の tree も変わった $TC 本）"
+
+          say "### (b) main の声と台帳"
+          git show main:voice-used.txt | tr -d '\r' | sed '/^$/d' | sort -u > "$W/used.txt"
+          git -c core.quotePath=false ls-tree --name-only main | sort -u > "$W/main-root.txt"
+          comm -23 "$W/used.txt" "$W/main-root.txt" > "$OUT/voice-missing.txt"
+          VM=$(git -c core.quotePath=false ls-tree -r --name-only main | isvoice | wc -l | tr -d ' ')
+          VB=$(git -C "$W/mirror.git" -c core.quotePath=false ls-tree -r --name-only main | isvoice | wc -l | tr -d ' ')
+          if [ ! -s "$OUT/voice-missing.txt" ]; then ok "台帳 voice-used.txt $(nl_count "$W/used.txt") 本の声が main の tree に全部在る（欠け 0）"; else fail "台帳の声の欠け $(nl_count "$OUT/voice-missing.txt") 本（voice-missing.txt）"; fi
+          if [ "$VM" = "$VB" ]; then ok "main の tree の声 $VM 本（元 $VB 本）"; else fail "main の tree の声が $VB → $VM"; fi
+
+          say "### (c) 数"
+          CA=$(git rev-list --all --count); CB=$(cat "$W/commits-before")
+          HA=$(git for-each-ref refs/heads --format=x | wc -l | tr -d ' '); HB=$(cat "$W/heads-before")
+          GA=$(git for-each-ref refs/tags  --format=x | wc -l | tr -d ' '); GB=$(cat "$W/tags-before")
+          EA=$(empties .); EB=$(cat "$W/empties-before")
+          if [ "$HA" = "$HB" ]; then ok "枝 $HA（元 $HB）"; else fail "枝 $HB → $HA"; fi
+          if [ "$GA" = "$GB" ]; then ok "タグ $GA（元 $GB）"; else fail "タグ $GB → $GA"; fi
+          if [ "$CA" = "$CB" ]; then ok "commit $CA（元 $CB）"; elif [ "$PRUNE_EMPTY" != never ]; then say "- commit $CB → $CA（空になって落ちた $((CB-CA)) 本・prune_empty=$PRUNE_EMPTY）"; else fail "commit $CB → $CA（prune_empty=never なのに数が違う）"; fi
+          say "- 中身の変わらない commit $EB → $EA（声を抜いて空になった commit $((EA-EB)) 本。prune_empty=never なので落とさず残した）"
+
+          say "### (c') 抜いたパスの残り"
+          histblobs . | cut -f2 | sort -u > "$W/hist-paths-after.txt"
+          LEFT=$(comm -12 "$W/hist-paths-after.txt" "$OUT/paths-to-remove.txt" | wc -l | tr -d ' ')
+          if [ "$LEFT" = 0 ]; then ok "書き換え後の全部の枝とタグの履歴に、抜いたパスは 0 本"; else fail "抜いたはずのパスが $LEFT 本残る"; fi
+
+          say "### (d) 置き場の大きさ"
+          git reflog expire --expire=now --all
+          git gc --prune=now --quiet
+          PM=$(cat "$W/pack-mirror"); PW=$(cat "$W/pack-work-before"); PA=$(packsize .); FD=$(cat "$W/freed-disk")
+          say "- 蔵から取った mirror $(mb "$PM")MB／書き換え前の作業用の写し $(mb "$PW")MB → 書き換えて gc の後 $(mb "$PA")MB（減 $(mb $((PW-PA)))MB・見込み $(mb "$FD")MB・0810 の測りでは約 793MB）"
+
+          say "### (e) fsck"
+          if git fsck --no-dangling > "$W/fsck.txt" 2>&1; then ok "git fsck --no-dangling"; else fail "git fsck"; tail -20 "$W/fsck.txt" | tee -a "$R"; fi
+          touch "$W/done-verify"
+
+      # ---- ⑧ 書き換え済みの丸ごと ----
+      - name: ⑧ 書き換え済みの丸ごと（bundle --all）
+        id: bundle_new
+        run: |
+          source "$W/lib.sh"
+          cd "$W/work.git"
+          say "## ⑧ 書き換え済みの丸ごと"
+          git bundle create "$OUT/rewritten-all.bundle" --all
+          rm -rf "$W/vb.git"; git init -q --bare "$W/vb.git"
+          if git -C "$W/vb.git" bundle verify "$OUT/rewritten-all.bundle" > "$W/bv-new.txt" 2>&1; then ok "rewritten-all.bundle の verify（空の置き場で・$(mb "$(stat -c %s "$OUT/rewritten-all.bundle")")MB）"; else fail "rewritten-all.bundle の verify"; tail -5 "$W/bv-new.txt" | tee -a "$R"; fi
+          git bundle list-heads "$OUT/rewritten-all.bundle" | grep -Ev ' HEAD$' | awk '{print $1, $2}' | sort -k2 > "$W/bh-new.txt"
+          git for-each-ref --format='%(objectname) %(refname)' refs/heads refs/tags | sort -k2 > "$W/rf-new.txt"
+          if cmp -s "$W/bh-new.txt" "$W/rf-new.txt"; then ok "写しの頭が書き換え後の枝とタグ $(nl_count "$W/rf-new.txt") 本と一致"; else fail "写しの頭が書き換え後の枝とタグと合わない"; fi
+          touch "$W/done-bundle_new"
+
+      # ---- まとめ（落ちても回す）----
+      - name: まとめ
+        id: final
+        if: always()
+        run: |
+          source "$W/lib.sh" 2>/dev/null || { mkdir -p "$OUT"; echo "共通の道具が出来ていない" >> "$OUT/fails.txt"; exit 1; }
+          set +e
+          say "## まとめ"
+          for s in lib mirror before bundle_orig plan rewrite verify bundle_new; do
+            [ -f "$W/done-$s" ] || fail "段 $s が最後まで行かなかった（途中で落ちた）"
+          done
+          if [ -s "$OUT/fails.txt" ]; then say "- **FAIL $(nl_count "$OUT/fails.txt") 件。押さないこと。**"; cat "$R" >> "${GITHUB_STEP_SUMMARY:-/dev/null}"; exit 1; fi
+          say "- 全部 PASS。押すのは VAIO で bundle を確かめてから（reports/y1122-1010-rewrite-workflow.md）"
+          cat "$R" >> "${GITHUB_STEP_SUMMARY:-/dev/null}"
+          exit 0
+
+      # ---- 成果物（部分でも上げる）----
+      - name: 成果物：検証の結果
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: history-rewrite-report
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            /mnt/rw/out/*.txt
+            /mnt/rw/out/*.md
+      - name: 成果物：書き換え済みの丸ごと
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rewritten-all-bundle
+          retention-days: 14
+          compression-level: 0
+          if-no-files-found: warn
+          path: /mnt/rw/out/rewritten-all.bundle
+      - name: 成果物：元の丸ごと
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: original-all-bundle
+          retention-days: 14
+          compression-level: 0
+          if-no-files-found: warn
+          path: /mnt/rw/out/original-all.bundle
