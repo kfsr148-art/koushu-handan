@@ -1452,8 +1452,8 @@ try {
       if (!r) { ng(w + 'x' + h + '：測れない（箱）'); continue; }
       if (!r.pbExists) { ng(w + 'x' + h + '：箱（#progBox）が無い'); continue; }
       if (!r.pbShown) { ng(w + 'x' + h + '：作業中なのに箱が出ない'); }
-      else if (r.pbPrev !== 'HEADER') { ng(w + 'x' + h + '：箱が見出し（header）の直後にない（直前＝' + r.pbPrev + '）'); }
-      else if (r.pbTop < r.pbHeadBottom - 1 || r.pbTop - r.pbHeadBottom > 24) { ng(w + 'x' + h + '：箱が見出しのすぐ下でない（見出しの下端 ' + r.pbHeadBottom + '・箱の上端 ' + r.pbTop + '）'); }
+      else if (r.pbPrev !== 'P') { ng(w + 'x' + h + '：箱が使用量（#usageMsg）の直後にない（直前＝' + r.pbPrev + '）'); }   /* v220（枠 百四十三）：見出し→使用量の三つ→箱。箱の直前は使用量の説明の行（#usageMsg の <p>） */
+      else if (r.pbTop < r.pbHeadBottom - 1 || r.pbTop - r.pbHeadBottom > 120) { ng(w + 'x' + h + '：箱が見出しと使用量のすぐ下でない（見出しの下端 ' + r.pbHeadBottom + '・箱の上端 ' + r.pbTop + '）'); }
       else if (r.pbRows !== 2 || !r.pbEta || !r.pbGauge) { ng(w + 'x' + h + '：箱の中が「終わる見込み」と手順のゲージの二行でない（' + r.pbRows + '行・見込み' + r.pbEta + '・ゲージ' + r.pbGauge + '）'); }
       else if (r.pbBorder < 1) { ng(w + 'x' + h + '：一つの箱に見えない（枠が無い）'); }
       else if (r.pbOver || r.pbLeft < 0 || r.pbRight > r.w + 1) { ng(w + 'x' + h + '：箱が横に溢れる（' + Math.round(r.pbLeft) + '〜' + Math.round(r.pbRight) + '・実際の視野の幅 ' + r.w + '）'); }   /* 視野の幅は headless の窓の下限で指定より広い事がある（実際の幅 r.w と比べる） */
