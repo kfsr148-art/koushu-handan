@@ -1011,7 +1011,7 @@ function staticParts() {
     const iP = H.indexOf('<div class="usage" id="usageTag"'), iHr = H.indexOf('<div class="halfrow btn4row" id="halfRow">');
     const above = (iP > 0 && iHr > iP) ? ids(H.slice(iP, iHr).replace(/<!--[\s\S]*?-->/g, '')) : [];
     const pt = cutFn(H, 'paintTodoList');
-    const t9 = above.join(',') === 'usageTag,usageMsg,progBox,pipeWarn,wakeWarn,kumoLine,btnCopyAll,list,board' && H.indexOf('#btnCopyAll, #list{display:none !important;}') >= 0 && H.indexOf('#board{display:none !important;}') >= 0 && H.indexOf('<ul id="todoList" class="todoList"></ul>') > iS && pt.indexOf("var a = mergedTodo().filter(function (m) { return m.kind === 'card'; });") >= 0 && pt.indexOf("'📣'") < 0;
+    const t9 = above.join(',') === 'usageTag,usageMsg,progBox,pipeWarn,kumoLine,btnCopyAll,list,board' && H.indexOf('#btnCopyAll, #list{display:none !important;}') >= 0 && H.indexOf('#board{display:none !important;}') >= 0 && H.indexOf('<ul id="todoList" class="todoList"></ul>') > iS && pt.indexOf("var a = mergedTodo().filter(function (m) { return m.kind === 'card'; });") >= 0 && pt.indexOf("'📣'") < 0;
     /* v216（本人の枠 九十二・百十二）：目次（#todoList）と雲の一行（#kumoLine）は画面に出さない（器と中身は残す＝数・写す中身は変わらない） */
     if (H.indexOf('#todoList{display:none !important;}') >= 0 && H.indexOf('#kumoLine{display:none !important;}') >= 0 && H.indexOf('<p class="kumo-line hide" id="kumoLine"></p>') >= 0) { ok('目次（#todoList）と雲の一行（#kumoLine）は display:none で画面に出さない（器は残す・まとめて写すの中身と N件はそのまま）'); } else { ng('目次か雲の一行が画面に出得る（#todoList・#kumoLine の display:none が無い）'); }
     if (t9) { ok('ボタンの上に知らせの行を足さない：見出しの下の箱からボタンの段までの器は ' + above.length + ' 個（決まった物だけ）・板（あなた待ち）とお知らせの一覧は画面に出さない・目次は八つの下で押し通知（📣）の行を塗らない'); } else { ng('ボタンの上に行が足され得る（間の器 ' + above.join(',') + '・目次の塗り ' + (pt.indexOf("m.kind === 'card'") >= 0) + '）'); }
@@ -1959,7 +1959,7 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     const body = (i >= 0 && j > i) ? H.slice(i, j + 4) : '';
     if (!body) { ng('様子を写す … statusText が無い'); return; }
     if (/fetch\(|\.then\(|await |XMLHttpRequest/.test(body)) { ng('様子を写す … statusText の中で読みに行っている'); return; }
-    const els = { pipeWarn: { className: 'pipe', textContent: '止まっとるかも：作り値の赤い行' }, wakeWarn: { className: 'pipe hide', textContent: '' } };
+    const els = { pipeWarn: { className: 'pipe', textContent: '止まっとるかも：作り値の赤い行' } };
     let txt = '';
     try {
       const wi = H.indexOf('  function waitListLines('), wj = (wi >= 0) ? H.indexOf(String.fromCharCode(10) + '  }', wi) : -1; const wlsrc = (wi >= 0 && wj > wi) ? H.slice(wi, wj + 4) : '';   // v197：statusText が使う waitListLines も一緒に切り出す
