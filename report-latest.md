@@ -1,11 +1,11 @@
-﻿# 再起動-2（r1123-0336・後の測り）
+﻿# 再起動-2（r1123-0334・後の測り）
 
-**終わり** — 2026-11-23 03:36（VAIO）。毎週土曜の起こしで再起動し、起き上がった。
+**終わり** — 2026-11-23 03:34（VAIO）。毎週土曜の起こしで再起動し、起き上がった。
 
 | | 前 | 後 | 差 |
 |---|---|---|---|
-| 空き物理メモリ | 4738MB | **4095MB** | -643MB |
-| claude | 671MB | **19MB** | -652MB |
+| 空き物理メモリ | 4738MB | **4116MB** | -622MB |
+| claude | 671MB | **8MB** | -663MB |
 
 起き上がった刻 … 11/23/2026 03:02:03
 claude が起きた刻 … 2026-11-23 03:25:37（1本）
@@ -18,12 +18,11 @@ claude が起きた刻 … 2026-11-23 03:25:37（1本）
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **1163件**ある。
+　ここに出るのは新しい20件。全部で **1162件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
-| [`r1123-0336-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1123-0336-2.md) | 11-23 03:36 | 再起動-2（r1123-0336・後の測り） |
 | [`r1123-0334-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1123-0334-2.md) | 11-23 03:34 | 再起動-2（r1123-0334・後の測り） |
 | [`r1123-0326-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1123-0326-2.md) | 11-23 03:26 | 再起動-2（r1123-0326・後の測り） |
 | [`y1122-2255-yakuman-rate.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-2255-yakuman-rate.md) | 11-22 21:53 | 枠 百十三・百十四 ②③：国士・四暗刻の和了率を雲で測り、解説の文案に数を入れた |
@@ -43,5 +42,6 @@ claude が起きた刻 … 2026-11-23 03:25:37（1本）
 | [`y1122-2030-queue-next.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-2030-queue-next.md) | 11-22 20:29 | 枠 百四十七：窓が待機のまま止まった訳と、続けさせる手を一本に |
 | [`cloud-check-fast-20261122-103240.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-check-fast-20261122-103240.md) | 11-22 20:29 | 雲で回した：`check-fast.js` |
 | [`y1122-1935-kokushi-buttons.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1935-kokushi-buttons.md) | 11-22 19:31 | 枠 百三十七：見張り台の国士の問いの釦の字を三つに（v1517） |
+| [`y1122-1920-ledger-handover.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1122-1920-ledger-handover.md) | 11-22 19:20 | 枠 百三十五：順番待ちに済んだ物が残る（引き継ぎ先）・見込みを実測から出す・stable の訳 |
 
 <!-- 控えの一覧 ここまで -->
