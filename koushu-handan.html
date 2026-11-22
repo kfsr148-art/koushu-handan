@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1517">
+<html lang="ja" data-ver="1518">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1398,7 +1398,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1517</div>
+  <div id="verTag">v1518</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -3762,7 +3762,7 @@ function advDecodeWav(ab) {
     add('w009', 1, '本物', '急がば回れ', '一向聴まで遠い手は形を整える', f => f.sh >= 3 && f.atk);
     add('w010', 1, '本物', '金持ち喧嘩せず', '点棒に余裕があれば無理をしない（守りの手の心得）', f => f.def && f.yao >= 6);
     // ---- 数牌の形（段1〜2）----
-    add('w011', 1, '用語', '中ぶくれ', '真ん中がふくらんだ形（4567など）', f => M.some(s => [3, 4, 5].some(n => has4(f, s, n))));
+    add('w011', 1, '用語', '中ぶくれ', '真ん中がふくらんだ形（4567など）', f => M.some(s => [3, 4, 5].some(n => f.c(s + n) >= 1 && f.c(s + (n + 1)) >= 2 && f.c(s + (n + 2)) >= 1)));   // v1518（枠 百四十一・大4）：四枚続き（has4）でなく、真ん中が重なる形（一姫の need と同じ）。意味の字は変えていない（本人が選ぶ）
     function has4(f, s, n) { return f.has(s, n) && f.has(s, n + 1) && f.has(s, n + 2) && f.has(s, n + 3); }
     add('w012', 2, '用語', '五連形', '5枚つながった形', f => M.some(s => [1, 2, 3, 4, 5].some(n => has4(f, s, n) && f.has(s, n + 4))));
     add('w013', 1, '用語', '嵌張はツモが遠い', '真ん中が空いた待ちは出にくい', f => f.kan >= 2);
@@ -7075,7 +7075,16 @@ function advDecodeWav(ab) {
     const savedHand = hand, savedDora = doraCount;
     hand = tiles; doraCount = 0;
     let a = null;
-    try { a = analyze(); }
+    try {
+      a = analyze();
+      // v1518（枠 百四十一・大1）：「判定する」と同じく、際どい手と良形があと一つ足りない手は審判の票で決め直す（ssQuietVerdict と同じ形）。
+      // tenLeans が外の hand を読むので、手牌を差し替えている間に呼ぶ。
+      if(a){
+        const catN = tiles.filter(t => t.suit === 'cat').length + countIsolatedRealTiles(tiles.filter(t => t.suit !== 'cat'));
+        const rv = revoteVerdict(a, catN);
+        if(rv){ a.revote = rv; a.verdict = rv.to; }
+      }
+    }
     finally { hand = savedHand; doraCount = savedDora; }
     return a;
   }
