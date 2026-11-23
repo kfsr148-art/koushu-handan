@@ -85,6 +85,9 @@ advx-butler-advd-sen-s.m4a
 advx-butler-advd-sen.m4a
 advx-butler-advd-w-cheap-s.m4a
 advx-butler-advd-w-cheap.m4a
+advx-butler-advd-w-chi-f.m4a
+advx-butler-advd-w-chi-n.m4a
+advx-butler-advd-w-chi-t.m4a
 advx-butler-advd-w-far-s.m4a
 advx-butler-advd-w-far.m4a
 advx-butler-advd-w-few.m4a
@@ -279,6 +282,9 @@ advx-french-advd-sen-s.m4a
 advx-french-advd-sen.m4a
 advx-french-advd-w-cheap-s.m4a
 advx-french-advd-w-cheap.m4a
+advx-french-advd-w-chi-f.m4a
+advx-french-advd-w-chi-n.m4a
+advx-french-advd-w-chi-t.m4a
 advx-french-advd-w-far-s.m4a
 advx-french-advd-w-far.m4a
 advx-french-advd-w-few.m4a
@@ -474,6 +480,9 @@ advx-ichihime-advd-sen-s.m4a
 advx-ichihime-advd-sen.m4a
 advx-ichihime-advd-w-cheap-s.m4a
 advx-ichihime-advd-w-cheap.m4a
+advx-ichihime-advd-w-chi-f.m4a
+advx-ichihime-advd-w-chi-n.m4a
+advx-ichihime-advd-w-chi-t.m4a
 advx-ichihime-advd-w-far-s.m4a
 advx-ichihime-advd-w-far.m4a
 advx-ichihime-advd-w-few.m4a
@@ -668,6 +677,9 @@ advx-lady-advd-sen-s.m4a
 advx-lady-advd-sen.m4a
 advx-lady-advd-w-cheap-s.m4a
 advx-lady-advd-w-cheap.m4a
+advx-lady-advd-w-chi-f.m4a
+advx-lady-advd-w-chi-n.m4a
+advx-lady-advd-w-chi-t.m4a
 advx-lady-advd-w-far-s.m4a
 advx-lady-advd-w-far.m4a
 advx-lady-advd-w-few.m4a
@@ -862,6 +874,9 @@ advx-sensei-advd-sen-s.m4a
 advx-sensei-advd-sen.m4a
 advx-sensei-advd-w-cheap-s.m4a
 advx-sensei-advd-w-cheap.m4a
+advx-sensei-advd-w-chi-f.m4a
+advx-sensei-advd-w-chi-n.m4a
+advx-sensei-advd-w-chi-t.m4a
 advx-sensei-advd-w-far-s.m4a
 advx-sensei-advd-w-far.m4a
 advx-sensei-advd-w-few.m4a
@@ -1056,6 +1071,9 @@ advx-strategist-advd-sen-s.m4a
 advx-strategist-advd-sen.m4a
 advx-strategist-advd-w-cheap-s.m4a
 advx-strategist-advd-w-cheap.m4a
+advx-strategist-advd-w-chi-f.m4a
+advx-strategist-advd-w-chi-n.m4a
+advx-strategist-advd-w-chi-t.m4a
 advx-strategist-advd-w-far-s.m4a
 advx-strategist-advd-w-far.m4a
 advx-strategist-advd-w-few.m4a
