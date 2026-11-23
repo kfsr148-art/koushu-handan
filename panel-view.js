@@ -43,6 +43,47 @@ function shelfView() {
     return { n: s.items.length, pct: Math.round((Number(s.pct) || 0) * 10) / 10, items: s.items.slice(0, 30).map(x => ({ no: x.no, title: String(x.title || '').slice(0, 80), pct: Number(x.pct) || 0, type: String(x.type || '').slice(0, 30) })) };
   } catch (e) { return null; }
 }
+// v226（枠 百六十五）：今走っている仕事一つの週の使用量。見込み＝似た型（見込み時間が近い）の終わった仕事の実測の中央値から。今まで＝仕事の始まりの週%と今の週%の差。
+//   ＊週%は整数なので粗い。終わった仕事の実測は ~/.claude/job-week-history.tsv（刻／見込み分／増えた週%／経過分）に貯める（棚の見積もりの学びにも使う）。
+//   ＊weekJobStep は純粋（ファイルを触らない）。weekJobUpdate が ~/.claude の job-week.json・job-week-history.tsv を読み書きする（CLI の見張りの呼びだけから呼ぶ。検査の panelView は書かない）。
+function mikomiMin(v) { const m = String(v == null ? '' : v).match(/([0-9]+)/); return m ? parseInt(m[1], 10) : 0; }
+function median(a) { const b = a.slice().sort((x, y) => x - y), n = b.length; return n ? (n % 2 ? b[(n - 1) / 2] : (b[n / 2 - 1] + b[n / 2]) / 2) : 0; }
+function weekJobStep(store, d, pct, now, hist) {
+  store = (store && typeof store === 'object') ? store : {}; hist = Array.isArray(hist) ? hist : [];
+  const out = { store: store, view: null, finish: null };
+  const working = d && d.stat === '作業中' && Number(d.startedAt) > 0;
+  const key = working ? (String(d.startedAt) + '|' + String(d.subj || '')) : '';
+  const havePct = (typeof pct === 'number' && isFinite(pct));
+  if (store.key && store.key !== key) {   /* 前の仕事が終わった（別の仕事に替わった）。実測を一行返す */
+    const dl = havePct || typeof store.lastPct === 'number' ? ((typeof store.lastPct === 'number' ? store.lastPct : pct) - store.startPct) : null;
+    const el = Math.max(0, Math.round((now - (store.startedAt || now)) / 60));
+    if (dl !== null && el >= 2 && store.mikomi > 0 && dl >= 0) { out.finish = { at: now, mikomi: store.mikomi, delta: dl, minutes: el }; }
+    store = out.store = {};
+  }
+  if (!working) { return out; }
+  if (!store.key) { store = out.store = { key: key, startedAt: Number(d.startedAt), startPct: havePct ? pct : null, lastPct: havePct ? pct : null, mikomi: mikomiMin(d.mikomi) }; }
+  if (havePct) { if (store.startPct === null || store.startPct === undefined) { store.startPct = pct; } store.lastPct = pct; }
+  if (mikomiMin(d.mikomi) > 0) { store.mikomi = mikomiMin(d.mikomi); }
+  const dn = (typeof store.lastPct === 'number' && typeof store.startPct === 'number') ? Math.max(0, store.lastPct - store.startPct) : null;
+  const mk = store.mikomi || 0, near = hist.filter(h => h.mikomi > 0 && mk > 0 && h.mikomi >= mk * 0.5 && h.mikomi <= mk * 2 && h.minutes > 0).slice(-20);
+  let est = '—';
+  if (near.length >= 3 && mk > 0) { const v = median(near.map(h => h.delta / h.minutes)) * mk; est = v < 1 ? '1%未満' : ('約' + Math.round(v) + '%'); }
+  out.view = { est: '見込み ' + est, now: '今まで ' + (dn === null ? '—' : (dn < 1 ? '1%未満' : (Math.round(dn) + '%'))), n: near.length };
+  return out;
+}
+function weekJobUpdate(d, now) {
+  const home = process.env.SHADOW_HOME || path.join(require('os').homedir(), '.claude');
+  const rdj = f => { try { return JSON.parse(fs.readFileSync(path.join(home, f), 'utf8').replace(/^\uFEFF/, '')); } catch (e) { return null; } };
+  now = now || Math.floor(Date.now() / 1000);
+  const u = rdj('usage.json'); let pct = null;
+  try { const at = Date.parse(u.at || ''); const wk = u.rate_limits && u.rate_limits.seven_day; if (wk && typeof wk.used_percentage === 'number' && at > 0 && Date.now() - at < 30 * 60 * 1000) { pct = wk.used_percentage; } } catch (e) { }
+  let hist = [];
+  try { hist = fs.readFileSync(path.join(home, 'job-week-history.tsv'), 'utf8').split(String.fromCharCode(10)).filter(l => l && l[0] !== '#').map(l => { const c = l.split(String.fromCharCode(9)); return { at: Number(c[0]), mikomi: Number(c[1]), delta: Number(c[2]), minutes: Number(c[3]) }; }); } catch (e) { }
+  const r = weekJobStep(rdj('job-week.json'), d, pct, now, hist);
+  try { fs.writeFileSync(path.join(home, 'job-week.json'), JSON.stringify(r.store)); } catch (e) { }
+  if (r.finish) { try { fs.appendFileSync(path.join(home, 'job-week-history.tsv'), [r.finish.at, r.finish.mikomi, r.finish.delta, r.finish.minutes].join(String.fromCharCode(9)) + String.fromCharCode(10)); } catch (e) { } }
+  return r.view;
+}
 function panelView(d, notices, ntfySent, now) {
   d = d || {}; now = now || Math.floor(Date.now() / 1000);
   const rows = Array.isArray(notices) ? notices : [];
@@ -82,7 +123,7 @@ function allView(d, now) {
 }
 
 // 字の組み立ては panel-core.js の物をそのまま出す（panel-check.js・endat の検査が読む口。写しではない）
-module.exports = { panelView, senkoEpoch: PC.senkoEpoch, omoteLines: PC.omoteLines, uraLines: PC.uraLines, endLine: PC.endLine, endShort: PC.endShort, uraCount: PC.uraCount, boxSpec: PC.boxSpec, uraBusyText: PC.uraBusyText, ntfyOfCard: PC.ntfyOfCard, core: PC };
+module.exports = { weekJobStep, panelView, senkoEpoch: PC.senkoEpoch, omoteLines: PC.omoteLines, uraLines: PC.uraLines, endLine: PC.endLine, endShort: PC.endShort, uraCount: PC.uraCount, boxSpec: PC.boxSpec, uraBusyText: PC.uraBusyText, ntfyOfCard: PC.ntfyOfCard, core: PC };
 
 if (require.main === module) {
   // 使い方：node panel-view.js <state.json の道> [<出し先の道>]  出し先が無ければ標準出力（PowerShell の文字化けを避けるため、見張りは道を渡す）
@@ -92,6 +133,7 @@ if (require.main === module) {
   if (!d.ura) { try { d.ura = JSON.parse(fs.readFileSync(path.join(require('os').homedir(), '.claude', 'ura-out.json'), 'utf8').replace(/^﻿/, '')); } catch (e) { } }
   // v203（枠 五十）：表と裏方の全部終わる見込みは、隣の endat.js で組む（~/.claude の台帳・段の台帳・下請けと雲の控えを読む）。こけたら eta 無しで今までどおり
   if (!d.eta) { try { d.eta = require(path.join(ROOT, 'endat.js')).compute(d); } catch (e) { } }
-  const out = JSON.stringify(panelView(d, rd('notices.json'), rd('ntfy-sent.json')));
+  const pvo = panelView(d, rd('notices.json'), rd('ntfy-sent.json')); try { pvo.weekJob = weekJobUpdate(d); } catch (e) { pvo.weekJob = null; }   /* v226：見張りの呼びの時だけ週の使用量を控えて載せる */
+  const out = JSON.stringify(pvo);
   if (process.argv[3]) { fs.writeFileSync(process.argv[3], out, 'utf8'); } else { process.stdout.write(out); }
 }

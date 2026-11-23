@@ -1999,6 +1999,18 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
   if (!vScript || !vTag || !vFile) { ng('版の三箇所のどれかが読めない（PANEL_VER「' + vScript + '」／verTag「' + vTag + '」／panel-ver.txt「' + vFile + '」）'); }
   else if (vScript !== vTag || vScript !== vFile) { ng('版が揃っていない（PANEL_VER ' + vScript + ' ／ verTag ' + vTag + ' ／ panel-ver.txt ' + vFile + '）'); }
   else { ok('版が三箇所とも v' + vScript); }
+  /* v226（枠 百六十五）：今の仕事の週の使用量（weekJobStep は純粋）。見込み＝似た型の実測3件以上の中央値・無ければ「—」／今まで＝始まりからの差（1%未満の表記）／仕事が無ければ null／終わると実測の一行が返る。パネルは #weekJob を出す字面がある */
+  {
+    const PVw = require(path.join(path.dirname(SRC), 'panel-view.js'));
+    const H = [{ mikomi: 30, delta: 3, minutes: 28 }, { mikomi: 25, delta: 2, minutes: 20 }, { mikomi: 40, delta: 5, minutes: 42 }, { mikomi: 300, delta: 30, minutes: 200 }];
+    const dj = { stat: '作業中', startedAt: 1000, subj: 'x', mikomi: '30分' };
+    const a1 = PVw.weekJobStep({}, dj, 50, 1060, H), a2 = PVw.weekJobStep(a1.store, dj, 52, 1600, H), a3 = PVw.weekJobStep(a2.store, { stat: '待機中' }, 52, 2000, H), a4 = PVw.weekJobStep({}, dj, 50, 1060, []);
+    const good = a1.view && a1.view.est === '見込み 約3%' && a1.view.now === '今まで 1%未満' && a2.view.now === '今まで 2%' && a3.view === null && a3.finish && a3.finish.delta === 2 && a3.finish.mikomi === 30 && a4.view.est === '見込み —' && !/[$＄]|ドル/.test(JSON.stringify(a1.view));
+    if (good) { ok('今の仕事の週の使用量：実測3件で「見込み 約3%」・実測なしは「見込み —」・始まりからの差は「1%未満」「2%」・仕事が終わると null と実測の一行・金額の字なし'); }
+    else { ng('週の使用量の組み立てが違う：' + JSON.stringify([a1.view, a2.view, a3.view, a3.finish, a4.view])); }
+    if (html.indexOf('id="weekJob"') >= 0 && html.indexOf('id="wjEst"') >= 0 && html.indexOf('panelView.weekJob') >= 0 && html.indexOf('.weekjob[hidden]{display:none;}') >= 0) { ok('パネル：「返事パネル」の字の下に #weekJob（見込み・今まで）を state.json の panelView.weekJob から出す字面がある'); }
+    else { ng('パネルの週の使用量の字面が無い'); }
+  }
   /* v225（枠 百六十二）：棚（panelView.shelf）。shelf.json から n・pct・items が組まれ、無ければ null。パネルは釦を「棚 N件・約M%」にし、直近に終わった三件は「くわしく」の rows に入る字面がある */
   {
     const os2 = require('os'), fs2 = require('fs'), pth2 = require('path');
