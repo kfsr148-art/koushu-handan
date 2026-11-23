@@ -2046,6 +2046,13 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     if (/素振り 12:00 時点：起こすなら #4（見積もり 3%）/.test(a3) && /今は入らん（残り 3%・一番軽い #4 は 4.5%）/.test(b3) && /動く時間の外（次は 14:00 から）/.test(c3) && /戻りまで1時間を切った/.test(d3) && PV3.sweepLine(null, it3) === '' && html.indexOf('lastShelf.sweep') >= 0) { ok('棚の素振りの一行：入る／入らん（残りと一番軽い枠×1.5）／動く時間の外（次の刻）／戻り間近／材料なしは空・パネルが一覧の頭に出す字面がある'); }
     else { ng('棚の素振りの一行が違う：' + [a3, b3, c3, d3].join(' | ')); }
   }
+  /* v230（枠 二百七）：1セッション≒棚 N%。3件未満は16（仮）・3件でちょうどの数（仮なし）・釦の字に入る・古い「あと…件仕掛けられる」は無い */
+  {
+    const PV4 = require(path.join(path.dirname(SRC), 'panel-view.js'));
+    const r4 = [{ s: 3, w: 0.5 }, { s: 3, w: 0.5 }, { s: 4, w: 1 }], e0 = PV4.shelfCapacity([]), e2 = PV4.shelfCapacity(r4.slice(0, 2)), e3 = PV4.shelfCapacity(r4), e3z = PV4.shelfCapacity([{ s: 0, w: 1 }, { s: 0, w: 1 }, { s: 3, w: 0.5 }]);
+    if (e0 === '1セッション≒棚 16%（仮）' && e2 === e0 && e3 === '1セッション≒棚 17%' && e3z === e0 && html.slice(html.indexOf('function shelfLabel()'), html.indexOf('function paintShelf()')).indexOf('lastShelf.capacity') >= 0 && e3.indexOf('1セッション≒棚') === 0 && html.indexOf('lastShelf.capacity') >= 0 && html.indexOf('件仕掛けられる') < 0 && PV4.shelfCapacity.toString().indexOf('あと') < 0) { ok('1セッション≒棚 N%：3件未満は16（仮）・3件で中央値（仮なし）・s<=0は数えない・釦の字に足す・「あと…件仕掛けられる」は無い'); }
+    else { ng('1セッション≒棚の一行が違う：' + [e0, e2, e3, e3z].join(' | ')); }
+  }
   /* v228（枠 百九十七・棚 #10）：ヨシの釦。panelView.yoshiOpen は yoshi-open.tsv の印だけ（古い順・話題名は載らない）。パネルは #doneHead をヨシの釦にし、青・N件・送った・通ったの字と、話題名は電話（localStorage）に覚える字面がある。終わりましたの一覧の口は #doneToggle へ移した */
   {
     const os4 = require('os'), fs4 = require('fs'), pth4 = require('path');

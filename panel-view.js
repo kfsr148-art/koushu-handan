@@ -67,6 +67,13 @@ function sweepLine(r, items) {
   } else { body = String(r.reason || '').slice(0, 60); }
   return '素振り ' + hm(t) + ' 時点：' + body;
 }
+// 枠 二百七：1セッション≒棚 N%＝セッション100%で棚が何%ぶん（週%の単位）進むか。rows の各行は {s:セッション%, w:週%}（分け前）。s<=0 の行は使わない。
+//   使える行が3件未満は今の値16を（仮）で出す。3件以上は 週%÷セッション%×100 の中央値（整数に丸める）。
+function shelfCapacity(rows) {
+  const r = (Array.isArray(rows) ? rows : []).filter(x => x && Number(x.s) > 0 && isFinite(Number(x.w))).slice(-20);
+  if (r.length < 3) { return '1セッション≒棚 16%（仮）'; }
+  return '1セッション≒棚 ' + Math.round(median(r.map(x => Number(x.w) / Number(x.s) * 100))) + '%';
+}
 // v225（枠 百六十二）：棚（余った使用量で回す溜め場）の釦と一覧の材料。~/.claude/shelf.json（走り手 shadow-run.js が控える）。無ければ null。
 function shelfView() {
   try {
@@ -74,7 +81,8 @@ function shelfView() {
     const s = JSON.parse(fs.readFileSync(path.join(home, 'shelf.json'), 'utf8').replace(/^\uFEFF/, ''));
     if (!s || !Array.isArray(s.items)) { return null; }
     let sw = ''; try { sw = sweepLine(JSON.parse(fs.readFileSync(path.join(home, 'shelf-run.json'), 'utf8').replace(/^﻿/, '')), s.items); } catch (e) { sw = ''; }
-    return { n: s.items.length, sweep: sw, pct: Math.round((Number(s.pct) || 0) * 10) / 10, items: s.items.slice(0, 30).map(x => ({ no: x.no, title: String(x.title || '').slice(0, 80), pct: Number(x.pct) || 0, type: String(x.type || '').slice(0, 30) })) };
+    let cap = null; try { const tab = String.fromCharCode(9), nl = String.fromCharCode(10); const rows = fs.readFileSync(path.join(home, 'shelf-history.tsv'), 'utf8').split(nl).filter(l => l && l.charAt(0) !== '#').map(l => { const c = l.split(tab); return { s: Number(c[2]), w: Number(c[3]) }; }); cap = shelfCapacity(rows); } catch (e) { cap = shelfCapacity([]); }
+    return { n: s.items.length, sweep: sw, capacity: cap, pct: Math.round((Number(s.pct) || 0) * 10) / 10, items: s.items.slice(0, 30).map(x => ({ no: x.no, title: String(x.title || '').slice(0, 80), pct: Number(x.pct) || 0, type: String(x.type || '').slice(0, 30) })) };
   } catch (e) { return null; }
 }
 // v226（枠 百六十五）：今走っている仕事一つの週の使用量。見込み＝似た型（見込み時間が近い）の終わった仕事の実測の中央値から。今まで＝仕事の始まりの週%と今の週%の差。
@@ -175,7 +183,7 @@ function allView(d, now) {
 }
 
 // 字の組み立ては panel-core.js の物をそのまま出す（panel-check.js・endat の検査が読む口。写しではない）
-module.exports = { sweepLine, convK, weekJobStep, panelView, senkoEpoch: PC.senkoEpoch, omoteLines: PC.omoteLines, uraLines: PC.uraLines, endLine: PC.endLine, endShort: PC.endShort, uraCount: PC.uraCount, boxSpec: PC.boxSpec, uraBusyText: PC.uraBusyText, ntfyOfCard: PC.ntfyOfCard, core: PC };
+module.exports = { shelfCapacity, sweepLine, convK, weekJobStep, panelView, senkoEpoch: PC.senkoEpoch, omoteLines: PC.omoteLines, uraLines: PC.uraLines, endLine: PC.endLine, endShort: PC.endShort, uraCount: PC.uraCount, boxSpec: PC.boxSpec, uraBusyText: PC.uraBusyText, ntfyOfCard: PC.ntfyOfCard, core: PC };
 
 if (require.main === module) {
   // 使い方：node panel-view.js <state.json の道> [<出し先の道>]  出し先が無ければ標準出力（PowerShell の文字化けを避けるため、見張りは道を渡す）
