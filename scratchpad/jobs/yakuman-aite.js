@@ -10,9 +10,14 @@
 const fs = require('fs'), os = require('os'), path = require('path'), { execSync, spawn } = require('child_process');
 const ROOT = path.join(__dirname, '..', '..');
 const WORK_MS = 1230 * 1000, KILL_MS = 1320 * 1000, NWORK = 4;
-const NAME = 'cloud-yakuman-aite-';
-const ARMS = ['push', 'fold', 'base'];
-const FRAMES = [
+const STAGE = process.env.AITE_STAGE === '2' ? '2' : '1';   /* 一段目／二段目（yakuman-aite2.js が AITE_STAGE=2 を立てて読み込む） */
+const NAME = 'cloud-yakuman-aite' + (STAGE === '2' ? '2' : '') + '-';
+const ARMS = ['push', 'fold', 'norn', 'base'];   /* norn＝四暗刻の枠だけ：ロンを見送る（暗刻4つ＝単騎の時だけロン）。国士の枠には無い */
+const armsOf = f => ARMS.filter(a => a !== 'norn' || f.kind === 's');
+const FRAMES = STAGE === '2' ? [
+  { id: 'k9', kind: 'k', k: 9 }, { id: 'k12', kind: 'k', k: 12 },
+  { id: 's30', kind: 's', kt: 3, p: 0 }, { id: 's22', kind: 's', kt: 2, p: 2 }, { id: 's15', kind: 's', kt: 1, p: 5 }
+] : [
   { id: 'k10', kind: 'k', k: 10 }, { id: 'k11', kind: 'k', k: 11 },
   { id: 's32', kind: 's', kt: 3, p: 2 }, { id: 's31', kind: 's', kt: 3, p: 1 }, { id: 's23', kind: 's', kt: 2, p: 3 }
 ];
@@ -81,6 +86,15 @@ function makeTable() {
     select_fulou(dapai, info) { return this._yaku ? undefined : super.select_fulou(dapai, info); }
     select_gang(info) { return this._yaku ? undefined : super.select_gang(info); }
     select_pingju() { return this._yaku ? false : super.select_pingju(); }
+    select_hule(data, hupai, info) {
+      /* norn：ロンを見送る（ツモ＝data が無い時は上がる）。暗刻が4つ（単騎待ち）の時だけロンも上がる */
+      if (this._yaku && this._ctx.arm === 'norn' && data) {
+        const b = this.shoupai._bingpai; let t = 0;
+        ['m', 'p', 's', 'z'].forEach(k => { for (let n = 1; n <= (k === 'z' ? 7 : 9); n++) { if (b[k][n] >= 3) { t++; } } });
+        if (t < 4) { return false; }
+      }
+      return super.select_hule(data, hupai, info);
+    }
     select_dapai(info) {
       if (!this._yaku) { return super.select_dapai(info); }
       const sp = this._suanpai, me = this._menfeng, lz = riichiSeats(sp, me);
@@ -161,7 +175,7 @@ function work(out, ms, part, maxCycles) {
   for (let j = 1; j <= maxCycles && Date.now() - t0 < ms; j++) {
     for (let f = 0; f < FRAMES.length; f++) {
       const seed = 100003 * part + 7919 * j + 31 * f + 20261123;
-      ARMS.forEach(arm => {
+      armsOf(FRAMES[f]).forEach(arm => {
         if (Date.now() - t0 >= ms) { return; }
         try {
           const r = table.playOne(part, j, FRAMES[f], arm, seed);
@@ -188,7 +202,7 @@ function summarize(rows, title) {
   P(''); P('## ' + title); P('');
   P('| 枠 | 腕 | 局 | 役満和了 | 役満ツモ | 役満ロン | 他の和了 | 放銃 | （立直者へ） | 被ツモ | 流局 | 平均点棒 | 立直が入った局 | 巡目の平均 |');
   P('|---|---|---|---|---|---|---|---|---|---|---|---|---|---|');
-  FRAMES.forEach(f => ARMS.forEach(a => {
+  FRAMES.forEach(f => armsOf(f).forEach(a => {
     const xs = rows.filter(r => r['枠'] === f.id && r['腕'] === a), n = xs.length;
     const ym = xs.filter(r => r['結果'] === '和了' && r['役満'] === '1'), ot = xs.filter(r => r['結果'] === '和了' && r['役満'] !== '1');
     const dl = xs.filter(r => r['結果'] === '放銃');
@@ -198,7 +212,7 @@ function summarize(rows, title) {
   }));
   P(''); P('### 同じ山どうしの差（腕 − base・同じ枠・同じ周・同じ本）');
   P(''); P('| 枠 | 腕 | 組 | 役満和了率の差 | 点棒の差（平均±標準誤差×1.96） | 放銃率の差 |'); P('|---|---|---|---|---|---|');
-  FRAMES.forEach(f => ['push', 'fold'].forEach(a => {
+  FRAMES.forEach(f => ['push', 'fold', 'norn'].filter(a => armsOf(f).indexOf(a) >= 0).forEach(a => {
     const idx = {};
     rows.filter(r => r['枠'] === f.id).forEach(r => { const k = r['本'] + '-' + r['周']; (idx[k] = idx[k] || {})[r['腕']] = r; });
     const pairs = Object.keys(idx).map(k => idx[k]).filter(o => o[a] && o['base']);
@@ -225,7 +239,7 @@ if (argv[0] === '--worker') {
   summarize(rows, '手元の極小の試し（' + n + '周・数は当てにならない）');
   /* 同じ山の確かめ：同じ枠・同じ周の三腕は、配牌が同じ */
   const by = {}; rows.forEach(r => { const k = r['枠'] + r['周']; (by[k] = by[k] || {})[r['腕']] = r['配牌'] + '@' + r['席']; });
-  const same = Object.keys(by).filter(k => { const o = by[k]; return o.push && o.fold && o.base && o.push === o.fold && o.fold === o.base; }).length;
+  const same = Object.keys(by).filter(k => { const o = by[k]; return o.push && o.fold && o.base && o.push === o.fold && o.fold === o.base && (o.norn === undefined || o.norn === o.base); }).length;
   console.log('同じ山の確かめ：三腕とも配牌と席が同じだった枠×周 ' + same + '／' + Object.keys(by).length);
   fs.rmSync(dir, { recursive: true, force: true });
 } else {
