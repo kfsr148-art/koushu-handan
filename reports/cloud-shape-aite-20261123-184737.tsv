@@ -1,0 +1,2812 @@
+# 雲で回した 七対子・染め・対々の相手あり測り（20261123-184737 UTC・push/base の二腕・同じ山）。
+本	周	枠	腕	席	配牌	結果	役満	形和了	和了型	役名	放銃先リーチ	受リーチ	点棒	巡目	打数
+0	1	q2	push	2	s2s2p3p3p2p4s4z6m1m7z5m6m2	放銃					1	1	-7700	12	13
+0	1	q2	base	2	s2s2p3p3p2p4s4z6m1m7z5m6m2	和了	0	0	ロン	翻牌 白		0	1000	9	9
+0	1	q3	push	3	s7s7s9s9z4z4p2p9s1z2z6p1m5	被ツモ						1	-3000	17	16
+0	1	q3	base	3	s7s7s9s9z4z4p2p9s1z2z6p1m5	被ツモ						1	-4000	11	11
+0	1	q4	push	2	p4p4p2p2z3z3s6s6p3z6s9p7s7	無関係						1	0	11	11
+0	1	q4	base	2	p4p4p2p2z3z3s6s6p3z6s9p7s7	和了	0	0	ツモ	立直+門前清自摸和+自風 西+一盃口		0	8900	12	11
+0	1	q5	push	1	s7s7p2p2m9m9z2z2m6m6m8p9p5	和了	0	1	ロン	七対子		0	1600	4	3
+0	1	q5	base	1	s7s7p2p2m9m9z2z2m6m6m8p9p5	被ツモ						1	-1000	12	12
+0	1	q6	push	2	s3s3m1m1s5s5s7s7m2m2z2z2p4	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		0	8000	2	1
+0	1	q6	base	2	s3s3m1m1s5s5s7s7m2m2z2z2p4	流局						1	1500	18	17
+0	2	q2	push	3	p8p8s1s1p1s4s7p5m2p6z1m1s2	被ツモ						1	-3000	14	13
+0	2	q2	base	3	p8p8s1s1p1s4s7p5m2p6z1m1s2	無関係						0	0	10	9
+0	2	q3	push	3	s6s6m3m3z4z4p1p8p2m4z6p4m1	無関係						1	0	10	8
+0	2	q3	base	3	s6s6m3m3z4z4p1p8p2m4z6p4m1	放銃					0	0	-1300	7	7
+0	2	q4	push	1	p3p3s6s6m4m4m2m2z6z2s5p5m5	無関係						0	0	8	8
+0	2	q4	base	1	p3p3s6s6m4m4m2m2z6z2s5p5m5	無関係						0	0	7	8
+0	2	q5	push	2	s4s4s1s1p8p8s2s2s8s8s7p6m5	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	11	11
+0	2	q5	base	2	s4s4s1s1p8p8s2s2s8s8s7p6m5	流局						1	1500	18	18
+0	2	q6	push	1	p8p8p9p9m8m8m9m9s9s9s5s5s8	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	3	2
+0	2	q6	base	1	p8p8p9p9m8m8m9m9s9s9s5s5s8	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+裏ドラ		0	13000	3	2
+0	3	q2	push	2	z3z3m9m9z2m8p8z5z1p2p5m3s7	流局						0	-3000	18	18
+0	3	q2	base	2	z3z3m9m9z2m8p8z5z1p2p5m3s7	無関係						1	0	13	13
+0	3	q3	push	2	s1s1s4s4m9m9m2s7s5s2m8z5m6	被ツモ						1	-2000	5	5
+0	3	q3	base	2	s1s1s4s4m9m9m2s7s5s2m8z5m6	無関係						1	0	8	7
+0	3	q4	push	2	s1s1s9s9p3p3p2p2p6m9z6z5s4	放銃					1	1	-11600	6	6
+0	3	q4	base	2	s1s1s9s9p3p3p2p2p6m9z6z5s4	和了	0	1	ツモ	立直+門前清自摸和+七対子		1	8400	12	11
+0	3	q5	push	1	s4s4z4z4p5p5m3m3p7p7m4m9p2	無関係						1	0	6	5
+0	3	q5	base	1	s4s4z4z4p5p5m3m3p7p7m4m9p2	無関係						1	0	6	5
+0	3	q6	push	3	p8p8p6p6s1s1z5z5s5s5m7m7z1	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		0	8000	5	4
+0	3	q6	base	3	p8p8p6p6s1s1z5z5s5s5m7m7z1	流局						0	3000	18	18
+0	4	q2	push	3	s9s9z6z6p9z7m7m5z2m4s1m1z1	放銃					0	1	-1000	12	12
+0	4	q2	base	3	s9s9z6z6p9z7m7m5z2m4s1m1z1	和了	0	0	ロン	翻牌 發		0	1000	7	6
+0	4	q3	push	2	m4m4m1m1s3s3z7p1m2s6p4p8z4	放銃					1	1	-7700	11	11
+0	4	q3	base	2	m4m4m1m1s3s3z7p1m2s6p4p8z4	被ツモ						1	-3900	12	12
+0	4	q4	push	1	m5m5p7p7m6m6s3s3z1p6s9z3s4	放銃					0	0	-2000	11	11
+0	4	q4	base	1	m5m5p7p7m6m6s3s3z1p6s9z3s4	放銃					1	1	-8000	10	11
+0	4	q5	push	1	z3z3p1p1m3m3s8s8z7z7s7s5p7	被ツモ						1	-4000	8	7
+0	4	q5	base	1	z3z3p1p1m3m3s8s8z7z7s7s5p7	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+赤ドラ		0	13000	7	6
+0	4	q6	push	1	m6m6s6s6p7p7z3z3z4z4s2s2s1	無関係						1	0	11	11
+0	4	q6	base	1	m6m6s6s6p7p7z3z3z4z4s2s2s1	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	8	8
+0	5	q2	push	1	m4m4m2m2z2p4z1m9m3m7z5p8s1	放銃					0	0	-1500	7	7
+0	5	q2	base	1	m4m4m2m2z2p4z1m9m3m7z5p8s1	被ツモ						0	-300	8	10
+0	5	q3	push	1	z4z4p6p6m5m5m1m8m9z7s5s3z2	放銃					1	1	-5200	13	13
+0	5	q3	base	1	z4z4p6p6m5m5m1m8m9z7s5s3z2	流局						1	-1000	18	18
+0	5	q4	push	1	p4p4p7p7p3p3p9p9m1m5p6s4p2	流局						0	0	1	1
+0	5	q4	base	1	p4p4p7p7p3p3p9p9m1m5p6s4p2	流局						0	0	1	1
+0	5	q5	push	3	p3p3p2p2z3z3m4m4m1m1z5z2m8	和了	0	1	ロン	七対子+ドラ		0	6400	16	15
+0	5	q5	base	3	p3p3p2p2z3z3m4m4m1m1z5z2m8	流局						0	-1500	18	16
+0	5	q6	push	3	m5m5s9s9z3z3z1z1m4m4m7m7m2	被ツモ						0	-2000	11	11
+0	5	q6	base	3	m5m5s9s9z3z3z1z1m4m4m7m7m2	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	13	11
+0	6	q2	push	3	m6m6s5s5p5z4z5s3s6s7p9m3s4	被ツモ						1	-1000	11	10
+0	6	q2	base	3	m6m6s5s5p5z4z5s3s6s7p9m3s4	被ツモ						1	-500	13	12
+0	6	q3	push	1	m5m5p9p9z2z2p1p2z7m1z6z3s4	放銃					1	1	-2600	9	9
+0	6	q3	base	1	m5m5p9p9z2z2p1p2z7m1z6z3s4	被ツモ						1	-1300	9	10
+0	6	q4	push	3	p8p8m1m1s9s9z7z7p1s5m9p9m8	被ツモ						0	-700	13	13
+0	6	q4	base	3	p8p8m1m1s9s9z7z7p1s5m9p9m8	流局						1	-1000	18	18
+0	6	q5	push	2	s1s1z1z1z4z4m9m9m6m6p1p2s7	放銃					1	1	-8000	14	14
+0	6	q5	base	2	s1s1z1z1z4z4m9m9m6m6p1p2s7	流局						1	-1500	18	17
+0	6	q6	push	1	s9s9z4z4p3p3m7m7s1s1p8p8p1	和了	0	1	ロン	七対子		0	1600	3	2
+0	6	q6	base	1	s9s9z4z4p3p3m7m7s1s1p8p8p1	和了	0	1	ロン	ダブル立直+七対子		0	7400	3	3
+0	7	q2	push	2	p1p1z4z4p2m6m1s5z1m2s7s4m5	放銃					1	1	-2600	9	9
+0	7	q2	base	2	p1p1z4z4p2m6m1s5z1m2s7s4m5	無関係						1	0	9	8
+0	7	q3	push	3	p7p7s7s7m1m1p2p1z5p4s3z7s8	放銃					1	1	-12000	13	13
+0	7	q3	base	3	p7p7s7s7m1m1p2p1z5p4s3z7s8	流局						0	1500	18	18
+0	7	q4	push	1	m2m2p3p3z6z6s7s7z7p4s8p8s3	放銃					1	1	-3900	9	9
+0	7	q4	base	1	m2m2p3p3z6z6s7s7z7p4s8p8s3	被ツモ						1	-2000	12	11
+0	7	q5	push	1	p5p5m2m2m3m3z1z1p3p3m5s7s3	被ツモ						1	-3900	15	15
+0	7	q5	base	1	p5p5m2m2m3m3z1z1p3p3m5s7s3	被ツモ						1	-3900	15	15
+0	7	q6	push	2	s1s1p3p3s2s2z6z6z3z3p8p8z1	被ツモ						1	-1300	11	11
+0	7	q6	base	2	s1s1p3p3s2s2z6z6z3z3p8p8z1	和了	0	1	ロン	ダブル立直+七対子+ドラ		0	13000	7	6
+0	8	q2	push	3	s3s3p5p5p6m2z5p3z1p1m3s2s5	放銃					1	1	-14600	14	14
+0	8	q2	base	3	s3s3p5p5p6m2z5p3z1p1m3s2s5	被ツモ						1	-6000	11	11
+0	8	q3	push	2	s5s5z1z1p2p2s9m4p4s8m8m3p6	無関係						1	0	8	7
+0	8	q3	base	2	s5s5z1z1p2p2s9m4p4s8m8m3p6	被ツモ						0	-700	10	10
+0	8	q4	push	1	p6p6s8s8s4s4p2p2s7s1p7s2z4	流局						1	-1000	18	18
+0	8	q4	base	1	p6p6s8s8s4s4p2p2s7s1p7s2z4	被ツモ						1	-2000	15	16
+0	8	q5	push	2	s7s7s6s6m7m7z1z1s1s1s8p8p5	被ツモ						1	-1000	7	6
+0	8	q5	base	2	s7s7s6s6m7m7z1z1s1s1s8p8p5	和了	0	0	ロン	場風 東+混一色		1	4900	14	14
+0	8	q6	push	2	z4z4s1s1p4p4z3z3p9p9s8s8s7	和了	0	1	ロン	七対子		0	1600	1	1
+0	8	q6	base	2	z4z4s1s1p4p4z3z3p9p9s8s8s7	和了	0	1	ロン	ダブル立直+七対子		0	7400	8	7
+0	9	q2	push	1	m4m4p5p5p9z1s5p3m6p8p4m7m1	無関係						0	0	11	10
+0	9	q2	base	1	m4m4p5p5p9z1s5p3m6p8p4m7m1	無関係						0	0	11	10
+0	9	q3	push	2	m5m5s5s5z4z4z1s1p5z2z7z6p7	無関係						1	0	16	16
+0	9	q3	base	2	m5m5s5s5z4z4z1s1p5z2z7z6p7	流局						1	-1000	18	17
+0	9	q4	push	3	z5z5s5s5m8m8s4s4m9m4z6p3p2	流局						1	1500	18	18
+0	9	q4	base	3	z5z5s5s5m8m8s4s4m9m4z6p3p2	和了	0	0	ツモ	翻牌 白+対々和		1	6200	12	12
+0	9	q5	push	2	p8p8p4p4p5p5z2z2m9m9m3s6s1	無関係						1	0	10	10
+0	9	q5	base	2	p8p8p4p4p5p5z2z2m9m9m3s6s1	被ツモ						1	-500	9	8
+0	9	q6	push	3	s6s6s5s5s4s4s3s3s7s7z1z1m2	被ツモ						1	-2000	8	7
+0	9	q6	base	3	s6s6s5s5s4s4s3s3s7s7z1z1m2	被ツモ						1	-2000	8	7
+0	10	q2	push	2	m2m2p2p2p6s8s2z1m3m4p4s3s1	放銃					1	1	-12000	12	12
+0	10	q2	base	2	m2m2p2p2p6s8s2z1m3m4p4s3s1	被ツモ						1	-6000	10	9
+0	10	q3	push	3	m2m2s8s8s3s3m9m3p1z7z3s5p4	無関係						1	0	9	9
+0	10	q3	base	3	m2m2s8s8s3s3m9m3p1z7z3s5p4	被ツモ						0	-3000	12	12
+0	10	q4	push	2	m2m2p3p3p6p6p5p5p4s5m4p1m9	無関係						0	0	6	7
+0	10	q4	base	2	m2m2p3p3p6p6p5p5p4s5m4p1m9	無関係						1	0	10	9
+0	10	q5	push	2	s4s4z3z3s9s9s6s6m4m4z7z2m3	無関係						0	0	8	8
+0	10	q5	base	2	s4s4z3z3s9s9s6s6m4m4z7z2m3	被ツモ						0	-4000	8	9
+0	10	q6	push	1	s6s6m3m3p2p2m4m4z1z1p9p9s1	放銃					1	1	-12000	17	17
+0	10	q6	base	1	s6s6m3m3p2p2m4m4z1z1p9p9s1	和了	0	1	ロン	ダブル立直+七対子		1	8400	12	12
+0	11	q2	push	3	z7z7m7m7z3s3m6s1m8s2s7s8m5	無関係						1	0	8	7
+0	11	q2	base	3	z7z7m7m7z3s3m6s1m8s2s7s8m5	和了	0	0	ロン	翻牌 中		0	1000	4	4
+0	11	q3	push	1	p3p3s9s9z4z4p1s8s3z3s2s6z1	放銃					1	1	-12000	11	12
+0	11	q3	base	1	p3p3s9s9z4z4p1s8s3z3s2s6z1	無関係						0	0	10	10
+0	11	q4	push	2	z4z4s7s7s2s2p8p8m3p7s6s5z6	無関係						0	0	16	16
+0	11	q4	base	2	z4z4s7s7s2s2p8p8m3p7s6s5z6	流局						1	-1500	18	18
+0	11	q5	push	1	s9s9z1z1m1m1p6p6m3m3p5s6z6	放銃					0	0	-1000	7	7
+0	11	q5	base	1	s9s9z1z1m1m1p6p6m3m3p5s6z6	放銃					0	0	-1000	6	6
+0	11	q6	push	3	p3p3z7z7m4m4z1z1m2m2z6z6z5	無関係						0	0	15	15
+0	11	q6	base	3	p3p3z7z7m4m4z1z1m2m2z6z6z5	流局						0	3000	18	17
+0	12	q2	push	1	z4z4s5s5m3s7m8p3p9m5s3z6s1	放銃					0	1	-1500	8	9
+0	12	q2	base	1	z4z4s5s5m3s7m8p3p9m5s3z6s1	無関係						1	0	9	9
+0	12	q3	push	2	s2s2m8m8s8s8p2z5m4z6p3z7z3	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		1	9000	13	12
+0	12	q3	base	2	s2s2m8m8s8s8p2z5m4z6p3z7z3	和了	0	0	ロン	断幺九+ドラ		1	4000	15	15
+0	12	q4	push	1	z6z6s6s6p5p5p2p2m7p8p4m6p7	放銃					1	1	-3900	17	17
+0	12	q4	base	1	z6z6s6s6p5p5p2p2m7p8p4m6p7	和了	0	0	ツモ	翻牌 發+ドラ		1	3000	10	9
+0	12	q5	push	3	s4s4p3p3p8p8p6p6s8s8p9m3s5	放銃					0	0	-2000	11	11
+0	12	q5	base	3	s4s4p3p3p8p8p6p6s8s8p9m3s5	放銃					0	0	-2000	11	11
+0	12	q6	push	3	s4s4z7z7m2m2z1z1p6p6p4p4p3	和了	0	1	ロン	七対子		0	1600	14	14
+0	12	q6	base	3	s4s4z7z7m2m2z1z1p6p6p4p4p3	和了	0	1	ロン	ダブル立直+七対子		0	7400	6	5
+0	13	q2	push	1	z2z2p3p3m4p2s9s1m9p9s8m5s2	被ツモ						1	-2000	18	18
+0	13	q2	base	1	z2z2p3p3m4p2s9s1m9p9s8m5s2	和了	0	0	ロン	自風 南+ドラ		0	2000	12	12
+0	13	q3	push	1	p2p2p5p5p4p4p7m7m1s4m3p6m4	放銃					0	1	-1000	12	13
+0	13	q3	base	1	p2p2p5p5p4p4p7m7m1s4m3p6m4	和了	0	0	ロン	立直+断幺九+一盃口+赤ドラ		0	9000	10	10
+0	13	q4	push	3	p3p3s9s9p6p6m9m9s6s5s3z1p5	流局						1	-1000	18	17
+0	13	q4	base	3	p3p3s9s9p6p6m9m9s6s5s3z1p5	流局						1	-1000	18	17
+0	13	q5	push	1	p9p9s6s6z5z5m1m1z1z1m4m7s5	放銃					0	0	-1000	11	12
+0	13	q5	base	1	p9p9s6s6z5z5m1m1z1z1m4m7s5	放銃					1	1	-12000	5	7
+0	13	q6	push	2	m7m7z4z4p8p8z5z5z1z1s1s1m8	流局						0	1000	18	17
+0	13	q6	base	2	m7m7z4z4p8p8z5z5z1z1s1s1m8	和了	0	1	ロン	ダブル立直+七対子		0	7400	7	7
+0	14	q2	push	3	p8p8m4m4s4m2s6z1m6s8m1m8p7	流局						0	1500	18	18
+0	14	q2	base	3	p8p8m4m4s4m2s6z1m6s8m1m8p7	和了	0	0	ロン	断幺九+ドラ		0	7700	10	10
+0	14	q3	push	3	m8m8s6s6p8p8s7m3m7s2p7p1p4	無関係						0	0	15	14
+0	14	q3	base	3	m8m8s6s6p8p8s7m3m7s2p7p1p4	流局						1	-1000	18	18
+0	14	q4	push	1	s5s5p3p3m7m7m3m3m9p1z4m2p8	流局						1	-1000	18	18
+0	14	q4	base	1	s5s5p3p3m7m7m3m3m9p1z4m2p8	流局						1	1500	18	18
+0	14	q5	push	3	m6m6s3s3s5s5s1s1z4z4m5z3p7	放銃					1	1	-6400	15	15
+0	14	q5	base	3	m6m6s3s3s5s5s1s1z4z4m5z3p7	和了	0	0	ツモ	自風 北		1	2100	12	11
+0	14	q6	push	3	m4m4z4z4m8m8z2z2s8s8z5z5p7	和了	0	1	ロン	七対子		0	1600	2	1
+0	14	q6	base	3	m4m4z4z4m8m8z2z2s8s8z5z5p7	和了	0	1	ロン	ダブル立直+七対子		0	7400	5	4
+0	15	q2	push	2	m7m7s2s2s1z1m3p5m8s8z5z7m6	流局						1	1500	18	17
+0	15	q2	base	2	m7m7s2s2s1z1m3p5m8s8z5z7m6	流局						1	-1000	18	17
+0	15	q3	push	2	z1z1m1m1p4p4p5m7m3s4m2s5z3	放銃					1	1	-7700	7	7
+0	15	q3	base	2	z1z1m1m1p4p4p5m7m3s4m2s5z3	放銃					1	1	-7700	7	7
+0	15	q4	push	3	z6z6z7z7z4z4m7m7p7s3z2m2s6	流局						1	-1500	18	19
+0	15	q4	base	3	z6z6z7z7z4z4m7m7p7s3z2m2s6	無関係						0	0	11	12
+0	15	q5	push	1	s9s9m1m1s6s6m6m6z1z1s8s1m7	流局						1	-1000	18	18
+0	15	q5	base	1	s9s9m1m1s6s6m6m6z1z1s8s1m7	流局						0	3000	18	18
+0	15	q6	push	2	s1s1s8s8z6z6m6m6s3s3p8p8z7	被ツモ						1	-3900	15	15
+0	15	q6	base	2	s1s1s8s8z6z6m6m6s3s3p8p8z7	和了	0	1	ロン	ダブル立直+七対子		0	7400	6	6
+0	16	q2	push	3	s3s3s5s5z5p1p4m5z1s1p5p9m3	被ツモ						0	-1000	12	12
+0	16	q2	base	3	s3s3s5s5z5p1p4m5z1s1p5p9m3	流局						1	-1000	18	18
+0	16	q3	push	2	m4m4p7p7s7s7s1m1p3z4m9s6s2	被ツモ						1	-3000	15	15
+0	16	q3	base	2	m4m4p7p7s7s7s1m1p3z4m9s6s2	和了	0	0	ロン	断幺九+対々和		1	6200	12	12
+0	16	q4	push	3	p7p7s5s5m5m5p3p3p4z3z6m8p8	被ツモ						1	-2000	8	7
+0	16	q4	base	3	p7p7s5s5m5m5p3p3p4z3z6m8p8	被ツモ						1	-2000	8	7
+0	16	q5	push	2	p5p5m3m3s6s6s2s2s7s7z5m6p3	放銃					0	0	-3900	15	15
+0	16	q5	base	2	p5p5m3m3s6s6s2s2s7s7z5m6p3	被ツモ						0	-1300	17	17
+0	16	q6	push	3	s7s7s3s3z1z1s1s1m1m1m9m9z2	和了	0	1	ロン	七対子		0	1600	1	0
+0	16	q6	base	3	s7s7s3s3z1z1s1s1m1m1m9m9z2	和了	0	1	ロン	七対子		0	1600	1	0
+0	17	q2	push	3	p8p8z7z7p5m2s4p1m5m8p2s8p3	無関係						1	0	9	8
+0	17	q2	base	3	p8p8z7z7p5m2s4p1m5m8p2s8p3	放銃					1	1	-12000	6	6
+0	17	q3	push	3	m2m2m7m7s4s4p2m6z6z7s5s2m9	放銃					1	1	-2600	4	4
+0	17	q3	base	3	m2m2m7m7s4s4p2m6z6z7s5s2m9	被ツモ						1	-1000	6	5
+0	17	q4	push	1	m7m7p6p6z2z2m5m5z7m2z5z4s2	被ツモ						0	-3000	7	8
+0	17	q4	base	1	m7m7p6p6z2z2m5m5z7m2z5z4s2	和了	0	1	ロン	立直+七対子+赤ドラ		0	7400	9	9
+0	17	q5	push	1	m5m5s1s1z4z4s3s3p3p3p6s5p4	被ツモ						0	-400	13	13
+0	17	q5	base	1	m5m5s1s1z4z4s3s3p3p3p6s5p4	流局						0	3000	18	18
+0	17	q6	push	2	p3p3s8s8p8p8m9m9m7m7s6s6z5	和了	0	1	ロン	七対子		0	1600	1	1
+0	17	q6	base	2	p3p3s8s8p8p8m9m9m7m7s6s6z5	和了	0	1	ロン	ダブル立直+一発+七対子+裏ドラ		0	13000	1	1
+0	18	q2	push	3	m9m9m5m5z6z5s8z3p7s6m4p6m8	和了	0	1	ロン	七対子		1	2600	11	10
+0	18	q2	base	3	m9m9m5m5z6z5s8z3p7s6m4p6m8	無関係						1	0	15	14
+0	18	q3	push	1	m1m1m7m7s1s1p1m3p5s8z6m5s2	無関係						0	0	10	10
+0	18	q3	base	1	m1m1m7m7s1s1p1m3p5s8z6m5s2	被ツモ						0	-4000	16	17
+0	18	q4	push	1	z5z5s8s8m9m9m1m1p5m4m5m7z2	無関係						1	0	11	11
+0	18	q4	base	1	z5z5s8s8m9m9m1m1p5m4m5m7z2	放銃					1	1	-8000	9	10
+0	18	q5	push	1	m8m8m1m1s1s1s9s9s6s6z1p2z2	無関係						1	0	8	8
+0	18	q5	base	1	m8m8m1m1s1s1s9s9s6s6z1p2z2	放銃					1	1	-5200	10	10
+0	18	q6	push	2	m2m2z1z1s8s8p4p4p3p3p9p9s3	和了	0	1	ロン	七対子		0	1600	8	8
+0	18	q6	base	2	m2m2z1z1s8s8p4p4p3p3p9p9s3	流局						0	3000	18	17
+0	19	q2	push	2	z2z2m9m9z7s9p5m2m7m5m8m3p6	被ツモ						1	-4000	10	9
+0	19	q2	base	2	z2z2m9m9z7s9p5m2m7m5m8m3p6	被ツモ						1	-4000	9	9
+0	19	q3	push	2	m1m1p6p6z4z4z2z3z6p3m2z1s1	被ツモ						0	-1000	7	7
+0	19	q3	base	2	m1m1p6p6z4z4z2z3z6p3m2z1s1	被ツモ						0	-1000	7	7
+0	19	q4	push	2	p1p1z5z5s7s7s4s4s3p9p3m7s2	無関係						0	0	10	10
+0	19	q4	base	2	p1p1z5z5s7s7s4s4s3p9p3m7s2	流局						1	1500	18	17
+0	19	q5	push	1	s9s9s1s1s4s4p1p1m2m2z1p2z3	流局						1	1500	18	18
+0	19	q5	base	1	s9s9s1s1s4s4p1p1m2m2z1p2z3	流局						1	-1000	18	18
+0	19	q6	push	2	s6s6s4s4z5z5m8m8p3p3z1z1m2	和了	0	1	ロン	七対子		0	1600	3	2
+0	19	q6	base	2	s6s6s4s4z5z5m8m8p3p3z1z1m2	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	3	2
+0	20	q2	push	3	z7z7z3z3m9p4s6s5p1p8m7m4m3	流局						0	0	1	0
+0	20	q2	base	3	z7z7z3z3m9p4s6s5p1p8m7m4m3	流局						0	0	1	0
+0	20	q3	push	3	p5p5z4z4m6m6p3s4s7z6s1p8z7	被ツモ						1	-2000	14	13
+0	20	q3	base	3	p5p5z4z4m6m6p3s4s7z6s1p8z7	被ツモ						1	-2000	14	13
+0	20	q4	push	1	m5m5m3m3z1z1p5p5s4m1p7s9p8	被ツモ						1	-500	10	9
+0	20	q4	base	1	m5m5m3m3z1z1p5p5s4m1p7s9p8	被ツモ						0	-500	10	11
+0	20	q5	push	3	m9m9m6m6m1m1s3s3p5p5s6z7p1	被ツモ						0	-500	8	7
+0	20	q5	base	3	m9m9m6m6m1m1s3s3p5p5s6z7p1	被ツモ						0	-500	10	9
+0	20	q6	push	3	m8m8s4s4s7s7p7p7m6m6m1m1s5	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		1	9000	5	4
+0	20	q6	base	3	m8m8s4s4s7s7p7p7m6m6m1m1s5	放銃					1	1	-2600	3	3
+0	21	q2	push	3	s5s5s6s6p8s2z1m8s7p2p5z7m2	放銃					1	1	-5800	16	16
+0	21	q2	base	3	s5s5s6s6p8s2z1m8s7p2p5z7m2	被ツモ						1	-2000	12	12
+0	21	q3	push	2	p2p2s4s4z2z2m6p5z7m9m3z5p1	流局						1	-1000	18	17
+0	21	q3	base	2	p2p2s4s4z2z2m6p5z7m9m3z5p1	無関係						0	0	10	11
+0	21	q4	push	1	p6p6z3z3p7p7m5m5z6s4s9p4z1	被ツモ						0	-2600	7	7
+0	21	q4	base	1	p6p6z3z3p7p7m5m5z6s4s9p4z1	被ツモ						0	-2600	7	7
+0	21	q5	push	1	z4z4m1m1s9s9p3p3p7p7m8p2p1	和了	0	1	ロン	七対子+ドラ		0	6400	6	5
+0	21	q5	base	1	z4z4m1m1s9s9p3p3p7p7m8p2p1	被ツモ						1	-3900	14	13
+0	21	q6	push	1	s7s7z1z1s4s4s6s6s1s1p8p8p4	和了	0	1	ロン	七対子		0	1600	3	3
+0	21	q6	base	1	s7s7z1z1s4s4s6s6s1s1p8p8p4	流局						0	3000	18	18
+0	22	q2	push	3	m6m6z2z2z6s6z3s2s7s3z1m7s4	被ツモ						0	-500	8	7
+0	22	q2	base	3	m6m6z2z2z6s6z3s2s7s3z1m7s4	無関係						0	0	13	14
+0	22	q3	push	3	m9m9m5m5p4p4z7m6s3p5p1p9s9	放銃					0	0	-2900	8	8
+0	22	q3	base	3	m9m9m5m5p4p4z7m6s3p5p1p9s9	流局						1	-1000	18	17
+0	22	q4	push	2	z4z4p4p4s4s4p6p6m3z7m2m1m4	被ツモ						0	-1000	13	13
+0	22	q4	base	2	z4z4p4p4s4s4p6p6m3z7m2m1m4	被ツモ						0	-1000	13	13
+0	22	q5	push	3	s9s9z6z6z3z3s2s2m2m2s7z4m7	放銃					1	1	-1300	8	8
+0	22	q5	base	3	s9s9z6z6z3z3s2s2m2m2s7z4m7	被ツモ						1	-300	9	8
+0	22	q6	push	2	m5m5m6m6p3p3p7p7s4s4p4p4z1	被ツモ						0	-700	13	13
+0	22	q6	base	2	m5m5m6m6p3p3p7p7s4s4p4p4z1	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+ドラ		0	13000	5	4
+0	23	q2	push	3	p9p9m7m7z3m4p4m2m9p3p8s5m6	被ツモ						0	-400	7	6
+0	23	q2	base	3	p9p9m7m7z3m4p4m2m9p3p8s5m6	被ツモ						0	-400	7	6
+0	23	q3	push	2	z5z5p6p6m9m9m5s1m8z7s9p5s3	無関係						1	0	10	9
+0	23	q3	base	2	z5z5p6p6m9m9m5s1m8z7s9p5s3	被ツモ						1	-1000	10	9
+0	23	q4	push	3	m7m7m3m3s1s1s6s6z7p5p4s3p2	放銃					1	1	-7700	6	6
+0	23	q4	base	3	m7m7m3m3s1s1s6s6z7p5p4s3p2	被ツモ						1	-300	13	13
+0	23	q5	push	2	s8s8p4p4z1z1z2z2m9m9s9m2z3	和了	0	1	ツモ	門前清自摸和+七対子		1	4200	10	9
+0	23	q5	base	2	s8s8p4p4z1z1z2z2m9m9s9m2z3	流局						1	1500	18	17
+0	23	q6	push	1	m4m4s6s6z7z7m5m5z6z6m7m7m9	和了	0	1	ロン	七対子		0	1600	4	4
+0	23	q6	base	1	m4m4s6s6z7z7m5m5z6z6m7m7m9	和了	0	1	ロン	ダブル立直+七対子+裏ドラ		0	13000	5	5
+0	24	q2	push	1	z6z6m1m1z1s6z3p6z5p8s3z2p2	無関係						1	0	14	13
+0	24	q2	base	1	z6z6m1m1z1s6z3p6z5p8s3z2p2	流局						1	-1000	18	18
+0	24	q3	push	2	p7p7s4s4m3m3m5m4z7p3s7z1p8	無関係						0	0	16	16
+0	24	q3	base	2	p7p7s4s4m3m3m5m4z7p3s7z1p8	和了	0	0	ロン	断幺九		0	1000	6	7
+0	24	q4	push	1	z4z4z7z7p9p9z6z6m9s1m6s4p6	放銃					0	0	-1000	16	17
+0	24	q4	base	1	z4z4z7z7p9p9z6z6m9s1m6s4p6	和了	0	0	ロン	翻牌 發+翻牌 中+混一色+ドラ		0	8000	5	6
+0	24	q5	push	2	m8m8p3p3s5s5p5p5s4s4p4z5p7	放銃					1	1	-3200	8	8
+0	24	q5	base	2	m8m8p3p3s5s5p5p5s4s4p4z5p7	和了	0	1	ツモ	立直+門前清自摸和+断幺九+七対子+裏ドラ		0	13000	15	14
+0	24	q6	push	1	m6m6p2p2z1z1z2z2s4s4z5z5z4	和了	0	1	ロン	七対子		0	1600	1	0
+0	24	q6	base	1	m6m6p2p2z1z1z2z2s4s4z5z5z4	和了	0	1	ロン	七対子		0	1600	1	0
+0	25	q2	push	2	z1z1p1p1p4s4z6z5p8z2z4z3s7	無関係						0	0	10	10
+0	25	q2	base	2	z1z1p1p1p4s4z6z5p8z2z4z3s7	放銃					1	1	-7200	7	7
+0	25	q3	push	3	m2m2s7s7m4m4z3p2p5p9p8s2m5	無関係						0	0	12	12
+0	25	q3	base	3	m2m2s7s7m4m4z3p2p5p9p8s2m5	放銃					1	1	-3900	9	9
+0	25	q4	push	2	m6m6s8s8s4s4s7s7z6p4z3z1m1	被ツモ						0	-300	7	8
+0	25	q4	base	2	m6m6s8s8s4s4s7s7z6p4z3z1m1	被ツモ						0	-300	7	8
+0	25	q5	push	2	s6s6s9s9m2m2m3m3s3s3z7m5z5	無関係						0	0	10	9
+0	25	q5	base	2	s6s6s9s9m2m2m3m3s3s3z7m5z5	被ツモ						0	-2000	14	15
+0	25	q6	push	3	p2p2m1m1z1z1m4m4s9s9p5p5s3	和了	0	1	ロン	七対子		1	2600	6	6
+0	25	q6	base	3	p2p2m1m1z1z1m4m4s9s9p5p5s3	被ツモ						1	-500	7	6
+0	26	q2	push	2	p4p4z4z4s6p2m3z7s2s9m8z1m7	被ツモ						1	-4000	12	11
+0	26	q2	base	2	p4p4z4z4s6p2m3z7s2s9m8z1m7	被ツモ						1	-4000	12	11
+0	26	q3	push	3	z5z5s9s9p2p2m3z7s8s6p7s2p3	無関係						1	0	14	13
+0	26	q3	base	3	z5z5s9s9p2p2m3z7s8s6p7s2p3	被ツモ						0	-1000	10	10
+0	26	q4	push	3	s2s2z1z1m6m6m7m7s6p2z2z4m9	被ツモ						1	-3000	16	15
+0	26	q4	base	3	s2s2z1z1m6m6m7m7s6p2z2z4m9	被ツモ						1	-3000	16	15
+0	26	q5	push	3	z6z6m9m9s1s1m4m4p7p7z7m3z4	無関係						0	0	6	6
+0	26	q5	base	3	z6z6m9m9s1s1m4m4p7p7z7m3z4	和了	0	0	ロン	翻牌 發+対々和		0	5200	11	13
+0	26	q6	push	3	s4s4p5p5m6m6s1s1p6p6z7z7z4	和了	0	1	ロン	七対子+ドラ		0	6400	1	0
+0	26	q6	base	3	s4s4p5p5m6m6s1s1p6p6z7z7z4	和了	0	1	ロン	七対子+ドラ		0	6400	1	0
+0	27	q2	push	2	z7z7z3z3m1z6p7z2s7p8p5z5s9	無関係						1	0	7	6
+0	27	q2	base	2	z7z7z3z3m1z6p7z2s7p8p5z5s9	和了	0	0	ロン	自風 西+翻牌 中		0	2000	6	7
+0	27	q3	push	2	m1m1s6s6s4s4m9s3p7m2s9z4z1	無関係						1	0	4	4
+0	27	q3	base	2	m1m1s6s6s4s4m9s3p7m2s9z4z1	被ツモ						1	-2000	4	3
+0	27	q4	push	2	z7z7p1p1m9m9z1z1m7m2s8p9s3	被ツモ						1	-2600	13	12
+0	27	q4	base	2	z7z7p1p1m9m9z1z1m7m2s8p9s3	無関係						0	0	10	11
+0	27	q5	push	3	p9p9s4s4s1s1m1m1m2m2m4z1s3	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		1	9000	12	11
+0	27	q5	base	3	p9p9s4s4s1s1m1m1m2m2m4z1s3	無関係						1	0	11	11
+0	27	q6	push	1	s9s9z4z4z5z5s7s7s3s3m5m5p2	和了	1	0	ツモ	地和		0	32000	1	0
+0	27	q6	base	1	s9s9z4z4z5z5s7s7s3s3m5m5p2	和了	1	0	ツモ	地和		0	32000	1	0
+0	28	q2	push	1	s7s7p5p5z6m7s3z4s2m4m6s1p9	無関係						0	0	18	18
+0	28	q2	base	1	s7s7p5p5z6m7s3z4s2m4m6s1p9	流局						0	3000	18	18
+0	28	q3	push	3	z6z6p3p3p5p5z5p1s5p7s1m8z3	被ツモ						1	-6000	8	7
+0	28	q3	base	3	z6z6p3p3p5p5z5p1s5p7s1m8z3	被ツモ						1	-6000	8	7
+0	28	q4	push	3	p8p8p4p4p9p9p3p3s4m7p2s1s2	無関係						0	0	9	8
+0	28	q4	base	3	p8p8p4p4p9p9p3p3s4m7p2s1s2	被ツモ						0	-500	17	16
+0	28	q5	push	1	p3p3s8s8z7z7z5z5s7s7m2s3m7	和了	0	1	ロン	七対子		0	1600	7	7
+0	28	q5	base	1	p3p3s8s8z7z7z5z5s7s7m2s3m7	無関係						1	0	16	16
+0	28	q6	push	1	m7m7m2m2m4m4s7s7s6s6s3s3z7	和了	0	1	ロン	断幺九+七対子		0	3200	4	4
+0	28	q6	base	1	m7m7m2m2m4m4s7s7s6s6s3s3z7	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	5	4
+0	29	q2	push	1	z3z3s2s2z4m7z6s4m5s7z5s5p9	無関係						0	0	10	10
+0	29	q2	base	1	z3z3s2s2z4m7z6s4m5s7z5s5p9	無関係						0	0	12	11
+0	29	q3	push	1	s6s6s3s3s7s7s8m1p9s2m3p3z2	無関係						0	0	5	5
+0	29	q3	base	1	s6s6s3s3s7s7s8m1p9s2m3p3z2	被ツモ						0	-800	9	10
+0	29	q4	push	2	z6z6z1z1s5s5z5z5p8m7p9s9m3	流局						1	1500	18	17
+0	29	q4	base	2	z6z6z1z1s5s5z5z5p8m7p9s9m3	無関係						1	0	14	14
+0	29	q5	push	3	m2m2p4p4p3p3s2s2m6m6s6m7s1	和了	0	1	ロン	七対子		0	1600	3	3
+0	29	q5	base	3	m2m2p4p4p3p3s2s2m6m6s6m7s1	和了	0	0	ロン	断幺九		1	2000	9	10
+0	29	q6	push	1	p3p3m6m6z1z1s7s7s5s5m7m7s3	無関係						1	0	9	9
+0	29	q6	base	1	p3p3m6m6z1z1s7s7s5s5m7m7s3	放銃					1	1	-2600	10	10
+0	30	q2	push	1	m7m7m8m8s3z5m2m4p9s1z3p4p5	被ツモ						0	-2000	11	12
+0	30	q2	base	1	m7m7m8m8s3z5m2m4p9s1z3p4p5	被ツモ						1	-3000	11	11
+0	30	q3	push	3	z4z4p5p5m2m2p2p7s5z2m1p3s2	無関係						0	0	7	5
+0	30	q3	base	3	z4z4p5p5m2m2p2p7s5z2m1p3s2	無関係						0	0	7	5
+0	30	q4	push	3	m1m1p6p6z7z7z2z2m9s2z4m8m7	被ツモ						1	-1300	16	16
+0	30	q4	base	3	m1m1p6p6z7z7z2z2m9s2z4m8m7	無関係						1	0	9	9
+0	30	q5	push	1	m6m6p2p2s2s2m4m4p8p8m1m7m3	和了	0	1	ロン	断幺九+七対子		0	3200	6	6
+0	30	q5	base	1	m6m6p2p2s2s2m4m4p8p8m1m7m3	和了	0	1	ツモ	立直+門前清自摸和+断幺九+七対子		0	9000	13	12
+0	30	q6	push	1	p7p7s8s8z5z5m8m8z6z6p6p6p9	和了	0	1	ツモ	門前清自摸和+七対子+赤ドラ		0	6400	5	4
+0	30	q6	base	1	p7p7s8s8z5z5m8m8z6z6p6p6p9	流局						0	3000	18	18
+0	31	q2	push	2	z3z3s8s8z4p5s9m9s7s2m8p6p3	被ツモ						1	-4000	11	10
+0	31	q2	base	2	z3z3s8s8z4p5s9m9s7s2m8p6p3	無関係						0	0	7	8
+0	31	q3	push	1	s6s6s9s9p2p2z4p7m7s2s7p3p6	被ツモ						0	-2600	11	11
+0	31	q3	base	1	s6s6s9s9p2p2z4p7m7s2s7p3p6	被ツモ						0	-2600	8	9
+0	31	q4	push	1	m8m8m3m3z4z4z7z7m6p2p1z3s7	被ツモ						1	-6000	13	12
+0	31	q4	base	1	m8m8m3m3z4z4z7z7m6p2p1z3s7	被ツモ						1	-6000	13	12
+0	31	q5	push	3	m5m5z1z1p1p1z4z4m7m7p5m1s6	流局						1	-1000	18	17
+0	31	q5	base	3	m5m5z1z1p1p1z4z4m7m7p5m1s6	和了	0	0	ツモ	場風 東+自風 北+ドラ		0	8000	9	9
+0	31	q6	push	3	p3p3p4p4s3s3m9m9m5m5z1z1m6	和了	0	1	ロン	七対子+ドラ		0	6400	3	2
+0	31	q6	base	3	p3p3p4p4s3s3m9m9m5m5z1z1m6	流局						0	3000	18	17
+0	32	q2	push	1	s3s3m8m8z7m1p4m7p8z5p3s7p1	被ツモ						1	-3000	15	15
+0	32	q2	base	1	s3s3m8m8z7m1p4m7p8z5p3s7p1	被ツモ						1	-3000	15	15
+0	32	q3	push	1	p3p3p4p4s8s8m2m8p2p9s3z2p1	無関係						1	0	10	9
+0	32	q3	base	1	p3p3p4p4s8s8m2m8p2p9s3z2p1	和了	0	1	ロン	立直+七対子		1	5200	13	12
+0	32	q4	push	2	s6s6m4m4z5z5z3z3p9z4p7m9s5	和了	0	1	ロン	七対子+ドラ		0	6400	16	17
+0	32	q4	base	2	s6s6m4m4z5z5z3z3p9z4p7m9s5	和了	0	0	ロン	自風 西+翻牌 白+ドラ		0	7700	13	14
+0	32	q5	push	1	s5s5m9m9p9p9s6s6s9s9s8s2s1	無関係						0	0	9	8
+0	32	q5	base	1	s5s5m9m9p9p9s6s6s9s9s8s2s1	無関係						0	0	9	8
+0	32	q6	push	2	m3m3p9p9s5s5p8p8m8m8s2s2p2	無関係						0	0	8	9
+0	32	q6	base	2	m3m3p9p9s5s5p8p8m8m8s2s2p2	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+ドラ		0	13000	5	4
+0	33	q2	push	1	s5s5z6z6z2m1s6m6p7s1p8s9p4	被ツモ						1	-700	13	13
+0	33	q2	base	1	s5s5z6z6z2m1s6m6p7s1p8s9p4	被ツモ						1	-700	13	13
+0	33	q3	push	2	m7m7z3z3m3m3z4m6s7m1s5z5p4	被ツモ						0	-500	12	12
+0	33	q3	base	2	m7m7z3z3m3m3z4m6s7m1s5z5p4	被ツモ						1	-500	13	13
+0	33	q4	push	3	m2m2z3z3s4s4p9p9m3p2s2m6m4	被ツモ						0	-300	8	9
+0	33	q4	base	3	m2m2z3z3s4s4p9p9m3p2s2m6m4	和了	0	1	ロン	立直+七対子		0	4200	6	6
+0	33	q5	push	1	m9m9s3s3s7s7p7p7z7z7z6s1p8	被ツモ						0	-700	10	10
+0	33	q5	base	1	m9m9s3s3s7s7p7p7z7z7z6s1p8	無関係						0	0	10	11
+0	33	q6	push	1	z7z7m8m8m3m3m2m2p6p6z2z2m6	和了	0	1	ロン	七対子		0	1600	5	5
+0	33	q6	base	1	z7z7m8m8m3m3m2m2p6p6z2z2m6	放銃					1	1	-7700	15	15
+0	34	q2	push	3	s5s5s2s2m9m3p8z7m4p6m6m1z4	被ツモ						0	-500	12	13
+0	34	q2	base	3	s5s5s2s2m9m3p8z7m4p6m6m1z4	被ツモ						1	-2000	14	15
+0	34	q3	push	3	s4s4m3m3m8m8p1p2s3p4z6m7z3	被ツモ						1	-1300	18	17
+0	34	q3	base	3	s4s4m3m3m8m8p1p2s3p4z6m7z3	被ツモ						1	-1300	18	17
+0	34	q4	push	2	p6p6s1s1p5p5s6s6m7m1p4s7m3	被ツモ						1	-4000	13	13
+0	34	q4	base	2	p6p6s1s1p5p5s6s6m7m1p4s7m3	和了	0	0	ツモ	立直+門前清自摸和+一盃口		1	6000	10	9
+0	34	q5	push	2	m8m8p9p9s6s6z4z4p6p6z6p7m2	放銃					0	0	-2000	11	12
+0	34	q5	base	2	m8m8p9p9s6s6z4z4p6p6z6p7m2	放銃					0	0	-2000	10	11
+0	34	q6	push	3	p3p3s2s2s5s5m1m1m6m6z3z3s7	和了	0	1	ロン	七対子		0	1600	7	6
+0	34	q6	base	3	p3p3s2s2s5s5m1m1m6m6z3z3s7	和了	0	1	ロン	ダブル立直+七対子		0	7400	3	2
+0	35	q2	push	1	p4p4z6z6z2z3s6p7p6p3s7z5m1	無関係						0	0	8	8
+0	35	q2	base	1	p4p4z6z6z2z3s6p7p6p3s7z5m1	放銃					0	0	-11600	5	7
+0	35	q3	push	1	s4s4m9m9m7m7p3p2z4s2p9z2p8	被ツモ						1	-2000	12	12
+0	35	q3	base	1	s4s4m9m9m7m7p3p2z4s2p9z2p8	被ツモ						1	-1000	9	9
+0	35	q4	push	1	z4z4m3m3s3s3s5s5z3p7z1s7m4	和了	0	1	ツモ	門前清自摸和+七対子		1	4200	17	16
+0	35	q4	base	1	z4z4m3m3s3s3s5s5z3p7z1s7m4	被ツモ						1	-8000	17	18
+0	35	q5	push	1	s3s3s4s4p6p6m6m6p4p4z2m5z7	被ツモ						0	-1000	14	14
+0	35	q5	base	1	s3s3s4s4p6p6m6m6p4p4z2m5z7	和了	0	1	ツモ	立直+門前清自摸和+七対子		0	7400	18	17
+0	35	q6	push	2	s5s5z5z5s8s8m8m8p6p6p8p8s6	和了	0	1	ロン	七対子		0	1600	5	4
+0	35	q6	base	2	s5s5z5z5s8s8m8m8p6p6p8p8s6	流局						0	3000	18	17
+0	36	q2	push	3	s1s1p1p1s8p4m8p6p5p8s7m3m7	放銃					1	1	-7700	9	9
+0	36	q2	base	3	s1s1p1p1s8p4m8p6p5p8s7m3m7	和了	0	0	ロン	立直+平和+ドラ		1	5900	7	6
+0	36	q3	push	2	p8p8z5z5z2z2m3m7p7z6m9s5s7	被ツモ						0	-400	10	10
+0	36	q3	base	2	p8p8z5z5z2z2m3m7p7z6m9s5s7	無関係						1	0	8	9
+0	36	q4	push	3	p5p5s9s9m4m4s4s4p3p1m7s7s5	無関係						0	0	10	10
+0	36	q4	base	3	p5p5s9s9m4m4s4s4p3p1m7s7s5	被ツモ						0	-2000	10	11
+0	36	q5	push	1	p3p3s7s7p9p9z3z3s9s9m6s6p7	放銃					1	1	-5800	12	13
+0	36	q5	base	1	p3p3s7s7p9p9z3z3s9s9m6s6p7	無関係						1	0	16	16
+0	36	q6	push	1	p8p8z7z7p5p5p4p4s9s9m4m4p1	無関係						0	0	8	9
+0	36	q6	base	1	p8p8z7z7p5p5p4p4s9s9m4m4p1	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	16	15
+0	37	q2	push	2	z5z5z4z4p2z3p9p7m2m8m4s5p3	放銃					1	1	-1300	5	5
+0	37	q2	base	2	z5z5z4z4p2z3p9p7m2m8m4s5p3	和了	0	0	ロン	翻牌 白+混一色+ドラ		1	9000	10	11
+0	37	q3	push	2	s8s8p5p5p2p2p3m7m4z6p8m1s3	放銃					0	0	-3900	11	11
+0	37	q3	base	2	s8s8p5p5p2p2p3m7m4z6p8m1s3	流局						0	-3000	18	18
+0	37	q4	push	1	z1z1s4s4z7z7m4m4s6m5p7p9m1	放銃					1	1	-3900	13	13
+0	37	q4	base	1	z1z1s4s4z7z7m4m4s6m5p7p9m1	被ツモ						1	-8000	13	13
+0	37	q5	push	3	s6s6m1m1s8s8m2m2p4p4s1s9p6	無関係						0	0	10	9
+0	37	q5	base	3	s6s6m1m1s8s8m2m2p4p4s1s9p6	流局						0	3000	18	17
+0	37	q6	push	3	z2z2z5z5s6s6s8s8s1s1m8m8p3	被ツモ						0	-500	10	9
+0	37	q6	base	3	z2z2z5z5s6s6s8s8s1s1m8m8p3	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	5	4
+0	38	q2	push	2	m8m8p5p5m5m7m4z1s8s1s4z2m3	被ツモ						0	-3900	18	18
+0	38	q2	base	2	m8m8p5p5m5m7m4z1s8s1s4z2m3	無関係						1	0	15	15
+0	38	q3	push	2	z5z5z7z7z3z3s7m5s8s4p4m6p8	放銃					1	1	-8000	15	16
+0	38	q3	base	2	z5z5z7z7z3z3s7m5s8s4p4m6p8	被ツモ						0	-500	5	7
+0	38	q4	push	3	m6m6p3p3p8p8s5s5z2p4s1s6m9	放銃					0	0	-2900	14	14
+0	38	q4	base	3	m6m6p3p3p8p8s5s5z2p4s1s6m9	被ツモ						1	-1000	8	7
+0	38	q5	push	1	m8m8m6m6m3m3s2s2m1m1s8s4z4	被ツモ						1	-700	9	9
+0	38	q5	base	1	m8m8m6m6m3m3s2s2m1m1s8s4z4	被ツモ						1	-700	9	9
+0	38	q6	push	3	z5z5z3z3s3s3p2p2p3p3p4p4z6	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	4	3
+0	38	q6	base	3	z5z5z3z3s3s3p2p2p3p3p4p4z6	流局						0	3000	18	17
+0	39	q2	push	1	m4m4s6s6m7s4z4s1m5m2z6p9p7	無関係						0	0	15	16
+0	39	q2	base	1	m4m4s6s6m7s4z4s1m5m2z6p9p7	被ツモ						1	-2000	12	12
+0	39	q3	push	1	m9m9z1z1s1s1s7s4p3m4p9s3z6	被ツモ						1	-700	12	12
+0	39	q3	base	1	m9m9z1z1s1s1s7s4p3m4p9s3z6	被ツモ						1	-700	12	12
+0	39	q4	push	3	p5p5m3m3m9m9p3p3p1p2s1m4z7	無関係						1	0	15	14
+0	39	q4	base	3	p5p5m3m3m9m9p3p3p1p2s1m4z7	被ツモ						0	-4000	9	8
+0	39	q5	push	3	p8p8m3m3z6z6m1m1s3s3z4s7z3	放銃					1	1	-8000	8	8
+0	39	q5	base	3	p8p8m3m3z6z6m1m1s3s3z4s7z3	無関係						1	0	10	9
+0	39	q6	push	2	s1s1s6s6p5p5m1m1m3m3s7s7p9	和了	0	1	ロン	七対子+ドラ		0	6400	2	2
+0	39	q6	base	2	s1s1s6s6p5p5m1m1m3m3s7s7p9	被ツモ						1	-2000	14	14
+0	40	q2	push	1	s1s1p2p2p1z4z7m4z6m7m8p6m5	無関係						1	0	14	14
+0	40	q2	base	1	s1s1p2p2p1z4z7m4z6m7m8p6m5	放銃					0	1	-1000	14	14
+0	40	q3	push	2	m1m1m6m6p5p5z2z3s9m9p2m5s6	無関係						0	0	11	11
+0	40	q3	base	2	m1m1m6m6p5p5z2z3s9m9p2m5s6	放銃					0	0	-2900	11	12
+0	40	q4	push	2	p3p3z1z1m9m9z2z2p7m4s1s7z3	流局						1	1000	18	17
+0	40	q4	base	2	p3p3z1z1m9m9z2z2p7m4s1s7z3	放銃					1	1	-4800	14	14
+0	40	q5	push	2	m2m2m5m5p9p9s3s3z3z3s7p8p6	和了	0	1	ロン	七対子		0	1600	10	10
+0	40	q5	base	2	m2m2m5m5p9p9s3s3z3z3s7p8p6	和了	0	1	ロン	立直+七対子		0	4200	7	7
+0	40	q6	push	2	p9p9m1m1s9s9p5p5m2m2s1s1z4	和了	0	1	ロン	七対子		0	1600	5	4
+0	40	q6	base	2	p9p9m1m1s9s9p5p5m2m2s1s1z4	和了	0	1	ロン	ダブル立直+一発+七対子+裏ドラ		0	13000	2	1
+0	41	q2	push	2	p5p5m5m5m4z2s6z5p7z7m8z6m3	被ツモ						1	-3000	12	12
+0	41	q2	base	2	p5p5m5m5m4z2s6z5p7z7m8z6m3	被ツモ						1	-3000	12	12
+0	41	q3	push	3	s5s5z5z5z1z1m7s8p4z6z3m2s7	無関係						1	0	14	13
+0	41	q3	base	3	s5s5z5z5z1z1m7s8p4z6z3m2s7	和了	0	0	ロン	場風 東+翻牌 白		0	2000	9	10
+0	41	q4	push	3	m5m5p7p7m6m6s6s6z7s7p1p2p6	放銃					1	1	-1300	15	15
+0	41	q4	base	3	m5m5p7p7m6m6s6s6z7s7p1p2p6	和了	0	0	ツモ	断幺九+赤ドラ		1	5000	14	13
+0	41	q5	push	2	s2s2p8p8s3s3m5m5z4z4z5m1m6	被ツモ						1	-2000	8	8
+0	41	q5	base	2	s2s2p8p8s3s3m5m5z4z4z5m1m6	被ツモ						1	-2000	8	8
+0	41	q6	push	2	s8s8m1m1s9s9p3p3p6p6p9p9p5	被ツモ						1	-8000	12	11
+0	41	q6	base	2	s8s8m1m1s9s9p3p3p6p6p9p9p5	無関係						1	0	8	7
+0	42	q2	push	2	z7z7z2z2p8p3m7z1p6s9m8p9s7	放銃					1	1	-12000	13	13
+0	42	q2	base	2	z7z7z2z2p8p3m7z1p6s9m8p9s7	無関係						0	0	8	8
+0	42	q3	push	3	p9p9z4z4s2s2s3m8z2m2p8p3z7	流局						1	0	18	18
+0	42	q3	base	3	p9p9z4z4s2s2s3m8z2m2p8p3z7	和了	0	0	ツモ	自風 北		1	2500	9	10
+0	42	q4	push	2	p3p3m4m4p6p6z1z1s3s8z7p1z3	流局						0	0	1	0
+0	42	q4	base	2	p3p3m4m4p6p6z1z1s3s8z7p1z3	流局						0	0	1	0
+0	42	q5	push	3	z4z4z2z2p6p6s9s9s6s6p7m7s1	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	5	4
+0	42	q5	base	3	z4z4z2z2p6p6s9s9s6s6p7m7s1	流局						0	1500	18	17
+0	42	q6	push	3	p9p9z5z5m1m1m5m5p2p2m3m3s7	放銃					0	0	-3900	8	8
+0	42	q6	base	3	p9p9z5z5m1m1m5m5p2p2m3m3s7	放銃					1	1	-8000	11	11
+0	43	q2	push	1	p5p5p4p4m8p9m5s1m9m4s8z5z4	無関係						0	0	10	10
+0	43	q2	base	1	p5p5p4p4m8p9m5s1m9m4s8z5z4	流局						0	1500	18	18
+0	43	q3	push	3	p4p4s6s6z1z1p6z2s4m7z5p3p8	被ツモ						1	-2600	12	12
+0	43	q3	base	3	p4p4s6s6z1z1p6z2s4m7z5p3p8	流局						1	-1000	18	18
+0	43	q4	push	3	p7p7z7z7m5m5m2m2s3s4z1m8p1	無関係						0	0	13	12
+0	43	q4	base	3	p7p7z7z7m5m5m2m2s3s4z1m8p1	被ツモ						1	-6000	18	19
+0	43	q5	push	3	p4p4z2z2z4z4m9m9z1z1p1p2p5	和了	0	1	ツモ	門前清自摸和+七対子+赤ドラ		1	7400	5	4
+0	43	q5	base	3	p4p4z2z2z4z4m9m9z1z1p1p2p5	被ツモ						1	-1300	8	7
+0	43	q6	push	3	m8m8m5m5m1m1s1s1p9p9m2m2p2	和了	0	1	ロン	七対子		0	1600	17	17
+0	43	q6	base	3	m8m8m5m5m1m1s1s1p9p9m2m2p2	流局						0	3000	18	17
+0	44	q2	push	2	m1m1p5p5p7s3p8z4m4m9s4s2s6	無関係						1	0	8	7
+0	44	q2	base	2	m1m1p5p5p7s3p8z4m4m9s4s2s6	無関係						1	0	8	7
+0	44	q3	push	3	p3p3s3s3m9m9m7s1m4m3z1m2s5	放銃					1	1	-2600	14	14
+0	44	q3	base	3	p3p3s3s3m9m9m7s1m4m3z1m2s5	和了	0	0	ツモ	立直+門前清自摸和		0	3000	15	14
+0	44	q4	push	3	m4m4m6m6z2z2s7s7s1p4z6s5z3	被ツモ						1	-3000	8	7
+0	44	q4	base	3	m4m4m6m6z2z2s7s7s1p4z6s5z3	被ツモ						1	-3000	8	7
+0	44	q5	push	2	s1s1z3z3m1m1s3s3s4s4p9z1s5	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	12	11
+0	44	q5	base	2	s1s1z3z3m1m1s3s3s4s4p9z1s5	和了	0	0	ロン	自風 西		0	1000	6	6
+0	44	q6	push	3	m2m2s2s2z2z2p4p4s8s8z6z6s9	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	3	2
+0	44	q6	base	3	m2m2s2s2z2z2p4p4s8s8z6z6s9	和了	0	1	ロン	ダブル立直+七対子+裏ドラ		0	13000	5	4
+0	45	q2	push	3	z4z4p1p1z7s2m4s5z5z1p9z6m5	放銃					1	1	-8000	14	13
+0	45	q2	base	3	z4z4p1p1z7s2m4s5z5z1p9z6m5	無関係						1	0	16	14
+0	45	q3	push	3	p6p6z2z2p3p3m7p1p7m2p4z6m1	無関係						1	0	10	9
+0	45	q3	base	3	p6p6z2z2p3p3m7p1p7m2p4z6m1	放銃					1	1	-8000	13	13
+0	45	q4	push	1	m5m5m7m7p4p4m8m8z4z5m2z7s6	和了	0	1	ロン	七対子+ドラ		0	6400	5	5
+0	45	q4	base	1	m5m5m7m7p4p4m8m8z4z5m2z7s6	和了	0	0	ロン	翻牌 中+混一色		0	5200	12	14
+0	45	q5	push	1	m2m2s4s4m3m3p1p1p3p3m8s6p5	和了	0	1	ロン	七対子+ドラ+赤ドラ		0	8000	12	13
+0	45	q5	base	1	m2m2s4s4m3m3p1p1p3p3m8s6p5	無関係						0	0	11	12
+0	45	q6	push	3	s6s6m2m2s8s8p9p9m8m8z3z3m9	和了	0	1	ロン	七対子+ドラ		0	6400	4	3
+0	45	q6	base	3	s6s6m2m2s8s8p9p9m8m8z3z3m9	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	7	6
+0	46	q2	push	2	p9p9m9m9s1m1m4z3p5p1p2s2m5	無関係						1	0	14	14
+0	46	q2	base	2	p9p9m9m9s1m1m4z3p5p1p2s2m5	流局						1	-1500	18	18
+0	46	q3	push	3	p9p9m2m2m8m8p6p5p1m1z7s1z3	無関係						1	0	11	10
+0	46	q3	base	3	p9p9m2m2m8m8p6p5p1m1z7s1z3	放銃					0	0	-2000	12	12
+0	46	q4	push	3	s9s9m9m9z4z4p4p4z3m4p1z5p9	流局						1	-1000	18	17
+0	46	q4	base	3	s9s9m9m9z4z4p4p4z3m4p1z5p9	被ツモ						1	-3000	7	6
+0	46	q5	push	1	p9p9z5z5s4s4p8p8p4p4s7p6m5	放銃					0	0	-2600	3	3
+0	46	q5	base	1	p9p9z5z5s4s4p8p8p4p4s7p6m5	流局						0	1500	18	17
+0	46	q6	push	2	p7p7s2s2z6z6p9p9z2z2m7m7m1	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	3	2
+0	46	q6	base	2	p7p7s2s2z6z6p9p9z2z2m7m7m1	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	3	2
+0	47	q2	push	3	p5p5p6p6z3s3m4s6m2p9z1z2p1	流局						1	-3000	18	17
+0	47	q2	base	3	p5p5p6p6z3s3m4s6m2p9z1z2p1	放銃					1	1	-7700	16	16
+0	47	q3	push	1	s8s8m5m5s4s4z6p3m2p2m9m4m3	流局						1	1000	18	18
+0	47	q3	base	1	s8s8m5m5s4s4z6p3m2p2m9m4m3	被ツモ						1	-6000	6	6
+0	47	q4	push	1	m2m2m7m7p5p5m9m9z5p2z4z7m5	流局						0	0	1	1
+0	47	q4	base	1	m2m2m7m7p5p5m9m9z5p2z4z7m5	流局						0	0	1	1
+0	47	q5	push	1	z2z2s1s1z7z7p2p2z3z3p4p7s8	被ツモ						1	-4000	10	9
+0	47	q5	base	1	z2z2s1s1z7z7p2p2z3z3p4p7s8	被ツモ						1	-4000	10	9
+0	47	q6	push	3	m9m9s3s3p7p7p5p5p2p2m8m8m4	和了	0	1	ロン	七対子		0	1600	2	2
+0	47	q6	base	3	m9m9s3s3p7p7p5p5p2p2m8m8m4	和了	0	1	ロン	立直+七対子+裏ドラ		0	9000	15	14
+0	48	q2	push	1	s4s4m3m3s7p4p7z4s6p9m4m5p2	被ツモ						0	-500	7	8
+0	48	q2	base	1	s4s4m3m3s7p4p7z4s6p9m4m5p2	和了	0	0	ツモ	断幺九+ドラ+赤ドラ		0	8000	10	10
+0	48	q3	push	1	p8p8p1p1s6s6z4m6z6m1s7p4s2	放銃					0	0	-5800	8	9
+0	48	q3	base	1	p8p8p1p1s6s6z4m6z6m1s7p4s2	放銃					0	1	-2900	9	10
+0	48	q4	push	1	z2z2p7p7s2s2m7m7m1p4z6p6s6	被ツモ						1	-500	11	11
+0	48	q4	base	1	z2z2p7p7s2s2m7m7m1p4z6p6s6	和了	0	0	ロン	自風 南		0	1000	9	10
+0	48	q5	push	1	p9p9m3m3s7s7m6m6p1p1m9s5s3	無関係						0	0	9	9
+0	48	q5	base	1	p9p9m3m3s7s7m6m6p1p1m9s5s3	被ツモ						0	-1000	11	11
+0	48	q6	push	3	z5z5s2s2s7s7p9p9z1z1p7p7z2	和了	0	1	ロン	七対子		0	1600	3	2
+0	48	q6	base	3	z5z5s2s2s7s7p9p9z1z1p7p7z2	和了	0	1	ロン	ダブル立直+七対子		0	7400	3	2
+0	49	q2	push	1	m9m9m5m5z4z3s3p4p1p3z6p2m4	放銃					1	1	-12000	10	10
+0	49	q2	base	1	m9m9m5m5z4z3s3p4p1p3z6p2m4	被ツモ						1	-6000	13	12
+0	49	q3	push	3	p5p5s4s4s3s3p7s7s6z5z2p3z4	流局						1	-1500	18	17
+0	49	q3	base	3	p5p5s4s4s3s3p7s7s6z5z2p3z4	流局						0	3000	18	17
+0	49	q4	push	2	m9m9m2m2p8p8p9p9s3s9s5z3z6	無関係						0	0	10	11
+0	49	q4	base	2	m9m9m2m2p8p8p9p9s3s9s5z3z6	和了	0	0	ロン	立直+ドラ+裏ドラ		1	7200	16	15
+0	49	q5	push	1	p5p5p1p1p7p7p9p9p2p2z2s4m8	被ツモ						0	-500	7	7
+0	49	q5	base	1	p5p5p1p1p7p7p9p9p2p2z2s4m8	被ツモ						0	-500	7	7
+0	49	q6	push	1	z3z3m5m5s4s4m3m3s2s2p9p9m2	和了	0	1	ロン	七対子		0	1600	3	2
+0	49	q6	base	1	z3z3m5m5s4s4m3m3s2s2p9p9m2	被ツモ						1	-1300	12	12
+0	50	q2	push	1	p5p5p3p3m1z1p8z7z3m4s2p7m2	放銃					1	1	-5200	11	11
+0	50	q2	base	1	p5p5p3p3m1z1p8z7z3m4s2p7m2	流局						1	-1500	18	18
+0	50	q3	push	3	s4s4z2z2m5m5m1m9p5p4z1s3p1	無関係						0	0	7	7
+0	50	q3	base	3	s4s4z2z2m5m5m1m9p5p4z1s3p1	無関係						0	0	7	7
+0	50	q4	push	1	p1p1z6z6p9p9m2m2s4z1p7s9m5	流局						1	-1000	18	18
+0	50	q4	base	1	p1p1z6z6p9p9m2m2s4z1p7s9m5	和了	0	0	ロン	翻牌 發+対々和		0	5200	8	9
+0	50	q5	push	1	z7z7m4m4z3z3s3s3m7m7m9z5p1	和了	0	1	ロン	七対子		0	1600	5	5
+0	50	q5	base	1	z7z7m4m4z3z3s3s3m7m7m9z5p1	和了	0	1	ロン	ダブル立直+七対子		0	7400	5	5
+0	50	q6	push	1	z1z1m6m6m2m2s7s7p8p8s6s6s1	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		0	8000	11	10
+0	50	q6	base	1	z1z1m6m6m2m2s7s7p8p8s6s6s1	流局						0	3000	18	18
+0	51	q2	push	3	m2m2z1z1s7m4s1s2m8z5p7s5z2	被ツモ						1	-2000	8	7
+0	51	q2	base	3	m2m2z1z1s7m4s1s2m8z5p7s5z2	被ツモ						1	-2000	8	7
+0	51	q3	push	3	m9m9m6m6z3z3s4s5s2s1p9z5z2	無関係						1	0	5	4
+0	51	q3	base	3	m9m9m6m6z3z3s4s5s2s1p9z5z2	無関係						1	0	5	4
+0	51	q4	push	3	z1z1s1s1m9m9s7s7p2m2z7z3m1	無関係						1	0	8	7
+0	51	q4	base	3	z1z1s1s1m9m9s7s7p2m2z7z3m1	無関係						1	0	11	10
+0	51	q5	push	2	p6p6p7p7m7m7z6z6p2p2z4z2s5	無関係						1	0	12	12
+0	51	q5	base	2	p6p6p7p7m7m7z6z6p2p2z4z2s5	流局						1	1500	18	18
+0	51	q6	push	3	p7p7m6m6p6p6m7m7m2m2z5z5p2	無関係						1	0	8	7
+0	51	q6	base	3	p7p7m6m6p6p6m7m7m2m2z5z5p2	和了	0	1	ロン	ダブル立直+七対子		1	8400	12	11
+0	52	q2	push	1	s6s6m8m8m3m5p7m2m7z3s2s8s4	被ツモ						1	-1600	17	17
+0	52	q2	base	1	s6s6m8m8m3m5p7m2m7z3s2s8s4	和了	0	0	ロン	立直+平和+ドラ+裏ドラ		1	9700	7	7
+0	52	q3	push	2	p5p5s7s7z1z1z2m8z3z6m7p6m6	無関係						1	0	10	9
+0	52	q3	base	2	p5p5s7s7z1z1z2m8z3z6m7p6m6	放銃					1	1	-5200	9	10
+0	52	q4	push	3	z4z4p3p3m9m9p6p6m7m6p1s4m3	和了	0	1	ツモ	門前清自摸和+七対子		1	4200	13	12
+0	52	q4	base	3	z4z4p3p3m9m9p6p6m7m6p1s4m3	被ツモ						1	-4000	7	8
+0	52	q5	push	1	s6s6s1s1z2z2p5p5m3m3p2p1s4	被ツモ						1	-2000	6	6
+0	52	q5	base	1	s6s6s1s1z2z2p5p5m3m3p2p1s4	和了	0	0	ツモ	自風 南+対々和+三暗刻		0	8000	8	7
+0	52	q6	push	2	z2z2p4p4z4z4z3z3p1p1s6s6s8	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	10	9
+0	52	q6	base	2	z2z2p4p4z4z4z3z3p1p1s6s6s8	和了	0	1	ロン	ダブル立直+七対子+ドラ+裏ドラ		1	18000	12	11
+0	53	q2	push	2	p8p8z6z6m8m1s9p6s8m3s2z7z1	放銃					0	0	-1000	5	6
+0	53	q2	base	2	p8p8z6z6m8m1s9p6s8m3s2z7z1	被ツモ						0	-500	13	13
+0	53	q3	push	1	m6m6s8s8p8p8m3z5z4m8z1s6m9	被ツモ						1	-2000	15	15
+0	53	q3	base	1	m6m6s8s8p8p8m3z5z4m8z1s6m9	無関係						1	0	15	17
+0	53	q4	push	1	m2m2p7p7s9s9p8p8s3z7p9m8z1	被ツモ						1	-2000	16	16
+0	53	q4	base	1	m2m2p7p7s9s9p8p8s3z7p9m8z1	被ツモ						1	-2000	16	16
+0	53	q5	push	3	z1z1p6p6p1p1s5s5z4z4p7m3z3	和了	0	1	ロン	七対子		0	1600	8	7
+0	53	q5	base	3	z1z1p6p6p1p1s5s5z4z4p7m3z3	被ツモ						0	-1000	7	8
+0	53	q6	push	1	p9p9m6m6s9s9z2z2m4m4p4p4p6	和了	0	1	ロン	七対子		0	1600	3	3
+0	53	q6	base	1	p9p9m6m6s9s9z2z2m4m4p4p4p6	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	3	2
+0	54	q2	push	1	z1z1s3s3s6m9p8p6m5s1z3z2m3	和了	0	1	ツモ	門前清自摸和+七対子+混一色		0	12000	11	11
+0	54	q2	base	1	z1z1s3s3s6m9p8p6m5s1z3z2m3	無関係						0	0	11	12
+0	54	q3	push	1	p4p4s7s7z6z6z1m3s3m2m1s4p6	無関係						1	0	9	9
+0	54	q3	base	1	p4p4s7s7z6z6z1m3s3m2m1s4p6	和了	0	0	ツモ	立直+門前清自摸和+ドラ+裏ドラ		0	8900	8	8
+0	54	q4	push	1	s2s2z7z7p5p5m7m7p4s4m6z2s8	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	15	14
+0	54	q4	base	1	s2s2z7z7p5p5m7m7p4s4m6z2s8	流局						0	3000	18	18
+0	54	q5	push	1	m4m4m8m8s3s3m9m9z2z2m1p4p2	無関係						0	0	8	7
+0	54	q5	base	1	m4m4m8m8s3s3m9m9z2z2m1p4p2	被ツモ						1	-1600	15	15
+0	54	q6	push	2	p1p1z3z3z1z1s1s1m8m8p3p3p4	和了	0	1	ロン	七対子		0	1600	7	7
+0	54	q6	base	2	p1p1z3z3z1z1s1s1m8m8p3p3p4	和了	0	1	ロン	ダブル立直+七対子+赤ドラ+裏ドラ		1	14000	14	14
+0	55	q2	push	2	p8p8m4m4s5s7z2m1z1s9p6m3m7	流局						1	-1000	18	18
+0	55	q2	base	2	p8p8m4m4s5s7z2m1z1s9p6m3m7	被ツモ						0	-1000	10	10
+0	55	q3	push	1	s3s3z7z7z1z1p8z4p7m4m5s8m6	放銃					1	1	-5200	15	16
+0	55	q3	base	1	s3s3z7z7z1z1p8z4p7m4m5s8m6	和了	0	0	ロン	場風 東+翻牌 中		0	2600	4	4
+0	55	q4	push	3	z3z3p3p3z4z4m1m1s8s9m4p9p4	放銃					1	1	-1300	15	15
+0	55	q4	base	3	z3z3p3p3z4z4m1m1s8s9m4p9p4	流局						1	-1500	18	17
+0	55	q5	push	3	s3s3z2z2m5m5p6p6m3m3z1s1p1	放銃					0	0	-1000	10	10
+0	55	q5	base	3	s3s3z2z2m5m5p6p6m3m3z1s1p1	流局						0	1500	18	18
+0	55	q6	push	2	p4p4p1p1p3p3s9s9z1z1z7z7s4	被ツモ						1	-2000	15	15
+0	55	q6	base	2	p4p4p1p1p3p3s9s9z1z1z7z7s4	放銃					1	1	-7700	16	16
+0	56	q2	push	3	m2m2p7p7z5s3z7m6s1p9s9z4m5	被ツモ						1	-6000	8	8
+0	56	q2	base	3	m2m2p7p7z5s3z7m6s1p9s9z4m5	被ツモ						1	-6000	8	8
+0	56	q3	push	2	s1s1z3z3z1z1m9m8s6z6m1p3p8	無関係						0	0	11	10
+0	56	q3	base	2	s1s1z3z3z1z1m9m8s6z6m1p3p8	放銃					1	1	-5800	14	16
+0	56	q4	push	3	m5m5s9s9m2m2p8p8z2z6p3s4m7	和了	0	1	ツモ	門前清自摸和+七対子		1	4200	10	9
+0	56	q4	base	3	m5m5s9s9m2m2p8p8z2z6p3s4m7	和了	0	1	ツモ	立直+門前清自摸和+七対子		0	7400	5	4
+0	56	q5	push	1	s7s7z7z7m2m2s5s5s8s8z6p5s2	流局						0	-1000	18	18
+0	56	q5	base	1	s7s7z7z7m2m2s5s5s8s8z6p5s2	和了	0	0	ツモ	翻牌 中+混一色		1	6200	8	8
+0	56	q6	push	3	s6s6p2p2z4z4m6m6s8s8p4p4z5	和了	1	0	ツモ	地和		0	32000	1	0
+0	56	q6	base	3	s6s6p2p2z4z4m6m6s8s8p4p4z5	和了	1	0	ツモ	地和		0	32000	1	0
+0	57	q2	push	1	z2z2z4z4p3s5p4m6m1m4m8m3z5	無関係						0	0	13	13
+0	57	q2	base	1	z2z2z4z4p3s5p4m6m1m4m8m3z5	被ツモ						1	-700	7	8
+0	57	q3	push	2	p6p6s5s5p1p1z4z6z1z3z7s9m3	放銃					1	1	-9600	11	11
+0	57	q3	base	2	p6p6s5s5p1p1z4z6z1z3z7s9m3	無関係						1	0	9	9
+0	57	q4	push	2	m8m8z2z2m3m3s8s8p7p6z7p4z3	無関係						0	0	15	16
+0	57	q4	base	2	m8m8z2z2m3m3s8s8p7p6z7p4z3	流局						0	3000	18	17
+0	57	q5	push	1	m2m2m1m1s5s5s8s8z7z7m9p3p8	無関係						1	0	11	11
+0	57	q5	base	1	m2m2m1m1s5s5s8s8z7z7m9p3p8	和了	0	1	ツモ	立直+門前清自摸和+七対子		1	8400	17	17
+0	57	q6	push	3	s8s8z4z4p5p5s4s4m3m3s3s3m9	流局						1	1500	18	17
+0	57	q6	base	3	s8s8z4z4p5p5s4s4m3m3s3s3m9	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+裏ドラ		0	13000	11	10
+0	58	q2	push	2	s7s7z2z2m5z1s9p1p2z6p7m8m7	流局						1	1000	18	17
+0	58	q2	base	2	s7s7z2z2m5z1s9p1p2z6p7m8m7	被ツモ						1	-500	16	15
+0	58	q3	push	2	m5m5m7m7s7s7z4m1p7s4p5z1p4	被ツモ						0	-6000	7	7
+0	58	q3	base	2	m5m5m7m7s7s7z4m1p7s4p5z1p4	被ツモ						0	-6000	7	7
+0	58	q4	push	1	z3z3m8m8m4m4p3p3p5m3m1m2s2	流局						1	1500	18	18
+0	58	q4	base	1	z3z3m8m8m4m4p3p3p5m3m1m2s2	流局						1	1500	18	18
+0	58	q5	push	2	m6m6s7s7m3m3m7m7s9s9s2p5s6	流局						1	-3000	18	18
+0	58	q5	base	2	m6m6s7s7m3m3m7m7s9s9s2p5s6	無関係						0	0	16	15
+0	58	q6	push	1	p9p9m3m3z5z5p2p2p6p6p4p4p5	放銃					0	0	-5800	13	14
+0	58	q6	base	1	p9p9m3m3z5z5p2p2p6p6p4p4p5	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	3	2
+0	59	q2	push	3	m1m1z6z6s8z2p2z5p1s9m7p8m4	放銃					1	1	-5200	9	9
+0	59	q2	base	3	m1m1z6z6s8z2p2z5p1s9m7p8m4	流局						1	-1000	18	19
+0	59	q3	push	3	p2p2m5m5p3p3m1z2m4m7z5z6s7	無関係						0	0	15	15
+0	59	q3	base	3	p2p2m5m5p3p3m1z2m4m7z5z6s7	和了	0	0	ツモ	断幺九+ドラ+赤ドラ		0	4000	13	14
+0	59	q4	push	2	p6p6s9s9p4p4m6m6s4s7m7p5m1	無関係						1	0	10	10
+0	59	q4	base	2	p6p6s9s9p4p4m6m6s4s7m7p5m1	被ツモ						1	-700	17	17
+0	59	q5	push	2	z7z7s9s9p3p3m2m2s5s5m1s8m4	無関係						0	0	12	11
+0	59	q5	base	2	z7z7s9s9p3p3m2m2s5s5m1s8m4	放銃					0	0	-1500	9	10
+0	59	q6	push	3	p9p9z4z4s1s1z7z7m5m5m2m2m7	被ツモ						1	-500	17	17
+0	59	q6	base	3	p9p9z4z4s1s1z7z7m5m5m2m2m7	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	4	3
+0	60	q2	push	2	s2s2p9p9p2m4p5p6p7m7s3m5s1	無関係						0	0	10	10
+0	60	q2	base	2	s2s2p9p9p2m4p5p6p7m7s3m5s1	放銃					0	0	-7700	10	10
+0	60	q3	push	2	s9s9m4m4m2m2m8z4p4p5p2s6s5	無関係						0	0	11	11
+0	60	q3	base	2	s9s9m4m4m2m2m8z4p4p5p2s6s5	和了	0	0	ロン	立直+一発+断幺九		0	6200	11	11
+0	60	q4	push	3	s6s6m9m9s4s4m3m3s1z7p5z2s3	無関係						1	0	9	9
+0	60	q4	base	3	s6s6m9m9s4s4m3m3s1z7p5z2s3	和了	0	0	ロン	立直+一盃口+ドラ		0	9000	14	14
+0	60	q5	push	3	z4z4m1m1z2z2p5p5p8p8p3m6m3	流局						1	-1000	18	17
+0	60	q5	base	3	z4z4m1m1z2z2p5p5p8p8p3m6m3	放銃					1	1	-18000	10	10
+0	60	q6	push	2	z3z3p6p6s7s7m3m3z4z4m8m8p8	和了	0	1	ロン	七対子+赤ドラ		0	3200	6	6
+0	60	q6	base	2	z3z3p6p6s7s7m3m3z4z4m8m8p8	和了	0	1	ロン	ダブル立直+七対子		0	7400	5	4
+0	61	q2	push	1	p1p1s7s7m6p9m3m2z2p2m5z1m9	和了	0	1	ロン	七対子		0	1600	9	9
+0	61	q2	base	1	p1p1s7s7m6p9m3m2z2p2m5z1m9	和了	0	0	ツモ	自風 南		0	1100	10	10
+0	61	q3	push	3	m3m3p5p5s7s7z3m4s1m1s6s8s4	被ツモ						0	-2000	11	10
+0	61	q3	base	3	m3m3p5p5s7s7z3m4s1m1s6s8s4	放銃					0	0	-7700	8	8
+0	61	q4	push	2	s1s1z2z2m2m2m1m1m6m8p7z3s4	被ツモ						1	-4000	8	7
+0	61	q4	base	2	s1s1z2z2m2m2m1m1m6m8p7z3s4	被ツモ						1	-4000	8	7
+0	61	q5	push	2	z2z2s8s8m8m8m9m9z3z3p8m3p9	被ツモ						1	-700	16	17
+0	61	q5	base	2	z2z2s8s8m8m8m9m9z3z3p8m3p9	和了	0	0	ツモ	自風 西+混一色+ドラ		1	9000	13	14
+0	61	q6	push	3	m2m2m1m1s4s4p5p5s5s5p2p2s2	放銃					1	1	-2000	7	6
+0	61	q6	base	3	m2m2m1m1s4s4p5p5s5s5p2p2s2	和了	0	1	ロン	ダブル立直+七対子		0	7400	13	13
+0	62	q2	push	2	s7s7z4z4z5m7p7s4m2s2p9m3s6	無関係						0	0	10	10
+0	62	q2	base	2	s7s7z4z4z5m7p7s4m2s2p9m3s6	無関係						0	0	10	10
+0	62	q3	push	1	m1m1s4s4s6s6p9z4z1m3m6s1s5	放銃					0	1	-2000	17	16
+0	62	q3	base	1	m1m1s4s4s6s6p9z4z1m3m6s1s5	和了	0	1	ロン	立直+七対子+ドラ+裏ドラ		1	14000	9	9
+0	62	q4	push	1	s4s4m7m7s3s3z3z3s6p6z6s9z7	被ツモ						1	-1000	7	7
+0	62	q4	base	1	s4s4m7m7s3s3z3z3s6p6z6s9z7	被ツモ						1	-1000	7	7
+0	62	q5	push	3	m4m4z4z4z2z2p8p8p2p2z5m9s1	放銃					0	0	-2000	7	8
+0	62	q5	base	3	m4m4z4z4z2z2p8p8p2p2z5m9s1	無関係						1	0	9	8
+0	62	q6	push	3	p8p8s2s2m8m8z5z5s7s7p1p1z7	和了	0	1	ロン	七対子+ドラ		0	6400	1	0
+0	62	q6	base	3	p8p8s2s2m8m8z5z5s7s7p1p1z7	和了	0	1	ロン	七対子+ドラ		0	6400	1	0
+0	63	q2	push	1	p1p1p4p4m4z1z7m8p5s6m6p8s7	被ツモ						1	-1300	17	17
+0	63	q2	base	1	p1p1p4p4m4z1z7m8p5s6m6p8s7	被ツモ						1	-1300	17	17
+0	63	q3	push	1	z2z2p5p5m1m1p4p1m6p3m7p9m5	無関係						1	0	12	12
+0	63	q3	base	1	z2z2p5p5m1m1p4p1m6p3m7p9m5	被ツモ						1	-2000	11	11
+0	63	q4	push	1	s4s4s5s5z5z5p9p9z4p3p5m1z1	無関係						0	0	9	9
+0	63	q4	base	1	s4s4s5s5z5z5p9p9z4p3p5m1z1	放銃					0	0	-2900	6	7
+0	63	q5	push	3	s4s4p8p8s7s7m3m3z5z5p1m6p4	流局						1	0	18	18
+0	63	q5	base	3	s4s4p8p8s7s7m3m3z5z5p1m6p4	流局						1	-1500	18	19
+0	63	q6	push	1	z4z4m7m7s2s2z7z7p5p5p3p3s7	放銃					1	1	-7700	18	18
+0	63	q6	base	1	z4z4m7m7s2s2z7z7p5p5p3p3s7	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	7	6
+0	64	q2	push	2	m6m6p2p2s4m9p6m2m4p3m7p4m3	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	7	6
+0	64	q2	base	2	m6m6p2p2s4m9p6m2m4p3m7p4m3	和了	0	0	ロン	立直+断幺九+裏ドラ		1	7200	11	11
+0	64	q3	push	3	z2z2p9p9z1z1p6m7p1s1z5s4p2	被ツモ						1	-4000	18	17
+0	64	q3	base	3	z2z2p9p9z1z1p6m7p1s1z5s4p2	放銃					1	1	-3900	11	12
+0	64	q4	push	3	p7p7m5m5p5p5p2p2s2s4z3s9s7	放銃					1	1	-8000	13	14
+0	64	q4	base	3	p7p7m5m5p5p5p2p2s2s4z3s9s7	流局						1	-1000	18	17
+0	64	q5	push	1	p2p2z1z1p3p3s2s2z7z7p6m4m8	被ツモ						1	-3000	8	7
+0	64	q5	base	1	p2p2z1z1p3p3s2s2z7z7p6m4m8	無関係						1	0	13	13
+0	64	q6	push	3	p6p6p8p8m1m1s9s9s7s7m7m7z1	和了	0	1	ロン	七対子		0	1600	2	1
+0	64	q6	base	3	p6p6p8p8m1m1s9s9s7s7m7m7z1	流局						0	3000	18	17
+0	65	q2	push	2	p9p9m1m1z7m3p6s1m4s7s5z6m5	無関係						1	0	17	18
+0	65	q2	base	2	p9p9m1m1z7m3p6s1m4s7s5z6m5	被ツモ						0	-2000	17	17
+0	65	q3	push	2	p6p6m6m6s7s7s9s3z1z5p9m5z7	流局						1	-1000	18	18
+0	65	q3	base	2	p6p6m6m6s7s7s9s3z1z5p9m5z7	被ツモ						0	-2000	14	14
+0	65	q4	push	2	p9p9m5m5s9s9s8s8s1z7s4m7s3	放銃					0	0	-1300	13	14
+0	65	q4	base	2	p9p9m5m5s9s9s8s8s1z7s4m7s3	無関係						0	0	10	10
+0	65	q5	push	3	m5m5z3z3m3m3p3p3p6p6p5s1s3	無関係						0	0	7	6
+0	65	q5	base	3	m5m5z3z3m3m3p3p3p6p6p5s1s3	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+赤ドラ		0	13000	4	3
+0	65	q6	push	1	s8s8p8p8p4p4m9m9m2m2p1p1m7	無関係						0	0	7	7
+0	65	q6	base	1	s8s8p8p8p4p4m9m9m2m2p1p1m7	和了	0	1	ロン	ダブル立直+七対子+ドラ		0	13000	12	12
+0	66	q2	push	3	s7s7m4m4z3s6p9z5p4s3m9m7p8	被ツモ						1	-1300	10	9
+0	66	q2	base	3	s7s7m4m4z3s6p9z5p4s3m9m7p8	流局						1	-1000	18	17
+0	66	q3	push	3	m5m5p7p7p5p5s7s6p2m8p3m1p6	放銃					1	1	-1600	8	8
+0	66	q3	base	3	m5m5p7p7p5p5s7s6p2m8p3m1p6	流局						0	1500	17	19
+0	66	q4	push	1	p5p5m4m4s2s2z1z1s8p8p1z3s4	被ツモ						1	-4000	7	6
+0	66	q4	base	1	p5p5m4m4s2s2z1z1s8p8p1z3s4	被ツモ						1	-4000	7	6
+0	66	q5	push	1	p2p2z2z2m4m4s9s9p6p6p1m5m7	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	8	7
+0	66	q5	base	1	p2p2z2z2m4m4s9s9p6p6p1m5m7	和了	0	1	ツモ	立直+門前清自摸和+七対子		1	8400	15	14
+0	66	q6	push	2	p9p9p2p2m8m8z1z1s6s6s7s7m4	和了	0	1	ロン	七対子		0	1600	7	7
+0	66	q6	base	2	p9p9p2p2m8m8z1z1s6s6s7s7m4	和了	0	1	ロン	ダブル立直+七対子		0	7400	9	8
+0	67	q2	push	2	p8p8s9s9p9z7m2s3s5m3z2p6s8	放銃					1	1	-16000	11	12
+0	67	q2	base	2	p8p8s9s9p9z7m2s3s5m3z2p6s8	放銃					0	0	-7700	9	10
+0	67	q3	push	3	m1m1s9s9s8s8p6s3m4p9z7z4z2	被ツモ						1	-3000	16	15
+0	67	q3	base	3	m1m1s9s9s8s8p6s3m4p9z7z4z2	放銃					0	0	-3900	9	10
+0	67	q4	push	3	s1s1s9s9p3p3m3m3p8m2m4s5m9	和了	0	1	ロン	七対子		1	3600	17	16
+0	67	q4	base	3	s1s1s9s9p3p3m3m3p8m2m4s5m9	放銃					0	0	-1500	11	11
+0	67	q5	push	1	m9m9m3m3z1z1p9p9s9s9m6z6m5	和了	0	1	ロン	七対子		0	1600	1	1
+0	67	q5	base	1	m9m9m3m3z1z1p9p9s9s9m6z6m5	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	3	2
+0	67	q6	push	3	m3m3z1z1p2p2p7p7z6z6m5m5z7	和了	0	1	ツモ	門前清自摸和+七対子+赤ドラ		1	7400	7	6
+0	67	q6	base	3	m3m3z1z1p2p2p7p7z6z6m5m5z7	和了	0	1	ロン	ダブル立直+七対子+赤ドラ		0	9000	4	3
+0	68	q2	push	1	m6m6s8s8z5p1p9z4p8z2s6m8m9	無関係						1	0	15	15
+0	68	q2	base	1	m6m6s8s8z5p1p9z4p8z2s6m8m9	被ツモ						1	-6000	18	18
+0	68	q3	push	1	m9m9m7m7m1m1s5m4p2s3s4z6p3	放銃					0	0	-7700	12	12
+0	68	q3	base	1	m9m9m7m7m1m1s5m4p2s3s4z6p3	放銃					0	0	-2900	8	10
+0	68	q4	push	2	z6z6p7p7z7z7s8s8z5s2m8p2p4	無関係						1	0	17	17
+0	68	q4	base	2	z6z6p7p7z7z7s8s8z5s2m8p2p4	和了	0	0	ロン	翻牌 發+翻牌 中		0	2000	5	5
+0	68	q5	push	1	s6s6m1m1z4z4m3m3p2p2s2p7m9	放銃					0	0	-3900	13	15
+0	68	q5	base	1	s6s6m1m1z4z4m3m3p2p2s2p7m9	被ツモ						0	-1000	9	10
+0	68	q6	push	1	z7z7s4s4m8m8m7m7s2s2p6p6z2	被ツモ						1	-2000	13	13
+0	68	q6	base	1	z7z7s4s4m8m8m7m7s2s2p6p6z2	和了	0	1	ロン	ダブル立直+七対子		0	7400	2	2
+0	69	q2	push	1	p5p5s6s6s8m8s5p1s2s3p2p3p8	流局						1	-3000	18	18
+0	69	q2	base	1	p5p5s6s6s8m8s5p1s2s3p2p3p8	和了	0	0	ツモ	立直+門前清自摸和+平和		0	3700	14	13
+0	69	q3	push	1	m8m8p1p1m5m5s5z1p5m1p9s8z5	無関係						1	0	8	8
+0	69	q3	base	1	m8m8p1p1m5m5s5z1p5m1p9s8z5	無関係						1	0	8	8
+0	69	q4	push	2	z5z5s8s8m2m2s3s3p4z6m7s9m5	無関係						0	0	13	14
+0	69	q4	base	2	z5z5s8s8m2m2s3s3p4z6m7s9m5	無関係						1	0	8	8
+0	69	q5	push	3	z5z5m1m1p5p5m9m9p7p7s1m6z6	無関係						1	0	10	9
+0	69	q5	base	3	z5z5m1m1p5p5m9m9p7p7s1m6z6	無関係						1	0	8	7
+0	69	q6	push	2	p1p1p3p3p6p6p4p4s9s9z5z5m3	被ツモ						0	-1000	4	5
+0	69	q6	base	2	p1p1p3p3p6p6p4p4s9s9z5z5m3	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+ドラ		0	13000	11	10
+0	70	q2	push	2	m2m2s7s7s4m6p2m9p3p8p6z2p4	被ツモ						1	-3900	16	17
+0	70	q2	base	2	m2m2s7s7s4m6p2m9p3p8p6z2p4	和了	0	0	ロン	断幺九+ドラ		0	2000	6	7
+0	70	q3	push	3	m8m8p9p9m1m1s7p2p8z2p3m7s1	無関係						1	0	14	13
+0	70	q3	base	3	m8m8p9p9m1m1s7p2p8z2p3m7s1	流局						1	-1500	18	17
+0	70	q4	push	2	p5p5s7s7p4p4s9s9m2p1s5z6m4	被ツモ						0	-3200	11	10
+0	70	q4	base	2	p5p5s7s7p4p4s9s9m2p1s5z6m4	無関係						1	0	13	13
+0	70	q5	push	1	m1m1s2s2m6m6z3z3s8s8m2z4p3	和了	0	1	ロン	七対子		0	1600	4	4
+0	70	q5	base	1	m1m1s2s2m6m6z3z3s8s8m2z4p3	流局						0	3000	18	18
+0	70	q6	push	1	z7z7m3m3p4p4p1p1s6s6z1z1s3	和了	0	1	ロン	七対子		0	1600	6	5
+0	70	q6	base	1	z7z7m3m3p4p4p1p1s6s6z1z1s3	放銃					1	1	-5200	11	11
+0	71	q2	push	3	z7z7p1p1s9z4s4s8m7p8s5s2z2	無関係						1	0	12	11
+0	71	q2	base	3	z7z7p1p1s9z4s4s8m7p8s5s2z2	和了	0	0	ロン	翻牌 中		0	1000	6	7
+0	71	q3	push	2	m3m3m9m9s4s4m4m6p3z7p1s2s7	放銃					0	0	-2000	6	5
+0	71	q3	base	2	m3m3m9m9s4s4m4m6p3z7p1s2s7	被ツモ						0	-1300	6	6
+0	71	q4	push	3	s2s2p2p2p3p3m1m1p6s4m6z1z4	無関係						0	0	8	7
+0	71	q4	base	3	s2s2p2p2p3p3m1m1p6s4m6z1z4	放銃					1	1	-12000	10	10
+0	71	q5	push	2	m9m9p2p2s6s6m1m1m7m7z7p6s1	放銃					0	0	-1500	14	14
+0	71	q5	base	2	m9m9p2p2s6s6m1m1m7m7z7p6s1	被ツモ						1	-2000	9	9
+0	71	q6	push	3	s3s3m7m7p2p2s8s8s6s6p4p4z5	放銃					1	1	-2600	16	16
+0	71	q6	base	3	s3s3m7m7p2p2s8s8s6s6p4p4z5	流局						0	3000	18	17
+0	72	q2	push	3	m5m5m2m2p4m7s7z2z1s2p1s1p7	無関係						1	0	11	10
+0	72	q2	base	3	m5m5m2m2p4m7s7z2z1s2p1s1p7	無関係						1	0	17	16
+0	72	q3	push	2	m4m4m3m3p1p1z2s9m9p5s4s3m7	放銃					1	1	-3900	12	12
+0	72	q3	base	2	m4m4m3m3p1p1z2s9m9p5s4s3m7	無関係						1	0	6	5
+0	72	q4	push	2	z3z3z7z7m8m8m4m4z2s5z1z5m6	和了	0	1	ロン	七対子		0	1600	13	14
+0	72	q4	base	2	z3z3z7z7m8m8m4m4z2s5z1z5m6	和了	0	0	ツモ	自風 西+混一色		0	5200	10	11
+0	72	q5	push	3	z7z7s1s1p7p7s4s4s7s7m6p6z5	和了	0	1	ロン	七対子+ドラ		0	6400	4	3
+0	72	q5	base	3	z7z7s1s1p7p7s4s4s7s7m6p6z5	無関係						1	0	16	15
+0	72	q6	push	3	p2p2s8s8p7p7s6s6s3s3s4s4m6	無関係						0	0	11	11
+0	72	q6	base	3	p2p2s8s8p7p7s6s6s3s3s4s4m6	和了	0	1	ロン	ダブル立直+断幺九+七対子		0	9000	13	12
+0	73	q2	push	3	z1z1m9m9s8p6m6p7p2s7s4s6p5	放銃					0	0	-18000	7	7
+0	73	q2	base	3	z1z1m9m9s8p6m6p7p2s7s4s6p5	和了	0	0	ロン	場風 東+ドラ		1	3000	11	11
+0	73	q3	push	1	m4m4m6m6z2z2m5p6s4m3p3s6s7	被ツモ						1	-4000	16	16
+0	73	q3	base	1	m4m4m6m6z2z2m5p6s4m3p3s6s7	和了	0	0	ロン	自風 南+ドラ+赤ドラ		0	3900	11	13
+0	73	q4	push	2	s7s7m9m9p7p7m6m6z4s2s8s6m2	被ツモ						0	-1000	12	12
+0	73	q4	base	2	s7s7m9m9p7p7m6m6z4s2s8s6m2	被ツモ						0	-1300	12	12
+0	73	q5	push	1	p9p9s2s2s8s8z4z4s7s7m7z1p4	和了	0	1	ツモ	門前清自摸和+七対子		1	4200	16	15
+0	73	q5	base	1	p9p9s2s2s8s8z4z4s7s7m7z1p4	被ツモ						0	-1000	16	16
+0	73	q6	push	1	m2m2s3s3p6p6p5p5m1m1s6s6m5	放銃					1	1	-7700	2	2
+0	73	q6	base	1	m2m2s3s3p6p6p5p5m1m1s6s6m5	被ツモ						1	-2000	12	11
+0	74	q2	push	3	z1z1s3s3p8p5z2m1m6z7s6z3m8	被ツモ						1	-2000	9	8
+0	74	q2	base	3	z1z1s3s3p8p5z2m1m6z7s6z3m8	和了	0	0	ロン	場風 東+ドラ		0	2000	9	10
+0	74	q3	push	3	z3z3z5z5s7s7z2s2s5p1m8p6s3	無関係						0	0	14	14
+0	74	q3	base	3	z3z3z5z5s7s7z2s2s5p1m8p6s3	無関係						1	0	14	14
+0	74	q4	push	2	p5p5z4z4z3z3p2p2s9m9s4p7s1	放銃					0	0	-1000	6	7
+1	1	q2	push	1	m1m1z6z6s4p9p8z1s6s7s8z2p5	和了	0	1	ロン	七対子+赤ドラ		0	3200	10	10
+1	1	q2	base	1	m1m1z6z6s4p9p8z1s6s7s8z2p5	被ツモ						1	-2000	15	16
+1	1	q3	push	3	p7p7s5s5z7z7m9z6z1m6p1p9p8	流局						1	1000	18	18
+1	1	q3	base	3	p7p7s5s5z7z7m9z6z1m6p1p9p8	無関係						1	0	8	9
+1	1	q4	push	3	p5p5p9p9m6m6s7s7s3m8m5p8z7	放銃					0	0	-2900	5	5
+1	1	q4	base	3	p5p5p9p9m6m6s7s7s3m8m5p8z7	流局						1	-1000	18	17
+1	1	q5	push	3	s8s8s3s3m5m5s1s1z2z2p4z5z1	流局						1	1500	18	18
+1	1	q5	base	3	s8s8s3s3m5m5s1s1z2z2p4z5z1	流局						0	3000	18	17
+1	1	q6	push	2	s2s2m2m2p9p9p6p6p3p3z6z6s7	和了	0	1	ロン	七対子+ドラ		0	6400	3	2
+1	1	q6	base	2	s2s2m2m2p9p9p6p6p3p3z6z6s7	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+ドラ		0	13000	3	2
+1	2	q2	push	2	s3s3m1m1m7m2s8m8p6s1m4p2z6	無関係						0	0	6	7
+1	2	q2	base	2	s3s3m1m1m7m2s8m8p6s1m4p2z6	無関係						0	0	7	7
+1	2	q3	push	1	z1z1z2z2m8m8s9s6z7s1p8z4s3	被ツモ						1	-1300	9	9
+1	2	q3	base	1	z1z1z2z2m8m8s9s6z7s1p8z4s3	放銃					1	1	-2600	9	10
+1	2	q4	push	2	z7z7p8p8s5s5p1p1s1z3p5m4z1	被ツモ						1	-2000	12	11
+1	2	q4	base	2	z7z7p8p8s5s5p1p1s1z3p5m4z1	被ツモ						1	-2000	12	11
+1	2	q5	push	1	p7p7m9m9p3p3z6z6m5m5m7m1z5	和了	0	1	ロン	七対子		0	1600	8	9
+1	2	q5	base	1	p7p7m9m9p3p3z6z6m5m5m7m1z5	放銃					1	1	-7700	14	15
+1	2	q6	push	3	p8p8m4m4z1z1m5m5s1s1s2s2m2	和了	0	1	ロン	七対子		0	1600	7	6
+1	2	q6	base	3	p8p8m4m4z1z1m5m5s1s1s2s2m2	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+赤ドラ		0	13000	8	7
+1	3	q2	push	1	s8s8m1m1s7z6s5m6m8p1p6z3p3	放銃					1	1	-8000	9	9
+1	3	q2	base	1	s8s8m1m1s7z6s5m6m8p1p6z3p3	被ツモ						1	-2000	12	12
+1	3	q3	push	1	m5m5z1z1s8s8m8z4p7p1m7p2m2	流局						1	-1000	18	18
+1	3	q3	base	1	m5m5z1z1s8s8m8z4p7p1m7p2m2	和了	0	0	ロン	場風 東		0	1000	7	8
+1	3	q4	push	1	s2s2m7m7m6m6m1m1m9z5p6z3p9	被ツモ						1	-1000	13	12
+1	3	q4	base	1	s2s2m7m7m6m6m1m1m9z5p6z3p9	被ツモ						1	-1000	13	12
+1	3	q5	push	1	z6z6z7z7s3s3p3p3p4p4m2s7s5	被ツモ						0	-1600	16	16
+1	3	q5	base	1	z6z6z7z7s3s3p3p3p4p4m2s7s5	被ツモ						0	-1300	12	12
+1	3	q6	push	2	s3s3z5z5m4m4m2m2s6s6s4s4p1	和了	1	0	ツモ	地和		0	32000	1	0
+1	3	q6	base	2	s3s3z5z5m4m4m2m2s6s6s4s4p1	和了	1	0	ツモ	地和		0	32000	1	0
+1	4	q2	push	2	p3p3p1p1m8s5m3m6z2p4s1m4s8	被ツモ						1	-700	14	13
+1	4	q2	base	2	p3p3p1p1m8s5m3m6z2p4s1m4s8	和了	0	0	ロン	立直+裏ドラ		1	7500	11	11
+1	4	q3	push	1	z1z1p2p2z7z7s5p1p7m7z5z2p8	無関係						0	0	10	10
+1	4	q3	base	1	z1z1p2p2z7z7s5p1p7m7z5z2p8	和了	0	0	ロン	場風 東+翻牌 中+混全帯幺九+混一色+ドラ		1	13000	15	17
+1	4	q4	push	1	m8m8m5m5m3m3s5s5s3s8p2p1p6	無関係						0	0	6	6
+1	4	q4	base	1	m8m8m5m5m3m3s5s5s3s8p2p1p6	流局						1	1500	18	18
+1	4	q5	push	2	m2m2s2s2s7s7m8m8m5m5p3p8p7	放銃					0	0	-7700	15	16
+1	4	q5	base	2	m2m2s2s2s7s7m8m8m5m5p3p8p7	流局						0	3000	18	17
+1	4	q6	push	1	p9p9z5z5s2s2m3m3p4p4m7m7p1	和了	0	1	ロン	七対子+ドラ		0	6400	8	7
+1	4	q6	base	1	p9p9z5z5s2s2m3m3p4p4m7m7p1	放銃					0	0	-2900	10	10
+1	5	q2	push	3	m8m8s6s6s4p5s3m7m6m2s7z7p7	無関係						0	0	6	5
+1	5	q2	base	3	m8m8s6s6s4p5s3m7m6m2s7z7p7	和了	0	0	ロン	断幺九		0	1000	14	16
+1	5	q3	push	3	p7p7s4s4s9s9m8s6m9m5z6s1z3	被ツモ						0	-2000	18	17
+1	5	q3	base	3	p7p7s4s4s9s9m8s6m9m5z6s1z3	被ツモ						1	-2000	14	14
+1	5	q4	push	3	z6z6p9p9m9m9p3p3p4p6s2m7z4	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		1	10000	17	16
+1	5	q4	base	3	z6z6p9p9m9m9p3p3p4p6s2m7z4	流局						0	3000	18	17
+1	5	q5	push	3	m9m9m4m4z5z5p1p1m7m7z6p4s6	和了	0	1	ロン	七対子		1	1600	14	14
+1	5	q5	base	3	m9m9m4m4z5z5p1p1m7m7z6p4s6	無関係						0	0	13	13
+1	5	q6	push	3	p8p8p1p1p4p4m9m9s8s8s6s6z4	和了	0	1	ロン	七対子		1	2600	13	13
+1	5	q6	base	3	p8p8p1p1p4p4m9m9s8s8s6s6z4	放銃					0	0	-1000	16	16
+1	6	q2	push	1	p8p8s7s7p2m7p9p4p3s6m5z3z1	無関係						0	0	10	10
+1	6	q2	base	1	p8p8s7s7p2m7p9p4p3s6m5z3z1	無関係						1	0	15	15
+1	6	q3	push	2	p6p6p4p4m8m8z1p5p2s6m2m1m7	流局						1	-1000	18	17
+1	6	q3	base	2	p6p6p4p4m8m8z1p5p2s6m2m1m7	放銃					0	0	-8000	10	10
+1	6	q4	push	3	m5m5p6p6m3m3m8m8z3z1p9s1m6	流局						1	-1000	18	17
+1	6	q4	base	3	m5m5p6p6m3m3m8m8z3z1p9s1m6	流局						1	-1000	18	17
+1	6	q5	push	1	m9m9p2p2s8s8s5s5s4s4z5m3z3	被ツモ						1	-2600	9	8
+1	6	q5	base	1	m9m9p2p2s8s8s5s5s4s4z5m3z3	被ツモ						1	-2600	9	8
+1	6	q6	push	1	s3s3p6p6p7p7p2p2p1p1m6m6z2	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	3	2
+1	6	q6	base	1	s3s3p6p6p7p7p2p2p1p1m6m6z2	和了	0	1	ロン	ダブル立直+七対子+裏ドラ		1	14000	11	11
+1	7	q2	push	2	m8m8p2p2p6s1p3z2z5z3s7m3s4	無関係						1	0	13	12
+1	7	q2	base	2	m8m8p2p2p6s1p3z2z5z3s7m3s4	和了	0	0	ロン	断幺九+ドラ		1	4000	11	10
+1	7	q3	push	2	s4s4p5p5p2p2m4m6m7s1z6m3z7	放銃					0	1	-11600	15	15
+1	7	q3	base	2	s4s4p5p5p2p2m4m6m7s1z6m3z7	放銃					1	1	-8000	9	10
+1	7	q4	push	1	p2p2s8s8z2z2s3s3z3m8s9z5p5	流局						0	-1000	18	18
+1	7	q4	base	1	p2p2s8s8z2z2s3s3z3m8s9z5p5	流局						1	-1500	18	18
+1	7	q5	push	2	m6m6s2s2m9m9z1z1z5z5s1s8z3	和了	0	1	ロン	七対子		0	1600	6	6
+1	7	q5	base	2	m6m6s2s2m9m9z1z1z5z5s1s8z3	被ツモ						1	-3900	7	8
+1	7	q6	push	3	z7z7p3p3s4s4m6m6m2m2z5z5p1	放銃					0	1	-5800	6	5
+1	7	q6	base	3	z7z7p3p3s4s4m6m6m2m2z5z5p1	和了	0	1	ロン	ダブル立直+七対子		0	7400	9	8
+1	8	q2	push	3	p5p5z3z3m4s2s7p9p1m7p7m1s5	被ツモ						1	-2000	13	11
+1	8	q2	base	3	p5p5z3z3m4s2s7p9p1m7p7m1s5	和了	0	0	ツモ	立直+門前清自摸和+三暗刻		0	9000	13	12
+1	8	q3	push	3	z1z1m7m7m6m6m3s6z6s5m9s1m1	無関係						1	0	14	13
+1	8	q3	base	3	z1z1m7m7m6m6m3s6z6s5m9s1m1	無関係						1	0	10	9
+1	8	q4	push	1	s4s4p8p8s8s8p2p2m3m2s7s5z1	無関係						0	0	7	6
+1	8	q4	base	1	s4s4p8p8s8s8p2p2m3m2s7s5z1	流局						1	1000	18	17
+1	8	q5	push	3	m2m2z3z3s2s2m1m1s8s8m7s5p9	無関係						1	0	7	6
+1	8	q5	base	3	m2m2z3z3s2s2m1m1s8s8m7s5p9	無関係						1	0	7	6
+1	8	q6	push	1	s4s4m5m5p8p8m4m4z4z4m9m9p2	放銃					1	1	-2600	9	9
+1	8	q6	base	1	s4s4m5m5p8p8m4m4z4z4m9m9p2	和了	0	1	ロン	ダブル立直+七対子+裏ドラ		0	13000	10	10
+1	9	q2	push	1	s4s4m7m7s7p1m5s5m1p6z7s1p2	無関係						0	0	11	11
+1	9	q2	base	1	s4s4m7m7s7p1m5s5m1p6z7s1p2	被ツモ						1	-3000	14	13
+1	9	q3	push	1	p1p1s5s5m2m2s1z4p5p3m1p7m5	被ツモ						1	-1000	8	8
+1	9	q3	base	1	p1p1s5s5m2m2s1z4p5p3m1p7m5	和了	0	0	ツモ	立直+門前清自摸和+赤ドラ		0	5000	7	6
+1	9	q4	push	1	p5p5z2z2z4z4m4m4s2p7s3m6m9	流局						1	-1000	18	18
+1	9	q4	base	1	p5p5z2z2z4z4m4m4s2p7s3m6m9	和了	0	0	ロン	自風 南+赤ドラ		1	3000	9	10
+1	9	q5	push	1	m3m3m8m8s2s2s7s7z6z6m5m7s6	放銃					0	1	-5800	13	13
+1	9	q5	base	1	m3m3m8m8s2s2s7s7z6z6m5m7s6	流局						1	1500	18	18
+1	9	q6	push	1	m6m6p9p9m3m3m8m8z2z2s9s9s5	和了	0	1	ロン	七対子		0	1600	8	7
+1	9	q6	base	1	m6m6p9p9m3m3m8m8z2z2s9s9s5	和了	0	1	ツモ	立直+門前清自摸和+七対子		0	7400	3	2
+1	10	q2	push	2	p1p1m6m6z6m7p2z2s8p7s9z3p9	流局						1	-1000	18	17
+1	10	q2	base	2	p1p1m6m6z6m7p2z2s8p7s9z3p9	流局						1	-1000	18	17
+1	10	q3	push	1	m9m9z5z5z6z6p2z7z4m7z3s9m4	放銃					1	1	-2600	13	13
+1	10	q3	base	1	m9m9z5z5z6z6p2z7z4m7z3s9m4	無関係						1	0	7	8
+1	10	q4	push	3	m4m4p5p5s2s2s7s7p1s1m8z7z3	被ツモ						1	-3000	17	17
+1	10	q4	base	3	m4m4p5p5s2s2s7s7p1s1m8z7z3	流局						1	-1000	18	17
+1	10	q5	push	3	z5z5m5m5s4s4z1z1m2m2p8p4m9	無関係						1	0	13	12
+1	10	q5	base	3	z5z5m5m5s4s4z1z1m2m2p8p4m9	被ツモ						1	-3000	14	14
+1	10	q6	push	2	m6m6s1s1m4m4z3z3p7p7m3m3s5	和了	0	1	ロン	七対子		0	1600	6	6
+1	10	q6	base	2	m6m6s1s1m4m4z3z3p7p7m3m3s5	被ツモ						0	-2000	10	10
+1	11	q2	push	2	z4z4z1z1p6z6m9p5s8z2z5m7m5	無関係						1	0	10	10
+1	11	q2	base	2	z4z4z1z1p6z6m9p5s8z2z5m7m5	無関係						1	0	17	17
+1	11	q3	push	3	s1s1s7s7s8s8z6z2s9m8m6s2p6	無関係						0	0	15	16
+1	11	q3	base	3	s1s1s7s7s8s8z6z2s9m8m6s2p6	放銃					0	1	-1500	10	10
+1	11	q4	push	2	p5p5s6s6s4s4z3z3m5p3m4p4s7	無関係						1	0	13	13
+1	11	q4	base	2	p5p5s6s6s4s4z3z3m5p3m4p4s7	流局						1	-1000	18	19
+1	11	q5	push	3	z6z6s7s7z5z5p9p9p7p7p3p8s6	和了	0	1	ロン	七対子		1	2600	12	11
+1	11	q5	base	3	z6z6s7s7z5z5p9p9p7p7p3p8s6	放銃					1	1	-3900	12	13
+1	11	q6	push	3	s9s9p2p2s7s7m8m8p6p6m5m5s1	放銃					0	0	-11600	10	10
+1	11	q6	base	3	s9s9p2p2s7s7m8m8p6p6m5m5s1	和了	0	1	ロン	ダブル立直+七対子+赤ドラ		1	9000	7	6
+1	12	q2	push	1	z3z3s9s9p4m3p6s7p9z5z1s8s4	被ツモ						1	-2000	15	14
+1	12	q2	base	1	z3z3s9s9p4m3p6s7p9z5z1s8s4	無関係						1	0	12	12
+1	12	q3	push	3	s5s5s9s9p9p9z1z5m3p2s7p8z3	被ツモ						1	-1000	13	13
+1	12	q3	base	3	s5s5s9s9p9p9z1z5m3p2s7p8z3	被ツモ						1	-6000	8	7
+1	12	q4	push	1	z7z7p3p3p6p6s5s5m8p2s8z5s9	無関係						0	0	10	9
+1	12	q4	base	1	z7z7p3p3p6p6s5s5m8p2s8z5s9	被ツモ						1	-6000	9	9
+1	12	q5	push	3	p6p6p1p1s1s1m7m7z6z6p9z7p8	無関係						0	0	3	3
+1	12	q5	base	3	p6p6p1p1s1s1m7m7z6z6p9z7p8	和了	0	1	ロン	立直+七対子		0	4200	5	5
+1	12	q6	push	3	p3p3s7s7z1z1p2p2p9p9m2m2m8	被ツモ						1	-3000	13	12
+1	12	q6	base	3	p3p3s7s7z1z1p2p2p9p9m2m2m8	流局						0	3000	18	17
+1	13	q2	push	2	s7s7m6m6z5s5s1p4m8p3s3m4m2	被ツモ						1	-700	14	13
+1	13	q2	base	2	s7s7m6m6z5s5s1p4m8p3s3m4m2	放銃					1	1	-1300	13	13
+1	13	q3	push	3	p5p5m3m3p9p9m7p4p2z2m5p6m4	被ツモ						0	-400	12	12
+1	13	q3	base	3	p5p5m3m3p9p9m7p4p2z2m5p6m4	放銃					0	0	-2000	11	12
+1	13	q4	push	3	p5p5s3s3p6p6m2m2z6s2p8p7p3	被ツモ						1	-2000	8	7
+1	13	q4	base	3	p5p5s3s3p6p6m2m2z6s2p8p7p3	被ツモ						1	-2000	8	7
+1	13	q5	push	3	z2z2z7z7p2p2s9s9s2s2m9p6m6	被ツモ						1	-3000	9	8
+1	13	q5	base	3	z2z2z7z7p2p2s9s9s2s2m9p6m6	被ツモ						1	-3000	9	8
+1	13	q6	push	1	z5z5p8p8s1s1m5m5p5p5m9m9p6	和了	0	1	ロン	七対子		0	1600	7	7
+1	13	q6	base	1	z5z5p8p8s1s1m5m5p5p5m9m9p6	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+裏ドラ		0	13000	3	2
+1	14	q2	push	3	p7p7z2z2p4s2m5s3s1p2m9p1p9	流局						1	-1500	18	18
+1	14	q2	base	3	p7p7z2z2p4s2m5s3s1p2m9p1p9	無関係						0	0	13	14
+1	14	q3	push	1	m2m2z2z2z1z1p4p7s8z7s4s1s7	被ツモ						1	-1300	16	15
+1	14	q3	base	1	m2m2z2z2z1z1p4p7s8z7s4s1s7	無関係						1	0	12	12
+1	14	q4	push	3	s2s2z3z3m6m6s5s5s4s7m3p8s9	流局						1	-1000	18	17
+1	14	q4	base	3	s2s2z3z3m6m6s5s5s4s7m3p8s9	流局						0	3000	18	17
+1	14	q5	push	2	p8p8z2z2z1z1m6m6m9m9m5p9m4	放銃					0	1	-8000	5	5
+1	14	q5	base	2	p8p8z2z2z1z1m6m6m9m9m5p9m4	無関係						1	0	17	16
+1	14	q6	push	2	m7m7p7p7s8s8s4s4z7z7m9m9s1	和了	0	1	ロン	七対子		0	1600	12	14
+1	14	q6	base	2	m7m7p7p7s8s8s4s4z7z7m9m9s1	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	11	10
+1	15	q2	push	1	p9p9z5z5m6m3z3s1s3m9s2p7s9	和了	0	1	ロン	七対子+赤ドラ		1	4200	14	14
+1	15	q2	base	1	p9p9z5z5m6m3z3s1s3m9s2p7s9	無関係						1	0	9	9
+1	15	q3	push	3	p8p8p6p6s7s7s9p2m9s6m8z5m3	放銃					1	1	-5800	6	6
+1	15	q3	base	3	p8p8p6p6s7s7s9p2m9s6m8z5m3	被ツモ						1	-2600	9	9
+1	15	q4	push	2	p6p6m5m5z2z2s6s6m9s7z4p1z6	無関係						1	0	8	7
+1	15	q4	base	2	p6p6m5m5z2z2s6s6m9s7z4p1z6	被ツモ						0	-500	7	8
+1	15	q5	push	1	s2s2s5s5z5z5p5p5p7p7s7p4s1	流局						1	1000	18	18
+1	15	q5	base	1	s2s2s5s5z5z5p5p5p7p7s7p4s1	無関係						1	0	10	9
+1	15	q6	push	1	p8p8m5m5p2p2m9m9z7z7s1s1z2	和了	0	1	ロン	七対子		0	1600	1	1
+1	15	q6	base	1	p8p8m5m5p2p2m9m9z7z7s1s1z2	和了	0	1	ロン	ダブル立直+七対子		0	7400	8	7
+1	16	q2	push	2	s5s5m5m5z5z6p1s3p7s1m2p4m6	無関係						1	0	7	6
+1	16	q2	base	2	s5s5m5m5z5z6p1s3p7s1m2p4m6	無関係						1	0	15	15
+1	16	q3	push	3	z5z5s6s6m5m5z6p4s7z4s9m9p7	無関係						1	0	11	10
+1	16	q3	base	3	z5z5s6s6m5m5z6p4s7z4s9m9p7	和了	0	0	ロン	翻牌 白+ドラ		0	8000	12	14
+1	16	q4	push	3	s2s2z1z1s5s5z6z6z3s3m8m7p6	流局						1	1500	18	17
+1	16	q4	base	3	s2s2z1z1s5s5z6z6z3s3m8m7p6	和了	0	0	ロン	場風 東+翻牌 發		0	2000	5	6
+1	16	q5	push	2	s7s7z7z7s2s2m1m1m9m9z6s4p9	無関係						1	0	11	11
+1	16	q5	base	2	s7s7z7z7s2s2m1m1m9m9z6s4p9	無関係						1	0	11	11
+1	16	q6	push	3	s7s7s5s5s4s4z4z4z3z3s8s8p7	和了	0	1	ロン	七対子+ドラ		0	6400	5	4
+1	16	q6	base	3	s7s7s5s5s4s4z4z4z3z3s8s8p7	無関係						1	0	15	14
+1	17	q2	push	3	m9m9p5p5p1z2s4s3s5p9s7z6z3	無関係						0	0	12	11
+1	17	q2	base	3	m9m9p5p5p1z2s4s3s5p9s7z6z3	無関係						0	0	11	11
+1	17	q3	push	3	s4s4p2p2s8s8s7z2z4s2p3z7s5	放銃					0	0	-8000	11	11
+1	17	q3	base	3	s4s4p2p2s8s8s7z2z4s2p3z7s5	和了	0	0	ロン	断幺九+対々和		1	4900	10	11
+1	17	q4	push	3	p1p1s6s6s9s9z3z3p3p5m2p8m6	無関係						0	0	13	14
+1	17	q4	base	3	p1p1s6s6s9s9z3z3p3p5m2p8m6	被ツモ						0	-500	15	15
+1	17	q5	push	1	s3s3s1s1z7z7s2s2m4m4z3p4m2	和了	0	0	ロン	一盃口+ドラ		0	5200	6	6
+1	17	q5	base	1	s3s3s1s1z7z7s2s2m4m4z3p4m2	放銃					0	0	-2600	10	11
+1	17	q6	push	3	m6m6m2m2z6z6z1z1s8s8p7p7s9	和了	0	1	ロン	七対子		0	1600	11	10
+1	17	q6	base	3	m6m6m2m2z6z6z1z1s8s8p7p7s9	流局						0	1500	18	17
+1	18	q2	push	1	m4m4p7p7p5z6s3z7z2p1s1z1p6	和了	0	1	ロン	七対子		1	2600	10	10
+1	18	q2	base	1	m4m4p7p7p5z6s3z7z2p1s1z1p6	流局						1	-1000	18	18
+1	18	q3	push	2	p7p7p2p2p3p3z1m4s6s1s3p5m2	流局						1	-1000	18	18
+1	18	q3	base	2	p7p7p2p2p3p3z1m4s6s1s3p5m2	和了	0	1	ロン	立直+七対子+ドラ+裏ドラ		0	13000	9	9
+1	18	q4	push	2	p2p2s1s1p6p6z5z5z6p7s9p4s3	無関係						1	0	11	10
+1	18	q4	base	2	p2p2s1s1p6p6z5z5z6p7s9p4s3	和了	0	0	ロン	翻牌 白+赤ドラ		1	3000	6	6
+1	18	q5	push	2	m6m6p7p7m8m8z4z4s6s6z6p9p3	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	4	3
+1	18	q5	base	2	m6m6p7p7m8m8z4z4s6s6z6p9p3	無関係						1	0	11	11
+1	18	q6	push	2	s4s4s9s9m2m2p9p9m5m5p5p5s8	和了	0	1	ロン	七対子		0	1600	2	1
+1	18	q6	base	2	s4s4s9s9m2m2p9p9m5m5p5p5s8	被ツモ						1	-1000	10	10
+1	19	q2	push	2	s2s2s3s3m8p1s4m1z6p4p9z2z4	無関係						1	0	14	15
+1	19	q2	base	2	s2s2s3s3m8p1s4m1z6p4p9z2z4	流局						1	-3000	18	18
+1	19	q3	push	2	p7p7p2p2p5p5s7m7m2z6z2p8z3	被ツモ						1	-4000	16	16
+1	19	q3	base	2	p7p7p2p2p5p5s7m7m2z6z2p8z3	流局						1	-1000	18	18
+1	19	q4	push	3	s4s4p7p7z3z3m5m5z2z5m1m8z6	和了	0	1	ツモ	門前清自摸和+七対子+赤ドラ		0	6400	13	12
+1	19	q4	base	3	s4s4p7p7z3z3m5m5z2z5m1m8z6	流局						1	-1000	18	17
+1	19	q5	push	3	m2m2m8m8s4s4m9m9s7s7s6p5p8	被ツモ						1	-2000	15	14
+1	19	q5	base	3	m2m2m8m8s4s4m9m9s7s7s6p5p8	被ツモ						1	-2000	15	14
+1	19	q6	push	2	s8s8p8p8z7z7s4s4s1s1m9m9s9	和了	0	1	ロン	七対子		0	1600	9	9
+1	19	q6	base	2	s8s8p8p8z7z7s4s4s1s1m9m9s9	流局						0	3000	18	17
+1	20	q2	push	3	s9s9p8p8p7m9p1z6z1m6p6s2s4	被ツモ						0	-1000	14	14
+1	20	q2	base	3	s9s9p8p8p7m9p1z6z1m6p6s2s4	放銃					0	0	-2900	11	11
+1	20	q3	push	2	s1s1z4z4m1m1z6s4s5z2p3z3z1	無関係						1	0	16	15
+1	20	q3	base	2	s1s1z4z4m1m1z6s4s5z2p3z3z1	無関係						1	0	16	15
+1	20	q4	push	2	z4z4m2m2m9m9m6m6s7m3m4p9p8	和了	0	1	ロン	七対子		1	3600	13	12
+1	20	q4	base	2	z4z4m2m2m9m9m6m6s7m3m4p9p8	被ツモ						1	-1000	17	17
+1	20	q5	push	3	s5s5m2m2z1z1z7z7s2s2m1s6s3	流局						1	1500	18	17
+1	20	q5	base	3	s5s5m2m2z1z1z7z7s2s2m1s6s3	被ツモ						0	-500	13	14
+1	20	q6	push	3	p7p7m7m7p9p9p4p4m4m4z4z4s7	無関係						0	0	6	6
+1	20	q6	base	3	p7p7m7m7p9p9p4p4m4m4z4z4s7	和了	0	1	ツモ	ダブル立直+一発+門前清自摸和+七対子		0	13000	2	1
+1	21	q2	push	1	s7s7z1z1p4p1s3z3s5p9m6m2m5	無関係						1	0	18	17
+1	21	q2	base	1	s7s7z1z1p4p1s3z3s5p9m6m2m5	和了	0	0	ロン	場風 東+ドラ		0	2000	9	10
+1	21	q3	push	1	m3m3p5p5p2p2s6z1s8m1s7z4m4	被ツモ						0	-300	7	7
+1	21	q3	base	1	m3m3p5p5p2p2s6z1s8m1s7z4m4	無関係						0	0	7	7
+1	21	q4	push	1	s1s1p6p6z3z3z1z1m3z4m1z7s9	被ツモ						0	-2000	8	8
+1	21	q4	base	1	s1s1p6p6z3z3z1z1m3z4m1z7s9	被ツモ						0	-2000	8	8
+1	21	q5	push	1	z2z2z6z6m9m9p6p6z1z1m1s2m6	流局						1	1500	18	18
+1	21	q5	base	1	z2z2z6z6m9m9p6p6z1z1m1s2m6	流局						1	1000	18	18
+1	21	q6	push	1	z6z6m6m6s9s9m9m9m7m7p3p3s2	被ツモ						0	-300	8	8
+1	21	q6	base	1	z6z6m6m6s9s9m9m9m7m7p3p3s2	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	4	3
+1	22	q2	push	1	m6m6p2p2p3s9s7p5s4m3p1z7m4	無関係						0	0	5	4
+1	22	q2	base	1	m6m6p2p2p3s9s7p5s4m3p1z7m4	無関係						1	0	11	11
+1	22	q3	push	3	p2p2p3p3z5z5m1s3m9s5p5p1s9	被ツモ						1	-2000	16	15
+1	22	q3	base	3	p2p2p3p3z5z5m1s3m9s5p5p1s9	無関係						1	0	11	11
+1	22	q4	push	3	m7m7z1z1p6p6s2s2z6m6s6z2s9	放銃					0	0	-2900	13	13
+1	22	q4	base	3	m7m7z1z1p6p6s2s2z6m6s6z2s9	流局						1	-1000	18	19
+1	22	q5	push	2	p4p4s3s3m1m1m2m2p5p5s4m8m9	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		0	8000	7	6
+1	22	q5	base	2	p4p4s3s3m1m1m2m2p5p5s4m8m9	流局						1	1000	18	17
+1	22	q6	push	3	s3s3z3z3m9m9s2s2m1m1m5m5m2	和了	0	1	ロン	七対子		0	1600	2	0
+1	22	q6	base	3	s3s3z3z3m9m9s2s2m1m1m5m5m2	和了	0	1	ロン	七対子		0	1600	2	0
+1	23	q2	push	3	m4m4m1m1s3s5p5p7z3s4m7z4s2	流局						0	-1500	18	17
+1	23	q2	base	3	m4m4m1m1s3s5p5p7z3s4m7z4s2	被ツモ						0	-1300	15	14
+1	23	q3	push	2	s6s6s2s2z4z4m7m9m5m1m4m6z5	無関係						1	0	13	13
+1	23	q3	base	2	s6s6s2s2z4z4m7m9m5m1m4m6z5	被ツモ						1	-2000	10	11
+1	23	q4	push	3	m9m9m3m3m6m6s3s3p9s5z1m4s9	被ツモ						0	-500	8	8
+1	23	q4	base	3	m9m9m3m3m6m6s3s3p9s5z1m4s9	無関係						0	0	11	10
+1	23	q5	push	1	m4m4s1s1s9s9s5s5s7s7m8p1s2	和了	0	1	ロン	七対子		0	1600	4	3
+1	23	q5	base	1	m4m4s1s1s9s9s5s5s7s7m8p1s2	放銃					1	1	-17300	15	15
+1	23	q6	push	1	z2z2m8m8z3z3m3m3m9m9p2p2z7	和了	0	1	ロン	七対子		0	1600	6	6
+1	23	q6	base	1	z2z2m8m8z3z3m3m3m9m9p2p2z7	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	10	9
+1	24	q2	push	1	p5p5m6m6m9m4p4p7p3z1z2z5p6	放銃					1	1	-11600	16	16
+1	24	q2	base	1	p5p5m6m6m9m4p4p7p3z1z2z5p6	被ツモ						1	-4000	16	16
+1	24	q3	push	2	p9p9s1s1m1m1p4s9s3p3m8z5p8	無関係						1	0	13	13
+1	24	q3	base	2	p9p9s1s1m1m1p4s9s3p3m8z5p8	和了	0	0	ロン	立直+平和+赤ドラ		1	5900	12	12
+1	24	q4	push	2	s1s1p4p4m1m1m5m5z4p7p8m6p5	放銃					1	1	-8000	11	11
+1	24	q4	base	2	s1s1p4p4m1m1m5m5z4p7p8m6p5	流局						0	3000	18	17
+1	24	q5	push	1	m9m9s2s2s6s6s4s4m7m7z7p8z1	被ツモ						0	-500	9	9
+1	24	q5	base	1	m9m9s2s2s6s6s4s4m7m7z7p8z1	流局						0	3000	18	18
+1	24	q6	push	2	z4z4z7z7s9s9s4s4p7p7m5m5m8	放銃					1	1	-12000	17	17
+1	24	q6	base	2	z4z4z7z7s9s9s4s4p7p7m5m5m8	流局						0	3000	18	17
+1	25	q2	push	1	m2m2s4s4z4m9m8p6s1p1z2z1m4	無関係						0	0	6	6
+1	25	q2	base	1	m2m2s4s4z4m9m8p6s1p1z2z1m4	無関係						0	0	9	9
+1	25	q3	push	1	s4s4s6s6z7z7p4m1m8s3p8z3z6	流局						1	-1500	17	17
+1	25	q3	base	1	s4s4s6s6z7z7p4m1m8s3p8z3z6	放銃					1	1	-2000	7	8
+1	25	q4	push	3	p3p3m1m1s6s6z6z6s4m5p9s1z2	被ツモ						1	-2000	11	10
+1	25	q4	base	3	p3p3m1m1s6s6z6z6s4m5p9s1z2	被ツモ						1	-3000	10	10
+1	25	q5	push	3	p6p6s5s5s9s9s6s6s2s2p2p4s1	無関係						1	0	11	10
+1	25	q5	base	3	p6p6s5s5s9s9s6s6s2s2p2p4s1	被ツモ						0	-4000	9	9
+1	25	q6	push	2	s4s4p7p7p4p4m1m1p1p1p2p2z2	和了	0	1	ロン	七対子		0	1600	2	1
+1	25	q6	base	2	s4s4p7p7p4p4m1m1p1p1p2p2z2	和了	0	1	ロン	ダブル立直+一発+七対子		0	9000	2	1
+1	26	q2	push	1	p8p8m4m4z5p4m6z4m1s7s6s4m9	無関係						0	0	11	12
+1	26	q2	base	1	p8p8m4m4z5p4m6z4m1s7s6s4m9	無関係						0	0	6	7
+1	26	q3	push	2	s3s3z5z5s7s7m8p8m9s6m5p5m6	被ツモ						1	-300	9	9
+1	26	q3	base	2	s3s3z5z5s7s7m8p8m9s6m5p5m6	和了	0	0	ロン	翻牌 白		0	1000	7	8
+1	26	q4	push	2	z6z6m3m3z2z2z4z4p9s7z7p4m7	流局						1	-1000	18	18
+1	26	q4	base	2	z6z6m3m3z2z2z4z4p9s7z7p4m7	被ツモ						1	-500	16	17
+1	26	q5	push	1	z3z3p2p2m8m8s6s6s5s5s7p4z4	流局						1	1500	18	18
+1	26	q5	base	1	z3z3p2p2m8m8s6s6s5s5s7p4z4	和了	0	0	ロン	対々和+ドラ		1	9000	8	8
+1	26	q6	push	3	m3m3z7z7m4m4z3z3p6p6s2s2z4	被ツモ						1	-2000	13	13
+1	26	q6	base	3	m3m3z7z7m4m4z3z3p6p6s2s2z4	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	4	3
+1	27	q2	push	1	z6z6m2m2p7s4p6p8p9p1p3z4s6	流局						1	-1000	18	18
+1	27	q2	base	1	z6z6m2m2p7s4p6p8p9p1p3z4s6	和了	0	1	ロン	立直+七対子+ドラ		0	9000	14	15
+1	27	q3	push	1	m8m8s8s8m7m7z2p6z1m3p8z3p3	流局						1	-1500	18	18
+1	27	q3	base	1	m8m8s8s8m7m7z2p6z1m3p8z3p3	放銃					1	1	-8000	12	12
+1	27	q4	push	2	p6p6m4m4s8s8p1p1m2z3z7z2p8	被ツモ						0	-1300	8	8
+1	27	q4	base	2	p6p6m4m4s8s8p1p1m2z3z7z2p8	和了	0	1	ロン	立直+七対子		0	4200	7	7
+1	27	q5	push	2	s7s7p9p9z1z1p6p6p8p8s1z3s2	放銃					1	1	-8000	12	12
+1	27	q5	base	2	s7s7p9p9z1z1p6p6p8p8s1z3s2	流局						1	-1000	18	18
+1	27	q6	push	2	m7m7z6z6p9p9z2z2s9s9p1p1z7	和了	0	1	ロン	七対子		0	1600	1	0
+1	27	q6	base	2	m7m7z6z6p9p9z2z2s9s9p1p1z7	和了	0	1	ロン	七対子		0	1600	1	0
+1	28	q2	push	1	m5m5m2m2z2p2m3s6s9m1p7s2m8	放銃					1	1	-3900	12	12
+1	28	q2	base	1	m5m5m2m2z2p2m3s6s9m1p7s2m8	和了	0	0	ロン	断幺九+赤ドラ		0	2000	5	6
+1	28	q3	push	2	m8m8s7s7z4z4z3z1p6m6p3m4p1	無関係						1	0	9	8
+1	28	q3	base	2	m8m8s7s7z4z4z3z1p6m6p3m4p1	無関係						1	0	9	8
+1	28	q4	push	2	m1m1z5z5z2z2s9s9m7m4m9s7m6	被ツモ						1	-3200	8	7
+1	28	q4	base	2	m1m1z5z5z2z2s9s9m7m4m9s7m6	和了	0	0	ロン	翻牌 白+赤ドラ		0	2000	5	5
+1	28	q5	push	1	s8s8p2p2p4p4m4m4z1z1s2m1p6	和了	0	1	ロン	七対子+ドラ		0	6400	4	3
+1	28	q5	base	1	s8s8p2p2p4p4m4m4z1z1s2m1p6	和了	0	1	ロン	ダブル立直+七対子+ドラ		0	13000	9	8
+1	28	q6	push	2	p1p1s6s6s1s1s2s2m2m2z7z7z3	和了	0	1	ロン	七対子		0	1600	13	13
+1	28	q6	base	2	p1p1s6s6s1s1s2s2m2m2z7z7z3	和了	0	1	ロン	ダブル立直+七対子		0	7400	9	8
+1	29	q2	push	3	s5s5z2z2m1s1p4s7m8z5s8s4p3	被ツモ						1	-2000	16	15
+1	29	q2	base	3	s5s5z2z2m1s1p4s7m8z5s8s4p3	被ツモ						1	-2000	16	15
+1	29	q3	push	2	s3s3p4p4z1z1p7z2z3p8s2m9m6	無関係						1	0	15	15
+1	29	q3	base	2	s3s3p4p4z1z1p7z2z3p8s2m9m6	無関係						0	0	8	9
+1	29	q4	push	2	p2p2p8p8m2m2m5m5s8z7p3m8p1	被ツモ						1	-4000	8	8
+1	29	q4	base	2	p2p2p8p8m2m2m5m5s8z7p3m8p1	放銃					0	0	-3900	7	7
+1	29	q5	push	2	z1z1m6m6p6p6m7m7z7z7m8p7p4	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	6	4
+1	29	q5	base	2	z1z1m6m6p6p6m7m7z7z7m8p7p4	和了	0	0	ロン	場風 東+翻牌 中+対々和		0	8000	8	9
+1	29	q6	push	2	m8m8s6s6z6z6p4p4m9m9z3z3p7	和了	0	1	ロン	七対子+ドラ		0	6400	4	4
+1	29	q6	base	2	m8m8s6s6z6z6p4p4m9m9z3z3p7	流局						0	3000	18	17
+1	30	q2	push	3	p2p2z5z5p7p3m5z1p6s7m8m6s8	被ツモ						0	-1000	9	9
+1	30	q2	base	3	p2p2z5z5p7p3m5z1p6s7m8m6s8	流局						1	-1000	18	18
+1	30	q3	push	3	p1p1s9s9p2p2p3m9m5p5s2p8m8	放銃					0	0	-3900	4	4
+1	30	q3	base	3	p1p1s9s9p2p2p3m9m5p5s2p8m8	無関係						0	0	5	5
+1	30	q4	push	3	s1s1p5p5p4p4m9m9z7s5p7s3s2	被ツモ						0	-1300	8	7
+1	30	q4	base	3	s1s1p5p5p4p4m9m9z7s5p7s3s2	被ツモ						0	-1300	8	7
+1	30	q5	push	2	z7z7m2m2s7s7p7p7p5p5z3m7z6	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	8	7
+1	30	q5	base	2	z7z7m2m2s7s7p7p7p5p5z3m7z6	無関係						1	0	17	18
+1	30	q6	push	3	s4s4s2s2m9m9p3p3p4p4m5m5z5	無関係						1	0	8	7
+1	30	q6	base	3	s4s4s2s2m9m9p3p3p4p4m5m5z5	和了	0	1	ロン	ダブル立直+七対子		0	7400	5	4
+1	31	q2	push	2	p4p4m4m4m7s4p7p6z7p2z1p1s5	放銃					0	0	-2900	8	8
+1	31	q2	base	2	p4p4m4m4m7s4p7p6z7p2z1p1s5	被ツモ						1	-500	11	11
+1	31	q3	push	3	m5m5s4s4m9m9s8z2p4s1s7m4z3	流局						1	-3000	18	18
+1	31	q3	base	3	m5m5s4s4m9m9s8z2p4s1s7m4z3	無関係						1	0	14	13
+1	31	q4	push	1	s5s5s2s2p7p7z1z1p2p6s8p3m6	無関係						1	0	11	11
+1	31	q4	base	1	s5s5s2s2p7p7z1z1p2p6s8p3m6	無関係						1	0	10	10
+1	31	q5	push	1	p8p8s6s6p9p9p4p4s2s2p7p6s5	無関係						0	0	13	13
+1	31	q5	base	1	p8p8s6s6p9p9p4p4s2s2p7p6s5	流局						1	1500	18	18
+1	31	q6	push	2	z7z7m3m3m2m2s6s6p6p6z4z4p3	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	3	2
+1	31	q6	base	2	z7z7m3m3m2m2s6s6p6p6z4z4p3	和了	0	1	ロン	ダブル立直+七対子		0	7400	12	11
+1	32	q2	push	1	m7m7z4z4z2m3p9p3s5s8s4p6p1	和了	0	1	ロン	七対子+ドラ+赤ドラ		0	8000	9	9
+1	32	q2	base	1	m7m7z4z4z2m3p9p3s5s8s4p6p1	被ツモ						1	-6000	17	17
+1	32	q3	push	1	z5z5m3m3p3p3s5z3s2s3m7m2p2	流局						1	-1000	18	19
+1	32	q3	base	1	z5z5m3m3p3p3s5z3s2s3m7m2p2	流局						1	-1500	18	19
+1	32	q4	push	3	z1z1m5m5p1p1m3m3m9p8z2s7m7	無関係						1	0	17	16
+1	32	q4	base	3	z1z1m5m5p1p1m3m3m9p8z2s7m7	流局						1	1500	18	17
+1	32	q5	push	3	z7z7m7m7m3m3m8m8s3s3p4m1s1	被ツモ						1	-300	17	16
+1	32	q5	base	3	z7z7m7m7m3m3m8m8s3s3p4m1s1	被ツモ						1	-300	17	16
+1	32	q6	push	2	m4m4z7z7m3m3m5m5s2s2s3s3m9	被ツモ						1	-2000	9	9
+1	32	q6	base	2	m4m4z7z7m3m3m5m5s2s2s3s3m9	和了	0	1	ロン	ダブル立直+七対子		1	8400	9	8
+1	33	q2	push	2	z2z2m2m2s5z7m9p8z6s2m8z1p7	被ツモ						0	-1000	16	16
+1	33	q2	base	2	z2z2m2m2s5z7m9p8z6s2m8z1p7	和了	0	0	ツモ	門前清自摸和		1	3100	15	14
+1	33	q3	push	2	s2s2z2z2p6p6z7p7m5p8p3z4p1	被ツモ						1	-4000	12	12
+1	33	q3	base	2	s2s2z2z2p6p6z7p7m5p8p3z4p1	和了	0	0	ツモ	立直+門前清自摸和+裏ドラ		0	6200	10	9
+1	33	q4	push	2	s4s4m1m1s7s7m3m3m2p3z5s6m5	被ツモ						1	-6000	18	17
+1	33	q4	base	2	s4s4m1m1s7s7m3m3m2p3z5s6m5	無関係						1	0	12	11
+1	33	q5	push	3	s5s5p7p7p5p5m1m1s8s8z7z6m6	被ツモ						1	-700	12	11
+1	33	q5	base	3	s5s5p7p7p5p5m1m1s8s8z7z6m6	放銃					1	1	-2000	10	10
+1	33	q6	push	2	z3z3p5p5m2m2z6z6p1p1s5s5s2	和了	0	1	ロン	七対子		0	1600	1	1
+1	33	q6	base	2	z3z3p5p5m2m2z6z6p1p1s5s5s2	和了	0	1	ロン	ダブル立直+七対子		0	7400	3	2
+1	34	q2	push	1	p8p8z6z6p7z4m9p1s7s9p2s3s1	無関係						1	0	7	7
+1	34	q2	base	1	p8p8z6z6p7z4m9p1s7s9p2s3s1	被ツモ						1	-3200	13	13
+1	34	q3	push	2	z1z1m9m9m1m1p2m8s9s2m5m2m3	放銃					1	1	-12000	6	6
+1	34	q3	base	2	z1z1m9m9m1m1p2m8s9s2m5m2m3	流局						1	-1500	18	17
+1	34	q4	push	2	m8m8s1s1z6z6p1p1m9p3s3p6m7	放銃					1	1	-5800	13	14
+1	34	q4	base	2	m8m8s1s1z6z6p1p1m9p3s3p6m7	流局						1	-3000	18	18
+1	34	q5	push	2	s2s2m2m2p5p5p2p2m8m8z1s3p9	被ツモ						1	-2000	8	7
+1	34	q5	base	2	s2s2m2m2p5p5p2p2m8m8z1s3p9	被ツモ						1	-2000	8	7
+1	34	q6	push	1	p3p3p4p4s3s3m5m5m3m3p5p5m2	和了	0	1	ツモ	門前清自摸和+断幺九+七対子+赤ドラ		0	8000	5	4
+1	34	q6	base	1	p3p3p4p4s3s3m5m5m3m3p5p5m2	流局						0	3000	18	18
+1	35	q2	push	2	s7s7s5s5z6m9s6z7p9z1s1p2p3	放銃					0	0	-1000	8	9
+1	35	q2	base	2	s7s7s5s5z6m9s6z7p9z1s1p2p3	放銃					0	0	-1500	13	14
+1	35	q3	push	3	s8s8p2p2m5m5s5s2m4p8z4p4s1	被ツモ						1	-1600	17	16
+1	35	q3	base	3	s8s8p2p2m5m5s5s2m4p8z4p4s1	被ツモ						1	-1600	17	16
+1	35	q4	push	2	z4z4p9p9m6m6s8s8p3s1p2s5z5	無関係						0	0	14	15
+1	35	q4	base	2	z4z4p9p9m6m6s8s8p3s1p2s5z5	無関係						1	0	17	17
+1	35	q5	push	3	p7p7m1m1z2z2p9p9s9s9z4z5p4	放銃					0	0	-2000	9	9
+1	35	q5	base	3	p7p7m1m1z2z2p9p9s9s9z4z5p4	放銃					0	0	-2000	9	9
+1	35	q6	push	3	z5z5m9m9s7s7s4s4m4m4m8m8s3	和了	0	1	ロン	七対子+ドラ		0	6400	3	2
+1	35	q6	base	3	z5z5m9m9s7s7s4s4m4m4m8m8s3	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+ドラ+裏ドラ		0	17000	4	3
+1	36	q2	push	1	z4z4m8m8z6s2p7m3m1p6s1s7z2	無関係						0	0	16	15
+1	36	q2	base	1	z4z4m8m8z6s2p7m3m1p6s1s7z2	流局						0	1500	18	18
+1	36	q3	push	3	p2p2m6m6m3m3p9z2p7m7z6p8p3	放銃					0	0	-5800	16	17
+1	36	q3	base	3	p2p2m6m6m3m3p9z2p7m7z6p8p3	和了	0	0	ツモ	翻牌 發+ドラ+赤ドラ		0	4000	10	10
+1	36	q4	push	2	z1z1m5m5z4z4p8p8s4m3s6s9p5	無関係						0	0	11	11
+1	36	q4	base	2	z1z1m5m5z4z4p8p8s4m3s6s9p5	無関係						0	0	9	8
+1	36	q5	push	2	p3p3z3z3s1s1m9m9m3m3m5p6z7	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	11	11
+1	36	q5	base	2	p3p3z3z3s1s1m9m9m3m3m5p6z7	被ツモ						0	-500	11	11
+1	36	q6	push	1	p8p8m5m5p2p2z3z3p1p1m1m1p7	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	7	6
+1	36	q6	base	1	p8p8m5m5p2p2z3z3p1p1m1m1p7	流局						1	1500	18	18
+1	37	q2	push	1	z5z5s6s6p5p8s5p4z2s1m6z6p9	放銃					1	1	-5800	11	11
+1	37	q2	base	1	z5z5s6s6p5p8s5p4z2s1m6z6p9	和了	0	0	ロン	翻牌 白+ドラ+赤ドラ		1	8700	10	10
+1	37	q3	push	3	m1m1s2s2s7s7p2p8m8m5m6m4s4	流局						1	-1000	18	17
+1	37	q3	base	3	m1m1s2s2s7s7p2p8m8m5m6m4s4	無関係						1	0	16	16
+1	37	q4	push	2	s4s4s3s3z1z1m8m8p7s7p1m1m5	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	8	7
+1	37	q4	base	2	s4s4s3s3z1z1m8m8p7s7p1m1m5	無関係						1	0	14	14
+1	37	q5	push	3	z7z7m9m9p6p6m8m8z6z6s3p4z3	放銃					1	1	-1300	7	7
+1	37	q5	base	3	z7z7m9m9p6p6m8m8z6z6s3p4z3	被ツモ						1	-6000	15	14
+1	37	q6	push	1	z1z1p8p8m5m5s8s8p6p6p4p4p7	和了	0	1	ロン	七対子		0	1600	6	6
+1	37	q6	base	1	z1z1p8p8m5m5s8s8p6p6p4p4p7	和了	0	1	ロン	ダブル立直+七対子+赤ドラ+裏ドラ		1	14000	12	11
+1	38	q2	push	3	z5z5s8s8m3s4p8p9s5p2z2m2z3	被ツモ						1	-2000	5	4
+1	38	q2	base	3	z5z5s8s8m3s4p8p9s5p2z2m2z3	無関係						1	0	8	9
+1	38	q3	push	1	s2s2p4p4p5p5s3z5p3m5m2m6p8	放銃					0	1	-2900	12	13
+1	38	q3	base	1	s2s2p4p4p5p5s3z5p3m5m2m6p8	放銃					1	1	-7700	7	8
+1	38	q4	push	2	z1z1p2p2z5z5s2s2p8m1p7p9s6	被ツモ						1	-3900	6	5
+1	38	q4	base	2	z1z1p2p2z5z5s2s2p8m1p7p9s6	被ツモ						1	-3900	6	5
+1	38	q5	push	3	s9s9m4m4s3s3m9m9s8s8p7z6m5	放銃					0	0	-1000	9	8
+1	38	q5	base	3	s9s9m4m4s3s3m9m9s8s8p7z6m5	流局						0	1500	18	17
+1	38	q6	push	1	p9p9p4p4z2z2z1z1m4m4m3m3p7	和了	0	1	ロン	七対子		0	1600	12	13
+1	38	q6	base	1	p9p9p4p4z2z2z1z1m4m4m3m3p7	流局						0	3000	18	18
+1	39	q2	push	3	p7p7z6z6p5s2s7p9m2z5z1p2s4	被ツモ						1	-2000	16	15
+1	39	q2	base	3	p7p7z6z6p5s2s7p9m2z5z1p2s4	無関係						1	0	8	8
+1	39	q3	push	3	z3z3s3s3m2m2p7p4z7m1z6p1p8	放銃					1	1	-8000	15	15
+1	39	q3	base	3	z3z3s3s3m2m2p7p4z7m1z6p1p8	被ツモ						1	-1000	17	16
+1	39	q4	push	2	m2m2m7m7s1s1z7z7s2p5p3s3s6	流局						1	1000	18	17
+1	39	q4	base	2	m2m2m7m7s1s1z7z7s2p5p3s3s6	被ツモ						1	-2000	17	18
+1	39	q5	push	3	s2s2z4z4p3p3z1z1z7z7z2s1p9	無関係						0	0	9	7
+1	39	q5	base	3	s2s2z4z4p3p3z1z1z7z7z2s1p9	和了	0	0	ロン	場風 東+翻牌 中+対々和+ドラ		1	12000	11	13
+1	39	q6	push	1	s5s5z7z7z3z3p6p6m2m2s8s8p7	放銃					1	1	-8000	10	10
+1	39	q6	base	1	s5s5z7z7z3z3p6p6m2m2s8s8p7	放銃					1	1	-12000	9	9
+1	40	q2	push	2	p6p6m7m7s5m3z6p9z1s8z3p4s9	被ツモ						1	-4000	11	11
+1	40	q2	base	2	p6p6m7m7s5m3z6p9z1s8z3p4s9	被ツモ						1	-2000	15	14
+1	40	q3	push	1	m8m8z2z2m6m6m4p7p9m9s9z3z7	無関係						0	0	5	5
+1	40	q3	base	1	m8m8z2z2m6m6m4p7p9m9s9z3z7	無関係						0	0	5	5
+1	40	q4	push	1	p5p5s2s2p8p8p7p7z6p3m3z2p2	無関係						0	0	17	18
+1	40	q4	base	1	p5p5s2s2p8p8p7p7z6p3m3z2p2	無関係						1	0	15	16
+1	40	q5	push	2	m4m4m7m7z6z6m5m5m8m8z3p3p4	和了	0	1	ロン	七対子		1	2600	17	16
+1	40	q5	base	2	m4m4m7m7z6z6m5m5m8m8z3p3p4	和了	0	0	ロン	混一色		0	2000	5	5
+1	40	q6	push	1	z2z2z7z7m8m8m9m9p6p6p8p8p5	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		0	8000	5	4
+1	40	q6	base	1	z2z2z7z7m8m8m9m9p6p6p8p8p5	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+ドラ		0	13000	10	9
+1	41	q2	push	2	m6m6s9s9m7z2m9s3p4p3s1m2z6	無関係						1	0	15	15
+1	41	q2	base	2	m6m6s9s9m7z2m9s3p4p3s1m2z6	無関係						1	0	15	15
+1	41	q3	push	1	p3p3s3s3p6p6m4z1m7z2z4s2p2	無関係						1	0	12	11
+1	41	q3	base	1	p3p3s3s3p6p6m4z1m7z2z4s2p2	無関係						1	0	12	11
+1	41	q4	push	1	z5z5z2z2m3m3m6m6z1z6s3m7p9	被ツモ						0	-2600	6	6
+1	41	q4	base	1	z5z5z2z2m3m3m6m6z1z6s3m7p9	無関係						0	0	6	6
+1	41	q5	push	2	z1z1p8p8m1m1m7m7m5m5m9p3m4	放銃					1	1	-3900	16	16
+1	41	q5	base	2	z1z1p8p8m1m1m7m7m5m5m9p3m4	流局						1	-1500	18	19
+1	41	q6	push	2	z7z7z5z5s7s7s5s5z4z4s9s9p2	放銃					1	1	-8000	14	14
+1	41	q6	base	2	z7z7z5z5s7s7s5s5z4z4s9s9p2	放銃					1	1	-8000	10	10
+1	42	q2	push	2	s7s7z1z1z6s9m5p8p4m2m4z2s3	無関係						0	0	9	9
+1	42	q2	base	2	s7s7z1z1z6s9m5p8p4m2m4z2s3	放銃					0	0	-3900	11	12
+1	42	q3	push	1	m6m6p8p8z1z1s9m1z6p3p5z2s2	被ツモ						1	-4000	7	6
+1	42	q3	base	1	m6m6p8p8z1z1s9m1z6p3p5z2s2	被ツモ						1	-4000	7	6
+1	42	q4	push	2	p6p6z1z1s2s2s3s3p5m4p9z7m8	被ツモ						1	-1000	10	9
+1	42	q4	base	2	p6p6z1z1s2s2s3s3p5m4p9z7m8	放銃					0	0	-2900	6	7
+1	42	q5	push	3	s8s8z4z4m2m2z7z7s4s4p2z2z3	無関係						0	0	6	6
+1	42	q5	base	3	s8s8z4z4m2m2z7z7s4s4p2z2z3	和了	0	0	ツモ	自風 北+翻牌 中+対々和		0	8000	6	7
+1	42	q6	push	2	m9m9m1m1p6p6p8p8m7m7m6m6z7	和了	0	1	ロン	七対子		0	1600	1	0
+1	42	q6	base	2	m9m9m1m1p6p6p8p8m7m7m6m6z7	和了	0	1	ロン	七対子		0	1600	1	0
+1	43	q2	push	3	z7z7p5p5z6s1s4p4p1m8m3p6s9	無関係						1	0	9	9
+1	43	q2	base	3	z7z7p5p5z6s1s4p4p1m8m3p6s9	和了	0	0	ロン	立直+ドラ+赤ドラ		0	6200	13	14
+1	43	q3	push	1	s7s7s4s4p9p9m6s5p8m8m9p5s8	流局						0	1500	18	18
+1	43	q3	base	1	s7s7s4s4p9p9m6s5p8m8m9p5s8	放銃					1	1	-3900	13	13
+1	43	q4	push	3	s3s3s5s5p9p9p4p4s6s8m1z5m4	放銃					1	1	-5200	16	16
+1	43	q4	base	3	s3s3s5s5p9p9p4p4s6s8m1z5m4	流局						1	1500	18	18
+1	43	q5	push	2	z4z4m2m2p8p8s2s2m1m1z6z2s6	無関係						0	0	11	11
+1	43	q5	base	2	z4z4m2m2p8p8s2s2m1m1z6z2s6	放銃					0	0	-1300	10	10
+1	43	q6	push	2	m2m2s5s5m8m8m5m5m4m4s7s7z4	和了	0	1	ロン	断幺九+七対子		0	3200	3	2
+1	43	q6	base	2	m2m2s5s5m8m8m5m5m4m4s7s7z4	和了	0	1	ロン	ダブル立直+七対子		0	7400	9	8
+1	44	q2	push	1	p6p6m1m1p5z5s2s6s9s1m7z1z4	被ツモ						1	-4000	14	13
+1	44	q2	base	1	p6p6m1m1p5z5s2s6s9s1m7z1z4	被ツモ						1	-4000	14	13
+1	44	q3	push	2	m4m4s5s5p1p1m9p4p8m5z1z5s3	無関係						1	0	11	11
+1	44	q3	base	2	m4m4s5s5p1p1m9p4p8m5z1z5s3	流局						1	1500	18	18
+1	44	q4	push	2	s4s4m6m6p1p1p2p2z1z5s8s9s1	和了	0	1	ロン	七対子+ドラ		1	7400	15	14
+1	44	q4	base	2	s4s4m6m6p1p1p2p2z1z5s8s9s1	和了	0	1	ロン	立直+一発+七対子		1	6400	13	13
+1	44	q5	push	1	m5m5s7s7z4z4p3p3m6m6m3z7z1	和了	0	1	ロン	七対子+赤ドラ		0	3200	8	9
+1	44	q5	base	1	m5m5s7s7z4z4p3p3m6m6m3z7z1	和了	0	1	ツモ	立直+門前清自摸和+七対子		0	7400	15	14
+1	44	q6	push	2	s1s1m8m8s9s9z6z6z5z5s3s3z7	和了	1	0	ツモ	地和		0	32000	1	0
+1	44	q6	base	2	s1s1m8m8s9s9z6z6z5z5s3s3z7	和了	1	0	ツモ	地和		0	32000	1	0
+1	45	q2	push	1	s8s8p5p5m1m9z1p1s7z5z2p2s3	放銃					1	1	-5200	11	11
+1	45	q2	base	1	s8s8p5p5m1m9z1p1s7z5z2p2s3	流局						1	-1000	18	18
+1	45	q3	push	2	s6s6s2s2z7z7s3z2p5m4p8p7s9	流局						1	-1000	18	17
+1	45	q3	base	2	s6s6s2s2z7z7s3z2p5m4p8p7s9	無関係						1	0	14	13
+1	45	q4	push	3	z7z7p9p9s1s1p4p4s4m5p6z3m6	流局						1	1500	18	17
+1	45	q4	base	3	z7z7p9p9s1s1p4p4s4m5p6z3m6	無関係						1	0	14	13
+1	45	q5	push	1	m8m8p4p4z5z5p9p9s6s6m3z3s4	無関係						1	0	9	10
+1	45	q5	base	1	m8m8p4p4z5z5p9p9s6s6m3z3s4	和了	0	1	ロン	立直+七対子		0	4200	8	8
+1	45	q6	push	2	p5p5z6z6s6s6z3z3p9p9m2m2m3	和了	0	1	ロン	七対子		0	1600	8	7
+1	45	q6	base	2	p5p5z6z6s6s6z3z3p9p9m2m2m3	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	16	15
+1	46	q2	push	3	p2p2s8s8s7s4z1s5p4s6m7s2p3	被ツモ						1	-2000	17	16
+1	46	q2	base	3	p2p2s8s8s7s4z1s5p4s6m7s2p3	和了	0	0	ツモ	立直+門前清自摸和+平和+断幺九		0	6200	16	15
+1	46	q3	push	1	m5m5p8p8s1s1p5s6m8z4p3z5p7	流局						0	-1000	18	18
+1	46	q3	base	1	m5m5p8p8s1s1p5s6m8z4p3z5p7	被ツモ						1	-4000	15	15
+1	46	q4	push	3	z4z4s6s6p8p8m3m3m1p7m4z2z1	無関係						1	0	10	9
+1	46	q4	base	3	z4z4s6s6p8p8m3m3m1p7m4z2z1	被ツモ						1	-2000	16	16
+1	46	q5	push	1	s1s1m3m3p7p7p3p3p8p8m9z5s7	被ツモ						1	-2000	15	16
+1	46	q5	base	1	s1s1m3m3p7p7p3p3p8p8m9z5s7	流局						1	1000	18	19
+1	46	q6	push	1	m1m1m8m8s6s6m4m4z2z2m2m2s9	被ツモ						1	-6000	10	9
+1	46	q6	base	1	m1m1m8m8s6s6m4m4z2z2m2m2s9	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+ドラ		0	13000	4	3
+1	47	q2	push	2	p8p8z1z1s6p9z5z3m5m7s7s9p1	無関係						0	0	13	13
+1	47	q2	base	2	p8p8z1z1s6p9z5z3m5m7s7s9p1	被ツモ						1	-3900	14	14
+1	47	q3	push	3	s9s9p1p1z7z7s7p9m6z3m9m1z5	無関係						1	0	9	8
+1	47	q3	base	3	s9s9p1p1z7z7s7p9m6z3m9m1z5	被ツモ						1	-3000	13	12
+1	47	q4	push	3	m9m9p9p9m8m8s1s1p4m3m4z4p5	無関係						1	0	11	10
+1	47	q4	base	3	m9m9p9p9m8m8s1s1p4m3m4z4p5	無関係						1	0	13	12
+1	47	q5	push	1	z7z7s4s4m7m7z3z3s6s6m8z5p6	無関係						1	0	17	17
+1	47	q5	base	1	z7z7s4s4m7m7z3z3s6s6m8z5p6	無関係						0	0	7	7
+1	47	q6	push	2	m8m8p5p5p7p7m6m6z4z4p9p9m9	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	2	1
+1	47	q6	base	2	m8m8p5p5p7p7m6m6z4z4p9p9m9	和了	0	1	ツモ	ダブル立直+一発+門前清自摸和+七対子+裏ドラ		0	17000	2	1
+1	48	q2	push	3	s1s1s2s2s8m2p9m6z4z2m4z5m1	流局						1	-1500	18	17
+1	48	q2	base	3	s1s1s2s2s8m2p9m6z4z2m4z5m1	流局						1	-1000	18	17
+1	48	q3	push	1	s6s6s8s8m5m5s9m6m7s5s7p5z1	無関係						0	0	15	15
+1	48	q3	base	1	s6s6s8s8m5m5s9m6m7s5s7p5z1	和了	0	0	ロン	立直+断幺九+ドラ		1	10000	13	12
+1	48	q4	push	3	s4s4z1z1s8s8z4z4m4m2p3p1p5	流局						1	-1500	18	17
+1	48	q4	base	3	s4s4z1z1s8s8z4z4m4m2p3p1p5	和了	0	0	ロン	場風 東+自風 北		1	2000	13	13
+1	48	q5	push	2	s8s8z6z6p5p5z7z7s2s2p9m7m6	流局						1	-1500	18	17
+1	48	q5	base	2	s8s8z6z6p5p5z7z7s2s2p9m7m6	放銃					1	1	-2000	9	10
+1	48	q6	push	2	z6z6m6m6s2s2s5s5p1p1p5p5m1	和了	0	1	ロン	七対子		0	1600	7	6
+1	48	q6	base	2	z6z6m6m6s2s2s5s5p1p1p5p5m1	流局						0	3000	18	17
+1	49	q2	push	2	p6p6m9m9m8s7m3z7z6s9p4s3p5	無関係						1	0	11	11
+1	49	q2	base	2	p6p6m9m9m8s7m3z7z6s9p4s3p5	無関係						1	0	11	11
+1	49	q3	push	3	m8m8z7z7m1m1p7p3m3s3s7p1s9	放銃					1	1	-8000	7	7
+1	49	q3	base	3	m8m8z7z7m1m1p7p3m3s3s7p1s9	被ツモ						1	-3000	6	5
+1	49	q4	push	3	m6m6p5p5m8m8s3s3z7m3p7s1z6	被ツモ						1	-4000	12	11
+1	49	q4	base	3	m6m6p5p5m8m8s3s3z7m3p7s1z6	被ツモ						1	-4000	12	11
+1	49	q5	push	3	p1p1s6s6s7s7m2m2p3p3m3s8m4	被ツモ						0	-700	6	6
+1	49	q5	base	3	p1p1s6s6s7s7m2m2p3p3m3s8m4	和了	0	0	ロン	立直+一盃口+裏ドラ		1	9000	10	9
+1	49	q6	push	2	z3z3z6z6s3s3p1p1z4z4m3m3s2	無関係						1	0	9	9
+1	49	q6	base	2	z3z3z6z6s3s3p1p1z4z4m3m3s2	和了	0	1	ロン	ダブル立直+七対子		0	7400	6	5
+1	50	q2	push	1	p4p4m8m8z1s1z2s3s7m6p5m9s5	無関係						1	0	8	7
+1	50	q2	base	1	p4p4m8m8z1s1z2s3s7m6p5m9s5	放銃					0	0	-2000	10	11
+1	50	q3	push	1	p5p5m5m5z3z3m1z6s3z5p8m2p9	無関係						0	0	17	16
+1	50	q3	base	1	p5p5m5m5z3z3m1z6s3z5p8m2p9	無関係						0	0	10	10
+1	50	q4	push	3	z4z4m2m2s8s8s6s6p8m3m7z7p7	無関係						0	0	8	8
+1	50	q4	base	3	z4z4m2m2s8s8s6s6p8m3m7z7p7	和了	0	0	ロン	自風 北		0	1000	7	7
+1	50	q5	push	1	s1s1m7m7p4p4p1p1z7z7p3z1s2	放銃					1	1	-4800	18	18
+1	50	q5	base	1	s1s1m7m7p4p4p1p1z7z7p3z1s2	流局						1	1000	17	18
+1	50	q6	push	3	s4s4s8s8s2s2p2p2p3p3z7z7s6	放銃					1	1	-2900	14	14
+1	50	q6	base	3	s4s4s8s8s2s2p2p2p3p3z7z7s6	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	6	5
+1	51	q2	push	1	s8s8s4s4s9s3p4z6m3m7s1m9z2	被ツモ						0	-1000	10	10
+1	51	q2	base	1	s8s8s4s4s9s3p4z6m3m7s1m9z2	和了	0	0	ロン	翻牌 發		1	3000	14	14
+1	51	q3	push	3	p7p7p4p4m6m6m2m1s2z5p8p3z3	被ツモ						1	-2600	11	11
+1	51	q3	base	3	p7p7p4p4m6m6m2m1s2z5p8p3z3	被ツモ						1	-2000	14	14
+1	51	q4	push	1	p2p2p8p8s9s9z7z7p9m6m7s7s2	和了	0	1	ロン	七対子		0	1600	6	6
+1	51	q4	base	1	p2p2p8p8s9s9z7z7p9m6m7s7s2	被ツモ						1	-2000	5	4
+1	51	q5	push	1	z1z1z3z3s2s2s4s4p9p9m1s7m9	和了	0	1	ロン	七対子+ドラ+赤ドラ		1	8000	5	5
+1	51	q5	base	1	z1z1z3z3s2s2s4s4p9p9m1s7m9	放銃					0	0	-1000	8	10
+1	51	q6	push	3	s5s5p2p2m8m8p1p1m9m9z4z4m2	和了	0	1	ロン	七対子		0	1600	5	4
+1	51	q6	base	3	s5s5p2p2m8m8p1p1m9m9z4z4m2	和了	0	1	ロン	ダブル立直+七対子		1	8400	15	14
+1	52	q2	push	1	m1m1z7z7z1p3s2m8z4p7z3s1z5	被ツモ						1	-1600	10	10
+1	52	q2	base	1	m1m1z7z7z1p3s2m8z4p7z3s1z5	被ツモ						1	-1600	10	10
+1	52	q3	push	2	z3z3m5m5m8m8s2s7s6p7z7p8p5	放銃					0	1	-11600	16	16
+1	52	q3	base	2	z3z3m5m5m8m8s2s7s6p7z7p8p5	無関係						0	0	6	6
+1	52	q4	push	1	p9p9s2s2z4z4m2m2z5p4z1m4m6	和了	0	1	ロン	七対子+ドラ		1	7400	15	15
+1	52	q4	base	1	p9p9s2s2z4z4m2m2z5p4z1m4m6	流局						1	-3000	18	17
+1	52	q5	push	3	m2m2m6m6s7s7p1p1z1z1p8p3s4	和了	0	1	ロン	七対子+ドラ		0	6400	9	9
+1	52	q5	base	3	m2m2m6m6s7s7p1p1z1z1p8p3s4	無関係						0	0	8	8
+1	52	q6	push	3	z5z5z1z1p4p4z3z3s3s3s4s4m6	和了	0	1	ロン	七対子		1	3600	13	12
+1	52	q6	base	3	z5z5z1z1p4p4z3z3s3s3s4s4m6	和了	0	1	ロン	ダブル立直+七対子		0	7400	13	12
+1	53	q2	push	3	p9p9z2z2m2m6m3s2m8p6p2m1z3	被ツモ						0	-1000	15	14
+1	53	q2	base	3	p9p9z2z2m2m6m3s2m8p6p2m1z3	被ツモ						0	-1000	15	14
+1	53	q3	push	3	p5p5z4z4m4m4p4p9s2m3p7s9z3	被ツモ						1	-4000	13	12
+1	53	q3	base	3	p5p5z4z4m4m4p4p9s2m3p7s9z3	被ツモ						1	-1300	10	9
+1	53	q4	push	3	s4s4z2z2z5z5s5s5s3m8p3m4s6	被ツモ						1	-6000	18	17
+1	53	q4	base	3	s4s4z2z2z5z5s5s5s3m8p3m4s6	和了	0	0	ロン	翻牌 白+混一色		0	3900	5	6
+1	53	q5	push	3	p4p4p1p1z5z5p2p2m6m6m4s5z2	和了	0	1	ロン	七対子		0	1600	3	3
+1	53	q5	base	3	p4p4p1p1z5z5p2p2m6m6m4s5z2	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	8	7
+1	53	q6	push	1	p7p7z2z2s2s2m1m1z3z3z7z7p2	和了	0	1	ロン	七対子		0	1600	1	0
+1	53	q6	base	1	p7p7z2z2s2s2m1m1z3z3z7z7p2	和了	0	1	ロン	七対子		0	1600	1	0
+1	54	q2	push	1	s5s5m7m7z7p5m6m5s1m2s2z5s9	放銃					1	1	-1300	12	12
+1	54	q2	base	1	s5s5m7m7z7p5m6m5s1m2s2z5s9	流局						1	1500	18	18
+1	54	q3	push	2	p2p2s8s8z5z5s9p8s4z2s5m5z1	放銃					0	0	-2900	9	9
+1	54	q3	base	2	p2p2s8s8z5z5s9p8s4z2s5m5z1	流局						1	-1000	18	18
+1	54	q4	push	2	p3p3s1s1s6s6m9m9m7m3s3z7m5	流局						1	-1000	18	17
+1	54	q4	base	2	p3p3s1s1s6s6m9m9m7m3s3z7m5	被ツモ						1	-1000	10	10
+1	54	q5	push	2	z3z3m6m6m5m5p1p1z5z5m9p7s8	放銃					1	1	-5200	10	10
+1	54	q5	base	2	z3z3m6m6m5m5p1p1z5z5m9p7s8	放銃					0	0	-2000	15	16
+1	54	q6	push	2	m9m9m4m4s2s2m2m2z1z1z7z7z6	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	4	3
+1	54	q6	base	2	m9m9m4m4s2s2m2m2z1z1z7z7z6	和了	0	1	ロン	ダブル立直+七対子		0	7400	4	4
+1	55	q2	push	1	p7p7z2z2m1p9s3m6m5p6m7z6p8	無関係						0	0	10	10
+1	55	q2	base	1	p7p7z2z2m1p9s3m6m5p6m7z6p8	和了	0	0	ツモ	自風 南		0	1100	9	9
+1	55	q3	push	3	m5m5p5p5s6s6p8m6s8z2s7p3p6	被ツモ						1	-1000	14	13
+1	55	q3	base	3	m5m5p5p5s6s6p8m6s8z2s7p3p6	和了	0	0	ツモ	立直+一発+門前清自摸和+断幺九		1	9900	12	11
+1	55	q4	push	3	m1m1s2s2p3p3s4s4z4s9p1s1z5	被ツモ						1	-500	9	8
+1	55	q4	base	3	m1m1s2s2p3p3s4s4z4s9p1s1z5	和了	0	1	ツモ	立直+門前清自摸和+七対子+赤ドラ		1	14000	8	7
+1	55	q5	push	3	p2p2s2s2p5p5z7z7s3s3s5m7z5	流局						1	-1000	18	18
+1	55	q5	base	3	p2p2s2s2p5p5z7z7s3s3s5m7z5	和了	0	0	ツモ	翻牌 中+赤ドラ		1	4000	15	15
+1	55	q6	push	1	m5m5m9m9m8m8s4s4z7z7z2z2z5	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	6	7
+1	55	q6	base	1	m5m5m9m9m8m8s4s4z7z7z2z2z5	被ツモ						0	-300	9	9
+1	56	q2	push	1	z4z4p6p6s6p9s3m6p3p4s2z6m1	流局						1	1500	18	18
+1	56	q2	base	1	z4z4p6p6s6p9s3m6p3p4s2z6m1	流局						1	-1000	18	18
+1	56	q3	push	2	p8p8m5m5z1z1s4s1z2s9m9z4m1	無関係						0	0	12	13
+1	56	q3	base	2	p8p8m5m5z1z1s4s1z2s9m9z4m1	放銃					0	0	-8000	15	17
+1	56	q4	push	3	p8p8s5s5p9p9p6p6p1m4z7p2m8	無関係						0	0	11	10
+1	56	q4	base	3	p8p8s5s5p9p9p6p6p1m4z7p2m8	被ツモ						1	-1300	11	10
+1	56	q5	push	1	m5m5m7m7s6s6m9m9p9p9s1s8m1	和了	0	1	ロン	七対子		0	1600	8	7
+1	56	q5	base	1	m5m5m7m7s6s6m9m9p9p9s1s8m1	和了	0	1	ロン	ダブル立直+七対子		0	7400	4	4
+1	56	q6	push	1	m6m6z2z2m3m3p3p3p1p1m2m2z5	被ツモ						1	-2000	18	17
+1	56	q6	base	1	m6m6z2z2m3m3p3p3p1p1m2m2z5	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+ドラ		0	13000	5	4
+1	57	q2	push	3	p3p3m2m2s5p8s6z3z5s1p7m8s9	無関係						1	0	15	15
+1	57	q2	base	3	p3p3m2m2s5p8s6z3z5s1p7m8s9	流局						1	-1500	18	18
+1	57	q3	push	3	m4m4s3s3p5p5p6p9z2p1s6s5s7	和了	0	1	ロン	七対子+赤ドラ		1	4200	14	14
+1	57	q3	base	3	m4m4s3s3p5p5p6p9z2p1s6s5s7	被ツモ						0	-300	14	15
+1	57	q4	push	3	p7p7s5s5m2m2p3p3z2m1s9m5p8	放銃					1	1	-7700	11	11
+1	57	q4	base	3	p7p7s5s5m2m2p3p3z2m1s9m5p8	和了	0	0	ツモ	断幺九		1	3100	15	15
+1	57	q5	push	1	s9s9p1p1p4p4p7p7z2z2m8m7z3	被ツモ						1	-4000	17	16
+1	57	q5	base	1	s9s9p1p1p4p4p7p7z2z2m8m7z3	流局						0	1500	18	17
+1	57	q6	push	1	s6s6m2m2m4m4m8m8p4p4s9s9m9	和了	0	1	ロン	七対子		0	1600	3	3
+1	57	q6	base	1	s6s6m2m2m4m4m8m8p4p4s9s9m9	流局						0	3000	18	18
+1	58	q2	push	1	s3s3m8m8s9p9z2z7z4p3m6p1p5	流局						1	-1500	18	18
+1	58	q2	base	1	s3s3m8m8s9p9z2z7z4p3m6p1p5	被ツモ						1	-2000	9	9
+1	58	q3	push	2	s3s3s6s6s9s9m3s7m7z7m9m6p3	無関係						0	0	6	5
+1	58	q3	base	2	s3s3s6s6s9s9m3s7m7z7m9m6p3	無関係						0	0	5	5
+1	58	q4	push	1	s7s7s8s8p3p3p9p9s6m4s3z7s1	放銃					1	1	-2000	17	17
+1	58	q4	base	1	s7s7s8s8p3p3p9p9s6m4s3z7s1	被ツモ						0	-700	10	10
+1	58	q5	push	2	p2p2z4z4m1m1s3s3m6m6z5s4p8	和了	0	1	ロン	七対子		1	3600	15	14
+1	58	q5	base	2	p2p2z4z4m1m1s3s3m6m6z5s4p8	流局						1	-1000	18	17
+1	58	q6	push	2	p9p9s6s6m6m6z3z3p4p4p8p8s9	被ツモ						0	-2600	9	8
+1	58	q6	base	2	p9p9s6s6m6m6z3z3p4p4p8p8s9	被ツモ						1	-2000	8	6
+1	59	q2	push	1	z2z2p4p4m4m8m7p2s8m6z1z3p7	被ツモ						0	-500	9	9
+1	59	q2	base	1	z2z2p4p4m4m8m7p2s8m6z1z3p7	被ツモ						0	-500	8	10
+1	59	q3	push	3	m7m7s9s9p6p6s8p1p5p3z4z1m4	無関係						0	0	10	9
+1	59	q3	base	3	m7m7s9s9p6p6s8p1p5p3z4z1m4	放銃					0	0	-2000	11	12
+1	59	q4	push	3	p4p4m7m7p9p9p7p7s6p6p5p2z2	被ツモ						1	-8000	12	11
+1	59	q4	base	3	p4p4m7m7p9p9p7p7s6p6p5p2z2	放銃					0	0	-7700	13	15
+1	59	q5	push	1	p3p3s9s9s4s4s8s8s1s1m4m5m6	和了	0	1	ツモ	門前清自摸和+七対子		1	4200	7	6
+1	59	q5	base	1	p3p3s9s9s4s4s8s8s1s1m4m5m6	放銃					0	0	-2000	5	5
+1	59	q6	push	1	p8p8p9p9m6m6p5p5p2p2m8m8s1	和了	0	1	ロン	七対子		0	1600	2	1
+1	59	q6	base	1	p8p8p9p9m6m6p5p5p2p2m8m8s1	和了	0	1	ロン	ダブル立直+七対子+裏ドラ		0	13000	13	13
+1	60	q2	push	2	m9m9z1z1p5m1z6s1p9m2s9s8p4	放銃					0	0	-2900	13	14
+1	60	q2	base	2	m9m9z1z1p5m1z6s1p9m2s9s8p4	和了	0	0	ロン	場風 東+ドラ		1	3600	12	12
+1	60	q3	push	3	z1z1p1p1m1m1p7z4z7m6m9m7p2	無関係						0	0	8	8
+1	60	q3	base	3	z1z1p1p1m1m1p7z4z7m6m9m7p2	無関係						0	0	8	9
+1	60	q4	push	3	z5z5m6m6m2m2p2p2z4s3z6m9p8	無関係						0	0	12	12
+1	60	q4	base	3	z5z5m6m6m2m2p2p2z4s3z6m9p8	被ツモ						1	-2000	10	10
+1	60	q5	push	1	m4m4s4s4m2m2s3s3z5z5p8m5s1	和了	0	1	ツモ	海底摸月+門前清自摸和+七対子		1	7400	18	17
+1	60	q5	base	1	m4m4s4s4m2m2s3s3z5z5p8m5s1	和了	0	0	ロン	翻牌 白+対々和		1	6200	9	9
+1	60	q6	push	1	z1z1m2m2p6p6m8m8z5z5p5p5z3	和了	0	1	ロン	七対子+ドラ+赤ドラ		0	8000	8	8
+1	60	q6	base	1	z1z1m2m2p6p6m8m8z5z5p5p5z3	和了	0	1	ロン	ダブル立直+七対子+ドラ		0	13000	4	4
+1	61	q2	push	3	z4z4m1m1m7z1z5p5s3m3p9z2p4	流局						1	-1000	18	17
+1	61	q2	base	3	z4z4m1m1m7z1z5p5s3m3p9z2p4	和了	0	0	ツモ	自風 北		1	2500	15	14
+1	61	q3	push	2	m8m8p1p1m7m7m4s3p2z2z4p8p6	放銃					1	1	-3900	16	16
+1	61	q3	base	2	m8m8p1p1m7m7m4s3p2z2z4p8p6	被ツモ						0	-2000	10	9
+1	61	q4	push	1	m1m1s5s5p2p2s3s3m9s8m6z2p1	被ツモ						1	-6000	10	10
+1	61	q4	base	1	m1m1s5s5p2p2s3s3m9s8m6z2p1	被ツモ						1	-6000	10	10
+1	61	q5	push	2	m6m6p3p3z6z6m9m9m2m2s6p5s7	被ツモ						1	-4000	17	18
+1	61	q5	base	2	m6m6p3p3z6z6m9m9m2m2s6p5s7	被ツモ						1	-500	12	13
+1	61	q6	push	3	p1p1z4z4p6p6m8m8m7m7p2p2p4	和了	0	1	ロン	七対子		0	1600	8	7
+1	61	q6	base	3	p1p1z4z4p6p6m8m8m7m7p2p2p4	被ツモ						0	-3900	3	2
+1	62	q2	push	3	m3m3m8m8p8s8m6p2p1z4p9p4s5	流局						1	-1000	18	17
+1	62	q2	base	3	m3m3m8m8p8s8m6p2p1z4p9p4s5	被ツモ						1	-4000	8	7
+1	62	q3	push	1	m1m1p4p4p3p3z3s4p1p2z4s1p9	被ツモ						1	-2000	15	14
+1	62	q3	base	1	m1m1p4p4p3p3z3s4p1p2z4s1p9	無関係						1	0	8	9
+1	62	q4	push	2	s6s6p3p3p8p8m8m8s9s8m4z6m7	無関係						0	0	8	7
+1	62	q4	base	2	s6s6p3p3p8p8m8m8s9s8m4z6m7	無関係						0	0	8	7
+1	62	q5	push	1	p5p5m6m6m3m3z4z4z6z6z3s3s9	和了	0	1	ロン	七対子+ドラ+赤ドラ		0	8000	4	4
+1	62	q5	base	1	p5p5m6m6m3m3z4z4z6z6z3s3s9	流局						1	1500	18	18
+1	62	q6	push	2	m7m7z2z2p9p9s3s3m4m4s4s4s8	和了	0	1	ロン	七対子		0	1600	11	11
+1	62	q6	base	2	m7m7z2z2p9p9s3s3m4m4s4s4s8	流局						0	3000	18	17
+1	63	q2	push	3	s8s8z7z7z5s1z1m2s3p4p1p2s2	被ツモ						1	-2000	8	7
+1	63	q2	base	3	s8s8z7z7z5s1z1m2s3p4p1p2s2	被ツモ						1	-2000	8	7
+1	63	q3	push	3	p4p4z2z2z6z6p5s8z5m9p9p1z4	流局						1	-1000	18	17
+1	63	q3	base	3	p4p4z2z2z6z6p5s8z5m9p9p1z4	流局						1	-1000	18	17
+1	63	q4	push	1	m5m5s9s9p1p1s4s4m9m1s5m6s2	無関係						0	0	15	16
+1	63	q4	base	1	m5m5s9s9p1p1s4s4m9m1s5m6s2	流局						0	1500	18	18
+1	63	q5	push	2	z6z6s6s6p1p1p2p2m4m4m2z3z5	無関係						0	0	8	9
+1	63	q5	base	2	z6z6s6s6p1p1p2p2m4m4m2z3z5	無関係						0	0	9	9
+1	63	q6	push	3	s4s4m3m3s1s1m8m8p9p9z7z7s6	和了	1	0	ツモ	地和		0	32000	1	0
+1	63	q6	base	3	s4s4m3m3s1s1m8m8p9p9z7z7s6	和了	1	0	ツモ	地和		0	32000	1	0
+1	64	q2	push	3	p7p7s5s5m7z7s2p3s7m8m9m2z1	被ツモ						1	-4000	7	6
+1	64	q2	base	3	p7p7s5s5m7z7s2p3s7m8m9m2z1	流局						1	-1000	18	17
+1	64	q3	push	3	s2s2z3z3m9m9s6p8s8m5z4m7s4	無関係						1	0	17	17
+1	64	q3	base	3	s2s2z3z3m9m9s6p8s8m5z4m7s4	無関係						1	0	11	11
+1	64	q4	push	3	p4p4s7s7s4s4s3s3s5s9p9m8z5	流局						1	-1000	18	17
+1	64	q4	base	3	p4p4s7s7s4s4s3s3s5s9p9m8z5	和了	0	0	ツモ	断幺九		1	2100	4	4
+1	64	q5	push	1	p3p3s7s7p7p7m8m8m1m1m3s1z1	放銃					0	0	-1500	4	5
+1	64	q5	base	1	p3p3s7s7p7p7m8m8m1m1m3s1z1	放銃					0	0	-1500	10	11
+1	64	q6	push	1	z7z7s2s2z2z2s6s6s3s3m3m3m8	放銃					1	1	-16000	11	11
+1	64	q6	base	1	z7z7s2s2z2z2s6s6s3s3m3m3m8	流局						0	3000	18	18
+1	65	q2	push	1	s4s4m7m7p9z6m3z7s9p6s1z1p4	被ツモ						1	-1000	16	16
+1	65	q2	base	1	s4s4m7m7p9z6m3z7s9p6s1z1p4	無関係						1	0	9	9
+1	65	q3	push	3	m2m2m1m1p6p6m4z2z4m3s7p7s8	無関係						0	0	6	5
+1	65	q3	base	3	m2m2m1m1p6p6m4z2z4m3s7p7s8	和了	0	0	ロン	立直		0	2300	9	9
+1	65	q4	push	2	s8s8z7z7z3z3s6s6p7p4m9z5s9	放銃					1	1	-3900	11	11
+1	65	q4	base	2	s8s8z7z7z3z3s6s6p7p4m9z5s9	被ツモ						1	-2000	15	14
+1	65	q5	push	3	z7z7s9s9s3s3s5s5s6s6s1p6m5	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	7	6
+1	65	q5	base	3	z7z7s9s9s3s3s5s5s6s6s1p6m5	和了	0	0	ロン	翻牌 中+混一色		0	3900	9	9
+1	65	q6	push	2	p3p3z4z4s6s6s2s2z1z1p6p6m9	和了	0	1	ロン	七対子+ドラ		1	7400	16	15
+1	65	q6	base	2	p3p3z4z4s6s6s2s2z1z1p6p6m9	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+裏ドラ		0	13000	4	3
+1	66	q2	push	1	z5z5z4z4p1m8m2z7s9m5p9s8m7	被ツモ						1	-6000	8	8
+1	66	q2	base	1	z5z5z4z4p1m8m2z7s9m5p9s8m7	無関係						1	0	17	17
+1	66	q3	push	2	z7z7m3m3s7s7z3s3z5m5p5p2s2	無関係						0	0	10	10
+1	66	q3	base	2	z7z7m3m3s7s7z3s3z5m5p5p2s2	無関係						0	0	15	15
+1	66	q4	push	3	p6p6p8p8s5s5p5p5p9z5m2m8s9	被ツモ						1	-4000	12	11
+1	66	q4	base	3	p6p6p8p8s5s5p5p5p9z5m2m8s9	流局						1	-1000	18	17
+1	66	q5	push	1	z3z3p3p3p7p7m8m8m7m7m1s3z1	放銃					0	1	-5800	8	9
+1	66	q5	base	1	z3z3p3p3p7p7m8m8m7m7m1s3z1	和了	0	1	ツモ	立直+門前清自摸和+七対子		0	7400	8	8
+1	66	q6	push	2	s3s3z3z3p8p8s6s6p2p2s4s4m8	流局						0	0	1	0
+1	66	q6	base	2	s3s3z3z3p8p8s6s6p2p2s4s4m8	流局						0	0	1	0
+1	67	q2	push	2	p5p5m1m1m8z7m7z5p4m6m5m2p3	放銃					1	1	-12000	7	7
+1	67	q2	base	2	p5p5m1m1m8z7m7z5p4m6m5m2p3	被ツモ						1	-4000	12	11
+1	67	q3	push	3	p9p9s5s5z7z7p3s9m7p6m6p2m1	被ツモ						1	-2000	12	11
+1	67	q3	base	3	p9p9s5s5z7z7p3s9m7p6m6p2m1	無関係						1	0	8	8
+1	67	q4	push	3	s4s4m3m3z3z3m4m4z2s2p7m2s3	被ツモ						1	-2000	15	14
+1	67	q4	base	3	s4s4m3m3z3z3m4m4z2s2p7m2s3	被ツモ						1	-2000	15	14
+1	67	q5	push	2	z1z1z6z6p8p8z5z5s9s9m5p6z7	無関係						1	0	13	12
+1	67	q5	base	2	z1z1z6z6p8p8z5z5s9s9m5p6z7	流局						0	3000	18	17
+1	67	q6	push	3	m3m3m4m4p1p1z3z3z1z1s1s1s3	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	2	1
+1	67	q6	base	3	m3m3m4m4p1p1z3z3z1z1s1s1s3	和了	0	1	ロン	ダブル立直+七対子		1	8400	13	12
+1	68	q2	push	2	p5p5s4s4p4m2z3s7s9z2p1z5m3	無関係						1	0	9	9
+1	68	q2	base	2	p5p5s4s4p4m2z3s7s9z2p1z5m3	放銃					1	1	-12000	8	8
+1	68	q3	push	3	z5z5m6m6p2p2p4s4p5m7m1z7p6	無関係						0	0	7	6
+1	68	q3	base	3	z5z5m6m6p2p2p4s4p5m7m1z7p6	和了	0	0	ツモ	翻牌 白+ドラ		0	7900	7	7
+1	68	q4	push	3	z5z5z7z7m9m9z1z1s7p4m7z6s2	被ツモ						1	-2600	14	13
+1	68	q4	base	3	z5z5z7z7m9m9z1z1s7p4m7z6s2	和了	0	0	ロン	場風 東+翻牌 中+混全帯幺九		0	5200	4	5
+1	68	q5	push	1	p5p5s1s1s5s5m2m2p7p7s7m8z3	無関係						1	0	8	7
+1	68	q5	base	1	p5p5s1s1s5s5m2m2p7p7s7m8z3	無関係						1	0	8	7
+1	68	q6	push	1	m3m3p9p9s9s9z2z2p8p8z7z7p5	和了	0	1	ロン	七対子+ドラ		0	6400	8	9
+1	68	q6	base	1	m3m3p9p9s9s9z2z2p8p8z7z7p5	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	7	6
+1	69	q2	push	1	s3s3p5p5m3z7s1s7m4s9m6p2z5	流局						1	1500	18	18
+1	69	q2	base	1	s3s3p5p5m3z7s1s7m4s9m6p2z5	和了	0	0	ツモ	翻牌 白		0	1100	14	15
+1	69	q3	push	2	p6p6m5m5p3p3m3z1m9m6s5m1s1	無関係						0	0	7	6
+1	69	q3	base	2	p6p6m5m5p3p3m3z1m9m6s5m1s1	放銃					1	1	-9600	7	9
+1	69	q4	push	3	m8m8p7p7s4s4p4p4z6p2s3m2z4	放銃					1	1	-8000	16	16
+1	69	q4	base	3	m8m8p7p7s4s4p4p4z6p2s3m2z4	和了	0	0	ロン	立直+平和+断幺九+裏ドラ		1	9700	11	10
+1	69	q5	push	1	m9m9s5s5p5p5s6s6m3m3m2z4p3	流局						1	-1500	18	18
+1	69	q5	base	1	m9m9s5s5p5p5s6s6m3m3m2z4p3	被ツモ						1	-2000	10	10
+1	69	q6	push	1	m5m5m8m8p2p2z2z2m3m3s9s9m7	放銃					1	1	-2000	11	11
+1	69	q6	base	1	m5m5m8m8p2p2z2z2m3m3s9s9m7	被ツモ						1	-500	12	12
+1	70	q2	push	3	m2m2m6m6s7s4s8m5s2p2z4m7s1	無関係						1	0	14	13
+1	70	q2	base	3	m2m2m6m6s7s4s8m5s2p2z4m7s1	無関係						0	0	12	13
+1	70	q3	push	2	m7m7z1z1s5s5s7s3z7p5m2p7m5	流局						1	-1000	18	17
+1	70	q3	base	2	m7m7z1z1s5s5s7s3z7p5m2p7m5	和了	0	0	ツモ	場風 東		0	1500	8	7
+1	70	q4	push	1	m9m9p9p9s3s3m1m1m3p5s9m8z3	放銃					1	1	-3200	16	17
+1	70	q4	base	1	m9m9p9p9s3s3m1m1m3p5s9m8z3	放銃					1	1	-3200	14	15
+1	70	q5	push	2	s6s6z5z5s4s4p2p2m5m5m4m3p1	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		0	8000	2	1
+1	70	q5	base	2	s6s6z5z5s4s4p2p2m5m5m4m3p1	被ツモ						1	-1000	15	14
+1	70	q6	push	3	z7z7m1m1p4p4p6p6s4s4p7p7m3	和了	0	1	ロン	七対子		0	1600	2	1
+1	70	q6	base	3	z7z7m1m1p4p4p6p6s4s4p7p7m3	放銃					1	1	-8000	8	8
+1	71	q2	push	2	s1s1s3s3p7m5p9p1p6s4m9s7p8	被ツモ						0	-2600	12	12
+1	71	q2	base	2	s1s1s3s3p7m5p9p1p6s4m9s7p8	無関係						1	0	8	8
+1	71	q3	push	1	p1p1m7m7z2z2p3p9m4z1p4p7s6	被ツモ						1	-2600	12	12
+1	71	q3	base	1	p1p1m7m7z2z2p3p9m4z1p4p7s6	和了	0	0	ロン	自風 南+対々和		0	5200	8	9
+1	71	q4	push	1	s9s9z7z7s2s2z1z1z2s3p6p3z4	放銃					1	1	-8000	17	17
+1	71	q4	base	1	s9s9z7z7s2s2z1z1z2s3p6p3z4	流局						1	1000	18	18
+2	1	q2	push	2	p5p5p7p7p9z3s6z7m6m9z6s3m8	放銃					1	1	-3900	11	11
+2	1	q2	base	2	p5p5p7p7p9z3s6z7m6m9z6s3m8	流局						0	1500	18	18
+2	1	q3	push	1	p2p2m8m8s7s7s2p3z3p4z7m1p1	放銃					0	0	-3900	6	8
+2	1	q3	base	1	p2p2m8m8s7s7s2p3z3p4z7m1p1	無関係						0	0	7	7
+2	1	q4	push	3	p2p2z2z2m3m3s6s6p3p1m6p5z6	被ツモ						0	-1000	6	5
+2	1	q4	base	3	p2p2z2z2m3m3s6s6p3p1m6p5z6	無関係						0	0	6	5
+2	1	q5	push	1	p2p2z5z5z2z2m4m4p4p4m9s7m6	被ツモ						1	-6000	4	3
+2	1	q5	base	1	p2p2z5z5z2z2m4m4p4p4m9s7m6	被ツモ						1	-6000	4	3
+2	1	q6	push	3	s4s4z7z7m7m7p1p1m2m2z1z1s3	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		0	8000	5	4
+2	1	q6	base	3	s4s4z7z7m7m7p1p1m2m2z1z1s3	流局						0	3000	18	17
+2	2	q2	push	1	p7p7s5s5z1z7p3p5m3p4z4s8m7	和了	0	1	ツモ	海底摸月+門前清自摸和+断幺九+七対子+赤ドラ		1	13000	18	18
+2	2	q2	base	1	p7p7s5s5z1z7p3p5m3p4z4s8m7	被ツモ						1	-1300	11	11
+2	2	q3	push	2	z5z5p8p8p9p9s5p4m4p5m3m1p2	無関係						1	0	14	13
+2	2	q3	base	2	z5z5p8p8p9p9s5p4m4p5m3m1p2	和了	0	0	ロン	翻牌 白		0	1000	11	11
+2	2	q4	push	1	p7p7z3z3m4m4m3m3z1s5s1p5z6	和了	0	1	ロン	七対子+ドラ		0	12000	17	19
+2	2	q4	base	1	p7p7z3z3m4m4m3m3z1s5s1p5z6	被ツモ						1	-1300	13	14
+2	2	q5	push	2	m2m2m1m1m8m8m3m3p7p7p9s3m9	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	3	2
+2	2	q5	base	2	m2m2m1m1m8m8m3m3p7p7p9s3m9	和了	0	1	ロン	ダブル立直+七対子		1	8400	14	13
+2	2	q6	push	2	z5z5z1z1z6z6z4z4s3s3m3m3z7	和了	0	1	ロン	七対子		0	1600	3	2
+2	2	q6	base	2	z5z5z1z1z6z6z4z4s3s3m3m3z7	無関係						1	0	8	7
+2	3	q2	push	3	p5p5s3s3p9m7s8p4m1m4p6m9s4	流局						1	1000	18	18
+2	3	q2	base	3	p5p5s3s3p9m7s8p4m1m4p6m9s4	被ツモ						1	-3000	9	8
+2	3	q3	push	2	s3s3m6m6p4p4p8p6m7m1z2z3s7	流局						0	0	1	1
+2	3	q3	base	2	s3s3m6m6p4p4p8p6m7m1z2z3s7	流局						0	0	1	1
+2	3	q4	push	1	p8p8m1m1s6s6p1p1p4s3m3z1m7	被ツモ						1	-6000	13	12
+2	3	q4	base	1	p8p8m1m1s6s6p1p1p4s3m3z1m7	被ツモ						1	-2600	16	15
+2	3	q5	push	1	s5s5p4p4s9s9z7z7p5p5s1m4m2	流局						0	0	18	19
+2	3	q5	base	1	s5s5p4p4s9s9z7z7p5p5s1m4m2	被ツモ						1	-2000	10	11
+2	3	q6	push	3	s1s1z1z1m2m2z3z3s9s9p4p4z6	和了	0	1	ロン	七対子		0	1600	1	0
+2	3	q6	base	3	s1s1z1z1m2m2z3z3s9s9p4p4z6	和了	0	1	ロン	七対子		0	1600	1	0
+2	4	q2	push	1	z7z7m5m5m8p7m2z6s8p5p8p9m7	流局						1	1500	18	18
+2	4	q2	base	1	z7z7m5m5m8p7m2z6s8p5p8p9m7	和了	0	0	ロン	翻牌 中		0	1000	8	8
+2	4	q3	push	3	s3s3m3m3p5p5p3s9s6z3s5z2p7	流局						0	1000	18	18
+2	4	q3	base	3	s3s3m3m3p5p5p3s9s6z3s5z2p7	被ツモ						0	-1000	17	16
+2	4	q4	push	3	z4z4p3p3m9m9m8m8m5m1s4p8z1	無関係						1	0	11	11
+2	4	q4	base	3	z4z4p3p3m9m9m8m8m5m1s4p8z1	無関係						1	0	11	11
+2	4	q5	push	1	m3m3p8p8s2s2s7s7p9p9s4m7s6	流局						1	-1000	18	18
+2	4	q5	base	1	m3m3p8p8s2s2s7s7p9p9s4m7s6	流局						1	1500	18	18
+2	4	q6	push	1	z1z1p6p6z3z3p2p2m1m1z2z2p1	被ツモ						1	-1000	16	16
+2	4	q6	base	1	z1z1p6p6z3z3p2p2m1m1z2z2p1	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	15	14
+2	5	q2	push	1	p5p5p1p1z4s2p2p4z2z6s4s6s7	流局						1	-1000	18	18
+2	5	q2	base	1	p5p5p1p1z4s2p2p4z2z6s4s6s7	被ツモ						1	-4000	18	18
+2	5	q3	push	1	p4p4m2m2m4m4p1z5z7p6s9s5z3	無関係						1	0	13	13
+2	5	q3	base	1	p4p4m2m2m4m4p1z5z7p6s9s5z3	放銃					1	1	-12000	17	17
+2	5	q4	push	1	p8p8p6p6m5m5s5s5p4z6s9p9z4	被ツモ						0	-2000	15	15
+2	5	q4	base	1	p8p8p6p6m5m5s5s5p4z6s9p9z4	放銃					1	1	-18000	9	9
+2	5	q5	push	3	s2s2m7m7m8m8p5p5p2p2z1m3s7	放銃					1	1	-9300	9	9
+2	5	q5	base	3	s2s2m7m7m8m8p5p5p2p2z1m3s7	放銃					1	1	-9300	9	9
+2	5	q6	push	3	z1z1s8s8m8m8z6z6p8p8s5s5s7	和了	0	1	ツモ	門前清自摸和+七対子		1	5200	7	6
+2	5	q6	base	3	z1z1s8s8m8m8z6z6p8p8s5s5s7	被ツモ						1	-700	7	6
+2	6	q2	push	2	z1z1p1p1s4s9p3p7z2m4m2p5m9	被ツモ						1	-2000	12	11
+2	6	q2	base	2	z1z1p1p1s4s9p3p7z2m4m2p5m9	和了	0	0	ツモ	場風 東		1	3100	13	12
+2	6	q3	push	2	p2p2p4p4p6p6p3z6m3m1s3s4p5	無関係						1	0	16	15
+2	6	q3	base	2	p2p2p4p4p6p6p3z6m3m1s3s4p5	和了	0	0	ロン	立直+一発+平和+断幺九+一盃口+裏ドラ		0	13000	8	8
+2	6	q4	push	1	m8m8m9m9p3p3p9p9m2m7m1p6z6	流局						0	1500	18	18
+2	6	q4	base	1	m8m8m9m9p3p3p9p9m2m7m1p6z6	無関係						1	0	10	10
+2	6	q5	push	3	z5z5m8m8s2s2m4m4s7s7s9m1z3	和了	0	1	ロン	七対子+ドラ		0	6400	9	8
+2	6	q5	base	3	z5z5m8m8s2s2m4m4s7s7s9m1z3	流局						0	1500	18	17
+2	6	q6	push	1	z2z2m5m5m1m1m6m6m8m8s3s3m7	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		0	8000	4	3
+2	6	q6	base	1	z2z2m5m5m1m1m6m6m8m8s3s3m7	放銃					1	1	-5200	17	17
+2	7	q2	push	1	p4p4p1p1s8z5s9p8s1p9s6s3m7	無関係						0	0	11	11
+2	7	q2	base	1	p4p4p1p1s8z5s9p8s1p9s6s3m7	被ツモ						1	-3900	9	8
+2	7	q3	push	2	p1p1z6z6m4m4z5m5m8z4s3s2s7	被ツモ						1	-2000	9	8
+2	7	q3	base	2	p1p1z6z6m4m4z5m5m8z4s3s2s7	被ツモ						1	-2000	9	9
+2	7	q4	push	1	z7z7s1s1p9p9s9s9m4m8z1p1z6	無関係						0	0	3	2
+2	7	q4	base	1	z7z7s1s1p9p9s9s9m4m8z1p1z6	無関係						0	0	3	2
+2	7	q5	push	2	p9p9m9m9m7m7p7p7s5s5p6z2m2	和了	0	1	ロン	七対子+ドラ		0	6400	7	6
+2	7	q5	base	2	p9p9m9m9m7m7p7p7s5s5p6z2m2	被ツモ						0	-2600	17	16
+2	7	q6	push	3	m3m3z4z4s6s6s9s9p3p3m5m5p6	被ツモ						0	-4000	7	8
+2	7	q6	base	3	m3m3z4z4s6s6s9s9p3p3m5m5p6	流局						0	3000	18	17
+2	8	q2	push	1	p9p9m4m4p7p8s4s8m8m9p2m1p3	被ツモ						1	-500	12	12
+2	8	q2	base	1	p9p9m4m4p7p8s4s8m8m9p2m1p3	被ツモ						1	-500	12	12
+2	8	q3	push	1	z3z3m3m3z2z2z7s9p5m6m5s1p9	無関係						1	0	8	7
+2	8	q3	base	1	z3z3m3m3z2z2z7s9p5m6m5s1p9	被ツモ						1	-4000	6	6
+2	8	q4	push	2	m7m7s1s1m5m5p2p2p8s8z3m4z7	和了	0	1	ロン	七対子		0	1600	10	10
+2	8	q4	base	2	m7m7s1s1m5m5p2p2p8s8z3m4z7	放銃					0	0	-2000	8	8
+2	8	q5	push	3	p2p2z5z5p3p3p5p5p4p4m7s1z1	流局						1	-1000	18	17
+2	8	q5	base	3	p2p2z5z5p3p3p5p5p4p4m7s1z1	和了	0	0	ツモ	立直+門前清自摸和+一盃口+ドラ		0	9000	12	11
+2	8	q6	push	2	s5s5z3z3s9s9p4p4p1p1s4s4z6	和了	0	1	ツモ	門前清自摸和+七対子+赤ドラ		0	6400	9	9
+2	8	q6	base	2	s5s5z3z3s9s9p4p4p1p1s4s4z6	被ツモ						0	-1000	10	9
+2	9	q2	push	1	z7z7s7s7p8s1z2p7m6m2s4m7z6	流局						1	1500	18	18
+2	9	q2	base	1	z7z7s7s7p8s1z2p7m6m2s4m7z6	和了	0	0	ロン	翻牌 中+ドラ		0	2000	5	6
+2	9	q3	push	2	s4s4z2z2m4m4z7s8z4z1p1m2m7	被ツモ						1	-8000	8	7
+2	9	q3	base	2	s4s4z2z2m4m4z7s8z4z1p1m2m7	和了	0	0	ロン	立直		0	2300	7	7
+2	9	q4	push	2	p5p5p9p9p1p1s5s5s8m8p2m4z5	和了	0	1	ツモ	門前清自摸和+七対子+赤ドラ		1	7400	15	14
+2	9	q4	base	2	p5p5p9p9p1p1s5s5s8m8p2m4z5	和了	0	1	ツモ	立直+門前清自摸和+七対子		0	7400	14	13
+2	9	q5	push	3	s3s3m2m2z6z6z1z1p4p4p7z3s2	無関係						0	0	7	7
+2	9	q5	base	3	s3s3m2m2z6z6z1z1p4p4p7z3s2	被ツモ						0	-300	7	7
+2	9	q6	push	3	s8s8m8m8p6p6z3z3z2z2z5z5s4	無関係						1	0	13	12
+2	9	q6	base	3	s8s8m8m8p6p6z3z3z2z2z5z5s4	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	10	9
+2	10	q2	push	1	p3p3z3z3z1z6s1m8p7s2s6m3s5	流局						0	-1500	18	18
+2	10	q2	base	1	p3p3z3z3z1z6s1m8p7s2s6m3s5	無関係						0	0	13	13
+2	10	q3	push	2	m3m3z1z1m6m6s5p3m4s4p9m8p1	放銃					1	1	-7700	15	15
+2	10	q3	base	2	m3m3z1z1m6m6s5p3m4s4p9m8p1	放銃					0	0	-5800	14	15
+2	10	q4	push	1	z3z3s8s8s5s5m1m1p2s3m3p7s6	和了	0	1	ロン	七対子		0	1600	5	6
+2	10	q4	base	1	z3z3s8s8s5s5m1m1p2s3m3p7s6	和了	0	1	ロン	立直+七対子		0	4200	10	11
+2	10	q5	push	3	z2z2z6z6p5p5p3p3m6m6p6z4s8	被ツモ						1	-2000	14	14
+2	10	q5	base	3	z2z2z6z6p5p5p3p3m6m6p6z4s8	放銃					0	0	-1500	11	12
+2	10	q6	push	3	s6s6s1s1z2z2s9s9p2p2m3m3p8	被ツモ						1	-3000	18	17
+2	10	q6	base	3	s6s6s1s1z2z2s9s9p2p2m3m3p8	和了	0	1	ロン	ダブル立直+七対子+裏ドラ		1	14000	16	15
+2	11	q2	push	1	p3p3m4m4z1p7s4p8z7p6s9m8s3	無関係						0	0	11	12
+2	11	q2	base	1	p3p3m4m4z1p7s4p8z7p6s9m8s3	和了	0	0	ロン	立直		0	2300	8	8
+2	11	q3	push	3	m3m3p8p8s7s7p2s6m7p6z2p3p5	無関係						0	0	7	6
+2	11	q3	base	3	m3m3p8p8s7s7p2s6m7p6z2p3p5	無関係						0	0	7	6
+2	11	q4	push	1	m7m7z2z2p9p9m5m5s4s3m3z6z5	被ツモ						1	-2000	11	11
+2	11	q4	base	1	m7m7z2z2p9p9m5m5s4s3m3z6z5	被ツモ						0	-2000	11	14
+2	11	q5	push	3	z5z5z3z3m6m6z7z7z6z6m8z4s5	放銃					1	1	-8000	9	9
+2	11	q5	base	3	z5z5z3z3m6m6z7z7z6z6m8z4s5	和了	1	0	ツモ	大三元		0	32000	8	8
+2	11	q6	push	2	s6s6s7s7p7p7s9s9p8p8p6p6z7	和了	0	1	ツモ	門前清自摸和+七対子		1	4200	5	4
+2	11	q6	base	2	s6s6s7s7p7p7s9s9p8p8p6p6z7	放銃					1	1	-7700	11	11
+2	12	q2	push	2	s5s5s4s4z7s7z5s8s6s9p7m3m4	流局						1	1500	18	17
+2	12	q2	base	2	s5s5s4s4z7s7z5s8s6s9p7m3m4	被ツモ						0	-2000	12	11
+2	12	q3	push	2	z3z3z2z2m7m7z4z5m6p1s1s9p5	被ツモ						1	-1300	10	9
+2	12	q3	base	2	z3z3z2z2m7m7z4z5m6p1s1s9p5	放銃					1	1	-3900	17	17
+2	12	q4	push	1	m4m4s5s5s7s7m1m1s2m9p2s8z6	和了	0	1	ロン	七対子		0	1600	8	8
+2	12	q4	base	1	m4m4s5s5s7s7m1m1s2m9p2s8z6	和了	0	1	ロン	立直+七対子+裏ドラ		1	10000	17	17
+2	12	q5	push	2	p7p7p9p9m5m5m7m7m9m9p1z1z7	流局						1	1000	18	17
+2	12	q5	base	2	p7p7p9p9m5m5m7m7m9m9p1z1z7	流局						0	3000	18	17
+2	12	q6	push	1	m1m1m9m9s3s3p1p1p7p7s9s9z6	和了	0	1	ロン	七対子		0	1600	1	1
+2	12	q6	base	1	m1m1m9m9s3s3p1p1p7p7s9s9z6	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		1	10000	16	15
+2	13	q2	push	1	m1m1p2p2s5s4p4s1z2p5m2m5m6	被ツモ						1	-500	17	17
+2	13	q2	base	1	m1m1p2p2s5s4p4s1z2p5m2m5m6	和了	0	0	ツモ	三色同順		1	2100	10	10
+2	13	q3	push	3	m8m8p4p4p9p9m5z5p8m7m2z1p3	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		1	9000	16	15
+2	13	q3	base	3	m8m8p4p4p9p9m5z5p8m7m2z1p3	和了	0	1	ツモ	立直+門前清自摸和+七対子+ドラ+裏ドラ		0	17000	16	15
+2	13	q4	push	1	m8m8s8s8s6s6z3z3s5s7p7p1s3	被ツモ						1	-500	13	13
+2	13	q4	base	1	m8m8s8s8s6s6z3z3s5s7p7p1s3	被ツモ						1	-2000	8	8
+2	13	q5	push	2	m3m3p8p8s1s1s8s8z4z4m2s2p5	流局						1	1500	18	18
+2	13	q5	base	2	m3m3p8p8s1s1s8s8z4z4m2s2p5	和了	0	1	ツモ	立直+門前清自摸和+七対子+赤ドラ		0	9000	17	16
+2	13	q6	push	3	p2p2z4z4s2s2p9p9p5p5m1m1m3	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	9	8
+2	13	q6	base	3	p2p2z4z4s2s2p9p9p5p5m1m1m3	流局						0	3000	18	17
+2	14	q2	push	3	m7m7m1m1s1z7p9m2z2m8s3z1p7	無関係						1	0	15	15
+2	14	q2	base	3	m7m7m1m1s1z7p9m2z2m8s3z1p7	放銃					0	0	-11600	10	10
+2	14	q3	push	2	m2m2p6p6z6z6p4m1s4s6z3m5m9	流局						1	-1000	18	17
+2	14	q3	base	2	m2m2p6p6z6z6p4m1s4s6z3m5m9	被ツモ						1	-2000	10	10
+2	14	q4	push	2	z2z2s2s2p4p4p8p8m1z4z1s5m9	放銃					1	1	-7700	13	13
+2	14	q4	base	2	z2z2s2s2p4p4p8p8m1z4z1s5m9	無関係						1	0	12	11
+2	14	q5	push	1	z2z2z6z6m2m2z3z3m7m7p4z4p9	無関係						1	0	15	15
+2	14	q5	base	1	z2z2z6z6m2m2z3z3m7m7p4z4p9	和了	0	0	ツモ	自風 南+翻牌 發+対々和+三暗刻+混一色		1	17000	10	10
+2	14	q6	push	2	p2p2s6s6p9p9p4p4m3m3s8s8m5	和了	0	1	ロン	七対子		0	1600	2	1
+2	14	q6	base	2	p2p2s6s6p9p9p4p4m3m3s8s8m5	流局						0	3000	18	17
+2	15	q2	push	3	s1s1m5m5s2p7m1p8z5s7p2m2z2	放銃					0	1	-1000	13	12
+2	15	q2	base	3	s1s1m5m5s2p7m1p8z5s7p2m2z2	流局						1	-1000	18	17
+2	15	q3	push	3	s2s2p3p3p8p8p9p4z3p2p5m4s3	被ツモ						0	-2000	11	11
+2	15	q3	base	3	s2s2p3p3p8p8p9p4z3p2p5m4s3	放銃					1	1	-8000	9	9
+2	15	q4	push	3	m1m1p3p3m8m8m4m4m6s8z2m7s4	和了	0	1	ツモ	門前清自摸和+七対子		1	4200	16	15
+2	15	q4	base	3	m1m1p3p3m8m8m4m4m6s8z2m7s4	和了	0	0	ロン	断幺九+ドラ+赤ドラ		0	7700	12	13
+2	15	q5	push	2	m9m9z2z2z4z4z6z6z5z5p9m2p1	放銃					1	1	-12000	7	6
+2	15	q5	base	2	m9m9z2z2z4z4z6z6z5z5p9m2p1	被ツモ						1	-2000	14	13
+2	15	q6	push	1	s1s1p1p1p7p7s8s8p8p8m9m9p9	和了	0	1	ロン	七対子		0	1600	5	5
+2	15	q6	base	1	s1s1p1p1p7p7s8s8p8p8m9m9p9	流局						0	3000	18	18
+2	16	q2	push	2	m4m4s9s9p5z1z5m7m3z6z7p7m9	無関係						1	0	12	12
+2	16	q2	base	2	m4m4s9s9p5z1z5m7m3z6z7p7m9	被ツモ						0	-1000	15	15
+2	16	q3	push	2	s2s2m6m6m2m2p5s5p2m1p1s9z3	被ツモ						1	-1000	12	12
+2	16	q3	base	2	s2s2m6m6m2m2p5s5p2m1p1s9z3	流局						1	-1500	18	18
+2	16	q4	push	3	p8p8s7s7p6p6m9m9m7z2m3z6m2	流局						1	1500	18	17
+2	16	q4	base	3	p8p8s7s7p6p6m9m9m7z2m3z6m2	和了	0	1	ロン	立直+七対子+裏ドラ		1	10000	16	16
+2	16	q5	push	2	s1s1m6m6m8m8s9s9m9m9p1z2s6	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	10	9
+2	16	q5	base	2	s1s1m6m6m8m8s9s9m9m9p1z2s6	放銃					0	0	-2900	12	12
+2	16	q6	push	1	s1s1p7p7z3z3p5p5m2m2m8m8s9	和了	0	1	ロン	七対子+ドラ		0	6400	4	4
+2	16	q6	base	1	s1s1p7p7z3z3p5p5m2m2m8m8s9	和了	0	1	ロン	ダブル立直+七対子+ドラ		0	13000	14	14
+2	17	q2	push	1	p4p4z7z7m8s2s6m7s5p3p8m4z3	被ツモ						1	-1000	16	15
+2	17	q2	base	1	p4p4z7z7m8s2s6m7s5p3p8m4z3	和了	0	0	ロン	翻牌 中		0	1000	6	6
+2	17	q3	push	2	z5z5z4z4m8m8m7z1s4m2p5p9m5	流局						1	-1500	18	18
+2	17	q3	base	2	z5z5z4z4m8m8m7z1s4m2p5p9m5	無関係						1	0	11	11
+2	17	q4	push	1	p6p6p7p7z6z6s5s5z2m7z3m3s8	被ツモ						0	-300	13	13
+2	17	q4	base	1	p6p6p7p7z6z6s5s5z2m7z3m3s8	流局						1	-1000	18	18
+2	17	q5	push	3	p1p1m2m2p4p4z1z1p7p7s5s1m4	和了	0	1	ロン	七対子		1	1600	17	17
+2	17	q5	base	3	p1p1m2m2p4p4z1z1p7p7s5s1m4	無関係						1	0	17	17
+2	17	q6	push	3	s2s2p7p7p8p8z4z4s6s6m7m7p9	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	2	1
+2	17	q6	base	3	s2s2p7p7p8p8z4z4s6s6m7m7p9	和了	0	1	ツモ	ダブル立直+一発+門前清自摸和+七対子		0	13000	2	1
+2	18	q2	push	1	z6z6p4p4p8s8p1s3s5s9m3p9m1	被ツモ						1	-6000	14	13
+2	18	q2	base	1	z6z6p4p4p8s8p1s3s5s9m3p9m1	和了	0	0	ロン	翻牌 發+赤ドラ		0	2000	9	10
+2	18	q3	push	1	s2s2p3p3s6s6m7m8m9p1p2z6m2	無関係						1	0	12	12
+2	18	q3	base	1	s2s2p3p3s6s6m7m8m9p1p2z6m2	流局						0	1500	18	17
+2	18	q4	push	2	p1p1s8s8s1s1z4z4z6s6p3p4z2	和了	0	1	ロン	七対子		0	1600	8	8
+2	18	q4	base	2	p1p1s8s8s1s1z4z4z6s6p3p4z2	流局						1	1500	18	17
+2	18	q5	push	3	s4s4s7s7m6m6z5z5p7p7s5m7z6	和了	0	1	ロン	七対子+ドラ		0	6400	10	10
+2	18	q5	base	3	s4s4s7s7m6m6z5z5p7p7s5m7z6	和了	0	0	ロン	翻牌 白+ドラ		1	8700	13	13
+2	18	q6	push	2	p1p1z3z3m9m9m2m2s6s6s7s7p8	和了	0	1	ロン	七対子		0	1600	1	1
+2	18	q6	base	2	p1p1z3z3m9m9m2m2s6s6s7s7p8	無関係						1	0	8	7
+2	19	q2	push	3	p1p1s5s5p6p7s7m6z6m3s3s1m2	流局						1	-1000	18	17
+2	19	q2	base	3	p1p1s5s5p6p7s7m6z6m3s3s1m2	流局						0	3000	18	17
+2	19	q3	push	3	z3z3p4p4m5m5m9s2m1s4m8p7m7	和了	0	1	ロン	七対子		0	1600	12	11
+2	19	q3	base	3	z3z3p4p4m5m5m9s2m1s4m8p7m7	和了	0	0	ツモ	立直+門前清自摸和+赤ドラ+裏ドラ		1	10900	15	14
+2	19	q4	push	2	p4p4s5s5z6z6p5p5m8s4p9s6s2	放銃					1	1	-2600	16	16
+2	19	q4	base	2	p4p4s5s5z6z6p5p5m8s4p9s6s2	無関係						1	0	9	8
+2	19	q5	push	2	s8s8z5z5s9s9m9m9m3m3m5m2z3	放銃					0	0	-3900	7	7
+2	19	q5	base	2	s8s8z5z5s9s9m9m9m3m3m5m2z3	和了	0	1	ツモ	立直+門前清自摸和+七対子+赤ドラ		0	9000	4	3
+2	19	q6	push	2	z3z3z2z2s6s6s7s7p8p8z1z1p1	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	5	4
+2	19	q6	base	2	z3z3z2z2s6s6s7s7p8p8z1z1p1	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+赤ドラ		0	13000	12	11
+2	20	q2	push	2	s8s8s9s9p8s7m3z5p7p9m2s2p6	被ツモ						0	-500	14	14
+2	20	q2	base	2	s8s8s9s9p8s7m3z5p7p9m2s2p6	流局						0	1500	18	17
+2	20	q3	push	1	s7s7m1m1p8p8z6z4p2p3z1m4m8	無関係						1	0	6	6
+2	20	q3	base	1	s7s7m1m1p8p8z6z4p2p3z1m4m8	無関係						1	0	6	6
+2	20	q4	push	2	s8s8s1s1p2p2p9p9p6s5z7s7z6	無関係						0	0	5	5
+2	20	q4	base	2	s8s8s1s1p2p2p9p9p6s5z7s7z6	流局						1	1500	18	17
+2	20	q5	push	2	m5m5s7s7p3p3s2s2m2m2s6z6p2	被ツモ						1	-500	13	13
+2	20	q5	base	2	m5m5s7s7p3p3s2s2m2m2s6z6p2	無関係						0	0	8	8
+2	20	q6	push	1	z7z7m6m6z2z2z4z4p7p7s3s3z6	被ツモ						0	-500	8	8
+2	20	q6	base	1	z7z7m6m6z2z2z4z4p7p7s3s3z6	放銃					1	1	-18000	18	18
+2	21	q2	push	2	p4p4m9m9z6p6p7p2z7s3m1z1m7	被ツモ						1	-500	16	15
+2	21	q2	base	2	p4p4m9m9z6p6p7p2z7s3m1z1m7	被ツモ						1	-500	16	15
+2	21	q3	push	2	p3p3p2p2s7s7z7s3s1z3s5m7p9	被ツモ						0	-1000	11	11
+2	21	q3	base	2	p3p3p2p2s7s7z7s3s1z3s5m7p9	和了	0	0	ツモ	立直+一発+門前清自摸和+平和+赤ドラ		0	9000	8	7
+2	21	q4	push	2	p2p2m7m7m2m2s3s3z2p6z6z7s5	放銃					1	1	-5200	17	17
+2	21	q4	base	2	p2p2m7m7m2m2s3s3z2p6z6z7s5	放銃					1	1	-5200	17	17
+2	21	q5	push	2	p5p5m1m1p2p2s1s1m5m5m3s4s5	流局						1	-1000	18	17
+2	21	q5	base	2	p5p5m1m1p2p2s1s1m5m5m3s4s5	流局						1	-1000	18	17
+2	21	q6	push	3	p5p5z7z7m4m4z1z1m6m6p2p2z5	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	6	5
+2	21	q6	base	3	p5p5z7z7m4m4z1z1m6m6p2p2z5	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	10	9
+2	22	q2	push	1	z5z5m6m6p5p8p3s3p9s6m9z3p6	和了	0	1	ツモ	門前清自摸和+七対子+赤ドラ		1	7400	16	15
+2	22	q2	base	1	z5z5m6m6p5p8p3s3p9s6m9z3p6	和了	0	0	ツモ	翻牌 白+ドラ+赤ドラ		0	4000	13	14
+2	22	q3	push	2	m3m3z6z6s4s4s8z5s3z2m9s6p5	無関係						0	0	9	10
+2	22	q3	base	2	m3m3z6z6s4s4s8z5s3z2m9s6p5	和了	0	0	ツモ	翻牌 發		1	2100	7	7
+2	22	q4	push	1	p5p5p2p2s5s5p9p9p8s3m9m7z3	流局						0	-1500	18	19
+2	22	q4	base	1	p5p5p2p2s5s5p9p9p8s3m9m7z3	和了	0	1	ロン	立直+一発+七対子+赤ドラ		0	9000	14	14
+2	22	q5	push	1	m6m6z4z4s2s2m3m3s5s5s3s8p3	和了	0	1	ロン	七対子+ドラ		0	6400	7	7
+2	22	q5	base	1	m6m6z4z4s2s2m3m3s5s5s3s8p3	和了	0	1	ロン	ダブル立直+七対子+ドラ		0	13000	4	4
+2	22	q6	push	2	m6m6s9s9s5s5z1z1m1m1m5m5p9	和了	0	1	ロン	七対子		0	1600	2	1
+2	22	q6	base	2	m6m6s9s9s5s5z1z1m1m1m5m5p9	和了	0	1	ロン	ダブル立直+七対子		1	8400	10	9
+2	23	q2	push	1	p4p4s1s1m7z5s2z3z7m4p1p3s3	和了	0	1	ツモ	門前清自摸和+七対子		1	4200	15	14
+2	23	q2	base	1	p4p4s1s1m7z5s2z3z7m4p1p3s3	被ツモ						0	-500	11	11
+2	23	q3	push	3	s7s7m3m3m8m8z7m1p8s8p2m2p1	流局						1	-1500	17	16
+2	23	q3	base	3	s7s7m3m3m8m8z7m1p8s8p2m2p1	和了	0	0	ロン	断幺九		0	1000	8	8
+2	23	q4	push	1	m7m7p1p1z1z1m6m6p2s1m4z7p4	被ツモ						0	-1000	6	5
+2	23	q4	base	1	m7m7p1p1z1z1m6m6p2s1m4z7p4	和了	0	0	ロン	場風 東+対々和		1	5200	9	11
+2	23	q5	push	1	z3z3p6p6m8m8z1z1m3m3p4z5s2	無関係						0	0	11	11
+2	23	q5	base	1	z3z3p6p6m8m8z1z1m3m3p4z5s2	被ツモ						1	-1000	16	16
+2	23	q6	push	1	p9p9s5s5p2p2z5z5p8p8s6s6s2	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	11	10
+2	23	q6	base	1	p9p9s5s5p2p2z5z5p8p8s6s6s2	流局						0	3000	18	18
+2	24	q2	push	2	m5m5z3z3s6p9p8p1m9z7p3p6p7	無関係						0	0	15	16
+2	24	q2	base	2	m5m5z3z3s6p9p8p1m9z7p3p6p7	流局						1	-1000	18	18
+2	24	q3	push	3	p9p9s3s3m6m6m5s9s1p2z3z5s5	流局						1	-1500	18	18
+2	24	q3	base	3	p9p9s3s3m6m6m5s9s1p2z3z5s5	無関係						0	0	10	10
+2	24	q4	push	1	s7s7m6m6s8s8p7p7m4m8p6p2p3	和了	0	1	ロン	七対子		1	3600	15	14
+2	24	q4	base	1	s7s7m6m6s8s8p7p7m4m8p6p2p3	流局						1	-1000	18	18
+2	24	q5	push	2	p7p7z5z5s6s6z7z7z1z1m8m1s3	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		0	8000	7	6
+2	24	q5	base	2	p7p7z5z5s6s6z7z7z1z1m8m1s3	和了	0	0	ツモ	場風 東+翻牌 白+翻牌 中+対々和		1	9000	6	7
+2	24	q6	push	3	m7m7m5m5p9p9p1p1m6m6s8s8s6	放銃					1	1	-12000	16	16
+2	24	q6	base	3	m7m7m5m5p9p9p1p1m6m6s8s8s6	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+裏ドラ		0	13000	5	4
+2	25	q2	push	2	m1m1p8p8m8s8z7s3z5p2p5s1m9	無関係						1	0	16	16
+2	25	q2	base	2	m1m1p8p8m8s8z7s3z5p2p5s1m9	被ツモ						0	-300	8	8
+2	25	q3	push	3	z5z5p3p3s6s6s2s7z7m9z2m3m4	無関係						1	0	9	8
+2	25	q3	base	3	z5z5p3p3s6s6s2s7z7m9z2m3m4	被ツモ						1	-3000	14	14
+2	25	q4	push	2	s4s4s7s7z3z3m5m5m8m4z5m3p6	無関係						0	0	14	14
+2	25	q4	base	2	s4s4s7s7z3z3m5m5m8m4z5m3p6	和了	0	0	ツモ	自風 西+赤ドラ		0	2700	7	6
+2	25	q5	push	2	m6m6p3p3s2s2p9p9s5s5m7z2z5	被ツモ						0	-300	12	11
+2	25	q5	base	2	m6m6p3p3s2s2p9p9s5s5m7z2z5	被ツモ						0	-300	12	11
+2	25	q6	push	1	m9m9p8p8m5m5z6z6m2m2z7z7s3	和了	0	1	ロン	七対子		0	1600	2	2
+2	25	q6	base	1	m9m9p8p8m5m5z6z6m2m2z7z7s3	流局						1	1500	18	18
+2	26	q2	push	1	p6p6z1z1p3z4s6p7s4m4m8s5m2	放銃					1	1	-2000	12	12
+2	26	q2	base	1	p6p6z1z1p3z4s6p7s4m4m8s5m2	和了	0	0	ロン	場風 東		1	1000	6	7
+2	26	q3	push	2	z5z5s2s2m1m1p6z4z2p3m3p1m8	放銃					0	0	-3900	7	8
+2	26	q3	base	2	z5z5s2s2m1m1p6z4z2p3m3p1m8	放銃					0	0	-1000	12	13
+2	26	q4	push	1	m6m6s8s8m7m7m2m2p5z1m1p3p7	放銃					0	0	-3900	13	13
+2	26	q4	base	1	m6m6s8s8m7m7m2m2p5z1m1p3p7	無関係						0	0	10	11
+2	26	q5	push	2	m4m4z5z5s4s4p2p2p1p1z2p8s1	被ツモ						1	-2000	15	15
+2	26	q5	base	2	m4m4z5z5s4s4p2p2p1p1z2p8s1	無関係						0	0	11	11
+2	26	q6	push	1	z7z7m9m9s2s2m6m6z5z5m3m3m2	無関係						1	0	11	10
+2	26	q6	base	1	z7z7m9m9s2s2m6m6z5z5m3m3m2	放銃					0	0	-5800	15	16
+2	27	q2	push	2	m2m2m7m7s1p5p7z1m6p1s6s2m8	無関係						1	0	10	11
+2	27	q2	base	2	m2m2m7m7s1p5p7z1m6p1s6s2m8	被ツモ						1	-500	12	12
+2	27	q3	push	2	p7p7m7m7m1m1p5m2z6p4s3z1z3	無関係						1	0	11	11
+2	27	q3	base	2	p7p7m7m7m1m1p5m2z6p4s3z1z3	無関係						1	0	11	11
+2	27	q4	push	1	p6p6m9m9m4m4m5m5p9z3s1p3z2	和了	0	1	ロン	七対子		0	1600	3	3
+2	27	q4	base	1	p6p6m9m9m4m4m5m5p9z3s1p3z2	流局						0	1500	18	18
+2	27	q5	push	1	m5m5m8m8m4m4z2z2z5z5p8p2m1	放銃					1	1	-12000	6	6
+2	27	q5	base	1	m5m5m8m8m4m4z2z2z5z5p8p2m1	被ツモ						1	-300	14	15
+2	27	q6	push	3	z3z3p7p7p5p5s1s1z7z7s6s6s9	無関係						0	0	7	7
+2	27	q6	base	3	z3z3p7p7p5p5s1s1z7z7s6s6s9	被ツモ						0	-500	6	6
+2	28	q2	push	3	p6p6m4m4m2p1z3p2m1z5m5z1s5	無関係						0	0	9	9
+2	28	q2	base	3	p6p6m4m4m2p1z3p2m1z5m5z1s5	和了	0	0	ロン	立直+断幺九+ドラ		0	9000	15	16
+2	28	q3	push	1	m6m6s6s6z1z1p8s8z4m1s9s5m8	被ツモ						1	-1000	15	15
+2	28	q3	base	1	m6m6s6s6z1z1p8s8z4m1s9s5m8	被ツモ						1	-1000	9	10
+2	28	q4	push	1	m8m8z7z7p5p5p4p4m7m6s2z6p7	流局						1	1500	18	17
+2	28	q4	base	1	m8m8z7z7p5p5p4p4m7m6s2z6p7	和了	0	0	ロン	翻牌 中		0	1000	7	7
+2	28	q5	push	2	s2s2s9s9s6s6m6m6s5s5p1m7p9	無関係						1	0	11	12
+2	28	q5	base	2	s2s2s9s9s6s6m6m6s5s5p1m7p9	流局						0	-3000	18	19
+2	28	q6	push	3	z7z7p3p3s1s1p4p4p9p9p8p8s2	和了	0	1	ロン	七対子		0	1600	9	8
+2	28	q6	base	3	z7z7p3p3s1s1p4p4p9p9p8p8s2	流局						0	3000	18	17
+2	29	q2	push	2	z4z4p5p5m2m7p1m5m9s9m1z2m6	流局						1	1500	18	18
+2	29	q2	base	2	z4z4p5p5m2m7p1m5m9s9m1z2m6	流局						1	-1000	18	17
+2	29	q3	push	1	m4m4m5m5s8s8p9m9p2p1p5z7z3	被ツモ						1	-3000	14	14
+2	29	q3	base	1	m4m4m5m5s8s8p9m9p2p1p5z7z3	被ツモ						1	-3000	14	14
+2	29	q4	push	1	z3z3p8p8s9s9m5m5m2m6z4s3p4	流局						0	1000	18	18
+2	29	q4	base	1	z3z3p8p8s9s9m5m5m2m6z4s3p4	無関係						0	0	10	11
+2	29	q5	push	1	z1z1s7s7s9s9s3s3m1m1p6m3m4	放銃					1	1	-12000	7	7
+2	29	q5	base	1	z1z1s7s7s9s9s3s3m1m1p6m3m4	和了	0	1	ロン	ダブル立直+七対子		1	8400	10	10
+2	29	q6	push	1	z7z7p1p1z5z5z1z1p5p5p3p3m2	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		0	8000	9	8
+2	29	q6	base	1	z7z7p1p1z5z5z1z1p5p5p3p3m2	流局						1	0	14	13
+2	30	q2	push	1	p1p1z6z6s2z5s7s3s6p9z1m3s1	被ツモ						1	-8000	8	7
+2	30	q2	base	1	p1p1z6z6s2z5s7s3s6p9z1m3s1	被ツモ						1	-8000	8	7
+2	30	q3	push	3	m4m4z5z5s5s5p2m6m3s6p7z2z4	無関係						1	0	15	15
+2	30	q3	base	3	m4m4z5z5s5s5p2m6m3s6p7z2z4	流局						1	-1500	18	17
+2	30	q4	push	3	m2m2s2s2m6m6m8m8s6p3s9m7z1	放銃					1	1	-3900	11	11
+2	30	q4	base	3	m2m2s2s2m6m6m8m8s6p3s9m7z1	和了	0	0	ロン	断幺九+対々和		1	4900	7	8
+2	30	q5	push	3	z2z2s3s3z1z1p8p8s4s4p6z3p3	被ツモ						0	-2000	10	10
+2	30	q5	base	3	z2z2s3s3z1z1p8p8s4s4p6z3p3	放銃					0	0	-12000	16	16
+2	30	q6	push	1	m9m9p1p1m6m6s5s5p7p7p8p8s2	和了	0	1	ロン	七対子		0	1600	14	14
+2	30	q6	base	1	m9m9p1p1m6m6s5s5p7p7p8p8s2	流局						0	3000	18	18
+2	31	q2	push	2	z5z5p8p8m3m9z2p6m2z4s5m8p2	無関係						1	0	12	11
+2	31	q2	base	2	z5z5p8p8m3m9z2p6m2z4s5m8p2	無関係						1	0	11	10
+2	31	q3	push	1	m9m9p5p5s6s6s1m3m7z5p7z3s8	放銃					1	1	-12000	18	18
+2	31	q3	base	1	m9m9p5p5s6s6s1m3m7z5p7z3s8	被ツモ						1	-700	13	13
+2	31	q4	push	3	s2s2z7z7p6p6p2p2p8z6z2p9p1	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	11	10
+2	31	q4	base	3	s2s2z7z7p6p6p2p2p8z6z2p9p1	流局						1	-1000	18	19
+2	31	q5	push	3	z4z4p3p3p6p6s1s1s4s4s8m2p1	被ツモ						0	-2000	12	11
+2	31	q5	base	3	z4z4p3p3p6p6s1s1s4s4s8m2p1	和了	0	1	ロン	立直+七対子+裏ドラ		0	9000	13	12
+2	31	q6	push	2	s2s2m9m9m8m8p1p1p4p4s5s5m3	放銃					1	1	-7700	11	11
+2	31	q6	base	2	s2s2m9m9m8m8p1p1p4p4s5s5m3	流局						0	1500	18	17
+2	32	q2	push	1	p4p4m2m2s7s5m4m9z4p9s2s9p7	放銃					1	1	-2900	10	10
+2	32	q2	base	1	p4p4m2m2s7s5m4m9z4p9s2s9p7	被ツモ						1	-1300	15	14
+2	32	q3	push	3	m4m4z1z1s3s3s1p9z5m6p3s5p7	被ツモ						1	-500	12	11
+2	32	q3	base	3	m4m4z1z1s3s3s1p9z5m6p3s5p7	無関係						1	0	6	7
+2	32	q4	push	3	p9p9p8p8s4s4p4p4z4p3s9m2m9	放銃					1	1	-12000	11	11
+2	32	q4	base	3	p9p9p8p8s4s4p4p4z4p3s9m2m9	放銃					0	1	-8000	12	12
+2	32	q5	push	3	p1p1m3m3z5z5p7p7z4z4s2m1s9	無関係						0	0	8	9
+2	32	q5	base	3	p1p1m3m3z5z5p7p7z4z4s2m1s9	放銃					0	0	-1300	7	8
+2	32	q6	push	3	p1p1m4m4p6p6m7m7m9m9s2s2s3	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	4	3
+2	32	q6	base	3	p1p1m4m4p6p6m7m7m9m9s2s2s3	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	7	6
+2	33	q2	push	1	m7m7z6z6s8s3s6z2p3p1z4m6p5	無関係						0	0	12	13
+2	33	q2	base	1	m7m7z6z6s8s3s6z2p3p1z4m6p5	和了	0	0	ロン	翻牌 發		0	1000	9	10
+2	33	q3	push	1	s4s4s5s5p6p6p7m7m5z7m3s1m4	被ツモ						1	-700	15	15
+2	33	q3	base	1	s4s4s5s5p6p6p7m7m5z7m3s1m4	流局						0	3000	18	18
+2	33	q4	push	3	m8m8p4p4p3p3m4m4m2s6z4p6p7	和了	0	1	ロン	七対子		0	1600	13	12
+2	33	q4	base	3	m8m8p4p4p3p3m4m4m2s6z4p6p7	無関係						0	0	16	16
+2	33	q5	push	1	s9s9s7s7s5s5p6p6s4s4p2m3z3	放銃					0	0	-1000	10	11
+2	33	q5	base	1	s9s9s7s7s5s5p6p6s4s4p2m3z3	放銃					0	1	-12000	13	14
+2	33	q6	push	3	m2m2m6m6m7m7p6p6z4z4p3p3m8	無関係						0	0	10	10
+2	33	q6	base	3	m2m2m6m6m7m7p6p6z4z4p3p3m8	和了	0	1	ツモ	立直+門前清自摸和+七対子+ドラ		0	13000	8	7
+2	34	q2	push	3	p5p5s9s9s1p2p8m1m9p1p7m4p9	無関係						0	0	8	6
+2	34	q2	base	3	p5p5s9s9s1p2p8m1m9p1p7m4p9	被ツモ						0	-300	10	9
+2	34	q3	push	1	s8s8z6z6p2p2m2p1s5m7m9z5p5	無関係						0	0	10	10
+2	34	q3	base	1	s8s8z6z6p2p2m2p1s5m7m9z5p5	和了	0	0	ロン	翻牌 發+赤ドラ		1	3000	14	14
+2	34	q4	push	3	m1m1s5s5s3s3p8p8z5s2s9z1z6	流局						1	-1000	18	17
+2	34	q4	base	3	m1m1s5s5s3s3p8p8z5s2s9z1z6	和了	0	0	ツモ	断幺九		1	2100	14	13
+2	34	q5	push	2	p4p4s6s6m8m8m1m1z6z6p8m7m6	和了	0	1	ロン	七対子		0	1600	12	11
+2	34	q5	base	2	p4p4s6s6m8m8m1m1z6z6p8m7m6	被ツモ						1	-2000	12	12
+2	34	q6	push	2	z7z7s1s1s5s5p2p2s3s3s6s6s7	和了	0	1	ロン	七対子		1	2600	9	9
+2	34	q6	base	2	z7z7s1s1s5s5p2p2s3s3s6s6s7	和了	0	1	ロン	ダブル立直+七対子+裏ドラ		1	14000	10	10
+2	35	q2	push	1	s6s6s4s4m6s3p1z1p9z2p4z5s5	無関係						0	0	15	15
+2	35	q2	base	1	s6s6s4s4m6s3p1z1p9z2p4z5s5	放銃					0	0	-3900	11	12
+2	35	q3	push	1	z1z1p3p3p6p6s7z7m8m1m4s6s4	被ツモ						0	-300	15	15
+2	35	q3	base	1	z1z1p3p3p6p6s7z7m8m1m4s6s4	無関係						1	0	8	8
+2	35	q4	push	3	p6p6s7s7p9p9p2p2s5m1z6m3m5	和了	0	1	ロン	七対子		0	1600	7	7
+2	35	q4	base	3	p6p6s7s7p9p9p2p2s5m1z6m3m5	被ツモ						0	-500	14	14
+2	35	q5	push	1	s5s5p1p1m3m3p7p7m1m1m6s4z4	流局						1	1500	18	17
+2	35	q5	base	1	s5s5p1p1m3m3p7p7m1m1m6s4z4	流局						1	-1000	18	17
+2	35	q6	push	3	p7p7z1z1p1p1s9s9z4z4s3s3s6	被ツモ						1	-3900	8	7
+2	35	q6	base	3	p7p7z1z1p1p1s9s9z4z4s3s3s6	和了	0	1	ロン	ダブル立直+七対子		0	7400	10	9
+2	36	q2	push	1	z6z6s9s9p7p8s3m7z3p1p2z5s5	被ツモ						1	-2000	14	14
+2	36	q2	base	1	z6z6s9s9p7p8s3m7z3p1p2z5s5	流局						0	0	1	1
+2	36	q3	push	3	z5z5m2m2p9p9s3p8s6p2z3p7z2	無関係						0	0	8	6
+2	36	q3	base	3	z5z5m2m2p9p9s3p8s6p2z3p7z2	和了	0	0	ロン	翻牌 白+対々和		0	5200	8	10
+2	36	q4	push	2	p4p4s3s3m3m3z2z2z3p6s7s4z6	流局						0	-1000	18	18
+2	36	q4	base	2	p4p4s3s3m3m3z2z2z3p6s7s4z6	流局						1	1500	18	18
+2	36	q5	push	2	z3z3z2z2p7p7m8m8s9s9p6m5s4	放銃					1	1	-18000	15	15
+2	36	q5	base	2	z3z3z2z2p7p7m8m8s9s9p6m5s4	放銃					1	1	-2600	10	11
+2	36	q6	push	1	p7p7m2m2s7s7z2z2z1z1p8p8z6	和了	0	1	ロン	七対子		0	1600	3	2
+2	36	q6	base	1	p7p7m2m2s7s7z2z2z1z1p8p8z6	和了	0	1	ロン	ダブル立直+七対子		0	7400	7	7
+2	37	q2	push	1	z4z4p6p6m6m9z7s6z1m2m3z2z6	無関係						1	0	8	8
+2	37	q2	base	1	z4z4p6p6m6m9z7s6z1m2m3z2z6	無関係						1	0	8	8
+2	37	q3	push	1	s2s2p1p1m3m3z3s1p9p8z6s5z2	和了	0	1	ロン	七対子+ドラ		1	7400	15	15
+2	37	q3	base	1	s2s2p1p1m3m3z3s1p9p8z6s5z2	被ツモ						0	-800	7	7
+2	37	q4	push	1	p4p4s6s6m1m1z2z2p2m2z4p5p1	被ツモ						0	-1300	7	7
+2	37	q4	base	1	p4p4s6s6m1m1z2z2p2m2z4p5p1	無関係						0	0	7	7
+2	37	q5	push	3	m1m1p9p9m9m9m6m6p6p6s2s6s1	放銃					1	1	-3200	17	17
+2	37	q5	base	3	m1m1p9p9m9m9m6m6p6p6s2s6s1	和了	0	1	ツモ	立直+門前清自摸和+七対子+ドラ+裏ドラ		1	18000	16	15
+2	37	q6	push	1	s1s1s6s6m1m1z6z6z2z2z3z3p3	放銃					1	1	-5200	12	12
+2	37	q6	base	1	s1s1s6s6m1m1z6z6z2z2z3z3p3	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	5	5
+2	38	q2	push	1	m9m9m5m5m4m6s9z5p5z1s4s5p4	放銃					1	1	-12000	12	12
+2	38	q2	base	1	m9m9m5m5m4m6s9z5p5z1s4s5p4	和了	0	0	ロン	立直+ドラ		0	3600	8	8
+2	38	q3	push	2	m4m4p4p4p6p6s6s9z7p2z6m8m6	無関係						0	0	8	8
+2	38	q3	base	2	m4m4p4p4p6p6s6s9z7p2z6m8m6	放銃					0	0	-1000	6	6
+2	38	q4	push	2	m8m8s5s5s1s1z3z3p1s6m9p7s3	流局						1	1500	18	17
+2	38	q4	base	2	m8m8s5s5s1s1z3z3p1s6m9p7s3	和了	0	0	ロン	対々和+ドラ		1	9000	7	7
+2	38	q5	push	3	m7m7m1m1p6p6p5p5s1s1m5z2m9	放銃					1	1	-12000	10	10
+2	38	q5	base	3	m7m7m1m1p6p6p5p5s1s1m5z2m9	和了	0	1	ツモ	立直+門前清自摸和+七対子+赤ドラ		1	10000	14	13
+2	38	q6	push	3	m5m5z1z1m6m6m2m2z6z6z2z2s8	和了	0	1	ロン	七対子		0	1600	1	0
+2	38	q6	base	3	m5m5z1z1m6m6m2m2z6z6z2z2s8	和了	0	1	ロン	七対子		0	1600	1	0
+2	39	q2	push	3	m2m2p8p8z6p2z2s8m9m6s2m1z5	放銃					1	1	-2900	10	10
+2	39	q2	base	3	m2m2p8p8z6p2z2s8m9m6s2m1z5	流局						1	-1000	18	17
+2	39	q3	push	3	z5z5s8s8z3z3s9m3m1m9s6z6s1	流局						1	1500	18	18
+2	39	q3	base	3	z5z5s8s8z3z3s9m3m1m9s6z6s1	流局						0	-3000	18	17
+2	39	q4	push	1	m6m6m4m4s2s2p3p3m8p5s4p6p7	被ツモ						1	-1000	13	13
+2	39	q4	base	1	m6m6m4m4s2s2p3p3m8p5s4p6p7	和了	0	1	ロン	立直+断幺九+七対子+赤ドラ		0	9000	15	15
+2	39	q5	push	2	p5p5p3p3p6p6s2s2z6z6s3s7m7	流局						1	-1000	18	18
+2	39	q5	base	2	p5p5p3p3p6p6s2s2z6z6s3s7m7	被ツモ						1	-400	7	9
+2	39	q6	push	1	p9p9p7p7s5s5s9s9p6p6z7z7z2	無関係						1	0	7	6
+2	39	q6	base	1	p9p9p7p7s5s5s9s9p6p6z7z7z2	無関係						1	0	7	6
+2	40	q2	push	1	z2z2p7p7m6m9m7p6z7z4s1z3p9	流局						1	-1000	18	18
+2	40	q2	base	1	z2z2p7p7m6m9m7p6z7z4s1z3p9	和了	0	0	ロン	自風 南+ドラ		0	5200	11	12
+2	40	q3	push	2	p8p8z5z5m4m4m3z7p7s5s3s8z4	流局						1	-1000	18	17
+2	40	q3	base	2	p8p8z5z5m4m4m3z7p7s5s3s8z4	流局						1	1500	18	17
+2	40	q4	push	2	p9p9p8p8m5m5m6m6s6z6m4s2s1	被ツモ						0	-500	16	16
+2	40	q4	base	2	p9p9p8p8m5m5m6m6s6z6m4s2s1	和了	0	0	ロン	立直+一盃口		1	4600	14	14
+2	40	q5	push	3	m3m3s5s5s8s8p3p3s6s6s4p5m7	放銃					1	1	-8000	10	10
+2	40	q5	base	3	m3m3s5s5s8s8p3p3s6s6s4p5m7	放銃					0	1	-1500	10	10
+2	40	q6	push	2	p9p9p5p5s2s2z1z1z6z6m4m4s5	和了	1	0	ツモ	地和		0	32000	1	0
+2	40	q6	base	2	p9p9p5p5s2s2z1z1z6z6m4m4s5	和了	1	0	ツモ	地和		0	32000	1	0
+2	41	q2	push	3	p3p3z3z3m8p8z7s4z6p2s5p6m6	流局						0	-1500	18	17
+2	41	q2	base	3	p3p3z3z3m8p8z7s4z6p2s5p6m6	流局						1	-1000	18	18
+2	41	q3	push	3	z7z7m7m7p3p3z5s4p9m1s9z3p4	流局						1	-1000	18	17
+2	41	q3	base	3	z7z7m7m7p3p3z5s4p9m1s9z3p4	流局						1	-1500	18	17
+2	41	q4	push	2	m8m8p2p2m6m6z5z5z7m3z6s6p1	流局						1	1000	18	17
+2	41	q4	base	2	m8m8p2p2m6m6z5z5z7m3z6s6p1	流局						0	1000	18	18
+2	41	q5	push	2	m7m7s8s8z3z3p4p4s4s4m2m4p5	流局						1	1500	18	17
+2	41	q5	base	2	m7m7s8s8z3z3p4p4s4s4m2m4p5	和了	0	0	ロン	立直+自風 西+裏ドラ		1	8400	18	17
+2	41	q6	push	1	z6z6s7s7z2z2m4m4p9p9s9s9z7	放銃					1	1	-8000	13	14
+2	41	q6	base	1	z6z6s7s7z2z2m4m4p9p9s9s9z7	和了	0	1	ロン	ダブル立直+七対子+赤ドラ		1	10000	11	10
+2	42	q2	push	2	m3m3p6p6z7m6p3m5s7p4p1m9m1	放銃					0	0	-7700	3	4
+2	42	q2	base	2	m3m3p6p6z7m6p3m5s7p4p1m9m1	放銃					0	0	-8000	3	4
+2	42	q3	push	1	z4z4z7z7z1z1s7s4m1z3p2m8p1	和了	0	1	ロン	七対子		1	2600	9	9
+2	42	q3	base	1	z4z4z7z7z1z1s7s4m1z3p2m8p1	被ツモ						1	-1000	15	15
+2	42	q4	push	3	s5s5m8m8m1m1p2p2s8m7z3p9s3	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		1	13000	15	14
+2	42	q4	base	3	s5s5m8m8m1m1p2p2s8m7z3p9s3	無関係						0	0	3	2
+2	42	q5	push	1	m5m5z5z5s6s6m3m3s8s8z2s7s9	流局						0	0	1	1
+2	42	q5	base	1	m5m5z5z5s6s6m3m3s8s8z2s7s9	流局						0	0	1	1
+2	42	q6	push	3	s8s8p6p6z6z6s2s2s6s6z3z3p4	無関係						0	0	6	6
+2	42	q6	base	3	s8s8p6p6z6z6s2s2s6s6z3z3p4	和了	0	1	ロン	立直+七対子+裏ドラ		1	10000	17	17
+2	43	q2	push	2	m4m4p6p6s2s7s8m2p9p2s1p5m7	無関係						0	0	10	10
+2	43	q2	base	2	m4m4p6p6s2s7s8m2p9p2s1p5m7	流局						1	-1500	18	18
+2	43	q3	push	1	p9p9p8p8z4z4p1s8z6s6s5p3s2	無関係						0	0	12	12
+2	43	q3	base	1	p9p9p8p8z4z4p1s8z6s6s5p3s2	被ツモ						1	-4000	18	18
+2	43	q4	push	1	p6p6s4s4p2p2s2s2p9m4z6p5z1	無関係						0	0	10	11
+2	43	q4	base	1	p6p6s4s4p2p2s2s2p9m4z6p5z1	和了	0	0	ロン	断幺九		0	1000	7	8
+2	43	q5	push	1	s4s4s1s1z5z5p5p5p1p1m3s7m7	放銃					0	1	-2000	9	9
+2	43	q5	base	1	s4s4s1s1z5z5p5p5p1p1m3s7m7	無関係						0	0	10	10
+2	43	q6	push	1	m3m3p2p2m1m1m7m7p9p9m9m9m5	和了	0	1	ロン	七対子		0	1600	3	3
+2	43	q6	base	1	m3m3p2p2m1m1m7m7p9p9m9m9m5	無関係						1	0	14	14
+2	44	q2	push	1	s2s2m9m9m5z3s6p4m1p6m8z1s7	無関係						0	0	8	8
+2	44	q2	base	1	s2s2m9m9m5z3s6p4m1p6m8z1s7	無関係						1	0	10	10
+2	44	q3	push	1	m1m1m6m6z1z1s8z5p2s6s9z4m7	無関係						1	0	8	7
+2	44	q3	base	1	m1m1m6m6z1z1s8z5p2s6s9z4m7	和了	0	0	ロン	場風 東		1	1000	10	10
+2	44	q4	push	1	z1z1z6z6z5z5m7m7p4p9z2s8s4	流局						0	0	1	1
+2	44	q4	base	1	z1z1z6z6z5z5m7m7p4p9z2s8s4	流局						0	0	1	1
+2	44	q5	push	1	p1p1m1m1p2p2m8m8m2m2p7z7z6	放銃					1	1	-12000	11	11
+2	44	q5	base	1	p1p1m1m1p2p2m8m8m2m2p7z7z6	放銃					1	1	-7700	10	10
+2	44	q6	push	3	p3p3p7p7m3m3s3s3m5m5m4m4s5	和了	0	1	ロン	七対子		0	1600	4	5
+2	44	q6	base	3	p3p3p7p7m3m3s3s3m5m5m4m4s5	和了	0	1	ツモ	ダブル立直+門前清自摸和+断幺九+七対子+赤ドラ		0	13000	4	3
+2	45	q2	push	2	m1m1s8s8s9p2s5p5m7s4s3m8p7	被ツモ						1	-2000	14	14
+2	45	q2	base	2	m1m1s8s8s9p2s5p5m7s4s3m8p7	流局						1	1500	18	17
+2	45	q3	push	1	z7z7s1s1z1z1m5s4z4m1m8s2z6	和了	0	1	ロン	七対子		1	1600	14	14
+2	45	q3	base	1	z7z7s1s1z1z1m5s4z4m1m8s2z6	和了	0	0	ロン	翻牌 中+混一色+ドラ		1	13000	13	14
+2	45	q4	push	1	m6m6p3p3p2p2s3s3s2m1p1z3z4	和了	0	1	ロン	七対子		0	1600	7	7
+2	45	q4	base	1	m6m6p3p3p2p2s3s3s2m1p1z3z4	和了	0	0	ツモ	立直+門前清自摸和+平和+一盃口		0	6200	12	11
+2	45	q5	push	1	p2p2s4s4p1p1m5m5m8m8z1p6s8	和了	0	1	ロン	七対子+赤ドラ		1	4200	6	5
+2	45	q5	base	1	p2p2s4s4p1p1m5m5m8m8z1p6s8	和了	0	1	ツモ	立直+門前清自摸和+七対子+赤ドラ		0	9000	10	9
+2	45	q6	push	1	s4s4m3m3p4p4s8s8z3z3z4z4z2	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	12	11
+2	45	q6	base	1	s4s4m3m3p4p4s8s8z3z3z4z4z2	流局						0	3000	18	18
+2	46	q2	push	3	z6z6z3z3m8p8s2p6z4p9m9z1s4	流局						1	-1000	18	17
+2	46	q2	base	3	z6z6z3z3m8p8s2p6z4p9m9z1s4	和了	0	0	ロン	翻牌 發+ドラ		1	2000	10	9
+2	46	q3	push	3	s4s4m1m1z6z6m4s8s9z4p1m5s2	被ツモ						1	-1300	10	9
+2	46	q3	base	3	s4s4m1m1z6z6m4s8s9z4p1m5s2	和了	0	0	ツモ	翻牌 發		0	1100	7	6
+2	46	q4	push	2	p4p4s3s3p8p8m8m8s6s2p3m4m2	和了	0	1	ロン	七対子		0	1600	9	9
+2	46	q4	base	2	p4p4s3s3p8p8m8m8s6s2p3m4m2	放銃					1	1	-2000	13	13
+2	46	q5	push	3	m5m5s5s5s1s1s9s9z3z3z6z7m3	和了	0	1	ロン	七対子		0	1600	11	10
+2	46	q5	base	3	m5m5s5s5s1s1s9s9z3z3z6z7m3	被ツモ						1	-3000	16	15
+2	46	q6	push	2	z6z6m9m9m4m4s5s5z5z5s9s9p3	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	4	3
+2	46	q6	base	2	z6z6m9m9m4m4s5s5z5z5s9s9p3	流局						0	3000	18	17
+2	47	q2	push	3	m4m4m9m9p3z1s5z6s7m6z4p6s4	被ツモ						1	-700	10	9
+2	47	q2	base	3	m4m4m9m9p3z1s5z6s7m6z4p6s4	和了	0	0	ロン	一気通貫		0	1000	15	15
+2	47	q3	push	1	s7s7s5s5s3s3z7p7p6p3p8p2z5	被ツモ						1	-700	15	15
+2	47	q3	base	1	s7s7s5s5s3s3z7p7p6p3p8p2z5	流局						0	3000	18	17
+2	47	q4	push	2	p6p6m2m2p3p3z3z3m4s5m1z6z5	放銃					1	1	-8000	10	10
+2	47	q4	base	2	p6p6m2m2p3p3z3z3m4s5m1z6z5	和了	0	1	ツモ	立直+一発+門前清自摸和+七対子+ドラ		0	13000	8	6
+2	47	q5	push	2	s2s2p7p7m4m4m6m6p1p1p3m5p2	和了	0	1	ツモ	門前清自摸和+七対子		1	4200	15	14
+2	47	q5	base	2	s2s2p7p7m4m4m6m6p1p1p3m5p2	流局						1	-1000	18	17
+2	47	q6	push	1	m7m7s9s9s2s2s4s4m2m2s1s1m9	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	3	2
+2	47	q6	base	1	m7m7s9s9s2s2s4s4m2m2s1s1m9	和了	0	1	ロン	ダブル立直+七対子+裏ドラ		1	14000	14	14
+2	48	q2	push	2	p9p9m2m2m9m8s3z2m1s6s4s8m3	被ツモ						0	-1000	15	15
+2	48	q2	base	2	p9p9m2m2m9m8s3z2m1s6s4s8m3	無関係						0	0	13	13
+2	48	q3	push	2	z3z3p3p3m1m1s1z6s9s4z5p6s8	放銃					0	0	-3900	11	11
+2	48	q3	base	2	z3z3p3p3m1m1s1z6s9s4z5p6s8	被ツモ						0	-500	8	8
+2	48	q4	push	1	s4s4p4p4p2p2p3p3m1s5m4s2z7	無関係						1	0	15	15
+2	48	q4	base	1	s4s4p4p4p2p2p3p3m1s5m4s2z7	和了	0	0	ツモ	立直+一発+門前清自摸和+平和+断幺九+一盃口+赤ドラ+裏ドラ		0	17000	5	4
+2	48	q5	push	1	p4p4z3z3p5p5m3m3p2p2s9p1p7	無関係						1	0	12	12
+2	48	q5	base	1	p4p4z3z3p5p5m3m3p2p2s9p1p7	放銃					1	1	-10600	17	17
+2	48	q6	push	3	m2m2z2z2z4z4p6p6p8p8s3s3m3	無関係						1	0	15	14
+2	48	q6	base	3	m2m2z2z2z4z4p6p6p8p8s3s3m3	和了	0	1	ロン	ダブル立直+七対子		1	8400	5	4
+2	49	q2	push	3	s8s8m9m9m4p5m2z3s5s7p3z7z2	流局						1	-1500	18	17
+2	49	q2	base	3	s8s8m9m9m4p5m2z3s5s7p3z7z2	流局						1	-1500	18	17
+2	49	q3	push	2	m5m5p4p4m8m8s1s3p6z2s2s8m1	被ツモ						1	-2000	17	17
+2	49	q3	base	2	m5m5p4p4m8m8s1s3p6z2s2s8m1	無関係						1	0	11	11
+2	49	q4	push	2	p9p9p8p8s7s7s8s8z4s3p5z2m2	被ツモ						1	-2000	13	13
+2	49	q4	base	2	p9p9p8p8s7s7s8s8z4s3p5z2m2	被ツモ						1	-3000	8	7
+2	49	q5	push	1	p3p3z6z6s8s8z2z2p4p4p2m3s2	流局						1	-1500	18	18
+2	49	q5	base	1	p3p3z6z6s8s8z2z2p4p4p2m3s2	和了	0	0	ロン	自風 南+翻牌 發		0	2600	3	3
+2	49	q6	push	3	s9s9m4m4s6s6m3m3m8m8z4z4s7	和了	0	1	ロン	七対子		0	1600	9	8
+2	49	q6	base	3	s9s9m4m4s6s6m3m3m8m8z4z4s7	被ツモ						1	-2000	7	6
+2	50	q2	push	3	s2s2p2p2s6s9m2p5s3s5s7z4z1	放銃					1	1	-5800	10	10
+2	50	q2	base	3	s2s2p2p2s6s9m2p5s3s5s7z4z1	放銃					1	1	-5800	15	15
+2	50	q3	push	2	z3z3m9m9z1z1z6p1p2p6s7p4m7	被ツモ						0	-1300	13	14
+2	50	q3	base	2	z3z3m9m9z1z1z6p1p2p6s7p4m7	被ツモ						0	-2000	12	13
+2	50	q4	push	2	z7z7s4s4p2p2s1s1s5p3p5s2m3	放銃					0	0	-1000	11	12
+2	50	q4	base	2	z7z7s4s4p2p2s1s1s5p3p5s2m3	和了	0	1	ツモ	立直+一発+門前清自摸和+七対子+ドラ+裏ドラ		0	17000	16	16
+2	50	q5	push	1	s3s3s8s8s9s9p3p3s2s2m3z3z4	無関係						0	0	8	8
+2	50	q5	base	1	s3s3s8s8s9s9p3p3s2s2m3z3z4	被ツモ						0	-1300	7	6
+2	50	q6	push	1	m1m1p3p3m8m8z2z2s8s8p7p7m6	和了	0	1	ロン	七対子		0	1600	3	2
+2	50	q6	base	1	m1m1p3p3m8m8z2z2s8s8p7p7m6	流局						0	1500	18	18
+2	51	q2	push	1	p8p8m9m9p6p5p7z1m5p2z4p3z2	和了	0	1	ロン	七対子		0	1600	12	12
+2	51	q2	base	1	p8p8m9m9p6p5p7z1m5p2z4p3z2	無関係						0	0	14	15
+2	51	q3	push	1	p6p6s4s4s2s2m3p1m6z6s1m8z2	流局						1	-1500	18	17
+2	51	q3	base	1	p6p6s4s4s2s2m3p1m6z6s1m8z2	無関係						0	0	10	10
+2	51	q4	push	1	m3m3m5m5p7p7s9s9s8s4z2m9m7	被ツモ						1	-1000	10	10
+2	51	q4	base	1	m3m3m5m5p7p7s9s9s8s4z2m9m7	被ツモ						1	-1000	10	10
+2	51	q5	push	2	s7s7m1m1s1s1p7p7m7m7m9z7z1	無関係						0	0	9	9
+2	51	q5	base	2	s7s7m1m1s1s1p7p7m7m7m9z7z1	放銃					0	0	-1000	9	9
+2	51	q6	push	3	z7z7m8m8s5s5m7m7m5m5s9s9m1	被ツモ						1	-2000	5	4
+2	51	q6	base	3	z7z7m8m8s5s5m7m7m5m5s9s9m1	和了	0	1	ロン	立直+七対子+ドラ		1	10000	8	6
+2	52	q2	push	1	m8m8p2p2p9m2z7s7s5s2s6s9m6	被ツモ						1	-3000	12	12
+2	52	q2	base	1	m8m8p2p2p9m2z7s7s5s2s6s9m6	和了	0	0	ロン	立直+一発		1	4600	7	7
+2	52	q3	push	1	m4m4s4s4z5z5m7s5m2s7m5p1p5	被ツモ						0	-700	8	8
+2	52	q3	base	1	m4m4s4s4z5z5m7s5m2s7m5p1p5	放銃					0	0	-2000	9	10
+2	52	q4	push	2	m5m5m7m7m1m1m2m2p4z2s7m8m6	無関係						1	0	10	9
+2	52	q4	base	2	m5m5m7m7m1m1m2m2p4z2s7m8m6	無関係						1	0	10	9
+2	52	q5	push	2	p1p1m1m1z2z2z6z6p6p6z4m6z7	放銃					1	1	-8000	5	5
+2	52	q5	base	2	p1p1m1m1z2z2z6z6p6p6z4m6z7	被ツモ						1	-2000	13	13
+2	52	q6	push	1	s6s6s9s9s1s1p4p4z4z4m6m6m3	和了	0	1	ツモ	門前清自摸和+七対子		1	4200	15	14
+2	52	q6	base	1	s6s6s9s9s1s1p4p4z4z4m6m6m3	流局						0	3000	18	18
+2	53	q2	push	2	z1z1s3s3m1s8m8m4s7p9m7m2s9	流局						1	1500	18	17
+2	53	q2	base	2	z1z1s3s3m1s8m8m4s7p9m7m2s9	無関係						1	0	8	8
+2	53	q3	push	3	m1m1p2p2s5s5p9m2m6z7s7m5m3	流局						1	-1000	18	17
+2	53	q3	base	3	m1m1p2p2s5s5p9m2m6z7s7m5m3	無関係						1	0	11	10
+2	53	q4	push	3	p6p6p1p1m4m4z2z2p9s7z4m9s1	被ツモ						1	-2000	8	7
+2	53	q4	base	3	p6p6p1p1m4m4z2z2p9s7z4m9s1	被ツモ						1	-2000	8	7
+2	53	q5	push	1	s9s9m6m6p8p8p2p2p4p4m8m5p3	無関係						1	0	15	16
+2	53	q5	base	1	s9s9m6m6p8p8p2p2p4p4m8m5p3	無関係						1	0	15	16
+2	53	q6	push	2	z1z1s5s5p2p2p9p9m5m5m6m6m2	和了	0	1	ロン	七対子		0	1600	5	4
+2	53	q6	base	2	z1z1s5s5p2p2p9p9m5m5m6m6m2	和了	0	1	ロン	ダブル立直+七対子		0	7400	4	3
+2	54	q2	push	2	z7z7s1s1z4m3s6p2s8s4m6s9p7	無関係						0	0	6	5
+2	54	q2	base	2	z7z7s1s1z4m3s6p2s8s4m6s9p7	無関係						0	0	5	6
+2	54	q3	push	3	m7m7p8p8p5p5z7z3s7m1z5s6s2	無関係						1	0	10	9
+2	54	q3	base	3	m7m7p8p8p5p5z7z3s7m1z5s6s2	無関係						1	0	13	13
+2	54	q4	push	3	m2m2p5p5p3p3z2z2s6s8s7p2z4	流局						1	1000	18	18
+2	54	q4	base	3	m2m2p5p5p3p3z2z2s6s8s7p2z4	和了	0	0	ツモ	立直+門前清自摸和+赤ドラ		0	5000	9	8
+2	54	q5	push	1	m4m4s1s1z7z7m8m8p6p6s6p5s9	放銃					0	0	-5200	5	5
+2	54	q5	base	1	m4m4s1s1z7z7m8m8p6p6s6p5s9	無関係						1	0	10	9
+2	54	q6	push	1	z2z2p5p5s6s6z1z1s3s3p2p2p4	和了	0	1	ロン	七対子		0	1600	4	4
+2	54	q6	base	1	z2z2p5p5s6s6z1z1s3s3p2p2p4	被ツモ						1	-2000	11	11
+2	55	q2	push	2	s7s7m6m6z4p9m3s5p2p5p7m9s1	無関係						0	0	12	12
+2	55	q2	base	2	s7s7m6m6z4p9m3s5p2p5p7m9s1	被ツモ						0	-2600	6	6
+2	55	q3	push	1	m7m7s7s7m6m6z3s3m5m8s5s2m1	無関係						1	0	11	10
+2	55	q3	base	1	m7m7s7s7m6m6z3s3m5m8s5s2m1	和了	0	0	ツモ	立直+門前清自摸和+平和+ドラ+赤ドラ		0	9000	6	5
+2	55	q4	push	1	p7p7s5s5s2s2p2p2s6s7p3p8m7	無関係						1	0	16	15
+2	55	q4	base	1	p7p7s5s5s2s2p2p2s6s7p3p8m7	放銃					0	0	-3900	9	11
+2	55	q5	push	2	s5s5m5m5p3p3p6p6s9s9m7p1z5	被ツモ						0	-500	4	4
+2	55	q5	base	2	s5s5m5m5p3p3p6p6s9s9m7p1z5	被ツモ						0	-500	4	4
+2	55	q6	push	3	p8p8s2s2z3z3s1s1z6z6m1m1m2	和了	0	1	ロン	七対子		1	2600	10	9
+2	55	q6	base	3	p8p8s2s2z3z3s1s1z6z6m1m1m2	和了	0	1	ロン	ダブル立直+七対子		0	7400	9	8
+2	56	q2	push	1	s9s9s3s3m8p1z2m6s4m7s6m9s8	流局						1	-1000	18	18
+2	56	q2	base	1	s9s9s3s3m8p1z2m6s4m7s6m9s8	和了	0	0	ロン	立直+一発+裏ドラ		1	7200	8	8
+2	56	q3	push	1	m9m9s9s9s8s8s6p7p3m8z6z4p1	無関係						0	0	11	10
+2	56	q3	base	1	m9m9s9s9s8s8s6p7p3m8z6z4p1	無関係						0	0	14	14
+2	56	q4	push	3	p3p3s2s2z6z6z3z3m3s9p6s8m9	和了	0	1	ツモ	門前清自摸和+七対子		1	4200	16	15
+2	56	q4	base	3	p3p3s2s2z6z6z3z3m3s9p6s8m9	和了	0	0	ロン	翻牌 發		1	1300	5	7
+2	56	q5	push	1	p8p8m4m4m9m9m6m6m3m3s1s6s7	和了	0	1	ロン	七対子		0	1600	7	7
+2	56	q5	base	1	p8p8m4m4m9m9m6m6m3m3s1s6s7	被ツモ						1	-500	15	15
+2	56	q6	push	1	m3m3z4z4m9m9s6s6s1s1m4m4m6	被ツモ						1	-16000	7	6
+2	56	q6	base	1	m3m3z4z4m9m9s6s6s1s1m4m4m6	被ツモ						1	-16000	7	6
+2	57	q2	push	1	z4z4z6z6p5p9s2p2s5s7p3z3m4	無関係						0	0	11	11
+2	57	q2	base	1	z4z4z6z6p5p9s2p2s5s7p3z3m4	和了	0	0	ツモ	翻牌 發+赤ドラ		1	3700	11	11
+2	57	q3	push	3	m7m7p5p5s6s6m9p3s5p7p2z7s3	被ツモ						1	-500	8	7
+2	57	q3	base	3	m7m7p5p5s6s6m9p3s5p7p2z7s3	無関係						1	0	8	7
+2	57	q4	push	3	s9s9m7m7m4m4m8m8s5s7s4z3s6	和了	0	1	ロン	七対子+赤ドラ		1	4200	12	11
+2	57	q4	base	3	s9s9m7m7m4m4m8m8s5s7s4z3s6	放銃					0	0	-1500	14	13
+2	57	q5	push	3	s5s5m7m7s8s8p7p7p3p3m2s2m1	和了	0	1	ロン	断幺九+七対子		0	3200	4	3
+2	57	q5	base	3	s5s5m7m7s8s8p7p7p3p3m2s2m1	和了	0	1	ロン	立直+断幺九+七対子		0	7400	15	14
+2	57	q6	push	2	m9m9s8s8m8m8p2p2m2m2p1p1s3	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		0	8000	3	2
+2	57	q6	base	2	m9m9s8s8m8m8p2p2m2m2p1p1s3	流局						1	1500	18	17
+2	58	q2	push	3	p4p4m8m8z3s3s6p5m3p3m6m5z1	流局						0	0	1	1
+2	58	q2	base	3	p4p4m8m8z3s3s6p5m3p3m6m5z1	流局						0	0	1	1
+2	58	q3	push	3	p9p9s1s1p6p6m2z2s8z1p2m3z4	無関係						1	0	6	5
+2	58	q3	base	3	p9p9s1s1p6p6m2z2s8z1p2m3z4	無関係						1	0	6	5
+2	58	q4	push	1	s3s3s5s5s7s7z4z4s1p9p7z3m3	和了	0	1	ロン	七対子		1	2600	15	15
+2	58	q4	base	1	s3s3s5s5s7s7z4z4s1p9p7z3m3	和了	0	0	ロン	混一色		0	2000	10	10
+2	58	q5	push	1	m1m1m9m9m7m7z6z6p8p8p5m6z5	被ツモ						1	-3000	4	4
+2	58	q5	base	1	m1m1m9m9m7m7z6z6p8p8p5m6z5	被ツモ						1	-3000	4	4
+2	58	q6	push	1	p1p1z1z1m6m6z6z6p6p6m5m5z2	和了	0	1	ロン	七対子+赤ドラ		0	3200	15	17
+2	58	q6	base	1	p1p1z1z1m6m6z6z6p6p6m5m5z2	和了	0	1	ロン	ダブル立直+七対子		0	7400	2	2
+2	59	q2	push	1	p8p8m1m1m6p6s3s4s9s6p3m2z3	流局						1	-1500	18	18
+2	59	q2	base	1	p8p8m1m1m6p6s3s4s9s6p3m2z3	無関係						0	0	13	14
+2	59	q3	push	2	p4p4z6z6z1z1p7s6m2p9m1p8z7	流局						0	-1000	18	18
+2	59	q3	base	2	p4p4z6z6z1z1p7s6m2p9m1p8z7	無関係						1	0	11	12
+2	59	q4	push	2	m7m7s8s8z1z1m8m8p1m5s3z7p4	無関係						0	0	10	10
+2	59	q4	base	2	m7m7s8s8z1z1m8m8p1m5s3z7p4	和了	0	0	ロン	場風 東		0	1000	7	8
+2	59	q5	push	1	z4z4p7p7p5p5z5z5s2s2s6p8m9	無関係						1	0	9	8
+2	59	q5	base	1	z4z4p7p7p5p5z5z5s2s2s6p8m9	放銃					0	0	-18000	6	7
+2	59	q6	push	1	m1m1p7p7m8m8s7s7p1p1p8p8p4	無関係						0	0	11	11
+2	59	q6	base	1	m1m1p7p7m8m8s7s7p1p1p8p8p4	流局						0	3000	18	18
+2	60	q2	push	2	s1s1p9p9z1z4s3m6s7z3s9p2m2	放銃					1	1	-8000	9	10
+2	60	q2	base	2	s1s1p9p9z1z4s3m6s7z3s9p2m2	被ツモ						1	-2000	7	6
+2	60	q3	push	1	p2p2s9s9p7p7s7m8z7m4p3m6p6	被ツモ						1	-4000	9	9
+2	60	q3	base	1	p2p2s9s9p7p7s7m8z7m4p3m6p6	流局						1	-1000	18	17
+2	60	q4	push	1	s6s6s8s8m3m3s3s3s9p9m2m7s1	放銃					0	0	-2000	17	18
+2	60	q4	base	1	s6s6s8s8m3m3s3s3s9p9m2m7s1	和了	0	0	ツモ	立直+門前清自摸和+平和+ドラ+裏ドラ		0	9000	12	11
+2	60	q5	push	3	s5s5m5m5s1s1m4m4m6m6s7s3p9	流局						0	0	18	17
+2	60	q5	base	3	s5s5m5m5s1s1m4m4m6m6s7s3p9	流局						0	1500	18	17
+2	60	q6	push	3	p9p9z7z7z2z2p8p8m1m1s9s9m7	和了	0	1	ツモ	門前清自摸和+七対子		1	5200	9	8
+2	60	q6	base	3	p9p9z7z7z2z2p8p8m1m1s9s9m7	放銃					1	1	-8000	8	8
+2	61	q2	push	3	z6z6m2m2s8s4m6m7m9z3p8s7s6	無関係						1	0	12	12
+2	61	q2	base	3	z6z6m2m2s8s4m6m7m9z3p8s7s6	被ツモ						1	-500	16	16
+2	61	q3	push	3	p2p2z3z3m8m8m1p7p3m7s3m3z1	和了	0	1	ロン	七対子		1	2600	18	16
+2	61	q3	base	3	p2p2z3z3m8m8m1p7p3m7s3m3z1	無関係						1	0	16	16
+2	61	q4	push	1	p6p6s1s1s5s5z1z1m5p1s2s3m4	和了	0	1	ロン	七対子+ドラ		0	6400	6	6
+2	61	q4	base	1	p6p6s1s1s5s5z1z1m5p1s2s3m4	被ツモ						1	-4000	10	9
+2	61	q5	push	1	p3p3z5z5s2s2s7s7m7m7m2p6z7	放銃					0	1	-2000	12	12
+2	61	q5	base	1	p3p3z5z5s2s2s7s7m7m7m2p6z7	被ツモ						1	-1000	8	8
+2	61	q6	push	3	m1m1m2m2m8m8s8s8z4z4z2z2p7	和了	0	1	ロン	七対子		0	1600	2	1
+2	61	q6	base	3	m1m1m2m2m8m8s8s8z4z4z2z2p7	流局						1	1500	18	17
+2	62	q2	push	3	m6m6s6s6p6s8s1m7m5p8z7p2p3	放銃					0	0	-12000	15	14
+2	62	q2	base	3	m6m6s6s6p6s8s1m7m5p8z7p2p3	和了	0	0	ロン	三色同順+ドラ		0	2000	15	15
+2	62	q3	push	1	p6p6s6s6m5m5s3m4z3m1z6z4m8	被ツモ						0	-1000	11	12
+2	62	q3	base	1	p6p6s6s6m5m5s3m4z3m1z6z4m8	無関係						0	0	9	9
+2	62	q4	push	1	s5s5z6z6z2z2s7s7p8m9m8s1z7	放銃					1	1	-3900	8	8
+2	62	q4	base	1	s5s5z6z6z2z2s7s7p8m9m8s1z7	放銃					1	1	-7700	7	7
+2	62	q5	push	3	m9m9p3p3p8p8m7m7p5p5m8z3z1	無関係						1	0	10	9
+2	62	q5	base	3	m9m9p3p3p8p8m7m7p5p5m8z3z1	被ツモ						1	-2000	9	8
+2	62	q6	push	3	z6z6s9s9p2p2z2z2s2s2z4z4z5	放銃					1	1	-4800	6	6
+2	62	q6	base	3	z6z6s9s9p2p2z2z2s2s2z4z4z5	和了	0	1	ロン	ダブル立直+七対子		0	7400	3	2
+2	63	q2	push	3	z6z6m7m7s5p8m8z2m3m4m2z1s3	無関係						0	0	7	6
+2	63	q2	base	3	z6z6m7m7s5p8m8z2m3m4m2z1s3	和了	0	0	ロン	翻牌 發		0	1000	7	8
+2	63	q3	push	2	p4p4s2s2s8s8s6m7z6m3m6m8p8	流局						1	-1500	18	18
+2	63	q3	base	2	p4p4s2s2s8s8s6m7z6m3m6m8p8	和了	0	1	ロン	立直+断幺九+七対子+赤ドラ		0	9000	14	15
+2	63	q4	push	3	p1p1s3s3p6p6p8p8z2s2p7m1s6	流局						1	1500	18	17
+2	63	q4	base	3	p1p1s3s3p6p6p8p8z2s2p7m1s6	放銃					1	1	-8000	12	12
+2	63	q5	push	2	s6s6m1m1p6p6s9s9m9m9m3m2p2	和了	0	1	ロン	七対子		0	1600	13	14
+2	63	q5	base	2	s6s6m1m1p6p6s9s9m9m9m3m2p2	被ツモ						0	-500	14	13
+2	63	q6	push	3	p8p8z2z2z5z5s2s2p6p6s6s6m9	和了	0	1	ロン	七対子		0	1600	3	2
+2	63	q6	base	3	p8p8z2z2z5z5s2s2p6p6s6s6m9	流局						0	3000	18	17
+2	64	q2	push	3	z6z6s3s3z4s5p7m7m9p4m3s1m6	流局						1	-1000	18	18
+2	64	q2	base	3	z6z6s3s3z4s5p7m7m9p4m3s1m6	放銃					0	1	-3900	14	14
+2	64	q3	push	1	s9s9p8p8s3s3z5m3m6s4s6m8m4	流局						1	-1500	18	18
+2	64	q3	base	1	s9s9p8p8s3s3z5m3m6s4s6m8m4	放銃					0	0	-7700	10	11
+2	64	q4	push	2	s4s4z7z7s8s8p4p4s9p1s3s1m3	放銃					1	1	-7700	8	8
+2	64	q4	base	2	s4s4z7z7s8s8p4p4s9p1s3s1m3	放銃					1	1	-7700	8	8
+2	64	q5	push	3	s4s4m5m5z2z2m2m2p7p7s3p2p5	放銃					0	0	-1000	11	11
+2	64	q5	base	3	s4s4m5m5z2z2m2m2p7p7s3p2p5	和了	0	1	ツモ	立直+門前清自摸和+七対子		1	8400	17	16
+2	64	q6	push	3	p9p9s1s1s2s2z3z3z6z6p3p3s4	無関係						1	0	15	14
+2	64	q6	base	3	p9p9s1s1s2s2z3z3z6z6p3p3s4	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+ドラ		1	14000	7	6
+2	65	q2	push	1	m6m6p7p7p3p6s4z4p9s9s2s7z1	被ツモ						1	-700	11	11
+2	65	q2	base	1	m6m6p7p7p3p6s4z4p9s9s2s7z1	被ツモ						1	-700	11	11
+2	65	q3	push	1	m3m3m4m4p2p2z3z2p8m5s6z7s7	無関係						1	0	15	15
+2	65	q3	base	1	m3m3m4m4p2p2z3z2p8m5s6z7s7	放銃					0	0	-2900	11	12
+2	65	q4	push	3	m3m3m7m7p4p4p9p9p5s8m8z7m5	無関係						1	0	15	14
+2	65	q4	base	3	m3m3m7m7p4p4p9p9p5s8m8z7m5	無関係						1	0	15	14
+2	65	q5	push	1	m9m9s6s6p8p8s1s1p5p5p3p1s2	被ツモ						0	-400	6	6
+2	65	q5	base	1	m9m9s6s6p8p8s1s1p5p5p3p1s2	被ツモ						0	-400	6	6
+2	65	q6	push	1	p7p7s2s2p4p4p8p8s5s5s1s1p1	和了	0	1	ロン	七対子		0	1600	4	4
+2	65	q6	base	1	p7p7s2s2p4p4p8p8s5s5s1s1p1	和了	0	1	ロン	ダブル立直+七対子		0	7400	6	5
+2	66	q2	push	2	m3m3m5m5z5m1p1p6p4s9s6p7m6	放銃					0	1	-2600	10	11
+2	66	q2	base	2	m3m3m5m5z5m1p1p6p4s9s6p7m6	放銃					0	1	-2600	9	10
+2	66	q3	push	3	m9m9m1m1m4m4s2z5p8s8z2p4z4	被ツモ						1	-2000	9	9
+2	66	q3	base	3	m9m9m1m1m4m4s2z5p8s8z2p4z4	被ツモ						1	-2000	9	9
+2	66	q4	push	2	m5m5z1z1s9s9s4s4s1z5m2s5s3	放銃					1	1	-8000	17	17
+2	66	q4	base	2	m5m5z1z1s9s9s4s4s1z5m2s5s3	放銃					0	0	-3900	10	11
+2	66	q5	push	1	z2z2z6z6s1s1m2m2p7p7m8p3s2	無関係						1	0	6	6
+2	66	q5	base	1	z2z2z6z6s1s1m2m2p7p7m8p3s2	和了	0	0	ロン	自風 南+翻牌 發+対々和		1	9000	8	9
+2	66	q6	push	1	p3p3p7p7m8m8s7s7z6z6p4p4m6	和了	0	1	ロン	七対子+ドラ		0	6400	3	2
+2	66	q6	base	1	p3p3p7p7m8m8s7s7z6z6p4p4m6	流局						1	1000	18	18
+2	67	q2	push	2	p8p8z4z4p9p1m1m4m3z2s5z5p3	放銃					1	1	-5200	12	12
+2	67	q2	base	2	p8p8z4z4p9p1m1m4m3z2s5z5p3	無関係						0	0	7	6
+2	67	q3	push	1	m7m7s8s8s3s3p2m2z3p5s4p3m9	放銃					1	1	-5200	8	9
+2	67	q3	base	1	m7m7s8s8s3s3p2m2z3p5s4p3m9	和了	0	0	ロン	断幺九		1	1000	9	10
+2	67	q4	push	3	m4m4m2m2p5p5m5m5p4z6p9s5m1	流局						1	-1000	18	17
+2	67	q4	base	3	m4m4m2m2p5p5m5m5p4z6p9s5m1	和了	0	0	ロン	立直+平和+断幺九+三色同順+赤ドラ		1	14000	16	16
+2	67	q5	push	3	s2s2s5s5m6m6m8m8z5z5z4p6s4	和了	0	1	ロン	七対子+赤ドラ		0	3200	10	10
+2	67	q5	base	3	s2s2s5s5m6m6m8m8z5z5z4p6s4	流局						0	3000	18	17
+2	67	q6	push	3	p6p6s4s4s7s7p7p7s3s3p3p3m5	無関係						1	0	8	7
+2	67	q6	base	3	p6p6s4s4s7s7p7p7s3s3p3p3m5	流局						0	1500	18	17
+2	68	q2	push	1	z6z6m2m2z4m3p8s5m8m6p4m7z3	無関係						0	0	9	10
+2	68	q2	base	1	z6z6m2m2z4m3p8s5m8m6p4m7z3	和了	0	0	ロン	立直+一発+翻牌 發+ドラ		1	9000	8	9
+2	68	q3	push	1	z7z7s4s4z4z4z6p1s9s5p3m6m8	無関係						1	0	17	16
+2	68	q3	base	1	z7z7s4s4z4z4z6p1s9s5p3m6m8	和了	0	0	ロン	翻牌 中		0	1600	5	6
+2	68	q4	push	3	p3p3z7z7z2z2p9p9s8p7z6s6z3	被ツモ						1	-2000	6	4
+2	68	q4	base	3	p3p3z7z7z2z2p9p9s8p7z6s6z3	和了	0	0	ロン	翻牌 中		0	1000	7	8
+2	68	q5	push	1	m6m6p3p3z1z1m1m1s6s6p1s5s1	無関係						0	0	6	6
+3	1	q2	push	2	p6p6p4p4s8s9s5p1s7z7p2s4p5	無関係						1	0	12	12
+3	1	q2	base	2	p6p6p4p4s8s9s5p1s7z7p2s4p5	和了	0	0	ロン	立直		1	4300	14	14
+3	1	q3	push	1	z1z1s3s3m9m9z4z7m7z3m3m5z6	放銃					1	1	-8000	12	12
+3	1	q3	base	1	z1z1s3s3m9m9z4z7m7z3m3m5z6	放銃					1	1	-8000	10	11
+3	1	q4	push	2	z3z3m8m8p5p5p1p1m7m4z4z6s1	無関係						1	0	13	13
+3	1	q4	base	2	z3z3m8m8p5p5p1p1m7m4z4z6s1	和了	0	0	ロン	自風 西+ドラ		0	5200	12	13
+3	1	q5	push	3	m2m2p5p5m5m5m3m3s6s6m8s8s1	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	6	5
+3	1	q5	base	3	m2m2p5p5m5m5m3m3s6s6m8s8s1	被ツモ						1	-300	15	14
+3	1	q6	push	1	s3s3m6m6z3z3m3m3z1z1z4z4z6	放銃					1	1	-2600	17	17
+3	1	q6	base	1	s3s3m6m6z3z3m3m3z1z1z4z4z6	被ツモ						1	-1600	12	12
+3	2	q2	push	2	p7p7z1z1s4z4s2m5p2s5p1z5p8	放銃					1	1	-18000	14	14
+3	2	q2	base	2	p7p7z1z1s4z4s2m5p2s5p1z5p8	放銃					1	1	-12000	14	15
+3	2	q3	push	1	m5m5p5p5p6p6p8m6s8s7s6p3z3	被ツモ						0	-1000	17	17
+3	2	q3	base	1	m5m5p5p5p6p6p8m6s8s7s6p3z3	被ツモ						1	-500	15	15
+3	2	q4	push	2	m3m3z2z2s3s3m9m9m8p4m4p3p5	無関係						0	0	8	9
+3	2	q4	base	2	m3m3z2z2s3s3m9m9m8p4m4p3p5	流局						1	1500	18	17
+3	2	q5	push	2	s5s5p1p1m4m4s9s9s6s6s1m3s2	和了	0	1	ロン	七対子		1	2600	13	13
+3	2	q5	base	2	s5s5p1p1m4m4s9s9s6s6s1m3s2	無関係						0	0	14	14
+3	2	q6	push	1	s6s6z3z3z2z2s4s4m8m8p5p5z1	被ツモ						1	-1000	13	12
+3	2	q6	base	1	s6s6z3z3z2z2s4s4m8m8p5p5z1	和了	0	1	ロン	ダブル立直+七対子		0	7400	8	8
+3	3	q2	push	3	z1z1z2z2p1p7s2s1m9m5p6s3z5	放銃					1	1	-12000	11	10
+3	3	q2	base	3	z1z1z2z2p1p7s2s1m9m5p6s3z5	和了	0	0	ロン	場風 東		0	1000	6	7
+3	3	q3	push	3	m4m4m9m9z4z4s7p6s3z1z5s6z7	流局						1	-1000	18	18
+3	3	q3	base	3	m4m4m9m9z4z4s7p6s3z1z5s6z7	和了	0	0	ツモ	自風 北		0	1100	16	17
+3	3	q4	push	1	z5z5z3z3s5s5z6z6s3s7m3p3m2	無関係						1	0	6	6
+3	3	q4	base	1	z5z5z3z3s5s5z6z6s3s7m3p3m2	和了	0	0	ロン	翻牌 白+翻牌 發+対々和+混一色+赤ドラ		1	13000	13	15
+3	3	q5	push	3	z4z4m7m7p7p7m6m6z5z5s9m9p9	流局						1	1500	18	18
+3	3	q5	base	3	z4z4m7m7p7p7m6m6z5z5s9m9p9	和了	0	0	ロン	翻牌 白		0	1000	6	7
+3	3	q6	push	1	p2p2s2s2p7p7p9p9m2m2z5z5p4	和了	0	1	ロン	七対子		0	1600	6	5
+3	3	q6	base	1	p2p2s2s2p7p7p9p9m2m2z5z5p4	放銃					1	1	-1300	9	9
+3	4	q2	push	1	m1m1s6s6s9p7z2z5z3m3m4z6p3	流局						1	-1500	18	18
+3	4	q2	base	1	m1m1s6s6s9p7z2z5z3m3m4z6p3	無関係						0	0	16	17
+3	4	q3	push	2	p3p3p8p8s1s1z4s3m9s9m1m5m4	被ツモ						1	-6000	9	8
+3	4	q3	base	2	p3p3p8p8s1s1z4s3m9s9m1m5m4	放銃					0	0	-2000	9	11
+3	4	q4	push	2	z2z2z4z4m9m9s6s6z7s9p6s3p1	放銃					0	0	-11600	11	11
+3	4	q4	base	2	z2z2z4z4m9m9s6s6z7s9p6s3p1	被ツモ						0	-500	7	7
+3	4	q5	push	3	p1p1m4m4m8m8z7z7p6p6s2p7z2	無関係						0	0	7	7
+3	4	q5	base	3	p1p1m4m4m8m8z7z7p6p6s2p7z2	放銃					0	0	-3900	11	11
+3	4	q6	push	1	p3p3s1s1m2m2s8s8p2p2m3m3m5	和了	0	1	ロン	七対子		0	1600	6	6
+3	4	q6	base	1	p3p3s1s1m2m2s8s8p2p2m3m3m5	和了	0	1	ツモ	ダブル立直+海底摸月+門前清自摸和+七対子+赤ドラ		1	14000	18	17
+3	5	q2	push	2	z5z5p8p8m2p4z1z4p7s3z6p9m4	流局						1	-1500	18	18
+3	5	q2	base	2	z5z5p8p8m2p4z1z4p7s3z6p9m4	放銃					0	1	-6400	8	10
+3	5	q3	push	1	p5p5s3s3m4m4z7z4z2m8s2p3m2	放銃					0	0	-1000	9	9
+3	5	q3	base	1	p5p5s3s3m4m4z7z4z2m8s2p3m2	和了	0	0	ロン	断幺九+赤ドラ		0	2000	11	11
+3	5	q4	push	1	z3z3m7m7z7z7s7s7m8p1z6s3s5	和了	0	1	ツモ	門前清自摸和+七対子+赤ドラ		0	6400	12	11
+3	5	q4	base	1	z3z3m7m7z7z7s7s7m8p1z6s3s5	無関係						1	0	9	9
+3	5	q5	push	1	p9p9p8p8m3m3p3p3z2z2z5p6z4	放銃					0	0	-2000	5	5
+3	5	q5	base	1	p9p9p8p8m3m3p3p3z2z2z5p6z4	無関係						0	0	7	6
+3	5	q6	push	3	m2m2m9m9p7p7s6s6s5s5p6p6z6	和了	0	1	ロン	七対子		0	1600	8	7
+3	5	q6	base	3	m2m2m9m9p7p7s6s6s5s5p6p6z6	和了	0	1	ロン	ダブル立直+一発+七対子+裏ドラ		0	13000	2	1
+3	6	q2	push	2	z1z1z2z2p6s1m7p3z6s4p2z7m2	無関係						0	0	16	16
+3	6	q2	base	2	z1z1z2z2p6s1m7p3z6s4p2z7m2	放銃					0	0	-1000	7	7
+3	6	q3	push	1	p6p6p8p8m9m9p4s2p5s4m1m6s7	無関係						0	0	6	6
+3	6	q3	base	1	p6p6p8p8m9m9p4s2p5s4m1m6s7	放銃					0	0	-1500	11	12
+3	6	q4	push	3	z2z2s3s3z5z5p5p5m9s9s1p9s5	無関係						1	0	17	16
+3	6	q4	base	3	z2z2s3s3z5z5p5p5m9s9s1p9s5	被ツモ						1	-2000	15	14
+3	6	q5	push	3	m8m8s3s3m7m7p1p1z5z5z1m1z4	放銃					1	1	-5200	17	17
+3	6	q5	base	3	m8m8s3s3m7m7p1p1z5z5z1m1z4	被ツモ						1	-2000	9	8
+3	6	q6	push	3	m6m6p9p9z4z4m2m2z6z6s7s7p7	和了	0	1	ロン	七対子		0	1600	4	3
+3	6	q6	base	3	m6m6p9p9z4z4m2m2z6z6s7s7p7	被ツモ						1	-4000	12	11
+3	7	q2	push	1	p2p2m4m4s7p3s5p5s8z6p9z3m1	被ツモ						0	-500	10	9
+3	7	q2	base	1	p2p2m4m4s7p3s5p5s8z6p9z3m1	無関係						1	0	9	8
+3	7	q3	push	2	z3z3m8m8m7m7z4m5z5p5z1p2z7	被ツモ						1	-2000	8	8
+3	7	q3	base	2	z3z3m8m8m7m7z4m5z5p5z1p2z7	和了	0	0	ロン	自風 西+翻牌 中+混一色+ドラ		0	12000	13	13
+3	7	q4	push	3	p5p5m4m4s5s5z3z3p8m3s9p7z6	無関係						0	0	14	15
+3	7	q4	base	3	p5p5m4m4s5s5z3z3p8m3s9p7z6	流局						0	3000	18	17
+3	7	q5	push	2	s5s5z3z3p5p5m9m9p2p2z2z6m1	和了	0	1	ロン	七対子		0	1600	4	3
+3	7	q5	base	2	s5s5z3z3p5p5m9m9p2p2z2z6m1	放銃					1	1	-18000	15	17
+3	7	q6	push	1	p5p5p8p8p6p6s2s2m8m8s5s5s8	和了	0	1	ロン	断幺九+七対子		0	3200	5	4
+3	7	q6	base	1	p5p5p8p8p6p6s2s2m8m8s5s5s8	放銃					1	1	-2900	14	14
+3	8	q2	push	3	p9p9p5p5s2m5s9m3p1m6z7m9s7	流局						0	-1500	18	18
+3	8	q2	base	3	p9p9p5p5s2m5s9m3p1m6z7m9s7	放銃					0	1	-6400	13	14
+3	8	q3	push	1	m4m4p9p9z3z3s1m1p1p7p2z2m3	被ツモ						1	-3000	15	16
+3	8	q3	base	1	m4m4p9p9z3z3s1m1p1p7p2z2m3	無関係						0	0	12	13
+3	8	q4	push	2	p8p8p1p1p5p5p6p6s1m4z1m8m1	無関係						1	0	9	8
+3	8	q4	base	2	p8p8p1p1p5p5p6p6s1m4z1m8m1	被ツモ						1	-3000	14	14
+3	8	q5	push	2	m3m3m9m9p4p4s2s2p2p2s1p5p1	放銃					1	1	-7700	16	16
+3	8	q5	base	2	m3m3m9m9p4p4s2s2p2p2s1p5p1	放銃					0	0	-1000	10	10
+3	8	q6	push	3	m9m9p7p7z7z7s8s8p8p8s5s5z2	和了	0	1	ロン	七対子		0	1600	1	0
+3	8	q6	base	3	m9m9p7p7z7z7s8s8p8p8s5s5z2	和了	0	1	ロン	七対子		0	1600	1	0
+3	9	q2	push	3	p5p5p3p3m6z3p6m8m7p9m5m3s5	和了	0	1	ロン	七対子		0	1600	16	17
+3	9	q2	base	3	p5p5p3p3m6z3p6m8m7p9m5m3s5	放銃					1	1	-12000	12	13
+3	9	q3	push	1	p9p9z3z3p5p5s1z7p7p3s2m7s4	流局						0	-1500	18	18
+3	9	q3	base	1	p9p9z3z3p5p5s1z7p7p3s2m7s4	流局						1	-3000	18	19
+3	9	q4	push	3	s8s8m8m8m3m3p9p9p6p7s1m4s6	被ツモ						1	-3000	14	13
+3	9	q4	base	3	s8s8m8m8m3m3p9p9p6p7s1m4s6	和了	0	0	ロン	立直		1	2300	9	8
+3	9	q5	push	1	z3z3z5z5m8m8p7p7s2s2m1m9p5	放銃					1	1	-7700	11	12
+3	9	q5	base	1	z3z3z5z5m8m8p7p7s2s2m1m9p5	和了	0	1	ロン	立直+七対子+裏ドラ		1	10000	10	11
+3	9	q6	push	3	z6z6s9s9z5z5p7p7m1m1p8p8z2	和了	0	1	ロン	七対子+ドラ		0	6400	1	0
+3	9	q6	base	3	z6z6s9s9z5z5p7p7m1m1p8p8z2	和了	0	1	ロン	七対子+ドラ		0	6400	1	0
+3	10	q2	push	3	p1p1s2s2p8s1z1p4p2m9m3m2m8	被ツモ						1	-2000	16	15
+3	10	q2	base	3	p1p1s2s2p8s1z1p4p2m9m3m2m8	流局						1	-1000	18	17
+3	10	q3	push	3	z3z3m3m3p8p8p3z4s8p7m6s4p1	無関係						1	0	11	10
+3	10	q3	base	3	z3z3m3m3p8p8p3z4s8p7m6s4p1	無関係						1	0	11	10
+3	10	q4	push	2	p8p8s9s9s7s7s5s5p3m2s2z7z4	流局						1	1500	18	18
+3	10	q4	base	2	p8p8s9s9s7s7s5s5p3m2s2z7z4	流局						1	-1000	18	18
+3	10	q5	push	3	p4p4s2s2m1m1s4s4s7s7p5s8m7	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	12	11
+3	10	q5	base	3	p4p4s2s2m1m1s4s4s7s7p5s8m7	無関係						1	0	14	15
+3	10	q6	push	2	m7m7p1p1s6s6s8s8z2z2m8m8m5	無関係						1	0	8	8
+3	10	q6	base	2	m7m7p1p1s6s6s8s8z2z2m8m8m5	流局						1	1000	18	17
+3	11	q2	push	3	m1m1m9m9z7s4s6m2z3s5z5s3p1	流局						1	-1000	18	17
+3	11	q2	base	3	m1m1m9m9z7s4s6m2z3s5z5s3p1	無関係						1	0	13	12
+3	11	q3	push	2	s3s3m6m6m8m8z3m7s9p4p3p6z6	放銃					1	1	-3900	13	13
+3	11	q3	base	2	s3s3m6m6m8m8z3m7s9p4p3p6z6	流局						1	-1000	18	17
+3	11	q4	push	2	m1m1s1s1m8m8p6p6p7m3p2m9z7	無関係						1	0	12	12
+3	11	q4	base	2	m1m1s1s1m8m8p6p6p7m3p2m9z7	無関係						1	0	12	12
+3	11	q5	push	3	p8p8z2z2s5s5s1s1m2m2m8p6z4	被ツモ						1	-2000	15	14
+3	11	q5	base	3	p8p8z2z2s5s5s1s1m2m2m8p6z4	被ツモ						1	-2000	15	14
+3	11	q6	push	1	m4m4s6s6m5m5s5s5s8s8m6m6z3	放銃					1	1	-3900	9	9
+3	11	q6	base	1	m4m4s6s6m5m5s5s5s8s8m6m6z3	和了	0	1	ロン	ダブル立直+七対子		1	8400	12	12
+3	12	q2	push	3	p8p8m2m2p1m1z5s1s8s9p4m7m3	被ツモ						1	-1300	14	13
+3	12	q2	base	3	p8p8m2m2p1m1z5s1s8s9p4m7m3	和了	0	0	ツモ	立直+門前清自摸和		0	3000	11	11
+3	12	q3	push	3	m3m3s7s7s9s9z3p9z1m6p4p3s6	被ツモ						0	-3000	13	12
+3	12	q3	base	3	m3m3s7s7s9s9z3p9z1m6p4p3s6	被ツモ						0	-3000	13	12
+3	12	q4	push	2	p1p1s5s5m7m7p5p5m9z3m3m6p3	無関係						0	0	7	6
+3	12	q4	base	2	p1p1s5s5m7m7p5p5m9z3m3m6p3	流局						1	1500	18	18
+3	12	q5	push	2	p6p6z2z2s2s2m1m1s6s6m5m6m8	被ツモ						0	-4000	11	11
+3	12	q5	base	2	p6p6z2z2s2s2m1m1s6s6m5m6m8	無関係						1	0	7	7
+3	12	q6	push	1	p8p8s3s3p5p5s5s5m7m7z3z3z5	和了	1	0	ツモ	地和		0	32000	1	0
+3	12	q6	base	1	p8p8s3s3p5p5s5s5m7m7z3z3z5	和了	1	0	ツモ	地和		0	32000	1	0
+3	13	q2	push	3	s4s4s5s5z7s3p8s8p3m9m6p6p5	無関係						0	0	10	11
+3	13	q2	base	3	s4s4s5s5z7s3p8s8p3m9m6p6p5	放銃					0	0	-2900	12	13
+3	13	q3	push	1	s8s8z3z3p7p7m4p8p6m8s7z1p4	無関係						0	0	16	16
+3	13	q3	base	1	s8s8z3z3p7p7m4p8p6m8s7z1p4	放銃					1	1	-2000	16	16
+3	13	q4	push	1	z4z4p9p9z7z7m4m4m8s3p1z3p5	無関係						0	0	12	13
+3	13	q4	base	1	z4z4p9p9z7z7m4m4m8s3p1z3p5	放銃					0	0	-3900	8	10
+3	13	q5	push	1	s8s8z1z1m4m4p3p3z7z7z3s4m5	無関係						0	0	17	17
+3	13	q5	base	1	s8s8z1z1m4m4p3p3z7z7z3s4m5	無関係						1	0	17	17
+3	13	q6	push	1	m1m1m8m8z5z5m4m4s4s4s1s1p9	和了	0	1	ロン	七対子		0	1600	9	9
+3	13	q6	base	1	m1m1m8m8z5z5m4m4s4s4s1s1p9	放銃					0	0	-3900	15	15
+3	14	q2	push	1	s2s2p3p3m1z6s5z2p7p4m7s3z7	被ツモ						0	-1000	12	12
+3	14	q2	base	1	s2s2p3p3m1z6s5z2p7p4m7s3z7	放銃					1	1	-7700	14	15
+3	14	q3	push	1	m3m3z1z1p6p6p9z3p4m1m7z2m9	和了	0	1	ロン	七対子		0	1600	11	11
+3	14	q3	base	1	m3m3z1z1p6p6p9z3p4m1m7z2m9	被ツモ						1	-1300	11	11
+3	14	q4	push	2	p4p4s5s5s8s8s2s2m6z7s6m9s9	和了	0	1	ロン	七対子		0	1600	4	3
+3	14	q4	base	2	p4p4s5s5s8s8s2s2m6z7s6m9s9	流局						0	1500	18	18
+3	14	q5	push	1	s6s6p6p6m6m6p2p2s2s2z1z7p8	被ツモ						1	-2000	13	13
+3	14	q5	base	1	s6s6p6p6m6m6p2p2s2s2z1z7p8	被ツモ						1	-2000	13	13
+3	14	q6	push	2	p5p5m8m8z5z5m7m7p3p3p4p4s1	和了	0	1	ロン	七対子		1	1600	4	3
+3	14	q6	base	2	p5p5m8m8z5z5m7m7p3p3p4p4s1	流局						0	3000	18	17
+3	15	q2	push	3	m9m9z7z7m6p2m8p4s9m2z4z2z6	無関係						1	0	13	12
+3	15	q2	base	3	m9m9z7z7m6p2m8p4s9m2z4z2z6	無関係						1	0	13	12
+3	15	q3	push	3	p8p8z1z1p6p6z5z4s6s3s8s5z3	放銃					0	0	-2000	12	11
+3	15	q3	base	3	p8p8z1z1p6p6z5z4s6s3s8s5z3	和了	0	0	ツモ	場風 東+対々和+三暗刻		0	8000	12	11
+3	15	q4	push	1	s6s6p3p3z4z4z6z6z1s1s4s2m3	無関係						1	0	7	7
+3	15	q4	base	1	s6s6p3p3z4z4z6z6z1s1s4s2m3	被ツモ						1	-2000	12	12
+3	15	q5	push	3	m6m6z6z6s9s9s5s5m1m1p3z2s2	無関係						1	0	9	9
+3	15	q5	base	3	m6m6z6z6s9s9s5s5m1m1p3z2s2	無関係						0	0	4	5
+3	15	q6	push	2	s5s5m9m9z1z1m1m1z7z7p6p6s8	被ツモ						0	-2000	13	13
+3	15	q6	base	2	s5s5m9m9z1z1m1m1z7z7p6p6s8	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	14	13
+3	16	q2	push	3	p4p4p2p2p5p1s9z1z7z4s1m6p8	無関係						1	0	10	9
+3	16	q2	base	3	p4p4p2p2p5p1s9z1z7z4s1m6p8	無関係						1	0	10	9
+3	16	q3	push	2	s2s2s5s5p4p4z1m2p6z7p3z2p8	放銃					1	1	-2600	13	13
+3	16	q3	base	2	s2s2s5s5p4p4z1m2p6z7p3z2p8	無関係						1	0	13	13
+3	16	q4	push	3	p9p9z3z3m4m4m7m7z5z6m1s5s3	被ツモ						1	-2600	10	9
+3	16	q4	base	3	p9p9z3z3m4m4m7m7z5z6m1s5s3	被ツモ						1	-2600	10	9
+3	16	q5	push	1	m6m6z1z1z5z5s9s9m4m4p4s1m8	和了	0	1	ロン	七対子		1	2600	10	9
+3	16	q5	base	1	m6m6z1z1z5z5s9s9m4m4p4s1m8	被ツモ						1	-4000	16	15
+3	16	q6	push	1	z1z1m1m1z7z7m6m6s2s2p6p6s6	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	4	3
+3	16	q6	base	1	z1z1m1m1z7z7m6m6s2s2p6p6s6	和了	0	1	ツモ	立直+門前清自摸和+七対子		0	7400	4	3
+3	17	q2	push	3	z5z5s1s1p8s9z7m1p1m2s8s5z2	被ツモ						1	-1300	8	7
+3	17	q2	base	3	z5z5s1s1p8s9z7m1p1m2s8s5z2	放銃					1	1	-7700	10	10
+3	17	q3	push	3	p3p3m9m9p9p9z5p1s9p4s1m3m7	被ツモ						1	-6000	7	6
+3	17	q3	base	3	p3p3m9m9p9p9z5p1s9p4s1m3m7	被ツモ						1	-6000	7	6
+3	17	q4	push	1	m8m8p5p5z7z7p6p6p3p4m1s9s5	放銃					1	1	-1300	17	17
+3	17	q4	base	1	m8m8p5p5z7z7p6p6p3p4m1s9s5	被ツモ						0	-300	11	12
+3	17	q5	push	2	p5p5s5s5p8p8s7s7p4p4z3m9z7	和了	0	1	ロン	断幺九+七対子		1	3200	5	4
+3	17	q5	base	2	p5p5s5s5p8p8s7s7p4p4z3m9z7	無関係						1	0	7	6
+3	17	q6	push	1	s2s2s3s3s5s5p9p9p6p6m6m6z3	和了	0	1	ロン	七対子		0	1600	1	0
+3	17	q6	base	1	s2s2s3s3s5s5p9p9p6p6m6m6z3	和了	0	1	ロン	七対子		0	1600	1	0
+3	18	q2	push	2	m5m5z3z3m6s2s8p8m4z1p4z6m2	無関係						0	0	14	12
+3	18	q2	base	2	m5m5z3z3m6s2s8p8m4z1p4z6m2	放銃					0	1	-1500	7	7
+3	18	q3	push	3	p9p9m9m9z6z6m2p8p4p5s6z7m1	放銃					1	1	-12000	12	12
+3	18	q3	base	3	p9p9m9m9z6z6m2p8p4p5s6z7m1	無関係						1	0	10	10
+3	18	q4	push	3	m4m4s9s9s8s8s5s5p5m5m9m7z5	被ツモ						1	-4000	13	12
+3	18	q4	base	3	m4m4s9s9s8s8s5s5p5m5m9m7z5	被ツモ						1	-6000	14	14
+3	18	q5	push	1	p3p3z3z3s9s9z6z6s7s7m1m9p4	無関係						0	0	6	5
+3	18	q5	base	1	p3p3z3z3s9s9z6z6s7s7m1m9p4	無関係						0	0	6	7
+3	18	q6	push	2	m6m6p5p5m7m7s8s8s6s6z3z3p7	和了	0	1	ロン	七対子		0	1600	5	5
+3	18	q6	base	2	m6m6p5p5m7m7s8s8s6s6z3z3p7	被ツモ						1	-2000	14	14
+3	19	q2	push	3	m9m9m5m5p2s4p4z2s5p1s9p3m2	放銃					0	1	-7700	11	10
+3	19	q2	base	3	m9m9m5m5p2s4p4z2s5p1s9p3m2	被ツモ						0	-500	7	6
+3	19	q3	push	3	z3z3p7p7m8m8p9p3p2p4s7m5s8	被ツモ						1	-2000	12	11
+3	19	q3	base	3	z3z3p7p7m8m8p9p3p2p4s7m5s8	被ツモ						1	-2000	12	11
+3	19	q4	push	2	s6s6m1m1p5p5m4m4s5m7s4p4m9	放銃					0	0	-1000	10	11
+3	19	q4	base	2	s6s6m1m1p5p5m4m4s5m7s4p4m9	流局						0	3000	18	18
+3	19	q5	push	1	p6p6s9s9s8s8m3m3s6s6p1s4p5	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		0	8000	6	5
+3	19	q5	base	1	p6p6s9s9s8s8m3m3s6s6p1s4p5	和了	0	1	ツモ	立直+門前清自摸和+七対子+ドラ		1	14000	15	14
+3	19	q6	push	3	s3s3s2s2s4s4p3p3z1z1m6m6s6	流局						1	1500	18	17
+3	19	q6	base	3	s3s3s2s2s4s4p3p3z1z1m6m6s6	流局						1	1500	18	17
+3	20	q2	push	2	s5s5z7z7z5m6z2p2s7s9z3p1p5	無関係						1	0	15	15
+3	20	q2	base	2	s5s5z7z7z5m6z2p2s7s9z3p1p5	和了	0	0	ロン	翻牌 中+ドラ		1	3000	9	9
+3	20	q3	push	1	m9m9s3s3m1m1s2p1s8s5z1z5z4	無関係						0	0	8	7
+3	20	q3	base	1	m9m9s3s3m1m1s2p1s8s5z1z5z4	無関係						1	0	11	11
+3	20	q4	push	1	s9s9s5s5z3z3z2z2m7m8m4s6p7	無関係						1	0	15	15
+3	20	q4	base	1	s9s9s5s5z3z3z2z2m7m8m4s6p7	流局						0	1500	18	18
+3	20	q5	push	3	s2s2m8m8m2m2s6s6z1z1p5m4s1	被ツモ						1	-300	15	14
+3	20	q5	base	3	s2s2m8m8m2m2s6s6z1z1p5m4s1	無関係						0	0	13	13
+3	20	q6	push	2	p8p8z3z3z4z4m8m8s6s6z7z7s1	和了	0	1	ロン	七対子		0	1600	4	3
+3	20	q6	base	2	p8p8z3z3z4z4m8m8s6s6z7z7s1	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	9	8
+3	21	q2	push	3	z7z7m6m6s5s2m8s7p5p1z2m2s6	無関係						0	0	5	5
+3	21	q2	base	3	z7z7m6m6s5s2m8s7p5p1z2m2s6	無関係						0	0	5	5
+3	21	q3	push	2	p7p7p8p8s8s8s9m4z3z1p2s4m5	和了	0	1	ロン	七対子		0	1600	11	11
+3	21	q3	base	2	p7p7p8p8s8s8s9m4z3z1p2s4m5	放銃					0	0	-2900	9	11
+3	21	q4	push	3	p3p3p7p7s6s6m8m8z7p1p6m2p4	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		0	8000	9	8
+3	21	q4	base	3	p3p3p7p7s6s6m8m8z7p1p6m2p4	和了	0	0	ツモ	断幺九+ドラ+赤ドラ		1	8900	9	9
+3	21	q5	push	2	m1m1m3m3p7p7z4z4p1p1s1m2p4	和了	0	1	ロン	七対子+ドラ		0	6400	10	9
+3	21	q5	base	2	m1m1m3m3p7p7z4z4p1p1s1m2p4	流局						0	3000	18	17
+3	21	q6	push	1	s8s8s2s2p5p5m5m5s1s1m6m6z3	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		0	8000	2	2
+3	21	q6	base	1	s8s8s2s2p5p5m5m5s1s1m6m6z3	和了	0	1	ロン	ダブル立直+七対子+ドラ		1	14000	15	14
+3	22	q2	push	1	p2p2s1s1p3z1s9m9p5m3s2p8z4	放銃					0	0	-2000	9	10
+3	22	q2	base	1	p2p2s1s1p3z1s9m9p5m3s2p8z4	被ツモ						0	-300	10	10
+3	22	q3	push	1	p1p1s1s1p3p3m3z5z4s5m8z6z1	無関係						1	0	13	13
+3	22	q3	base	1	p1p1s1s1p3p3m3z5z4s5m8z6z1	被ツモ						1	-300	11	12
+3	22	q4	push	1	z3z3p9p9m9m9s5s5p4p8p6z1m8	流局						1	1500	18	18
+3	22	q4	base	1	z3z3p9p9m9m9s5s5p4p8p6z1m8	放銃					0	0	-2900	10	11
+3	22	q5	push	3	s3s3p6p6m5m5m6m6p7p7z7m4z3	被ツモ						0	-1300	5	5
+3	22	q5	base	3	s3s3p6p6m5m5m6m6p7p7z7m4z3	放銃					0	0	-5200	9	10
+3	22	q6	push	2	m5m5m6m6z5z5s4s4s5s5z3z3z2	和了	0	1	ロン	七対子		0	1600	4	3
+3	22	q6	base	2	m5m5m6m6z5z5s4s4s5s5z3z3z2	和了	0	1	ロン	ダブル立直+七対子		0	7400	8	8
+3	23	q2	push	2	m1m1m6m6z7p8m3s1p3z5z6s7p2	流局						1	-1500	18	17
+3	23	q2	base	2	m1m1m6m6z7p8m3s1p3z5z6s7p2	無関係						1	0	14	14
+3	23	q3	push	3	z4z4z1z1p6p6z3s1m4s7p4s6s8	無関係						1	0	18	16
+3	23	q3	base	3	z4z4z1z1p6p6z3s1m4s7p4s6s8	和了	0	0	ロン	場風 東+自風 北		0	2000	6	7
+3	23	q4	push	2	p1p1p2p2s5s5p9p9z6s2s7s1m4	無関係						0	0	5	5
+3	23	q4	base	2	p1p1p2p2s5s5p9p9z6s2s7s1m4	無関係						0	0	8	8
+3	23	q5	push	1	z4z4s5s5p9p9m4m4p2p2z6m3s2	流局						1	0	18	18
+3	23	q5	base	1	z4z4s5s5p9p9m4m4p2p2z6m3s2	和了	0	1	ツモ	立直+門前清自摸和+七対子+裏ドラ		1	14000	14	13
+3	23	q6	push	1	p6p6m6m6p5p5s7s7s6s6z6z6m7	無関係						1	0	7	8
+3	23	q6	base	1	p6p6m6m6p5p5s7s7s6s6z6z6m7	和了	0	1	ロン	ダブル立直+七対子+裏ドラ		0	13000	5	5
+3	24	q2	push	2	s3s3m6m6p9z1z7m3m2p7s5z6s9	被ツモ						1	-3000	16	15
+3	24	q2	base	2	s3s3m6m6p9z1z7m3m2p7s5z6s9	無関係						1	0	17	16
+3	24	q3	push	1	s7s7z3z3z4z4s3z5m1m4s2z7p3	和了	0	1	ロン	七対子+ドラ		0	6400	10	11
+3	24	q3	base	1	s7s7z3z3z4z4s3z5m1m4s2z7p3	被ツモ						0	-2000	13	14
+3	24	q4	push	1	s7s7m5m5m9m9m3m3s3s9z4m8z5	被ツモ						1	-1300	9	9
+3	24	q4	base	1	s7s7m5m5m9m9m3m3s3s9z4m8z5	無関係						0	0	9	9
+3	24	q5	push	1	z7z7p1p1p7p7s9s9p3p3m3s7z3	和了	0	1	ロン	七対子		0	1600	3	2
+3	24	q5	base	1	z7z7p1p1p7p7s9s9p3p3m3s7z3	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	9	8
+3	24	q6	push	3	s4s4m5m5p6p6s9s9z2z2s6s6z4	和了	0	1	ロン	七対子		0	1600	1	0
+3	24	q6	base	3	s4s4m5m5p6p6s9s9z2z2s6s6z4	和了	0	1	ロン	七対子		0	1600	1	0
+3	25	q2	push	2	p6p6m7m7p9s2s4z7m2p4z4s3z2	被ツモ						1	-2000	13	13
+3	25	q2	base	2	p6p6m7m7p9s2s4z7m2p4z4s3z2	無関係						0	0	8	8
+3	25	q3	push	2	p4p4s5s5p3p3z5s8p8m5s1z1p9	無関係						1	0	9	9
+3	25	q3	base	2	p4p4s5s5p3p3z5s8p8m5s1z1p9	無関係						0	0	12	12
+3	25	q4	push	3	s9s9z2z2m5m5s7s7m3s8s2s3m6	流局						1	1500	18	17
+3	25	q4	base	3	s9s9z2z2m5m5s7s7m3s8s2s3m6	放銃					1	1	-8000	10	10
+3	25	q5	push	1	m2m2z2z2p1p1s4s4z1z1p3p2p9	被ツモ						1	-700	9	9
+3	25	q5	base	1	m2m2z2z2p1p1s4s4z1z1p3p2p9	和了	0	0	ロン	場風 東+自風 南		0	2000	6	7
+3	25	q6	push	1	m9m9s9s9p8p8s3s3m4m4p2p2s7	放銃					1	1	-3900	14	14
+3	25	q6	base	1	m9m9s9s9p8p8s3s3m4m4p2p2s7	和了	0	1	ロン	ダブル立直+七対子		1	8400	5	5
+3	26	q2	push	1	z4z4s5s5m1m9p6z6p1s8p7s7z1	流局						1	0	18	17
+3	26	q2	base	1	z4z4s5s5m1m9p6z6p1s8p7s7z1	流局						1	-1000	18	18
+3	26	q3	push	1	p7p7s1s1m2m2z6m7z2s4p4z1z5	放銃					0	0	-1500	4	5
+3	26	q3	base	1	p7p7s1s1m2m2z6m7z2s4p4z1z5	放銃					0	0	-1500	7	8
+3	26	q4	push	3	z4z4m8m8s6s6z6z6s8m2p2p4m9	無関係						1	0	9	8
+3	26	q4	base	3	z4z4m8m8s6s6z6z6s8m2p2p4m9	無関係						0	0	9	11
+3	26	q5	push	1	z5z5z6z6p1p1m4m4m2m2z3p6z4	和了	0	1	ロン	七対子		0	1600	5	5
+3	26	q5	base	1	z5z5z6z6p1p1m4m4m2m2z3p6z4	流局						1	1000	18	18
+3	26	q6	push	2	s8s8z7z7z5z5s4s4p5p5m5m5s2	和了	0	1	ロン	七対子		0	1600	4	3
+3	26	q6	base	2	s8s8z7z7z5z5s4s4p5p5m5m5s2	和了	0	1	ロン	ダブル立直+七対子		1	8400	8	8
+3	27	q2	push	3	s8s8z2z2z7z3m9p2s9p3m7s3p9	放銃					1	1	-1300	8	8
+3	27	q2	base	3	s8s8z2z2z7z3m9p2s9p3m7s3p9	無関係						1	0	11	10
+3	27	q3	push	2	s2s2p7p7z5z5s7p6p5p2m4m2p1	流局						1	1500	18	18
+3	27	q3	base	2	s2s2p7p7z5z5s7p6p5p2m4m2p1	無関係						1	0	10	10
+3	27	q4	push	3	z6z6z3z3s7s7m2m2m1m8m4s5s8	被ツモ						1	-2000	14	14
+3	27	q4	base	3	z6z6z3z3s7s7m2m2m1m8m4s5s8	和了	0	0	ロン	立直+裏ドラ		1	10000	10	9
+3	27	q5	push	2	m7m7m6m6z2z2s1s1z5z5z7p1s9	和了	0	1	ロン	七対子		0	1600	3	2
+3	27	q5	base	2	m7m7m6m6z2z2s1s1z5z5z7p1s9	和了	0	0	ロン	翻牌 白+混一色+赤ドラ		0	7700	5	6
+3	27	q6	push	1	m3m3m8m8m7m7s8s8p5p5s3s3s7	被ツモ						1	-2000	9	9
+3	27	q6	base	1	m3m3m8m8m7m7s8s8p5p5s3s3s7	和了	0	1	ロン	ダブル立直+断幺九+七対子		0	9000	10	10
+3	28	q2	push	1	p4p4m9m9s8z7s9p3s5p8z1m1p9	被ツモ						1	-2000	11	11
+3	28	q2	base	1	p4p4m9m9s8z7s9p3s5p8z1m1p9	被ツモ						1	-3000	13	13
+3	28	q3	push	3	m5m5s7s7s9s9p3z1m8z3m9p6p1	無関係						1	0	11	11
+3	28	q3	base	3	m5m5s7s7s9s9p3z1m8z3m9p6p1	流局						1	-1500	18	17
+3	28	q4	push	1	s6s6p5p5p4p4m7m7m5s1s5p7z3	被ツモ						1	-2000	16	16
+3	28	q4	base	1	s6s6p5p5p4p4m7m7m5s1s5p7z3	和了	0	1	ツモ	立直+門前清自摸和+七対子		0	7400	12	12
+3	28	q5	push	2	z5z5z4z4s8s8s6s6z2z2m2p6p3	放銃					0	1	-1000	7	7
+3	28	q5	base	2	z5z5z4z4s8s8s6s6z2z2m2p6p3	無関係						0	0	3	5
+3	28	q6	push	1	m4m4z6z6p5p5z3z3m2m2z5z5p8	和了	0	1	ロン	七対子		0	1600	3	2
+3	28	q6	base	1	m4m4z6z6p5p5z3z3m2m2z5z5p8	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	12	11
+3	29	q2	push	1	p2p2m9m9s4z7p3p7z4s3m4s1p5	放銃					1	1	-3200	15	16
+3	29	q2	base	1	p2p2m9m9s4z7p3p7z4s3m4s1p5	被ツモ						1	-1600	16	16
+3	29	q3	push	3	p7p7s6s6m6m6s4s7p1m5p8z7s1	被ツモ						1	-2000	15	14
+3	29	q3	base	3	p7p7s6s6m6m6s4s7p1m5p8z7s1	放銃					0	0	-12000	9	11
+3	29	q4	push	3	z4z4z2z2z3z3s2s2s9m5p4s6s1	被ツモ						1	-1000	12	11
+3	29	q4	base	3	z4z4z2z2z3z3s2s2s9m5p4s6s1	被ツモ						1	-4000	9	9
+3	29	q5	push	1	s9s9p1p1p7p7m5m5m2m2z6s6z1	無関係						0	0	6	6
+3	29	q5	base	1	s9s9p1p1p7p7m5m5m2m2z6s6z1	放銃					0	0	-2000	10	10
+3	29	q6	push	3	s4s4m8m8p9p9z2z2m1m1z1z1s9	和了	0	1	ロン	七対子+ドラ		0	6400	1	0
+3	29	q6	base	3	s4s4m8m8p9p9z2z2m1m1z1z1s9	和了	0	1	ロン	七対子+ドラ		0	6400	1	0
+3	30	q2	push	3	p4p4s2s2p3s7m6p8m5s1s4m4p9	無関係						0	0	12	11
+3	30	q2	base	3	p4p4s2s2p3s7m6p8m5s1s4m4p9	和了	0	0	ロン	立直+一発+一盃口+ドラ+赤ドラ		0	9000	8	8
+3	30	q3	push	3	s9s9z1z1p5p5s7m3p4s1z3z6p1	無関係						0	0	11	10
+3	30	q3	base	3	s9s9z1z1p5p5s7m3p4s1z3z6p1	被ツモ						0	-500	8	8
+3	30	q4	push	3	s6s6p3p3z4z4m1m1s7m4s5m9m6	放銃					1	1	-8000	8	8
+3	30	q4	base	3	s6s6p3p3z4z4m1m1s7m4s5m9m6	和了	0	0	ロン	自風 北		0	1000	8	9
+3	30	q5	push	3	p9p9p6p6z4z4z5z5s1s1m1m2m7	無関係						0	0	11	10
+3	30	q5	base	3	p9p9p6p6z4z4z5z5s1s1m1m2m7	被ツモ						1	-3900	11	12
+3	30	q6	push	1	z2z2m8m8s8s8s6s6z1z1m9m9s4	和了	0	1	ロン	七対子		0	1600	6	5
+3	30	q6	base	1	z2z2m8m8s8s8s6s6z1z1m9m9s4	流局						1	1500	18	18
+3	31	q2	push	1	s1s1p4p4m8z1p6m4z3m9s2s7s6	流局						1	-1000	18	18
+3	31	q2	base	1	s1s1p4p4m8z1p6m4z3m9s2s7s6	放銃					1	1	-11600	12	12
+3	31	q3	push	3	s9s9m4m4m3m3z1p4p1z4s3s2s1	無関係						1	0	11	10
+3	31	q3	base	3	s9s9m4m4m3m3z1p4p1z4s3s2s1	無関係						1	0	6	6
+3	31	q4	push	3	m3m3s4s4p7p7p4p4z1z4s9s3p8	流局						1	1000	18	17
+3	31	q4	base	3	m3m3s4s4p7p7p4p4z1z4s9s3p8	流局						1	1500	18	17
+3	31	q5	push	3	z6z6s9s9s4s4s5s5z7z7m8z1z5	和了	0	1	ロン	七対子+混一色		0	8000	7	6
+3	31	q5	base	3	z6z6s9s9s4s4s5s5z7z7m8z1z5	被ツモ						1	-4000	9	11
+3	31	q6	push	2	m1m1p6p6m8m8s7s7p2p2m9m9s6	放銃					1	1	-12000	12	12
+3	31	q6	base	2	m1m1p6p6m8m8s7s7p2p2m9m9s6	流局						1	1500	18	17
+3	32	q2	push	3	p6p6z3z3s1p4p1s3m6s6s4z6s7	流局						1	-1000	18	17
+3	32	q2	base	3	p6p6z3z3s1p4p1s3m6s6s4z6s7	流局						0	3000	18	17
+3	32	q3	push	3	s9s9z6z6s1s1s4s7p3p7z5p1m2	被ツモ						1	-1000	13	12
+3	32	q3	base	3	s9s9z6z6s1s1s4s7p3p7z5p1m2	放銃					1	1	-5200	17	17
+3	32	q4	push	1	p8p8m9m9p4p4s9s9m3s3z7m6z6	流局						1	1500	18	18
+3	32	q4	base	1	p8p8m9m9p4p4s9s9m3s3z7m6z6	和了	0	1	ツモ	立直+門前清自摸和+七対子+ドラ		0	13000	16	16
+3	32	q5	push	3	s1s1z5z5m4m4z2z2p5p5m7p6z4	和了	0	1	ロン	七対子		0	1600	15	15
+3	32	q5	base	3	s1s1z5z5m4m4z2z2p5p5m7p6z4	被ツモ						1	-2000	16	15
+3	32	q6	push	3	m9m9m7m7z3z3s1s1m1m1s8s8m8	無関係						0	0	16	15
+3	32	q6	base	3	m9m9m7m7z3z3s1s1m1m1s8s8m8	流局						1	1500	18	17
+3	33	q2	push	1	p7p7s7s7p9p4p2s3m1s5s4z3p5	流局						1	1500	18	18
+3	33	q2	base	1	p7p7s7s7p9p4p2s3m1s5s4z3p5	流局						0	3000	18	18
+3	33	q3	push	2	z7z7s6s6s5s5z3p4s9m5p7z1s8	無関係						0	0	10	10
+3	33	q3	base	2	z7z7s6s6s5s5z3p4s9m5p7z1s8	放銃					1	1	-12000	7	8
+3	33	q4	push	3	p5p5p9p9m3m3z7z7s9m9p3m2p6	無関係						1	0	11	11
+3	33	q4	base	3	p5p5p9p9m3m3z7z7s9m9p3m2p6	無関係						0	0	7	7
+3	33	q5	push	1	s8s8m2m2z6z6s6s6p3p3s7m9p9	放銃					1	1	-1600	14	14
+3	33	q5	base	1	s8s8m2m2z6z6s6s6p3p3s7m9p9	放銃					1	1	-1600	11	11
+3	33	q6	push	3	m5m5m9m9m8m8z1z1z6z6p1p1p9	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	9	8
+3	33	q6	base	3	m5m5m9m9m8m8z1z1z6z6p1p1p9	和了	0	1	ツモ	立直+門前清自摸和+七対子		0	7400	8	7
+3	34	q2	push	2	m2m2p5p5p6m3m1m7m9m5z5p4p3	放銃					0	0	-2000	5	5
+3	34	q2	base	2	m2m2p5p5p6m3m1m7m9m5z5p4p3	被ツモ						0	-500	7	7
+3	34	q3	push	2	z2z2z1z1z7z7m7m9m2s1s7m5m4	放銃					1	1	-12000	11	11
+3	34	q3	base	2	z2z2z1z1z7z7m7m9m2s1s7m5m4	無関係						1	0	8	8
+3	34	q4	push	2	z1z1m2m2p4p4s7s7s3p6s8s9m8	和了	0	1	ロン	七対子		0	1600	11	11
+3	34	q4	base	2	z1z1m2m2p4p4s7s7s3p6s8s9m8	無関係						1	0	15	15
+3	34	q5	push	2	p2p2s4s4s7s7s3s3p9p9z1z3m4	和了	0	1	ツモ	門前清自摸和+七対子+赤ドラ		0	6400	8	7
+3	34	q5	base	2	p2p2s4s4s7s7s3s3p9p9z1z3m4	流局						1	1000	18	17
+3	34	q6	push	2	p7p7z6z6s4s4p4p4p8p8s7s7z7	和了	0	1	ロン	七対子		0	1600	2	1
+3	34	q6	base	2	p7p7z6z6s4s4p4p4p8p8s7s7z7	和了	0	1	ロン	ダブル立直+一発+七対子		0	9000	2	1
+3	35	q2	push	2	z6z6s2s2p1z3p8m5p4z5s4p7s8	被ツモ						0	-3900	13	12
+3	35	q2	base	2	z6z6s2s2p1z3p8m5p4z5s4p7s8	無関係						0	0	11	11
+3	35	q3	push	2	p2p2z4z4p3p3m9s4s3z5s7s9m2	被ツモ						1	-2000	12	11
+3	35	q3	base	2	p2p2z4z4p3p3m9s4s3z5s7s9m2	無関係						1	0	11	10
+3	35	q4	push	2	s9s9z4z4m7m7p8p8p3s5m8z3z7	被ツモ						1	-3000	10	9
+3	35	q4	base	2	s9s9z4z4m7m7p8p8p3s5m8z3z7	被ツモ						1	-4000	17	16
+3	35	q5	push	1	z7z7m5m5m6m6z3z3p7p7p6s1s8	和了	0	1	ロン	七対子+ドラ		0	6400	5	5
+3	35	q5	base	1	z7z7m5m5m6m6z3z3p7p7p6s1s8	放銃					1	1	-5800	8	10
+3	35	q6	push	2	z1z1s7s7s9s9s1s1s6s6s3s3p6	放銃					0	0	-2900	12	13
+3	35	q6	base	2	z1z1s7s7s9s9s1s1s6s6s3s3p6	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	9	8
+3	36	q2	push	1	p6p6m9m9p7m1z7z5z4m4p3s1p5	被ツモ						1	-300	11	11
+3	36	q2	base	1	p6p6m9m9p7m1z7z5z4m4p3s1p5	無関係						0	0	8	8
+3	36	q3	push	3	s3s3p7p7m9m9s2p8z3p9s8z2m1	被ツモ						1	-2000	13	12
+3	36	q3	base	3	s3s3p7p7m9m9s2p8z3p9s8z2m1	無関係						0	0	8	8
+3	36	q4	push	3	s3s3z5z5m5m5s8s8p9p1m9m2z1	被ツモ						1	-6000	12	11
+3	36	q4	base	3	s3s3z5z5m5m5s8s8p9p1m9m2z1	流局						1	0	14	13
+3	36	q5	push	2	s3s3m4m4s9s9z4z4m8m8p5s4z5	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	7	6
+3	36	q5	base	2	s3s3m4m4s9s9z4z4m8m8p5s4z5	和了	0	1	ロン	立直+七対子+裏ドラ		0	9000	15	15
+3	36	q6	push	3	m8m8p9p9p5p5z3z3p8p8s7s7m6	放銃					1	1	-8000	3	3
+3	36	q6	base	3	m8m8p9p9p5p5z3z3p8p8s7s7m6	放銃					1	1	-8000	3	3
+3	37	q2	push	2	s4s4z4z4s1m8z5s6p7s3p8p4p9	無関係						1	0	11	11
+3	37	q2	base	2	s4s4z4z4s1m8z5s6p7s3p8p4p9	被ツモ						1	-1300	12	11
+3	37	q3	push	2	m8m8m9m9z7z7z3m1p2s5p8z1p7	流局						0	-1000	18	17
+3	37	q3	base	2	m8m8m9m9z7z7z3m1p2s5p8z1p7	無関係						0	0	10	10
+3	37	q4	push	1	m3m3p7p7s6s6s7s7p5s4p3z3p9	流局						1	1500	18	17
+3	37	q4	base	1	m3m3p7p7s6s6s7s7p5s4p3z3p9	和了	0	0	ロン	立直+断幺九+対々和+三暗刻		1	14000	18	17
+3	37	q5	push	2	m5m5s2s2p5p5s3s3s1s1s5p6s8	放銃					0	0	-1000	13	13
+3	37	q5	base	2	m5m5s2s2p5p5s3s3s1s1s5p6s8	被ツモ						1	-300	13	13
+3	37	q6	push	2	s9s9p2p2z3z3p6p6p3p3z5z5z4	被ツモ						1	-3000	8	7
+3	37	q6	base	2	s9s9p2p2z3z3p6p6p3p3z5z5z4	和了	0	1	ロン	立直+七対子+赤ドラ		1	8400	13	12
+3	38	q2	push	3	p5p5s3s3s8m8z3m9s6z6z7z4s4	被ツモ						1	-2000	10	8
+3	38	q2	base	3	p5p5s3s3s8m8z3m9s6z6z7z4s4	被ツモ						1	-2000	10	8
+3	38	q3	push	3	s8s8z5z5z1z1z3z6p6m3s2m1s6	流局						1	-1500	18	17
+3	38	q3	base	3	s8s8z5z5z1z1z3z6p6m3s2m1s6	和了	0	0	ツモ	嶺上開花+場風 東+翻牌 白		1	7400	9	9
+3	38	q4	push	2	z1z1s4s4p8p8s8s8p3p4s7m3p7	放銃					1	1	-3900	15	15
+3	38	q4	base	2	z1z1s4s4p8p8s8s8p3p4s7m3p7	和了	0	0	ロン	場風 東		0	1000	7	8
+3	38	q5	push	1	s6s6p8p8p9p9s1s1m3m3z3z1m1	無関係						1	0	12	13
+3	38	q5	base	1	s6s6p8p8p9p9s1s1m3m3z3z1m1	無関係						1	0	12	13
+3	38	q6	push	3	z4z4m5m5p3p3m8m8p4p4z5z5z6	和了	0	1	ロン	七対子		1	2600	13	12
+3	38	q6	base	3	z4z4m5m5p3p3m8m8p4p4z5z5z6	和了	0	1	ロン	立直+七対子		0	4200	9	7
+3	39	q2	push	2	p8p8m9m9s4s2p2s3p9p5z7s1s9	被ツモ						1	-2000	14	13
+3	39	q2	base	2	p8p8m9m9s4s2p2s3p9p5z7s1s9	無関係						0	0	14	14
+3	39	q3	push	2	s2s2p7p7m9m9s1m6m2m1s7s3p8	被ツモ						1	-2000	16	15
+3	39	q3	base	2	s2s2p7p7m9m9s1m6m2m1s7s3p8	和了	0	0	ロン	純全帯幺九		0	2000	7	7
+3	39	q4	push	2	z1z1z3z3m8m8z6z6m4z4m7p4m9	被ツモ						1	-2000	12	12
+3	39	q4	base	2	z1z1z3z3m8m8z6z6m4z4m7p4m9	和了	0	0	ロン	自風 西+翻牌 發+赤ドラ		1	5900	11	11
+3	39	q5	push	1	m3m3z2z2s2s2p2p2p3p3p1s1m4	放銃					0	1	-3900	11	11
+3	39	q5	base	1	m3m3z2z2s2s2p2p2p3p3p1s1m4	和了	0	0	ロン	自風 南		0	1000	3	4
+3	39	q6	push	3	m4m4s4s4p9p9s5s5z7z7s1s1m6	被ツモ						1	-1000	16	16
+3	39	q6	base	3	m4m4s4s4p9p9s5s5z7z7s1s1m6	和了	0	1	ロン	ダブル立直+河底撈魚+七対子		0	9000	18	17
+3	40	q2	push	1	p7p7z4z4m2s2m6s7s9z7s1z2z5	放銃					1	1	-11600	9	9
+3	40	q2	base	1	p7p7z4z4m2s2m6s7s9z7s1z2z5	被ツモ						1	-3900	15	14
+3	40	q3	push	2	p1p1z3z3p2p2p9p7s3z1p4z2m5	放銃					0	0	-2000	8	8
+3	40	q3	base	2	p1p1z3z3p2p2p9p7s3z1p4z2m5	和了	0	0	ツモ	場風 東+自風 西+対々和+混一色		0	12000	10	11
+3	40	q4	push	1	m4m4p5p5p9p9p3p3p2m3z1p8z6	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		1	10000	12	11
+3	40	q4	base	1	m4m4p5p5p9p9p3p3p2m3z1p8z6	被ツモ						1	-4000	12	12
+3	40	q5	push	1	p5p5z3z3s7s7s4s4m8m8m5z7m9	無関係						1	0	9	8
+3	40	q5	base	1	p5p5z3z3s7s7s4s4m8m8m5z7m9	放銃					1	1	-6400	11	11
+3	40	q6	push	2	m4m4s8s8p7p7z2z2s9s9m5m5s6	和了	0	1	ロン	七対子+ドラ		0	6400	3	1
+3	40	q6	base	2	m4m4s8s8p7p7z2z2s9s9m5m5s6	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+ドラ		0	13000	8	7
+3	41	q2	push	2	z4z4m4m4s1p3p9p8m5p1s9p6s6	無関係						0	0	12	12
+3	41	q2	base	2	z4z4m4m4s1p3p9p8m5p1s9p6s6	無関係						0	0	9	9
+3	41	q3	push	1	p6p6s3s3z5z5p2m7p5z4m3s9m2	無関係						0	0	10	9
+3	41	q3	base	1	p6p6s3s3z5z5p2m7p5z4m3s9m2	和了	0	0	ツモ	立直+門前清自摸和+平和		1	4700	13	13
+3	41	q4	push	2	p5p5m5m5z6z6p2p2m4s5s1p9s3	和了	0	1	ロン	七対子+ドラ		1	7400	10	9
+3	41	q4	base	2	p5p5m5m5z6z6p2p2m4s5s1p9s3	和了	0	0	ロン	翻牌 發+ドラ+赤ドラ		0	8000	13	14
+3	41	q5	push	2	m5m5m8m8s7s7p6p6z2z2m9z3s6	和了	0	1	ロン	七対子		0	1600	9	9
+3	41	q5	base	2	m5m5m8m8s7s7p6p6z2z2m9z3s6	和了	0	1	ロン	ダブル立直+七対子+裏ドラ		0	13000	9	8
+3	41	q6	push	2	m1m1p4p4m8m8z5z5z1z1m9m9p5	被ツモ						0	-500	12	11
+3	41	q6	base	2	m1m1p4p4m8m8z5z5z1z1m9m9p5	和了	0	1	ロン	立直+七対子+ドラ		0	9000	6	5
+3	42	q2	push	2	s8s8p9p9p6p8m1m9m5s4z7p4z5	流局						1	-1500	18	17
+3	42	q2	base	2	s8s8p9p9p6p8m1m9m5s4z7p4z5	放銃					1	1	-2600	13	14
+3	42	q3	push	1	m2m2m7m7s9s9m3s8s7z2p2m5p8	被ツモ						1	-1300	7	7
+3	42	q3	base	1	m2m2m7m7s9s9m3s8s7z2p2m5p8	被ツモ						1	-1300	7	7
+3	42	q4	push	1	z5z5p1p1p2p2z1z1p3s3m6p9z7	被ツモ						1	-500	13	13
+3	42	q4	base	1	z5z5p1p1p2p2z1z1p3s3m6p9z7	和了	0	0	ツモ	場風 東+翻牌 白+ドラ		0	8000	6	6
+3	42	q5	push	3	m9m9z1z1s6s6m7m7p3p3m6p4s8	被ツモ						1	-3900	15	14
+3	42	q5	base	3	m9m9z1z1s6s6m7m7p3p3m6p4s8	和了	0	1	ツモ	立直+門前清自摸和+七対子		0	7400	5	4
+3	42	q6	push	2	m2m2p3p3p6p6m4m4p1p1m8m8z6	和了	0	1	ロン	七対子		0	1600	1	0
+3	42	q6	base	2	m2m2p3p3p6p6m4m4p1p1m8m8z6	和了	0	1	ロン	七対子		0	1600	1	0
+3	43	q2	push	1	s4s4s5s5p8s6z1p6m8z7z2m4m7	流局						1	-1000	18	18
+3	43	q2	base	1	s4s4s5s5p8s6z1p6m8z7z2m4m7	和了	0	0	ロン	立直+平和+断幺九+裏ドラ		0	9000	9	9
+3	43	q3	push	3	p1p1s2s2z5z5z2s6m4z7p8p5z3	無関係						1	0	13	13
+3	43	q3	base	3	p1p1s2s2z5z5z2s6m4z7p8p5z3	無関係						1	0	10	10
+3	43	q4	push	2	p7p7m5m5s6s6z6z6z7p3p6s1p9	被ツモ						0	-300	7	7
+3	43	q4	base	2	p7p7m5m5s6s6z6z6z7p3p6s1p9	流局						1	-1000	18	19
+3	43	q5	push	1	z1z1s1s1m1m1s9s9m3m3s2m7z7	無関係						0	0	7	7
+3	43	q5	base	1	z1z1s1s1m1m1s9s9m3m3s2m7z7	無関係						0	0	7	7
+3	43	q6	push	2	z7z7s8s8p7p7p2p2p8p8m3m3z2	和了	0	1	ロン	七対子		0	1600	3	2
+3	43	q6	base	2	z7z7s8s8p7p7p2p2p8p8m3m3z2	放銃					0	0	-1500	15	15
+3	44	q2	push	3	m9m9p7p7p1m7z3m8z5z2m3s1p3	被ツモ						1	-6000	6	5
+3	44	q2	base	3	m9m9p7p7p1m7z3m8z5z2m3s1p3	被ツモ						1	-6000	6	5
+3	44	q3	push	1	s1s1z4z4p6p6s9z7p9z1s5m9s8	被ツモ						1	-2000	12	12
+3	44	q3	base	1	s1s1z4z4p6p6s9z7p9z1s5m9s8	被ツモ						1	-2000	12	12
+3	44	q4	push	1	m8m8p3p3p9p9z3z3m3s2z4m5s3	被ツモ						1	-4000	16	15
+3	44	q4	base	1	m8m8p3p3p9p9z3z3m3s2z4m5s3	無関係						0	0	12	13
+3	44	q5	push	2	m7m7m4m4m2m2s3s3s8s8m8s1z1	被ツモ						1	-2000	8	8
+3	44	q5	base	2	m7m7m4m4m2m2s3s3s8s8m8s1z1	和了	0	1	ロン	立直+断幺九+七対子+ドラ		1	14000	10	10
+3	44	q6	push	3	m4m4p1p1p2p2m2m2m5m5s8s8m8	流局						1	1500	18	17
+3	44	q6	base	3	m4m4p1p1p2p2m2m2m5m5s8s8m8	放銃					1	1	-2600	12	12
+3	45	q2	push	1	m1m1p7p7m6p4p8z7s9z4m4z6z2	無関係						0	0	12	13
+3	45	q2	base	1	m1m1p7p7m6p4p8z7s9z4m4z6z2	被ツモ						0	-1300	7	9
+3	45	q3	push	2	p1p1m9m9m6m6p8p7s8p4p3z4s9	無関係						0	0	10	11
+3	45	q3	base	2	p1p1m9m9m6m6p8p7s8p4p3z4s9	和了	0	0	ツモ	立直+門前清自摸和		0	3700	13	13
+3	45	q4	push	1	m7m7p3p3s1s1m8m8z2s4s5p2s6	放銃					1	1	-8000	10	10
+3	45	q4	base	1	m7m7p3p3s1s1m8m8z2s4s5p2s6	流局						1	-1500	18	18
+3	45	q5	push	1	s5s5s4s4m1m1m3m3p6p6z7z6p1	放銃					1	1	-5800	14	14
+3	45	q5	base	1	s5s5s4s4m1m1m3m3p6p6z7z6p1	放銃					1	1	-5800	14	14
+3	45	q6	push	1	z4z4m9m9s6s6s9s9s1s1m2m2z1	被ツモ						1	-3000	9	9
+3	45	q6	base	1	z4z4m9m9s6s6s9s9s1s1m2m2z1	流局						1	1500	18	18
+3	46	q2	push	3	s6s6p3p3m8s2z2p9z4s7p4m7m1	被ツモ						0	-2000	7	6
+3	46	q2	base	3	s6s6p3p3m8s2z2p9z4s7p4m7m1	被ツモ						0	-2000	7	6
+3	46	q3	push	1	s3s3z6z6p1p1m7s6z7z2s2p6s9	被ツモ						1	-3900	17	16
+3	46	q3	base	1	s3s3z6z6p1p1m7s6z7z2s2p6s9	被ツモ						1	-3900	17	16
+3	46	q4	push	3	z2z2z4z4m8m8m2m2m9s5m6z1p7	被ツモ						1	-4000	11	10
+3	46	q4	base	3	z2z2z4z4m8m8m2m2m9s5m6z1p7	流局						1	-1000	18	17
+3	46	q5	push	3	m8m8z7z7s2s2s6s6p7p7m9z5z1	和了	0	1	ロン	七対子		0	1600	7	6
+3	46	q5	base	3	m8m8z7z7s2s2s6s6p7p7m9z5z1	和了	0	1	ツモ	立直+一発+門前清自摸和+七対子+ドラ+裏ドラ		1	18000	11	10
+3	46	q6	push	2	z3z3m8m8m4m4m1m1p5p5s2s2s1	和了	0	1	ロン	七対子		0	1600	11	12
+3	46	q6	base	2	z3z3m8m8m4m4m1m1p5p5s2s2s1	流局						0	3000	18	17
+3	47	q2	push	2	p2p2z3z3z6p5z2s2m5m1p7s6m6	流局						1	-1000	18	18
+3	47	q2	base	2	p2p2z3z3z6p5z2s2m5m1p7s6m6	和了	0	0	ロン	自風 西		0	1000	6	6
+3	47	q3	push	1	p8p8p1p1z2z2z7p2s4s9z5s7m9	流局						1	-1500	18	18
+3	47	q3	base	1	p8p8p1p1z2z2z7p2s4s9z5s7m9	流局						0	1000	18	18
+3	47	q4	push	1	s6s6p8p8p1p1s5s5m7m6p9m2p7	流局						0	1000	18	19
+3	47	q4	base	1	s6s6p8p8p1p1s5s5m7m6p9m2p7	無関係						1	0	16	16
+3	47	q5	push	2	m7m7p1p1p9p9p2p2s3s3s2s5z7	流局						1	1500	18	17
+3	47	q5	base	2	m7m7p1p1p9p9p2p2s3s3s2s5z7	和了	0	1	ツモ	立直+一発+門前清自摸和+七対子+赤ドラ		0	13000	3	2
+3	47	q6	push	1	m9m9m2m2m4m4z1z1m1m1s3s3p3	和了	0	1	ロン	七対子		0	1600	4	4
+3	47	q6	base	1	m9m9m2m2m4m4z1z1m1m1s3s3p3	流局						0	3000	18	18
+3	48	q2	push	1	s5s5m8m8m4p2m6s9z1z4p7z2z6	放銃					0	0	-1500	14	15
+3	48	q2	base	1	s5s5m8m8m4p2m6s9z1z4p7z2z6	放銃					1	1	-1300	10	11
+3	48	q3	push	1	s3s3z2z2p3p3z7s4z5m4z4m1s8	放銃					0	0	-1000	12	12
+3	48	q3	base	1	s3s3z2z2p3p3z7s4z5m4z4m1s8	放銃					0	0	-1000	7	7
+3	48	q4	push	2	m9m9s2s2p6p6p8p8z2p1m8s9p3	流局						1	1000	18	18
+3	48	q4	base	2	m9m9s2s2p6p6p8p8z2p1m8s9p3	無関係						1	0	18	18
+3	48	q5	push	2	m5m5z2z2z4z4p7p7m7m7z7p2p9	放銃					1	1	-2600	11	11
+3	48	q5	base	2	m5m5z2z2z4z4p7p7m7m7z7p2p9	無関係						1	0	7	6
+3	48	q6	push	1	s7s7s3s3m5m5m1m1m4m4z7z7s2	和了	0	1	ツモ	門前清自摸和+七対子+赤ドラ		0	6400	11	10
+3	48	q6	base	1	s7s7s3s3m5m5m1m1m4m4z7z7s2	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	8	7
+3	49	q2	push	3	p3p3s8s8z2m1s6z3z4m3p2p4m8	放銃					0	0	-11600	8	7
+3	49	q2	base	3	p3p3s8s8z2m1s6z3z4m3p2p4m8	無関係						0	0	11	11
+3	49	q3	push	1	s6s6s4s4m2m2s7z5m6p6p8m3s8	無関係						1	0	13	13
+3	49	q3	base	1	s6s6s4s4m2m2s7z5m6p6p8m3s8	無関係						1	0	9	10
+3	49	q4	push	3	z4z4s3s3p1p1m2m2s5z2z1s9m6	無関係						1	0	7	6
+3	49	q4	base	3	z4z4s3s3p1p1m2m2s5z2z1s9m6	無関係						1	0	7	6
+3	49	q5	push	1	m1m1z1z1m8m8z6z6p2p2m7p9s3	和了	0	1	ロン	七対子		0	1600	6	6
+3	49	q5	base	1	m1m1z1z1m8m8z6z6p2p2m7p9s3	和了	0	1	ロン	立直+七対子		0	4200	9	9
+3	49	q6	push	1	s1s1p7p7m1m1m3m3z2z2m4m4z5	和了	0	1	ロン	七対子		1	2600	11	11
+3	49	q6	base	1	s1s1p7p7m1m1m3m3z2z2m4m4z5	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	10	9
+3	50	q2	push	2	m6m6z7z7p1m9s5m8z1z4z3s9m3	被ツモ						0	-300	6	6
+3	50	q2	base	2	m6m6z7z7p1m9s5m8z1z4z3s9m3	被ツモ						0	-300	6	6
+3	50	q3	push	3	m6m6z1z1s1s1m1z3s3m9m2p4m3	放銃					1	1	-5800	10	10
+3	50	q3	base	3	m6m6z1z1s1s1m1z3s3m9m2p4m3	放銃					1	1	-5200	12	12
+3	50	q4	push	2	p3p3z1z1s6s6s1s1z3z2p1m6m3	無関係						0	0	12	12
+3	50	q4	base	2	p3p3z1z1s6s6s1s1z3z2p1m6m3	流局						0	3000	18	18
+3	50	q5	push	3	s9s9z5z5p4p4s3s3s5s5s7z1s6	放銃					1	1	-2000	5	5
+3	50	q5	base	3	s9s9z5z5p4p4s3s3s5s5s7z1s6	被ツモ						1	-1000	7	6
+3	50	q6	push	3	z2z2s1s1p2p2m9m9p9p9m7m7p1	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		1	9000	12	10
+3	50	q6	base	3	z2z2s1s1p2p2m9m9p9p9m7m7p1	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+ドラ+裏ドラ		0	17000	9	8
+3	51	q2	push	1	s5s5z4z4m3s4p1m4s1m6z6m2z2	被ツモ						1	-1600	12	11
+3	51	q2	base	1	s5s5z4z4m3s4p1m4s1m6z6m2z2	被ツモ						1	-1600	12	11
+3	51	q3	push	1	m5m5s6s6m3m3s3s8m4z4m2p8p7	放銃					0	0	-1000	8	8
+3	51	q3	base	1	m5m5s6s6m3m3s3s8m4z4m2p8p7	和了	0	0	ツモ	立直+一発+門前清自摸和+断幺九+赤ドラ+裏ドラ		1	18000	13	13
+3	51	q4	push	3	z3z3z5z5m2m2p2p2p3z1z6z4m5	放銃					1	1	-8000	10	10
+3	51	q4	base	3	z3z3z5z5m2m2p2p2p3z1z6z4m5	流局						1	0	18	18
+3	51	q5	push	3	m6m6z4z4m2m2s6s6p4p4s3p8z2	被ツモ						0	-500	7	7
+3	51	q5	base	3	m6m6z4z4m2m2s6s6p4p4s3p8z2	被ツモ						0	-500	7	7
+3	51	q6	push	2	m9m9z3z3z7z7s7s7m7m7z5z5m3	被ツモ						0	-1000	12	12
+3	51	q6	base	2	m9m9z3z3z7z7s7s7m7m7z5z5m3	放銃					1	1	-18000	16	16
+3	52	q2	push	2	m2m2m9m9z7s7p6m5s5s1s9m7p3	無関係						1	0	15	15
+3	52	q2	base	2	m2m2m9m9z7s7p6m5s5s1s9m7p3	無関係						1	0	8	8
+3	52	q3	push	1	p1p1p9p9p6p6s2m6m9s8p3s9m8	無関係						1	0	12	11
+3	52	q3	base	1	p1p1p9p9p6p6s2m6m9s8p3s9m8	被ツモ						1	-6000	16	16
+3	52	q4	push	1	p7p7p6p6s5s5s2s2p1m2z4m7m5	無関係						1	0	12	12
+3	52	q4	base	1	p7p7p6p6s5s5s2s2p1m2z4m7m5	無関係						1	0	7	7
+3	52	q5	push	2	s4s4p3p3m8m8p8p8s1s1s8m5m6	被ツモ						1	-8000	17	16
+3	52	q5	base	2	s4s4p3p3m8m8p8p8s1s1s8m5m6	被ツモ						1	-8000	17	16
+3	52	q6	push	2	s9s9p2p2p6p6m3m3s2s2m7m7p8	和了	0	1	ロン	七対子		0	1600	4	3
+3	52	q6	base	2	s9s9p2p2p6p6m3m3s2s2m7m7p8	放銃					1	1	-7700	14	14
+3	53	q2	push	3	s4s4z5z5p2p7p4z1m2z4p8z6s3	無関係						1	0	9	8
+3	53	q2	base	3	s4s4z5z5p2p7p4z1m2z4p8z6s3	無関係						1	0	7	7
+3	53	q3	push	1	z2z2p7p7s2s2s5m9p5p9m7m1s9	無関係						1	0	10	10
+3	53	q3	base	1	z2z2p7p7s2s2s5m9p5p9m7m1s9	放銃					1	1	-5200	8	9
+3	53	q4	push	2	p2p2m9m9p8p8s3s3s7s4s1p6m4	和了	0	1	ツモ	門前清自摸和+七対子+赤ドラ		0	6400	11	10
+3	53	q4	base	2	p2p2m9m9p8p8s3s3s7s4s1p6m4	放銃					1	1	-12000	16	16
+3	53	q5	push	1	m1m1m4m4s2s2z2z2s7s7p9z3z5	被ツモ						1	-8000	9	8
+3	53	q5	base	1	m1m1m4m4s2s2z2z2s7s7p9z3z5	和了	0	1	ツモ	立直+門前清自摸和+七対子		1	8400	10	9
+3	53	q6	push	1	m6m6p7p7p6p6z6z6m3m3z4z4m5	和了	0	1	ロン	七対子		0	1600	3	3
+3	53	q6	base	1	m6m6p7p7p6p6z6z6m3m3z4z4m5	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子+赤ドラ		0	13000	13	12
+3	54	q2	push	3	s2s2z7z7m7p2s5m3z4p6s4m6p3	放銃					0	0	-2000	17	18
+3	54	q2	base	3	s2s2z7z7m7p2s5m3z4p6s4m6p3	和了	0	0	ロン	翻牌 中		0	1000	7	6
+3	54	q3	push	1	p6p6m6m6p3p3m3p9z5s9s5s2p7	被ツモ						0	-1000	14	14
+3	54	q3	base	1	p6p6m6m6p3p3m3p9z5s9s5s2p7	無関係						1	0	12	13
+3	54	q4	push	1	p2p2z7z7m9m9s7s7z1m3s3p7s8	無関係						0	0	11	11
+3	54	q4	base	1	p2p2z7z7m9m9s7s7z1m3s3p7s8	和了	0	1	ツモ	立直+門前清自摸和+七対子+ドラ+赤ドラ		0	13000	14	13
+3	54	q5	push	2	s3s3p1p1z4z4m3m3s1s1z7s7s6	無関係						0	0	8	8
+3	54	q5	base	2	s3s3p1p1z4z4m3m3s1s1z7s7s6	無関係						0	0	9	10
+3	54	q6	push	3	m2m2s4s4p1p1p4p4s7s7s6s6z7	被ツモ						1	-2600	9	8
+3	54	q6	base	3	m2m2s4s4p1p1p4p4s7s7s6s6z7	放銃					0	0	-2900	12	11
+3	55	q2	push	1	z4z4s3s3z7z2p3s5p7z6p9m5m7	無関係						1	0	6	6
+3	55	q2	base	1	z4z4s3s3z7z2p3s5p7z6p9m5m7	無関係						1	0	7	6
+3	55	q3	push	1	z2z2s5s5s9s9s8m4p7p6z3s7m8	放銃					0	1	-2000	15	16
+3	55	q3	base	1	z2z2s5s5s9s9s8m4p7p6z3s7m8	無関係						0	0	11	11
+3	55	q4	push	2	m4m4m7m7m3m3s2s2s7m6m1p5s5	無関係						1	0	7	7
+3	55	q4	base	2	m4m4m7m7m3m3s2s2s7m6m1p5s5	無関係						0	0	7	7
+3	55	q5	push	3	p4p4s8s8p8p8z5z5m8m8z4p1z6	放銃					1	1	-2900	13	13
+3	55	q5	base	3	p4p4s8s8p8p8z5z5m8m8z4p1z6	流局						0	3000	18	17
+3	55	q6	push	3	m4m4m2m2s7s7s3s3z5z5z7z7s8	和了	0	1	ロン	七対子		0	1600	5	4
+3	55	q6	base	3	m4m4m2m2s7s7s3s3z5z5z7z7s8	放銃					1	1	-5200	11	11
+3	56	q2	push	1	p4p4z2z2p1s9s7s4m4s3z1s1p7	無関係						0	0	16	16
+3	56	q2	base	1	p4p4z2z2p1s9s7s4m4s3z1s1p7	放銃					1	1	-3900	12	13
+3	56	q3	push	3	z6z6p6p6z1z1s6p8z5p7p4p2m7	無関係						0	0	11	11
+3	56	q3	base	3	z6z6p6p6z1z1s6p8z5p7p4p2m7	和了	0	0	ロン	場風 東+翻牌 發+混一色+ドラ		1	9000	10	11
+3	56	q4	push	3	m8m8z6z6s8s8p8p8p3m9p4p1z7	無関係						1	0	13	12
+3	56	q4	base	3	m8m8z6z6s8s8p8p8p3m9p4p1z7	放銃					0	0	-9700	15	16
+3	56	q5	push	3	p6p6p7p7m1m1s3s3p4p4s8z3s5	被ツモ						1	-1000	15	14
+3	56	q5	base	3	p6p6p7p7m1m1s3s3p4p4s8z3s5	和了	0	1	ロン	立直+七対子+ドラ+裏ドラ		0	13000	14	14
+3	56	q6	push	3	z3z3m1m1m9m9m6m6z2z2s8s8z6	和了	0	1	ロン	七対子		0	1600	3	2
+3	56	q6	base	3	z3z3m1m1m9m9m6m6z2z2s8s8z6	和了	0	1	ロン	ダブル立直+一発+七対子		0	9000	2	1
+3	57	q2	push	1	s2s2p6p6s3z4s5m4p9s8s6p7m7	流局						1	-1000	18	17
+3	57	q2	base	1	s2s2p6p6s3z4s5m4p9s8s6p7m7	流局						1	-1000	18	17
+3	57	q3	push	2	p5p5p9p9m1m1p6p7p4m5m9z2m6	被ツモ						0	-700	8	8
+3	57	q3	base	2	p5p5p9p9m1m1p6p7p4m5m9z2m6	放銃					0	0	-2900	11	12
+3	57	q4	push	1	z2z2m6m6m5m5m9m9s9s3z5m2m8	無関係						0	0	10	9
+3	57	q4	base	1	z2z2m6m6m5m5m9m9s9s3z5m2m8	被ツモ						1	-4000	17	16
+3	57	q5	push	3	s5s5s3s3s9s9z2z2p1p1z7p3m1	被ツモ						1	-6000	12	11
+3	57	q5	base	3	s5s5s3s3s9s9z2z2p1p1z7p3m1	被ツモ						1	-6000	12	11
+3	57	q6	push	3	m3m3z4z4p6p6m1m1m7m7z6z6p7	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		0	8000	6	5
+3	57	q6	base	3	m3m3z4z4p6p6m1m1m7m7z6z6p7	流局						1	1500	18	17
+3	58	q2	push	3	z1z1m3m3m7s3p7s1s7m2s9s6z5	無関係						1	0	6	6
+3	58	q2	base	3	z1z1m3m3m7s3p7s1s7m2s9s6z5	被ツモ						0	-1300	12	12
+3	58	q3	push	1	z5z5m6m6z4z4s1z3p8s7p5m5p1	放銃					1	1	-2000	16	16
+3	58	q3	base	1	z5z5m6m6z4z4s1z3p8s7p5m5p1	流局						1	-1000	18	19
+3	58	q4	push	2	m1m1s4s4s9s9p7p7s3p4z5p1m6	被ツモ						1	-4000	8	7
+3	58	q4	base	2	m1m1s4s4s9s9p7p7s3p4z5p1m6	被ツモ						1	-4000	8	7
+3	58	q5	push	1	p7p7p9p9p3p3m7m7m4m4s4s6z3	和了	0	1	ツモ	門前清自摸和+七対子+ドラ		0	8000	10	10
+3	58	q5	base	1	p7p7p9p9p3p3m7m7m4m4s4s6z3	無関係						1	0	14	13
+3	58	q6	push	1	z5z5m4m4s5s5s8s8s7s7m2m2s3	被ツモ						1	-2000	13	13
+3	58	q6	base	1	z5z5m4m4s5s5s8s8s7s7m2m2s3	流局						0	3000	18	18
+3	59	q2	push	2	p5p5p4p4p1z6p9p2z1s1s5p3m7	放銃					1	1	-3900	9	9
+3	59	q2	base	2	p5p5p4p4p1z6p9p2z1s1s5p3m7	無関係						1	0	14	14
+3	59	q3	push	1	m9m9p2p2s7s7s6s9p7p3m2s4m8	放銃					1	1	-12000	13	13
+3	59	q3	base	1	m9m9p2p2s7s7s6s9p7p3m2s4m8	流局						1	1500	18	18
+3	59	q4	push	1	s1s1s6s6m6m6p3p3s5p8p6m1s8	無関係						1	0	11	10
+3	59	q4	base	1	s1s1s6s6m6m6p3p3s5p8p6m1s8	無関係						1	0	12	12
+3	59	q5	push	2	m8m8s3s3m2m2p7p7z5z5m4m5s4	被ツモ						0	-1300	7	7
+3	59	q5	base	2	m8m8s3s3m2m2p7p7z5z5m4m5s4	無関係						1	0	17	17
+3	59	q6	push	1	s5s5s3s3z7z7z6z6p3p3m7m7s9	無関係						1	0	8	9
+3	59	q6	base	1	s5s5s3s3z7z7z6z6p3p3m7m7s9	和了	0	1	ロン	ダブル立直+七対子+ドラ		0	13000	12	12
+3	60	q2	push	1	p4p4z2z2m3p3s3p8p1z6s6s9m2	無関係						1	0	10	11
+3	60	q2	base	1	p4p4z2z2m3p3s3p8p1z6s6s9m2	被ツモ						0	-2000	13	14
+3	60	q3	push	2	m9m9m3m3p4p4s9s8p7m5s5s1p1	流局						1	-1500	18	17
+3	60	q3	base	2	m9m9m3m3p4p4s9s8p7m5s5s1p1	放銃					0	1	-1000	14	14
+3	60	q4	push	3	s2s2s7s7s1s1s9s9p3m6z3m1z7	無関係						0	0	7	6
+3	60	q4	base	3	s2s2s7s7s1s1s9s9p3m6z3m1z7	無関係						0	0	7	6
+3	60	q5	push	2	s3s3m4m4m3m3s2s2p1p1p5s7s6	流局						0	-1000	18	18
+3	60	q5	base	2	s3s3m4m4m3m3s2s2p1p1p5s7s6	無関係						0	0	7	6
+3	60	q6	push	1	p6p6z1z1p1p1s3s3m1m1p4p4s8	和了	0	1	ロン	七対子		0	1600	4	3
+3	60	q6	base	1	p6p6z1z1p1p1s3s3m1m1p4p4s8	流局						0	3000	18	18
+3	61	q2	push	3	z5z5z6z6p5p3m9s4z3p1m7m2s3	無関係						0	0	12	11
+3	61	q2	base	3	z5z5z6z6p5p3m9s4z3p1m7m2s3	無関係						0	0	9	9
+3	61	q3	push	2	s9s9m5m5s1s1p6p1m6z2s8s6p7	流局						1	1500	18	17
+3	61	q3	base	2	s9s9m5m5s1s1p6p1m6z2s8s6p7	和了	0	0	ツモ	立直+門前清自摸和		0	3700	16	15
+3	61	q4	push	2	s8s8s1s1z2z2s4s4s6m2p7m1m9	被ツモ						1	-1300	17	17
+3	61	q4	base	2	s8s8s1s1z2z2s4s4s6m2p7m1m9	和了	0	0	ロン	立直		1	3600	16	16
+3	61	q5	push	2	p8p8z2z2p6p6s6s6s5s5s3m1m7	無関係						0	0	7	6
+3	61	q5	base	2	p8p8z2z2p6p6s6s6s5s5s3m1m7	無関係						0	0	7	6
+3	61	q6	push	1	p1p1p2p2z4z4z1z1z7z7m7m7s5	和了	0	1	ロン	七対子		0	1600	9	9
+3	61	q6	base	1	p1p1p2p2z4z4z1z1z7z7m7m7s5	和了	0	1	ツモ	ダブル立直+一発+門前清自摸和+七対子+ドラ		0	17000	2	1
+3	62	q2	push	3	m4m4s6s6z6m3z3p7s8s3m9m6s9	放銃					1	1	-18000	16	16
+3	62	q2	base	3	m4m4s6s6z6m3z3p7s8s3m9m6s9	流局						1	-1000	18	17
+3	62	q3	push	2	s3s3s1s1z7z7m7m9z4s2m1s4p1	無関係						0	0	10	10
+3	62	q3	base	2	s3s3s1s1z7z7m7m9z4s2m1s4p1	放銃					0	0	-1000	6	7
+3	62	q4	push	1	m4m4p4p4z1z1s4s4z4s5s1m7p7	和了	0	1	ロン	七対子+ドラ		0	6400	10	9
+3	62	q4	base	1	m4m4p4p4z1z1s4s4z4s5s1m7p7	被ツモ						0	-2000	15	15
+3	62	q5	push	1	z1z1p4p4m4m4p6p6m1m1m8m5z4	放銃					1	1	-18000	10	11
+3	62	q5	base	1	z1z1p4p4m4m4p6p6m1m1m8m5z4	流局						1	-1500	18	18
+3	62	q6	push	2	s3s3s8s8p2p2m4m4p1p1m8m8p5	被ツモ						0	-500	11	11
+3	62	q6	base	2	s3s3s8s8p2p2m4m4p1p1m8m8p5	放銃					1	1	-12000	6	6
+3	63	q2	push	1	z3z3m9m9z6p3p9m4s3m7z1m6s2	無関係						0	0	5	4
+3	63	q2	base	1	z3z3m9m9z6p3p9m4s3m7z1m6s2	無関係						0	0	5	4
+3	63	q3	push	1	z6z6p6p6m3m3p3s2m1z5z4s6p9	放銃					1	1	-2900	9	9
+3	63	q3	base	1	z6z6p6p6m3m3p3s2m1z5z4s6p9	無関係						1	0	12	12
+3	63	q4	push	2	m8m8m1m1z4z4m5m5s1m7m2m6z6	和了	0	1	ロン	七対子+ドラ+赤ドラ		1	8000	11	11
+3	63	q4	base	2	m8m8m1m1z4z4m5m5s1m7m2m6z6	和了	0	0	ロン	翻牌 發+混一色+ドラ		0	8000	9	10
+3	63	q5	push	1	m5m5p8p8s9s9s7s7z7z7z5s6p2	和了	0	1	ツモ	門前清自摸和+七対子		0	3200	6	5
+3	63	q5	base	1	m5m5p8p8s9s9s7s7z7z7z5s6p2	被ツモ						0	-1300	16	18
+3	63	q6	push	1	m8m8z7z7p8p8m2m2m4m4s7s7z1	無関係						1	0	7	7
+3	63	q6	base	1	m8m8z7z7p8p8m2m2m4m4s7s7z1	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	5	4
+3	64	q2	push	1	s2s2p1p1z5m2p2s1p7p4s5m3z7	被ツモ						1	-400	12	12
+3	64	q2	base	1	s2s2p1p1z5m2p2s1p7p4s5m3z7	無関係						0	0	8	9
+3	64	q3	push	3	s5s5z4z4p4p4s4z1s2m2s6z3m8	放銃					1	1	-5200	8	8
+3	64	q3	base	3	s5s5z4z4p4p4s4z1s2m2s6z3m8	放銃					1	1	-5200	6	6
+3	64	q4	push	2	s4s4m1m1s9s9p9p9s8p2z5p3m9	流局						1	-1000	18	17
+3	64	q4	base	2	s4s4m1m1s9s9p9p9s8p2z5p3m9	流局						1	1500	18	17
+3	64	q5	push	3	m1m1p4p4z6z6s3s3s7s7s8p6s6	被ツモ						1	-4000	9	9
+3	64	q5	base	3	m1m1p4p4z6z6s3s3s7s7s8p6s6	無関係						1	0	10	11
+3	64	q6	push	1	m2m2z2z2p2p2m9m9p3p3m4m4p9	無関係						0	0	5	6
+3	64	q6	base	1	m2m2z2z2p2p2m9m9p3p3m4m4p9	和了	0	1	ツモ	ダブル立直+門前清自摸和+七対子		0	9000	12	11
+3	65	q2	push	3	z2z2p9p9m2z3m1p3p2s4p5s2m6	放銃					0	1	-12000	7	7
+3	65	q2	base	3	z2z2p9p9m2z3m1p3p2s4p5s2m6	放銃					1	1	-6400	8	8
+3	65	q3	push	1	p5p5s5s5m5m5m2p1z5z3p2m9z6	被ツモ						1	-2600	6	6
+3	65	q3	base	1	p5p5s5s5m5m5m2p1z5z3p2m9z6	被ツモ						1	-2600	6	6
+3	65	q4	push	1	p1p1z4z4m6m6z3z3p8z5z2m1m9	放銃					1	1	-3900	7	7
+3	65	q4	base	1	p1p1z4z4m6m6z3z3p8z5z2m1m9	放銃					1	1	-3900	7	7
+3	65	q5	push	1	m9m9p8p8m3m3m6m6z5z5s2p5z3	放銃					1	1	-8000	12	13
+3	65	q5	base	1	m9m9p8p8m3m3m6m6z5z5s2p5z3	流局						1	-1000	18	18
+3	65	q6	push	2	m5m5m8m8z4z4p9p9m6m6m1m1p8	和了	0	1	ロン	七対子		1	2600	10	10
+3	65	q6	base	2	m5m5m8m8z4z4p9p9m6m6m1m1p8	無関係						1	0	12	11
+3	66	q2	push	1	s5s5z2z2z6s7z5s4p5p7m2p1m5	無関係						0	0	11	11
+3	66	q2	base	1	s5s5z2z2z6s7z5s4p5p7m2p1m5	放銃					0	0	-2900	11	11
+3	66	q3	push	2	m7m7p4p4p9p9s2z6p7m4s7m2p8	無関係						0	0	9	9
+3	66	q3	base	2	m7m7p4p4p9p9s2z6p7m4s7m2p8	被ツモ						0	-400	7	7
+3	66	q4	push	1	z4z4p7p7m6m6z3z3z2p4p8m9z5	和了	0	1	ロン	七対子+赤ドラ		1	3200	6	5
+3	66	q4	base	1	z4z4p7p7m6m6z3z3z2p4p8m9z5	被ツモ						0	-2000	17	17
+3	66	q5	push	2	s1s1p6p6p7p7s2s2m5m5z3m1z1	放銃					1	1	-7800	11	11
+3	66	q5	base	2	s1s1p6p6p7p7s2s2m5m5z3m1z1	放銃					1	1	-7800	11	11
+3	66	q6	push	2	p5p5m7m7p4p4s9s9p3p3s6s6p8	和了	0	1	ロン	七対子+ドラ		0	6400	3	2
+3	66	q6	base	2	p5p5m7m7p4p4s9s9p3p3s6s6p8	被ツモ						1	-2000	8	8
+3	67	q2	push	2	z1z1s1s1m1z5z2s7m6m5m4p2m2	被ツモ						0	-300	12	12
+3	67	q2	base	2	z1z1s1s1m1z5z2s7m6m5m4p2m2	被ツモ						0	-4000	12	13
+3	67	q3	push	2	z6z6z4z4p5p5m7p6m9z1m1s4z7	被ツモ						1	-500	13	13
+3	67	q3	base	2	z6z6z4z4p5p5m7p6m9z1m1s4z7	和了	0	0	ツモ	立直+一発+門前清自摸和+赤ドラ+裏ドラ		1	11000	13	12
+3	67	q4	push	1	s8s8m2m2m9m9p4p4p9m4s7s9m5	放銃					1	1	-7700	16	16
+3	67	q4	base	1	s8s8m2m2m9m9p4p4p9m4s7s9m5	流局						0	1500	18	18
+3	67	q5	push	2	z7z7s1s1m8m8m4m4s6s6p4z1s5	無関係						1	0	14	14
+3	67	q5	base	2	z7z7s1s1m8m8m4m4s6s6p4z1s5	和了	0	1	ロン	立直+七対子+ドラ		1	10000	8	8
+3	67	q6	push	1	z5z5m1m1s6s6z7z7p2p2m2m2p4	放銃					1	1	-8000	10	10
+3	67	q6	base	1	z5z5m1m1s6s6z7z7p2p2m2m2p4	放銃					1	1	-12000	13	13
+3	68	q2	push	3	z4z4p2p2p8m5s6z7s4z1p7s1m3	流局						0	-1000	18	18
+3	68	q2	base	3	z4z4p2p2p8m5s6z7s4z1p7s1m3	無関係						1	0	9	9
+3	68	q3	push	1	s8s8m2m2m1m1p1m5m8p9s9z2p2	無関係						1	0	11	11
+3	68	q3	base	1	s8s8m2m2m1m1p1m5m8p9s9z2p2	和了	0	0	ロン	立直		0	2600	9	9
+3	68	q4	push	1	p4p4s1s1p8p8z7z7m5z5m6s6m1	被ツモ						0	-700	5	5
+3	68	q4	base	1	p4p4s1s1p8p8z7z7m5z5m6s6m1	和了	0	0	ロン	翻牌 中		0	1000	7	8
+3	68	q5	push	2	s5s5p2p2m6m6m7m7s1s1p9z3z1	被ツモ						0	-500	6	5
+3	68	q5	base	2	s5s5p2p2m6m6m7m7s1s1p9z3z1	被ツモ						0	-500	6	5
+3	68	q6	push	1	p2p2s3s3z3z3s9s9p5p5s5s5s6	和了	1	0	ツモ	地和		0	32000	1	0
+3	68	q6	base	1	p2p2s3s3z3z3s9s9p5p5s5s5s6	和了	1	0	ツモ	地和		0	32000	1	0
+3	69	q2	push	2	s2s2s5s5m4p2s4z3m5p7p3s6p1	和了	0	1	ロン	七対子+赤ドラ		1	3200	8	8
+3	69	q2	base	2	s2s2s5s5m4p2s4z3m5p7p3s6p1	和了	0	0	ツモ	立直+門前清自摸和+平和+ドラ+赤ドラ		0	9000	9	8
+3	69	q3	push	3	p6p6s8s8s4s4s5m3s1z5m8z1m9	放銃					1	1	-7700	12	11
+3	69	q3	base	3	p6p6s8s8s4s4s5m3s1z5m8z1m9	和了	0	0	ロン	立直+ドラ+裏ドラ		0	6200	12	12
+3	69	q4	push	3	m5m5z1z1s2s2s8s8s6z2p1m6m7	無関係						0	0	7	7
+3	69	q4	base	3	m5m5z1z1s2s2s8s8s6z2p1m6m7	無関係						1	0	8	9
+3	69	q5	push	2	s9s9m7m7m2m2z3z3p9p9z2p8p6	放銃					0	0	-3900	8	9
+3	69	q5	base	2	s9s9m7m7m2m2z3z3p9p9z2p8p6	無関係						1	0	17	16
+3	69	q6	push	3	m8m8m2m2s7s7p2p2m1m1p1p1m4	被ツモ						1	-2000	11	10
+3	69	q6	base	3	m8m8m2m2s7s7p2p2m1m1p1p1m4	被ツモ						1	-4000	15	14
+3	70	q2	push	3	s4s4z2z2s8s2m6m7m4m1z5m9p8	流局						1	-1000	18	17
+3	70	q2	base	3	s4s4z2z2s8s2m6m7m4m1z5m9p8	被ツモ						0	-2000	11	10
