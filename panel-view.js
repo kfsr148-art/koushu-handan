@@ -71,7 +71,7 @@ function sweepLine(r, items) {
 //   使える行が3件未満は今の値16を（仮）で出す。3件以上は 週%÷セッション%×100 の中央値（整数に丸める）。
 function shelfCapacity(rows) {
   const r = (Array.isArray(rows) ? rows : []).filter(x => x && Number(x.s) > 0 && isFinite(Number(x.w))).slice(-20);
-  if (r.length < 3) { return '1セッション≒棚 16%（仮）'; }
+  if (r.length < 3) { return '1セッション≒棚 16%'; }   // 枠 二百十五：元が少ない間も同じ形（言葉は付けない）
   return '1セッション≒棚 ' + Math.round(median(r.map(x => Number(x.w) / Number(x.s) * 100))) + '%';
 }
 // v225（枠 百六十二）：棚（余った使用量で回す溜め場）の釦と一覧の材料。~/.claude/shelf.json（走り手 shadow-run.js が控える）。無ければ null。

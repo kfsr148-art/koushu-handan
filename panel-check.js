@@ -2050,7 +2050,7 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
   {
     const PV4 = require(path.join(path.dirname(SRC), 'panel-view.js'));
     const r4 = [{ s: 3, w: 0.5 }, { s: 3, w: 0.5 }, { s: 4, w: 1 }], e0 = PV4.shelfCapacity([]), e2 = PV4.shelfCapacity(r4.slice(0, 2)), e3 = PV4.shelfCapacity(r4), e3z = PV4.shelfCapacity([{ s: 0, w: 1 }, { s: 0, w: 1 }, { s: 3, w: 0.5 }]);
-    if (e0 === '1セッション≒棚 16%（仮）' && e2 === e0 && e3 === '1セッション≒棚 17%' && e3z === e0 && html.slice(html.indexOf('function shelfLabel()'), html.indexOf('function paintShelf()')).indexOf('lastShelf.capacity') >= 0 && e3.indexOf('1セッション≒棚') === 0 && html.indexOf('lastShelf.capacity') >= 0 && html.indexOf('件仕掛けられる') < 0 && PV4.shelfCapacity.toString().indexOf('あと') < 0) { ok('1セッション≒棚 N%：3件未満は16（仮）・3件で中央値（仮なし）・s<=0は数えない・釦の字に足す・「あと…件仕掛けられる」は無い'); }
+    if (e0 === '1セッション≒棚 16%' && e2 === e0 && e3 === '1セッション≒棚 17%' && e3z === e0 && html.slice(html.indexOf('function shelfLabel()'), html.indexOf('function paintShelf()')).indexOf('lastShelf.capacity') < 0 && html.indexOf('id="wjCap"') >= 0 && html.indexOf('wjCapT') >= 0 && html.indexOf('.weekjob .wj-cap') >= 0 && e3.indexOf('1セッション≒棚') === 0 && html.indexOf('件仕掛けられる') < 0 && html.indexOf('（仮）') < 0 && PV4.shelfCapacity.toString().indexOf('あと') < 0) { ok('1セッション≒棚 N%：3件未満も16（言葉は付けない）・3件で中央値・s<=0は数えない・棚の釦の字には足さず返事パネルの今までの行の下（#wjCap）に出す・「あと…件仕掛けられる」「（仮）」は無い'); }
     else { ng('1セッション≒棚の一行が違う：' + [e0, e2, e3, e3z].join(' | ')); }
   }
   /* v228（枠 百九十七・棚 #10）：ヨシの釦。panelView.yoshiOpen は yoshi-open.tsv の印だけ（古い順・話題名は載らない）。パネルは #doneHead をヨシの釦にし、青・N件・送った・通ったの字と、話題名は電話（localStorage）に覚える字面がある。終わりましたの一覧の口は #doneToggle へ移した */
