@@ -48,7 +48,15 @@ function shelfView() {
 //   ＊weekJobStep は純粋（ファイルを触らない）。weekJobUpdate が ~/.claude の job-week.json・job-week-history.tsv を読み書きする（CLI の見張りの呼びだけから呼ぶ。検査の panelView は書かない）。
 function mikomiMin(v) { const m = String(v == null ? '' : v).match(/([0-9]+)/); return m ? parseInt(m[1], 10) : 0; }
 function median(a) { const b = a.slice().sort((x, y) => x - y), n = b.length; return n ? (n % 2 ? b[(n - 1) / 2] : (b[n / 2 - 1] + b[n / 2]) / 2) : 0; }
-function weekJobStep(store, d, pct, now, hist) {
+// 枠 百七十六：額→週% の換算 k（週% / USD）。点＝週%が一つ上がった変わり目の額（statusline-usage.js が cost-pct.json に控える）。最初と最後の点の差から出す。点が2つ未満・額が増えていない時は null（換算が立つまで整数の今まで）。
+function convK(points) {
+  const p = Array.isArray(points) ? points.filter(x => x && typeof x.pct === 'number' && typeof x.cost === 'number') : [];
+  if (p.length < 2) { return null; }
+  const a = p[0], b = p[p.length - 1], dc = b.cost - a.cost, dp = b.pct - a.pct;
+  return (dc > 0.5 && dp > 0) ? dp / dc : null;
+}
+function pct1(v) { return v < 0.05 ? '0.1%未満' : (Math.round(v * 10) / 10).toFixed(1) + '%'; }
+function weekJobStep(store, d, pct, now, hist, cost, k) {
   store = (store && typeof store === 'object') ? store : {}; hist = Array.isArray(hist) ? hist : [];
   const out = { store: store, view: null, finish: null };
   const working = d && d.stat === '作業中' && Number(d.startedAt) > 0;
@@ -57,18 +65,26 @@ function weekJobStep(store, d, pct, now, hist) {
   if (store.key && store.key !== key) {   /* 前の仕事が終わった（別の仕事に替わった）。実測を一行返す */
     const dl = havePct || typeof store.lastPct === 'number' ? ((typeof store.lastPct === 'number' ? store.lastPct : pct) - store.startPct) : null;
     const el = Math.max(0, Math.round((now - (store.startedAt || now)) / 60));
-    if (dl !== null && el >= 2 && store.mikomi > 0 && dl >= 0) { out.finish = { at: now, mikomi: store.mikomi, delta: dl, minutes: el }; }
+    const endCost = (typeof cost === 'number' && isFinite(cost)) ? cost : store.lastCost;
+    const dcs = (typeof endCost === 'number' && typeof store.startCost === 'number') ? Math.max(0, endCost - store.startCost) : null;
+    if (dl !== null && el >= 2 && store.mikomi > 0 && dl >= 0) { out.finish = { at: now, mikomi: store.mikomi, delta: dl, minutes: el, cost: dcs }; }
     store = out.store = {};
   }
   if (!working) { return out; }
-  if (!store.key) { store = out.store = { key: key, startedAt: Number(d.startedAt), startPct: havePct ? pct : null, lastPct: havePct ? pct : null, mikomi: mikomiMin(d.mikomi) }; }
+  const haveCost = (typeof cost === 'number' && isFinite(cost));
+  if (!store.key) { store = out.store = { key: key, startedAt: Number(d.startedAt), startPct: havePct ? pct : null, lastPct: havePct ? pct : null, mikomi: mikomiMin(d.mikomi), startCost: haveCost ? cost : null, lastCost: haveCost ? cost : null }; }
+  if (haveCost) { if (store.startCost === null || store.startCost === undefined) { store.startCost = cost; } store.lastCost = cost; }
   if (havePct) { if (store.startPct === null || store.startPct === undefined) { store.startPct = pct; } store.lastPct = pct; }
   if (mikomiMin(d.mikomi) > 0) { store.mikomi = mikomiMin(d.mikomi); }
   const dn = (typeof store.lastPct === 'number' && typeof store.startPct === 'number') ? Math.max(0, store.lastPct - store.startPct) : null;
   const mk = store.mikomi || 0, near = hist.filter(h => h.mikomi > 0 && mk > 0 && h.mikomi >= mk * 0.5 && h.mikomi <= mk * 2 && h.minutes > 0).slice(-20);
   let est = '—';
-  if (near.length >= 3 && mk > 0) { const v = median(near.map(h => h.delta / h.minutes)) * mk; est = v < 1 ? '1%未満' : ('約' + Math.round(v) + '%'); }
-  out.view = { est: '見込み ' + est, now: '今まで ' + (dn === null ? '—' : (dn < 1 ? '1%未満' : (Math.round(dn) + '%'))), n: near.length };
+  const kk = (typeof k === 'number' && k > 0) ? k : null, nearC = near.filter(h => typeof h.cost === 'number' && h.cost > 0);
+  if (kk && nearC.length >= 3 && mk > 0) { const v = median(nearC.map(h => h.cost / h.minutes)) * mk * kk; est = '約' + pct1(v); }   // 換算が立っていれば額から（小数一桁）
+  else if (near.length >= 3 && mk > 0) { const v = median(near.map(h => h.delta / h.minutes)) * mk; est = v < 1 ? '1%未満' : ('約' + Math.round(v) + '%'); }
+  const dcNow = (typeof store.lastCost === 'number' && typeof store.startCost === 'number') ? Math.max(0, store.lastCost - store.startCost) : null;
+  const nowTxt = (kk && dcNow !== null) ? pct1(dcNow * kk) : (dn === null ? '—' : (dn < 1 ? '1%未満' : (Math.round(dn) + '%')));
+  out.view = { est: '見込み ' + est, now: '今まで ' + nowTxt, n: near.length, k: kk };
   return out;
 }
 function weekJobUpdate(d, now) {
@@ -78,10 +94,12 @@ function weekJobUpdate(d, now) {
   const u = rdj('usage.json'); let pct = null;
   try { const at = Date.parse(u.at || ''); const wk = u.rate_limits && u.rate_limits.seven_day; if (wk && typeof wk.used_percentage === 'number' && at > 0 && Date.now() - at < 30 * 60 * 1000) { pct = wk.used_percentage; } } catch (e) { }
   let hist = [];
-  try { hist = fs.readFileSync(path.join(home, 'job-week-history.tsv'), 'utf8').split(String.fromCharCode(10)).filter(l => l && l[0] !== '#').map(l => { const c = l.split(String.fromCharCode(9)); return { at: Number(c[0]), mikomi: Number(c[1]), delta: Number(c[2]), minutes: Number(c[3]) }; }); } catch (e) { }
-  const r = weekJobStep(rdj('job-week.json'), d, pct, now, hist);
+  try { hist = fs.readFileSync(path.join(home, 'job-week-history.tsv'), 'utf8').split(String.fromCharCode(10)).filter(l => l && l[0] !== '#').map(l => { const c = l.split(String.fromCharCode(9)); return { at: Number(c[0]), mikomi: Number(c[1]), delta: Number(c[2]), minutes: Number(c[3]), cost: (c[4] !== undefined && c[4] !== '') ? Number(c[4]) : null }; }); } catch (e) { }
+  let cost = null; try { if (u && typeof u.cost_usd === 'number' && Date.now() - Date.parse(u.at || '') < 30 * 60 * 1000) { cost = u.cost_usd; } } catch (e) { }
+  const cpj = rdj('cost-pct.json'), kconv = (cpj && u && cpj.session === u.session_id) ? convK(cpj.points) : null;
+  const r = weekJobStep(rdj('job-week.json'), d, pct, now, hist, cost, kconv);
   try { fs.writeFileSync(path.join(home, 'job-week.json'), JSON.stringify(r.store)); } catch (e) { }
-  if (r.finish) { try { fs.appendFileSync(path.join(home, 'job-week-history.tsv'), [r.finish.at, r.finish.mikomi, r.finish.delta, r.finish.minutes].join(String.fromCharCode(9)) + String.fromCharCode(10)); } catch (e) { } }
+  if (r.finish) { try { fs.appendFileSync(path.join(home, 'job-week-history.tsv'), [r.finish.at, r.finish.mikomi, r.finish.delta, r.finish.minutes, (r.finish.cost === null || r.finish.cost === undefined) ? '' : r.finish.cost.toFixed(3)].join(String.fromCharCode(9)) + String.fromCharCode(10)); } catch (e) { } }
   return r.view;
 }
 function panelView(d, notices, ntfySent, now) {
@@ -123,7 +141,7 @@ function allView(d, now) {
 }
 
 // 字の組み立ては panel-core.js の物をそのまま出す（panel-check.js・endat の検査が読む口。写しではない）
-module.exports = { weekJobStep, panelView, senkoEpoch: PC.senkoEpoch, omoteLines: PC.omoteLines, uraLines: PC.uraLines, endLine: PC.endLine, endShort: PC.endShort, uraCount: PC.uraCount, boxSpec: PC.boxSpec, uraBusyText: PC.uraBusyText, ntfyOfCard: PC.ntfyOfCard, core: PC };
+module.exports = { convK, weekJobStep, panelView, senkoEpoch: PC.senkoEpoch, omoteLines: PC.omoteLines, uraLines: PC.uraLines, endLine: PC.endLine, endShort: PC.endShort, uraCount: PC.uraCount, boxSpec: PC.boxSpec, uraBusyText: PC.uraBusyText, ntfyOfCard: PC.ntfyOfCard, core: PC };
 
 if (require.main === module) {
   // 使い方：node panel-view.js <state.json の道> [<出し先の道>]  出し先が無ければ標準出力（PowerShell の文字化けを避けるため、見張りは道を渡す）

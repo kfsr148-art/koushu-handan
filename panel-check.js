@@ -2008,6 +2008,16 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     const good = a1.view && a1.view.est === '見込み 約3%' && a1.view.now === '今まで 1%未満' && a2.view.now === '今まで 2%' && a3.view === null && a3.finish && a3.finish.delta === 2 && a3.finish.mikomi === 30 && a4.view.est === '見込み —' && !/[$＄]|ドル/.test(JSON.stringify(a1.view));
     if (good) { ok('今の仕事の週の使用量：実測3件で「見込み 約3%」・実測なしは「見込み —」・始まりからの差は「1%未満」「2%」・仕事が終わると null と実測の一行・金額の字なし'); }
     else { ng('週の使用量の組み立てが違う：' + JSON.stringify([a1.view, a2.view, a3.view, a3.finish, a4.view])); }
+    /* v227（枠 百七十六）：週%を小数で。額→週% の換算 k は convK（週%が上がった変わり目の点・最初と最後の差）。k が立てば『今まで 0.3%』『見込み 約0.2%』（小数一桁）・立たない間は整数のまま。終わると額の差も実測に残る */
+    {
+      const kk = PVw.convK([{ pct: 90, cost: 20 }, { pct: 91, cost: 27.6 }]), k0 = PVw.convK([{ pct: 90, cost: 20 }]);
+      const Hc = [{ mikomi: 30, delta: 3, minutes: 28, cost: 1.2 }, { mikomi: 25, delta: 2, minutes: 20, cost: 0.9 }, { mikomi: 40, delta: 5, minutes: 42, cost: 1.8 }];
+      const djc = { stat: '作業中', startedAt: 1000, subj: 'x', mikomi: '30分' };
+      const c1 = PVw.weekJobStep({}, djc, 90, 1060, Hc, 20.0, kk), c2 = PVw.weekJobStep(c1.store, djc, 90, 1700, Hc, 22.3, kk), c3 = PVw.weekJobStep(c2.store, { stat: '待機中' }, 91, 2000, Hc, 23.0, kk), c4 = PVw.weekJobStep({}, djc, 90, 1060, Hc.map(h => Object.assign({}, h, { cost: null })), 20.0, null);
+      const okc = k0 === null && Math.abs(kk - 1 / 7.6) < 0.001 && c1.view.now === '今まで 0.1%未満' && c2.view.now === '今まで 0.3%' && /^見込み 約0\.[0-9]%$/.test(c1.view.est) && c3.finish && Math.abs(c3.finish.cost - 3.0) < 0.001 && c4.view.now === '今まで 1%未満' && /^見込み 約3%$/.test(c4.view.est);
+      if (okc) { ok('週の使用量を小数で：換算 k が立てば「今まで 0.3%」「見込み 約0.2%」・点が1つなら k なし・k が立たない間は整数のまま・終わると額の差が実測に残る'); }
+      else { ng('週の使用量の小数が違う：' + JSON.stringify([kk, k0, c1.view, c2.view, c3.finish, c4.view])); }
+    }
     if (html.indexOf('id="weekJob"') >= 0 && html.indexOf('id="wjEst"') >= 0 && html.indexOf('panelView.weekJob') >= 0 && html.indexOf('.weekjob[hidden]{display:none;}') >= 0) { ok('パネル：「返事パネル」の字の下に #weekJob（見込み・今まで）を state.json の panelView.weekJob から出す字面がある'); }
     else { ng('パネルの週の使用量の字面が無い'); }
   }
