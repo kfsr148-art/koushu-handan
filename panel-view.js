@@ -34,13 +34,31 @@ function shadowBox(now) {
     return { k: '影の仕事', done: dn, run: 1, total: tot, now: t.length > 30 ? t.slice(0, 29) + '…' : t, endSec: end, endAt: end ? p2(d.getUTCHours()) + ':' + p2(d.getUTCMinutes()) : '', over: false, unk: false, lab: dn + '/' + tot };
   } catch (e) { return null; }
 }
+// v227（枠 百九十三・棚 #11）：棚の割り振り係の素振りの最後の結果を一行にする（純粋）。材料＝~/.claude/shelf-run.json（at／would／reason／hLeft／week／room）と棚の一覧。
+//   ＊「起こすなら #N（見積もり M%）」／「今は入らん（残り A%・一番軽い #N は B%）」／「動く時間の外（次は HH:MM から）」。見た刻（素振りの at）を HH:MM で添える。
+function sweepLine(r, items) {
+  if (!r || typeof r !== 'object' || !r.at) { return ''; }
+  const t = Date.parse(r.at); if (!t) { return ''; }
+  const hm = ms => { const d = new Date(ms); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
+  let body = '';
+  const hLeft = Number(r.hLeft);
+  if (r.would && r.would.no != null) { body = '起こすなら #' + r.would.no + '（見積もり ' + (Number(r.would.pct) || 0) + '%）'; }
+  else if (isFinite(hLeft) && /戻りまで [0-9.]+ 時間/.test(String(r.reason || '')) && hLeft > 8) { body = '動く時間の外（次は ' + hm(t + (hLeft - 8) * 3600000) + ' から）'; }
+  else if (/1時間を切った/.test(String(r.reason || ''))) { body = '戻りまで1時間を切った（新しく起こさない）'; }
+  else if (typeof r.room === 'number') {
+    const arr = (Array.isArray(items) ? items : []).filter(x => Number(x.pct) > 0), min = arr.length ? arr.reduce((a, b) => (Number(b.pct) < Number(a.pct) ? b : a)) : null;
+    body = '今は入らん（残り ' + r.room + '%' + (min ? '・一番軽い #' + min.no + ' は ' + (Math.round(Number(min.pct) * 15) / 10) + '%' : '') + '）';
+  } else { body = String(r.reason || '').slice(0, 60); }
+  return '素振り ' + hm(t) + ' 時点：' + body;
+}
 // v225（枠 百六十二）：棚（余った使用量で回す溜め場）の釦と一覧の材料。~/.claude/shelf.json（走り手 shadow-run.js が控える）。無ければ null。
 function shelfView() {
   try {
     const home = process.env.SHADOW_HOME || path.join(require('os').homedir(), '.claude');
     const s = JSON.parse(fs.readFileSync(path.join(home, 'shelf.json'), 'utf8').replace(/^\uFEFF/, ''));
     if (!s || !Array.isArray(s.items)) { return null; }
-    return { n: s.items.length, pct: Math.round((Number(s.pct) || 0) * 10) / 10, items: s.items.slice(0, 30).map(x => ({ no: x.no, title: String(x.title || '').slice(0, 80), pct: Number(x.pct) || 0, type: String(x.type || '').slice(0, 30) })) };
+    let sw = ''; try { sw = sweepLine(JSON.parse(fs.readFileSync(path.join(home, 'shelf-run.json'), 'utf8').replace(/^﻿/, '')), s.items); } catch (e) { sw = ''; }
+    return { n: s.items.length, sweep: sw, pct: Math.round((Number(s.pct) || 0) * 10) / 10, items: s.items.slice(0, 30).map(x => ({ no: x.no, title: String(x.title || '').slice(0, 80), pct: Number(x.pct) || 0, type: String(x.type || '').slice(0, 30) })) };
   } catch (e) { return null; }
 }
 // v226（枠 百六十五）：今走っている仕事一つの週の使用量。見込み＝似た型（見込み時間が近い）の終わった仕事の実測の中央値から。今まで＝仕事の始まりの週%と今の週%の差。
@@ -141,7 +159,7 @@ function allView(d, now) {
 }
 
 // 字の組み立ては panel-core.js の物をそのまま出す（panel-check.js・endat の検査が読む口。写しではない）
-module.exports = { convK, weekJobStep, panelView, senkoEpoch: PC.senkoEpoch, omoteLines: PC.omoteLines, uraLines: PC.uraLines, endLine: PC.endLine, endShort: PC.endShort, uraCount: PC.uraCount, boxSpec: PC.boxSpec, uraBusyText: PC.uraBusyText, ntfyOfCard: PC.ntfyOfCard, core: PC };
+module.exports = { sweepLine, convK, weekJobStep, panelView, senkoEpoch: PC.senkoEpoch, omoteLines: PC.omoteLines, uraLines: PC.uraLines, endLine: PC.endLine, endShort: PC.endShort, uraCount: PC.uraCount, boxSpec: PC.boxSpec, uraBusyText: PC.uraBusyText, ntfyOfCard: PC.ntfyOfCard, core: PC };
 
 if (require.main === module) {
   // 使い方：node panel-view.js <state.json の道> [<出し先の道>]  出し先が無ければ標準出力（PowerShell の文字化けを避けるため、見張りは道を渡す）

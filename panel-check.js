@@ -2037,6 +2037,15 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     if (html.indexOf("function shelfLabel()") >= 0 && html.indexOf('id="shelfBox"') >= 0 && html.indexOf('✅ 直近に終わった：') >= 0 && html.indexOf('>直近に終わった仕事（0件）<') < 0) { ok('パネル：釦は棚・一覧 #shelfBox・直近に終わった三件は「くわしく」の rows（✅ 直近に終わった：）に入る字面がある'); }
     else { ng('パネルの棚の字面が無い／古い直近の釦が残っている'); }
   }
+  /* v227（枠 百九十三・棚 #11）：棚の一覧の頭に素振りの最後の結果の一行（sweepLine）。入る・入らない・時間の外・戻り間近・材料なしの五つと、パネルが #shelfBox の頭に出す字面がある */
+  {
+    const PV3 = require(path.join(path.dirname(SRC), 'panel-view.js')), at3 = new Date(2026, 10, 23, 12, 0, 0).toISOString();
+    const it3 = [{ no: 4, pct: 3 }, { no: 9, pct: 8 }];
+    const a3 = PV3.sweepLine({ at: at3, would: { no: 4, pct: 3 }, hLeft: 6, week: 90, room: 5 }, it3), b3 = PV3.sweepLine({ at: at3, would: null, reason: '収まる課題が無い（残り 3%）', hLeft: 6, week: 92, room: 3 }, it3);
+    const c3 = PV3.sweepLine({ at: at3, would: null, reason: '戻りまで 10.0 時間（8時間前から動く）', hLeft: 10, week: 80 }, it3), d3 = PV3.sweepLine({ at: at3, would: null, reason: '戻りまで1時間を切った（新しく起こさない）', hLeft: 0.5, week: 99 }, it3);
+    if (/素振り 12:00 時点：起こすなら #4（見積もり 3%）/.test(a3) && /今は入らん（残り 3%・一番軽い #4 は 4.5%）/.test(b3) && /動く時間の外（次は 14:00 から）/.test(c3) && /戻りまで1時間を切った/.test(d3) && PV3.sweepLine(null, it3) === '' && html.indexOf('lastShelf.sweep') >= 0) { ok('棚の素振りの一行：入る／入らん（残りと一番軽い枠×1.5）／動く時間の外（次の刻）／戻り間近／材料なしは空・パネルが一覧の頭に出す字面がある'); }
+    else { ng('棚の素振りの一行が違う：' + [a3, b3, c3, d3].join(' | ')); }
+  }
   /* v224（枠 百五十六）：影の仕事の箱（panelView.shadowBox）。走っている間だけ載る・済んだら null・金額の字が無い・パネルが箱を出す字面がある */
   {
     const os = require('os'), fsx = require('fs'), pth = require('path');
