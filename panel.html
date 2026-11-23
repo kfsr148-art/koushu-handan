@@ -2080,6 +2080,7 @@
        ヨシ待ち → 指差し／連絡なし → 寝姿（字なし）／作業中 → コマ送り（「作業中、、、。」・v150）／写していない札が残る → 指差し／それ以外 → 待機の猫。
      ＊指差しの猫が出ている時は、ヨシ待ちでも「写していない札が残っている」でも必ず「まとめて写すヨシ！」。待機の猫の時は「待機中、、、。」。 */
   var POINT_TEXT = 'まとめて写すヨシ！';
+  var YB_KEY = 'kh-yoshi-topic', ybSent = '', lastYoshiOpen = [];   /* v228：ヨシの釦の持ち物は、使う関数より前（ここ）で宣言する（後ろに置くと、起動の途中の塗りで undefined を読む） */
   var lastKumo = '', lastTemoto = '', lastShadowBox = null, lastShelf = null, shelfOpen = false;   /* v218（枠 百二十九）：lastTemoto＝state.json の temoto（VAIO の手元の待ち「手元：題・見込み」）。頭の字・現場猫・見込みは lastKumo（kumo が無ければ temoto）を見る */
   /* v169（2026-11-19 本人の決め）：雲待ちの一行（kumo）の「見込み HH:MM」を秒に。見込みの前なら刻を、過ぎていれば 0 を返す。 */
   function kumoEtaSec() { return core().kumoEtaSec(lastKumo, Math.floor(Date.now() / 1000)); }
@@ -3099,7 +3100,6 @@
      ＊いつも出ている。ふだんは字だけ『👈 ヨシ待ち』。ヨシ待ちが N 件ある間は青く『👈 ヨシ待ち N件』。押すと、いちばん新しい印に『yoshi <印>』を ntfy の別の話題へ送る（二件以上でも最新へ。裸のヨシと同じ）。
      ＊話題の名前は秘密：公開のこのパネルには書かない。本人の電話で一度だけ入れ、電話の中（localStorage の kh-yoshi-topic）に覚える。
      ＊送った後は『👈 ヨシを送った』、その印が一覧から落ちたら（通った）『👈 ヨシが通った』（次に押す／新しい待ちが来るまで）。二度押しは受け側（yoshi-btn-recv.js）が一度だけ通す。 */
-  var YB_KEY = 'kh-yoshi-topic', ybSent = '', lastYoshiOpen = [];
   function ybLabel() {
     var n = lastYoshiOpen.length;
     if (ybSent) { return (lastYoshiOpen.indexOf(ybSent) >= 0) ? '👈 ヨシを送った' : '👈 ヨシが通った'; }
