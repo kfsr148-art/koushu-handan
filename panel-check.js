@@ -2085,6 +2085,12 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     if (html.indexOf("body: 'point ' + pointClean(pointName(el), 40)") >= 0 && html.indexOf("'point ' + ptopic") < 0) { ok('パネル：指さした部品の名を『point 名』で話題へ送る字面がある（話題名は書かない）'); }
     else { ng('パネルの指さしの送りの字面が無い'); }
   }
+  /* v231（枠 二百八・棚 #10）：ヨシの釦の鍵は話題名を打たずに渡す。パネルは入れ物（prompt）を出さず、開いた時の『#k=<鍵>』を localStorage に覚えて # を消し、鍵が無い時は釦の下に案内の一行を出す。鍵そのものはパネルに書かない */
+  {
+    const okPrompt = html.indexOf('window.prompt(') < 0, okHash = html.indexOf('/^#k=([A-Za-z0-9_-]{8,80})$/') >= 0 && html.indexOf('history.replaceState(null') >= 0 && html.indexOf('localStorage.setItem(YB_KEY, hk[1])') >= 0, okHint = html.indexOf('id="ybHint"') >= 0 && html.indexOf('ヨシ待ちの知らせを一度押すと使えます') >= 0, noKey = !/kh-yb-[0-9a-f]{8}/.test(html);
+    if (okPrompt && okHash && okHint && noKey) { ok('ヨシの釦の鍵：入れ物は出さない・開いた時の #k= を覚えて # を消す・鍵が無い時は案内の一行・パネルに鍵は書かれていない'); }
+    else { ng('ヨシの釦の鍵の渡し方の字面が違う（入れ物なし ' + okPrompt + '・#k= ' + okHash + '・案内 ' + okHint + '・鍵なし ' + noKey + '）'); }
+  }
   /* v224（枠 百五十六）：影の仕事の箱（panelView.shadowBox）。走っている間だけ載る・済んだら null・金額の字が無い・パネルが箱を出す字面がある */
   {
     const os = require('os'), fsx = require('fs'), pth = require('path');
