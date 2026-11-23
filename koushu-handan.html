@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1522">
+<html lang="ja" data-ver="1523">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1398,7 +1398,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1522</div>
+  <div id="verTag">v1523</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -6068,32 +6068,34 @@ function advDecodeWav(ab) {
      ＊値の出どころ：v1471（席を外した版）の雲1000局（reports/cloud-core-battle-1000-20261113-191605.tsv）の偶数局。
        奇数局で確かめ、4000手で守り→攻めが761手（平均+237・決める用+306／確かめる用+171）。報告 reports/y1114-0431.md。
      ＊先生だけ v1478 で材料を替えた（一色に6枚以上→攻め・ほかは黙る）。重みは攻め0.188312・守り0、他の審判との一致の度合いは全て0（y1114-0654 の甲・y1114-1031）。
+     ＊v1523（11-24・棚 #6）：今の版（v1522・analyze は v1473 以降同じ）の雲2706局（reports/cloud-shinpan-omomi-rec-20261123-104345.tsv・台本 scratchpad/jobs/shinpan-omomi.js）の偶数局で重みと一致の度合いを測り直して差し替えた。
+       確かめる用（奇数局）の守り→攻めの平均点は +445（旧い重み）→ +543。報告 reports/cloud-shinpan-omomi-20261123-104345.md。先生の一致の度合いは、この測りでは一姫との1だけが立つ（他は0）。
      ＊analyze() そのものは変えない（core-probe・core-battle の測りが analyze と揃うように）。「判定する」の処理からだけ呼ぶ。 */
   const REVOTE_W = {
-    butler: { a: 0.030996, d: 0.016352 },
-    strategist: { a: 0.144168, d: 0.163701 },
-    blunt: { a: 0.133269, d: 0.165675 },
-    lady: { a: 0.102204, d: 0.123066 },
-    french: { a: 0.131814, d: 0.09141 },
-    ichihime: { a: 0.07292, d: 0 },
-    sensei: { a: 0.188312, d: 0 },
-    cat: { a: 0.201778, d: 0.142209 },
-    eda: { a: 0.060265, d: 0.061561 },
-    ai: { a: 0.146542, d: 0.113296 },
-    usagi: { a: 0.098586, d: 0.151065 }
+    butler: { a: 0.106919, d: 0.065746 },
+    strategist: { a: 0.14261, d: 0.163268 },
+    blunt: { a: 0.12001, d: 0.16866 },
+    lady: { a: 0.115612, d: 0.151575 },
+    french: { a: 0.110302, d: 0.094807 },
+    ichihime: { a: 0.202376, d: 0 },
+    sensei: { a: 0.162465, d: 0 },
+    cat: { a: 0.143282, d: 0.195893 },
+    eda: { a: 0.04633, d: 0.049154 },
+    ai: { a: 0.507785, d: 0.175525 },
+    usagi: { a: 0.066245, d: 0.060155 }
   };
   const REVOTE_K = {
-    butler: { strategist: 0.048938, blunt: 0.101232, lady: 0, french: 0, ichihime: 0, sensei: 0, cat: 0.006861, eda: 0.095994, ai: 0.039654, usagi: 0 },
-    strategist: { butler: 0.048938, blunt: 0.817958, lady: 0.224508, french: 0.288134, ichihime: 0, sensei: 0, cat: 0.518748, eda: 0.205086, ai: 0.500492, usagi: 0.063895 },
-    blunt: { butler: 0.101232, strategist: 0.817958, lady: 0.301047, french: 0.971011, ichihime: 0, sensei: 0, cat: 0.855036, eda: 0.672484, ai: 0.625141, usagi: 0.729818 },
-    lady: { butler: 0, strategist: 0.224508, blunt: 0.301047, french: 0, ichihime: 0, sensei: 0, cat: 0.276238, eda: 0, ai: 0.173928, usagi: 0.074809 },
-    french: { butler: 0, strategist: 0.288134, blunt: 0.971011, lady: 0, ichihime: 0, sensei: 0, cat: 0.559729, eda: 0.215128, ai: 0.065432, usagi: 0.842298 },
-    ichihime: { butler: 0, strategist: 0, blunt: 0, lady: 0, french: 0, sensei: 0, cat: 0, eda: 0, ai: 0, usagi: 0 },
-    sensei: { butler: 0, strategist: 0, blunt: 0, lady: 0, french: 0, ichihime: 0, cat: 0, eda: 0, ai: 0, usagi: 0 },
-    cat: { butler: 0.006861, strategist: 0.518748, blunt: 0.855036, lady: 0.276238, french: 0.559729, ichihime: 0, sensei: 0, eda: 0.182196, ai: 0.202874, usagi: 0 },
-    eda: { butler: 0.095994, strategist: 0.205086, blunt: 0.672484, lady: 0, french: 0.215128, ichihime: 0, sensei: 0, cat: 0.182196, ai: 0.125646, usagi: 0.172965 },
-    ai: { butler: 0.039654, strategist: 0.500492, blunt: 0.625141, lady: 0.173928, french: 0.065432, ichihime: 0, sensei: 0, cat: 0.202874, eda: 0.125646, usagi: 0.008905 },
-    usagi: { butler: 0, strategist: 0.063895, blunt: 0.729818, lady: 0.074809, french: 0.842298, ichihime: 0, sensei: 0, cat: 0, eda: 0.172965, ai: 0.008905 }
+    butler: { strategist: 0.048916, blunt: 0.168516, lady: 0, french: 0.073448, ichihime: 0, sensei: 0, cat: 0.012578, eda: 0.111446, ai: 0.026266, usagi: 0.055769 },
+    strategist: { butler: 0.048916, blunt: 0.795932, lady: 0.194716, french: 0.287146, ichihime: 0, sensei: 0, cat: 0.510497, eda: 0.197544, ai: 0.3328, usagi: 0.102599 },
+    blunt: { butler: 0.168516, strategist: 0.795932, lady: 0.309453, french: 0.979051, ichihime: 0, sensei: 0, cat: 0.825906, eda: 0.704814, ai: 0.4433, usagi: 0.696363 },
+    lady: { butler: 0, strategist: 0.194716, blunt: 0.309453, french: 0, ichihime: 0, sensei: 0, cat: 0.214339, eda: 0, ai: 0.127519, usagi: 0.042406 },
+    french: { butler: 0.073448, strategist: 0.287146, blunt: 0.979051, lady: 0, ichihime: 0, sensei: 0, cat: 0.518844, eda: 0.222519, ai: 0, usagi: 0.817823 },
+    ichihime: { butler: 0, strategist: 0, blunt: 0, lady: 0, french: 0, sensei: 1, cat: 0, eda: 0, ai: 0, usagi: 0 },
+    sensei: { butler: 0, strategist: 0, blunt: 0, lady: 0, french: 0, ichihime: 1, cat: 0, eda: 0, ai: 0, usagi: 0 },
+    cat: { butler: 0.012578, strategist: 0.510497, blunt: 0.825906, lady: 0.214339, french: 0.518844, ichihime: 0, sensei: 0, eda: 0.131432, ai: 0.121626, usagi: 0 },
+    eda: { butler: 0.111446, strategist: 0.197544, blunt: 0.704814, lady: 0, french: 0.222519, ichihime: 0, sensei: 0, cat: 0.131432, ai: 0.098192, usagi: 0.202369 },
+    ai: { butler: 0.026266, strategist: 0.3328, blunt: 0.4433, lady: 0.127519, french: 0, ichihime: 0, sensei: 0, cat: 0.121626, eda: 0.098192, usagi: 0 },
+    usagi: { butler: 0.055769, strategist: 0.102599, blunt: 0.696363, lady: 0.042406, french: 0.817823, ichihime: 0, sensei: 0, cat: 0, eda: 0.202369, ai: 0 }
   };
   function revoteVerdict(a, catN){
     if(!a || a.tooMany || a.kokushiSeen || a.yakumanReach) return null;
