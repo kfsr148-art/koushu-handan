@@ -102,19 +102,14 @@ function Send-Draft([string]$draft) {
   $tmp = [System.IO.Path]::GetTempFileName()
   try {
     [System.IO.File]::WriteAllText($tmp, $draft, (New-Object System.Text.UTF8Encoding($false)))
-    # ＊curl の終了コードだけを見てはいけない。HTTP が 429（1日の上限）でも curl は 0 を返す。
-    #   連絡文が弾かれたのに「送れた」ことになり、二度送らない仕組みが空振りを本送りと数える。
-    #   2026-08-23 に実測（本文は届かず、記録だけ成功のまま残った）。
-    $out = & curl.exe -s -S --max-time 20 -w '|HTTPCODE:%{http_code}' `
-      -H ('Title: ' + $enc) -H 'Priority: 2' -H 'Tags: mailbox' `
-      -H 'Content-Type: text/plain; charset=utf-8' `
-      --data-binary ('@' + $tmp) ('https://ntfy.sh/' + $topic) 2>&1
-    $code = $LASTEXITCODE
-    $one = (($out | Out-String).Trim() -replace '\s+', ' ')
-    $http = 0
-    if ($one -match 'HTTPCODE:(\d+)') { $http = [int]$matches[1] }
-    $ok = ($code -eq 0 -and $http -ge 200 -and $http -lt 300)
-    Write-Host ('  送信 ' + $(if ($ok) { 'OK' } else { 'NG' }) + ' exit=' + $code + ' HTTP=' + $http + ' 返り=' + $one)
+    # 2026-11-23 枠 百九十五（棚 #7）：ntfy へ送る口は push-plan.ps1 の Send-PushNtfy 一つ。ここで curl を直には呼ばない（決め・一日の上限・数え・記録を通る）。
+    #   ＊返り値：'200' など HTTP の数（送った）／'card'・'quiet'（決めで押さない）／'capped'（上限）／'notopic'。送れたのは '200' だけ。
+    #   ＊題『クロード連絡どき』は push-plan の分類に無いので push（手が要る物を落とさない側）。作り値は PUSH_FAKE_SEND（本物の ntfy を叩かない・作法14）。
+    . 'C:/Users/user/.claude/push-plan.ps1'
+    $code = [string](Send-PushNtfy -Title $NtfyTitle -Body $draft -From 'release-stable' -Priority '2')
+    $ok = ($code -eq '200')
+    $http = $code; $one = ''
+    Write-Host ('  送信 ' + $(if ($ok) { 'OK' } else { 'NG' }) + ' exit=0 HTTP=' + $http + ' 返り=push-plan')
     # 送れたものだけを、報告書の末尾の「送った知らせ」へ書き写す。弾かれた分は書かない。
     if ($ok) {
       try {
