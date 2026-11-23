@@ -78,6 +78,17 @@ function shelfCapacity(rows) {
 function shelfView() {
   try {
     const home = process.env.SHADOW_HOME || path.join(require('os').homedir(), '.claude');
+    // v235（枠 二百三十）：棚の釦は『計N件・使用予定M%』＝雲に並べてまだ札が出ていない枠の件数と週の見込み%の合計。元は ~/.claude/cloud-queue.json（cloud-queue.js が60秒に一度組む）。あればこれを使い、無ければ従来の shelf.json。
+    //   ＊検査（SHADOW_HOME 指定）では台本を呼ばない。
+    try {
+      const cqf = path.join(home, 'cloud-queue.json'), bomRe = new RegExp('^' + String.fromCharCode(0xFEFF));
+      if (!process.env.SHADOW_HOME) {
+        let age = 1e9; try { age = Date.now() / 1000 - Number(JSON.parse(fs.readFileSync(cqf, 'utf8').replace(bomRe, '')).epoch || 0); } catch (e) { }
+        if (age > 60) { require('child_process').spawnSync(process.execPath, [path.join(home, 'cloud-queue.js')], { timeout: 45000, windowsHide: true }); }
+      }
+      const q = JSON.parse(fs.readFileSync(cqf, 'utf8').replace(bomRe, ''));
+      if (q && Array.isArray(q.items) && (Date.now() / 1000 - Number(q.epoch || 0)) < 900) { return { n: q.items.length, sweep: '', capacity: null, pct: Math.round((Number(q.pct) || 0) * 10) / 10, cloud: true, items: q.items.slice(0, 30).map(x => ({ no: x.no, title: String(x.title || '').slice(0, 80), pct: Number(x.pct) || 0, type: String(x.status || '') + (x.est ? '・見込み推定' : '') })) }; }
+    } catch (e) { }
     const s = JSON.parse(fs.readFileSync(path.join(home, 'shelf.json'), 'utf8').replace(/^\uFEFF/, ''));
     if (!s || !Array.isArray(s.items)) { return null; }
     let sw = ''; try { sw = sweepLine(JSON.parse(fs.readFileSync(path.join(home, 'shelf-run.json'), 'utf8').replace(/^﻿/, '')), s.items); } catch (e) { sw = ''; }

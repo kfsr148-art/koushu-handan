@@ -1504,7 +1504,7 @@ try {
     }
     const rp = run(tmp, Object.assign({}, sc, { pressRecent: true }), 390, 844);
     if (!rp) { ng('測れない（直近の釦を押す）'); }
-    else if (/^棚 0件$/.test(String(rp.recBefore || '')) && rp.shelfOpen === true && rp.shelfClosed === true && /寝ている枠はありません/.test(String(rp.shelfText || ''))) { ok('v225：二段目の釦は「棚 N件・約M%」（棚が無ければ「棚 0件」）・押すと棚の一覧が開き、もう一度押すと閉じる（押す前「' + rp.recBefore + '」）'); }
+    else if (/^計0件$/.test(String(rp.recBefore || '')) && rp.shelfOpen === true && rp.shelfClosed === true && /雲に並んでいる枠はありません/.test(String(rp.shelfText || ''))) { ok('v235：二段目の釦は「計N件・使用予定M%」（雲の待ちが無ければ「計0件」）・押すと棚の一覧が開き、もう一度押すと閉じる（押す前「' + rp.recBefore + '」）'); }
     else { ng('棚の釦の字・開閉が違う（前「' + rp.recBefore + '」・後「' + rp.recAfter + '」・開 ' + rp.shelfOpen + '・閉 ' + rp.shelfClosed + '・中「' + String(rp.shelfText || '').slice(0, 40) + '」）'); }
   }
   /* ---- ⑤の二十六の二 v211（本人の枠 七十八・七十九）：底の八つは、まとめて写すが0件・1件・10件以上の時も、押し通知が有る時も無い時も、場所が少しも動かない（390・375・320） ---- */
@@ -2033,6 +2033,15 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
       const n1 = PV2.panelView({}, [], [], 1).shelf;
       if (n0 === null && n1 && n1.n === 2 && n1.pct === 18 && n1.items.length === 2 && n1.items[1].title === '通し読み' && n1.items[1].pct === 15) { ok('棚の材料：shelf.json が無ければ null・有れば n=2・約18%・一枠ずつ題と見積もり%が載る'); }
       else { ng('棚の材料が違う：無し ' + JSON.stringify(n0) + '／有り ' + JSON.stringify(n1)); }
+      // v235（枠 二百三十）：雲の待ち（cloud-queue.json）があれば、それが棚の材料（計N件・使用予定M%）。900秒より古ければ使わず shelf.json へ落ちる。
+      const nowE = Math.floor(Date.now() / 1000);
+      fs2.writeFileSync(pth2.join(dir2, 'cloud-queue.json'), JSON.stringify({ at: 'x', epoch: nowE, n: 2, pct: 9.5, items: [{ no: 1, title: '棚 #6 並べ直し', pct: 3, est: true, status: '走行中' }, { no: 2, title: '別の枠', pct: 6.5, est: false, status: '待ち' }] }));
+      const c1 = PV2.panelView({}, [], [], 1).shelf;
+      fs2.writeFileSync(pth2.join(dir2, 'cloud-queue.json'), JSON.stringify({ at: 'x', epoch: nowE - 2000, n: 1, pct: 3, items: [{ no: 1, title: '古い', pct: 3, status: '待ち' }] }));
+      const c2 = PV2.panelView({}, [], [], 1).shelf;
+      const htmlP = fs2.readFileSync(SRC, 'utf8');
+      if (c1 && c1.cloud === true && c1.n === 2 && c1.pct === 9.5 && c1.items[0].type === '走行中・見込み推定' && c1.items[1].type === '待ち' && c2 && c2.n === 2 && !c2.cloud && htmlP.indexOf("'計' + n + '件・使用予定'") >= 0 && htmlP.indexOf("'計0件'") >= 0) { ok('棚の釦の材料：雲の待ち（cloud-queue.json）があれば計2件・使用予定9.5%（推定は印つき）・900秒より古ければ shelf.json へ落ちる・釦は「計N件・使用予定M%」'); }
+      else { ng('雲の待ちの材料が違う：' + JSON.stringify(c1) + '／古い ' + JSON.stringify(c2)); }
     } finally { if (keep2 === undefined) { delete process.env.SHADOW_HOME; } else { process.env.SHADOW_HOME = keep2; } try { fs2.rmSync(dir2, { recursive: true, force: true }); } catch (e) { } }
     if (html.indexOf("function shelfLabel()") >= 0 && html.indexOf('id="shelfBox"') >= 0 && html.indexOf('✅ 直近に終わった：') >= 0 && html.indexOf('>直近に終わった仕事（0件）<') < 0) { ok('パネル：釦は棚・一覧 #shelfBox・直近に終わった三件は「くわしく」の rows（✅ 直近に終わった：）に入る字面がある'); }
     else { ng('パネルの棚の字面が無い／古い直近の釦が残っている'); }
