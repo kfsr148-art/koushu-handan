@@ -2062,6 +2062,22 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     if (html.indexOf('id="doneHead">👈 ヨシ待ち</button>') >= 0 && html.indexOf('id="doneToggle"') >= 0 && html.indexOf('function paintYoshiBtn()') >= 0 && html.indexOf("'kh-yoshi-topic'") >= 0 && html.indexOf("'yoshi ' + mark") >= 0 && html.indexOf('👈 ヨシを送った') >= 0 && html.indexOf('👈 ヨシが通った') >= 0 && html.indexOf('#doneHead.yb-on') >= 0 && html.indexOf('ntfy.sh/') >= 0 && !/kh-yoshi-topic'[ ]*,[ ]*'[A-Za-z0-9]/.test(html)) { ok('パネル：ヨシの釦（#doneHead・👈 ヨシ待ち／青N件／送った／通った）・話題名は電話に覚える（公開の字に名前を書かない）・終わりましたの口は #doneToggle'); }
     else { ng('パネルのヨシの釦の字面が無い／話題名が書かれている'); }
   }
+  /* v229（棚 #10 段③）：指さす。panelView.yubisashi は yubisashi.json の name・at（無ければ null）。パネルは指さした部品の名を『point 名』で話題へ送る */
+  {
+    const os5 = require('os'), fs5 = require('fs'), pth5 = require('path');
+    const dir5 = fs5.mkdtempSync(pth5.join(os5.tmpdir(), 'koushu-yu-')), keep5 = process.env.SHADOW_HOME;
+    try {
+      process.env.SHADOW_HOME = dir5;
+      const PV5 = require(pth5.join(path.dirname(SRC), 'panel-view.js'));
+      const y0 = PV5.panelView({}, [], [], 1).yubisashi;
+      fs5.writeFileSync(pth5.join(dir5, 'yubisashi.json'), JSON.stringify({ name: '状態の帯', at: '2026-11-23 20:00:00' }));
+      const y1 = PV5.panelView({}, [], [], 1).yubisashi;
+      if (y0 === null && y1 && y1.name === '状態の帯' && y1.at === '2026-11-23 20:00:00') { ok('指さすの材料：yubisashi.json が無ければ null・有れば name と at'); }
+      else { ng('指さすの材料が違う：' + JSON.stringify(y0) + ' / ' + JSON.stringify(y1)); }
+    } finally { if (keep5 === undefined) { delete process.env.SHADOW_HOME; } else { process.env.SHADOW_HOME = keep5; } try { fs5.rmSync(dir5, { recursive: true, force: true }); } catch (e) { } }
+    if (html.indexOf("body: 'point ' + pointClean(pointName(el), 40)") >= 0 && html.indexOf("'point ' + ptopic") < 0) { ok('パネル：指さした部品の名を『point 名』で話題へ送る字面がある（話題名は書かない）'); }
+    else { ng('パネルの指さしの送りの字面が無い'); }
+  }
   /* v224（枠 百五十六）：影の仕事の箱（panelView.shadowBox）。走っている間だけ載る・済んだら null・金額の字が無い・パネルが箱を出す字面がある */
   {
     const os = require('os'), fsx = require('fs'), pth = require('path');
