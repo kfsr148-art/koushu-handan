@@ -2046,6 +2046,22 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     if (/素振り 12:00 時点：起こすなら #4（見積もり 3%）/.test(a3) && /今は入らん（残り 3%・一番軽い #4 は 4.5%）/.test(b3) && /動く時間の外（次は 14:00 から）/.test(c3) && /戻りまで1時間を切った/.test(d3) && PV3.sweepLine(null, it3) === '' && html.indexOf('lastShelf.sweep') >= 0) { ok('棚の素振りの一行：入る／入らん（残りと一番軽い枠×1.5）／動く時間の外（次の刻）／戻り間近／材料なしは空・パネルが一覧の頭に出す字面がある'); }
     else { ng('棚の素振りの一行が違う：' + [a3, b3, c3, d3].join(' | ')); }
   }
+  /* v228（枠 百九十七・棚 #10）：ヨシの釦。panelView.yoshiOpen は yoshi-open.tsv の印だけ（古い順・話題名は載らない）。パネルは #doneHead をヨシの釦にし、青・N件・送った・通ったの字と、話題名は電話（localStorage）に覚える字面がある。終わりましたの一覧の口は #doneToggle へ移した */
+  {
+    const os4 = require('os'), fs4 = require('fs'), pth4 = require('path');
+    const dir4 = fs4.mkdtempSync(pth4.join(os4.tmpdir(), 'koushu-yo-')), keep4 = process.env.SHADOW_HOME;
+    try {
+      process.env.SHADOW_HOME = dir4;
+      const PV4 = require(pth4.join(path.dirname(SRC), 'panel-view.js'));
+      const e0 = PV4.panelView({}, [], [], 1).yoshiOpen;
+      fs4.writeFileSync(pth4.join(dir4, 'yoshi-open.tsv'), ['y1123-1111', '2026-11-23 19:00:00', '件A'].join(String.fromCharCode(9)) + String.fromCharCode(10) + ['y1123-2222', '2026-11-23 19:10:00', '件B'].join(String.fromCharCode(9)) + String.fromCharCode(10));
+      const e1 = PV4.panelView({}, [], [], 1).yoshiOpen;
+      if (Array.isArray(e0) && e0.length === 0 && e1.join(',') === 'y1123-1111,y1123-2222' && JSON.stringify(e1).indexOf('件') < 0) { ok('ヨシの釦の材料：一覧が無ければ空・有れば印だけ（古い順）'); }
+      else { ng('ヨシの釦の材料が違う：' + JSON.stringify(e0) + ' / ' + JSON.stringify(e1)); }
+    } finally { if (keep4 === undefined) { delete process.env.SHADOW_HOME; } else { process.env.SHADOW_HOME = keep4; } try { fs4.rmSync(dir4, { recursive: true, force: true }); } catch (e) { } }
+    if (html.indexOf('id="doneHead">👈 ヨシ待ち</button>') >= 0 && html.indexOf('id="doneToggle"') >= 0 && html.indexOf('function paintYoshiBtn()') >= 0 && html.indexOf("'kh-yoshi-topic'") >= 0 && html.indexOf("'yoshi ' + mark") >= 0 && html.indexOf('👈 ヨシを送った') >= 0 && html.indexOf('👈 ヨシが通った') >= 0 && html.indexOf('#doneHead.yb-on') >= 0 && html.indexOf('ntfy.sh/') >= 0 && !/kh-yoshi-topic'[ ]*,[ ]*'[A-Za-z0-9]/.test(html)) { ok('パネル：ヨシの釦（#doneHead・👈 ヨシ待ち／青N件／送った／通った）・話題名は電話に覚える（公開の字に名前を書かない）・終わりましたの口は #doneToggle'); }
+    else { ng('パネルのヨシの釦の字面が無い／話題名が書かれている'); }
+  }
   /* v224（枠 百五十六）：影の仕事の箱（panelView.shadowBox）。走っている間だけ載る・済んだら null・金額の字が無い・パネルが箱を出す字面がある */
   {
     const os = require('os'), fsx = require('fs'), pth = require('path');

@@ -34,6 +34,13 @@ function shadowBox(now) {
     return { k: '影の仕事', done: dn, run: 1, total: tot, now: t.length > 30 ? t.slice(0, 29) + '…' : t, endSec: end, endAt: end ? p2(d.getUTCHours()) + ':' + p2(d.getUTCMinutes()) : '', over: false, unk: false, lab: dn + '/' + tot };
   } catch (e) { return null; }
 }
+// v228（枠 百九十七・棚 #10）：今ヨシ待ちの印の一覧（~/.claude/yoshi-open.tsv の一列目＝印・古い順）。ヨシの釦の件数と、押した時に付ける『いちばん新しい印』の元。印は話題名ではないので公開してよい。
+function yoshiOpenList() {
+  try {
+    const home = process.env.SHADOW_HOME || path.join(require('os').homedir(), '.claude');
+    return fs.readFileSync(path.join(home, 'yoshi-open.tsv'), 'utf8').replace(/^\uFEFF/, '').split(/\r?\n/).map(l => l.split('\t')[0]).filter(m => /^y[0-9]{4}-[0-9]{4}/.test(m)).slice(-20);
+  } catch (e) { return []; }
+}
 // v227（枠 百九十三・棚 #11）：棚の割り振り係の素振りの最後の結果を一行にする（純粋）。材料＝~/.claude/shelf-run.json（at／would／reason／hLeft／week／room）と棚の一覧。
 //   ＊「起こすなら #N（見積もり M%）」／「今は入らん（残り A%・一番軽い #N は B%）」／「動く時間の外（次は HH:MM から）」。見た刻（素振りの at）を HH:MM で添える。
 function sweepLine(r, items) {
@@ -128,7 +135,7 @@ function panelView(d, notices, ntfySent, now) {
   // ---- 頭の字（パネルの headText と同じ PC.headText）----
   const head = PC.headText({ stat: d.stat, cloud: (typeof d.cloud === 'string') ? d.cloud : '', detail: (typeof d.detail === 'string') ? d.detail.replace(/（なし）/g, '') : '', ura: d.ura || null, lost: false,
     owedAt: (typeof d.cardOwedAt === 'number') ? d.cardOwedAt : 0, owedEta: (typeof d.cardOwedEta === 'number') ? d.cardOwedEta : 0, rows: rows, kumo: ((typeof d.kumo === 'string') && d.kumo) ? d.kumo : ((typeof d.temoto === 'string') ? d.temoto : ''), left: left, now: now });
-  return { shadowBox: shadowBox(now), shelf: shelfView(), head: head, label: PC.todoLabel(left), left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), coreVer: PC.VER, pub: { ver: String(d.pubVer || ''), at: Number(d.pubVerAt) || 0, line: PC.pubLine({ pubVer: d.pubVer, pubVerAt: d.pubVerAt, coreVer: PC.VER }) }, noEstimate: (String(d.stat || '') === '作業中' && !/[0-9]/.test(String(d.mikomi == null ? '' : d.mikomi))), jobEnd: jobEnd(d), omote: omoteView(d, now), ura: uraView(d, now), all: allView(d, now), at: now };
+  return { shadowBox: shadowBox(now), shelf: shelfView(), yoshiOpen: yoshiOpenList(), head: head, label: PC.todoLabel(left), left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), coreVer: PC.VER, pub: { ver: String(d.pubVer || ''), at: Number(d.pubVerAt) || 0, line: PC.pubLine({ pubVer: d.pubVer, pubVerAt: d.pubVerAt, coreVer: PC.VER }) }, noEstimate: (String(d.stat || '') === '作業中' && !/[0-9]/.test(String(d.mikomi == null ? '' : d.mikomi))), jobEnd: jobEnd(d), omote: omoteView(d, now), ura: uraView(d, now), all: allView(d, now), at: now };
 }
 // v203（枠 五十）：omote／ura は {lines（様子を写すと同じ字。パネルの画面には出さない）, endAt（HH:MM・JST）, endSec, src（元の数の一言）, 元の数…}。E は d.eta（endat.js）。
 // v204（枠 五十一）：panel＝パネルの箱が今出している物だけ（gauge＝ゲージの横の小さい字・end＝「全部終わる見込み HH:MM」の一行。裏方は done／run も）。src・始まり・lines は state.json の中だけ。
