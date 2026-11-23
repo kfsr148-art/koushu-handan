@@ -75,26 +75,38 @@ function shelfCapacity(rows) {
   return '1セッション≒棚 ' + Math.round(median(r.map(x => Number(x.w) / Number(x.s) * 100))) + '%';
 }
 // v225（枠 百六十二）：棚（余った使用量で回す溜め場）の釦と一覧の材料。~/.claude/shelf.json（走り手 shadow-run.js が控える）。無ければ null。
-function shelfView() {
+function shelfOnly() {
   try {
     const home = process.env.SHADOW_HOME || path.join(require('os').homedir(), '.claude');
-    // v235（枠 二百三十）：棚の釦は『計N件・使用予定M%』＝雲に並べてまだ札が出ていない枠の件数と週の見込み%の合計。元は ~/.claude/cloud-queue.json（cloud-queue.js が60秒に一度組む）。あればこれを使い、無ければ従来の shelf.json。
-    //   ＊検査（SHADOW_HOME 指定）では台本を呼ばない。
-    try {
-      const cqf = path.join(home, 'cloud-queue.json'), bomRe = new RegExp('^' + String.fromCharCode(0xFEFF));
-      if (!process.env.SHADOW_HOME) {
-        let age = 1e9; try { age = Date.now() / 1000 - Number(JSON.parse(fs.readFileSync(cqf, 'utf8').replace(bomRe, '')).epoch || 0); } catch (e) { }
-        if (age > 60) { require('child_process').spawnSync(process.execPath, [path.join(home, 'cloud-queue.js')], { timeout: 45000, windowsHide: true }); }
-      }
-      const q = JSON.parse(fs.readFileSync(cqf, 'utf8').replace(bomRe, ''));
-      if (q && Array.isArray(q.items) && (Date.now() / 1000 - Number(q.epoch || 0)) < 900) { return { n: q.items.length, sweep: '', capacity: null, pct: Math.round((Number(q.pct) || 0) * 10) / 10, cloud: true, items: q.items.slice(0, 30).map(x => ({ no: x.no, title: String(x.title || '').slice(0, 80), pct: Number(x.pct) || 0, type: String(x.status || '') + (x.est ? '・見込み推定' : '') })) }; }
-    } catch (e) { }
     const s = JSON.parse(fs.readFileSync(path.join(home, 'shelf.json'), 'utf8').replace(/^\uFEFF/, ''));
     if (!s || !Array.isArray(s.items)) { return null; }
     let sw = ''; try { sw = sweepLine(JSON.parse(fs.readFileSync(path.join(home, 'shelf-run.json'), 'utf8').replace(/^﻿/, '')), s.items); } catch (e) { sw = ''; }
     let cap = null; try { const tab = String.fromCharCode(9), nl = String.fromCharCode(10); const rows = fs.readFileSync(path.join(home, 'shelf-history.tsv'), 'utf8').split(nl).filter(l => l && l.charAt(0) !== '#').map(l => { const c = l.split(tab); return { s: Number(c[2]), w: Number(c[3]) }; }); cap = shelfCapacity(rows); } catch (e) { cap = shelfCapacity([]); }
     return { n: s.items.length, sweep: sw, capacity: cap, pct: Math.round((Number(s.pct) || 0) * 10) / 10, items: s.items.slice(0, 30).map(x => ({ no: x.no, title: String(x.title || '').slice(0, 80), pct: Number(x.pct) || 0, type: String(x.type || '').slice(0, 30) })) };
   } catch (e) { return null; }
+}
+// v236（枠 二百三十一）：雲の待ち（雲に並んでまだ終わっていない枠）。~/.claude/cloud-queue.json（cloud-queue.js が60秒に一度組む）。無い・900秒より古い時は null。棚（shelf.json）とは別の欄で、棚を消さない。
+//   ＊検査（SHADOW_HOME 指定）では台本を呼ばない。
+function cloudQueueView() {
+  try {
+    const home = process.env.SHADOW_HOME || path.join(require('os').homedir(), '.claude');
+    const cqf = path.join(home, 'cloud-queue.json'), bomRe = new RegExp('^' + String.fromCharCode(0xFEFF));
+    if (!process.env.SHADOW_HOME) {
+      let age = 1e9; try { age = Date.now() / 1000 - Number(JSON.parse(fs.readFileSync(cqf, 'utf8').replace(bomRe, '')).epoch || 0); } catch (e) { }
+      if (age > 60) { require('child_process').spawnSync(process.execPath, [path.join(home, 'cloud-queue.js')], { timeout: 45000, windowsHide: true }); }
+    }
+    const q = JSON.parse(fs.readFileSync(cqf, 'utf8').replace(bomRe, ''));
+    if (!q || !Array.isArray(q.items) || (Date.now() / 1000 - Number(q.epoch || 0)) >= 900) { return null; }
+    return { n: q.items.length, pct: Math.round((Number(q.pct) || 0) * 10) / 10, items: q.items.slice(0, 30).map(x => ({ no: x.no, title: String(x.title || '').slice(0, 80), pct: Number(x.pct) || 0, type: String(x.status || '') + (x.est ? '・見込み推定' : '') })) };
+  } catch (e) { return null; }
+}
+// 棚（koushu-ops の印「棚」の課題）はいつも元にして今まで通りに出し、雲の待ちは shelf.cloud として横に足す（棚が無くても雲があれば、空の棚に雲だけ載せる）。
+function shelfView() {
+  const sh = shelfOnly(), cl = cloudQueueView();
+  if (!sh && !cl) { return null; }
+  const out = sh || { n: 0, sweep: '', capacity: null, pct: 0, items: [] };
+  out.cloud = cl;
+  return out;
 }
 // v226（枠 百六十五）：今走っている仕事一つの週の使用量。見込み＝似た型（見込み時間が近い）の終わった仕事の実測の中央値から。今まで＝仕事の始まりの週%と今の週%の差。
 //   ＊週%は整数なので粗い。終わった仕事の実測は ~/.claude/job-week-history.tsv（刻／見込み分／増えた週%／経過分）に貯める（棚の見積もりの学びにも使う）。
