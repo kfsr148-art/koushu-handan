@@ -823,7 +823,7 @@ function staticParts() {
     /* 字数の見積もり：320px の視野で一つの釦の幅＝(320−左右の余白28−隙間8×3)÷4＝67px。「くわしく」「とじる」は13px×4字＝52px＋左右8pxで収まる */
     const bw = Math.floor((320 - 28 - 24) / 4), lw = Math.max('くわしく'.length, 'とじる'.length) * 13 + 8;
     if (lw <= bw && H.indexOf("stB.textContent = stepsOpen ? 'とじる' : 'くわしく';") >= 0) { ok('320px でも「くわしく」（' + lw + 'px）は四つ並びの釦の幅（' + bw + 'px）に一行で収まる見積もり（390・375 はもっと広い）'); } else { ng('くわしくの字が釦の幅に収まらない見積もり（' + lw + '／' + bw + '）'); }
-    if (H.indexOf("$('btnSteps').addEventListener('click', function () { stepsOpen = !stepsOpen; paintStateLine(); });") >= 0 && H.indexOf('el.hidden = !(stepsOpen && rows.length);') >= 0) { ok('押した時の動き（完了・進行中・予定が開く／とじる）は今のまま'); } else { ng('くわしくの押した時の動きが変わった'); }
+    if (H.indexOf("$('btnSteps').addEventListener('click', function () { stepsOpen = !stepsOpen; paintStateLine(); try { paintDoneFold(); } catch (e) { } });") >= 0 && H.indexOf('el.hidden = !(stepsOpen && rows.length);') >= 0) { ok('押した時の動き（完了・進行中・予定が開く／とじる）は今のまま'); } else { ng('くわしくの押した時の動きが変わった'); }
     const dir = path.dirname(SRC), ex = (n) => { try { return fs.statSync(path.join(dir, n)).size; } catch (e) { return 0; } };
     const png = (n) => { try { const b = fs.readFileSync(path.join(dir, n)); return b.readUInt32BE(16) + 'x' + b.readUInt32BE(20); } catch (e) { return ''; } };
     /* 六十五 → v211（本人の枠 七十三）：ヨシ待ちの猫は二枚を交互に（こぶし＝yoshi-machi-240.png・親指＝yoshi-machi2-soroe-240.png）。前の絵 yoshi-machi2-240.png と原版は残す */
@@ -2066,7 +2066,7 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
       if (Array.isArray(e0) && e0.length === 0 && e1.join(',') === 'y1123-1111,y1123-2222' && JSON.stringify(e1).indexOf('件') < 0) { ok('ヨシの釦の材料：一覧が無ければ空・有れば印だけ（古い順）'); }
       else { ng('ヨシの釦の材料が違う：' + JSON.stringify(e0) + ' / ' + JSON.stringify(e1)); }
     } finally { if (keep4 === undefined) { delete process.env.SHADOW_HOME; } else { process.env.SHADOW_HOME = keep4; } try { fs4.rmSync(dir4, { recursive: true, force: true }); } catch (e) { } }
-    if (html.indexOf('id="doneHead">👈 ヨシ待ち</button>') >= 0 && html.indexOf('id="doneToggle"') >= 0 && html.indexOf('function paintYoshiBtn()') >= 0 && html.indexOf("'kh-yoshi-topic'") >= 0 && html.indexOf("'yoshi ' + mark") >= 0 && html.indexOf('👈 ヨシを送った') >= 0 && html.indexOf('👈 ヨシが通った') >= 0 && html.indexOf('#doneHead.yb-on') >= 0 && html.indexOf('ntfy.sh/') >= 0 && !/kh-yoshi-topic'[ ]*,[ ]*'[A-Za-z0-9]/.test(html)) { ok('パネル：ヨシの釦（#doneHead・👈 ヨシ待ち／青N件／送った／通った）・話題名は電話に覚える（公開の字に名前を書かない）・終わりましたの口は #doneToggle'); }
+    if (html.indexOf('id="doneHead">👈 ヨシ待ち</button>') >= 0 && html.indexOf('id="doneFold"') >= 0 && html.indexOf('id="doneToggle"') < 0 && html.indexOf('function paintDoneFold()') >= 0 && html.indexOf('function paintYoshiBtn()') >= 0 && html.indexOf("'kh-yoshi-topic'") >= 0 && html.indexOf("'yoshi ' + mark") >= 0 && html.indexOf('👈 ヨシを送った') >= 0 && html.indexOf('👈 ヨシが通った') >= 0 && html.indexOf('#doneHead.yb-on') >= 0 && html.indexOf('ntfy.sh/') >= 0 && !/kh-yoshi-topic'[ ]*,[ ]*'[A-Za-z0-9]/.test(html)) { ok('パネル：ヨシの釦（#doneHead・👈 ヨシ待ち／青N件／送った／通った）・話題名は電話に覚える（公開の字に名前を書かない）・終わりましたの一覧は くわしくの中の畳み #doneFold（#doneToggle は無い）'); }
     else { ng('パネルのヨシの釦の字面が無い／話題名が書かれている'); }
   }
   /* v229（棚 #10 段③）：指さす。panelView.yubisashi は yubisashi.json の name・at（無ければ null）。パネルは指さした部品の名を『point 名』で話題へ送る */
