@@ -2045,6 +2045,11 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
       fs2.writeFileSync(pth2.join(dir2, 'cloud-queue.json'), JSON.stringify({ at: 'x', epoch: nowE, n: 1, pct: 3, items: [{ no: 9, title: '雲だけ', pct: 3, status: '待ち' }] }));
       const c3 = PV2.panelView({}, [], [], 1).shelf;
       const htmlP = fs2.readFileSync(SRC, 'utf8');
+      // v237（枠 二百三十五）：送った枠（窓＋雲を合わせて）の件数と使用予定%。窓＝作業中の一件＋順番待ち、雲＝待ち・走行中。窓の一件は fb（既定3）で数え、小数一桁。
+      { const sv = PV2.sentView, st1 = sv({ stat: '作業中', foot: { wait: 3 } }, { n: 2, pct: 9.5, fb: 3 }), st2 = sv({ stat: '待機中', foot: { wait: 0 } }, null), st3 = sv({ stat: '作業中', foot: { wait: 1 } }, { n: 0, pct: 0, fb: 1.5 });
+        const hp = fs2.readFileSync(SRC, 'utf8');
+        if (st1.n === 6 && st1.nw === 4 && st1.nc === 2 && st1.pct === 21.5 && st2.n === 0 && st2.pct === 0 && st3.n === 2 && st3.pct === 3 && hp.indexOf("'送った枠 ' + (sn.n | 0) + '件・使用予定 '") >= 0 && hp.indexOf("$('wjNow').textContent = '';") >= 0) { ok('送った枠：窓（作業中＋順番待ち）と雲を合わせた件数と使用予定%（窓の一件は fb・小数一桁）・返事パネルの下は「送った枠 N件・使用予定 M%」で「見込み」「今まで」は出さない'); }
+        else { ng('送った枠の数えが違う：' + JSON.stringify([st1, st2, st3])); } }
       if (c1 && c1.n === 2 && c1.pct === 18 && c1.items[1].title === '通し読み' && c1.cloud && c1.cloud.n === 2 && c1.cloud.pct === 9.5 && c1.cloud.items[0].type === '走行中・見込み推定' && c1.cloud.items[1].type === '待ち' &&
         c0 && c0.n === 2 && c0.cloud && c0.cloud.n === 0 && c2 && c2.n === 2 && c2.cloud === null && c3 && c3.n === 0 && c3.cloud && c3.cloud.n === 1 &&
         htmlP.indexOf("'棚 ' + n + '件・約'") >= 0 && htmlP.indexOf('function cloudLabel()') >= 0 && htmlP.indexOf('function cloudBox()') >= 0 && htmlP.indexOf("'雲 ' + ") >= 0) { ok('棚と雲：棚（shelf.json）は雲があっても2件のまま・雲は shelf.cloud に別の欄で載る（0件でも棚は消えない）・900秒より古い雲は null・棚が無く雲だけでも空の棚に雲が載る・釦の字は「棚 N件・約M%」の横に「雲 N件・M%」'); }

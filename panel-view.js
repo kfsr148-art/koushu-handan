@@ -97,8 +97,16 @@ function cloudQueueView() {
     }
     const q = JSON.parse(fs.readFileSync(cqf, 'utf8').replace(bomRe, ''));
     if (!q || !Array.isArray(q.items) || (Date.now() / 1000 - Number(q.epoch || 0)) >= 900) { return null; }
-    return { n: q.items.length, pct: Math.round((Number(q.pct) || 0) * 10) / 10, items: q.items.slice(0, 30).map(x => ({ no: x.no, title: String(x.title || '').slice(0, 80), pct: Number(x.pct) || 0, type: String(x.status || '') + (x.est ? '・見込み推定' : '') })) };
+    return { n: q.items.length, pct: Math.round((Number(q.pct) || 0) * 10) / 10, fb: (Number(q.fb) > 0 ? Number(q.fb) : 3), items: q.items.slice(0, 30).map(x => ({ no: x.no, title: String(x.title || '').slice(0, 80), pct: Number(x.pct) || 0, type: String(x.status || '') + (x.est ? '・見込み推定' : '') })) };
   } catch (e) { return null; }
+}
+// v237（枠 二百三十五）：返事パネルの下の「見込み」「今まで」の場所に出す『送った枠 N件・使用予定 M%』。送ってまだ終わっていない枠＝窓（作業中の一件＋順番待ち foot.wait）＋雲（cloud-queue.json の待ち・走行中）を合わせて数える（窓も雲も分けない）。
+//   使用予定％＝雲の枠は order-in.md 頭の「見込み：週 N%」の合計（無い枠は推定）・窓の枠は一件あたり fb（終わった雲の枠の実測の中央値・3件に満たない間は3）。小数一桁まで。雲の材料が無い時も窓だけで出す。
+function sentView(d, cl) {
+  const wait = (d && d.foot && typeof d.foot.wait === 'number' && d.foot.wait > 0) ? d.foot.wait : 0;
+  const nw = ((d && d.stat === '作業中') ? 1 : 0) + wait;
+  const fb = (cl && cl.fb > 0) ? cl.fb : 3, nc = cl ? cl.n : 0, pc = cl ? cl.pct : 0;
+  return { n: nw + nc, nw: nw, nc: nc, pct: Math.round((nw * fb + pc) * 10) / 10 };
 }
 // 棚（koushu-ops の印「棚」の課題）はいつも元にして今まで通りに出し、雲の待ちは shelf.cloud として横に足す（棚が無くても雲があれば、空の棚に雲だけ載せる）。
 function shelfView() {
@@ -175,7 +183,8 @@ function panelView(d, notices, ntfySent, now) {
   // ---- 頭の字（パネルの headText と同じ PC.headText）----
   const head = PC.headText({ stat: d.stat, cloud: (typeof d.cloud === 'string') ? d.cloud : '', detail: (typeof d.detail === 'string') ? d.detail.replace(/（なし）/g, '') : '', ura: d.ura || null, lost: false,
     owedAt: (typeof d.cardOwedAt === 'number') ? d.cardOwedAt : 0, owedEta: (typeof d.cardOwedEta === 'number') ? d.cardOwedEta : 0, rows: rows, kumo: ((typeof d.kumo === 'string') && d.kumo) ? d.kumo : ((typeof d.temoto === 'string') ? d.temoto : ''), left: left, now: now });
-  return { shadowBox: shadowBox(now), shelf: shelfView(), yoshiOpen: yoshiOpenList(), yubisashi: yubisashiView(), head: head, label: PC.todoLabel(left), left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), coreVer: PC.VER, pub: { ver: String(d.pubVer || ''), at: Number(d.pubVerAt) || 0, line: PC.pubLine({ pubVer: d.pubVer, pubVerAt: d.pubVerAt, coreVer: PC.VER }) }, noEstimate: (String(d.stat || '') === '作業中' && !/[0-9]/.test(String(d.mikomi == null ? '' : d.mikomi))), jobEnd: jobEnd(d), omote: omoteView(d, now), ura: uraView(d, now), all: allView(d, now), at: now };
+  const shelfV = shelfView();
+  return { shadowBox: shadowBox(now), shelf: shelfV, sent: sentView(d, shelfV ? shelfV.cloud : null), yoshiOpen: yoshiOpenList(), yubisashi: yubisashiView(), head: head, label: PC.todoLabel(left), left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), coreVer: PC.VER, pub: { ver: String(d.pubVer || ''), at: Number(d.pubVerAt) || 0, line: PC.pubLine({ pubVer: d.pubVer, pubVerAt: d.pubVerAt, coreVer: PC.VER }) }, noEstimate: (String(d.stat || '') === '作業中' && !/[0-9]/.test(String(d.mikomi == null ? '' : d.mikomi))), jobEnd: jobEnd(d), omote: omoteView(d, now), ura: uraView(d, now), all: allView(d, now), at: now };
 }
 // v203（枠 五十）：omote／ura は {lines（様子を写すと同じ字。パネルの画面には出さない）, endAt（HH:MM・JST）, endSec, src（元の数の一言）, 元の数…}。E は d.eta（endat.js）。
 // v204（枠 五十一）：panel＝パネルの箱が今出している物だけ（gauge＝ゲージの横の小さい字・end＝「全部終わる見込み HH:MM」の一行。裏方は done／run も）。src・始まり・lines は state.json の中だけ。
@@ -206,7 +215,7 @@ function allView(d, now) {
 }
 
 // 字の組み立ては panel-core.js の物をそのまま出す（panel-check.js・endat の検査が読む口。写しではない）
-module.exports = { shelfCapacity, sweepLine, convK, weekJobStep, panelView, senkoEpoch: PC.senkoEpoch, omoteLines: PC.omoteLines, uraLines: PC.uraLines, endLine: PC.endLine, endShort: PC.endShort, uraCount: PC.uraCount, boxSpec: PC.boxSpec, uraBusyText: PC.uraBusyText, ntfyOfCard: PC.ntfyOfCard, core: PC };
+module.exports = { sentView, shelfCapacity, sweepLine, convK, weekJobStep, panelView, senkoEpoch: PC.senkoEpoch, omoteLines: PC.omoteLines, uraLines: PC.uraLines, endLine: PC.endLine, endShort: PC.endShort, uraCount: PC.uraCount, boxSpec: PC.boxSpec, uraBusyText: PC.uraBusyText, ntfyOfCard: PC.ntfyOfCard, core: PC };
 
 if (require.main === module) {
   // 使い方：node panel-view.js <state.json の道> [<出し先の道>]  出し先が無ければ標準出力（PowerShell の文字化けを避けるため、見張りは道を渡す）
