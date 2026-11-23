@@ -306,7 +306,7 @@ function probeSource(scene) {
       }
       if (S.pressRecent) {   /* v187：直近に終わった仕事の釦（箱ごと押して写す） */
         var rbt = document.getElementById('btnRecent'); o.recBefore = txt(rbt); if (rbt) { rbt.click(); }
-        setTimeout(function () { o.recAfter = txt(rbt); o.recClip = String(CAP.clip || ''); out2(o); }, 700);
+        setTimeout(function () { o.recAfter = txt(rbt); o.recClip = String(CAP.clip || ''); var sb = document.getElementById('shelfBox'); o.shelfOpen = !!(sb && !sb.hidden); o.shelfText = sb ? txt(sb) : ''; if (rbt) { rbt.click(); } o.shelfClosed = !!(sb && sb.hidden); out2(o); }, 700);
         return;
       }
       if (S.press) {
@@ -1504,8 +1504,8 @@ try {
     }
     const rp = run(tmp, Object.assign({}, sc, { pressRecent: true }), 390, 844);
     if (!rp) { ng('測れない（直近の釦を押す）'); }
-    else if (/直近に終わった仕事（2件）/.test(String(rp.recBefore || '')) && /^写した$/.test(String(rp.recAfter || '')) && /直近その一/.test(String(rp.recClip || '')) && /直近その二/.test(String(rp.recClip || ''))) { ok('直近に終わった仕事は箱ごと押して全文が写る（押す前「' + rp.recBefore + '」・押した後「' + rp.recAfter + '」）'); }
-    else { ng('直近の釦を押しても写らない／字が違う（前「' + rp.recBefore + '」・後「' + rp.recAfter + '」・写し「' + String(rp.recClip || '').slice(0, 30) + '」）'); }
+    else if (/^棚 0件$/.test(String(rp.recBefore || '')) && rp.shelfOpen === true && rp.shelfClosed === true && /寝ている枠はありません/.test(String(rp.shelfText || ''))) { ok('v225：二段目の釦は「棚 N件・約M%」（棚が無ければ「棚 0件」）・押すと棚の一覧が開き、もう一度押すと閉じる（押す前「' + rp.recBefore + '」）'); }
+    else { ng('棚の釦の字・開閉が違う（前「' + rp.recBefore + '」・後「' + rp.recAfter + '」・開 ' + rp.shelfOpen + '・閉 ' + rp.shelfClosed + '・中「' + String(rp.shelfText || '').slice(0, 40) + '」）'); }
   }
   /* ---- ⑤の二十六の二 v211（本人の枠 七十八・七十九）：底の八つは、まとめて写すが0件・1件・10件以上の時も、押し通知が有る時も無い時も、場所が少しも動かない（390・375・320） ---- */
   head('⑤の二十六の二 底の八つの場所は 0件・1件・10件以上・押し通知の有無で動かない（四つ×二段・同じ幅と高さ・iPhone の幅）');
@@ -1999,6 +1999,22 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
   if (!vScript || !vTag || !vFile) { ng('版の三箇所のどれかが読めない（PANEL_VER「' + vScript + '」／verTag「' + vTag + '」／panel-ver.txt「' + vFile + '」）'); }
   else if (vScript !== vTag || vScript !== vFile) { ng('版が揃っていない（PANEL_VER ' + vScript + ' ／ verTag ' + vTag + ' ／ panel-ver.txt ' + vFile + '）'); }
   else { ok('版が三箇所とも v' + vScript); }
+  /* v225（枠 百六十二）：棚（panelView.shelf）。shelf.json から n・pct・items が組まれ、無ければ null。パネルは釦を「棚 N件・約M%」にし、直近に終わった三件は「くわしく」の rows に入る字面がある */
+  {
+    const os2 = require('os'), fs2 = require('fs'), pth2 = require('path');
+    const dir2 = fs2.mkdtempSync(pth2.join(os2.tmpdir(), 'koushu-shelf-')), keep2 = process.env.SHADOW_HOME;
+    try {
+      process.env.SHADOW_HOME = dir2;
+      const PV2 = require(pth2.join(path.dirname(SRC), 'panel-view.js'));
+      const n0 = PV2.panelView({}, [], [], 1).shelf;
+      fs2.writeFileSync(pth2.join(dir2, 'shelf.json'), JSON.stringify({ at: 'x', n: 2, pct: 18, items: [{ no: 4, title: '守りの種', pct: 3, type: 'ふだん' }, { no: 5, title: '通し読み', pct: 15, type: 'Fable' }] }));
+      const n1 = PV2.panelView({}, [], [], 1).shelf;
+      if (n0 === null && n1 && n1.n === 2 && n1.pct === 18 && n1.items.length === 2 && n1.items[1].title === '通し読み' && n1.items[1].pct === 15) { ok('棚の材料：shelf.json が無ければ null・有れば n=2・約18%・一枠ずつ題と見積もり%が載る'); }
+      else { ng('棚の材料が違う：無し ' + JSON.stringify(n0) + '／有り ' + JSON.stringify(n1)); }
+    } finally { if (keep2 === undefined) { delete process.env.SHADOW_HOME; } else { process.env.SHADOW_HOME = keep2; } try { fs2.rmSync(dir2, { recursive: true, force: true }); } catch (e) { } }
+    if (html.indexOf("function shelfLabel()") >= 0 && html.indexOf('id="shelfBox"') >= 0 && html.indexOf('✅ 直近に終わった：') >= 0 && html.indexOf('>直近に終わった仕事（0件）<') < 0) { ok('パネル：釦は棚・一覧 #shelfBox・直近に終わった三件は「くわしく」の rows（✅ 直近に終わった：）に入る字面がある'); }
+    else { ng('パネルの棚の字面が無い／古い直近の釦が残っている'); }
+  }
   /* v224（枠 百五十六）：影の仕事の箱（panelView.shadowBox）。走っている間だけ載る・済んだら null・金額の字が無い・パネルが箱を出す字面がある */
   {
     const os = require('os'), fsx = require('fs'), pth = require('path');
