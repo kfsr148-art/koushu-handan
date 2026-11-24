@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1528">
+<html lang="ja" data-ver="1529">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1398,7 +1398,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1528</div>
+  <div id="verTag">v1529</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -3466,8 +3466,8 @@ function advDecodeWav(ab) {
     const tl = advRetreatPart(a, attack);
     const withT = function(r){ r.push([tl || 'adva-tn']); return r; };   // v1506：七対子・対々和・タンヤオの文のあとに、巡目の一文（向聴2以上）か「何巡目まで、とは決めない」（向聴1以下）を足す
     if(attack){
-      if(a.kokushiSeen) return ([a.kokushiMayoi ? ['adva-kok-a', { n: Math.min(13, F.yaochuKinds) }, 'adva-kok-b', 'adva-kok-m'] : ['adva-kok-a', { n: Math.min(13, F.yaochuKinds) }, 'adva-kok-b'], [TEI, 'adva-kok-c']]);
-      if(a.yakumanReach) return ([['adva-yak-a'], [TEI, 'adva-yak-b']]);
+      if(a.kokushiSeen) return ([a.kokushiMayoi ? ['adva-kok-a', { n: Math.min(13, F.yaochuKinds) }, 'adva-kok-b', 'adva-kok-m'] : ['adva-kok-a', { n: Math.min(13, F.yaochuKinds) }, 'adva-kok-b'], [TEI, 'adva-kok-c'], [a.kokushiMayoi ? 'adva-yk-3' : 'adva-yk-1']]);   // v1529（棚 #9・y1124-1229）：相手あり測りの七文。11種以上＝27%／75%、10種＝押し切っても放銃だけが増える
+      if(a.yakumanReach) { const yl = [['adva-yak-a'], [TEI, 'adva-yak-b']]; if(a.yakumanName === '四暗刻' && F.trip >= 3){ if(F.pairs2 >= 2){ yl.push(['adva-yk-4'], ['adva-yk-5']); } else { yl.push(['adva-yk-7']); } } return yl; }   // v1529（棚 #9）：四暗刻は暗刻3＋対子2以上で yk-4・yk-5（27%／19%）、対子が足りなければ yk-7
       const chi = dirs.filter(function(d){ return /七対子/.test(d); })[0];
       if(chi){
         const m = /対子([0-9]+)/.exec(chi);
@@ -3488,7 +3488,7 @@ function advDecodeWav(ab) {
       else if(sh >= 0 && sh <= 2 && F.def === 0) lines.push(['adva-s-nosafe']);
       else if(F.doraFloat) lines.push(['adva-s-ukai']);
       else if(F.doraSoba) { /* v1500：「ドラの近くの牌は残して遠い牌から切る」は上の「切る」と同じ事なので足さない */ }
-      else if(F.honorPairs.length) lines.push(['adva-s-jihai']);
+      else if(F.honorPairs.length) lines.push(['adva-s-jihai']);   if(F.trip === 2 && F.pairs2 >= 2) lines.push(['adva-yk-6']);   /* v1529（棚 #9）：暗刻2＋対子2は役満を追っても数% */
       return lines;
     }
     /* 守り：①訳 ②序盤の切り方 ③リーチを受けた時 */
@@ -3524,6 +3524,7 @@ function advDecodeWav(ab) {
     else if(F.doraSoba && !a.kyushu) lines.push(['advd-s-sobat']);   // v1514：ドラの近くは6巡目までは切り、過ぎたら抱える
     else if(!a.kyushu && Object.keys(F.cnt).some(function(k){ return /^[ESWNPFC]$/.test(k); })) lines.push(['advd-s-jihaio']);   // v1514：字牌は「絞り」と言わず、降りる時に切るために抱える
     if(!a.kyushu) lines.push(['advd-sen']);   // v1514：撤退予約線の守り版（六つの分け全部同じ線・訳→切る順→線→リーチ）
+    if(a.kyushu) lines.push(['adva-yk-2']);   // v1529（棚 #9）：九種九牌は国士を追う値打ちが薄い（約2%）
     lines.push(['advd-riichi']);   // v1489：リーチの行は短い二文に分ける
     lines.push(keep.length ? ['advd-r2a', { t: keep[0] }, 'advd-r2b'] : ['advd-r2c']);
     return lines;
