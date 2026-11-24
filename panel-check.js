@@ -581,6 +581,18 @@ function staticParts() {
         /* 枠 二百七十三：画面の写し取り一覧の釦（btnShots）を公開の大きさの釦に替えた */
         if (html.indexOf('id="btnShots" aria-expanded="false">公開 —MB／1GB</button>') >= 0 && html.indexOf('site-size.json') >= 0 && html.indexOf('lastSite.mb >= 900') >= 0 && html.indexOf('shots/index.html') < 0) { ok('公開の大きさの釦：btnShots は『公開 NNNMB／1GB』（900MB から赤・押すと内訳・site-size.json を読む）・shots への番地は無い'); } else { ng('公開の大きさの釦が違う'); }
       }
+      /* v254（枠 二百七十八）：ヨシの釦の『通った』は約2秒・『送れなかった』は約4秒で元の『ヨシ待ち N件』へ戻る（押して2秒後→元の字） */
+      {
+        const lblSrc = cutFn(html, 'ybLabel');
+        if (!lblSrc) { ng('ybLabel が拾えない'); }
+        else {
+          const T0 = { t: 1000000 };
+          const mkL = (open, sent, kind, passed, fail) => new Function('S', 'var lastYoshiOpen = S.open, ybSent = S.sent, ybKind = S.kind, ybPassedAt = S.passed, ybFailAt = S.fail, YB_FAIL_MS = 4000, YB_PASS_MS = 2000, Date = { now: function () { return S.T.t; } }, setTimeout = function () { }, paintYoshiBtn = function () { };' + lblSrc + ' return function () { return ybLabel(); };')({ open: open, sent: sent, kind: kind, passed: passed, fail: fail, T: T0 });
+          const fP = mkL([], 'y1124-9999', 'go', 0, 0), p1 = fP(); T0.t += 2500; const p2 = fP();   // 通った（一覧から落ちた）→ 2.5秒後は元の字（0件なら0件）
+          const fX = mkL(['a', 'b'], '', '', 0, T0.t), x1 = fX(); T0.t += 1500; const x2 = fX(); T0.t += 3000; const x3 = fX();   // しくじった → 1.5秒後も『送れなかった』・4.5秒後は元の字（2件）
+          if (p1 === '👈 ヨシが通った' && p2 === '👈 ヨシ待ち 0件' && x1 === '👈 送れなかった' && x2 === '👈 送れなかった' && x3 === '👈 ヨシ待ち 2件') { ok('ヨシの釦：通った字は約2秒（押して2秒後→元の字 0件）・しくじった字は約4秒で元の字（件数つき）'); } else { ng('ヨシの釦の戻りが違う：' + [p1, p2, x1, x2, x3].join(' | ')); }
+        }
+      }
       if (SH0 === undefined) { delete process.env.SHADOW_HOME; } else { process.env.SHADOW_HOME = SH0; } try { fs.rmSync(tmpHome, { recursive: true, force: true }); } catch (e) { }
       /* v206（枠 五十八）：待ちでも下請けか雲が動いていれば「裏方作業中、、、。（下請け N本・雲 N本）」＋次「…」・どちらも動いていない時だけ「待ち：…」 */
       const hw = (ura, det) => PV.panelView({ stat: '待ち', detail: det, ura: ura }, [], [], NOW).head;
