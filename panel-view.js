@@ -74,6 +74,32 @@ function shelfCapacity(rows) {
   if (r.length < 3) { return '1セッション≒棚 16.0%'; }   // 枠 二百十五：元が少ない間も同じ形（言葉は付けない）
   return '1セッション≒棚 ' + (Math.round(median(r.map(x => Number(x.w) / Number(x.s) * 100)) * 10) / 10).toFixed(1) + '%';   // 枠 二百四十七：0.1% まで
 }
+// 枠 二百四十八・二百四十九：一件ごとの記録（窓の仕事 window-history.tsv・雲の走り senko/cloud-history.tsv・棚の実測 shelf-history.tsv）から、
+//   ①1セッション≒棚（セッションの増え分と週の増え分の組）と ②棚の各件の大きさ（似た仕事の実測の中央値）を出す。
+function tsvRows(file) { try { const tab = String.fromCharCode(9), nl = String.fromCharCode(10); return fs.readFileSync(file, 'utf8').replace(/^﻿/, '').split(nl).filter(l => l && l.charAt(0) !== '#').map(l => l.replace(/[\r]$/, '').split(tab)); } catch (e) { return []; } }
+function windowRows(home) {   // 列：刻／start・end／仕事の名／セッション%／週%／…。同じ名の start と end の差（セッションが増えた組だけ）
+  const open = {}, out = [];
+  tsvRows(path.join(home, 'window-history.tsv')).forEach(c => {
+    const s = Number(c[3]), w = Number(c[4]); if (!isFinite(s) || !isFinite(w)) { return; }
+    if (c[1] === 'start') { open[c[2]] = { s: s, w: w }; }
+    else if (c[1] === 'end' && open[c[2]]) { const ds = Math.round((s - open[c[2]].s) * 10) / 10, dw = Math.round((w - open[c[2]].w) * 10) / 10; delete open[c[2]]; if (ds > 0 && dw >= 0) { out.push({ s: ds, w: dw }); } }
+  });
+  return out;
+}
+function cloudRows() {   // senko/cloud-history.tsv の 増えたセッション%（列9）と 増えた週%（列3）。整数の差なので、セッションが増えた組だけ
+  const ks = process.env.KS_HOME || path.join(require('os').homedir(), 'Desktop', 'mahjong', 'koushu-state');
+  return tsvRows(path.join(ks, 'senko', 'cloud-history.tsv')).map(c => ({ s: Number(c[8 + 1]), w: Number(c[3]) })).filter(x => isFinite(x.s) && x.s > 0 && isFinite(x.w) && x.w >= 0);
+}
+function bigrams(t) { const s = String(t || '').replace(/[ 　、。・（）()「」『』：:]/g, ''), o = {}; for (let i = 0; i + 1 < s.length; i++) { o[s.slice(i, i + 2)] = 1; } return o; }
+function similar(a, b) { const A = bigrams(a), B = bigrams(b), ka = Object.keys(A); if (!ka.length) { return 0; } let n = 0; ka.forEach(k => { if (B[k]) { n++; } }); return n / (ka.length + Object.keys(B).length - n); }
+// 棚の各件：同じ型で題が似ている（二文字組の重なり 0.15 以上）終わった実測の、週の増えの中央値。無ければ手書きの見積もり＋印（basis）。
+function sizeItems(items, hist) {
+  return items.map(x => {
+    const sim = hist.filter(h => h.type && h.type === String(x.type || '') && similar(h.title, x.title) >= 0.15 && isFinite(h.w));
+    if (sim.length) { return Object.assign({}, x, { pct: Math.round(median(sim.map(h => h.w)) * 10) / 10, basis: '実測', nSim: sim.length }); }
+    return Object.assign({}, x, { basis: '手書き' });
+  });
+}
 // v225（枠 百六十二）：棚（余った使用量で回す溜め場）の釦と一覧の材料。~/.claude/shelf.json（走り手 shadow-run.js が控える）。無ければ null。
 function shelfOnly() {
   try {
@@ -81,8 +107,8 @@ function shelfOnly() {
     const s = JSON.parse(fs.readFileSync(path.join(home, 'shelf.json'), 'utf8').replace(/^\uFEFF/, ''));
     if (!s || !Array.isArray(s.items)) { return null; }
     let sw = ''; try { sw = sweepLine(JSON.parse(fs.readFileSync(path.join(home, 'shelf-run.json'), 'utf8').replace(/^﻿/, '')), s.items); } catch (e) { sw = ''; }
-    let cap = null; try { const tab = String.fromCharCode(9), nl = String.fromCharCode(10); const rows = fs.readFileSync(path.join(home, 'shelf-history.tsv'), 'utf8').split(nl).filter(l => l && l.charAt(0) !== '#').map(l => { const c = l.split(tab); return { s: Number(c[2]), w: Number(c[3]) }; }); cap = shelfCapacity(rows); } catch (e) { cap = shelfCapacity([]); }
-    return { n: s.items.length, sweep: sw, capacity: cap, pct: Math.round((Number(s.pct) || 0) * 10) / 10, items: s.items.slice(0, 30).map(x => ({ no: x.no, title: String(x.title || '').slice(0, 80), pct: Number(x.pct) || 0, type: String(x.type || '').slice(0, 30) })) };
+    let cap = null, hist = []; try { const sh = tsvRows(path.join(home, 'shelf-history.tsv')); hist = sh.map(c => ({ no: c[1], s: Number(c[2]), w: Number(c[3]), type: String(c[6] || ''), title: String(c[7] || '') })); cap = shelfCapacity(sh.map(c => ({ s: Number(c[2]), w: Number(c[3]) })).concat(windowRows(home), cloudRows())); } catch (e) { cap = shelfCapacity([]); }   // 枠 二百四十八：棚の実測に窓の仕事・雲の走りの組も足す
+    return { n: s.items.length, sweep: sw, capacity: cap, pct: Math.round(sizeItems(s.items.slice(0, 30).map(x => ({ title: String(x.title || ''), type: String(x.type || ''), pct: Number(x.pct) || 0 })), hist).reduce((t, x) => t + x.pct, 0) * 10) / 10, items: sizeItems(s.items.slice(0, 30).map(x => ({ no: x.no, title: String(x.title || '').slice(0, 80), pct: Number(x.pct) || 0, type: String(x.type || '').slice(0, 30) })), hist) };
   } catch (e) { return null; }
 }
 // v236（枠 二百三十一）：雲の待ち（雲に並んでまだ終わっていない枠）。~/.claude/cloud-queue.json（cloud-queue.js が60秒に一度組む）。無い・900秒より古い時は null。棚（shelf.json）とは別の欄で、棚を消さない。
