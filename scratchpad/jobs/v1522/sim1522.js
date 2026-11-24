@@ -30,6 +30,13 @@ function scenarios(vk) {   // 助言の行の場面（頭・終わりを除く�
   A.push([['adva-ikk-a'], [TEI, 'adva-ikk-b']]);
   A.push([['adva-neko-a', { n: 4 }, 'adva-neko-b'], [TEI, 'adva-neko-c'], ['adva-tc']]);   // v1506：猫牌4枚以上は「期限は引けない」
   A.push([['adva-yak-a'], [TEI, 'adva-yak-b']]);
+  /* v1529（棚 #9）：七文（国士・四暗刻・相手あり測り）の出る所＝本体 advLines0 と同じ並び */
+  A.push([['adva-kok-a', { n: 11 }, 'adva-kok-b'], [TEI, 'adva-kok-c'], ['adva-yk-1']]);
+  A.push([['adva-kok-a', { n: 10 }, 'adva-kok-b', 'adva-kok-m'], [TEI, 'adva-kok-c'], ['adva-yk-3']]);
+  A.push([['adva-yak-a'], [TEI, 'adva-yak-b'], ['adva-yk-4'], ['adva-yk-5']]);
+  A.push([['adva-yak-a'], [TEI, 'adva-yak-b'], ['adva-yk-7']]);
+  A.push([[w], [{ t: 'm7' }, 'adva-from', 'adva-t6'], ['adva-yk-6']]);
+  A.push([[w], ['adva-weak', 'adva-t6'], ['adva-yk-6']]);
   A.push([[SCENES[0]], ['adva-t6']]);
   A.push([[SCENES[1]], ['adva-t6']]);
   A.push([[SCENES[2]], ['adva-t6']]);
@@ -55,6 +62,8 @@ function scenarios(vk) {   // 助言の行の場面（頭・終わりを除く�
     D.push([['advd-w-' + k], KEEP_ES].concat(ch, [[{ t: 'E' }, 'advd-s-jihai'], ['advd-sen'], ['advd-riichi'], ['advd-r2a', { t: 'E' }, 'advd-r2b']]));
   });
   D.push([['advd-kyu'], KEEP_ES, [{ t: 'E' }, 'advd-s-jihai'], ['advd-riichi'], ['advd-r2a', { t: 'E' }, 'advd-r2b']]);
+  D.push([['advd-kyu'], KEEP_ES, [{ t: 'E' }, 'advd-s-jihai'], ['adva-yk-2'], ['advd-riichi'], ['advd-r2a', { t: 'E' }, 'advd-r2b']]);   // v1529（棚 #9）：九種九牌の守りに yk-2
+  D.push([['advd-kyu'], KEEP_ES, ['adva-yk-2'], ['advd-riichi'], ['advd-r2a', { t: 'E' }, 'advd-r2b']]);
   D.push([['advd-w-far'], [{ t: 'P' }, 'advd-keep'], ['advd-s-jihaio'], ['advd-sen'], ['advd-riichi'], ['advd-r2a', { t: 'P' }, 'advd-r2b']]);
   D.push([['advd-w-far'], ['advd-cut-a', { t: 'm7' }, 'advd-cut'], ['advd-sen'], ['advd-riichi'], ['advd-r2c']]);
   D.push([['advd-w-far'], ['advd-cut-a', { t: 'm7' }, 'advd-cut', { t: 'p5' }, 'advd-and', { t: 's5' }, 'advd-keep'], ['advd-s-nito'], ['advd-sen'], ['advd-riichi'], ['advd-r2a', { t: 'p5' }, 'advd-r2b']]);
@@ -125,18 +134,18 @@ function each(cb, opt) {   // 全組み合わせを回して cb(結果, 条件) 
     const big = C.advBigLine(tone, dial, sd === 'a');   // v1509：大物／惜しむ（本体は ctx.big の時だけ。字が空なら出ない）
     const hb = headSamples(dial, tone, m, sd, qsBase), hx = headSamples(dial, tone, m, sd, qsX);
     VK.forEach(vk => {
-    const sc = scenarios(vk), list = sd === 'a' ? sc.A : sc.D;
-    for (let i = 0; i < 3; i++) list.forEach((ls, k) => {
+    const sc = scenarios(vk), list0 = sd === 'a' ? sc.A : sc.D, list = process.env.YK_ONLY ? list0.filter(ls => JSON.stringify(ls).indexOf('adva-yk-') >= 0) : list0;   // v1529：YK_ONLY＝七文を含む並びだけ回す
+    for (let i = 0; i < (process.env.YK_ONLY ? 1 : 3); i++) list.forEach((ls, k) => {   /* v1529：YK_ONLY はくじ一つ */
       const c0 = { tone: tone, dial: dial, m: m, sd: sd, vk: vk, i: i, k: k };
       hb.forEach(h => {
         const f = compose(ls, c0, null, null, h.head);
         cb(f.r, Object.assign({ lines: f.lines, level: f.level, ok: f.ok, head: h.head, hcat: h.cat }, c0));
       });
-      if (big && i === 0) {   // 大物／惜しむの一言付き（くじ一つ・一言は両端の分位）
+      if (big && i === 0 && !process.env.YK_ONLY) {   // 大物／惜しむの一言付き（くじ一つ・一言は両端の分位）
         hx.forEach(h => { const fb = compose(ls, c0, null, null, h.head, big); cb(fb.r, Object.assign({ lines: fb.lines, level: fb.level, ok: fb.ok, head: h.head, hcat: h.cat, big: big }, c0)); });
       }
       const ob = C.ADV_OMO[dial + ':' + tone];
-      if (ob && i === 0 && (vk === VK[0] || vk === VK[3])) {   // 一言付きは、見方を二つ・くじ一つに絞って回す（量が多いため）
+      if (ob && i === 0 && !process.env.YK_ONLY && (vk === VK[0] || vk === VK[3])) {   // 一言付きは、見方を二つ・くじ一つに絞って回す（量が多いため）
         Object.keys(ob).forEach(sn => {
           if (sn === 'nick' && !cutPos(ls)) { return; }
           if (C.advOmoOverlaps(sn, ls)) { return; }
@@ -151,7 +160,7 @@ function each(cb, opt) {   // 全組み合わせを回して cb(結果, 条件) 
         });
       }
       if (i === 0 && vk === VK[0]) {   // 麻雀の言葉：全員・98語
-        WORDS.forEach(wd => hx.forEach(h => { const f3 = compose(ls, c0, null, wd, h.head); if (f3.level === 0 || f3.level === 1) { cb(f3.r, Object.assign({ lines: f3.lines, level: f3.level, ok: f3.ok, word: wd, ids: ls, head: h.head, hcat: h.cat }, c0)); } }));
+        (process.env.YK_ONLY ? WORDS.slice(0, 3) : WORDS).forEach(wd => hx.forEach(h => { const f3 = compose(ls, c0, null, wd, h.head); if (f3.level === 0 || f3.level === 1) { cb(f3.r, Object.assign({ lines: f3.lines, level: f3.level, ok: f3.ok, word: wd, ids: ls, head: h.head, hcat: h.cat }, c0)); } }));
       }
     });
     });
