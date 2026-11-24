@@ -9,7 +9,9 @@
 const fs = require('fs'), path = require('path');
 const ROOT = path.join(__dirname, '..', '..', '..');
 const NAMES = ['adva-weak', ...['035', '036', '039', '067', '068', '098', '099', '100', '101', '102', '103', '104'].map(n => 'advx-lady-advw-w' + n),
-  ...['butler', 'strategist', 'lady', 'french', 'ichihime', 'sensei'].map(t => 'advx-' + t + '-adva-weak')];
+  ...['butler', 'strategist', 'lady', 'french', 'ichihime', 'sensei'].map(t => 'advx-' + t + '-adva-weak'),
+  /* 棚 #9（2026-11-24）：七文 K1〜K7＝adva-yk-1〜7（ずんだの標準の声）と人格6人ぶん */
+  ...[1, 2, 3, 4, 5, 6, 7].map(n => 'adva-yk-' + n), ...['butler', 'strategist', 'lady', 'french', 'ichihime', 'sensei'].flatMap(t => [1, 2, 3, 4, 5, 6, 7].map(n => 'advx-' + t + '-adva-yk-' + n))];
 const say = {};
 fs.readFileSync(path.join(ROOT, 'voice-advice.txt'), 'utf8').split(/\r?\n/).forEach(l => { if (!l || l[0] === '#') { return; } const c = l.split('\t'); say[c[0].replace(/\.wav\.wav$/, '')] = c[c.length - 1]; });
 const lack = NAMES.filter(n => !say[n]);
