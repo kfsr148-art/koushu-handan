@@ -1,0 +1,2046 @@
+# 雲で回した タンヤオ の相手あり測り（20261124-084145 UTC・push/pushM/base の腕・同じ山）。
+本	周	枠	腕	席	配牌	結果	役満	形和了	和了型	役名	放銃先リーチ	受リーチ	点棒	巡目	打数	件
+0	1	y0	push	3	p7s6p8s5m7p6s2p7m2p5m6s2p6	和了	0	1	ツモ	門前清自摸和+平和+断幺九+三色同順+赤ドラ		0	12000	10	9	tanyao
+0	1	y0	pushM	3	p7s6p8s5m7p6s2p7m2p5m6s2p6	和了	0	1	ツモ	門前清自摸和+平和+断幺九+三色同順+赤ドラ		0	12000	10	9	tanyao
+0	1	y0	base	3	p7s6p8s5m7p6s2p7m2p5m6s2p6	和了	0	1	ツモ	立直+門前清自摸和+平和+断幺九		0	6200	10	9	tanyao
+0	1	y1	push	2	m1m6m2m5m6p2m5p7p4p6p4m8s8	無関係						1	0	8	8	tanyao
+0	1	y1	pushM	2	m1m6m2m5m6p2m5p7p4p6p4m8s8	無関係						1	0	8	8	tanyao
+0	1	y1	base	2	m1m6m2m5m6p2m5p7p4p6p4m8s8	無関係						1	0	16	15	tanyao
+0	1	y2	push	3	z7z2s4s2p6m8s3p3p8s6m5p3p2	被ツモ						1	-1300	17	16	tanyao
+0	1	y2	pushM	3	z7z2s4s2p6m8s3p3p8s6m5p3p2	被ツモ						1	-1300	17	16	tanyao
+0	1	y2	base	3	z7z2s4s2p6m8s3p3p8s6m5p3p2	和了	0	1	ツモ	立直+門前清自摸和+断幺九		0	5000	12	11	tanyao
+0	1	y3	push	1	s1m9z5m3s0p7s6s5s4m0s8s6p8	和了	0	1	ロン	断幺九+赤ドラ		1	3000	9	10	tanyao
+0	1	y3	pushM	1	s1m9z5m3s0p7s6s5s4m0s8s6p8	放銃					1	1	-2000	9	9	tanyao
+0	1	y3	base	1	s1m9z5m3s0p7s6s5s4m0s8s6p8	和了	0	1	ツモ	断幺九+赤ドラ		1	5000	10	10	tanyao
+0	1	y4	push	3	m9s9z7z1s6s2m6m6s4m7m2m4s3	被ツモ						1	-2000	11	10	tanyao
+0	1	y4	pushM	3	m9s9z7z1s6s2m6m6s4m7m2m4s3	無関係						0	0	10	9	tanyao
+0	1	y4	base	3	m9s9z7z1s6s2m6m6s4m7m2m4s3	被ツモ						0	-2000	14	14	tanyao
+0	1	y5	push	1	z4z5z2s9z5p4m4p6m3s7p8m8s7	和了	0	1	ツモ	断幺九		1	2100	16	16	tanyao
+0	1	y5	pushM	1	z4z5z2s9z5p4m4p6m3s7p8m8s7	放銃					1	1	-2000	13	13	tanyao
+0	1	y5	base	1	z4z5z2s9z5p4m4p6m3s7p8m8s7	流局						1	-1000	18	18	tanyao
+0	2	y0	push	1	m5m7m4m8m7m2m2m5s8m3m6s8s5	被ツモ						1	-300	11	11	tanyao
+0	2	y0	pushM	1	m5m7m4m8m7m2m2m5s8m3m6s8s5	被ツモ						1	-300	11	11	tanyao
+0	2	y0	base	1	m5m7m4m8m7m2m2m5s8m3m6s8s5	和了	0	1	ロン	立直+断幺九+赤ドラ		0	9000	4	4	tanyao
+0	2	y1	push	3	p9m7p7s6m2s4s2p6m8m2m6m3p5	和了	0	1	ロン	断幺九		0	1000	5	5	tanyao
+0	2	y1	pushM	3	p9m7p7s6m2s4s2p6m8m2m6m3p5	無関係						0	0	9	9	tanyao
+0	2	y1	base	3	p9m7p7s6m2s4s2p6m8m2m6m3p5	被ツモ						1	-2000	10	10	tanyao
+0	2	y2	push	2	m1z6m2m4s4s5m3p3s6p4m3p5s4	和了	0	0	ツモ	門前清自摸和+平和		1	3500	15	14	tanyao
+0	2	y2	pushM	2	m1z6m2m4s4s5m3p3s6p4m3p5s4	和了	0	0	ツモ	門前清自摸和+平和		1	3500	15	14	tanyao
+0	2	y2	base	2	m1z6m2m4s4s5m3p3s6p4m3p5s4	無関係						1	0	9	8	tanyao
+0	2	y3	push	3	s1m9z1s7s3m7s4m3m3p8s4p2p3	和了	0	1	ロン	断幺九+七対子		0	3200	10	10	tanyao
+0	2	y3	pushM	3	s1m9z1s7s3m7s4m3m3p8s4p2p3	和了	0	1	ロン	断幺九+七対子		0	3200	10	10	tanyao
+0	2	y3	base	3	s1m9z1s7s3m7s4m3m3p8s4p2p3	無関係						0	0	12	12	tanyao
+0	2	y4	push	1	z1z5z2z2s4p2m4m2p5p4m2m6p3	無関係						0	0	7	7	tanyao
+0	2	y4	pushM	1	z1z5z2z2s4p2m4m2p5p4m2m6p3	無関係						0	0	7	7	tanyao
+0	2	y4	base	1	z1z5z2z2s4p2m4m2p5p4m2m6p3	和了	0	0	ロン	立直+自風 南+裏ドラ		0	7400	12	12	tanyao
+0	2	y5	push	1	s9p9s9z5m9p4m7m3p2m6p5m7m6	和了	0	1	ロン	平和+断幺九+一盃口		0	3900	10	10	tanyao
+0	2	y5	pushM	1	s9p9s9z5m9p4m7m3p2m6p5m7m6	和了	0	1	ロン	平和+断幺九+一盃口		0	3900	10	10	tanyao
+0	2	y5	base	1	s9p9s9z5m9p4m7m3p2m6p5m7m6	放銃					1	1	-11600	11	12	tanyao
+0	3	y0	push	2	s6p8s5m2m6p3m4m8p6s6p3s7p5	放銃					0	0	-7700	12	14	tanyao
+0	3	y0	pushM	2	s6p8s5m2m6p3m4m8p6s6p3s7p5	放銃					0	0	-7700	12	14	tanyao
+0	3	y0	base	2	s6p8s5m2m6p3m4m8p6s6p3s7p5	和了	0	1	ツモ	断幺九		0	1100	12	12	tanyao
+0	3	y1	push	2	z1s0m6p5p3m8s2m4s7p8s3s4s8	無関係						1	0	10	10	tanyao
+0	3	y1	pushM	2	z1s0m6p5p3m8s2m4s7p8s3s4s8	流局						1	-1000	18	18	tanyao
+0	3	y1	base	2	z1s0m6p5p3m8s2m4s7p8s3s4s8	流局						1	-1000	18	18	tanyao
+0	3	y2	push	2	z5m9m3s3m2p5s7m4p6s8p3m8p6	無関係						1	0	5	4	tanyao
+0	3	y2	pushM	2	z5m9m3s3m2p5s7m4p6s8p3m8p6	無関係						1	0	5	4	tanyao
+0	3	y2	base	2	z5m9m3s3m2p5s7m4p6s8p3m8p6	無関係						1	0	5	4	tanyao
+0	3	y3	push	1	z7s9z1m2s6m7p3p8m3p6m4s3m8	被ツモ						1	-8000	17	17	tanyao
+0	3	y3	pushM	1	z7s9z1m2s6m7p3p8m3p6m4s3m8	無関係						1	0	9	9	tanyao
+0	3	y3	base	1	z7s9z1m2s6m7p3p8m3p6m4s3m8	無関係						0	0	11	12	tanyao
+0	3	y4	push	2	z7z7z6z6s3m4s6s2s4s8p2m8s5	無関係						0	0	10	10	tanyao
+0	3	y4	pushM	2	z7z7z6z6s3m4s6s2s4s8p2m8s5	無関係						0	0	10	10	tanyao
+0	3	y4	base	2	z7z7z6z6s3m4s6s2s4s8p2m8s5	和了	0	0	ロン	翻牌 中		0	1000	4	4	tanyao
+0	3	y5	push	2	z5z4p9p1z7s0p8m6p8p5s6p2s8	無関係						0	0	8	9	tanyao
+0	3	y5	pushM	2	z5z4p9p1z7s0p8m6p8p5s6p2s8	被ツモ						1	-1300	7	6	tanyao
+0	3	y5	base	2	z5z4p9p1z7s0p8m6p8p5s6p2s8	無関係						0	0	5	6	tanyao
+0	4	y0	push	1	p2p3m8p4s3s2p6s7m0s7p6m6s5	和了	0	1	ツモ	断幺九+ドラ+赤ドラ		1	5000	11	11	tanyao
+0	4	y0	pushM	1	p2p3m8p4s3s2p6s7m0s7p6m6s5	和了	0	1	ロン	断幺九+ドラ+赤ドラ		1	6200	17	17	tanyao
+0	4	y0	base	1	p2p3m8p4s3s2p6s7m0s7p6m6s5	和了	0	1	ロン	断幺九+赤ドラ		1	3000	9	10	tanyao
+0	4	y1	push	3	z6p5s6p5p3p6m8m4s2p3s4m7p4	無関係						0	0	6	6	tanyao
+0	4	y1	pushM	3	z6p5s6p5p3p6m8m4s2p3s4m7p4	無関係						0	0	6	6	tanyao
+0	4	y1	base	3	z6p5s6p5p3p6m8m4s2p3s4m7p4	無関係						0	0	10	10	tanyao
+0	4	y2	push	2	z5z6s8m8p3p7s6m7m4s2m7p6p4	無関係						0	0	7	7	tanyao
+0	4	y2	pushM	2	z5z6s8m8p3p7s6m7m4s2m7p6p4	流局						1	-3000	18	18	tanyao
+0	4	y2	base	2	z5z6s8m8p3p7s6m7m4s2m7p6p4	和了	0	1	ロン	断幺九+ドラ		0	2000	12	13	tanyao
+0	4	y3	push	3	p1z2s9m3p3p5m6s4m8m6m5s2s7	被ツモ						1	-2000	12	12	tanyao
+0	4	y3	pushM	3	p1z2s9m3p3p5m6s4m8m6m5s2s7	被ツモ						1	-6000	9	8	tanyao
+0	4	y3	base	3	p1z2s9m3p3p5m6s4m8m6m5s2s7	被ツモ						1	-6000	9	8	tanyao
+0	4	y4	push	1	z6m1m9z4s5p5m4p5p2s5m8p3s2	流局						1	1500	18	18	tanyao
+0	4	y4	pushM	1	z6m1m9z4s5p5m4p5p2s5m8p3s2	流局						1	1500	18	18	tanyao
+0	4	y4	base	1	z6m1m9z4s5p5m4p5p2s5m8p3s2	流局						1	1500	18	18	tanyao
+0	4	y5	push	3	s9z3z1z1z4s4s8m5m3m7p5m4s4	被ツモ						1	-4000	13	12	tanyao
+0	4	y5	pushM	3	s9z3z1z1z4s4s8m5m3m7p5m4s4	放銃					1	1	-3900	13	13	tanyao
+0	4	y5	base	3	s9z3z1z1z4s4s8m5m3m7p5m4s4	放銃					1	1	-3900	13	13	tanyao
+0	5	y0	push	2	s0p6p2p2s3m7s8p7p5m4p7p5m7	放銃					1	1	-12000	17	17	tanyao
+0	5	y0	pushM	2	s0p6p2p2s3m7s8p7p5m4p7p5m7	無関係						1	0	11	11	tanyao
+0	5	y0	base	2	s0p6p2p2s3m7s8p7p5m4p7p5m7	和了	0	1	ツモ	立直+門前清自摸和+断幺九+赤ドラ		1	11000	11	10	tanyao
+0	5	y1	push	1	s9m7m0m5p5p8m7s3p3s2s6s8p4	放銃					0	0	-8700	12	13	tanyao
+0	5	y1	pushM	1	s9m7m0m5p5p8m7s3p3s2s6s8p4	放銃					0	0	-8700	12	13	tanyao
+0	5	y1	base	1	s9m7m0m5p5p8m7s3p3s2s6s8p4	和了	0	0	ロン	立直+赤ドラ+裏ドラ		1	7200	10	11	tanyao
+0	5	y2	push	2	z6s9s2s4m4s7s8p2m4m6p8s6s3	被ツモ						1	-2000	16	15	tanyao
+0	5	y2	pushM	2	z6s9s2s4m4s7s8p2m4m6p8s6s3	流局						1	1500	18	17	tanyao
+0	5	y2	base	2	z6s9s2s4m4s7s8p2m4m6p8s6s3	放銃					1	1	-5200	16	16	tanyao
+0	5	y3	push	2	m1z7p1m5s6p3m4m2s7s4s6m8p3	無関係						1	0	13	14	tanyao
+0	5	y3	pushM	2	m1z7p1m5s6p3m4m2s7s4s6m8p3	無関係						0	0	7	7	tanyao
+0	5	y3	base	2	m1z7p1m5s6p3m4m2s7s4s6m8p3	無関係						1	0	8	9	tanyao
+0	5	y4	push	2	s9s9z5z1s6p6m4s2m2s5p4p6m3	放銃					1	1	-12000	9	10	tanyao
+0	5	y4	pushM	2	s9s9z5z1s6p6m4s2m2s5p4p6m3	放銃					0	0	-3900	14	16	tanyao
+0	5	y4	base	2	s9s9z5z1s6p6m4s2m2s5p4p6m3	流局						0	0	18	18	tanyao
+0	5	y5	push	3	s9p1m1p9m1m5m2m7p6p5s4s5m0	流局						1	-1000	18	17	tanyao
+0	5	y5	pushM	3	s9p1m1p9m1m5m2m7p6p5s4s5m0	流局						1	-1000	18	17	tanyao
+0	5	y5	base	3	s9p1m1p9m1m5m2m7p6p5s4s5m0	流局						1	1500	18	17	tanyao
+0	6	y0	push	1	p4s6p0s4m2m5m8s6p8p2p8m4p2	無関係						0	0	15	14	tanyao
+0	6	y0	pushM	1	p4s6p0s4m2m5m8s6p8p2p8m4p2	無関係						0	0	15	14	tanyao
+0	6	y0	base	1	p4s6p0s4m2m5m8s6p8p2p8m4p2	流局						0	1000	18	18	tanyao
+0	6	y1	push	1	z6m3m4s7p4m4s8m8p5m2p4p3p7	流局						0	1000	18	18	tanyao
+0	6	y1	pushM	1	z6m3m4s7p4m4s8m8p5m2p4p3p7	和了	0	0	ツモ	門前清自摸和+平和		1	2500	15	14	tanyao
+0	6	y1	base	1	z6m3m4s7p4m4s8m8p5m2p4p3p7	和了	0	0	ツモ	立直+門前清自摸和+平和+裏ドラ		1	7200	15	14	tanyao
+0	6	y2	push	2	s9z4s2p3m2s5p8m8s2s2m2p7p6	和了	0	1	ロン	断幺九+赤ドラ		1	3600	14	15	tanyao
+0	6	y2	pushM	2	s9z4s2p3m2s5p8m8s2s2m2p7p6	和了	0	1	ロン	断幺九+赤ドラ		1	3600	14	15	tanyao
+0	6	y2	base	2	s9z4s2p3m2s5p8m8s2s2m2p7p6	和了	0	0	ロン	立直		0	2300	14	14	tanyao
+0	6	y3	push	1	z3m1z6s0m3p6s2m6s3p8p0s7s7	和了	0	1	ツモ	断幺九+ドラ+赤ドラ		1	8900	12	11	tanyao
+0	6	y3	pushM	1	z3m1z6s0m3p6s2m6s3p8p0s7s7	被ツモ						1	-4000	16	15	tanyao
+0	6	y3	base	1	z3m1z6s0m3p6s2m6s3p8p0s7s7	和了	0	1	ツモ	断幺九+ドラ+赤ドラ		1	8900	12	11	tanyao
+0	6	y4	push	3	m1z5z6s1s5s3p7s3p2m7m6m5m2	流局						1	-1500	18	18	tanyao
+0	6	y4	pushM	3	m1z5z6s1s5s3p7s3p2m7m6m5m2	無関係						0	0	14	14	tanyao
+0	6	y4	base	3	m1z5z6s1s5s3p7s3p2m7m6m5m2	被ツモ						0	-500	17	17	tanyao
+0	6	y5	push	2	m1z5z4m9s9s4s8s3s6s6s3p4m3	和了	0	1	ロン	断幺九+ドラ+赤ドラ		1	8700	15	16	tanyao
+0	6	y5	pushM	2	m1z5z4m9s9s4s8s3s6s6s3p4m3	無関係						0	0	11	11	tanyao
+0	6	y5	base	2	m1z5z4m9s9s4s8s3s6s6s3p4m3	和了	0	1	ロン	断幺九+ドラ		0	3900	10	11	tanyao
+0	7	y0	push	3	s2m6p5s3s5s6m7m4s5s8m2m8m2	和了	0	0	ロン	平和		0	1000	6	5	tanyao
+0	7	y0	pushM	3	s2m6p5s3s5s6m7m4s5s8m2m8m2	和了	0	0	ロン	平和		0	1000	6	5	tanyao
+0	7	y0	base	3	s2m6p5s3s5s6m7m4s5s8m2m8m2	和了	0	1	ツモ	立直+門前清自摸和+平和+断幺九+ドラ		0	9000	9	8	tanyao
+0	7	y1	push	3	p9s8p3m5p0m4p4p2p6s3s5m8p2	無関係						0	0	7	7	tanyao
+0	7	y1	pushM	3	p9s8p3m5p0m4p4p2p6s3s5m8p2	無関係						0	0	7	7	tanyao
+0	7	y1	base	3	p9s8p3m5p0m4p4p2p6s3s5m8p2	放銃					0	0	-1500	7	8	tanyao
+0	7	y2	push	2	p9s1m6m7s4m5m4p6p3s6p4m6m2	流局						1	-1000	18	17	tanyao
+0	7	y2	pushM	2	p9s1m6m7s4m5m4p6p3s6p4m6m2	流局						1	-1000	18	17	tanyao
+0	7	y2	base	2	p9s1m6m7s4m5m4p6p3s6p4m6m2	流局						1	1500	18	17	tanyao
+0	7	y3	push	1	z2p1p1p3m4m8p4s6m3s0s2p4s8	放銃					1	1	-4800	12	12	tanyao
+0	7	y3	pushM	1	z2p1p1p3m4m8p4s6m3s0s2p4s8	流局						1	-1500	18	18	tanyao
+0	7	y3	base	1	z2p1p1p3m4m8p4s6m3s0s2p4s8	放銃					1	1	-4800	17	17	tanyao
+0	7	y4	push	1	z2z1z5z3s8s4p2m3s7p3p7m8p8	無関係						1	0	11	12	tanyao
+0	7	y4	pushM	1	z2z1z5z3s8s4p2m3s7p3p7m8p8	和了	0	1	ロン	平和+断幺九+ドラ		0	3900	17	17	tanyao
+0	7	y4	base	1	z2z1z5z3s8s4p2m3s7p3p7m8p8	流局						0	1500	18	18	tanyao
+0	7	y5	push	3	s1z4z7z4z3s4s4s5m8p4m4m6s3	被ツモ						1	-4000	5	4	tanyao
+0	7	y5	pushM	3	s1z4z7z4z3s4s4s5m8p4m4m6s3	被ツモ						1	-4000	5	4	tanyao
+0	7	y5	base	3	s1z4z7z4z3s4s4s5m8p4m4m6s3	被ツモ						1	-4000	5	4	tanyao
+0	8	y0	push	2	p2s6s4p8p2m0p2s3s6p6s3m6p7	和了	0	1	ロン	断幺九		0	1000	9	9	tanyao
+0	8	y0	pushM	2	p2s6s4p8p2m0p2s3s6p6s3m6p7	無関係						0	0	12	11	tanyao
+0	8	y0	base	2	p2s6s4p8p2m0p2s3s6p6s3m6p7	放銃					0	0	-1000	12	12	tanyao
+0	8	y1	push	1	z3p7s6s6s8s6s4s8p3p8p7p0p5	流局						1	1500	18	18	tanyao
+0	8	y1	pushM	1	z3p7s6s6s8s6s4s8p3p8p7p0p5	流局						1	1500	18	18	tanyao
+0	8	y1	base	1	z3p7s6s6s8s6s4s8p3p8p7p0p5	和了	0	0	ツモ	立直+門前清自摸和+ドラ+赤ドラ		0	9000	16	15	tanyao
+0	8	y2	push	3	z5z2m4s8p7p4p8m8p2m5p2m2s8	無関係						1	0	8	7	tanyao
+0	8	y2	pushM	3	z5z2m4s8p7p4p8m8p2m5p2m2s8	無関係						1	0	8	7	tanyao
+0	8	y2	base	3	z5z2m4s8p7p4p8m8p2m5p2m2s8	放銃					1	1	-12000	6	6	tanyao
+0	8	y3	push	1	z3z4m1m7s4p5p4s3m2m2s8m4m4	被ツモ						1	-6000	16	16	tanyao
+0	8	y3	pushM	1	z3z4m1m7s4p5p4s3m2m2s8m4m4	被ツモ						1	-6000	16	16	tanyao
+0	8	y3	base	1	z3z4m1m7s4p5p4s3m2m2s8m4m4	放銃					0	0	-1000	7	6	tanyao
+0	8	y4	push	2	z7m9m1z5p6p4p8s6m5m4p8p7s7	放銃					1	1	-12000	12	11	tanyao
+0	8	y4	pushM	2	z7m9m1z5p6p4p8s6m5m4p8p7s7	放銃					1	1	-12000	12	11	tanyao
+0	8	y4	base	2	z7m9m1z5p6p4p8s6m5m4p8p7s7	和了	0	1	ロン	断幺九		0	1000	10	10	tanyao
+0	8	y5	push	3	s1s9z6p9p9m8s2p4s5p4s8s8p7	放銃					1	1	-7700	11	11	tanyao
+0	8	y5	pushM	3	s1s9z6p9p9m8s2p4s5p4s8s8p7	放銃					1	1	-7700	11	11	tanyao
+0	8	y5	base	3	s1s9z6p9p9m8s2p4s5p4s8s8p7	無関係						1	0	15	14	tanyao
+0	9	y0	push	1	m2p6s3m4p0m5m7p2p4s6m6p7p6	和了	0	1	ツモ	断幺九+赤ドラ		1	4000	10	9	tanyao
+0	9	y0	pushM	1	m2p6s3m4p0m5m7p2p4s6m6p7p6	放銃					1	1	-2000	15	15	tanyao
+0	9	y0	base	1	m2p6s3m4p0m5m7p2p4s6m6p7p6	無関係						1	0	12	12	tanyao
+0	9	y1	push	1	m1s2p7s4p8p4s7m3m6p5m3s5s6	無関係						1	0	11	12	tanyao
+0	9	y1	pushM	1	m1s2p7s4p8p4s7m3m6p5m3s5s6	放銃					0	1	-1000	12	13	tanyao
+0	9	y1	base	1	m1s2p7s4p8p4s7m3m6p5m3s5s6	和了	0	0	ツモ	立直+門前清自摸和+平和		0	3700	17	16	tanyao
+0	9	y2	push	2	z5s1p3m6p4p8p3s5s4p6p8p6s7	被ツモ						1	-2600	14	14	tanyao
+0	9	y2	pushM	2	z5s1p3m6p4p8p3s5s4p6p8p6s7	放銃					1	1	-5800	14	14	tanyao
+0	9	y2	base	2	z5s1p3m6p4p8p3s5s4p6p8p6s7	被ツモ						1	-2600	14	14	tanyao
+0	9	y3	push	1	z5p9z7p3m6p3m5m3s8p6m6s7p4	被ツモ						0	-400	7	7	tanyao
+0	9	y3	pushM	1	z5p9z7p3m6p3m5m3s8p6m6s7p4	被ツモ						0	-400	7	7	tanyao
+0	9	y3	base	1	z5p9z7p3m6p3m5m3s8p6m6s7p4	被ツモ						1	-300	7	8	tanyao
+0	9	y4	push	1	z6z4z4z1p7s5p7p0m5p2m4p4m4	放銃					1	1	-3900	12	13	tanyao
+0	9	y4	pushM	1	z6z4z4z1p7s5p7p0m5p2m4p4m4	流局						1	1000	18	18	tanyao
+0	9	y4	base	1	z6z4z4z1p7s5p7p0m5p2m4p4m4	流局						1	1000	18	18	tanyao
+0	9	y5	push	3	z7z7s1s1m9p6s4p0p2m8m3s7p3	無関係						1	0	10	11	tanyao
+0	9	y5	pushM	3	z7z7s1s1m9p6s4p0p2m8m3s7p3	無関係						1	0	14	13	tanyao
+0	9	y5	base	3	z7z7s1s1m9p6s4p0p2m8m3s7p3	無関係						0	0	12	13	tanyao
+0	10	y0	push	3	p3m3p8m6m8s7s3m8p2p4s4s4s2	被ツモ						1	-3900	11	11	tanyao
+0	10	y0	pushM	3	p3m3p8m6m8s7s3m8p2p4s4s4s2	和了	0	1	ロン	断幺九		1	2300	13	12	tanyao
+0	10	y0	base	3	p3m3p8m6m8s7s3m8p2p4s4s4s2	流局						1	1500	18	17	tanyao
+0	10	y1	push	1	z6p8p4p8s4s6s3m6m2m6m6p4m2	放銃					1	1	-5200	7	7	tanyao
+0	10	y1	pushM	1	z6p8p4p8s4s6s3m6m2m6m6p4m2	放銃					1	1	-5200	7	7	tanyao
+0	10	y1	base	1	z6p8p4p8s4s6s3m6m2m6m6p4m2	放銃					1	1	-5200	9	9	tanyao
+0	10	y2	push	3	s9z6m2m7s5m3m8s2p3s4m2p8m6	被ツモ						1	-700	12	12	tanyao
+0	10	y2	pushM	3	s9z6m2m7s5m3m8s2p3s4m2p8m6	無関係						1	0	12	11	tanyao
+0	10	y2	base	3	s9z6m2m7s5m3m8s2p3s4m2p8m6	和了	0	0	ロン	一気通貫		0	1000	12	12	tanyao
+0	10	y3	push	2	s1s1z2p6s4m4m8m6m7s4s8s3m6	無関係						0	0	9	8	tanyao
+0	10	y3	pushM	2	s1s1z2p6s4m4m8m6m7s4s8s3m6	無関係						0	0	9	8	tanyao
+0	10	y3	base	2	s1s1z2p6s4m4m8m6m7s4s8s3m6	放銃					0	0	-11600	15	15	tanyao
+0	10	y4	push	2	z6p1z4m9m6m2m7p6m2s4p7s3m4	無関係						1	0	10	11	tanyao
+0	10	y4	pushM	2	z6p1z4m9m6m2m7p6m2s4p7s3m4	無関係						0	0	9	9	tanyao
+0	10	y4	base	2	z6p1z4m9m6m2m7p6m2s4p7s3m4	流局						1	-1500	18	18	tanyao
+0	10	y5	push	1	p1z1z7z3m1s8p4m0s7s8s4m7m3	和了	0	1	ロン	断幺九+赤ドラ		1	3000	17	17	tanyao
+0	10	y5	pushM	1	p1z1z7z3m1s8p4m0s7s8s4m7m3	流局						1	-1500	18	18	tanyao
+0	10	y5	base	1	p1z1z7z3m1s8p4m0s7s8s4m7m3	放銃					0	1	-1000	8	8	tanyao
+0	11	y0	push	1	p4p2p2s7p5p6p5s2p3p8p6s2m7	被ツモ						1	-3000	12	11	tanyao
+0	11	y0	pushM	1	p4p2p2s7p5p6p5s2p3p8p6s2m7	被ツモ						0	-3000	14	13	tanyao
+0	11	y0	base	1	p4p2p2s7p5p6p5s2p3p8p6s2m7	無関係						0	0	13	12	tanyao
+0	11	y1	push	1	z1m7s2p3p6s5p3p2s3p4s4p8m3	被ツモ						1	-1300	16	16	tanyao
+0	11	y1	pushM	1	z1m7s2p3p6s5p3p2s3p4s4p8m3	無関係						1	0	5	5	tanyao
+0	11	y1	base	1	z1m7s2p3p6s5p3p2s3p4s4p8m3	無関係						1	0	10	11	tanyao
+0	11	y2	push	3	s9z6m3p6m8p7p5m6s8m5p5p8p6	無関係						0	0	9	10	tanyao
+0	11	y2	pushM	3	s9z6m3p6m8p7p5m6s8m5p5p8p6	無関係						0	0	12	13	tanyao
+0	11	y2	base	3	s9z6m3p6m8p7p5m6s8m5p5p8p6	被ツモ						1	-2000	16	16	tanyao
+0	11	y3	push	1	m9s9z2p7s3s7s0s8m4p8m3m8m2	被ツモ						1	-3000	17	18	tanyao
+0	11	y3	pushM	1	m9s9z2p7s3s7s0s8m4p8m3m8m2	無関係						0	0	9	9	tanyao
+0	11	y3	base	1	m9s9z2p7s3s7s0s8m4p8m3m8m2	放銃					0	0	-5800	11	12	tanyao
+0	11	y4	push	1	z3m1p9z7p8p4s7s3m7p7p2m3p7	被ツモ						0	-700	14	14	tanyao
+0	11	y4	pushM	1	z3m1p9z7p8p4s7s3m7p7p2m3p7	被ツモ						0	-700	13	12	tanyao
+0	11	y4	base	1	z3m1p9z7p8p4s7s3m7p7p2m3p7	無関係						0	0	10	10	tanyao
+0	11	y5	push	3	z1z3z5z4m9s8s2s4m4m3p3p6p5	流局						1	-1500	18	17	tanyao
+0	11	y5	pushM	3	z1z3z5z4m9s8s2s4m4m3p3p6p5	流局						1	-1000	18	17	tanyao
+0	11	y5	base	3	z1z3z5z4m9s8s2s4m4m3p3p6p5	流局						1	-1500	18	17	tanyao
+0	12	y0	push	3	p2m4p6m5m8m3p6s8s3p2m7m6p7	無関係						0	0	9	8	tanyao
+0	12	y0	pushM	3	p2m4p6m5m8m3p6s8s3p2m7m6p7	無関係						0	0	9	8	tanyao
+0	12	y0	base	3	p2m4p6m5m8m3p6s8s3p2m7m6p7	無関係						0	0	9	8	tanyao
+0	12	y1	push	3	s1p5p8m4s4p7m7m0m2m5m8p3p4	和了	0	1	ツモ	門前清自摸和+断幺九+赤ドラ		1	5000	16	15	tanyao
+0	12	y1	pushM	3	s1p5p8m4s4p7m7m0m2m5m8p3p4	和了	0	1	ツモ	門前清自摸和+断幺九+赤ドラ		1	5000	16	15	tanyao
+0	12	y1	base	3	s1p5p8m4s4p7m7m0m2m5m8p3p4	和了	0	0	ツモ	立直+門前清自摸和+赤ドラ+裏ドラ		1	10000	10	9	tanyao
+0	12	y2	push	2	m1p1m3p6p5m4s7m8s6s5p4m7s2	無関係						0	0	8	7	tanyao
+0	12	y2	pushM	2	m1p1m3p6p5m4s7m8s6s5p4m7s2	無関係						0	0	8	7	tanyao
+0	12	y2	base	2	m1p1m3p6p5m4s7m8s6s5p4m7s2	無関係						0	0	8	7	tanyao
+0	12	y3	push	3	s9p1z3m7p3m8m5p8m7m2p5s6m3	和了	0	1	ロン	断幺九+ドラ		1	3000	14	15	tanyao
+0	12	y3	pushM	3	s9p1z3m7p3m8m5p8m7m2p5s6m3	被ツモ						0	-300	18	17	tanyao
+0	12	y3	base	3	s9p1z3m7p3m8m5p8m7m2p5s6m3	流局						0	1500	18	18	tanyao
+0	12	y4	push	1	z6z4z2p9p6p2p5p8p4s7m4m3s8	被ツモ						1	-4000	12	12	tanyao
+0	12	y4	pushM	1	z6z4z2p9p6p2p5p8p4s7m4m3s8	被ツモ						1	-4000	12	12	tanyao
+0	12	y4	base	1	z6z4z2p9p6p2p5p8p4s7m4m3s8	無関係						1	0	12	12	tanyao
+0	12	y5	push	3	z2z6z1z2z7s7s7p6p4m2p8p5p3	無関係						1	0	9	10	tanyao
+0	12	y5	pushM	3	z2z6z1z2z7s7s7p6p4m2p8p5p3	被ツモ						1	-4000	16	17	tanyao
+0	12	y5	base	3	z2z6z1z2z7s7s7p6p4m2p8p5p3	流局						1	1500	18	18	tanyao
+0	13	y0	push	1	s8m2m8p8s6p3s6p6m6p5m4s8m3	和了	0	1	ロン	断幺九+赤ドラ		1	3600	13	13	tanyao
+0	13	y0	pushM	1	s8m2m8p8s6p3s6p6m6p5m4s8m3	和了	0	1	ロン	断幺九+赤ドラ		1	3600	13	13	tanyao
+0	13	y0	base	1	s8m2m8p8s6p3s6p6m6p5m4s8m3	無関係						1	0	9	9	tanyao
+0	13	y1	push	3	z7s4m5m5p4p4s7s0p6s5m6p5s3	無関係						1	0	6	5	tanyao
+0	13	y1	pushM	3	z7s4m5m5p4p4s7s0p6s5m6p5s3	被ツモ						0	-300	7	6	tanyao
+0	13	y1	base	3	z7s4m5m5p4p4s7s0p6s5m6p5s3	和了	0	0	ロン	立直+ドラ+赤ドラ		1	7200	6	6	tanyao
+0	13	y2	push	1	s9z4p4s6p8m6s5p2s2s4p5m4m4	無関係						1	0	11	11	tanyao
+0	13	y2	pushM	1	s9z4p4s6p8m6s5p2s2s4p5m4m4	無関係						1	0	11	11	tanyao
+0	13	y2	base	1	s9z4p4s6p8m6s5p2s2s4p5m4m4	無関係						1	0	11	11	tanyao
+0	13	y3	push	1	p9m9z3s3s8s3p5p6m6p0p7m3p6	放銃					1	1	-5200	9	9	tanyao
+0	13	y3	pushM	1	p9m9z3s3s8s3p5p6m6p0p7m3p6	放銃					1	1	-5200	9	9	tanyao
+0	13	y3	base	1	p9m9z3s3s8s3p5p6m6p0p7m3p6	無関係						1	0	11	12	tanyao
+0	13	y4	push	3	s1s9z1z6m7p2p8p7m4s2s5p4s6	被ツモ						0	-1000	11	10	tanyao
+0	13	y4	pushM	3	s1s9z1z6m7p2p8p7m4s2s5p4s6	流局						0	-3000	17	17	tanyao
+0	13	y4	base	3	s1s9z1z6m7p2p8p7m4s2s5p4s6	流局						0	-3000	17	17	tanyao
+0	13	y5	push	1	s9z6z5z3z3p4s0p2s7p7m4s2p7	放銃					1	1	-12000	11	11	tanyao
+0	13	y5	pushM	1	s9z6z5z3z3p4s0p2s7p7m4s2p7	放銃					1	1	-12000	11	11	tanyao
+0	13	y5	base	1	s9z6z5z3z3p4s0p2s7p7m4s2p7	被ツモ						0	-300	9	9	tanyao
+0	14	y0	push	2	p6s2m5p2p4m2p3p0p3s6s6s8m3	放銃					0	0	-3900	16	17	tanyao
+0	14	y0	pushM	2	p6s2m5p2p4m2p3p0p3s6s6s8m3	放銃					0	0	-3900	16	17	tanyao
+0	14	y0	base	2	p6s2m5p2p4m2p3p0p3s6s6s8m3	放銃					0	0	-3900	6	6	tanyao
+0	14	y1	push	3	s9m7m4s3p8p3m4m2m8s2s5m8m6	無関係						0	0	10	9	tanyao
+0	14	y1	pushM	3	s9m7m4s3p8p3m4m2m8s2s5m8m6	無関係						0	0	10	10	tanyao
+0	14	y1	base	3	s9m7m4s3p8p3m4m2m8s2s5m8m6	無関係						1	0	9	9	tanyao
+0	14	y2	push	2	z1z1p4s7p8p3m8m4m5s5s7s8m8	放銃					1	1	-8000	9	9	tanyao
+0	14	y2	pushM	2	z1z1p4s7p8p3m8m4m5s5s7s8m8	被ツモ						1	-2000	9	8	tanyao
+0	14	y2	base	2	z1z1p4s7p8p3m8m4m5s5s7s8m8	和了	0	0	ツモ	場風 東		0	1100	9	10	tanyao
+0	14	y3	push	1	s1z7z6p6s6p0p2m3p5p5p3p4s2	被ツモ						1	-2600	12	11	tanyao
+0	14	y3	pushM	1	s1z7z6p6s6p0p2m3p5p5p3p4s2	被ツモ						1	-2600	12	11	tanyao
+0	14	y3	base	1	s1z7z6p6s6p0p2m3p5p5p3p4s2	被ツモ						1	-2600	12	11	tanyao
+0	14	y4	push	1	z7p9m9m9s2s2m6s4s2s2m0p7p4	無関係						0	0	11	11	tanyao
+0	14	y4	pushM	1	z7p9m9m9s2s2m6s4s2s2m0p7p4	無関係						0	0	11	11	tanyao
+0	14	y4	base	1	z7p9m9m9s2s2m6s4s2s2m0p7p4	無関係						0	0	11	11	tanyao
+0	14	y5	push	1	z3m9m9z7z5s3m6s4p8p4p7s2s6	流局						1	-1500	18	19	tanyao
+0	14	y5	pushM	1	z3m9m9z7z5s3m6s4p8p4p7s2s6	被ツモ						1	-1300	12	12	tanyao
+0	14	y5	base	1	z3m9m9z7z5s3m6s4p8p4p7s2s6	流局						1	-1500	18	18	tanyao
+0	15	y0	push	2	p8s7m7s6m2p6p8p3m2m4m6p7m6	放銃					1	1	-5800	14	15	tanyao
+0	15	y0	pushM	2	p8s7m7s6m2p6p8p3m2m4m6p7m6	被ツモ						1	-2000	13	12	tanyao
+0	15	y0	base	2	p8s7m7s6m2p6p8p3m2m4m6p7m6	被ツモ						1	-700	16	16	tanyao
+0	15	y1	push	1	s9s8s2m4m4m7p3m4m5s5p4m3p5	流局						1	0	18	19	tanyao
+0	15	y1	pushM	1	s9s8s2m4m4m7p3m4m5s5p4m3p5	流局						1	0	18	19	tanyao
+0	15	y1	base	1	s9s8s2m4m4m7p3m4m5s5p4m3p5	和了	0	0	ロン	立直+三色同順		0	6200	13	13	tanyao
+0	15	y2	push	2	s1p1m6m8p2p7p6m5m4s4s8m8p4	被ツモ						0	-1000	11	11	tanyao
+0	15	y2	pushM	2	s1p1m6m8p2p7p6m5m4s4s8m8p4	被ツモ						0	-1000	11	11	tanyao
+0	15	y2	base	2	s1p1m6m8p2p7p6m5m4s4s8m8p4	流局						0	3000	18	17	tanyao
+0	15	y3	push	1	z1p1z7m8m3p4s3s8s6m4m0s2m8	流局						1	1000	18	18	tanyao
+0	15	y3	pushM	1	z1p1z7m8m3p4s3s8s6m4m0s2m8	流局						1	1000	18	18	tanyao
+0	15	y3	base	1	z1p1z7m8m3p4s3s8s6m4m0s2m8	流局						0	1500	18	18	tanyao
+0	15	y4	push	3	m9s1z4z4s7s8p8m6m8m3m6m3p7	和了	0	1	ツモ	断幺九+ドラ		0	4000	8	8	tanyao
+0	15	y4	pushM	3	m9s1z4z4s7s8p8m6m8m3m6m3p7	放銃					0	0	-1300	8	9	tanyao
+0	15	y4	base	3	m9s1z4z4s7s8p8m6m8m3m6m3p7	放銃					1	1	-12000	11	12	tanyao
+0	15	y5	push	1	p1s9s9m1m1s3s8s5m6p3s3p4p8	放銃					1	1	-12000	9	9	tanyao
+0	15	y5	pushM	1	p1s9s9m1m1s3s8s5m6p3s3p4p8	放銃					1	1	-12000	13	13	tanyao
+0	15	y5	base	1	p1s9s9m1m1s3s8s5m6p3s3p4p8	被ツモ						1	-4000	17	16	tanyao
+0	16	y0	push	3	m0s2p5p6s3m8s8s6s2p6s4s7m6	放銃					0	0	-1000	6	7	tanyao
+0	16	y0	pushM	3	m0s2p5p6s3m8s8s6s2p6s4s7m6	放銃					0	0	-1000	6	7	tanyao
+0	16	y0	base	3	m0s2p5p6s3m8s8s6s2p6s4s7m6	和了	0	1	ロン	断幺九+ドラ+赤ドラ		0	7700	4	4	tanyao
+0	16	y1	push	2	z3p5m7s2p3s7p2p7m5s4s3p2p4	放銃					1	1	-7700	7	7	tanyao
+0	16	y1	pushM	2	z3p5m7s2p3s7p2p7m5s4s3p2p4	放銃					1	1	-7700	7	7	tanyao
+0	16	y1	base	2	z3p5m7s2p3s7p2p7m5s4s3p2p4	被ツモ						1	-2000	12	11	tanyao
+0	16	y2	push	3	z5z1m6m4s3s8p5m7s8s3m2m7m0	和了	0	1	ツモ	門前清自摸和+断幺九+赤ドラ		0	4000	7	6	tanyao
+0	16	y2	pushM	3	z5z1m6m4s3s8p5m7s8s3m2m7m0	和了	0	1	ツモ	門前清自摸和+断幺九+赤ドラ		0	4000	7	6	tanyao
+0	16	y2	base	3	z5z1m6m4s3s8p5m7s8s3m2m7m0	和了	0	0	ツモ	立直+門前清自摸和+赤ドラ		0	5000	11	9	tanyao
+0	16	y3	push	3	z4p1z2m3p4p7s3m5p7p6s4s6s8	無関係						1	0	8	7	tanyao
+0	16	y3	pushM	3	z4p1z2m3p4p7s3m5p7p6s4s6s8	無関係						1	0	8	7	tanyao
+0	16	y3	base	3	z4p1z2m3p4p7s3m5p7p6s4s6s8	無関係						0	0	5	4	tanyao
+0	16	y4	push	1	z7m9z1z5m2p6s3s6p2m0s5m5s3	放銃					0	1	-3900	10	11	tanyao
+0	16	y4	pushM	1	z7m9z1z5m2p6s3s6p2m0s5m5s3	無関係						1	0	17	16	tanyao
+0	16	y4	base	1	z7m9z1z5m2p6s3s6p2m0s5m5s3	被ツモ						0	-500	12	13	tanyao
+0	16	y5	push	3	z6z6p1p1m9m8s5p2s3s6m8m7p6	被ツモ						1	-500	13	13	tanyao
+0	16	y5	pushM	3	z6z6p1p1m9m8s5p2s3s6m8m7p6	被ツモ						1	-500	13	13	tanyao
+0	16	y5	base	3	z6z6p1p1m9m8s5p2s3s6m8m7p6	被ツモ						1	-500	7	6	tanyao
+0	17	y0	push	1	s6s2s8m0s5p3m8s6s8m3m2s7m8	被ツモ						0	-1300	9	10	tanyao
+0	17	y0	pushM	1	s6s2s8m0s5p3m8s6s8m3m2s7m8	被ツモ						0	-1300	9	10	tanyao
+0	17	y0	base	1	s6s2s8m0s5p3m8s6s8m3m2s7m8	無関係						0	0	10	11	tanyao
+0	17	y1	push	3	z3m4p7m5s7s8s6s8s4s5p8m8s2	放銃					0	1	-2900	8	9	tanyao
+0	17	y1	pushM	3	z3m4p7m5s7s8s6s8s4s5p8m8s2	無関係						1	0	8	8	tanyao
+0	17	y1	base	3	z3m4p7m5s7s8s6s8s4s5p8m8s2	和了	0	0	ツモ	立直+門前清自摸和		0	3000	11	10	tanyao
+0	17	y2	push	1	p1s1m3s2m8s8m2s6p2p3m2p6m8	和了	0	1	ツモ	門前清自摸和+断幺九+ドラ+赤ドラ		0	12000	14	14	tanyao
+0	17	y2	pushM	1	p1s1m3s2m8s8m2s6p2p3m2p6m8	和了	0	1	ツモ	門前清自摸和+断幺九+ドラ+赤ドラ		0	12000	14	14	tanyao
+0	17	y2	base	1	p1s1m3s2m8s8m2s6p2p3m2p6m8	無関係						1	0	13	13	tanyao
+0	17	y3	push	3	z2z4p9m0m3m2s7s2m2s4p5m5p8	無関係						1	0	9	10	tanyao
+0	17	y3	pushM	3	z2z4p9m0m3m2s7s2m2s4p5m5p8	無関係						0	0	4	4	tanyao
+0	17	y3	base	3	z2z4p9m0m3m2s7s2m2s4p5m5p8	被ツモ						1	-2000	7	7	tanyao
+0	17	y4	push	2	z5z3m9m1p5p4s5m6p3s8m8p0m5	和了	0	1	ツモ	断幺九+ドラ+赤ドラ		1	13000	17	17	tanyao
+0	17	y4	pushM	2	z5z3m9m1p5p4s5m6p3s8m8p0m5	被ツモ						1	-2000	16	15	tanyao
+0	17	y4	base	2	z5z3m9m1p5p4s5m6p3s8m8p0m5	被ツモ						1	-2000	16	15	tanyao
+0	17	y5	push	3	m1z3m1s9s9p8p2m8p6m6s5m3p6	被ツモ						1	-500	15	15	tanyao
+0	17	y5	pushM	3	m1z3m1s9s9p8p2m8p6m6s5m3p6	流局						1	8000	18	18	tanyao
+0	17	y5	base	3	m1z3m1s9s9p8p2m8p6m6s5m3p6	無関係						1	0	12	12	tanyao
+0	18	y0	push	1	p7s7p5s2m8m6m7p4m4m7p4p7s8	和了	0	1	ロン	断幺九+赤ドラ		0	3900	7	7	tanyao
+0	18	y0	pushM	1	p7s7p5s2m8m6m7p4m4m7p4p7s8	無関係						0	0	10	10	tanyao
+0	18	y0	base	1	p7s7p5s2m8m6m7p4m4m7p4p7s8	無関係						0	0	10	10	tanyao
+0	18	y1	push	2	z4m7s3s4s6p8m7p5p7p6s2s2s4	和了	0	1	ロン	断幺九		0	1000	10	10	tanyao
+0	18	y1	pushM	2	z4m7s3s4s6p8m7p5p7p6s2s2s4	流局						1	1000	18	18	tanyao
+0	18	y1	base	2	z4m7s3s4s6p8m7p5p7p6s2s2s4	流局						0	3000	18	17	tanyao
+0	18	y2	push	3	m9m1p3m2s3s6p6m3m5s5m8s4m8	放銃					1	1	-5200	12	12	tanyao
+0	18	y2	pushM	3	m9m1p3m2s3s6p6m3m5s5m8s4m8	放銃					1	1	-5200	12	12	tanyao
+0	18	y2	base	3	m9m1p3m2s3s6p6m3m5s5m8s4m8	放銃					1	1	-8000	12	11	tanyao
+0	18	y3	push	1	p9z5p1m6s2p3m8p3s3p4m2m4s5	和了	0	1	ツモ	断幺九+ドラ		0	2000	10	11	tanyao
+0	18	y3	pushM	1	p9z5p1m6s2p3m8p3s3p4m2m4s5	被ツモ						1	-4000	14	14	tanyao
+0	18	y3	base	1	p9z5p1m6s2p3m8p3s3p4m2m4s5	無関係						1	0	6	7	tanyao
+0	18	y4	push	1	z6z4s1z1m3s8s5s3m8s4s7s7s6	放銃					0	0	-3200	7	8	tanyao
+0	18	y4	pushM	1	z6z4s1z1m3s8s5s3m8s4s7s7s6	無関係						0	0	7	7	tanyao
+0	18	y4	base	1	z6z4s1z1m3s8s5s3m8s4s7s7s6	無関係						0	0	7	7	tanyao
+0	18	y5	push	1	m9m9s1m9z1m8m4p6p3m3m7p4p2	和了	0	1	ロン	断幺九+ドラ		1	2000	15	16	tanyao
+0	18	y5	pushM	1	m9m9s1m9z1m8m4p6p3m3m7p4p2	被ツモ						1	-2000	10	10	tanyao
+0	18	y5	base	1	m9m9s1m9z1m8m4p6p3m3m7p4p2	和了	0	0	ツモ	立直+一発+門前清自摸和+ドラ		0	9000	5	5	tanyao
+0	19	y0	push	2	p6p6m0m7s8p3s6p7s6s4s2m3m2	流局						1	1500	18	18	tanyao
+0	19	y0	pushM	2	p6p6m0m7s8p3s6p7s6s4s2m3m2	和了	0	0	ロン	平和+赤ドラ		0	2000	16	16	tanyao
+0	19	y0	base	2	p6p6m0m7s8p3s6p7s6s4s2m3m2	和了	0	1	ツモ	断幺九+赤ドラ		1	3000	17	17	tanyao
+0	19	y1	push	2	m9p8s8p6s6s7m4s3s8p7p5m3s4	和了	0	1	ロン	断幺九+ドラ		0	3900	8	8	tanyao
+0	19	y1	pushM	2	m9p8s8p6s6s7m4s3s8p7p5m3s4	和了	0	0	ツモ	門前清自摸和+平和+ドラ		0	5200	10	9	tanyao
+0	19	y1	base	2	m9p8s8p6s6s7m4s3s8p7p5m3s4	無関係						1	0	6	6	tanyao
+0	19	y2	push	1	m1s9m7s2p8m3m8p3p2s3m2p4m5	放銃					0	1	-1000	11	12	tanyao
+0	19	y2	pushM	1	m1s9m7s2p8m3m8p3p2s3m2p4m5	放銃					0	1	-1000	11	12	tanyao
+0	19	y2	base	1	m1s9m7s2p8m3m8p3p2s3m2p4m5	無関係						1	0	12	12	tanyao
+0	19	y3	push	2	m1z3m9p6m4s5p2p5p4p8p4m7p2	和了	0	1	ツモ	断幺九+赤ドラ		1	3000	16	16	tanyao
+0	19	y3	pushM	2	m1z3m9p6m4s5p2p5p4p8p4m7p2	和了	0	1	ロン	平和+断幺九+ドラ+赤ドラ		1	8700	11	11	tanyao
+0	19	y3	base	2	m1z3m9p6m4s5p2p5p4p8p4m7p2	流局						1	-1000	18	18	tanyao
+0	19	y4	push	1	z3s1s1m9m5p3m7p5p5s3p8p6p3	和了	0	1	ロン	断幺九+三色同順		0	2000	12	13	tanyao
+0	19	y4	pushM	1	z3s1s1m9m5p3m7p5p5s3p8p6p3	無関係						0	0	11	12	tanyao
+0	19	y4	base	1	z3s1s1m9m5p3m7p5p5s3p8p6p3	無関係						0	0	16	17	tanyao
+0	19	y5	push	2	p1z7z5s9p1p2p8m5s4m6s8s4m8	和了	0	1	ロン	断幺九+ドラ		0	3900	18	18	tanyao
+0	19	y5	pushM	2	p1z7z5s9p1p2p8m5s4m6s8s4m8	流局						1	1000	18	17	tanyao
+0	19	y5	base	2	p1z7z5s9p1p2p8m5s4m6s8s4m8	無関係						1	0	14	14	tanyao
+0	20	y0	push	3	m7s6p6p4p4s3p7m3m8s2m8s6p3	放銃					1	1	-12000	13	13	tanyao
+0	20	y0	pushM	3	m7s6p6p4p4s3p7m3m8s2m8s6p3	被ツモ						1	-4000	13	12	tanyao
+0	20	y0	base	3	m7s6p6p4p4s3p7m3m8s2m8s6p3	流局						1	1000	18	18	tanyao
+0	20	y1	push	2	p1m2p6s0p8m6m8s2s8m4s3p7p8	被ツモ						1	-700	11	10	tanyao
+0	20	y1	pushM	2	p1m2p6s0p8m6m8s2s8m4s3p7p8	被ツモ						1	-700	17	16	tanyao
+0	20	y1	base	2	p1m2p6s0p8m6m8s2s8m4s3p7p8	無関係						1	0	9	9	tanyao
+0	20	y2	push	1	z6m1m3p8m5s5p5s6s8p0p8m6s7	和了	0	1	ツモ	断幺九+ドラ+赤ドラ		1	5000	12	11	tanyao
+0	20	y2	pushM	1	z6m1m3p8m5s5p5s6s8p0p8m6s7	流局						1	-1000	18	18	tanyao
+0	20	y2	base	1	z6m1m3p8m5s5p5s6s8p0p8m6s7	流局						1	1500	18	18	tanyao
+0	20	y3	push	2	z1s1z3s8m8p6m7s8p3m6p8p0m5	被ツモ						0	-500	13	14	tanyao
+0	20	y3	pushM	2	z1s1z3s8m8p6m7s8p3m6p8p0m5	被ツモ						0	-500	13	14	tanyao
+0	20	y3	base	2	z1s1z3s8m8p6m7s8p3m6p8p0m5	和了	0	0	ツモ	立直+門前清自摸和+赤ドラ		0	9000	11	11	tanyao
+0	20	y4	push	1	z7z2s1p1s6m3s3m2p8m6s7m5s6	流局						1	-1000	18	18	tanyao
+0	20	y4	pushM	1	z7z2s1p1s6m3s3m2p8m6s7m5s6	無関係						1	0	17	16	tanyao
+0	20	y4	base	1	z7z2s1p1s6m3s3m2p8m6s7m5s6	無関係						1	0	13	13	tanyao
+0	20	y5	push	1	z6m9z4z1z7s4m5m6p3m8s6p7m8	被ツモ						0	-2000	3	4	tanyao
+0	20	y5	pushM	1	z6m9z4z1z7s4m5m6p3m8s6p7m8	無関係						0	0	6	8	tanyao
+0	20	y5	base	1	z6m9z4z1z7s4m5m6p3m8s6p7m8	和了	0	0	ツモ	立直+門前清自摸和+翻牌 中		0	5000	9	10	tanyao
+0	21	y0	push	3	s3p4p5s2m3m4p8m6m4p2s6s3p7	被ツモ						1	-2000	15	14	tanyao
+0	21	y0	pushM	3	s3p4p5s2m3m4p8m6m4p2s6s3p7	無関係						1	0	11	10	tanyao
+0	21	y0	base	3	s3p4p5s2m3m4p8m6m4p2s6s3p7	被ツモ						1	-2000	15	14	tanyao
+0	21	y1	push	1	z6s4p2p3m3m6s6m6m4m7s2p6s8	無関係						1	0	9	9	tanyao
+0	21	y1	pushM	1	z6s4p2p3m3m6s6m6m4m7s2p6s8	無関係						1	0	9	9	tanyao
+0	21	y1	base	1	z6s4p2p3m3m6s6m6m4m7s2p6s8	無関係						0	0	12	11	tanyao
+0	21	y2	push	3	z4p9s2m7p4s3p4s2s7m3m0m8m6	和了	0	1	ロン	平和+断幺九+ドラ+赤ドラ		0	7700	10	9	tanyao
+0	21	y2	pushM	3	z4p9s2m7p4s3p4s2s7m3m0m8m6	和了	0	1	ロン	平和+断幺九+ドラ+赤ドラ		0	7700	10	9	tanyao
+0	21	y2	base	3	z4p9s2m7p4s3p4s2s7m3m0m8m6	放銃					1	1	-12000	9	9	tanyao
+0	21	y3	push	3	p1m1z5s3s0m2s4m6s3m6p8m6m5	被ツモ						1	-1000	12	11	tanyao
+0	21	y3	pushM	3	p1m1z5s3s0m2s4m6s3m6p8m6m5	被ツモ						1	-1000	12	11	tanyao
+0	21	y3	base	3	p1m1z5s3s0m2s4m6s3m6p8m6m5	和了	0	0	ツモ	立直+門前清自摸和+一盃口+ドラ+赤ドラ		0	9000	9	8	tanyao
+0	21	y4	push	1	z5m1z1m9s4m2p0m4p8m8p3p4m2	被ツモ						1	-3000	10	11	tanyao
+0	21	y4	pushM	1	z5m1z1m9s4m2p0m4p8m8p3p4m2	流局						0	-1500	18	19	tanyao
+0	21	y4	base	1	z5m1z1m9s4m2p0m4p8m8p3p4m2	和了	0	0	ロン	立直+一発+ドラ+赤ドラ+裏ドラ		0	9000	10	10	tanyao
+0	21	y5	push	3	m9z1z6p1p1m8s5p2m2m6m6p6m6	被ツモ						1	-700	16	16	tanyao
+0	21	y5	pushM	3	m9z1z6p1p1m8s5p2m2m6m6p6m6	放銃					1	1	-2600	14	14	tanyao
+0	21	y5	base	3	m9z1z6p1p1m8s5p2m2m6m6p6m6	流局						0	3000	18	17	tanyao
+0	22	y0	push	2	m7m5p6s2m7m6p6s8s6m3p8m8s6	被ツモ						1	-6000	18	18	tanyao
+0	22	y0	pushM	2	m7m5p6s2m7m6p6s8s6m3p8m8s6	無関係						1	0	10	9	tanyao
+0	22	y0	base	2	m7m5p6s2m7m6p6s8s6m3p8m8s6	無関係						1	0	10	9	tanyao
+0	22	y1	push	3	p9p2s3s8s5p8s6s4s7s6m5s4s8	放銃					1	1	-15400	10	10	tanyao
+0	22	y1	pushM	3	p9p2s3s8s5p8s6s4s7s6m5s4s8	放銃					0	0	-7700	15	15	tanyao
+0	22	y1	base	3	p9p2s3s8s5p8s6s4s7s6m5s4s8	被ツモ						1	-4000	12	12	tanyao
+0	22	y2	push	1	s9z3s6p7s3m2m6p6m7s7m7m7m3	被ツモ						1	-2000	6	6	tanyao
+0	22	y2	pushM	1	s9z3s6p7s3m2m6p6m7s7m7m7m3	放銃					1	1	-3900	14	14	tanyao
+0	22	y2	base	1	s9z3s6p7s3m2m6p6m7s7m7m7m3	無関係						0	0	9	11	tanyao
+0	22	y3	push	3	z3s9z1p7m7s5m4m6m3s4s8p7p3	被ツモ						1	-4000	12	11	tanyao
+0	22	y3	pushM	3	z3s9z1p7m7s5m4m6m3s4s8p7p3	被ツモ						1	-4000	12	11	tanyao
+0	22	y3	base	3	z3s9z1p7m7s5m4m6m3s4s8p7p3	和了	0	1	ツモ	断幺九+ドラ		0	2000	14	12	tanyao
+0	22	y4	push	3	z5p1z7m1p3m2p7p3s4p6s7p4p8	無関係						0	0	12	12	tanyao
+0	22	y4	pushM	3	z5p1z7m1p3m2p7p3s4p6s7p4p8	和了	0	1	ロン	平和+断幺九		0	2000	14	14	tanyao
+0	22	y4	base	3	z5p1z7m1p3m2p7p3s4p6s7p4p8	和了	0	0	ロン	翻牌 白+ドラ		1	4900	12	12	tanyao
+0	22	y5	push	2	p1z2z3z4p1p3p5p0s2p8p6p8m2	無関係						1	0	4	3	tanyao
+0	22	y5	pushM	2	p1z2z3z4p1p3p5p0s2p8p6p8m2	無関係						1	0	4	3	tanyao
+0	22	y5	base	2	p1z2z3z4p1p3p5p0s2p8p6p8m2	無関係						1	0	4	3	tanyao
+0	23	y0	push	2	m5m4m2p6p8p6m6m3s3m8s8m7s4	無関係						1	0	10	11	tanyao
+0	23	y0	pushM	2	m5m4m2p6p8p6m6m3s3m8s8m7s4	無関係						0	0	9	9	tanyao
+0	23	y0	base	2	m5m4m2p6p8p6m6m3s3m8s8m7s4	放銃					0	0	-1000	11	12	tanyao
+0	23	y1	push	2	z2s5m8p4p3s6p7m5s8s8s2m4p8	無関係						0	0	15	14	tanyao
+0	23	y1	pushM	2	z2s5m8p4p3s6p7m5s8s8s2m4p8	無関係						0	0	15	14	tanyao
+0	23	y1	base	2	z2s5m8p4p3s6p7m5s8s8s2m4p8	和了	0	1	ロン	立直+断幺九+ドラ+裏ドラ		0	13000	10	9	tanyao
+0	23	y2	push	2	z6z6m8m6s8m7p2s6p0s3p2s7s3	和了	0	1	ロン	断幺九+ドラ		0	2600	8	7	tanyao
+0	23	y2	pushM	2	z6z6m8m6s8m7p2s6p0s3p2s7s3	和了	0	1	ロン	断幺九+ドラ		0	2600	8	7	tanyao
+0	23	y2	base	2	z6z6m8m6s8m7p2s6p0s3p2s7s3	和了	0	0	ロン	翻牌 發+ドラ		1	3000	4	4	tanyao
+0	23	y3	push	3	p9m1s9s8p2p8m6m7m4s7s4m5s2	被ツモ						1	-3000	18	17	tanyao
+0	23	y3	pushM	3	p9m1s9s8p2p8m6m7m4s7s4m5s2	放銃					1	1	-2600	13	13	tanyao
+0	23	y3	base	3	p9m1s9s8p2p8m6m7m4s7s4m5s2	和了	0	0	ロン	立直+ドラ		1	5600	13	12	tanyao
+0	23	y4	push	2	z2s9z5z5p3m4p3m5s6m2m8m7s2	流局						1	-1500	18	18	tanyao
+0	23	y4	pushM	2	z2s9z5z5p3m4p3m5s6m2m8m7s2	流局						1	-1000	18	17	tanyao
+0	23	y4	base	2	z2s9z5z5p3m4p3m5s6m2m8m7s2	無関係						1	0	12	12	tanyao
+0	23	y5	push	2	z4s9m9s1z1m7p4m6p8m8m4m3m7	和了	0	1	ロン	断幺九+ドラ		1	4000	17	17	tanyao
+0	23	y5	pushM	2	z4s9m9s1z1m7p4m6p8m8m4m3m7	流局						1	-1000	18	17	tanyao
+0	23	y5	base	2	z4s9m9s1z1m7p4m6p8m8m4m3m7	流局						1	-1000	18	17	tanyao
+0	24	y0	push	2	m8m6m8m4s2s5p5p7s2p4s2m8s4	和了	0	1	ツモ	門前清自摸和+断幺九		0	2000	7	6	tanyao
+0	24	y0	pushM	2	m8m6m8m4s2s5p5p7s2p4s2m8s4	和了	0	1	ツモ	門前清自摸和+断幺九		0	2000	7	6	tanyao
+0	24	y0	base	2	m8m6m8m4s2s5p5p7s2p4s2m8s4	無関係						0	0	15	16	tanyao
+0	24	y1	push	2	z3m3s2s3s4s5s6m5s3s4p2p2m3	和了	0	1	ロン	断幺九		1	1000	7	8	tanyao
+0	24	y1	pushM	2	z3m3s2s3s4s5s6m5s3s4p2p2m3	和了	0	1	ロン	平和+断幺九		1	2000	9	9	tanyao
+0	24	y1	base	2	z3m3s2s3s4s5s6m5s3s4p2p2m3	無関係						0	0	8	10	tanyao
+0	24	y2	push	1	z2p1m5p7p7p2p4s3p6p7m6m7m2	流局						1	1500	18	18	tanyao
+0	24	y2	pushM	1	z2p1m5p7p7p2p4s3p6p7m6m7m2	流局						1	-1000	18	18	tanyao
+0	24	y2	base	1	z2p1m5p7p7p2p4s3p6p7m6m7m2	被ツモ						0	-2600	11	12	tanyao
+0	24	y3	push	1	z7m9z1s7p7p4s6m3p6m2s2p4s5	被ツモ						0	-300	5	5	tanyao
+0	24	y3	pushM	1	z7m9z1s7p7p4s6m3p6m2s2p4s5	被ツモ						0	-300	5	5	tanyao
+0	24	y3	base	1	z7m9z1s7p7p4s6m3p6m2s2p4s5	無関係						0	0	5	4	tanyao
+0	24	y4	push	2	z2z1z6z5m3m6p7s8s3s3s3s3m7	和了	0	1	ロン	断幺九+ドラ+赤ドラ		0	8000	14	14	tanyao
+0	24	y4	pushM	2	z2z1z6z5m3m6p7s8s3s3s3s3m7	流局						1	-1000	18	18	tanyao
+0	24	y4	base	2	z2z1z6z5m3m6p7s8s3s3s3s3m7	無関係						1	0	10	10	tanyao
+0	24	y5	push	2	z5z7s9z2m9s2m3m6s3p7m2p3m5	無関係						1	0	14	14	tanyao
+0	24	y5	pushM	2	z5z7s9z2m9s2m3m6s3p7m2p3m5	流局						1	-3000	18	17	tanyao
+0	24	y5	base	2	z5z7s9z2m9s2m3m6s3p7m2p3m5	流局						0	3000	18	17	tanyao
+0	25	y0	push	3	p8s7m7p7m3p2m2m5m4p3p6p7p4	無関係						1	0	14	14	tanyao
+0	25	y0	pushM	3	p8s7m7p7m3p2m2m5m4p3p6p7p4	無関係						1	0	14	14	tanyao
+0	25	y0	base	3	p8s7m7p7m3p2m2m5m4p3p6p7p4	流局						1	1500	18	18	tanyao
+0	25	y1	push	1	z1s8p0s3s6p2s2m8s2s6p5p8p8	被ツモ						0	-2000	9	9	tanyao
+0	25	y1	pushM	1	z1s8p0s3s6p2s2m8s2s6p5p8p8	被ツモ						0	-2000	9	9	tanyao
+0	25	y1	base	1	z1s8p0s3s6p2s2m8s2s6p5p8p8	無関係						1	0	11	12	tanyao
+0	25	y2	push	2	p9z6p6p5s4p4m7m3p8p2m5s3p3	和了	0	1	ロン	断幺九		1	2000	10	9	tanyao
+0	25	y2	pushM	2	p9z6p6p5s4p4m7m3p8p2m5s3p3	無関係						1	0	15	15	tanyao
+0	25	y2	base	2	p9z6p6p5s4p4m7m3p8p2m5s3p3	被ツモ						1	-6000	10	10	tanyao
+0	25	y3	push	2	p9z3z6p6m2p2m6m8m7m5s7m8s3	無関係						1	0	13	15	tanyao
+0	25	y3	pushM	2	p9z3z6p6m2p2m6m8m7m5s7m8s3	流局						1	-1500	18	18	tanyao
+0	25	y3	base	2	p9z3z6p6m2p2m6m8m7m5s7m8s3	無関係						1	0	10	11	tanyao
+0	25	y4	push	2	p9p1m9s9m3p5m5s8m3s8m7p3m3	流局						1	-1500	18	18	tanyao
+0	25	y4	pushM	2	p9p1m9s9m3p5m5s8m3s8m7p3m3	被ツモ						0	-2000	17	17	tanyao
+0	25	y4	base	2	p9p1m9s9m3p5m5s8m3s8m7p3m3	和了	0	1	ロン	断幺九+ドラ		0	2600	14	14	tanyao
+0	25	y5	push	2	z2z2z3p9s9s7s6m4p2s2p4s7s2	無関係						0	0	10	9	tanyao
+0	25	y5	pushM	2	z2z2z3p9s9s7s6m4p2s2p4s7s2	無関係						0	0	9	8	tanyao
+0	25	y5	base	2	z2z2z3p9s9s7s6m4p2s2p4s7s2	無関係						0	0	10	9	tanyao
+0	26	y0	push	2	p6s8p8p3s4s2s5m2m6m8p6m5s0	流局						1	-1000	18	17	tanyao
+0	26	y0	pushM	2	p6s8p8p3s4s2s5m2m6m8p6m5s0	流局						1	-1000	18	17	tanyao
+0	26	y0	base	2	p6s8p8p3s4s2s5m2m6m8p6m5s0	無関係						0	0	12	13	tanyao
+0	26	y1	push	2	p9m3p7p0p2s2m7m8p4s6s5p8p8	放銃					0	0	-1000	8	8	tanyao
+0	26	y1	pushM	2	p9m3p7p0p2s2m7m8p4s6s5p8p8	放銃					0	0	-1000	8	8	tanyao
+0	26	y1	base	2	p9m3p7p0p2s2m7m8p4s6s5p8p8	無関係						0	0	8	7	tanyao
+0	26	y2	push	2	z4s9p4p5m4p3s3m7s8p7s4p4s7	被ツモ						1	-1000	9	9	tanyao
+0	26	y2	pushM	2	z4s9p4p5m4p3s3m7s8p7s4p4s7	被ツモ						1	-1000	9	9	tanyao
+0	26	y2	base	2	z4s9p4p5m4p3s3m7s8p7s4p4s7	被ツモ						1	-1000	9	9	tanyao
+0	26	y3	push	1	z5p1s9p3m2p0m6m7p3p4m7m8m4	無関係						1	0	13	13	tanyao
+0	26	y3	pushM	1	z5p1s9p3m2p0m6m7p3p4m7m8m4	無関係						1	0	13	13	tanyao
+0	26	y3	base	1	z5p1s9p3m2p0m6m7p3p4m7m8m4	和了	0	0	ロン	立直+平和+赤ドラ		0	4900	8	8	tanyao
+0	26	y4	push	2	z7z1p1z4s4p4m5m7p2m3p3s6p8	流局						1	1500	18	18	tanyao
+0	26	y4	pushM	2	z7z1p1z4s4p4m5m7p2m3p3s6p8	無関係						1	0	10	9	tanyao
+0	26	y4	base	2	z7z1p1z4s4p4m5m7p2m3p3s6p8	被ツモ						1	-2000	6	5	tanyao
+0	26	y5	push	2	z7s1z7z5s1p7s5m7m3s3p7m7p2	無関係						1	0	12	11	tanyao
+0	26	y5	pushM	2	z7s1z7z5s1p7s5m7m3s3p7m7p2	無関係						1	0	12	11	tanyao
+0	26	y5	base	2	z7s1z7z5s1p7s5m7m3s3p7m7p2	和了	0	0	ロン	翻牌 中+ドラ		0	3900	8	9	tanyao
+0	27	y0	push	3	p6p7m7s7m8p5p7p3s3p2p7s8p6	放銃					1	1	-2000	17	17	tanyao
+0	27	y0	pushM	3	p6p7m7s7m8p5p7p3s3p2p7s8p6	流局						1	1500	18	17	tanyao
+0	27	y0	base	3	p6p7m7s7m8p5p7p3s3p2p7s8p6	和了	0	1	ロン	立直+平和+断幺九+三色同順		0	9000	8	7	tanyao
+0	27	y1	push	2	z2p6p3p2p2s6p0s5m3p6m6p8m4	被ツモ						1	-2000	15	14	tanyao
+0	27	y1	pushM	2	z2p6p3p2p2s6p0s5m3p6m6p8m4	被ツモ						1	-2000	17	16	tanyao
+0	27	y1	base	2	z2p6p3p2p2s6p0s5m3p6m6p8m4	被ツモ						1	-2000	17	16	tanyao
+0	27	y2	push	3	z1z3m6m3p5s6m8p8m0s4s8p8s3	和了	0	1	ツモ	断幺九+ドラ+赤ドラ		0	4000	18	17	tanyao
+0	27	y2	pushM	3	z1z3m6m3p5s6m8p8m0s4s8p8s3	和了	0	1	ツモ	門前清自摸和+断幺九+赤ドラ		1	5000	16	15	tanyao
+0	27	y2	base	3	z1z3m6m3p5s6m8p8m0s4s8p8s3	和了	0	1	ツモ	断幺九+ドラ+赤ドラ		0	4000	18	17	tanyao
+0	27	y3	push	2	z6z5s9p3p7s2s6m6s2s4m8s8m3	放銃					1	1	-12000	12	12	tanyao
+0	27	y3	pushM	2	z6z5s9p3p7s2s6m6s2s4m8s8m3	流局						1	-1000	18	17	tanyao
+0	27	y3	base	2	z6z5s9p3p7s2s6m6s2s4m8s8m3	放銃					1	1	-12000	17	17	tanyao
+0	27	y4	push	2	z2z1z6z3s3s6s5p2s3m3m3s2s5	無関係						1	0	13	12	tanyao
+0	27	y4	pushM	2	z2z1z6z3s3s6s5p2s3m3m3s2s5	無関係						1	0	13	12	tanyao
+0	27	y4	base	2	z2z1z6z3s3s6s5p2s3m3m3s2s5	無関係						1	0	13	12	tanyao
+0	27	y5	push	2	m1m9z5m9s1p5p4p3p2s0s2m4m8	放銃					0	0	-2900	9	9	tanyao
+0	27	y5	pushM	2	m1m9z5m9s1p5p4p3p2s0s2m4m8	放銃					0	0	-2900	9	9	tanyao
+0	27	y5	base	2	m1m9z5m9s1p5p4p3p2s0s2m4m8	和了	0	0	ロン	立直+平和+裏ドラ		0	4900	11	11	tanyao
+0	28	y0	push	3	m7s4m3m3s0p5m6s8s6s5m2s2s3	和了	0	1	ロン	平和+断幺九+赤ドラ		0	3900	10	9	tanyao
+0	28	y0	pushM	3	m7s4m3m3s0p5m6s8s6s5m2s2s3	和了	0	1	ロン	平和+断幺九+赤ドラ		0	3900	10	9	tanyao
+0	28	y0	base	3	m7s4m3m3s0p5m6s8s6s5m2s2s3	和了	0	1	ロン	立直+平和+断幺九+ドラ+赤ドラ+裏ドラ		0	13000	16	15	tanyao
+0	28	y1	push	3	z5m2p8m6s8s8p7s5p3p4p4m8s7	流局						1	1500	18	18	tanyao
+0	28	y1	pushM	3	z5m2p8m6s8s8p7s5p3p4p4m8s7	無関係						1	0	13	12	tanyao
+1	1	y0	push	1	m7m5p6m3m3s8p0m4p5m8s0s3s8	被ツモ						0	-2000	10	11	tanyao
+1	1	y0	pushM	1	m7m5p6m3m3s8p0m4p5m8s0s3s8	無関係						1	0	15	14	tanyao
+1	1	y0	base	1	m7m5p6m3m3s8p0m4p5m8s0s3s8	無関係						0	0	10	10	tanyao
+1	1	y1	push	3	z6p2p2m5s8p7s2m7m7p8m8s8p8	和了	0	1	ロン	断幺九+七対子		1	4200	10	9	tanyao
+1	1	y1	pushM	3	z6p2p2m5s8p7s2m7m7p8m8s8p8	和了	0	1	ロン	断幺九+七対子		1	4200	10	9	tanyao
+1	1	y1	base	3	z6p2p2m5s8p7s2m7m7p8m8s8p8	被ツモ						1	-2000	12	11	tanyao
+1	1	y2	push	1	m1z6p7m4p0p6p5p6s4s6p2s6s6	被ツモ						1	-1000	11	11	tanyao
+1	1	y2	pushM	1	m1z6p7m4p0p6p5p6s4s6p2s6s6	被ツモ						1	-1000	11	11	tanyao
+1	1	y2	base	1	m1z6p7m4p0p6p5p6s4s6p2s6s6	無関係						1	0	15	15	tanyao
+1	1	y3	push	3	z3p1z5m3s3s8m5s3s6p5p3s6p2	被ツモ						0	-2600	5	4	tanyao
+1	1	y3	pushM	3	z3p1z5m3s3s8m5s3s6p5p3s6p2	被ツモ						0	-2600	5	4	tanyao
+1	1	y3	base	3	z3p1z5m3s3s8m5s3s6p5p3s6p2	被ツモ						0	-2600	5	4	tanyao
+1	1	y4	push	2	p9z6z1s9p4m5p4p2p3m0m4p8p6	流局						1	-1000	18	18	tanyao
+1	1	y4	pushM	2	p9z6z1s9p4m5p4p2p3m0m4p8p6	流局						1	-1000	18	18	tanyao
+1	1	y4	base	2	p9z6z1s9p4m5p4p2p3m0m4p8p6	和了	0	1	ロン	断幺九+赤ドラ		0	3900	13	13	tanyao
+1	1	y5	push	1	z7p9m1m1z6p5p7p6s8p7p2m7m8	和了	0	1	ロン	断幺九+赤ドラ		0	2000	10	10	tanyao
+1	1	y5	pushM	1	z7p9m1m1z6p5p7p6s8p7p2m7m8	無関係						0	0	10	9	tanyao
+1	1	y5	base	1	z7p9m1m1z6p5p7p6s8p7p2m7m8	無関係						0	0	10	9	tanyao
+1	2	y0	push	1	p8p3m6p8p7m2m4s4m3m2p5p7s5	放銃					0	0	-12000	9	10	tanyao
+1	2	y0	pushM	1	p8p3m6p8p7m2m4s4m3m2p5p7s5	放銃					0	0	-12000	9	10	tanyao
+1	2	y0	base	1	p8p3m6p8p7m2m4s4m3m2p5p7s5	放銃					0	0	-12000	9	10	tanyao
+1	2	y1	push	1	p9m6s2m4s4s3p4m8p8s7s5p4m5	和了	0	1	ロン	断幺九		0	1300	10	10	tanyao
+1	2	y1	pushM	1	p9m6s2m4s4s3p4m8p8s7s5p4m5	和了	0	1	ロン	断幺九		0	1300	10	10	tanyao
+1	2	y1	base	1	p9m6s2m4s4s3p4m8p8s7s5p4m5	和了	0	0	ロン	立直		0	2300	4	4	tanyao
+1	2	y2	push	1	z5z5m2p3s5p6s5p4m4s8s7m3s4	放銃					0	0	-1000	12	12	tanyao
+1	2	y2	pushM	1	z5z5m2p3s5p6s5p4m4s8s7m3s4	放銃					0	0	-1000	12	12	tanyao
+1	2	y2	base	1	z5z5m2p3s5p6s5p4m4s8s7m3s4	和了	0	0	ツモ	立直+門前清自摸和+裏ドラ		0	5000	14	13	tanyao
+1	2	y3	push	2	m1s1m9s2p5m7m6p8p3m7s4m4m0	和了	0	1	ロン	断幺九+七対子+ドラ+赤ドラ		0	12000	8	8	tanyao
+1	2	y3	pushM	2	m1s1m9s2p5m7m6p8p3m7s4m4m0	和了	0	1	ロン	断幺九+七対子+ドラ+赤ドラ		0	12000	8	8	tanyao
+1	2	y3	base	2	m1s1m9s2p5m7m6p8p3m7s4m4m0	放銃					0	1	-3900	11	11	tanyao
+1	2	y4	push	3	z2z6z7m1s2s3s3s3s7p3p5s4p7	被ツモ						1	-3000	15	14	tanyao
+1	2	y4	pushM	3	z2z6z7m1s2s3s3s3s7p3p5s4p7	被ツモ						1	-3000	15	14	tanyao
+1	2	y4	base	3	z2z6z7m1s2s3s3s3s7p3p5s4p7	被ツモ						1	-3000	15	14	tanyao
+1	2	y5	push	2	z6z7z3s9z6p8m4s7m2s3m5s4p5	被ツモ						1	-1600	17	16	tanyao
+1	2	y5	pushM	2	z6z7z3s9z6p8m4s7m2s3m5s4p5	被ツモ						1	-700	14	13	tanyao
+1	2	y5	base	2	z6z7z3s9z6p8m4s7m2s3m5s4p5	和了	0	0	ツモ	翻牌 發+赤ドラ		1	3000	14	13	tanyao
+1	3	y0	push	3	m3p4p2m2s3p7p3m4m5m8s7s2s3	和了	0	1	ツモ	断幺九+三色同順+赤ドラ		0	4000	9	8	tanyao
+1	3	y0	pushM	3	m3p4p2m2s3p7p3m4m5m8s7s2s3	被ツモ						1	-3000	17	16	tanyao
+1	3	y0	base	3	m3p4p2m2s3p7p3m4m5m8s7s2s3	和了	0	0	ロン	三色同順+赤ドラ		0	2000	10	10	tanyao
+1	3	y1	push	1	s9m6s5p5m2m3m6s3p8p6m2p4s0	被ツモ						1	-1300	12	12	tanyao
+1	3	y1	pushM	1	s9m6s5p5m2m3m6s3p8p6m2p4s0	放銃					1	1	-2000	16	16	tanyao
+1	3	y1	base	1	s9m6s5p5m2m3m6s3p8p6m2p4s0	和了	0	0	ロン	立直+平和+一盃口+赤ドラ		1	9700	10	10	tanyao
+1	3	y2	push	2	z1s1m7p5s8p7s0p0m3m4m7m6s6	和了	0	1	ロン	断幺九+赤ドラ		1	3900	9	10	tanyao
+1	3	y2	pushM	2	z1s1m7p5s8p7s0p0m3m4m7m6s6	和了	0	1	ロン	平和+断幺九+赤ドラ		0	7700	9	8	tanyao
+1	3	y2	base	2	z1s1m7p5s8p7s0p0m3m4m7m6s6	和了	0	1	ロン	断幺九+赤ドラ		0	3900	6	7	tanyao
+1	3	y3	push	1	z5z6m1p3s4s0s4p4s8s8m6p2s6	放銃					0	0	-7700	6	7	tanyao
+1	3	y3	pushM	1	z5z6m1p3s4s0s4p4s8s8m6p2s6	被ツモ						0	-2000	6	7	tanyao
+1	3	y3	base	1	z5z6m1p3s4s0s4p4s8s8m6p2s6	放銃					0	0	-2900	16	17	tanyao
+1	3	y4	push	1	s1p9z5z3m3p3p8p8p3s6m2p0s0	和了	0	1	ツモ	断幺九+赤ドラ		0	4000	10	11	tanyao
+1	3	y4	pushM	1	s1p9z5z3m3p3p8p8p3s6m2p0s0	被ツモ						1	-3200	16	15	tanyao
+1	3	y4	base	1	s1p9z5z3m3p3p8p8p3s6m2p0s0	放銃					1	1	-3200	15	17	tanyao
+1	3	y5	push	2	m9z4m1z1s9m4s6p2m2m3p8p7p7	放銃					1	1	-5200	10	10	tanyao
+1	3	y5	pushM	2	m9z4m1z1s9m4s6p2m2m3p8p7p7	放銃					1	1	-5200	10	10	tanyao
+1	3	y5	base	2	m9z4m1z1s9m4s6p2m2m3p8p7p7	被ツモ						1	-3000	13	13	tanyao
+1	4	y0	push	1	p6m8s5p3p7s3s8p2s3m2p6m6m0	無関係						1	0	11	10	tanyao
+1	4	y0	pushM	1	p6m8s5p3p7s3s8p2s3m2p6m6m0	流局						1	-1000	18	17	tanyao
+1	4	y0	base	1	p6m8s5p3p7s3s8p2s3m2p6m6m0	被ツモ						0	-700	8	9	tanyao
+1	4	y1	push	1	m1s2m0s3p8p6p0m2p6p4m6s4s4	放銃					0	0	-1500	5	6	tanyao
+1	4	y1	pushM	1	m1s2m0s3p8p6p0m2p6p4m6s4s4	無関係						0	0	12	12	tanyao
+1	4	y1	base	1	m1s2m0s3p8p6p0m2p6p4m6s4s4	被ツモ						0	-300	9	10	tanyao
+1	4	y2	push	1	s9z7p2p3s4m2p7s5m6m3m5p8m2	被ツモ						0	-2600	7	7	tanyao
+1	4	y2	pushM	1	s9z7p2p3s4m2p7s5m6m3m5p8m2	被ツモ						0	-2600	7	7	tanyao
+1	4	y2	base	1	s9z7p2p3s4m2p7s5m6m3m5p8m2	被ツモ						0	-2600	7	7	tanyao
+1	4	y3	push	2	p9m1z7p5m3p4p6s4s5s6s8s8p7	被ツモ						0	-1300	9	10	tanyao
+1	4	y3	pushM	2	p9m1z7p5m3p4p6s4s5s6s8s8p7	無関係						0	0	13	14	tanyao
+1	4	y3	base	2	p9m1z7p5m3p4p6s4s5s6s8s8p7	無関係						0	0	6	6	tanyao
+1	4	y4	push	1	m1s9s1z4s7s3m0m7s8m8s2s2m6	和了	0	1	ツモ	断幺九+ドラ+赤ドラ		1	5000	13	14	tanyao
+1	4	y4	pushM	1	m1s9s1z4s7s3m0m7s8m8s2s2m6	無関係						1	0	9	9	tanyao
+1	4	y4	base	1	m1s9s1z4s7s3m0m7s8m8s2s2m6	和了	0	0	ロン	立直+一発+平和+赤ドラ		0	8700	6	6	tanyao
+1	4	y5	push	1	z6z5z5p9p9m4p3p2s5m6m8p4p2	無関係						0	0	7	8	tanyao
+1	4	y5	pushM	1	z6z5z5p9p9m4p3p2s5m6m8p4p2	無関係						0	0	5	5	tanyao
+1	4	y5	base	1	z6z5z5p9p9m4p3p2s5m6m8p4p2	無関係						0	0	5	7	tanyao
+1	5	y0	push	3	s7p4p4m0s3m4s2s3s4p7m6s2m2	和了	0	1	ツモ	門前清自摸和+平和+断幺九+一盃口+赤ドラ		1	10000	14	13	tanyao
+1	5	y0	pushM	3	s7p4p4m0s3m4s2s3s4p7m6s2m2	和了	0	1	ツモ	門前清自摸和+平和+断幺九+一盃口+赤ドラ		1	10000	14	13	tanyao
+1	5	y0	base	3	s7p4p4m0s3m4s2s3s4p7m6s2m2	和了	0	1	ツモ	断幺九+赤ドラ		0	2000	14	14	tanyao
+1	5	y1	push	2	z5s5s7p6s6s4p3s2s8s3p7m6s2	放銃					0	1	-5800	12	13	tanyao
+1	5	y1	pushM	2	z5s5s7p6s6s4p3s2s8s3p7m6s2	無関係						1	0	17	17	tanyao
+1	5	y1	base	2	z5s5s7p6s6s4p3s2s8s3p7m6s2	被ツモ						0	-300	11	11	tanyao
+1	5	y2	push	3	s1z7m8p3m6s4m3m2m5s5m4p6p2	無関係						1	0	9	8	tanyao
+1	5	y2	pushM	3	s1z7m8p3m6s4m3m2m5s5m4p6p2	無関係						1	0	9	8	tanyao
+1	5	y2	base	3	s1z7m8p3m6s4m3m2m5s5m4p6p2	被ツモ						1	-3900	11	11	tanyao
+1	5	y3	push	1	p9m9p1m8p7m6p3s2m4s5p7m5s7	和了	0	1	ロン	断幺九+赤ドラ		0	2000	8	8	tanyao
+1	5	y3	pushM	1	p9m9p1m8p7m6p3s2m4s5p7m5s7	無関係						1	0	11	11	tanyao
+1	5	y3	base	1	p9m9p1m8p7m6p3s2m4s5p7m5s7	和了	0	1	ロン	断幺九+赤ドラ		0	2000	8	9	tanyao
+1	5	y4	push	2	z3z4z1z7m2s5s7p7p4p8s6s6m6	和了	0	0	ツモ	門前清自摸和+平和		1	2500	14	13	tanyao
+1	5	y4	pushM	2	z3z4z1z7m2s5s7p7p4p8s6s6m6	和了	0	0	ツモ	門前清自摸和+平和		1	2500	14	13	tanyao
+1	5	y4	base	2	z3z4z1z7m2s5s7p7p4p8s6s6m6	放銃					1	1	-2600	14	14	tanyao
+1	5	y5	push	3	z2z6z4p1m9s5m8m4m6m2m6s2p2	被ツモ						1	-2000	12	11	tanyao
+1	5	y5	pushM	3	z2z6z4p1m9s5m8m4m6m2m6s2p2	被ツモ						1	-2000	12	11	tanyao
+1	5	y5	base	3	z2z6z4p1m9s5m8m4m6m2m6s2p2	無関係						1	0	8	7	tanyao
+1	6	y0	push	3	p7s8p3m7s4s7s6p6m5m6s3p7p8	和了	0	1	ツモ	断幺九		0	1100	6	5	tanyao
+1	6	y0	pushM	3	p7s8p3m7s4s7s6p6m5m6s3p7p8	和了	0	1	ロン	断幺九		0	1300	10	9	tanyao
+1	6	y0	base	3	p7s8p3m7s4s7s6p6m5m6s3p7p8	流局						0	3000	18	17	tanyao
+1	6	y1	push	2	z4s6p4m0p8s7s2m6m7p2p4p6p7	和了	0	1	ロン	断幺九		0	1000	12	11	tanyao
+1	6	y1	pushM	2	z4s6p4m0p8s7s2m6m7p2p4p6p7	放銃					0	0	-1000	11	11	tanyao
+1	6	y1	base	2	z4s6p4m0p8s7s2m6m7p2p4p6p7	和了	0	1	ロン	断幺九+赤ドラ		0	2000	5	4	tanyao
+1	6	y2	push	3	z4s9p2s7p7m2m2p4p3p0s8m8m7	無関係						1	0	17	16	tanyao
+1	6	y2	pushM	3	z4s9p2s7p7m2m2p4p3p0s8m8m7	無関係						1	0	17	16	tanyao
+1	6	y2	base	3	z4s9p2s7p7m2m2p4p3p0s8m8m7	和了	0	0	ロン	立直+平和+三色同順+赤ドラ+裏ドラ		0	13000	6	6	tanyao
+1	6	y3	push	3	z5z5s9s7p6p4s0m2m6m7s2p2p5	無関係						0	0	12	13	tanyao
+1	6	y3	pushM	3	z5z5s9s7p6p4s0m2m6m7s2p2p5	無関係						1	0	12	12	tanyao
+1	6	y3	base	3	z5z5s9s7p6p4s0m2m6m7s2p2p5	和了	0	0	ツモ	翻牌 白+ドラ+赤ドラ		0	4000	12	11	tanyao
+1	6	y4	push	1	z1p9z6z7m6p5s2p7p2s7s4p6p8	流局						1	-1000	18	18	tanyao
+1	6	y4	pushM	1	z1p9z6z7m6p5s2p7p2s7s4p6p8	流局						1	-1000	18	18	tanyao
+1	6	y4	base	1	z1p9z6z7m6p5s2p7p2s7s4p6p8	被ツモ						1	-300	15	15	tanyao
+1	6	y5	push	3	s9p1m1z6z4s6s7s2p2p6p2p6p5	放銃					0	0	-2900	17	17	tanyao
+1	6	y5	pushM	3	s9p1m1z6z4s6s7s2p2p6p2p6p5	無関係						0	0	14	13	tanyao
+1	6	y5	base	3	s9p1m1z6z4s6s7s2p2p6p2p6p5	被ツモ						1	-1000	16	16	tanyao
+1	7	y0	push	3	p8p5s7p8p7s3m4p6m3s4m6m7s4	和了	0	1	ツモ	断幺九		0	1100	7	6	tanyao
+1	7	y0	pushM	3	p8p5s7p8p7s3m4p6m3s4m6m7s4	放銃					1	1	-5200	11	11	tanyao
+1	7	y0	base	3	p8p5s7p8p7s3m4p6m3s4m6m7s4	無関係						0	0	6	6	tanyao
+1	7	y1	push	2	p9s5m6p5m6p2p3m3s2s7p5m8p4	無関係						0	0	11	11	tanyao
+1	7	y1	pushM	2	p9s5m6p5m6p2p3m3s2s7p5m8p4	無関係						0	0	11	11	tanyao
+1	7	y1	base	2	p9s5m6p5m6p2p3m3s2s7p5m8p4	和了	0	1	ロン	断幺九+赤ドラ		1	4900	10	10	tanyao
+1	7	y2	push	3	p1z2p4s4m3m2p3m3s8s3p8p6p6	被ツモ						0	-1000	10	11	tanyao
+1	7	y2	pushM	3	p1z2p4s4m3m2p3m3s8s3p8p6p6	無関係						0	0	7	7	tanyao
+1	7	y2	base	3	p1z2p4s4m3m2p3m3s8s3p8p6p6	和了	0	1	ロン	断幺九		0	1000	7	8	tanyao
+1	7	y3	push	2	z7m1z7s6p3m7s8s5m7m4p8s7p2	無関係						1	0	16	15	tanyao
+1	7	y3	pushM	2	z7m1z7s6p3m7s8s5m7m4p8s7p2	無関係						1	0	16	15	tanyao
+1	7	y3	base	2	z7m1z7s6p3m7s8s5m7m4p8s7p2	無関係						1	0	10	10	tanyao
+1	7	y4	push	1	z1m9z5z3s2s3m3m4s0m7m6m6s5	流局						1	-1000	18	18	tanyao
+1	7	y4	pushM	1	z1m9z5z3s2s3m3m4s0m7m6m6s5	被ツモ						1	-1000	10	10	tanyao
+1	7	y4	base	1	z1m9z5z3s2s3m3m4s0m7m6m6s5	無関係						1	0	16	16	tanyao
+1	7	y5	push	2	z6s9z7m9m1p8p2s4s4s6s7p2p7	被ツモ						1	-2000	7	7	tanyao
+1	7	y5	pushM	2	z6s9z7m9m1p8p2s4s4s6s7p2p7	放銃					1	1	-2600	7	7	tanyao
+1	7	y5	base	2	z6s9z7m9m1p8p2s4s4s6s7p2p7	放銃					1	1	-1300	10	10	tanyao
+1	8	y0	push	1	m2s3s4s8s6p7p2s6p3s5m6m3m8	放銃					1	1	-18000	12	13	tanyao
+1	8	y0	pushM	1	m2s3s4s8s6p7p2s6p3s5m6m3m8	放銃					1	1	-18000	12	13	tanyao
+1	8	y0	base	1	m2s3s4s8s6p7p2s6p3s5m6m3m8	被ツモ						1	-2000	12	13	tanyao
+1	8	y1	push	1	z1s3m5m4m6s7p6p6m3p5s2p8s8	流局						0	0	1	1	tanyao
+1	8	y1	pushM	1	z1s3m5m4m6s7p6p6m3p5s2p8s8	流局						0	0	1	1	tanyao
+1	8	y1	base	1	z1s3m5m4m6s7p6p6m3p5s2p8s8	流局						0	0	1	1	tanyao
+1	8	y2	push	1	z6p9p0m2p7p6p6s2p4s5p2s4s8	無関係						0	0	12	13	tanyao
+1	8	y2	pushM	1	z6p9p0m2p7p6p6s2p4s5p2s4s8	無関係						0	0	12	13	tanyao
+1	8	y2	base	1	z6p9p0m2p7p6p6s2p4s5p2s4s8	和了	0	0	ロン	翻牌 發+混一色+赤ドラ		0	7700	9	10	tanyao
+1	8	y3	push	2	p9m9z6m0m7p5p7s0p4s4s3s8s3	放銃					0	1	-1300	9	10	tanyao
+1	8	y3	pushM	2	p9m9z6m0m7p5p7s0p4s4s3s8s3	被ツモ						0	-400	11	10	tanyao
+1	8	y3	base	2	p9m9z6m0m7p5p7s0p4s4s3s8s3	被ツモ						0	-400	11	10	tanyao
+1	8	y4	push	2	m1z1p1z1s0p2m3s3p2s8s6s5m2	被ツモ						1	-500	15	14	tanyao
+1	8	y4	pushM	2	m1z1p1z1s0p2m3s3p2s8s6s5m2	被ツモ						1	-500	15	14	tanyao
+1	8	y4	base	2	m1z1p1z1s0p2m3s3p2s8s6s5m2	和了	0	0	ツモ	場風 東+赤ドラ		1	3000	10	9	tanyao
+1	8	y5	push	2	z1s9s1z1z6s4m4m6p6m5m8m3s7	無関係						1	0	10	9	tanyao
+1	8	y5	pushM	2	z1s9s1z1z6s4m4m6p6m5m8m3s7	無関係						1	0	10	9	tanyao
+1	8	y5	base	2	z1s9s1z1z6s4m4m6p6m5m8m3s7	放銃					1	1	-8000	12	12	tanyao
+1	9	y0	push	1	p3p5m5s7m2s2p8p3p2m8p2m7p8	無関係						1	0	13	15	tanyao
+1	9	y0	pushM	1	p3p5m5s7m2s2p8p3p2m8p2m7p8	放銃					0	1	-5800	12	13	tanyao
+1	9	y0	base	1	p3p5m5s7m2s2p8p3p2m8p2m7p8	和了	0	0	ツモ	立直+門前清自摸和+平和+一盃口+ドラ+裏ドラ		0	13000	9	8	tanyao
+1	9	y1	push	1	z3s5s6p4p4m6m8p5m2m5s7m4s4	和了	0	1	ツモ	門前清自摸和+断幺九+ドラ		1	5000	10	9	tanyao
+1	9	y1	pushM	1	z3s5s6p4p4m6m8p5m2m5s7m4s4	和了	0	1	ツモ	門前清自摸和+断幺九+ドラ		1	5000	10	9	tanyao
+1	9	y1	base	1	z3s5s6p4p4m6m8p5m2m5s7m4s4	流局						1	1500	18	18	tanyao
+1	9	y2	push	3	z7z5p6s7m4m5p5m2s4s6p2s2m7	流局						0	1000	18	17	tanyao
+1	9	y2	pushM	3	z7z5p6s7m4m5p5m2s4s6p2s2m7	流局						0	1000	18	17	tanyao
+1	9	y2	base	3	z7z5p6s7m4m5p5m2s4s6p2s2m7	無関係						1	0	16	16	tanyao
+1	9	y3	push	1	z6z7s9p6s6p7p4m3p5p4s4m5m7	放銃					1	1	-7700	15	16	tanyao
+1	9	y3	pushM	1	z6z7s9p6s6p7p4m3p5p4s4m5m7	無関係						0	0	12	12	tanyao
+1	9	y3	base	1	z6z7s9p6s6p7p4m3p5p4s4m5m7	放銃					1	1	-12000	12	13	tanyao
+1	9	y4	push	2	p9z5m9z1m4m7m5m5m8p0m2m8p3	放銃					1	1	-2600	7	7	tanyao
+1	9	y4	pushM	2	p9z5m9z1m4m7m5m5m8p0m2m8p3	放銃					1	1	-2600	7	7	tanyao
+1	9	y4	base	2	p9z5m9z1m4m7m5m5m8p0m2m8p3	放銃					1	1	-2600	5	5	tanyao
+1	9	y5	push	3	p9s9z1p1p9m3p3p4m5p2s7s2s5	和了	0	0	ロン	平和		1	2000	11	11	tanyao
+1	9	y5	pushM	3	p9s9z1p1p9m3p3p4m5p2s7s2s5	和了	0	0	ロン	平和		1	2000	11	11	tanyao
+1	9	y5	base	3	p9s9z1p1p9m3p3p4m5p2s7s2s5	放銃					0	0	-1300	12	13	tanyao
+1	10	y0	push	1	p5p7m4m6m6m0p3s4m2s4s2s8m4	被ツモ						1	-300	14	14	tanyao
+1	10	y0	pushM	1	p5p7m4m6m6m0p3s4m2s4s2s8m4	被ツモ						1	-300	14	14	tanyao
+1	10	y0	base	1	p5p7m4m6m6m0p3s4m2s4s2s8m4	流局						1	-1000	18	18	tanyao
+1	10	y1	push	1	z4m8p7p5s2m6p6s8m2m6s7m4s5	無関係						1	0	10	10	tanyao
+1	10	y1	pushM	1	z4m8p7p5s2m6p6s8m2m6s7m4s5	無関係						1	0	10	10	tanyao
+1	10	y1	base	1	z4m8p7p5s2m6p6s8m2m6s7m4s5	被ツモ						0	-1000	9	8	tanyao
+1	10	y2	push	1	s9z3s3p7p2s4m6m8s2m3s2s8p4	無関係						0	0	15	16	tanyao
+1	10	y2	pushM	1	s9z3s3p7p2s4m6m8s2m3s2s8p4	無関係						0	0	15	15	tanyao
+1	10	y2	base	1	s9z3s3p7p2s4m6m8s2m3s2s8p4	無関係						0	0	12	12	tanyao
+1	10	y3	push	1	m1p9z7s4m5m2s6s2s8p8p2m6s5	無関係						0	0	12	13	tanyao
+1	10	y3	pushM	1	m1p9z7s4m5m2s6s2s8p8p2m6s5	被ツモ						1	-300	14	15	tanyao
+1	10	y3	base	1	m1p9z7s4m5m2s6s2s8p8p2m6s5	被ツモ						0	-400	8	8	tanyao
+1	10	y4	push	2	z4z6z3z4m4p3m4m6m8p4p6p5m2	放銃					0	1	-5800	7	7	tanyao
+1	10	y4	pushM	2	z4z6z3z4m4p3m4m6m8p4p6p5m2	無関係						1	0	7	7	tanyao
+1	10	y4	base	2	z4z6z3z4m4p3m4m6m8p4p6p5m2	放銃					1	1	-3200	9	9	tanyao
+1	10	y5	push	2	s1z2z6z5z6s8m7p5p4m7p2p5s2	和了	0	1	ツモ	門前清自摸和+断幺九+赤ドラ		0	4000	10	9	tanyao
+1	10	y5	pushM	2	s1z2z6z5z6s8m7p5p4m7p2p5s2	和了	0	1	ツモ	門前清自摸和+断幺九+赤ドラ		0	4000	10	9	tanyao
+1	10	y5	base	2	s1z2z6z5z6s8m7p5p4m7p2p5s2	和了	0	0	ロン	翻牌 發		1	2000	12	12	tanyao
+1	11	y0	push	2	m3m3p4m8s4m4p8p2s6m5s6p2s4	流局						0	0	1	1	tanyao
+1	11	y0	pushM	2	m3m3p4m8s4m4p8p2s6m5s6p2s4	流局						0	0	1	1	tanyao
+1	11	y0	base	2	m3m3p4m8s4m4p8p2s6m5s6p2s4	流局						0	0	1	1	tanyao
+1	11	y1	push	2	z7s2p3p3s4s8p8p8p4p6s7p2s0	流局						1	0	18	17	tanyao
+1	11	y1	pushM	2	z7s2p3p3s4s8p8p8p4p6s7p2s0	無関係						1	0	9	9	tanyao
+1	11	y1	base	2	z7s2p3p3s4s8p8p8p4p6s7p2s0	和了	0	0	ロン	翻牌 中+ドラ+赤ドラ		0	3900	11	11	tanyao
+1	11	y2	push	2	z4p1s3m3s6m2p7s8p7p8s7p7p3	流局						1	-1000	18	18	tanyao
+1	11	y2	pushM	2	z4p1s3m3s6m2p7s8p7p8s7p7p3	流局						0	-1500	18	19	tanyao
+1	11	y2	base	2	z4p1s3m3s6m2p7s8p7p8s7p7p3	和了	0	1	ツモ	断幺九+ドラ		0	7900	18	18	tanyao
+1	11	y3	push	3	z4z5z5m4p6s7m8m7m0p2m4s4s6	被ツモ						0	-500	9	8	tanyao
+1	11	y3	pushM	3	z4z5z5m4p6s7m8m7m0p2m4s4s6	無関係						0	0	9	7	tanyao
+1	11	y3	base	3	z4z5z5m4p6s7m8m7m0p2m4s4s6	被ツモ						0	-4000	9	9	tanyao
+1	11	y4	push	2	z6s9p1z3m5m7p6p5s7p4m2p3p3	和了	0	1	ツモ	断幺九+赤ドラ		0	2000	13	13	tanyao
+1	11	y4	pushM	2	z6s9p1z3m5m7p6p5s7p4m2p3p3	無関係						0	0	8	8	tanyao
+1	11	y4	base	2	z6s9p1z3m5m7p6p5s7p4m2p3p3	無関係						0	0	11	12	tanyao
+1	11	y5	push	3	z4s9z1z3z5p2m7m4m3p6m5s7s8	放銃					0	1	-2000	15	16	tanyao
+1	11	y5	pushM	3	z4s9z1z3z5p2m7m4m3p6m5s7s8	無関係						1	0	9	9	tanyao
+1	11	y5	base	3	z4s9z1z3z5p2m7m4m3p6m5s7s8	無関係						1	0	7	8	tanyao
+1	12	y0	push	1	p7s3s6s5p2p4s8m8s7m6p6m2p8	流局						1	1000	18	17	tanyao
+1	12	y0	pushM	1	p7s3s6s5p2p4s8m8s7m6p6m2p8	流局						1	1000	18	17	tanyao
+1	12	y0	base	1	p7s3s6s5p2p4s8m8s7m6p6m2p8	放銃					0	0	-3900	12	13	tanyao
+1	12	y1	push	3	z2s0s2s4p7m6s3m2m4m5p3m8s7	和了	0	0	ロン	平和+赤ドラ		0	3900	8	7	tanyao
+1	12	y1	pushM	3	z2s0s2s4p7m6s3m2m4m5p3m8s7	和了	0	0	ロン	平和+赤ドラ		0	3900	8	7	tanyao
+1	12	y1	base	3	z2s0s2s4p7m6s3m2m4m5p3m8s7	和了	0	1	ツモ	立直+門前清自摸和+平和+断幺九+赤ドラ		0	13000	9	8	tanyao
+1	12	y2	push	3	p1z3p7p2p8s7s4m3p2m2p3s5p8	放銃					1	1	-8000	12	12	tanyao
+1	12	y2	pushM	3	p1z3p7p2p8s7s4m3p2m2p3s5p8	放銃					1	1	-8000	12	12	tanyao
+1	12	y2	base	3	p1z3p7p2p8s7s4m3p2m2p3s5p8	被ツモ						1	-1000	15	14	tanyao
+1	12	y3	push	1	p1z5p1m4p7s2m8s7p8s3m2s4s6	和了	0	1	ツモ	断幺九		1	2100	12	12	tanyao
+1	12	y3	pushM	1	p1z5p1m4p7s2m8s7p8s3m2s4s6	流局						1	-1000	18	18	tanyao
+1	12	y3	base	1	p1z5p1m4p7s2m8s7p8s3m2s4s6	和了	0	0	ツモ	立直+門前清自摸和+平和+裏ドラ		0	6200	8	8	tanyao
+1	12	y4	push	1	z7z7m1p1m4m7s3s4m5m4s3s7s8	放銃					1	1	-7700	10	10	tanyao
+1	12	y4	pushM	1	z7z7m1p1m4m7s3s4m5m4s3s7s8	流局						1	1000	18	18	tanyao
+1	12	y4	base	1	z7z7m1p1m4m7s3s4m5m4s3s7s8	和了	0	0	ロン	翻牌 中		0	1000	3	4	tanyao
+1	12	y5	push	3	p9z3s9z1z2m2s8p0s2s6s4s0p7	放銃					1	1	-5200	10	10	tanyao
+1	12	y5	pushM	3	p9z3s9z1z2m2s8p0s2s6s4s0p7	無関係						1	0	13	12	tanyao
+1	12	y5	base	3	p9z3s9z1z2m2s8p0s2s6s4s0p7	無関係						1	0	13	12	tanyao
+1	13	y0	push	3	s7s6m2s5s2s4m7m8m8m5p5m8m8	流局						1	1000	18	18	tanyao
+1	13	y0	pushM	3	s7s6m2s5s2s4m7m8m8m5p5m8m8	流局						1	1000	18	18	tanyao
+1	13	y0	base	3	s7s6m2s5s2s4m7m8m8m5p5m8m8	和了	0	1	ロン	立直+断幺九+ドラ		0	7400	10	10	tanyao
+1	13	y1	push	1	z1p6m4p3s4p5s7s8s2m8p2p2p8	無関係						1	0	6	6	tanyao
+1	13	y1	pushM	1	z1p6m4p3s4p5s7s8s2m8p2p2p8	無関係						1	0	6	6	tanyao
+1	13	y1	base	1	z1p6m4p3s4p5s7s8s2m8p2p2p8	和了	0	1	ロン	断幺九		1	2000	7	7	tanyao
+1	13	y2	push	2	z7z4p4s3p7p7s6p0m5s6m7m4s2	流局						1	1500	18	18	tanyao
+1	13	y2	pushM	2	z7z4p4s3p7p7s6p0m5s6m7m4s2	流局						1	1500	18	18	tanyao
+1	13	y2	base	2	z7z4p4s3p7p7s6p0m5s6m7m4s2	流局						0	1500	18	18	tanyao
+1	13	y3	push	3	z7z3m1p2m6s7s4s5s8m8m4s3m8	放銃					1	1	-5200	9	9	tanyao
+1	13	y3	pushM	3	z7z3m1p2m6s7s4s5s8m8m4s3m8	放銃					1	1	-5200	12	12	tanyao
+1	13	y3	base	3	z7z3m1p2m6s7s4s5s8m8m4s3m8	被ツモ						1	-500	13	12	tanyao
+1	13	y4	push	1	z7z3z1s1m5m5p3s4m3m4s4s7s6	無関係						1	0	12	12	tanyao
+1	13	y4	pushM	1	z7z3z1s1m5m5p3s4m3m4s4s7s6	無関係						1	0	12	12	tanyao
+1	13	y4	base	1	z7z3z1s1m5m5p3s4m3m4s4s7s6	被ツモ						1	-2000	15	15	tanyao
+1	13	y5	push	1	s9z7z6p1z2m4m7p3m4s4s5p7s4	和了	0	1	ツモ	門前清自摸和+断幺九+七対子		0	6400	11	10	tanyao
+1	13	y5	pushM	1	s9z7z6p1z2m4m7p3m4s4s5p7s4	和了	0	1	ツモ	門前清自摸和+断幺九+七対子		0	6400	11	10	tanyao
+1	13	y5	base	1	s9z7z6p1z2m4m7p3m4s4s5p7s4	和了	0	0	ロン	自風 南		0	1300	10	11	tanyao
+1	14	y0	push	3	m4p2s4s7m3s2p8s5p4p6m7s6p2	被ツモ						1	-2000	13	11	tanyao
+1	14	y0	pushM	3	m4p2s4s7m3s2p8s5p4p6m7s6p2	被ツモ						1	-2000	12	10	tanyao
+1	14	y0	base	3	m4p2s4s7m3s2p8s5p4p6m7s6p2	和了	0	1	ツモ	断幺九+ドラ		1	3000	11	9	tanyao
+1	14	y1	push	2	s9p4p3p2s2s8s5p2s7s6m8s4m4	無関係						0	0	7	6	tanyao
+1	14	y1	pushM	2	s9p4p3p2s2s8s5p2s7s6m8s4m4	無関係						0	0	7	6	tanyao
+1	14	y1	base	2	s9p4p3p2s2s8s5p2s7s6m8s4m4	和了	0	0	ロン	立直+三色同順+ドラ+赤ドラ		0	9000	10	9	tanyao
+1	14	y2	push	3	p1p9m8m8s4s4s5s2s2s6m4p6s4	流局						1	1500	18	17	tanyao
+1	14	y2	pushM	3	p1p9m8m8s4s4s5s2s2s6m4p6s4	流局						1	1500	18	17	tanyao
+1	14	y2	base	3	p1p9m8m8s4s4s5s2s2s6m4p6s4	無関係						1	0	8	7	tanyao
+1	14	y3	push	2	s9s9m1p7m5s5m7p6p2m5p6m6p4	被ツモ						1	-2000	7	7	tanyao
+1	14	y3	pushM	2	s9s9m1p7m5s5m7p6p2m5p6m6p4	被ツモ						1	-2000	7	7	tanyao
+1	14	y3	base	2	s9s9m1p7m5s5m7p6p2m5p6m6p4	被ツモ						1	-2000	7	7	tanyao
+1	14	y4	push	1	z3m1p1m9m0m3s8s3s4m8s3p2p4	無関係						1	0	10	9	tanyao
+1	14	y4	pushM	1	z3m1p1m9m0m3s8s3s4m8s3p2p4	無関係						1	0	10	9	tanyao
+1	14	y4	base	1	z3m1p1m9m0m3s8s3s4m8s3p2p4	流局						1	1500	18	17	tanyao
+1	14	y5	push	2	m9s1z7p1z1s7m4p3s5p7s4m3s4	放銃					0	0	-2900	8	9	tanyao
+1	14	y5	pushM	2	m9s1z7p1z1s7m4p3s5p7s4m3s4	放銃					0	0	-2900	15	15	tanyao
+1	14	y5	base	2	m9s1z7p1z1s7m4p3s5p7s4m3s4	放銃					0	0	-2900	7	8	tanyao
+1	15	y0	push	2	p3p0p2s5s4m3s2s6s8m7p5m8m6	和了	0	1	ロン	断幺九+赤ドラ		1	4000	14	14	tanyao
+1	15	y0	pushM	2	p3p0p2s5s4m3s2s6s8m7p5m8m6	和了	0	1	ロン	断幺九+赤ドラ		0	5200	6	6	tanyao
+1	15	y0	base	2	p3p0p2s5s4m3s2s6s8m7p5m8m6	無関係						1	0	9	9	tanyao
+1	15	y1	push	3	z2m5m4m3p3s3s2s4s8m6s5m5p3	被ツモ						1	-3200	12	11	tanyao
+1	15	y1	pushM	3	z2m5m4m3p3s3s2s4s8m6s5m5p3	被ツモ						1	-3200	12	11	tanyao
+1	15	y1	base	3	z2m5m4m3p3s3s2s4s8m6s5m5p3	和了	0	0	ツモ	立直+門前清自摸和+平和+ドラ+裏ドラ		1	14000	8	6	tanyao
+1	15	y2	push	1	s1z5s7p5s2s3p4p4m2s7s6s2s7	無関係						1	0	7	7	tanyao
+1	15	y2	pushM	1	s1z5s7p5s2s3p4p4m2s7s6s2s7	放銃					0	0	-2600	8	8	tanyao
+1	15	y2	base	1	s1z5s7p5s2s3p4p4m2s7s6s2s7	無関係						0	0	6	6	tanyao
+1	15	y3	push	1	p9z5z1s2p2m8s2p8m3s5m7p2m4	放銃					0	0	-3900	15	16	tanyao
+1	15	y3	pushM	1	p9z5z1s2p2m8s2p8m3s5m7p2m4	放銃					0	0	-3900	15	16	tanyao
+1	15	y3	base	1	p9z5z1s2p2m8s2p8m3s5m7p2m4	和了	0	0	ロン	立直+赤ドラ		0	3600	15	15	tanyao
+1	15	y4	push	1	p9z7z2z5m3s2m3s8p3s2m6s3p8	放銃					1	1	-5800	15	16	tanyao
+1	15	y4	pushM	1	p9z7z2z5m3s2m3s8p3s2m6s3p8	無関係						1	0	13	13	tanyao
+1	15	y4	base	1	p9z7z2z5m3s2m3s8p3s2m6s3p8	無関係						0	0	10	11	tanyao
+1	15	y5	push	3	s9p9z6z6z1p2s6p8p2s8p7s7p7	無関係						0	0	10	12	tanyao
+1	15	y5	pushM	3	s9p9z6z6z1p2s6p8p2s8p7s7p7	放銃					0	1	-1000	10	11	tanyao
+1	15	y5	base	3	s9p9z6z6z1p2s6p8p2s8p7s7p7	流局						1	-1500	18	19	tanyao
+1	16	y0	push	1	p4p6s6m8m5s4s2m3m3m0p8s3m7	被ツモ						1	-2000	9	9	tanyao
+1	16	y0	pushM	1	p4p6s6m8m5s4s2m3m3m0p8s3m7	被ツモ						1	-2000	9	9	tanyao
+1	16	y0	base	1	p4p6s6m8m5s4s2m3m3m0p8s3m7	被ツモ						1	-3000	9	9	tanyao
+1	16	y1	push	1	m1m7p6p7p6m5m6s2s8s3m6p4p3	無関係						1	0	13	14	tanyao
+1	16	y1	pushM	1	m1m7p6p7p6m5m6s2s8s3m6p4p3	無関係						1	0	13	14	tanyao
+1	16	y1	base	1	m1m7p6p7p6m5m6s2s8s3m6p4p3	流局						1	1500	18	19	tanyao
+1	16	y2	push	3	m9s1p2m2s7m8m3p8s3s8m6s4s2	被ツモ						1	-2000	17	16	tanyao
+1	16	y2	pushM	3	m9s1p2m2s7m8m3p8s3s8m6s4s2	無関係						1	0	17	16	tanyao
+1	16	y2	base	3	m9s1p2m2s7m8m3p8s3s8m6s4s2	被ツモ						1	-1300	17	16	tanyao
+1	16	y3	push	3	p1z1z3m3p8m0m5p6p5m4s7s6p3	和了	0	1	ロン	断幺九		1	2000	13	12	tanyao
+1	16	y3	pushM	3	p1z1z3m3p8m0m5p6p5m4s7s6p3	流局						1	-1500	18	17	tanyao
+1	16	y3	base	3	p1z1z3m3p8m0m5p6p5m4s7s6p3	和了	0	1	ロン	断幺九+赤ドラ		1	4900	13	12	tanyao
+1	16	y4	push	1	z5m9z3s1p6s2m4s6p6m3s7p4p8	放銃					1	1	-5200	12	14	tanyao
+1	16	y4	pushM	1	z5m9z3s1p6s2m4s6p6m3s7p4p8	放銃					1	1	-8000	12	12	tanyao
+1	16	y4	base	1	z5m9z3s1p6s2m4s6p6m3s7p4p8	無関係						0	0	12	11	tanyao
+1	16	y5	push	3	z2z6z5p9z5m6p2p6p2m3s6p5s2	無関係						0	0	9	8	tanyao
+1	16	y5	pushM	3	z2z6z5p9z5m6p2p6p2m3s6p5s2	無関係						0	0	9	8	tanyao
+1	16	y5	base	3	z2z6z5p9z5m6p2p6p2m3s6p5s2	被ツモ						1	-1300	12	11	tanyao
+1	17	y0	push	3	m6p3m3m5s7p7s4m6p4m3p4p8s2	和了	0	1	ロン	平和+断幺九+一盃口		0	3900	15	14	tanyao
+1	17	y0	pushM	3	m6p3m3m5s7p7s4m6p4m3p4p8s2	和了	0	1	ロン	平和+断幺九+一盃口		0	3900	15	14	tanyao
+1	17	y0	base	3	m6p3m3m5s7p7s4m6p4m3p4p8s2	和了	0	0	ツモ	立直+門前清自摸和		0	3000	14	13	tanyao
+1	17	y1	push	3	z7s8p8p5m2m5p0m6s8s2s2p3m4	放銃					0	1	-2900	13	13	tanyao
+1	17	y1	pushM	3	z7s8p8p5m2m5p0m6s8s2s2p3m4	放銃					0	1	-2900	14	13	tanyao
+1	17	y1	base	3	z7s8p8p5m2m5p0m6s8s2s2p3m4	流局						1	-1000	18	17	tanyao
+1	17	y2	push	2	z3z6m3p6m6m7p2s4s3m4p7s5s6	和了	0	1	ロン	平和+断幺九+ドラ+赤ドラ		0	7700	10	9	tanyao
+1	17	y2	pushM	2	z3z6m3p6m6m7p2s4s3m4p7s5s6	和了	0	1	ロン	平和+断幺九+ドラ+赤ドラ		0	7700	10	9	tanyao
+1	17	y2	base	2	z3z6m3p6m6m7p2s4s3m4p7s5s6	和了	0	1	ツモ	立直+門前清自摸和+平和+断幺九+ドラ+赤ドラ+裏ドラ		1	14000	16	15	tanyao
+1	17	y3	push	1	p1z3z5m6p6p7p6p8s6m7m2p5m3	放銃					0	0	-2900	9	9	tanyao
+1	17	y3	pushM	1	p1z3z5m6p6p7p6p8s6m7m2p5m3	無関係						0	0	12	12	tanyao
+1	17	y3	base	1	p1z3z5m6p6p7p6p8s6m7m2p5m3	被ツモ						0	-1300	11	12	tanyao
+1	17	y4	push	2	z4z2m1p9m5p8m3s2p2s7p5s6m4	放銃					0	0	-1300	10	13	tanyao
+1	17	y4	pushM	2	z4z2m1p9m5p8m3s2p2s7p5s6m4	流局						0	-1500	18	19	tanyao
+1	17	y4	base	2	z4z2m1p9m5p8m3s2p2s7p5s6m4	流局						0	-1500	18	19	tanyao
+1	17	y5	push	3	s9z3s9z7s9p8s8p7m4p7s8p4p6	被ツモ						1	-1000	13	12	tanyao
+1	17	y5	pushM	3	s9z3s9z7s9p8s8p7m4p7s8p4p6	無関係						0	0	9	8	tanyao
+1	17	y5	base	3	s9z3s9z7s9p8s8p7m4p7s8p4p6	和了	0	0	ロン	立直+裏ドラ		1	5200	7	6	tanyao
+1	18	y0	push	1	m3p3s5m7p6p7p4m4p3s6s3m2s5	無関係						1	0	11	12	tanyao
+1	18	y0	pushM	1	m3p3s5m7p6p7p4m4p3s6s3m2s5	被ツモ						1	-6000	11	11	tanyao
+1	18	y0	base	1	m3p3s5m7p6p7p4m4p3s6s3m2s5	被ツモ						1	-6000	11	11	tanyao
+1	18	y1	push	2	s9s3s8p6p7s3s5m2s8p3s8m7p4	和了	0	1	ツモ	断幺九		0	1100	10	10	tanyao
+1	18	y1	pushM	2	s9s3s8p6p7s3s5m2s8p3s8m7p4	放銃					0	0	-2900	13	14	tanyao
+1	18	y1	base	2	s9s3s8p6p7s3s5m2s8p3s8m7p4	流局						0	3000	18	18	tanyao
+1	18	y2	push	2	z2p1s8m5s5p3s6m3p8m8s2p6p7	放銃					0	0	-2000	9	9	tanyao
+1	18	y2	pushM	2	z2p1s8m5s5p3s6m3p8m8s2p6p7	放銃					0	0	-2000	9	9	tanyao
+1	18	y2	base	2	z2p1s8m5s5p3s6m3p8m8s2p6p7	放銃					0	0	-2000	9	9	tanyao
+1	18	y3	push	2	p1z6z1m4s0m8p4m0m8p2s4p8p5	放銃					0	1	-1000	16	16	tanyao
+1	18	y3	pushM	2	p1z6z1m4s0m8p4m0m8p2s4p8p5	放銃					0	1	-1000	16	16	tanyao
+1	18	y3	base	2	p1z6z1m4s0m8p4m0m8p2s4p8p5	放銃					0	1	-2900	10	11	tanyao
+1	18	y4	push	3	z2z7s1z6m3m5p3p5m0m8m2p3m7	被ツモ						0	-1000	10	10	tanyao
+1	18	y4	pushM	3	z2z7s1z6m3m5p3p5m0m8m2p3m7	流局						1	-1000	18	18	tanyao
+1	18	y4	base	3	z2z7s1z6m3m5p3p5m0m8m2p3m7	被ツモ						0	-1000	10	10	tanyao
+1	18	y5	push	2	z6s9z4p9z7m7p7s4p4p7p8p6s4	被ツモ						1	-2000	13	13	tanyao
+1	18	y5	pushM	2	z6s9z4p9z7m7p7s4p4p7p8p6s4	流局						1	-1000	18	17	tanyao
+1	18	y5	base	2	z6s9z4p9z7m7p7s4p4p7p8p6s4	流局						1	-1000	18	17	tanyao
+1	19	y0	push	1	s3p5m7m3p2m2p7s0m6p3m5m6s8	被ツモ						1	-3000	14	14	tanyao
+1	19	y0	pushM	1	s3p5m7m3p2m2p7s0m6p3m5m6s8	放銃					1	1	-2900	17	17	tanyao
+1	19	y0	base	1	s3p5m7m3p2m2p7s0m6p3m5m6s8	無関係						1	0	12	11	tanyao
+1	19	y1	push	3	s1m7m2p4s7s4s2p5p8p8p2m8m8	放銃					1	1	-2600	13	13	tanyao
+1	19	y1	pushM	3	s1m7m2p4s7s4s2p5p8p8p2m8m8	流局						1	-1000	18	17	tanyao
+1	19	y1	base	3	s1m7m2p4s7s4s2p5p8p8p2m8m8	流局						1	-1000	18	17	tanyao
+1	19	y2	push	3	z4p1p8s5s6p3s8s7m2p2m6s8p6	無関係						1	0	12	12	tanyao
+1	19	y2	pushM	3	z4p1p8s5s6p3s8s7m2p2m6s8p6	無関係						1	0	12	11	tanyao
+1	19	y2	base	3	z4p1p8s5s6p3s8s7m2p2m6s8p6	和了	0	0	ロン	立直+ドラ+裏ドラ		0	9000	12	12	tanyao
+1	19	y3	push	2	z7s1s9m2s5s7m2p8p5s5m2p8p2	無関係						0	0	12	12	tanyao
+1	19	y3	pushM	2	z7s1s9m2s5s7m2p8p5s5m2p8p2	無関係						0	0	12	12	tanyao
+1	19	y3	base	2	z7s1s9m2s5s7m2p8p5s5m2p8p2	無関係						0	0	8	7	tanyao
+1	19	y4	push	2	s1z7p9z7p3m3s7p8s5s3s6m6s6	無関係						0	0	10	10	tanyao
+1	19	y4	pushM	2	s1z7p9z7p3m3s7p8s5s3s6m6s6	無関係						0	0	12	11	tanyao
+1	19	y4	base	2	s1z7p9z7p3m3s7p8s5s3s6m6s6	流局						1	1500	18	17	tanyao
+1	19	y5	push	3	z2z3p1s1z1s5p7m3p7p6m4s3p3	放銃					0	0	-1000	13	14	tanyao
+1	19	y5	pushM	3	z2z3p1s1z1s5p7m3p7p6m4s3p3	被ツモ						1	-2000	14	13	tanyao
+1	19	y5	base	3	z2z3p1s1z1s5p7m3p7p6m4s3p3	放銃					0	0	-2000	13	14	tanyao
+1	20	y0	push	2	m7m4s8m2p7m4m6m3s4m2m7s3p3	和了	0	1	ロン	断幺九		0	1000	16	17	tanyao
+1	20	y0	pushM	2	m7m4s8m2p7m4m6m3s4m2m7s3p3	流局						1	-3000	18	17	tanyao
+1	20	y0	base	2	m7m4s8m2p7m4m6m3s4m2m7s3p3	無関係						1	0	11	11	tanyao
+1	20	y1	push	2	z1m8p3s6s7s8m2m6m0p0s2p3p4	和了	0	1	ロン	断幺九+赤ドラ		0	3900	8	7	tanyao
+1	20	y1	pushM	2	z1m8p3s6s7s8m2m6m0p0s2p3p4	被ツモ						1	-2000	11	11	tanyao
+1	20	y1	base	2	z1m8p3s6s7s8m2m6m0p0s2p3p4	和了	0	1	ロン	断幺九+赤ドラ		0	3900	6	6	tanyao
+1	20	y2	push	1	z4p9p5m6m4m8m6s5s7m3p2m4p8	無関係						0	0	11	11	tanyao
+1	20	y2	pushM	1	z4p9p5m6m4m8m6s5s7m3p2m4p8	被ツモ						0	-500	9	9	tanyao
+1	20	y2	base	1	z4p9p5m6m4m8m6s5s7m3p2m4p8	和了	0	0	ツモ	立直+一発+門前清自摸和+平和+ドラ+裏ドラ		0	13000	8	7	tanyao
+1	20	y3	push	3	z1m9p1s5p6p2m2p7m6p8p6p0p2	和了	0	1	ロン	断幺九+ドラ+赤ドラ		1	9000	9	9	tanyao
+1	20	y3	pushM	3	z1m9p1s5p6p2m2p7m6p8p6p0p2	放銃					1	1	-5800	17	17	tanyao
+1	20	y3	base	3	z1m9p1s5p6p2m2p7m6p8p6p0p2	和了	0	1	ロン	断幺九+ドラ+赤ドラ		1	9000	9	9	tanyao
+1	20	y4	push	2	p1z1z6z4p4m5p2s0m2p4s5p3m7	無関係						1	0	18	17	tanyao
+1	20	y4	pushM	2	p1z1z6z4p4m5p2s0m2p4s5p3m7	無関係						1	0	18	17	tanyao
+1	20	y4	base	2	p1z1z6z4p4m5p2s0m2p4s5p3m7	無関係						0	0	11	12	tanyao
+1	20	y5	push	1	z1z1p9m1z7s4p5m5m3p4s2m3m5	無関係						1	0	14	14	tanyao
+1	20	y5	pushM	1	z1z1p9m1z7s4p5m5m3p4s2m3m5	被ツモ						0	-700	10	10	tanyao
+1	20	y5	base	1	z1z1p9m1z7s4p5m5m3p4s2m3m5	和了	0	0	ロン	場風 東		0	1000	7	7	tanyao
+1	21	y0	push	3	s4p4s3m6s3m6p5s8s5m2m3m2p6	和了	0	1	ロン	断幺九+赤ドラ		0	2000	10	10	tanyao
+1	21	y0	pushM	3	s4p4s3m6s3m6p5s8s5m2m3m2p6	放銃					1	1	-12000	11	11	tanyao
+1	21	y0	base	3	s4p4s3m6s3m6p5s8s5m2m3m2p6	流局						1	1000	17	17	tanyao
+1	21	y1	push	1	z3m7m8m6s4s6s4m2p8p0m3s8s0	無関係						1	0	9	8	tanyao
+1	21	y1	pushM	1	z3m7m8m6s4s6s4m2p8p0m3s8s0	無関係						1	0	9	8	tanyao
+1	21	y1	base	1	z3m7m8m6s4s6s4m2p8p0m3s8s0	和了	0	0	ツモ	立直+門前清自摸和+平和+赤ドラ+裏ドラ		1	11000	8	7	tanyao
+1	21	y2	push	2	s1s9m5p7p6s7s4p6p4m4s6p3m4	和了	0	1	ロン	断幺九		0	1000	10	10	tanyao
+1	21	y2	pushM	2	s1s9m5p7p6s7s4p6p4m4s6p3m4	放銃					0	1	-7700	10	10	tanyao
+1	21	y2	base	2	s1s9m5p7p6s7s4p6p4m4s6p3m4	放銃					1	1	-2000	11	11	tanyao
+1	21	y3	push	3	z3z6p1s4p8s5p7m8p7p2s3p5s3	流局						1	-1500	18	17	tanyao
+1	21	y3	pushM	3	z3z6p1s4p8s5p7m8p7p2s3p5s3	無関係						1	0	16	15	tanyao
+1	21	y3	base	3	z3z6p1s4p8s5p7m8p7p2s3p5s3	無関係						1	0	14	13	tanyao
+1	21	y4	push	1	z2m9z2m1p4s3p7m8p8s4m4m2m3	和了	0	1	ツモ	断幺九+ドラ		0	2000	10	11	tanyao
+1	21	y4	pushM	1	z2m9z2m1p4s3p7m8p8s4m4m2m3	被ツモ						0	-500	7	8	tanyao
+1	21	y4	base	1	z2m9z2m1p4s3p7m8p8s4m4m2m3	被ツモ						0	-500	9	9	tanyao
+1	21	y5	push	2	p9z5z1m1p9s7s3p8m3s3p2s6p5	被ツモ						1	-300	11	11	tanyao
+1	21	y5	pushM	2	p9z5z1m1p9s7s3p8m3s3p2s6p5	流局						1	-1500	18	18	tanyao
+1	21	y5	base	2	p9z5z1m1p9s7s3p8m3s3p2s6p5	和了	0	0	ツモ	場風 東+赤ドラ		0	4000	16	16	tanyao
+1	22	y0	push	3	s5p5p8m6s4p6s3p4m8p4p3s6p6	被ツモ						1	-1000	11	10	tanyao
+1	22	y0	pushM	3	s5p5p8m6s4p6s3p4m8p4p3s6p6	和了	0	1	ツモ	門前清自摸和+断幺九		0	2000	10	9	tanyao
+1	22	y0	base	3	s5p5p8m6s4p6s3p4m8p4p3s6p6	和了	0	1	ツモ	立直+門前清自摸和+断幺九+裏ドラ		0	8900	10	9	tanyao
+1	22	y1	push	3	z5m6m8m0s5s7p5p8s5p3s3p5p3	無関係						0	0	8	6	tanyao
+1	22	y1	pushM	3	z5m6m8m0s5s7p5p8s5p3s3p5p3	無関係						0	0	8	6	tanyao
+1	22	y1	base	3	z5m6m8m0s5s7p5p8s5p3s3p5p3	放銃					0	0	-2900	8	7	tanyao
+1	22	y2	push	1	p9z1m3p3m2p5p6s8m6m8m0s2s7	被ツモ						1	-2000	15	15	tanyao
+1	22	y2	pushM	1	p9z1m3p3m2p5p6s8m6m8m0s2s7	流局						1	1500	18	18	tanyao
+1	22	y2	base	1	p9z1m3p3m2p5p6s8m6m8m0s2s7	和了	0	0	ツモ	立直+嶺上開花+門前清自摸和+赤ドラ		0	9000	17	16	tanyao
+1	22	y3	push	3	p9p9z6p5m7p2m5p6m2m4m3s6m8	無関係						1	0	14	13	tanyao
+1	22	y3	pushM	3	p9p9z6p5m7p2m5p6m2m4m3s6m8	無関係						1	0	14	13	tanyao
+1	22	y3	base	3	p9p9z6p5m7p2m5p6m2m4m3s6m8	流局						0	3000	18	17	tanyao
+1	22	y4	push	2	p9m1z4z5p6p2p2m2m7p2s7p5p8	放銃					1	1	-2600	9	10	tanyao
+1	22	y4	pushM	2	p9m1z4z5p6p2p2m2m7p2s7p5p8	被ツモ						1	-300	17	16	tanyao
+1	22	y4	base	2	p9m1z4z5p6p2p2m2m7p2s7p5p8	被ツモ						1	-2600	10	9	tanyao
+1	22	y5	push	1	z5z5p1p9z7s4s2s3s6m4s0p3m4	被ツモ						1	-4000	12	12	tanyao
+1	22	y5	pushM	1	z5z5p1p9z7s4s2s3s6m4s0p3m4	被ツモ						1	-2000	14	14	tanyao
+1	22	y5	base	1	z5z5p1p9z7s4s2s3s6m4s0p3m4	和了	0	0	ロン	翻牌 白+赤ドラ		0	2000	6	6	tanyao
+1	23	y0	push	2	p5m2m4m6p7m8s7m3s2s7m4p5s4	被ツモ						1	-500	17	17	tanyao
+1	23	y0	pushM	2	p5m2m4m6p7m8s7m3s2s7m4p5s4	被ツモ						1	-500	17	17	tanyao
+1	23	y0	base	2	p5m2m4m6p7m8s7m3s2s7m4p5s4	被ツモ						1	-1000	11	11	tanyao
+1	23	y1	push	3	z1p6s6s8m8s7s6p8p4p3m6s5m2	放銃					0	0	-1000	9	10	tanyao
+1	23	y1	pushM	3	z1p6s6s8m8s7s6p8p4p3m6s5m2	無関係						0	0	11	11	tanyao
+1	23	y1	base	3	z1p6s6s8m8s7s6p8p4p3m6s5m2	和了	0	1	ロン	断幺九+赤ドラ		0	2000	17	18	tanyao
+1	23	y2	push	2	z7z4s4s4s7p2p5m3m2s2m2p8p2	和了	0	1	ロン	断幺九+七対子		0	3200	9	9	tanyao
+1	23	y2	pushM	2	z7z4s4s4s7p2p5m3m2s2m2p8p2	和了	0	1	ロン	断幺九+七対子		0	3200	9	9	tanyao
+1	23	y2	base	2	z7z4s4s4s7p2p5m3m2s2m2p8p2	放銃					0	0	-1500	4	4	tanyao
+1	23	y3	push	1	z3m1m9s6p8m3p3p5p3m8m5p8m6	無関係						0	0	8	11	tanyao
+1	23	y3	pushM	1	z3m1m9s6p8m3p3p5p3m8m5p8m6	被ツモ						0	-500	15	15	tanyao
+1	23	y3	base	1	z3m1m9s6p8m3p3p5p3m8m5p8m6	和了	0	1	ロン	断幺九		0	1000	11	12	tanyao
+1	23	y4	push	3	z3z3p1z7m6m7m4m3p6s2p8p2m0	被ツモ						1	-1300	14	15	tanyao
+1	23	y4	pushM	3	z3z3p1z7m6m7m4m3p6s2p8p2m0	被ツモ						1	-1300	14	15	tanyao
+1	23	y4	base	3	z3z3p1z7m6m7m4m3p6s2p8p2m0	無関係						1	0	14	15	tanyao
+1	23	y5	push	3	m9z1s1m9p1s4p6p4m2p7m7m3p5	流局						1	1500	18	18	tanyao
+1	23	y5	pushM	3	m9z1s1m9p1s4p6p4m2p7m7m3p5	無関係						1	0	7	7	tanyao
+1	23	y5	base	3	m9z1s1m9p1s4p6p4m2p7m7m3p5	無関係						1	0	7	7	tanyao
+1	24	y0	push	1	s7p6m4s3m3s6p5m0s7s4s3s6p6	和了	0	1	ツモ	門前清自摸和+断幺九+ドラ		0	4000	11	11	tanyao
+1	24	y0	pushM	1	s7p6m4s3m3s6p5m0s7s4s3s6p6	和了	0	1	ツモ	門前清自摸和+断幺九+ドラ		0	4000	11	11	tanyao
+1	24	y0	base	1	s7p6m4s3m3s6p5m0s7s4s3s6p6	無関係						0	0	10	10	tanyao
+1	24	y1	push	3	z1s8m4m2p4m6s8s4p7s3s5p8s5	和了	0	1	ロン	断幺九		0	1000	12	12	tanyao
+1	24	y1	pushM	3	z1s8m4m2p4m6s8s4p7s3s5p8s5	被ツモ						0	-1000	14	14	tanyao
+1	24	y1	base	3	z1s8m4m2p4m6s8s4p7s3s5p8s5	被ツモ						0	-2000	15	15	tanyao
+1	24	y2	push	3	s9p1m6p7m6s0s8m2s2s5m3m7m8	無関係						1	0	12	12	tanyao
+1	24	y2	pushM	3	s9p1m6p7m6s0s8m2s2s5m3m7m8	無関係						1	0	12	12	tanyao
+1	24	y2	base	3	s9p1m6p7m6s0s8m2s2s5m3m7m8	無関係						1	0	13	13	tanyao
+1	24	y3	push	3	p9z7s1m7s2m4p3m5p2p3m3m5p4	被ツモ						0	-2000	8	8	tanyao
+1	24	y3	pushM	3	p9z7s1m7s2m4p3m5p2p3m3m5p4	被ツモ						0	-2000	8	8	tanyao
+1	24	y3	base	3	p9z7s1m7s2m4p3m5p2p3m3m5p4	無関係						1	0	6	6	tanyao
+1	24	y4	push	3	z2m9z3s9s4p2p2s7p4p8m8p6m8	和了	0	1	ツモ	断幺九+赤ドラ		1	3000	15	14	tanyao
+1	24	y4	pushM	3	z2m9z3s9s4p2p2s7p4p8m8p6m8	無関係						1	0	8	7	tanyao
+1	24	y4	base	3	z2m9z3s9s4p2p2s7p4p8m8p6m8	無関係						1	0	8	7	tanyao
+1	24	y5	push	3	z7z6p9p1p1m4s5m0m6s6s6m6m4	被ツモ						0	-300	7	6	tanyao
+1	24	y5	pushM	3	z7z6p9p1p1m4s5m0m6s6s6m6m4	被ツモ						0	-300	7	6	tanyao
+1	24	y5	base	3	z7z6p9p1p1m4s5m0m6s6s6m6m4	被ツモ						0	-300	7	6	tanyao
+1	25	y0	push	1	s3m6m7p6m2p2m8p8m4s6p3m6m3	無関係						1	0	10	10	tanyao
+1	25	y0	pushM	1	s3m6m7p6m2p2m8p8m4s6p3m6m3	無関係						1	0	10	10	tanyao
+1	25	y0	base	1	s3m6m7p6m2p2m8p8m4s6p3m6m3	和了	0	1	ロン	立直+断幺九+ドラ		1	10000	9	9	tanyao
+1	25	y1	push	2	z5p4s5m5p3s5m8s3s6m5p5s8m3	和了	0	0	ツモ	門前清自摸和+赤ドラ		0	2000	10	10	tanyao
+1	25	y1	pushM	2	z5p4s5m5p3s5m8s3s6m5p5s8m3	和了	0	0	ツモ	門前清自摸和+赤ドラ		0	2000	10	10	tanyao
+1	25	y1	base	2	z5p4s5m5p3s5m8s3s6m5p5s8m3	和了	0	1	ツモ	断幺九+赤ドラ		0	2000	7	7	tanyao
+1	25	y2	push	3	z3z7p4p8s3s8p7m4m3p5m2m2s7	流局						0	0	1	0	tanyao
+1	25	y2	pushM	3	z3z7p4p8s3s8p7m4m3p5m2m2s7	流局						0	0	1	0	tanyao
+1	25	y2	base	3	z3z7p4p8s3s8p7m4m3p5m2m2s7	流局						0	0	1	0	tanyao
+1	25	y3	push	1	s9z3p9p2s6s6s6s2p0p2s4m3s7	無関係						0	0	12	12	tanyao
+1	25	y3	pushM	1	s9z3p9p2s6s6s6s2p0p2s4m3s7	無関係						0	0	12	12	tanyao
+1	25	y3	base	1	s9z3p9p2s6s6s6s2p0p2s4m3s7	放銃					0	0	-2000	12	13	tanyao
+1	25	y4	push	1	z6p1z2z3s6p5m4p3p4m5s2m4s8	被ツモ						0	-300	7	7	tanyao
+1	25	y4	pushM	1	z6p1z2z3s6p5m4p3p4m5s2m4s8	被ツモ						0	-300	7	7	tanyao
+1	25	y4	base	1	z6p1z2z3s6p5m4p3p4m5s2m4s8	放銃					0	0	-1000	7	9	tanyao
+1	25	y5	push	2	z7z2s9m1z3p3m6m2s8s6p6m7m3	和了	0	1	ロン	断幺九+ドラ		1	3600	14	14	tanyao
+1	25	y5	pushM	2	z7z2s9m1z3p3m6m2s8s6p6m7m3	和了	0	1	ロン	断幺九+ドラ		1	3600	14	14	tanyao
+1	25	y5	base	2	z7z2s9m1z3p3m6m2s8s6p6m7m3	被ツモ						0	-3900	9	10	tanyao
+1	26	y0	push	3	m4s8m2m5p2p5m4p0p4m6p7p5m4	被ツモ						1	-500	15	15	tanyao
+1	26	y0	pushM	3	m4s8m2m5p2p5m4p0p4m6p7p5m4	被ツモ						1	-500	15	15	tanyao
+1	26	y0	base	3	m4s8m2m5p2p5m4p0p4m6p7p5m4	流局						0	3000	18	17	tanyao
+1	26	y1	push	2	m1m6s5s3m5s2m4m3p2s8m5p0p5	無関係						1	0	12	12	tanyao
+1	26	y1	pushM	2	m1m6s5s3m5s2m4m3p2s8m5p0p5	流局						1	-1000	18	17	tanyao
+1	26	y1	base	2	m1m6s5s3m5s2m4m3p2s8m5p0p5	無関係						1	0	14	14	tanyao
+1	26	y2	push	1	z6s1p5p6m4s8s4p6p3m5p6p7p2	放銃					0	1	-2000	11	11	tanyao
+1	26	y2	pushM	1	z6s1p5p6m4s8s4p6p3m5p6p7p2	無関係						0	0	10	9	tanyao
+1	26	y2	base	1	z6s1p5p6m4s8s4p6p3m5p6p7p2	無関係						0	0	16	16	tanyao
+1	26	y3	push	3	z2z5p9p8p5s8p2p6m2s4m4s8p7	無関係						1	0	8	8	tanyao
+1	26	y3	pushM	3	z2z5p9p8p5s8p2p6m2s4m4s8p7	放銃					0	0	-2900	9	9	tanyao
+1	26	y3	base	3	z2z5p9p8p5s8p2p6m2s4m4s8p7	無関係						1	0	10	10	tanyao
+1	26	y4	push	1	z1z7z5m9p8p8p4m2m4p3m3m3s6	被ツモ						1	-2000	17	18	tanyao
+1	26	y4	pushM	1	z1z7z5m9p8p8p4m2m4p3m3m3s6	無関係						1	0	16	15	tanyao
+1	26	y4	base	1	z1z7z5m9p8p8p4m2m4p3m3m3s6	被ツモ						1	-2000	16	16	tanyao
+1	26	y5	push	2	s9m1z1z4z3m8p6p8s3p7m2p6p2	無関係						0	0	13	13	tanyao
+1	26	y5	pushM	2	s9m1z1z4z3m8p6p8s3p7m2p6p2	被ツモ						1	-3900	12	11	tanyao
+1	26	y5	base	2	s9m1z1z4z3m8p6p8s3p7m2p6p2	無関係						0	0	5	6	tanyao
+1	27	y0	push	3	s2p4m0m4p2p7p4m7p8m6s5s4p8	放銃					0	0	-5800	14	14	tanyao
+1	27	y0	pushM	3	s2p4m0m4p2p7p4m7p8m6s5s4p8	流局						0	-1000	18	17	tanyao
+1	27	y0	base	3	s2p4m0m4p2p7p4m7p8m6s5s4p8	和了	0	1	ツモ	断幺九+赤ドラ		0	2000	14	13	tanyao
+1	27	y1	push	3	z3s8s8s8m7p8m8s7s2m4s3s4m3	和了	0	0	ロン	平和		0	1000	5	4	tanyao
+1	27	y1	pushM	3	z3s8s8s8m7p8m8s7s2m4s3s4m3	和了	0	0	ロン	平和		0	1000	5	4	tanyao
+1	27	y1	base	3	z3s8s8s8m7p8m8s7s2m4s3s4m3	和了	0	1	ロン	立直+一発+平和+断幺九		0	8700	5	4	tanyao
+1	27	y2	push	1	s1p1p2s4p8p7m6s3p6m6m5s3m7	放銃					0	1	-2000	15	15	tanyao
+1	27	y2	pushM	1	s1p1p2s4p8p7m6s3p6m6m5s3m7	放銃					0	1	-2000	15	15	tanyao
+1	27	y2	base	1	s1p1p2s4p8p7m6s3p6m6m5s3m7	和了	0	0	ツモ	立直+門前清自摸和+平和		0	3700	16	15	tanyao
+1	27	y3	push	3	s1z7z4m7m4p3m2m2p2m7s8s2p0	放銃					1	1	-7700	2	2	tanyao
+1	27	y3	pushM	3	s1z7z4m7m4p3m2m2p2m7s8s2p0	放銃					1	1	-7700	2	2	tanyao
+1	27	y3	base	3	s1z7z4m7m4p3m2m2p2m7s8s2p0	放銃					1	1	-7700	3	3	tanyao
+1	27	y4	push	3	p9p9z1z2p2p2m5s4m4p6m6p3m4	和了	0	1	ロン	断幺九		0	1000	10	11	tanyao
+1	27	y4	pushM	3	p9p9z1z2p2p2m5s4m4p6m6p3m4	和了	0	1	ツモ	門前清自摸和+断幺九		1	4000	15	14	tanyao
+1	27	y4	base	3	p9p9z1z2p2p2m5s4m4p6m6p3m4	流局						1	1500	18	18	tanyao
+1	27	y5	push	1	s9z2p1z3z4p3p3p5s2s7p2p4s5	和了	0	0	ツモ	門前清自摸和+平和+ドラ		1	6200	15	13	tanyao
+1	27	y5	pushM	1	s9z2p1z3z4p3p3p5s2s7p2p4s5	和了	0	0	ツモ	門前清自摸和+平和+ドラ		1	6200	15	13	tanyao
+1	27	y5	base	1	s9z2p1z3z4p3p3p5s2s7p2p4s5	無関係						0	0	8	8	tanyao
+1	28	y0	push	1	m3m6m6m7s2m3m2m7s5p8p0m5s6	流局						1	1500	18	18	tanyao
+1	28	y0	pushM	1	m3m6m6m7s2m3m2m7s5p8p0m5s6	流局						1	1500	18	18	tanyao
+1	28	y0	base	1	m3m6m6m7s2m3m2m7s5p8p0m5s6	和了	0	1	ツモ	立直+門前清自摸和+平和+断幺九+一盃口+ドラ+赤ドラ		0	13000	9	8	tanyao
+1	28	y1	push	2	z5m7s6s3s5m4s4p7p8p8m2m2m5	被ツモ						0	-2000	14	13	tanyao
+1	28	y1	pushM	2	z5m7s6s3s5m4s4p7p8p8m2m2m5	被ツモ						0	-2000	14	13	tanyao
+1	28	y1	base	2	z5m7s6s3s5m4s4p7p8p8m2m2m5	和了	0	0	ツモ	立直+一発+門前清自摸和+平和		0	6200	7	6	tanyao
+1	28	y2	push	1	z1z4p6m7p7p0m3m6s6s8s2s0p5	流局						1	1500	18	18	tanyao
+1	28	y2	pushM	1	z1z4p6m7p7p0m3m6s6s8s2s0p5	無関係						0	0	18	18	tanyao
+1	28	y2	base	1	z1z4p6m7p7p0m3m6s6s8s2s0p5	和了	0	1	ロン	断幺九+赤ドラ		0	3900	12	12	tanyao
+1	28	y3	push	3	z1p9p1m8s3p4m7m6s3s0m2p8p3	和了	0	1	ツモ	断幺九+赤ドラ		0	2000	5	4	tanyao
+1	28	y3	pushM	3	z1p9p1m8s3p4m7m6s3s0m2p8p3	放銃					1	1	-1300	14	14	tanyao
+1	28	y3	base	3	z1p9p1m8s3p4m7m6s3s0m2p8p3	和了	0	0	ツモ	立直+門前清自摸和+平和		1	4700	10	9	tanyao
+1	28	y4	push	3	z7m9m9z7s3s8s0m5s4p2m7m7p7	流局						1	-1500	18	17	tanyao
+1	28	y4	pushM	3	z7m9m9z7s3s8s0m5s4p2m7m7p7	流局						1	-1500	18	17	tanyao
+2	1	y0	push	3	p0m7m2s7p4s3p8s7m6p7m7p2p3	被ツモ						1	-700	16	16	tanyao
+2	1	y0	pushM	3	p0m7m2s7p4s3p8s7m6p7m7p2p3	流局						1	-1000	18	17	tanyao
+2	1	y0	base	3	p0m7m2s7p4s3p8s7m6p7m7p2p3	流局						0	3000	18	17	tanyao
+2	1	y1	push	1	z4s2s5s2p5s3m0s7m2p7s8m7p3	流局						1	-1500	18	18	tanyao
+2	1	y1	pushM	1	z4s2s5s2p5s3m0s7m2p7s8m7p3	流局						1	-1500	18	18	tanyao
+2	1	y1	base	1	z4s2s5s2p5s3m0s7m2p7s8m7p3	被ツモ						1	-1000	16	16	tanyao
+2	1	y2	push	1	s9z7p3p5p2m6s2p7s0s3m6s2p7	無関係						1	0	16	15	tanyao
+2	1	y2	pushM	1	s9z7p3p5p2m6s2p7s0s3m6s2p7	無関係						1	0	16	15	tanyao
+2	1	y2	base	1	s9z7p3p5p2m6s2p7s0s3m6s2p7	放銃					0	1	-1000	10	11	tanyao
+2	1	y3	push	1	m9z7z1s3s6p2p0m3s5p8m8p4p2	和了	0	1	ロン	断幺九+赤ドラ		1	3000	14	16	tanyao
+2	1	y3	pushM	1	m9z7z1s3s6p2p0m3s5p8m8p4p2	被ツモ						1	-1600	16	17	tanyao
+2	1	y3	base	1	m9z7z1s3s6p2p0m3s5p8m8p4p2	放銃					0	0	-3900	7	8	tanyao
+2	1	y4	push	1	z5z2z2z5p4s3s8m7p3p3s7p2p5	和了	0	1	ロン	断幺九+赤ドラ		1	3000	15	15	tanyao
+2	1	y4	pushM	1	z5z2z2z5p4s3s8m7p3p3s7p2p5	被ツモ						1	-6000	9	8	tanyao
+2	1	y4	base	1	z5z2z2z5p4s3s8m7p3p3s7p2p5	和了	0	0	ツモ	翻牌 白		1	2100	8	8	tanyao
+2	1	y5	push	3	p9m9z4z7m1m8p8p4s3m2s7s0m6	流局						1	1500	18	18	tanyao
+2	1	y5	pushM	3	p9m9z4z7m1m8p8p4s3m2s7s0m6	被ツモ						1	-4000	13	13	tanyao
+2	1	y5	base	3	p9m9z4z7m1m8p8p4s3m2s7s0m6	和了	0	0	ロン	立直+ドラ+赤ドラ		0	9000	7	7	tanyao
+2	2	y0	push	2	p4s3s2p3m2m7p2m6p8p2m4s4s7	和了	0	0	ロン	平和+三色同順		0	3900	4	4	tanyao
+2	2	y0	pushM	2	p4s3s2p3m2m7p2m6p8p2m4s4s7	和了	0	0	ロン	平和+三色同順		0	3900	4	4	tanyao
+2	2	y0	base	2	p4s3s2p3m2m7p2m6p8p2m4s4s7	和了	0	0	ツモ	立直+一発+門前清自摸和+平和+三色同順		0	13000	5	4	tanyao
+2	2	y1	push	1	z7s6m4m5p2p7p2m4m3p2s3p4m2	無関係						0	0	8	7	tanyao
+2	2	y1	pushM	1	z7s6m4m5p2p7p2m4m3p2s3p4m2	無関係						0	0	8	7	tanyao
+2	2	y1	base	1	z7s6m4m5p2p7p2m4m3p2s3p4m2	無関係						0	0	8	7	tanyao
+2	2	y2	push	3	z6m1s3p0p3s2m4s2s8p6s6s4s5	和了	0	1	ロン	断幺九+ドラ+赤ドラ		0	8000	10	10	tanyao
+2	2	y2	pushM	3	z6m1s3p0p3s2m4s2s8p6s6s4s5	無関係						1	0	12	11	tanyao
+2	2	y2	base	3	z6m1s3p0p3s2m4s2s8p6s6s4s5	和了	0	1	ロン	断幺九+ドラ+赤ドラ		0	8000	8	8	tanyao
+2	2	y3	push	1	z7p1m1m8m7s0s7m3s3m3p3s4p8	無関係						1	0	13	13	tanyao
+2	2	y3	pushM	1	z7p1m1m8m7s0s7m3s3m3p3s4p8	被ツモ						1	-3000	10	10	tanyao
+2	2	y3	base	1	z7p1m1m8m7s0s7m3s3m3p3s4p8	被ツモ						1	-3000	10	10	tanyao
+2	2	y4	push	1	z7z1z2p9m7s3s4s7p5p3p5m3p4	和了	0	1	ロン	断幺九		0	1000	13	14	tanyao
+2	2	y4	pushM	1	z7z1z2p9m7s3s4s7p5p3p5m3p4	放銃					0	0	-2000	14	15	tanyao
+2	2	y4	base	1	z7z1z2p9m7s3s4s7p5p3p5m3p4	放銃					0	0	-1000	11	11	tanyao
+2	2	y5	push	1	p1p9z6z7z7m8s7p8m3s6p7m8m6	放銃					0	1	-3900	5	6	tanyao
+2	2	y5	pushM	1	p1p9z6z7z7m8s7p8m3s6p7m8m6	被ツモ						1	-1000	6	6	tanyao
+2	2	y5	base	1	p1p9z6z7z7m8s7p8m3s6p7m8m6	無関係						0	0	4	4	tanyao
+2	3	y0	push	2	s2s5p6m2p0s4m6s3p3p7s8m4m3	和了	0	1	ロン	平和+断幺九+赤ドラ		1	4900	8	8	tanyao
+2	3	y0	pushM	2	s2s5p6m2p0s4m6s3p3p7s8m4m3	和了	0	1	ロン	平和+断幺九+赤ドラ		1	4900	8	8	tanyao
+2	3	y0	base	2	s2s5p6m2p0s4m6s3p3p7s8m4m3	和了	0	0	ロン	立直+平和+赤ドラ		0	4900	12	11	tanyao
+2	3	y1	push	2	z3s6s8m0p5s3m6s5m8m5s7s6p4	和了	0	1	ロン	断幺九+ドラ+赤ドラ		0	5200	10	10	tanyao
+2	3	y1	pushM	2	z3s6s8m0p5s3m6s5m8m5s7s6p4	和了	0	1	ロン	断幺九+ドラ+赤ドラ		0	5200	10	10	tanyao
+2	3	y1	base	2	z3s6s8m0p5s3m6s5m8m5s7s6p4	和了	0	1	ロン	立直+断幺九+ドラ+赤ドラ+裏ドラ		1	14000	10	9	tanyao
+2	3	y2	push	2	z6z7p7s5p6m4p7p7p2m3p8m6s6	被ツモ						0	-1300	9	9	tanyao
+2	3	y2	pushM	2	z6z7p7s5p6m4p7p7p2m3p8m6s6	和了	0	1	ロン	断幺九+七対子+赤ドラ		0	6400	8	8	tanyao
+2	3	y2	base	2	z6z7p7s5p6m4p7p7p2m3p8m6s6	被ツモ						0	-1300	9	9	tanyao
+2	3	y3	push	3	m1p9z7s3p7s7p5p8m8p7s0m6s6	被ツモ						1	-3900	10	9	tanyao
+2	3	y3	pushM	3	m1p9z7s3p7s7p5p8m8p7s0m6s6	無関係						1	0	17	16	tanyao
+2	3	y3	base	3	m1p9z7s3p7s7p5p8m8p7s0m6s6	無関係						1	0	14	14	tanyao
+2	3	y4	push	3	z4z1z4p9s8s5s7p8m3m2m7p6s3	無関係						1	0	9	9	tanyao
+2	3	y4	pushM	3	z4z1z4p9s8s5s7p8m3m2m7p6s3	無関係						1	0	9	9	tanyao
+2	3	y4	base	3	z4z1z4p9s8s5s7p8m3m2m7p6s3	無関係						1	0	9	9	tanyao
+2	3	y5	push	1	z7z3z3z2z5m3s3s6s5p4m5s6p6	和了	0	1	ツモ	断幺九+ドラ		1	3000	13	12	tanyao
+2	3	y5	pushM	1	z7z3z3z2z5m3s3s6s5p4m5s6p6	流局						1	1500	18	18	tanyao
+2	3	y5	base	1	z7z3z3z2z5m3s3s6s5p4m5s6p6	流局						1	-1000	18	18	tanyao
+2	4	y0	push	1	m8m0p6p3s4p7m5p8p7p0m4s2s6	無関係						1	0	10	9	tanyao
+2	4	y0	pushM	1	m8m0p6p3s4p7m5p8p7p0m4s2s6	無関係						1	0	10	9	tanyao
+2	4	y0	base	1	m8m0p6p3s4p7m5p8p7p0m4s2s6	放銃					1	1	-8000	10	10	tanyao
+2	4	y1	push	1	p1m8p5p4p8m5s3m7m6s5m5m8m2	流局						1	1500	18	18	tanyao
+2	4	y1	pushM	1	p1m8p5p4p8m5s3m7m6s5m5m8m2	流局						1	-1500	18	18	tanyao
+2	4	y1	base	1	p1m8p5p4p8m5s3m7m6s5m5m8m2	流局						0	1500	18	18	tanyao
+2	4	y2	push	3	s1m9m7p2p5s3m3p3s5s0m2p4s2	放銃					0	0	-1000	8	9	tanyao
+2	4	y2	pushM	3	s1m9m7p2p5s3m3p3s5s0m2p4s2	無関係						0	0	16	16	tanyao
+2	4	y2	base	3	s1m9m7p2p5s3m3p3s5s0m2p4s2	流局						0	3000	18	17	tanyao
+2	4	y3	push	1	s1m9z7p2p6p5m7s7m8p3m6m4s4	放銃					1	1	-11900	16	16	tanyao
+2	4	y3	pushM	1	s1m9z7p2p6p5m7s7m8p3m6m4s4	無関係						1	0	6	6	tanyao
+2	4	y3	base	1	s1m9z7p2p6p5m7s7m8p3m6m4s4	放銃					1	1	-3900	11	12	tanyao
+2	4	y4	push	2	p9s9z4m9s5s8s3p4m6s2m5s7s4	無関係						0	0	6	6	tanyao
+2	4	y4	pushM	2	p9s9z4m9s5s8s3p4m6s2m5s7s4	無関係						0	0	6	6	tanyao
+2	4	y4	base	2	p9s9z4m9s5s8s3p4m6s2m5s7s4	無関係						0	0	6	6	tanyao
+2	4	y5	push	2	p1z1z6z2p9m2p2p4s6s8s2s2m5	無関係						0	0	9	10	tanyao
+2	4	y5	pushM	2	p1z1z6z2p9m2p2p4s6s8s2s2m5	無関係						0	0	9	10	tanyao
+2	4	y5	base	2	p1z1z6z2p9m2p2p4s6s8s2s2m5	被ツモ						0	-1300	9	10	tanyao
+2	5	y0	push	1	s4m7p6s6m4p7s3s3s2p2s5s6m2	放銃					1	1	-2600	9	9	tanyao
+2	5	y0	pushM	1	s4m7p6s6m4p7s3s3s2p2s5s6m2	被ツモ						0	-400	8	8	tanyao
+2	5	y0	base	1	s4m7p6s6m4p7s3s3s2p2s5s6m2	和了	0	0	ツモ	立直+門前清自摸和+平和		0	3700	8	7	tanyao
+2	5	y1	push	2	m1m2p5s2m8m4s0p6s6p5p2s3p3	被ツモ						0	-700	11	11	tanyao
+2	5	y1	pushM	2	m1m2p5s2m8m4s0p6s6p5p2s3p3	無関係						1	0	13	13	tanyao
+2	5	y1	base	2	m1m2p5s2m8m4s0p6s6p5p2s3p3	被ツモ						1	-700	15	15	tanyao
+2	5	y2	push	1	s9m9m7s6p6s3m2m6s2p5m5m5m8	和了	0	1	ツモ	断幺九		1	2100	10	9	tanyao
+2	5	y2	pushM	1	s9m9m7s6p6s3m2m6s2p5m5m5m8	放銃					1	1	-5800	17	17	tanyao
+2	5	y2	base	1	s9m9m7s6p6s3m2m6s2p5m5m5m8	和了	0	1	ロン	断幺九		1	2000	10	10	tanyao
+2	5	y3	push	3	z3m1z4p8p5s2m4s5s6s3p2p8p5	被ツモ						1	-2000	12	11	tanyao
+2	5	y3	pushM	3	z3m1z4p8p5s2m4s5s6s3p2p8p5	被ツモ						1	-2000	12	11	tanyao
+2	5	y3	base	3	z3m1z4p8p5s2m4s5s6s3p2p8p5	被ツモ						1	-8000	13	13	tanyao
+2	5	y4	push	1	z2s1m1p1m4m2m0s3p5s3p2m7m7	被ツモ						1	-6000	10	9	tanyao
+2	5	y4	pushM	1	z2s1m1p1m4m2m0s3p5s3p2m7m7	被ツモ						1	-6000	10	9	tanyao
+2	5	y4	base	1	z2s1m1p1m4m2m0s3p5s3p2m7m7	被ツモ						1	-6000	10	9	tanyao
+2	5	y5	push	1	p1m9z1z3z3m5m7s4p5m3s6s4s0	放銃					1	1	-17600	11	13	tanyao
+2	5	y5	pushM	1	p1m9z1z3z3m5m7s4p5m3s6s4s0	無関係						0	0	11	12	tanyao
+2	5	y5	base	1	p1m9z1z3z3m5m7s4p5m3s6s4s0	無関係						0	0	12	14	tanyao
+2	6	y0	push	2	p2s2s8m6s3m8p6p8m4s2p7m4p8	和了	0	1	ロン	断幺九		0	1000	5	5	tanyao
+2	6	y0	pushM	2	p2s2s8m6s3m8p6p8m4s2p7m4p8	無関係						0	0	6	6	tanyao
+2	6	y0	base	2	p2s2s8m6s3m8p6p8m4s2p7m4p8	被ツモ						1	-1300	7	7	tanyao
+2	6	y1	push	1	p9s2s6s5s6s7m4m8p7s3m8m3m3	放銃					1	1	-13600	9	8	tanyao
+2	6	y1	pushM	1	p9s2s6s5s6s7m4m8p7s3m8m3m3	放銃					1	1	-13600	9	8	tanyao
+2	6	y1	base	1	p9s2s6s5s6s7m4m8p7s3m8m3m3	和了	0	0	ロン	立直+平和+ドラ		1	5900	9	7	tanyao
+2	6	y2	push	3	z3m1m4s7s5p4p3m3s6s7m2s7p2	和了	0	1	ロン	断幺九+赤ドラ		0	2000	7	7	tanyao
+2	6	y2	pushM	3	z3m1m4s7s5p4p3m3s6s7m2s7p2	和了	0	1	ツモ	門前清自摸和+断幺九		0	2000	9	9	tanyao
+2	6	y2	base	3	z3m1m4s7s5p4p3m3s6s7m2s7p2	流局						0	3000	18	18	tanyao
+2	6	y3	push	1	z1z7m1s2m3m5p3p2m7s7p2m8m3	流局						1	1500	18	18	tanyao
+2	6	y3	pushM	1	z1z7m1s2m3m5p3p2m7s7p2m8m3	無関係						1	0	13	13	tanyao
+2	6	y3	base	1	z1z7m1s2m3m5p3p2m7s7p2m8m3	流局						1	1000	18	18	tanyao
+2	6	y4	push	3	p1p9z7z5m4s3s2s4s6m7p2p2m2	無関係						0	0	8	7	tanyao
+2	6	y4	pushM	3	p1p9z7z5m4s3s2s4s6m7p2p2m2	無関係						0	0	8	7	tanyao
+2	6	y4	base	3	p1p9z7z5m4s3s2s4s6m7p2p2m2	無関係						0	0	8	7	tanyao
+2	6	y5	push	2	z2m9z7p1z5p3s4m8m6m4p7s6p6	放銃					1	1	-8000	17	17	tanyao
+2	6	y5	pushM	2	z2m9z7p1z5p3s4m8m6m4p7s6p6	放銃					1	1	-8000	12	12	tanyao
+2	6	y5	base	2	z2m9z7p1z5p3s4m8m6m4p7s6p6	流局						1	-1000	18	17	tanyao
+2	7	y0	push	3	m8m5p3m7s6m2m6m3s0p2s5p8m0	被ツモ						0	-300	9	10	tanyao
+2	7	y0	pushM	3	m8m5p3m7s6m2m6m3s0p2s5p8m0	和了	0	1	ロン	断幺九+ドラ+赤ドラ		0	5200	15	16	tanyao
+2	7	y0	base	3	m8m5p3m7s6m2m6m3s0p2s5p8m0	放銃					0	0	-1000	7	8	tanyao
+2	7	y1	push	1	m9p3p4m6m2p6m5m4p2m8s7p3s6	流局						1	1500	18	18	tanyao
+2	7	y1	pushM	1	m9p3p4m6m2p6m5m4p2m8s7p3s6	流局						1	1500	18	18	tanyao
+2	7	y1	base	1	m9p3p4m6m2p6m5m4p2m8s7p3s6	流局						1	1500	18	18	tanyao
+2	7	y2	push	2	p1m1m3m2s6p6s6p6s4s7s8m5m4	和了	0	1	ロン	平和+断幺九+赤ドラ		0	3900	14	14	tanyao
+2	7	y2	pushM	2	p1m1m3m2s6p6s6p6s4s7s8m5m4	和了	0	1	ロン	平和+断幺九+赤ドラ		0	3900	14	14	tanyao
+2	7	y2	base	2	p1m1m3m2s6p6s6p6s4s7s8m5m4	流局						0	3000	18	18	tanyao
+2	7	y3	push	2	z2s9s9m6p5s7s8s3p3m3p4s7p6	無関係						0	0	15	15	tanyao
+2	7	y3	pushM	2	z2s9s9m6p5s7s8s3p3m3p4s7p6	和了	0	1	ロン	断幺九		1	3300	15	15	tanyao
+2	7	y3	base	2	z2s9s9m6p5s7s8s3p3m3p4s7p6	和了	0	0	ロン	立直+一盃口+裏ドラ		1	10000	14	13	tanyao
+2	7	y4	push	1	s1p1s9s1p6s3m8s7m3s6s2s7p0	被ツモ						1	-6000	13	12	tanyao
+2	7	y4	pushM	1	s1p1s9s1p6s3m8s7m3s6s2s7p0	流局						1	-1000	18	18	tanyao
+2	7	y4	base	1	s1p1s9s1p6s3m8s7m3s6s2s7p0	流局						1	-1000	18	18	tanyao
+2	7	y5	push	2	z1m9m9z3p9s3p7m7m3m4s6p4s7	被ツモ						1	-2000	15	14	tanyao
+2	7	y5	pushM	2	z1m9m9z3p9s3p7m7m3m4s6p4s7	被ツモ						1	-2000	15	14	tanyao
+2	7	y5	base	2	z1m9m9z3p9s3p7m7m3m4s6p4s7	被ツモ						1	-2000	15	14	tanyao
+2	8	y0	push	1	m2s6p5p3p3s8s4p7p5s3m4s6s6	被ツモ						1	-2000	7	7	tanyao
+2	8	y0	pushM	1	m2s6p5p3p3s8s4p7p5s3m4s6s6	流局						1	1500	18	18	tanyao
+2	8	y0	base	1	m2s6p5p3p3s8s4p7p5s3m4s6s6	被ツモ						1	-2000	7	7	tanyao
+2	8	y1	push	1	p1s4p8s6m3s3p3p6s5p2m7s5s8	放銃					1	1	-2000	13	13	tanyao
+2	8	y1	pushM	1	p1s4p8s6m3s3p3p6s5p2m7s5s8	放銃					1	1	-2000	13	13	tanyao
+2	8	y1	base	1	p1s4p8s6m3s3p3p6s5p2m7s5s8	和了	0	0	ロン	立直+一発+平和+裏ドラ		1	9700	12	11	tanyao
+2	8	y2	push	3	z1z2p5p5m7p0m2s4s8s3m4s8s2	和了	0	1	ロン	断幺九+ドラ+赤ドラ		0	3900	12	13	tanyao
+2	8	y2	pushM	3	z1z2p5p5m7p0m2s4s8s3m4s8s2	和了	0	1	ロン	断幺九+赤ドラ		1	4600	14	13	tanyao
+2	8	y2	base	3	z1z2p5p5m7p0m2s4s8s3m4s8s2	和了	0	1	ロン	断幺九+ドラ+赤ドラ		0	3900	9	9	tanyao
+2	8	y3	push	1	z7z2m1s7p7m4m7m4m6s8m8p4s8	和了	0	1	ロン	断幺九		1	2000	8	8	tanyao
+2	8	y3	pushM	1	z7z2m1s7p7m4m7m4m6s8m8p4s8	和了	0	1	ツモ	海底摸月+門前清自摸和+断幺九		1	6000	18	17	tanyao
+2	8	y3	base	1	z7z2m1s7p7m4m7m4m6s8m8p4s8	流局						1	-1500	18	17	tanyao
+2	8	y4	push	1	s9z3m1z1s7m8p8m4s4s2s3m6m5	被ツモ						0	-2000	12	13	tanyao
+2	8	y4	pushM	1	s9z3m1z1s7m8p8m4s4s2s3m6m5	被ツモ						0	-2000	12	13	tanyao
+2	8	y4	base	1	s9z3m1z1s7m8p8m4s4s2s3m6m5	和了	0	0	ロン	立直+ドラ		0	3600	10	10	tanyao
+2	8	y5	push	3	s9s9p9z6m1m6s3p2m2p3p4m5p8	放銃					1	1	-5200	10	10	tanyao
+2	8	y5	pushM	3	s9s9p9z6m1m6s3p2m2p3p4m5p8	被ツモ						1	-2000	11	10	tanyao
+2	8	y5	base	3	s9s9p9z6m1m6s3p2m2p3p4m5p8	被ツモ						1	-2000	11	10	tanyao
+2	9	y0	push	3	p6s2p7p4s3s3s4p3s8s6m5m6p7	放銃					1	1	-3200	10	11	tanyao
+2	9	y0	pushM	3	p6s2p7p4s3s3s4p3s8s6m5m6p7	放銃					1	1	-3200	13	14	tanyao
+2	9	y0	base	3	p6s2p7p4s3s3s4p3s8s6m5m6p7	無関係						1	0	9	10	tanyao
+2	9	y1	push	3	z5p0s3m5p5m4m5p7m8s7m4s8p2	和了	0	1	ロン	断幺九+ドラ		0	2000	15	15	tanyao
+2	9	y1	pushM	3	z5p0s3m5p5m4m5p7m8s7m4s8p2	和了	0	1	ロン	平和+断幺九+赤ドラ		0	3900	14	14	tanyao
+2	9	y1	base	3	z5p0s3m5p5m4m5p7m8s7m4s8p2	和了	0	1	ツモ	断幺九+ドラ+赤ドラ		1	10000	17	16	tanyao
+2	9	y2	push	3	p9z1p8m3s8p7m6m4m7p2p2p3m8	無関係						0	0	16	16	tanyao
+2	9	y2	pushM	3	p9z1p8m3s8p7m6m4m7p2p2p3m8	被ツモ						0	-1300	16	16	tanyao
+2	9	y2	base	3	p9z1p8m3s8p7m6m4m7p2p2p3m8	無関係						0	0	13	14	tanyao
+2	9	y3	push	3	s1z2m1m7m3s8m4s8p7p2s8p5m5	和了	0	1	ロン	断幺九+ドラ		1	2000	15	15	tanyao
+2	9	y3	pushM	3	s1z2m1m7m3s8m4s8p7p2s8p5m5	被ツモ						1	-500	18	17	tanyao
+2	9	y3	base	3	s1z2m1m7m3s8m4s8p7p2s8p5m5	和了	0	0	ロン	立直+平和+ドラ		1	5900	13	13	tanyao
+2	9	y4	push	1	s1m9m1z2m4m6s6m0p0m2s6m4s7	無関係						1	0	9	9	tanyao
+2	9	y4	pushM	1	s1m9m1z2m4m6s6m0p0m2s6m4s7	流局						1	1000	18	17	tanyao
+2	9	y4	base	1	s1m9m1z2m4m6s6m0p0m2s6m4s7	無関係						1	0	9	9	tanyao
+2	9	y5	push	1	z3z2s1z6m1p3p6s4s7s4p3s6p5	無関係						1	0	13	13	tanyao
+2	9	y5	pushM	1	z3z2s1z6m1p3p6s4s7s4p3s6p5	放銃					0	1	-3900	18	18	tanyao
+2	9	y5	base	1	z3z2s1z6m1p3p6s4s7s4p3s6p5	無関係						1	0	10	10	tanyao
+2	10	y0	push	1	p3s5p3p6m0s4p8s5m3s4p4m5p7	和了	0	1	ロン	断幺九		1	2300	16	16	tanyao
+2	10	y0	pushM	1	p3s5p3p6m0s4p8s5m3s4p4m5p7	和了	0	1	ロン	断幺九		1	2300	16	16	tanyao
+2	10	y0	base	1	p3s5p3p6m0s4p8s5m3s4p4m5p7	無関係						0	0	10	12	tanyao
+2	10	y1	push	2	z2s0s2p2m3p8m8m5m2s7s2s5p6	和了	0	1	ロン	断幺九+赤ドラ		1	2000	13	13	tanyao
+2	10	y1	pushM	2	z2s0s2p2m3p8m8m5m2s7s2s5p6	被ツモ						1	-2000	13	13	tanyao
+2	10	y1	base	2	z2s0s2p2m3p8m8m5m2s7s2s5p6	流局						1	-1000	18	18	tanyao
+2	10	y2	push	1	p9m9m3p3m6s4s3p7m4m2m8s5m8	無関係						0	0	12	13	tanyao
+2	10	y2	pushM	1	p9m9m3p3m6s4s3p7m4m2m8s5m8	無関係						0	0	12	13	tanyao
+2	10	y2	base	1	p9m9m3p3m6s4s3p7m4m2m8s5m8	被ツモ						1	-2000	11	11	tanyao
+2	10	y3	push	2	z3z3z3s8p2s2m2m8s7s8m5p7m7	被ツモ						1	-2600	13	12	tanyao
+2	10	y3	pushM	2	z3z3z3s8p2s2m2m8s7s8m5p7m7	被ツモ						1	-2600	13	12	tanyao
+2	10	y3	base	2	z3z3z3s8p2s2m2m8s7s8m5p7m7	被ツモ						1	-2600	13	12	tanyao
+2	10	y4	push	3	z2z5z7z6m7m7s7m6m4m6m6p3s2	無関係						0	0	8	7	tanyao
+2	10	y4	pushM	3	z2z5z7z6m7m7s7m6m4m6m6p3s2	無関係						0	0	8	7	tanyao
+2	10	y4	base	3	z2z5z7z6m7m7s7m6m4m6m6p3s2	被ツモ						1	-2600	16	15	tanyao
+2	10	y5	push	1	p9m9z3m1z2p5m6p6m3m5m3s7p8	流局						0	1000	18	18	tanyao
+2	10	y5	pushM	1	p9m9z3m1z2p5m6p6m3m5m3s7p8	被ツモ						0	-300	11	11	tanyao
+2	10	y5	base	1	p9m9z3m1z2p5m6p6m3m5m3s7p8	和了	0	1	ツモ	断幺九+ドラ+赤ドラ		1	5000	12	12	tanyao
+2	11	y0	push	3	s7s5p2s2m3s6s6m5m4s6p3s2m8	和了	0	1	ロン	平和+断幺九+ドラ		0	3900	4	3	tanyao
+2	11	y0	pushM	3	s7s5p2s2m3s6s6m5m4s6p3s2m8	和了	0	1	ロン	平和+断幺九+ドラ		0	3900	4	3	tanyao
+2	11	y0	base	3	s7s5p2s2m3s6s6m5m4s6p3s2m8	和了	0	1	ツモ	立直+門前清自摸和+平和+断幺九+ドラ		0	9000	5	4	tanyao
+2	11	y1	push	2	z7p2m5p2m2m8s7m3p7m4s7s4s3	和了	0	1	ツモ	門前清自摸和+断幺九+七対子		1	7400	17	16	tanyao
+2	11	y1	pushM	2	z7p2m5p2m2m8s7m3p7m4s7s4s3	和了	0	1	ツモ	門前清自摸和+断幺九+七対子		1	7400	17	16	tanyao
+2	11	y1	base	2	z7p2m5p2m2m8s7m3p7m4s7s4s3	無関係						1	0	10	10	tanyao
+2	11	y2	push	1	p1z3s6p2p3p5m4s5p6p7s7s3s2	和了	0	1	ツモ	断幺九+赤ドラ		1	3000	12	12	tanyao
+2	11	y2	pushM	1	p1z3s6p2p3p5m4s5p6p7s7s3s2	無関係						1	0	11	11	tanyao
+2	11	y2	base	1	p1z3s6p2p3p5m4s5p6p7s7s3s2	無関係						0	0	6	6	tanyao
+2	11	y3	push	1	z1m1z5p4s3m0p8s8p0p5m3p8p6	無関係						1	0	11	11	tanyao
+2	11	y3	pushM	1	z1m1z5p4s3m0p8s8p0p5m3p8p6	流局						1	-1000	18	18	tanyao
+2	11	y3	base	1	z1m1z5p4s3m0p8s8p0p5m3p8p6	和了	0	1	ロン	断幺九+ドラ+赤ドラ		0	3900	8	9	tanyao
+2	11	y4	push	1	z6p9m9z4p7p8p8m6m6m2m5m2p8	和了	0	1	ツモ	断幺九		0	1100	8	8	tanyao
+2	11	y4	pushM	1	z6p9m9z4p7p8p8m6m6m2m5m2p8	被ツモ						0	-2000	11	11	tanyao
+2	11	y4	base	1	z6p9m9z4p7p8p8m6m6m2m5m2p8	無関係						1	0	12	12	tanyao
+2	11	y5	push	1	z5z7s1z5z2p4m3p3s2p6m2m7s6	無関係						1	0	12	12	tanyao
+2	11	y5	pushM	1	z5z7s1z5z2p4m3p3s2p6m2m7s6	被ツモ						1	-1000	16	16	tanyao
+2	11	y5	base	1	z5z7s1z5z2p4m3p3s2p6m2m7s6	和了	0	0	ロン	翻牌 白		0	1000	9	9	tanyao
+2	12	y0	push	1	p5p5m6p7m2s5p2m7s8m4p4p3m7	無関係						0	0	11	13	tanyao
+2	12	y0	pushM	1	p5p5m6p7m2s5p2m7s8m4p4p3m7	被ツモ						0	-3900	11	12	tanyao
+2	12	y0	base	1	p5p5m6p7m2s5p2m7s8m4p4p3m7	無関係						0	0	12	13	tanyao
+2	12	y1	push	2	p9m3m2m3m2p2s6s5p8s3m8p3s7	放銃					1	1	-11600	3	3	tanyao
+2	12	y1	pushM	2	p9m3m2m3m2p2s6s5p8s3m8p3s7	放銃					1	1	-11600	3	3	tanyao
+2	12	y1	base	2	p9m3m2m3m2p2s6s5p8s3m8p3s7	被ツモ						1	-2600	5	4	tanyao
+2	12	y2	push	2	m9z4m2m2p6p6s7p7s5m6m4s3m7	放銃					1	1	-5200	8	8	tanyao
+2	12	y2	pushM	2	m9z4m2m2p6p6s7p7s5m6m4s3m7	放銃					1	1	-5200	8	8	tanyao
+2	12	y2	base	2	m9z4m2m2p6p6s7p7s5m6m4s3m7	放銃					1	1	-5200	8	8	tanyao
+2	12	y3	push	3	z4z7z6s6m8p5m3m8m0m2s2s7s5	放銃					1	1	-12000	8	8	tanyao
+2	12	y3	pushM	3	z4z7z6s6m8p5m3m8m0m2s2s7s5	放銃					1	1	-12000	8	8	tanyao
+2	12	y3	base	3	z4z7z6s6m8p5m3m8m0m2s2s7s5	無関係						1	0	11	11	tanyao
+2	12	y4	push	3	m1z7z3z5p2m3m5s6m7m3m5s6m8	放銃					1	1	-8000	7	7	tanyao
+2	12	y4	pushM	3	m1z7z3z5p2m3m5s6m7m3m5s6m8	被ツモ						1	-3200	12	11	tanyao
+2	12	y4	base	3	m1z7z3z5p2m3m5s6m7m3m5s6m8	和了	0	0	ツモ	翻牌 中		1	2100	6	6	tanyao
+2	12	y5	push	3	z5z4z6m1z3m3s3m5m6m2m7p2p4	被ツモ						1	-1300	10	10	tanyao
+2	12	y5	pushM	3	z5z4z6m1z3m3s3m5m6m2m7p2p4	被ツモ						1	-1300	10	9	tanyao
+2	12	y5	base	3	z5z4z6m1z3m3s3m5m6m2m7p2p4	和了	0	0	ツモ	立直+門前清自摸和+裏ドラ		1	6000	7	6	tanyao
+2	13	y0	push	3	m6s5s0s8s7p6p2p8m2s2p4p7m5	被ツモ						1	-4000	16	15	tanyao
+2	13	y0	pushM	3	m6s5s0s8s7p6p2p8m2s2p4p7m5	被ツモ						1	-4000	15	14	tanyao
+2	13	y0	base	3	m6s5s0s8s7p6p2p8m2s2p4p7m5	放銃					0	0	-2900	10	11	tanyao
+2	13	y1	push	1	z1m8p6p8p3s5s7p5m5s0m5p7m3	被ツモ						1	-1000	8	8	tanyao
+2	13	y1	pushM	1	z1m8p6p8p3s5s7p5m5s0m5p7m3	被ツモ						1	-1000	8	8	tanyao
+2	13	y1	base	1	z1m8p6p8p3s5s7p5m5s0m5p7m3	流局						1	1500	18	18	tanyao
+2	13	y2	push	3	m9p1p8p6p6s8s6p2s8s6s7s7s5	被ツモ						0	-300	16	16	tanyao
+2	13	y2	pushM	3	m9p1p8p6p6s8s6p2s8s6s7s7s5	放銃					0	1	-1000	13	13	tanyao
+2	13	y2	base	3	m9p1p8p6p6s8s6p2s8s6s7s7s5	被ツモ						1	-3900	17	17	tanyao
+2	13	y3	push	2	z4z6z2s2m4m4p7p4p5p8s2m4p0	無関係						1	0	12	12	tanyao
+2	13	y3	pushM	2	z4z6z2s2m4m4p7p4p5p8s2m4p0	無関係						1	0	16	16	tanyao
+2	13	y3	base	2	z4z6z2s2m4m4p7p4p5p8s2m4p0	被ツモ						0	-500	10	10	tanyao
+2	13	y4	push	1	s9p1p1z4s3m3m0p3p8p7m5s6s5	放銃					1	1	-8000	10	10	tanyao
+2	13	y4	pushM	1	s9p1p1z4s3m3m0p3p8p7m5s6s5	和了	0	1	ロン	断幺九+赤ドラ		1	3600	12	12	tanyao
+2	13	y4	base	1	s9p1p1z4s3m3m0p3p8p7m5s6s5	和了	0	0	ツモ	立直+一発+門前清自摸和+赤ドラ+裏ドラ		1	14000	10	10	tanyao
+2	13	y5	push	1	z5z3m9z6m9p8s3p6m3p4p7m8m3	和了	0	1	ツモ	断幺九+ドラ		1	3000	14	14	tanyao
+2	13	y5	pushM	1	z5z3m9z6m9p8s3p6m3p4p7m8m3	被ツモ						0	-700	8	8	tanyao
+2	13	y5	base	1	z5z3m9z6m9p8s3p6m3p4p7m8m3	被ツモ						0	-700	8	8	tanyao
+2	14	y0	push	1	p6s4s8m4m5s0m7m6p2p8p4s3p4	和了	0	1	ロン	断幺九+ドラ		1	3600	9	10	tanyao
+2	14	y0	pushM	1	p6s4s8m4m5s0m7m6p2p8p4s3p4	和了	0	1	ロン	断幺九+ドラ		1	3600	9	10	tanyao
+2	14	y0	base	1	p6s4s8m4m5s0m7m6p2p8p4s3p4	和了	0	1	ロン	立直+断幺九+ドラ+赤ドラ		1	10000	11	11	tanyao
+2	14	y1	push	1	z3m2s5p8s6p2p2m3p7m4m3p6s2	和了	0	0	ロン	平和+ドラ		1	3000	12	12	tanyao
+2	14	y1	pushM	1	z3m2s5p8s6p2p2m3p7m4m3p6s2	和了	0	0	ロン	平和+ドラ		1	3000	12	12	tanyao
+2	14	y1	base	1	z3m2s5p8s6p2p2m3p7m4m3p6s2	被ツモ						1	-2000	13	13	tanyao
+2	14	y2	push	1	z3z1s5m2p8p4p2m7m6m7s7s8p2	無関係						1	0	7	7	tanyao
+2	14	y2	pushM	1	z3z1s5m2p8p4p2m7m6m7s7s8p2	無関係						1	0	7	7	tanyao
+2	14	y2	base	1	z3z1s5m2p8p4p2m7m6m7s7s8p2	無関係						0	0	9	9	tanyao
+2	14	y3	push	3	p9z3s9p8m2m8s7m5m7p0p6m4s6	被ツモ						1	-1000	15	14	tanyao
+2	14	y3	pushM	3	p9z3s9p8m2m8s7m5m7p0p6m4s6	被ツモ						1	-1000	15	14	tanyao
+2	14	y3	base	3	p9z3s9p8m2m8s7m5m7p0p6m4s6	和了	0	0	ツモ	翻牌 白+赤ドラ		0	2000	11	11	tanyao
+2	14	y4	push	1	m9p1p9z6s7m0s8m7m4s3p6s2p5	無関係						0	0	10	11	tanyao
+2	14	y4	pushM	1	m9p1p9z6s7m0s8m7m4s3p6s2p5	無関係						0	0	17	17	tanyao
+2	14	y4	base	1	m9p1p9z6s7m0s8m7m4s3p6s2p5	放銃					0	0	-1500	6	7	tanyao
+2	14	y5	push	1	z3z4z1m1s1s7p6m5m8s6s4p7m4	放銃					1	1	-3200	12	13	tanyao
+2	14	y5	pushM	1	z3z4z1m1s1s7p6m5m8s6s4p7m4	無関係						1	0	16	16	tanyao
+2	14	y5	base	1	z3z4z1m1s1s7p6m5m8s6s4p7m4	被ツモ						1	-1600	15	15	tanyao
+2	15	y0	push	3	m5m4s3s4s2p3s6p4p7m7s4p6s3	和了	0	1	ロン	断幺九		0	1000	10	10	tanyao
+2	15	y0	pushM	3	m5m4s3s4s2p3s6p4p7m7s4p6s3	被ツモ						0	-6000	10	9	tanyao
+2	15	y0	base	3	m5m4s3s4s2p3s6p4p7m7s4p6s3	放銃					0	0	-1000	5	5	tanyao
+2	15	y1	push	3	z3m2s2s3s2s3m2m6s7m3p7m0m6	放銃					1	1	-8000	10	11	tanyao
+2	15	y1	pushM	3	z3m2s2s3s2s3m2m6s7m3p7m0m6	被ツモ						1	-3900	16	15	tanyao
+2	15	y1	base	3	z3m2s2s3s2s3m2m6s7m3p7m0m6	放銃					1	1	-5200	10	11	tanyao
+2	15	y2	push	1	z3s9m8p8m2p6m2m3m6p8p2m4p5	無関係						0	0	8	8	tanyao
+2	15	y2	pushM	1	z3s9m8p8m2p6m2m3m6p8p2m4p5	無関係						0	0	8	8	tanyao
+2	15	y2	base	1	z3s9m8p8m2p6m2m3m6p8p2m4p5	放銃					1	1	-5200	13	14	tanyao
+2	15	y3	push	2	p9z3m9s7p7p4m3m8s6s5p6m7s4	無関係						1	0	5	5	tanyao
+2	15	y3	pushM	2	p9z3m9s7p7p4m3m8s6s5p6m7s4	無関係						1	0	5	5	tanyao
+2	15	y3	base	2	p9z3m9s7p7p4m3m8s6s5p6m7s4	和了	0	0	ロン	立直+平和		1	4000	9	9	tanyao
+2	15	y4	push	2	z1m9m1z7s3m3s4p2p8p3m5p6s4	放銃					1	1	-3200	11	11	tanyao
+2	15	y4	pushM	2	z1m9m1z7s3m3s4p2p8p3m5p6s4	被ツモ						1	-1300	10	10	tanyao
+2	15	y4	base	2	z1m9m1z7s3m3s4p2p8p3m5p6s4	無関係						1	0	13	13	tanyao
+2	15	y5	push	3	z1z7z6z3z2s4s8m6p8p6p7m3p3	流局						0	0	1	0	tanyao
+2	15	y5	pushM	3	z1z7z6z3z2s4s8m6p8p6p7m3p3	流局						0	0	1	0	tanyao
+2	15	y5	base	3	z1z7z6z3z2s4s8m6p8p6p7m3p3	流局						0	0	1	0	tanyao
+2	16	y0	push	1	p4m4m7m2s5m4s6m3m4s4s6p2p4	無関係						0	0	13	14	tanyao
+2	16	y0	pushM	1	p4m4m7m2s5m4s6m3m4s4s6p2p4	無関係						0	0	13	14	tanyao
+2	16	y0	base	1	p4m4m7m2s5m4s6m3m4s4s6p2p4	流局						1	1500	18	19	tanyao
+2	16	y1	push	3	z6s4p8s8m6m8p5m4p6p6m3m4p6	流局						0	-1000	18	18	tanyao
+2	16	y1	pushM	3	z6s4p8s8m6m8p5m4p6p6m3m4p6	流局						0	-1000	18	18	tanyao
+2	16	y1	base	3	z6s4p8s8m6m8p5m4p6p6m3m4p6	和了	0	1	ロン	断幺九+ドラ		0	2000	13	14	tanyao
+2	16	y2	push	3	m9z4m7p4p8m6m2s7m3s6m8m5s4	放銃					1	1	-12000	8	8	tanyao
+2	16	y2	pushM	3	m9z4m7p4p8m6m2s7m3s6m8m5s4	被ツモ						1	-4000	8	7	tanyao
+2	16	y2	base	3	m9z4m7p4p8m6m2s7m3s6m8m5s4	和了	0	0	ロン	立直+平和+ドラ		1	5900	17	16	tanyao
+2	16	y3	push	1	m9z5p9s5s6m8p8m2s7s8m2m7s3	被ツモ						1	-6000	12	12	tanyao
+2	16	y3	pushM	1	m9z5p9s5s6m8p8m2s7s8m2m7s3	被ツモ						1	-3000	9	9	tanyao
+2	16	y3	base	1	m9z5p9s5s6m8p8m2s7s8m2m7s3	被ツモ						1	-3000	9	9	tanyao
+2	16	y4	push	2	m9z5s9z3s8p4m6p7s6m8p4m7m6	被ツモ						1	-4000	16	16	tanyao
+2	16	y4	pushM	2	m9z5s9z3s8p4m6p7s6m8p4m7m6	被ツモ						0	-2000	16	16	tanyao
+2	16	y4	base	2	m9z5s9z3s8p4m6p7s6m8p4m7m6	和了	0	1	ロン	断幺九+ドラ		0	2000	14	14	tanyao
+2	16	y5	push	3	z6z1s9m1m9s7p8s6s2p2p3s6p5	被ツモ						1	-4000	12	12	tanyao
+2	16	y5	pushM	3	z6z1s9m1m9s7p8s6s2p2p3s6p5	被ツモ						0	-4000	16	16	tanyao
+2	16	y5	base	3	z6z1s9m1m9s7p8s6s2p2p3s6p5	流局						0	1500	18	18	tanyao
+2	17	y0	push	1	s3p7p4s5s7s6s2p2p7p6s4m2p4	和了	0	0	ツモ	門前清自摸和+平和		1	2500	15	14	tanyao
+2	17	y0	pushM	1	s3p7p4s5s7s6s2p2p7p6s4m2p4	和了	0	0	ツモ	門前清自摸和+平和		1	2500	15	14	tanyao
+2	17	y0	base	1	s3p7p4s5s7s6s2p2p7p6s4m2p4	無関係						0	0	13	14	tanyao
+2	17	y1	push	1	s1m6m5p4s2m4s4s8p2p4m5p3s3	和了	0	1	ロン	断幺九		1	2300	11	11	tanyao
+2	17	y1	pushM	1	s1m6m5p4s2m4s4s8p2p4m5p3s3	和了	0	1	ロン	断幺九		1	2300	11	11	tanyao
+2	17	y1	base	1	s1m6m5p4s2m4s4s8p2p4m5p3s3	流局						0	3000	18	18	tanyao
+2	17	y2	push	2	m1p1s5p2m8p5s6p5s5s6p4s8m7	無関係						1	0	13	13	tanyao
+2	17	y2	pushM	2	m1p1s5p2m8p5s6p5s5s6p4s8m7	和了	0	1	ツモ	門前清自摸和+断幺九+ドラ+赤ドラ		0	7900	8	7	tanyao
+2	17	y2	base	2	m1p1s5p2m8p5s6p5s5s6p4s8m7	和了	0	1	ツモ	断幺九+ドラ+赤ドラ		1	5000	8	8	tanyao
+2	17	y3	push	3	z5s1p1p5m7m0p3s5m8p2p3p6m6	和了	0	1	ロン	断幺九+ドラ+赤ドラ		1	9000	15	15	tanyao
+2	17	y3	pushM	3	z5s1p1p5m7m0p3s5m8p2p3p6m6	流局						1	-1500	18	17	tanyao
+2	17	y3	base	3	z5s1p1p5m7m0p3s5m8p2p3p6m6	流局						0	3000	18	17	tanyao
+2	17	y4	push	1	p1z4m9p9s4s8p4p4s5s4m7s6p3	和了	0	1	ロン	断幺九		0	1000	17	17	tanyao
+2	17	y4	pushM	1	p1z4m9p9s4s8p4p4s5s4m7s6p3	流局						0	0	18	18	tanyao
+2	17	y4	base	1	p1z4m9p9s4s8p4p4s5s4m7s6p3	無関係						0	0	16	16	tanyao
+2	17	y5	push	1	z1p9m9p1z5s3s5p6s0m6s3m8p7	無関係						1	0	6	6	tanyao
+2	17	y5	pushM	1	z1p9m9p1z5s3s5p6s0m6s3m8p7	被ツモ						0	-300	5	4	tanyao
+2	17	y5	base	1	z1p9m9p1z5s3s5p6s0m6s3m8p7	放銃					0	1	-2000	15	16	tanyao
+2	18	y0	push	1	m7p6s3p8p2s2s2m3m0m8m4s4s5	被ツモ						1	-2000	11	10	tanyao
+2	18	y0	pushM	1	m7p6s3p8p2s2s2m3m0m8m4s4s5	被ツモ						1	-2000	11	10	tanyao
+2	18	y0	base	1	m7p6s3p8p2s2s2m3m0m8m4s4s5	流局						1	1500	18	18	tanyao
+2	18	y1	push	3	z4s6s4m3p8s2m5m2s3m6p6p7p3	無関係						0	0	8	7	tanyao
+2	18	y1	pushM	3	z4s6s4m3p8s2m5m2s3m6p6p7p3	無関係						0	0	8	7	tanyao
+2	18	y1	base	3	z4s6s4m3p8s2m5m2s3m6p6p7p3	無関係						0	0	8	7	tanyao
+2	18	y2	push	2	z7z1m2m4p8s8m8s7s5p2m7s3s3	無関係						1	0	10	9	tanyao
+2	18	y2	pushM	2	z7z1m2m4p8s8m8s7s5p2m7s3s3	無関係						1	0	10	9	tanyao
+2	18	y2	base	2	z7z1m2m4p8s8m8s7s5p2m7s3s3	放銃					1	1	-7700	12	12	tanyao
+2	18	y3	push	1	z6m9z5s7m2p8m0s4p3m5m3m4m7	放銃					0	0	-3900	10	11	tanyao
+2	18	y3	pushM	1	z6m9z5s7m2p8m0s4p3m5m3m4m7	被ツモ						1	-2000	9	9	tanyao
+2	18	y3	base	1	z6m9z5s7m2p8m0s4p3m5m3m4m7	無関係						0	0	12	12	tanyao
+2	18	y4	push	1	m9z7p9z3m5p3m8m8m3m3s8m7s0	放銃					0	1	-10600	13	15	tanyao
+2	18	y4	pushM	1	m9z7p9z3m5p3m8m8m3m3s8m7s0	放銃					0	0	-7700	12	13	tanyao
+2	18	y4	base	1	m9z7p9z3m5p3m8m8m3m3s8m7s0	無関係						1	0	9	9	tanyao
+2	18	y5	push	3	z4s1z4z7z4s8s6p7s2m6m8m4m7	被ツモ						1	-2000	9	8	tanyao
+2	18	y5	pushM	3	z4s1z4z7z4s8s6p7s2m6m8m4m7	被ツモ						1	-2000	9	8	tanyao
+2	18	y5	base	3	z4s1z4z7z4s8s6p7s2m6m8m4m7	被ツモ						1	-2000	9	8	tanyao
+2	19	y0	push	3	p8m2m4p7p3s3m6s7s3m2s7s8p6	被ツモ						1	-500	17	16	tanyao
+2	19	y0	pushM	3	p8m2m4p7p3s3m6s7s3m2s7s8p6	被ツモ						1	-500	17	16	tanyao
+2	19	y0	base	3	p8m2m4p7p3s3m6s7s3m2s7s8p6	無関係						1	0	10	9	tanyao
+2	19	y1	push	2	s9s8m3s8s3p2p5p5s4m2p3s5p2	和了	0	1	ロン	断幺九+七対子		1	4200	8	8	tanyao
+2	19	y1	pushM	2	s9s8m3s8s3p2p5p5s4m2p3s5p2	和了	0	1	ロン	断幺九+七対子		1	4200	8	8	tanyao
+2	19	y1	base	2	s9s8m3s8s3p2p5p5s4m2p3s5p2	放銃					0	0	-11600	15	16	tanyao
+2	19	y2	push	3	z5z2p7s7p8p3m3p2p6s0s8p7p8	被ツモ						1	-3000	10	10	tanyao
+2	19	y2	pushM	3	z5z2p7s7p8p3m3p2p6s0s8p7p8	放銃					1	1	-8000	13	13	tanyao
+2	19	y2	base	3	z5z2p7s7p8p3m3p2p6s0s8p7p8	被ツモ						0	-1000	10	10	tanyao
+2	19	y3	push	1	s1p9z7s2p8s8p8m7m6p8p8s7s7	被ツモ						1	-1000	17	17	tanyao
+2	19	y3	pushM	1	s1p9z7s2p8s8p8m7m6p8p8s7s7	被ツモ						1	-1000	17	17	tanyao
+2	19	y3	base	1	s1p9z7s2p8s8p8m7m6p8p8s7s7	和了	0	0	ツモ	立直+一発+門前清自摸和+ドラ+裏ドラ		0	13000	12	12	tanyao
+2	19	y4	push	2	p9z1p9z2p4p6p4p3m6m3s8p8p6	放銃					0	0	-12000	5	4	tanyao
+2	19	y4	pushM	2	p9z1p9z2p4p6p4p3m6m3s8p8p6	放銃					0	0	-12000	5	4	tanyao
+2	19	y4	base	2	p9z1p9z2p4p6p4p3m6m3s8p8p6	被ツモ						1	-2000	6	5	tanyao
+2	19	y5	push	1	p1s9z1s1z7p5m8s6m3s5s6s4s6	被ツモ						0	-500	16	16	tanyao
+2	19	y5	pushM	1	p1s9z1s1z7p5m8s6m3s5s6s4s6	被ツモ						0	-500	16	16	tanyao
+2	19	y5	base	1	p1s9z1s1z7p5m8s6m3s5s6s4s6	無関係						0	0	10	10	tanyao
+2	20	y0	push	3	p6p3m5s0p8s6p3s5s4p6m7s7p5	被ツモ						1	-2000	10	11	tanyao
+2	20	y0	pushM	3	p6p3m5s0p8s6p3s5s4p6m7s7p5	被ツモ						1	-2000	16	16	tanyao
+2	20	y0	base	3	p6p3m5s0p8s6p3s5s4p6m7s7p5	放銃					1	1	-8000	8	9	tanyao
+2	20	y1	push	2	z6p8p6s7s4p2m6m7s4s7p7m3s0	被ツモ						1	-4000	11	11	tanyao
+2	20	y1	pushM	2	z6p8p6s7s4p2m6m7s4s7p7m3s0	被ツモ						1	-4000	11	11	tanyao
+2	20	y1	base	2	z6p8p6s7s4p2m6m7s4s7p7m3s0	放銃					0	0	-2600	10	12	tanyao
+2	20	y2	push	1	m9z4p7m6p6p4p8m4p5p4p4m7m5	和了	0	1	ロン	断幺九		0	1000	5	5	tanyao
+2	20	y2	pushM	1	m9z4p7m6p6p4p8m4p5p4p4m7m5	被ツモ						1	-6000	11	11	tanyao
+2	20	y2	base	1	m9z4p7m6p6p4p8m4p5p4p4m7m5	被ツモ						0	-6000	11	10	tanyao
+2	20	y3	push	2	z6z7m9p4s6p6s5s6p4m6p4s3p5	放銃					0	1	-2000	15	15	tanyao
+2	20	y3	pushM	2	z6z7m9p4s6p6s5s6p4m6p4s3p5	放銃					0	0	-2600	15	14	tanyao
+2	20	y3	base	2	z6z7m9p4s6p6s5s6p4m6p4s3p5	和了	0	0	ロン	立直+ドラ		0	6200	11	11	tanyao
+2	20	y4	push	3	z4z5z6p1p7s4p2s5m6m4p4m7m3	無関係						0	0	6	5	tanyao
+2	20	y4	pushM	3	z4z5z6p1p7s4p2s5m6m4p4m7m3	放銃					0	0	-11600	9	9	tanyao
+2	20	y4	base	3	z4z5z6p1p7s4p2s5m6m4p4m7m3	被ツモ						1	-3900	15	15	tanyao
+2	20	y5	push	1	z6z3z7z2s1s3p2p3p7s3s2m6p0	被ツモ						1	-2000	10	9	tanyao
+2	20	y5	pushM	1	z6z3z7z2s1s3p2p3p7s3s2m6p0	被ツモ						1	-2000	10	9	tanyao
+2	20	y5	base	1	z6z3z7z2s1s3p2p3p7s3s2m6p0	被ツモ						1	-2000	10	9	tanyao
+2	21	y0	push	3	p6m7s6s2p4p3m3m5p2m5s8m3m6	無関係						1	0	9	8	tanyao
+2	21	y0	pushM	3	p6m7s6s2p4p3m3m5p2m5s8m3m6	無関係						1	0	9	8	tanyao
+2	21	y0	base	3	p6m7s6s2p4p3m3m5p2m5s8m3m6	無関係						1	0	9	8	tanyao
+2	21	y1	push	3	z1p4s8p6m8s7s5p7m3p8m4s7m4	和了	0	1	ロン	平和+断幺九		1	3000	14	13	tanyao
+2	21	y1	pushM	3	z1p4s8p6m8s7s5p7m3p8m4s7m4	和了	0	1	ロン	平和+断幺九		1	3000	14	13	tanyao
+2	21	y1	base	3	z1p4s8p6m8s7s5p7m3p8m4s7m4	被ツモ						1	-1300	6	5	tanyao
+2	21	y2	push	2	s1z4p7p8s8m7m8m4m3s7p7p5m8	流局						1	-1500	18	18	tanyao
+2	21	y2	pushM	2	s1z4p7p8s8m7m8m4m3s7p7p5m8	無関係						1	0	11	10	tanyao
+2	21	y2	base	2	s1z4p7p8s8m7m8m4m3s7p7p5m8	放銃					1	1	-18000	14	14	tanyao
+2	21	y3	push	2	s9m9z3s7m2m5s3p4p2s3s5m2s8	放銃					1	1	-12000	11	11	tanyao
+2	21	y3	pushM	2	s9m9z3s7m2m5s3p4p2s3s5m2s8	放銃					1	1	-12000	11	11	tanyao
+2	21	y3	base	2	s9m9z3s7m2m5s3p4p2s3s5m2s8	流局						1	-1000	18	17	tanyao
+2	21	y4	push	3	p9z7p1s9m2p7m8m5p8p6s4m8m7	被ツモ						0	-400	14	14	tanyao
+2	21	y4	pushM	3	p9z7p1s9m2p7m8m5p8p6s4m8m7	被ツモ						0	-400	14	14	tanyao
+2	21	y4	base	3	p9z7p1s9m2p7m8m5p8p6s4m8m7	流局						0	3000	18	17	tanyao
+2	21	y5	push	1	z2m9z3s9m9p3p2p6m7m8m8s3m4	無関係						0	0	8	8	tanyao
+2	21	y5	pushM	1	z2m9z3s9m9p3p2p6m7m8m8s3m4	無関係						0	0	8	8	tanyao
+2	21	y5	base	1	z2m9z3s9m9p3p2p6m7m8m8s3m4	無関係						0	0	8	8	tanyao
+2	22	y0	push	3	m0s5m7s7s0m4s5s2m2p4s2s8p4	被ツモ						0	-300	8	7	tanyao
+2	22	y0	pushM	3	m0s5m7s7s0m4s5s2m2p4s2s8p4	放銃					0	0	-3900	7	7	tanyao
+2	22	y0	base	3	m0s5m7s7s0m4s5s2m2p4s2s8p4	和了	0	1	ツモ	立直+門前清自摸和+断幺九+ドラ+赤ドラ		0	13000	8	7	tanyao
+2	22	y1	push	2	z7s5m8s4s8p2s3s7m5m4p7m2m6	和了	0	1	ツモ	断幺九+ドラ+赤ドラ		0	7900	12	11	tanyao
+2	22	y1	pushM	2	z7s5m8s4s8p2s3s7m5m4p7m2m6	無関係						1	0	10	10	tanyao
+2	22	y1	base	2	z7s5m8s4s8p2s3s7m5m4p7m2m6	和了	0	0	ロン	立直+平和+ドラ		1	5900	10	10	tanyao
+2	22	y2	push	2	z1p1p5p3p6s8p2s6m3s5m2p7p2	放銃					1	1	-8000	15	15	tanyao
+2	22	y2	pushM	2	z1p1p5p3p6s8p2s6m3s5m2p7p2	放銃					1	1	-8000	17	17	tanyao
+2	22	y2	base	2	z1p1p5p3p6s8p2s6m3s5m2p7p2	無関係						1	0	13	12	tanyao
+2	22	y3	push	1	z4p1z4m6p8p3s3m6m2s2s8p3s4	放銃					1	1	-12000	12	12	tanyao
+2	22	y3	pushM	1	z4p1z4m6p8p3s3m6m2s2s8p3s4	流局						1	-1000	18	18	tanyao
+2	22	y3	base	1	z4p1z4m6p8p3s3m6m2s2s8p3s4	無関係						1	0	12	12	tanyao
+2	22	y4	push	2	p9z6s1s9m2m2s3m7m8m3m4m4s8	被ツモ						1	-2000	14	14	tanyao
+2	22	y4	pushM	2	p9z6s1s9m2m2s3m7m8m3m4m4s8	流局						1	-1000	18	17	tanyao
+2	22	y4	base	2	p9z6s1s9m2m2s3m7m8m3m4m4s8	無関係						0	0	8	9	tanyao
+2	22	y5	push	3	m9z2z7m1z6p8s8p7s5m7m4s4p4	流局						1	-1500	18	17	tanyao
+2	22	y5	pushM	3	m9z2z7m1z6p8s8p7s5m7m4s4p4	流局						1	-1500	18	17	tanyao
+2	22	y5	base	3	m9z2z7m1z6p8s8p7s5m7m4s4p4	流局						1	-1000	18	17	tanyao
+2	23	y0	push	1	s7s2m4p5s4p3p2m3p0p7s8s4p7	無関係						0	0	5	4	tanyao
+2	23	y0	pushM	1	s7s2m4p5s4p3p2m3p0p7s8s4p7	放銃					1	1	-5800	11	10	tanyao
+2	23	y0	base	1	s7s2m4p5s4p3p2m3p0p7s8s4p7	和了	0	0	ツモ	立直+一発+門前清自摸和+平和+赤ドラ		0	9000	6	4	tanyao
+2	23	y1	push	3	m1s5p4s3p6m2m6s7m6s4p7p4m7	和了	0	1	ロン	断幺九		0	1000	6	5	tanyao
+2	23	y1	pushM	3	m1s5p4s3p6m2m6s7m6s4p7p4m7	和了	0	1	ロン	平和+断幺九		1	2000	10	9	tanyao
+2	23	y1	base	3	m1s5p4s3p6m2m6s7m6s4p7p4m7	和了	0	1	ロン	断幺九		0	1000	6	5	tanyao
+2	23	y2	push	2	z7z1p7s7p8p4s5s2p5s2s6s7m6	放銃					1	1	-2600	8	9	tanyao
+2	23	y2	pushM	2	z7z1p7s7p8p4s5s2p5s2s6s7m6	和了	0	1	ツモ	門前清自摸和+断幺九		1	3000	14	13	tanyao
+2	23	y2	base	2	z7z1p7s7p8p4s5s2p5s2s6s7m6	放銃					0	1	-1500	10	11	tanyao
+2	23	y3	push	1	z2z4z6m5p4p6s3s4s4p4s6m6p8	和了	0	1	ツモ	断幺九		1	2100	13	13	tanyao
+2	23	y3	pushM	1	z2z4z6m5p4p6s3s4s4p4s6m6p8	和了	0	1	ツモ	門前清自摸和+断幺九+三色同順+赤ドラ		0	8000	16	15	tanyao
+2	23	y3	base	1	z2z4z6m5p4p6s3s4s4p4s6m6p8	和了	0	0	ツモ	翻牌 白+ドラ+赤ドラ		1	9000	15	15	tanyao
+2	23	y4	push	3	z7m1m1s9p3p2s2p4p7s3p4m2s3	放銃					1	1	-3900	10	10	tanyao
+2	23	y4	pushM	3	z7m1m1s9p3p2s2p4p7s3p4m2s3	放銃					1	1	-2000	13	13	tanyao
+2	23	y4	base	3	z7m1m1s9p3p2s2p4p7s3p4m2s3	和了	0	0	ロン	立直+ドラ		1	10000	10	9	tanyao
+2	23	y5	push	3	z4z2z3s1z4s5m6s4s2s7s7m4p8	被ツモ						0	-500	6	6	tanyao
+2	23	y5	pushM	3	z4z2z3s1z4s5m6s4s2s7s7m4p8	被ツモ						0	-500	6	6	tanyao
+2	23	y5	base	3	z4z2z3s1z4s5m6s4s2s7s7m4p8	無関係						1	0	8	9	tanyao
+2	24	y0	push	3	m6m4m5p3m8m2p3s4m8m4p2p0s8	無関係						1	0	7	6	tanyao
+2	24	y0	pushM	3	m6m4m5p3m8m2p3s4m8m4p2p0s8	被ツモ						1	-6000	7	6	tanyao
+2	24	y0	base	3	m6m4m5p3m8m2p3s4m8m4p2p0s8	無関係						1	0	5	4	tanyao
+2	24	y1	push	2	z3p5m5p2p7s0m2m5s8m2m4p2p0	流局						1	1500	18	17	tanyao
+2	24	y1	pushM	2	z3p5m5p2p7s0m2m5s8m2m4p2p0	流局						1	1500	18	17	tanyao
+2	24	y1	base	2	z3p5m5p2p7s0m2m5s8m2m4p2p0	流局						1	-1000	18	17	tanyao
+2	24	y2	push	3	z1z5p8s4m5p2p6p6m8p7m7s7m0	無関係						1	0	12	11	tanyao
+2	24	y2	pushM	3	z1z5p8s4m5p2p6p6m8p7m7s7m0	無関係						1	0	12	11	tanyao
+2	24	y2	base	3	z1z5p8s4m5p2p6p6m8p7m7s7m0	和了	0	1	ロン	断幺九+赤ドラ		0	2000	14	14	tanyao
+2	24	y3	push	3	m1m9z4p6s8p2m7p3s3m7p8p0p7	被ツモ						0	-300	9	9	tanyao
+2	24	y3	pushM	3	m1m9z4p6s8p2m7p3s3m7p8p0p7	被ツモ						0	-300	9	9	tanyao
+2	24	y3	base	3	m1m9z4p6s8p2m7p3s3m7p8p0p7	放銃					0	0	-1000	9	9	tanyao
+2	24	y4	push	1	p9z6z6z1m7m3m6s8p4p3m8m4p4	無関係						1	0	15	15	tanyao
+2	24	y4	pushM	1	p9z6z6z1m7m3m6s8p4p3m8m4p4	流局						1	0	18	18	tanyao
+2	24	y4	base	1	p9z6z6z1m7m3m6s8p4p3m8m4p4	和了	0	0	ツモ	翻牌 發		1	2500	15	16	tanyao
+2	24	y5	push	1	m9m9z6z1s1p6s0s7p3s8m8s2p3	和了	0	0	ロン	平和+ドラ+赤ドラ		0	3900	14	14	tanyao
+2	24	y5	pushM	1	m9m9z6z1s1p6s0s7p3s8m8s2p3	和了	0	0	ロン	平和+ドラ+赤ドラ		0	3900	14	14	tanyao
+2	24	y5	base	1	m9m9z6z1s1p6s0s7p3s8m8s2p3	放銃					1	1	-8000	10	11	tanyao
+2	25	y0	push	1	p7m2m5s4m6m3s4m8p2p4m8p3p4	和了	0	1	ロン	断幺九		1	2000	12	13	tanyao
+2	25	y0	pushM	1	p7m2m5s4m6m3s4m8p2p4m8p3p4	無関係						0	0	7	8	tanyao
+2	25	y0	base	1	p7m2m5s4m6m3s4m8p2p4m8p3p4	無関係						0	0	8	9	tanyao
+2	25	y1	push	3	s9p8m6p8p4s4p5m0p4p3p2m8p3	和了	0	1	ロン	平和+断幺九+赤ドラ		0	3900	9	8	tanyao
+2	25	y1	pushM	3	s9p8m6p8p4s4p5m0p4p3p2m8p3	和了	0	1	ロン	平和+断幺九+赤ドラ		0	3900	9	8	tanyao
+2	25	y1	base	3	s9p8m6p8p4s4p5m0p4p3p2m8p3	和了	0	1	ツモ	立直+門前清自摸和+断幺九+赤ドラ		0	8900	10	9	tanyao
+2	25	y2	push	3	z5s1p2s4p3m3s8s3m3s6m4m8p2	放銃					0	0	-7700	9	10	tanyao
+2	25	y2	pushM	3	z5s1p2s4p3m3s8s3m3s6m4m8p2	放銃					0	0	-7700	9	10	tanyao
+2	25	y2	base	3	z5s1p2s4p3m3s8s3m3s6m4m8p2	被ツモ						0	-2000	10	10	tanyao
+2	25	y3	push	2	z5p1z6m7s3m4m3p8p6m6s3m6s4	被ツモ						0	-500	13	14	tanyao
+2	25	y3	pushM	2	z5p1z6m7s3m4m3p8p6m6s3m6s4	被ツモ						0	-500	13	14	tanyao
+2	25	y3	base	2	z5p1z6m7s3m4m3p8p6m6s3m6s4	無関係						0	0	8	8	tanyao
+2	25	y4	push	1	z1z3z3m9p8m7m5s6p5s6p3p8p8	被ツモ						0	-500	10	11	tanyao
+2	25	y4	pushM	1	z1z3z3m9p8m7m5s6p5s6p3p8p8	被ツモ						0	-500	10	11	tanyao
+2	25	y4	base	1	z1z3z3m9p8m7m5s6p5s6p3p8p8	被ツモ						0	-500	10	10	tanyao
+2	25	y5	push	3	z4z5z3s9s1s2m3m4s7m5m7m4m7	放銃					0	1	-7700	13	13	tanyao
+2	25	y5	pushM	3	z4z5z3s9s1s2m3m4s7m5m7m4m7	放銃					0	1	-7700	13	13	tanyao
+2	25	y5	base	3	z4z5z3s9s1s2m3m4s7m5m7m4m7	放銃					1	1	-12000	13	13	tanyao
+2	26	y0	push	1	p5p3p2s4s3p6m6s5s5p7s0m4m4	和了	0	0	ロン	平和+ドラ+赤ドラ		0	7700	4	4	tanyao
+2	26	y0	pushM	1	p5p3p2s4s3p6m6s5s5p7s0m4m4	和了	0	0	ロン	平和+ドラ+赤ドラ		0	7700	4	4	tanyao
+2	26	y0	base	1	p5p3p2s4s3p6m6s5s5p7s0m4m4	和了	0	0	ロン	立直+平和+ドラ+赤ドラ+裏ドラ		0	17000	12	12	tanyao
+2	26	y1	push	3	z1m8s5m7p8p5m5m6p0m4m7s3m3	放銃					1	1	-5200	17	17	tanyao
+2	26	y1	pushM	3	z1m8s5m7p8p5m5m6p0m4m7s3m3	流局						1	-1500	18	17	tanyao
+2	26	y1	base	3	z1m8s5m7p8p5m5m6p0m4m7s3m3	和了	0	0	ロン	立直+平和+赤ドラ+裏ドラ		0	9000	9	8	tanyao
+2	26	y2	push	3	s1z2p6m2s2p6m8s3m3s5s2s8s4	和了	0	1	ロン	断幺九+ドラ		0	3900	12	14	tanyao
+2	26	y2	pushM	3	s1z2p6m2s2p6m8s3m3s5s2s8s4	被ツモ						0	-1300	10	10	tanyao
+2	26	y2	base	3	s1z2p6m2s2p6m8s3m3s5s2s8s4	流局						0	1500	18	17	tanyao
+2	26	y3	push	2	z3z7s1s5p6s2p6m4p8s7s0m2m8	和了	0	1	ロン	断幺九+ドラ+赤ドラ		1	4900	13	13	tanyao
+2	26	y3	pushM	2	z3z7s1s5p6s2p6m4p8s7s0m2m8	放銃					1	1	-5200	11	11	tanyao
+2	26	y3	base	2	z3z7s1s5p6s2p6m4p8s7s0m2m8	流局						1	-1000	18	17	tanyao
+2	26	y4	push	3	p1m1m1s1p7p0s6p2s3m5m6p6s6	流局						1	-1000	18	17	tanyao
+2	26	y4	pushM	3	p1m1m1s1p7p0s6p2s3m5m6p6s6	流局						1	-1000	18	17	tanyao
+2	26	y4	base	3	p1m1m1s1p7p0s6p2s3m5m6p6s6	和了	0	0	ツモ	立直+門前清自摸和+ドラ+赤ドラ		0	8900	14	13	tanyao
+2	26	y5	push	3	z2z3s9z5z5m7p6m4p8p5p3p5m2	被ツモ						1	-6000	11	10	tanyao
+2	26	y5	pushM	3	z2z3s9z5z5m7p6m4p8p5p3p5m2	被ツモ						1	-6000	11	10	tanyao
+2	26	y5	base	3	z2z3s9z5z5m7p6m4p8p5p3p5m2	被ツモ						1	-6000	11	11	tanyao
+2	27	y0	push	3	m5s4s3s8p2p2m2p6m3s5s4s0m2	無関係						0	0	9	9	tanyao
+2	27	y0	pushM	3	m5s4s3s8p2p2m2p6m3s5s4s0m2	無関係						0	0	9	9	tanyao
+2	27	y0	base	3	m5s4s3s8p2p2m2p6m3s5s4s0m2	無関係						0	0	9	9	tanyao
+2	27	y1	push	1	z1p4s8s7m4p2p3s5s2m2p4m4p8	放銃					0	0	-8000	14	15	tanyao
+2	27	y1	pushM	1	z1p4s8s7m4p2p3s5s2m2p4m4p8	放銃					0	0	-8000	14	15	tanyao
+2	27	y1	base	1	z1p4s8s7m4p2p3s5s2m2p4m4p8	無関係						0	0	15	15	tanyao
+2	27	y2	push	1	z1m9m2s2p6s4s6p2m7m0s3s8m8	無関係						0	0	10	11	tanyao
+2	27	y2	pushM	1	z1m9m2s2p6s4s6p2m7m0s3s8m8	無関係						0	0	10	11	tanyao
+2	27	y2	base	1	z1m9m2s2p6s4s6p2m7m0s3s8m8	被ツモ						1	-2000	15	15	tanyao
+2	27	y3	push	3	m1z2z2m8s0m2p6s3p3m6p6p2m2	和了	0	1	ロン	断幺九+赤ドラ		0	2000	13	14	tanyao
+2	27	y3	pushM	3	m1z2z2m8s0m2p6s3p3m6p6p2m2	無関係						0	0	12	12	tanyao
+2	27	y3	base	3	m1z2z2m8s0m2p6s3p3m6p6p2m2	和了	0	1	ロン	断幺九+赤ドラ		0	2000	7	7	tanyao
+2	27	y4	push	3	s1z2z1z4s8p4p2p8p5m6s5m8s8	被ツモ						0	-300	9	9	tanyao
+2	27	y4	pushM	3	s1z2z1z4s8p4p2p8p5m6s5m8s8	和了	0	1	ツモ	門前清自摸和+平和+断幺九		0	2700	10	10	tanyao
+2	27	y4	base	3	s1z2z1z4s8p4p2p8p5m6s5m8s8	被ツモ						0	-400	9	9	tanyao
+2	27	y5	push	2	s1p9z4s1z7m8s2s4m3p6p6m6p7	被ツモ						0	-1000	14	14	tanyao
+2	27	y5	pushM	2	s1p9z4s1z7m8s2s4m3p6p6m6p7	放銃					0	0	-3900	14	14	tanyao
+2	27	y5	base	2	s1p9z4s1z7m8s2s4m3p6p6m6p7	放銃					0	0	-7700	13	13	tanyao
+2	28	y0	push	1	m7s6p5p8m2p3s0m3s2s7m5m7s6	無関係						0	0	8	8	tanyao
+2	28	y0	pushM	1	m7s6p5p8m2p3s0m3s2s7m5m7s6	無関係						0	0	7	7	tanyao
+2	28	y0	base	1	m7s6p5p8m2p3s0m3s2s7m5m7s6	和了	0	1	ロン	断幺九+赤ドラ		0	2000	7	7	tanyao
+2	28	y1	push	1	z6p2m7s4p8s5p6m3s7m3s5s2s6	和了	0	1	ロン	断幺九+赤ドラ		1	3600	8	8	tanyao
+2	28	y1	pushM	1	z6p2m7s4p8s5p6m3s7m3s5s2s6	和了	0	1	ロン	断幺九+赤ドラ		1	3600	8	8	tanyao
+2	28	y1	base	1	z6p2m7s4p8s5p6m3s7m3s5s2s6	無関係						1	0	10	10	tanyao
+2	28	y2	push	1	z7z2m3s7m4p5s5p4s8m6s6s2p8	和了	0	1	ツモ	断幺九		1	2100	10	9	tanyao
+2	28	y2	pushM	1	z7z2m3s7m4p5s5p4s8m6s6s2p8	被ツモ						1	-2000	11	11	tanyao
+2	28	y2	base	1	z7z2m3s7m4p5s5p4s8m6s6s2p8	無関係						0	0	7	7	tanyao
+2	28	y3	push	3	p9z4z5p6m5s4p7m5p8p7p5m8m6	放銃					1	1	-8000	9	9	tanyao
+2	28	y3	pushM	3	p9z4z5p6m5s4p7m5p8p7p5m8m6	放銃					1	1	-8000	9	9	tanyao
+2	28	y3	base	3	p9z4z5p6m5s4p7m5p8p7p5m8m6	放銃					1	1	-8000	9	9	tanyao
+2	28	y4	push	2	z1z4m9p1p6s6s7s3p6p7p3s2p3	放銃					1	1	-5200	9	9	tanyao
+2	28	y4	pushM	2	z1z4m9p1p6s6s7s3p6p7p3s2p3	放銃					1	1	-12000	11	11	tanyao
+2	28	y4	base	2	z1z4m9p1p6s6s7s3p6p7p3s2p3	放銃					1	1	-5200	9	9	tanyao
+2	28	y5	push	1	s1z7z2z7z2p7p4m8p5m3s7p5s7	無関係						1	0	9	9	tanyao
+2	28	y5	pushM	1	s1z7z2z7z2p7p4m8p5m3s7p5s7	無関係						1	0	9	9	tanyao
+2	28	y5	base	1	s1z7z2z7z2p7p4m8p5m3s7p5s7	無関係						1	0	9	9	tanyao
+2	29	y0	push	2	p3p5p7m7s8m7s8s3m5p2s6s2m2	流局						1	1500	18	18	tanyao
+2	29	y0	pushM	2	p3p5p7m7s8m7s8s3m5p2s6s2m2	流局						1	-1000	18	17	tanyao
+2	29	y0	base	2	p3p5p7m7s8m7s8s3m5p2s6s2m2	流局						1	-1000	18	17	tanyao
+2	29	y1	push	1	z2p7s6m8m5p4s7p2p2m4m4p0m7	無関係						0	0	12	12	tanyao
+2	29	y1	pushM	1	z2p7s6m8m5p4s7p2p2m4m4p0m7	無関係						0	0	12	12	tanyao
+2	29	y1	base	1	z2p7s6m8m5p4s7p2p2m4m4p0m7	被ツモ						0	-4000	8	8	tanyao
+2	29	y2	push	2	z3m9p3m4s0p7m8p3s3p8p2s6s2	放銃					1	1	-2900	7	7	tanyao
+2	29	y2	pushM	2	z3m9p3m4s0p7m8p3s3p8p2s6s2	放銃					1	1	-2900	7	7	tanyao
+2	29	y2	base	2	z3m9p3m4s0p7m8p3s3p8p2s6s2	放銃					1	1	-2900	7	7	tanyao
+2	29	y3	push	2	s1m1s1p4p6p2s8p7s0p5p7m8s6	流局						1	1500	18	18	tanyao
+2	29	y3	pushM	2	s1m1s1p4p6p2s8p7s0p5p7m8s6	放銃					1	1	-18000	12	12	tanyao
+2	29	y3	base	2	s1m1s1p4p6p2s8p7s0p5p7m8s6	無関係						0	0	16	16	tanyao
+2	29	y4	push	1	z5z5p1z4p0m5s7m7p7s2p4s6p6	放銃					1	1	-7700	13	13	tanyao
+2	29	y4	pushM	1	z5z5p1z4p0m5s7m7p7s2p4s6p6	無関係						1	0	9	9	tanyao
+2	29	y4	base	1	z5z5p1z4p0m5s7m7p7s2p4s6p6	和了	0	0	ロン	翻牌 白+ドラ+赤ドラ		0	7700	7	8	tanyao
+2	29	y5	push	2	z2z7m9m1z5p6m0s8s5m2s5m3p7	無関係						0	0	8	8	tanyao
+2	29	y5	pushM	2	z2z7m9m1z5p6m0s8s5m2s5m3p7	被ツモ						0	-300	5	5	tanyao
+2	29	y5	base	2	z2z7m9m1z5p6m0s8s5m2s5m3p7	放銃					0	0	-1000	5	6	tanyao
+2	30	y0	push	3	p8s4s6m3m2p2m6p7s6p7p6m6s3	放銃					0	0	-2000	14	14	tanyao
+2	30	y0	pushM	3	p8s4s6m3m2p2m6p7s6p7p6m6s3	放銃					0	0	-2000	14	14	tanyao
+2	30	y0	base	3	p8s4s6m3m2p2m6p7s6p7p6m6s3	流局						1	1500	18	18	tanyao
+2	30	y1	push	2	z1s4m3s3p3p2p7p5m8p2s8m7m7	流局						1	-1000	18	17	tanyao
+3	1	y0	push	1	s4m8p7m5m0m4s7p2p8s5s7m7p8	被ツモ						1	-3000	10	11	tanyao
+3	1	y0	pushM	1	s4m8p7m5m0m4s7p2p8s5s7m7p8	被ツモ						0	-700	13	13	tanyao
+3	1	y0	base	1	s4m8p7m5m0m4s7p2p8s5s7m7p8	放銃					1	1	-3900	14	16	tanyao
+3	1	y1	push	3	s1p4p8s3s4s8p8p7m4p2m7p2p0	無関係						1	0	13	12	tanyao
+3	1	y1	pushM	3	s1p4p8s3s4s8p8p7m4p2m7p2p0	無関係						1	0	13	12	tanyao
+3	1	y1	base	3	s1p4p8s3s4s8p8p7m4p2m7p2p0	無関係						1	0	13	12	tanyao
+3	1	y2	push	1	m9m9m3s4m6p3p7p2m3m8p3m3p5	和了	0	1	ツモ	門前清自摸和+断幺九		0	2000	6	5	tanyao
+3	1	y2	pushM	1	m9m9m3s4m6p3p7p2m3m8p3m3p5	和了	0	1	ツモ	門前清自摸和+断幺九		0	2000	6	5	tanyao
+3	1	y2	base	1	m9m9m3s4m6p3p7p2m3m8p3m3p5	和了	0	0	ツモ	立直+門前清自摸和		0	3000	9	8	tanyao
+3	1	y3	push	2	s9z4p9p4s3p3p3s8m2s7p5m4s8	和了	0	1	ロン	断幺九+ドラ		1	3000	12	12	tanyao
+3	1	y3	pushM	2	s9z4p9p4s3p3p3s8m2s7p5m4s8	無関係						1	0	14	14	tanyao
+3	1	y3	base	2	s9z4p9p4s3p3p3s8m2s7p5m4s8	流局						1	-1000	18	18	tanyao
+3	1	y4	push	1	p1m1z2z6s3m6m6s7m4p4p4p8m6	無関係						0	0	10	11	tanyao
+3	1	y4	pushM	1	p1m1z2z6s3m6m6s7m4p4p4p8m6	流局						1	-1000	18	17	tanyao
+3	1	y4	base	1	p1m1z2z6s3m6m6s7m4p4p4p8m6	和了	0	1	ロン	断幺九+ドラ		0	7700	9	10	tanyao
+3	1	y5	push	3	z2p9m9z3z3s8m2p4s6p6m8p2p5	被ツモ						0	-3900	10	10	tanyao
+3	1	y5	pushM	3	z2p9m9z3z3s8m2p4s6p6m8p2p5	被ツモ						0	-3900	10	10	tanyao
+3	1	y5	base	3	z2p9m9z3z3s8m2p4s6p6m8p2p5	被ツモ						0	-3900	10	10	tanyao
+3	2	y0	push	2	m6p5s3p2p4m2p7m0s3m8p3m6s6	被ツモ						1	-2000	12	10	tanyao
+3	2	y0	pushM	2	m6p5s3p2p4m2p7m0s3m8p3m6s6	被ツモ						1	-2000	12	10	tanyao
+3	2	y0	base	2	m6p5s3p2p4m2p7m0s3m8p3m6s6	無関係						0	0	7	6	tanyao
+3	2	y1	push	1	m9s7m5m0s8p4p6m3p5p3s7m2m2	無関係						1	0	16	17	tanyao
+3	2	y1	pushM	1	m9s7m5m0s8p4p6m3p5p3s7m2m2	無関係						1	0	14	14	tanyao
+3	2	y1	base	1	m9s7m5m0s8p4p6m3p5p3s7m2m2	和了	0	0	ロン	立直+赤ドラ		0	3600	18	18	tanyao
+3	2	y2	push	1	z6m9p6s2s2s8p3s7m7m8s2m8m6	被ツモ						0	-700	7	6	tanyao
+3	2	y2	pushM	1	z6m9p6s2s2s8p3s7m7m8s2m8m6	被ツモ						0	-700	7	6	tanyao
+3	2	y2	base	1	z6m9p6s2s2s8p3s7m7m8s2m8m6	和了	0	1	ロン	断幺九+ドラ		0	3900	7	8	tanyao
+3	2	y3	push	3	z4z5m1s0p5s4m8p2s4s5s6m7m3	無関係						0	0	13	14	tanyao
+3	2	y3	pushM	3	z4z5m1s0p5s4m8p2s4s5s6m7m3	放銃					1	1	-12000	10	10	tanyao
+3	2	y3	base	3	z4z5m1s0p5s4m8p2s4s5s6m7m3	流局						1	-1000	18	18	tanyao
+3	2	y4	push	1	z3m9p9z2p6p8p0m2p6s6s7s3m7	放銃					1	1	-18000	8	9	tanyao
+3	2	y4	pushM	1	z3m9p9z2p6p8p0m2p6s6s7s3m7	放銃					1	1	-18000	10	10	tanyao
+3	2	y4	base	1	z3m9p9z2p6p8p0m2p6s6s7s3m7	被ツモ						1	-300	8	8	tanyao
+3	2	y5	push	1	z5p9s9s9z5p4m2p4p8m4m5p6p4	放銃					0	0	-2900	8	10	tanyao
+3	2	y5	pushM	1	z5p9s9s9z5p4m2p4p8m4m5p6p4	無関係						0	0	10	11	tanyao
+3	2	y5	base	1	z5p9s9s9z5p4m2p4p8m4m5p6p4	被ツモ						0	-500	10	12	tanyao
+3	3	y0	push	3	m3m3s4p8m6p5s2m6p5p2m6p2m2	無関係						1	0	13	13	tanyao
+3	3	y0	pushM	3	m3m3s4p8m6p5s2m6p5p2m6p2m2	無関係						1	0	13	13	tanyao
+3	3	y0	base	3	m3m3s4p8m6p5s2m6p5p2m6p2m2	無関係						1	0	14	13	tanyao
+3	3	y1	push	3	p9s6m7s4p6m5m3s5p2p5p7s2m8	和了	0	1	ツモ	門前清自摸和+平和+断幺九		0	2700	10	9	tanyao
+3	3	y1	pushM	3	p9s6m7s4p6m5m3s5p2p5p7s2m8	和了	0	1	ツモ	門前清自摸和+平和+断幺九		0	2700	10	9	tanyao
+3	3	y1	base	3	p9s6m7s4p6m5m3s5p2p5p7s2m8	和了	0	1	ロン	立直+断幺九+ドラ		0	6200	9	8	tanyao
+3	3	y2	push	1	z4s9s4m2s3s4p5p2m0s3p6p2s5	和了	0	1	ツモ	断幺九+赤ドラ		0	2000	7	8	tanyao
+3	3	y2	pushM	1	z4s9s4m2s3s4p5p2m0s3p6p2s5	流局						1	1000	18	17	tanyao
+3	3	y2	base	1	z4s9s4m2s3s4p5p2m0s3p6p2s5	和了	0	1	ツモ	立直+門前清自摸和+平和+断幺九+赤ドラ		0	9000	9	9	tanyao
+3	3	y3	push	1	z6m1z7s4m4s7s7m7p4p5p6m8m8	被ツモ						1	-500	11	12	tanyao
+3	3	y3	pushM	1	z6m1z7s4m4s7s7m7p4p5p6m8m8	被ツモ						0	-300	15	14	tanyao
+3	3	y3	base	1	z6m1z7s4m4s7s7m7p4p5p6m8m8	和了	0	1	ツモ	断幺九+赤ドラ		0	2000	6	6	tanyao
+3	3	y4	push	1	m1p1m1z2p3p3p8s5s4s3s2m3s4	被ツモ						0	-2000	11	10	tanyao
+3	3	y4	pushM	1	m1p1m1z2p3p3p8s5s4s3s2m3s4	被ツモ						0	-2000	11	10	tanyao
+3	3	y4	base	1	m1p1m1z2p3p3p8s5s4s3s2m3s4	流局						0	3000	18	18	tanyao
+3	3	y5	push	1	p9m9z3z4z6p6s2m2s3m2p5s5p5	被ツモ						0	-2600	10	11	tanyao
+3	3	y5	pushM	1	p9m9z3z4z6p6s2m2s3m2p5s5p5	被ツモ						0	-2600	10	11	tanyao
+3	3	y5	base	1	p9m9z3z4z6p6s2m2s3m2p5s5p5	被ツモ						1	-2000	9	8	tanyao
+3	4	y0	push	1	p4p6s6p6s2m8p7m2m7m2m4p3s4	和了	0	1	ツモ	断幺九+ドラ		0	2000	7	6	tanyao
+3	4	y0	pushM	1	p4p6s6p6s2m8p7m2m7m2m4p3s4	流局						1	1500	18	18	tanyao
+3	4	y0	base	1	p4p6s6p6s2m8p7m2m7m2m4p3s4	無関係						1	0	5	5	tanyao
+3	4	y1	push	1	z4m6p6m8p7p7s5m4m5p6s7m3s6	流局						1	0	18	18	tanyao
+3	4	y1	pushM	1	z4m6p6m8p7p7s5m4m5p6s7m3s6	流局						1	-1000	18	18	tanyao
+3	4	y1	base	1	z4m6p6m8p7p7s5m4m5p6s7m3s6	流局						1	1500	18	18	tanyao
+3	4	y2	push	1	m1z3p3m3p4m6p8m3m7m3m6s8p8	無関係						1	0	8	8	tanyao
+3	4	y2	pushM	1	m1z3p3m3p4m6p8m3m7m3m6s8p8	無関係						1	0	8	8	tanyao
+3	4	y2	base	1	m1z3p3m3p4m6p8m3m7m3m6s8p8	無関係						1	0	8	8	tanyao
+3	4	y3	push	1	m9p1z4p3p7m3p6s4p2s6s0s4p4	放銃					0	0	-3900	8	9	tanyao
+3	4	y3	pushM	1	m9p1z4p3p7m3p6s4p2s6s0s4p4	放銃					0	0	-3900	8	9	tanyao
+3	4	y3	base	1	m9p1z4p3p7m3p6s4p2s6s0s4p4	放銃					1	1	-3900	12	13	tanyao
+3	4	y4	push	1	p9s1z6z5p0s6s3m6p8s2p7s3p3	無関係						1	0	10	10	tanyao
+3	4	y4	pushM	1	p9s1z6z5p0s6s3m6p8s2p7s3p3	無関係						1	0	10	10	tanyao
+3	4	y4	base	1	p9s1z6z5p0s6s3m6p8s2p7s3p3	無関係						1	0	12	12	tanyao
+3	4	y5	push	3	z1m9p9s1m1s4s6m8m2s8s3m2m6	被ツモ						1	-1300	11	11	tanyao
+3	4	y5	pushM	3	z1m9p9s1m1s4s6m8m2s8s3m2m6	放銃					1	1	-2900	11	11	tanyao
+3	4	y5	base	3	z1m9p9s1m1s4s6m8m2s8s3m2m6	放銃					0	1	-2000	13	13	tanyao
+3	5	y0	push	1	s0p5m8p6s7m2m3s4s8m6s6p3m7	無関係						0	0	5	6	tanyao
+3	5	y0	pushM	1	s0p5m8p6s7m2m3s4s8m6s6p3m7	無関係						0	0	5	6	tanyao
+3	5	y0	base	1	s0p5m8p6s7m2m3s4s8m6s6p3m7	無関係						0	0	5	6	tanyao
+3	5	y1	push	2	z3p5p5m6p8m2m4p4p0p2m8m3p7	和了	0	0	ツモ	門前清自摸和+赤ドラ		1	3000	9	8	tanyao
+3	5	y1	pushM	2	z3p5p5m6p8m2m4p4p0p2m8m3p7	和了	0	0	ツモ	門前清自摸和+赤ドラ		1	3000	9	8	tanyao
+3	5	y1	base	2	z3p5p5m6p8m2m4p4p0p2m8m3p7	和了	0	0	ツモ	立直+門前清自摸和+赤ドラ		1	6000	9	8	tanyao
+3	5	y2	push	1	z1m9m5p6p7m4m8m8m8s2s6p3p4	和了	0	1	ロン	断幺九+赤ドラ		0	2000	4	4	tanyao
+3	5	y2	pushM	1	z1m9m5p6p7m4m8m8m8s2s6p3p4	流局						1	-1500	18	17	tanyao
+3	5	y2	base	1	z1m9m5p6p7m4m8m8m8s2s6p3p4	和了	0	1	ロン	断幺九		0	1000	4	5	tanyao
+3	5	y3	push	1	p1z6z5p8m8p3s0s3s2m2s5s2m2	被ツモ						1	-1000	8	8	tanyao
+3	5	y3	pushM	1	p1z6z5p8m8p3s0s3s2m2s5s2m2	被ツモ						1	-1000	8	8	tanyao
+3	5	y3	base	1	p1z6z5p8m8p3s0s3s2m2s5s2m2	無関係						1	0	7	8	tanyao
+3	5	y4	push	2	s9z3s1p1p3s2m8s8s7p4m3s6m2	無関係						0	0	9	8	tanyao
+3	5	y4	pushM	2	s9z3s1p1p3s2m8s8s7p4m3s6m2	無関係						0	0	9	8	tanyao
+3	5	y4	base	2	s9z3s1p1p3s2m8s8s7p4m3s6m2	無関係						0	0	9	8	tanyao
+3	5	y5	push	3	z2z3p9z4p1s4p2s8p8p7s6p3s7	放銃					1	1	-5200	8	7	tanyao
+3	5	y5	pushM	3	z2z3p9z4p1s4p2s8p8p7s6p3s7	無関係						0	0	16	17	tanyao
+3	5	y5	base	3	z2z3p9z4p1s4p2s8p8p7s6p3s7	放銃					1	1	-8000	11	11	tanyao
+3	6	y0	push	1	p2m4s7p7s5m4s5m3s6m5s2m3p6	被ツモ						0	-1000	7	7	tanyao
+3	6	y0	pushM	1	p2m4s7p7s5m4s5m3s6m5s2m3p6	被ツモ						0	-1000	7	7	tanyao
+3	6	y0	base	1	p2m4s7p7s5m4s5m3s6m5s2m3p6	放銃					0	0	-3900	7	8	tanyao
+3	6	y1	push	1	p9m2s2s2p2p6s8s7m4p7m5s4m4	和了	0	1	ツモ	断幺九		0	1100	11	11	tanyao
+3	6	y1	pushM	1	p9m2s2s2p2p6s8s7m4p7m5s4m4	流局						1	-1000	18	18	tanyao
+3	6	y1	base	1	p9m2s2s2p2p6s8s7m4p7m5s4m4	放銃					1	1	-2600	15	16	tanyao
+3	6	y2	push	3	z1z5p8m2p2m2s7m5s5p6m8p7m8	無関係						1	0	17	17	tanyao
+3	6	y2	pushM	3	z1z5p8m2p2m2s7m5s5p6m8p7m8	無関係						1	0	17	17	tanyao
+3	6	y2	base	3	z1z5p8m2p2m2s7m5s5p6m8p7m8	放銃					0	0	-3200	13	13	tanyao
+3	6	y3	push	1	z3z5p9s4m3s2s6m5p4p8p4m3p4	放銃					0	0	-3900	11	12	tanyao
+3	6	y3	pushM	1	z3z5p9s4m3s2s6m5p4p8p4m3p4	放銃					1	1	-5200	15	15	tanyao
+3	6	y3	base	1	z3z5p9s4m3s2s6m5p4p8p4m3p4	無関係						1	0	9	9	tanyao
+3	6	y4	push	2	m1z1z3z3s6m2s8m7m8p3p6m4p4	無関係						1	0	11	12	tanyao
+3	6	y4	pushM	2	m1z1z3z3s6m2s8m7m8p3p6m4p4	被ツモ						1	-2600	17	17	tanyao
+3	6	y4	base	2	m1z1z3z3s6m2s8m7m8p3p6m4p4	流局						1	-1000	18	18	tanyao
+3	6	y5	push	1	p1p9p9z2s9p5p7m7s6m7m6p4m6	放銃					1	1	-1600	6	6	tanyao
+3	6	y5	pushM	1	p1p9p9z2s9p5p7m7s6m7m6p4m6	放銃					1	1	-1600	6	6	tanyao
+3	6	y5	base	1	p1p9p9z2s9p5p7m7s6m7m6p4m6	放銃					1	1	-1600	6	6	tanyao
+3	7	y0	push	3	p4s5s6p4s7p6s4m2m8p2p8p6m4	和了	0	1	ロン	断幺九+赤ドラ		1	3600	16	17	tanyao
+3	7	y0	pushM	3	p4s5s6p4s7p6s4m2m8p2p8p6m4	和了	0	1	ロン	断幺九+赤ドラ		1	3600	16	17	tanyao
+3	7	y0	base	3	p4s5s6p4s7p6s4m2m8p2p8p6m4	和了	0	1	ロン	断幺九+ドラ		0	2000	8	8	tanyao
+3	7	y1	push	3	z5m2s3p4s7m4m4m6p6m7s5m5m0	和了	0	1	ロン	断幺九+赤ドラ		0	2000	6	6	tanyao
+3	7	y1	pushM	3	z5m2s3p4s7m4m4m6p6m7s5m5m0	無関係						0	0	9	8	tanyao
+3	7	y1	base	3	z5m2s3p4s7m4m4m6p6m7s5m5m0	和了	0	1	ロン	断幺九+ドラ+赤ドラ		0	3900	7	7	tanyao
+3	7	y2	push	2	m9s1m4p6s7m0m4s8p0p5s4p8p6	無関係						1	0	8	7	tanyao
+3	7	y2	pushM	2	m9s1m4p6s7m0m4s8p0p5s4p8p6	無関係						1	0	8	7	tanyao
+3	7	y2	base	2	m9s1m4p6s7m0m4s8p0p5s4p8p6	無関係						1	0	15	15	tanyao
+3	7	y3	push	1	z7z7z1p4p3p0s3m6p6m7s2m7m6	被ツモ						1	-6000	6	6	tanyao
+3	7	y3	pushM	1	z7z7z1p4p3p0s3m6p6m7s2m7m6	無関係						1	0	6	5	tanyao
+3	7	y3	base	1	z7z7z1p4p3p0s3m6p6m7s2m7m6	和了	0	0	ロン	翻牌 中+ドラ+赤ドラ		1	4900	7	7	tanyao
+3	7	y4	push	1	z5z7z7s9p4s5p6m2s6m8p7m6p7	被ツモ						1	-300	16	16	tanyao
+3	7	y4	pushM	1	z5z7z7s9p4s5p6m2s6m8p7m6p7	放銃					1	1	-5200	18	18	tanyao
+3	7	y4	base	1	z5z7z7s9p4s5p6m2s6m8p7m6p7	被ツモ						1	-1300	11	11	tanyao
+3	7	y5	push	2	p9z1z4z6z4p2p6s6m7s7s8s5s6	被ツモ						1	-2000	15	15	tanyao
+3	7	y5	pushM	2	p9z1z4z6z4p2p6s6m7s7s8s5s6	無関係						1	0	11	10	tanyao
+3	7	y5	base	2	p9z1z4z6z4p2p6s6m7s7s8s5s6	流局						0	-1500	18	19	tanyao
+3	8	y0	push	3	p6s6m4m4s8m6p8p2s7p3p7m4p8	和了	0	1	ロン	断幺九		0	1300	9	8	tanyao
+3	8	y0	pushM	3	p6s6m4m4s8m6p8p2s7p3p7m4p8	和了	0	1	ロン	断幺九		0	1300	9	8	tanyao
+3	8	y0	base	3	p6s6m4m4s8m6p8p2s7p3p7m4p8	無関係						0	0	9	8	tanyao
+3	8	y1	push	3	z2s8m2p4s6s8s3p6m4p7s5s4p2	放銃					0	0	-2000	15	16	tanyao
+3	8	y1	pushM	3	z2s8m2p4s6s8s3p6m4p7s5s4p2	無関係						0	0	18	18	tanyao
+3	8	y1	base	3	z2s8m2p4s6s8s3p6m4p7s5s4p2	無関係						1	0	10	11	tanyao
+3	8	y2	push	1	p1z1m0m8p7p8m6s5m6m5p2m5m7	無関係						0	0	9	10	tanyao
+3	8	y2	pushM	1	p1z1m0m8p7p8m6s5m6m5p2m5m7	被ツモ						0	-1300	7	7	tanyao
+3	8	y2	base	1	p1z1m0m8p7p8m6s5m6m5p2m5m7	被ツモ						0	-1300	7	7	tanyao
+3	8	y3	push	2	m9z4z1s2p6s5m6p8m5m2m7s8s3	放銃					0	0	-1000	9	9	tanyao
+3	8	y3	pushM	2	m9z4z1s2p6s5m6p8m5m2m7s8s3	放銃					0	0	-1000	9	9	tanyao
+3	8	y3	base	2	m9z4z1s2p6s5m6p8m5m2m7s8s3	放銃					0	0	-1000	11	11	tanyao
+3	8	y4	push	2	z7z2z4s1s6m5s5s0p7p5p4m8m8	流局						1	-1000	18	17	tanyao
+3	8	y4	pushM	2	z7z2z4s1s6m5s5s0p7p5p4m8m8	流局						1	-1000	18	17	tanyao
+3	8	y4	base	2	z7z2z4s1s6m5s5s0p7p5p4m8m8	放銃					1	1	-5800	16	16	tanyao
+3	8	y5	push	1	z6z4s9z3z2m8p6m6p3p7p4p8s2	無関係						1	0	15	15	tanyao
+3	8	y5	pushM	1	z6z4s9z3z2m8p6m6p3p7p4p8s2	無関係						1	0	15	15	tanyao
+3	8	y5	base	1	z6z4s9z3z2m8p6m6p3p7p4p8s2	被ツモ						1	-1000	16	16	tanyao
+3	9	y0	push	1	s5m6p7p2p6m4m6p3p4m7p6p2s6	無関係						0	0	6	7	tanyao
+3	9	y0	pushM	1	s5m6p7p2p6m4m6p3p4m7p6p2s6	流局						1	1500	18	18	tanyao
+3	9	y0	base	1	s5m6p7p2p6m4m6p3p4m7p6p2s6	和了	0	0	ツモ	立直+門前清自摸和+平和+裏ドラ		0	6200	7	6	tanyao
+3	9	y1	push	3	z1p8s2p6s2s8p4m6s8m7p0s4m6	和了	0	1	ロン	平和+断幺九+ドラ+赤ドラ		1	8700	12	12	tanyao
+3	9	y1	pushM	3	z1p8s2p6s2s8p4m6s8m7p0s4m6	和了	0	1	ロン	平和+断幺九+ドラ+赤ドラ		1	8700	12	12	tanyao
+3	9	y1	base	3	z1p8s2p6s2s8p4m6s8m7p0s4m6	和了	0	1	ツモ	断幺九+ドラ+赤ドラ		0	4000	8	7	tanyao
+3	9	y2	push	2	s9p9s0s3m5s2p4m2m7m7p2s4p8	流局						1	1000	18	18	tanyao
+3	9	y2	pushM	2	s9p9s0s3m5s2p4m2m7m7p2s4p8	流局						1	-1000	18	17	tanyao
+3	9	y2	base	2	s9p9s0s3m5s2p4m2m7m7p2s4p8	放銃					0	0	-1000	7	7	tanyao
+3	9	y3	push	1	m1s9m9m4p4p6m7s8p4m6s3m5p8	放銃					1	1	-2600	11	11	tanyao
+3	9	y3	pushM	1	m1s9m9m4p4p6m7s8p4m6s3m5p8	無関係						1	0	12	11	tanyao
+3	9	y3	base	1	m1s9m9m4p4p6m7s8p4m6s3m5p8	無関係						1	0	12	11	tanyao
+3	9	y4	push	2	z1m9z3s9s8m8s4s7p2s3s5p8m7	被ツモ						0	-2600	10	10	tanyao
+3	9	y4	pushM	2	z1m9z3s9s8m8s4s7p2s3s5p8m7	被ツモ						0	-2600	10	10	tanyao
+3	9	y4	base	2	z1m9z3s9s8m8s4s7p2s3s5p8m7	放銃					0	0	-5800	7	9	tanyao
+3	9	y5	push	1	z1z3z6z5p9p8p7m4m5m7m4m4s6	被ツモ						1	-4000	15	14	tanyao
+3	9	y5	pushM	1	z1z3z6z5p9p8p7m4m5m7m4m4s6	流局						0	-1000	18	18	tanyao
+3	9	y5	base	1	z1z3z6z5p9p8p7m4m5m7m4m4s6	被ツモ						1	-2000	14	14	tanyao
+3	10	y0	push	1	s4p6p8m2p8s4p6m4s0m3s7m3s2	被ツモ						0	-1000	7	7	tanyao
+3	10	y0	pushM	1	s4p6p8m2p8s4p6m4s0m3s7m3s2	被ツモ						0	-1000	7	7	tanyao
+3	10	y0	base	1	s4p6p8m2p8s4p6m4s0m3s7m3s2	被ツモ						0	-1000	7	7	tanyao
+3	10	y1	push	3	z1s3s7m4m0m6m8p4s2p5s4s7m8	被ツモ						1	-4000	8	8	tanyao
+3	10	y1	pushM	3	z1s3s7m4m0m6m8p4s2p5s4s7m8	被ツモ						1	-1300	16	15	tanyao
+3	10	y1	base	3	z1s3s7m4m0m6m8p4s2p5s4s7m8	被ツモ						1	-4000	8	8	tanyao
+3	10	y2	push	2	s1z7p8p3p8s5m7p5m8s4m2p4s2	放銃					1	1	-8000	9	9	tanyao
+3	10	y2	pushM	2	s1z7p8p3p8s5m7p5m8s4m2p4s2	被ツモ						1	-2000	10	10	tanyao
+3	10	y2	base	2	s1z7p8p3p8s5m7p5m8s4m2p4s2	流局						1	-1500	18	17	tanyao
+3	10	y3	push	3	m9s1z5m7p7p3m5m2s0s8p4s7s8	無関係						1	0	14	15	tanyao
+3	10	y3	pushM	3	m9s1z5m7p7p3m5m2s0s8p4s7s8	無関係						1	0	15	15	tanyao
+3	10	y3	base	3	m9s1z5m7p7p3m5m2s0s8p4s7s8	被ツモ						1	-3900	18	18	tanyao
+3	10	y4	push	3	z2z3m1z6m3p6s2p2p5m8s7s8p6	和了	0	1	ツモ	断幺九+赤ドラ		1	3000	13	12	tanyao
+3	10	y4	pushM	3	z2z3m1z6m3p6s2p2p5m8s7s8p6	流局						1	-1500	18	17	tanyao
+3	10	y4	base	3	z2z3m1z6m3p6s2p2p5m8s7s8p6	和了	0	0	ロン	立直+平和+赤ドラ		1	5900	13	12	tanyao
+3	10	y5	push	1	z2z2z3p9m1p6p3m3p8p3m5s2p7	無関係						1	0	8	7	tanyao
+3	10	y5	pushM	1	z2z2z3p9m1p6p3m3p8p3m5s2p7	被ツモ						1	-2000	7	6	tanyao
+3	10	y5	base	1	z2z2z3p9m1p6p3m3p8p3m5s2p7	無関係						1	0	7	7	tanyao
+3	11	y0	push	1	s3s6m3s7m2s0s7s5p8s3s6m4s6	被ツモ						0	-300	9	9	tanyao
+3	11	y0	pushM	1	s3s6m3s7m2s0s7s5p8s3s6m4s6	被ツモ						0	-300	9	9	tanyao
+3	11	y0	base	1	s3s6m3s7m2s0s7s5p8s3s6m4s6	和了	0	1	ツモ	立直+海底摸月+門前清自摸和+断幺九+一盃口+赤ドラ		0	13000	18	17	tanyao
+3	11	y1	push	3	p9p3m3s4m7p2m5p0s8m5m8p5p2	被ツモ						1	-1000	12	13	tanyao
+3	11	y1	pushM	3	p9p3m3s4m7p2m5p0s8m5m8p5p2	無関係						1	0	11	11	tanyao
+3	11	y1	base	3	p9p3m3s4m7p2m5p0s8m5m8p5p2	和了	0	0	ツモ	立直+門前清自摸和+ドラ+赤ドラ		0	13000	8	7	tanyao
+3	11	y2	push	3	m1s1s6p8m4s8p3p5p3s2m3s4m0	和了	0	1	ツモ	断幺九+赤ドラ		1	3000	10	9	tanyao
+3	11	y2	pushM	3	m1s1s6p8m4s8p3p5p3s2m3s4m0	被ツモ						1	-700	12	12	tanyao
+3	11	y2	base	3	m1s1s6p8m4s8p3p5p3s2m3s4m0	放銃					1	1	-5200	11	11	tanyao
+3	11	y3	push	2	z6z5s1m8m4p4m7s8p4s3s6m7m4	無関係						1	0	8	8	tanyao
+3	11	y3	pushM	2	z6z5s1m8m4p4m7s8p4s3s6m7m4	無関係						1	0	13	12	tanyao
+3	11	y3	base	2	z6z5s1m8m4p4m7s8p4s3s6m7m4	流局						1	-1000	18	18	tanyao
+3	11	y4	push	2	s9m1z7z7m4p7s5s4m6m6m8m4s7	流局						0	1500	18	18	tanyao
+3	11	y4	pushM	2	s9m1z7z7m4p7s5s4m6m6m8m4s7	放銃					0	1	-5800	10	10	tanyao
+3	11	y4	base	2	s9m1z7z7m4p7s5s4m6m6m8m4s7	無関係						0	0	12	13	tanyao
+3	11	y5	push	1	s9p1z3z5z7s4p6m6p6m3s3m3s5	流局						1	1000	18	18	tanyao
+3	11	y5	pushM	1	s9p1z3z5z7s4p6m6p6m3s3m3s5	流局						1	1000	18	18	tanyao
+3	11	y5	base	1	s9p1z3z5z7s4p6m6p6m3s3m3s5	被ツモ						0	-1000	9	9	tanyao
+3	12	y0	push	3	p3s4p5s5p2s6m0m8s6m6s7p7p7	和了	0	1	ツモ	断幺九		0	1100	9	8	tanyao
+3	12	y0	pushM	3	p3s4p5s5p2s6m0m8s6m6s7p7p7	無関係						1	0	14	14	tanyao
+3	12	y0	base	3	p3s4p5s5p2s6m0m8s6m6s7p7p7	和了	0	1	ツモ	断幺九+赤ドラ		0	2000	9	8	tanyao
+3	12	y1	push	3	m1p6m3p4p7m2p7m8m6p8p2m7p6	無関係						1	0	11	11	tanyao
+3	12	y1	pushM	3	m1p6m3p4p7m2p7m8m6p8p2m7p6	放銃					1	1	-2600	10	10	tanyao
+3	12	y1	base	3	m1p6m3p4p7m2p7m8m6p8p2m7p6	和了	0	0	ロン	立直+一発+ドラ		0	6200	7	7	tanyao
+3	12	y2	push	3	z4z7s4s0s7m5s4p5m2m2s6p8m6	被ツモ						1	-1300	8	8	tanyao
+3	12	y2	pushM	3	z4z7s4s0s7m5s4p5m2m2s6p8m6	放銃					1	1	-3900	8	8	tanyao
+3	12	y2	base	3	z4z7s4s0s7m5s4p5m2m2s6p8m6	流局						1	-1000	18	17	tanyao
+3	12	y3	push	2	z1s9p1m7p8m4m8m8s3p8s0p4p7	被ツモ						1	-1300	13	13	tanyao
+3	12	y3	pushM	2	z1s9p1m7p8m4m8m8s3p8s0p4p7	流局						0	-1000	18	18	tanyao
+3	12	y3	base	2	z1s9p1m7p8m4m8m8s3p8s0p4p7	流局						1	-1500	18	17	tanyao
+3	12	y4	push	2	p1p9z3p9p6p6s7m6s3p8p4s7m4	放銃					1	1	-12000	16	16	tanyao
+3	12	y4	pushM	2	p1p9z3p9p6p6s7m6s3p8p4s7m4	流局						1	-1000	18	17	tanyao
+3	12	y4	base	2	p1p9z3p9p6p6s7m6s3p8p4s7m4	被ツモ						1	-3900	14	14	tanyao
+3	12	y5	push	1	p1z1p9s1z5p6m6s2s3m2m6p5p3	被ツモ						0	-1000	9	10	tanyao
+3	12	y5	pushM	1	p1z1p9s1z5p6m6s2s3m2m6p5p3	被ツモ						0	-1000	9	10	tanyao
+3	12	y5	base	1	p1z1p9s1z5p6m6s2s3m2m6p5p3	和了	0	0	ロン	場風 東		1	2000	8	10	tanyao
+3	13	y0	push	3	s4m8s2s8s8s6s5s5p8s2p2p3p4	無関係						1	0	10	9	tanyao
+3	13	y0	pushM	3	s4m8s2s8s8s6s5s5p8s2p2p3p4	流局						1	-1000	18	17	tanyao
+3	13	y0	base	3	s4m8s2s8s8s6s5s5p8s2p2p3p4	無関係						1	0	10	9	tanyao
+3	13	y1	push	1	m9s4p2p7m6p4m3s7m4s0m3p7p6	放銃					1	1	-12000	16	17	tanyao
+3	13	y1	pushM	1	m9s4p2p7m6p4m3s7m4s0m3p7p6	被ツモ						1	-500	17	17	tanyao
+3	13	y1	base	1	m9s4p2p7m6p4m3s7m4s0m3p7p6	放銃					0	0	-7700	9	10	tanyao
+3	13	y2	push	3	z2m9p8s3s4m3s6m2s6s7m3p4p8	被ツモ						0	-2000	12	13	tanyao
+3	13	y2	pushM	3	z2m9p8s3s4m3s6m2s6s7m3p4p8	被ツモ						1	-2000	7	6	tanyao
+3	13	y2	base	3	z2m9p8s3s4m3s6m2s6s7m3p4p8	被ツモ						1	-2000	7	6	tanyao
+3	13	y3	push	2	z7p9z2s7p5m4m3s7m7p6s5m8s7	無関係						1	0	10	9	tanyao
+3	13	y3	pushM	2	z7p9z2s7p5m4m3s7m7p6s5m8s7	無関係						1	0	10	9	tanyao
+3	13	y3	base	2	z7p9z2s7p5m4m3s7m7p6s5m8s7	無関係						1	0	10	9	tanyao
+3	13	y4	push	3	s9s9z1z5m7s6s4m4p3s2m4p4p5	無関係						1	0	9	8	tanyao
+3	13	y4	pushM	3	s9s9z1z5m7s6s4m4p3s2m4p4p5	被ツモ						0	-300	7	6	tanyao
+3	13	y4	base	3	s9s9z1z5m7s6s4m4p3s2m4p4p5	無関係						1	0	5	5	tanyao
+3	13	y5	push	2	s9z3s9z3s1s6m4s7s5m7s3m0s5	和了	0	1	ツモ	門前清自摸和+断幺九+赤ドラ		1	5000	15	14	tanyao
+3	13	y5	pushM	2	s9z3s9z3s1s6m4s7s5m7s3m0s5	和了	0	1	ツモ	門前清自摸和+断幺九+赤ドラ		1	5000	15	14	tanyao
+3	13	y5	base	2	s9z3s9z3s1s6m4s7s5m7s3m0s5	放銃					0	0	-1500	11	12	tanyao
+3	14	y0	push	2	p4s4p6p7s0p2s2s7p7s6m3p3s2	被ツモ						0	-1000	9	8	tanyao
+3	14	y0	pushM	2	p4s4p6p7s0p2s2s7p7s6m3p3s2	被ツモ						0	-1000	9	8	tanyao
+3	14	y0	base	2	p4s4p6p7s0p2s2s7p7s6m3p3s2	和了	0	1	ロン	立直+断幺九+赤ドラ		0	6200	6	6	tanyao
+3	14	y1	push	1	m9s5p5s8p8p6s5p0m8p7m4m4s2	和了	0	1	ロン	断幺九		0	1300	8	8	tanyao
+3	14	y1	pushM	1	m9s5p5s8p8p6s5p0m8p7m4m4s2	和了	0	1	ロン	断幺九		0	1300	8	8	tanyao
+3	14	y1	base	1	m9s5p5s8p8p6s5p0m8p7m4m4s2	和了	0	0	ロン	立直+赤ドラ		1	4600	15	15	tanyao
+3	14	y2	push	1	z1z3s7p4m3s4s2s7p6p3p3m3s3	放銃					1	1	-12000	11	11	tanyao
+3	14	y2	pushM	1	z1z3s7p4m3s4s2s7p6p3p3m3s3	放銃					1	1	-12000	11	11	tanyao
+3	14	y2	base	1	z1z3s7p4m3s4s2s7p6p3p3m3s3	被ツモ						1	-6000	14	13	tanyao
+3	14	y3	push	3	m9z6m1s5p6m6m5s5p8m7m4p2p7	無関係						1	0	11	10	tanyao
+3	14	y3	pushM	3	m9z6m1s5p6m6m5s5p8m7m4p2p7	無関係						1	0	11	10	tanyao
+3	14	y3	base	3	m9z6m1s5p6m6m5s5p8m7m4p2p7	被ツモ						1	-2000	12	11	tanyao
+3	14	y4	push	1	z3s9m9p1s2s0p8p8p6p5m3p3p7	和了	0	1	ロン	断幺九+ドラ+赤ドラ		1	5900	11	11	tanyao
+3	14	y4	pushM	1	z3s9m9p1s2s0p8p8p6p5m3p3p7	和了	0	1	ツモ	門前清自摸和+断幺九+ドラ+赤ドラ		1	9900	13	12	tanyao
+3	14	y4	base	1	z3s9m9p1s2s0p8p8p6p5m3p3p7	流局						1	-1500	18	18	tanyao
+3	14	y5	push	1	p9s1m9p1z6p3s7s0m8m3p8p5p2	放銃					1	1	-5200	9	9	tanyao
+3	14	y5	pushM	1	p9s1m9p1z6p3s7s0m8m3p8p5p2	無関係						1	0	13	13	tanyao
+3	14	y5	base	1	p9s1m9p1z6p3s7s0m8m3p8p5p2	放銃					0	0	-2600	9	9	tanyao
+3	15	y0	push	2	s2m6s3p7p8p7s5s2s8s5s7p8m4	無関係						1	0	13	12	tanyao
+3	15	y0	pushM	2	s2m6s3p7p8p7s5s2s8s5s7p8m4	無関係						1	0	13	12	tanyao
+3	15	y0	base	2	s2m6s3p7p8p7s5s2s8s5s7p8m4	無関係						1	0	13	12	tanyao
+3	15	y1	push	2	p9p4p4p8p8p5m4s2m6s5m5s7m8	被ツモ						1	-3000	5	5	tanyao
+3	15	y1	pushM	2	p9p4p4p8p8p5m4s2m6s5m5s7m8	流局						1	1500	18	17	tanyao
+3	15	y1	base	2	p9p4p4p8p8p5m4s2m6s5m5s7m8	被ツモ						1	-3000	5	5	tanyao
+3	15	y2	push	1	p9z2p6p8m2p5m8m8p4s3s2s6s8	被ツモ						1	-1000	16	17	tanyao
+3	15	y2	pushM	1	p9z2p6p8m2p5m8m8p4s3s2s6s8	被ツモ						1	-1000	11	11	tanyao
+3	15	y2	base	1	p9z2p6p8m2p5m8m8p4s3s2s6s8	和了	0	1	ツモ	断幺九		0	1100	11	12	tanyao
+3	15	y3	push	2	z5z5z6p5s6m6m2s5p2p6m0s7s3	放銃					1	1	-8000	14	14	tanyao
+3	15	y3	pushM	2	z5z5z6p5s6m6m2s5p2p6m0s7s3	無関係						1	0	16	15	tanyao
+3	15	y3	base	2	z5z5z6p5s6m6m2s5p2p6m0s7s3	放銃					1	1	-8000	14	14	tanyao
+3	15	y4	push	1	z2p9z3m1p5s7p2s3m0s7s4m3s7	放銃					1	1	-2600	5	5	tanyao
+3	15	y4	pushM	1	z2p9z3m1p5s7p2s3m0s7s4m3s7	放銃					1	1	-2600	5	5	tanyao
+3	15	y4	base	1	z2p9z3m1p5s7p2s3m0s7s4m3s7	和了	0	0	ツモ	立直+一発+門前清自摸和+ドラ+赤ドラ+裏ドラ		0	17000	7	7	tanyao
+3	15	y5	push	1	z5z6p9m1z6p2m5p7m7s7m4p6s3	無関係						0	0	9	10	tanyao
+3	15	y5	pushM	1	z5z6p9m1z6p2m5p7m7s7m4p6s3	流局						0	-1000	18	17	tanyao
+3	15	y5	base	1	z5z6p9m1z6p2m5p7m7s7m4p6s3	和了	0	0	ツモ	翻牌 發		1	2100	14	14	tanyao
+3	16	y0	push	1	m6p2p4p7m8s6s5p7s2s6m8s7s7	被ツモ						0	-1000	17	18	tanyao
+3	16	y0	pushM	1	m6p2p4p7m8s6s5p7s2s6m8s7s7	被ツモ						0	-1000	17	18	tanyao
+3	16	y0	base	1	m6p2p4p7m8s6s5p7s2s6m8s7s7	和了	0	1	ロン	立直+断幺九+一盃口		1	7200	14	15	tanyao
+3	16	y1	push	3	m9m8s6m5p7s7s4m7s7s6s5s2s6	流局						1	1500	18	18	tanyao
+3	16	y1	pushM	3	m9m8s6m5p7s7s4m7s7s6s5s2s6	無関係						1	0	9	8	tanyao
+3	16	y1	base	3	m9m8s6m5p7s7s4m7s7s6s5s2s6	流局						1	-1000	18	17	tanyao
+3	16	y2	push	2	z5s9p5s7m6m7p3s8m5m8m7s0s2	流局						1	1500	18	18	tanyao
+3	16	y2	pushM	2	z5s9p5s7m6m7p3s8m5m8m7s0s2	流局						1	1500	18	18	tanyao
+3	16	y2	base	2	z5s9p5s7m6m7p3s8m5m8m7s0s2	無関係						1	0	13	14	tanyao
+3	16	y3	push	3	z3s1z3p2s2p5m2s2p6s4s6p2s4	和了	0	0	ツモ	門前清自摸和+平和+一盃口+ドラ		1	6200	10	9	tanyao
+3	16	y3	pushM	3	z3s1z3p2s2p5m2s2p6s4s6p2s4	和了	0	0	ツモ	門前清自摸和+平和+一盃口+ドラ		1	6200	10	9	tanyao
+3	16	y3	base	3	z3s1z3p2s2p5m2s2p6s4s6p2s4	和了	0	0	ロン	立直+七対子		1	5200	15	14	tanyao
+3	16	y4	push	2	z6z1z6p9p5s5p3m2p5p4m6m4p3	放銃					0	0	-5800	13	14	tanyao
+3	16	y4	pushM	2	z6z1z6p9p5s5p3m2p5p4m6m4p3	放銃					0	0	-5800	13	14	tanyao
+3	16	y4	base	2	z6z1z6p9p5s5p3m2p5p4m6m4p3	無関係						0	0	17	18	tanyao
+3	16	y5	push	1	p1p1z7z6m1s0p5m6s4s3p4m3m8	放銃					1	1	-11600	9	10	tanyao
+3	16	y5	pushM	1	p1p1z7z6m1s0p5m6s4s3p4m3m8	放銃					1	1	-11600	9	10	tanyao
+3	16	y5	base	1	p1p1z7z6m1s0p5m6s4s3p4m3m8	被ツモ						1	-4000	8	8	tanyao
+3	17	y0	push	1	p7p8p3s8m2m6m4m0s0s6s4m6s7	無関係						0	0	8	7	tanyao
+3	17	y0	pushM	1	p7p8p3s8m2m6m4m0s0s6s4m6s7	無関係						0	0	8	7	tanyao
+3	17	y0	base	1	p7p8p3s8m2m6m4m0s0s6s4m6s7	被ツモ						0	-400	5	4	tanyao
+3	17	y1	push	3	z3p3s4m5m6p2p3m3m5m8s2s4s6	無関係						1	0	7	6	tanyao
+3	17	y1	pushM	3	z3p3s4m5m6p2p3m3m5m8s2s4s6	無関係						1	0	7	6	tanyao
+3	17	y1	base	3	z3p3s4m5m6p2p3m3m5m8s2s4s6	流局						1	-1000	18	17	tanyao
+3	17	y2	push	2	p1z2p3s3s8m4p7s5s5p5m6p7m2	放銃					1	1	-8000	14	14	tanyao
+3	17	y2	pushM	2	p1z2p3s3s8m4p7s5s5p5m6p7m2	流局						1	-1000	18	17	tanyao
+3	17	y2	base	2	p1z2p3s3s8m4p7s5s5p5m6p7m2	流局						1	-1000	18	17	tanyao
+3	17	y3	push	1	m1z4z1p3m3m2p8m8m3p3s2p2s8	放銃					0	0	-2000	8	9	tanyao
+3	17	y3	pushM	1	m1z4z1p3m3m2p8m8m3p3s2p2s8	被ツモ						0	-2000	11	12	tanyao
+3	17	y3	base	1	m1z4z1p3m3m2p8m8m3p3s2p2s8	被ツモ						1	-500	8	8	tanyao
+3	17	y4	push	3	p1z3p9p9p6s6m4p3p2p2m6p5p4	放銃					1	1	-7700	12	12	tanyao
+3	17	y4	pushM	3	p1z3p9p9p6s6m4p3p2p2m6p5p4	放銃					1	1	-7700	12	12	tanyao
+3	17	y4	base	3	p1z3p9p9p6s6m4p3p2p2m6p5p4	被ツモ						1	-700	17	16	tanyao
+3	17	y5	push	3	z6s1z3s1m1m4s2p4p6m5m5p8s4	無関係						1	0	11	11	tanyao
+3	17	y5	pushM	3	z6s1z3s1m1m4s2p4p6m5m5p8s4	被ツモ						1	-3000	10	10	tanyao
+3	17	y5	base	3	z6s1z3s1m1m4s2p4p6m5m5p8s4	被ツモ						1	-3000	10	10	tanyao
+3	18	y0	push	3	p6m6p7s7p6s5s3s7s6s8p3p5m7	無関係						0	0	13	14	tanyao
+3	18	y0	pushM	3	p6m6p7s7p6s5s3s7s6s8p3p5m7	無関係						0	0	13	14	tanyao
+3	18	y0	base	3	p6m6p7s7p6s5s3s7s6s8p3p5m7	被ツモ						0	-500	12	12	tanyao
+3	18	y1	push	2	z3p8p5m6p0p8p7m6m2p5s7s3m4	被ツモ						0	-2000	8	8	tanyao
+3	18	y1	pushM	2	z3p8p5m6p0p8p7m6m2p5s7s3m4	被ツモ						0	-2000	8	8	tanyao
+3	18	y1	base	2	z3p8p5m6p0p8p7m6m2p5s7s3m4	放銃					0	0	-7700	10	12	tanyao
+3	18	y2	push	1	s9p1p4m2m7m2s2s3p4p4p8m0p7	和了	0	1	ロン	断幺九+赤ドラ		0	2000	8	8	tanyao
+3	18	y2	pushM	1	s9p1p4m2m7m2s2s3p4p4p8m0p7	和了	0	1	ロン	断幺九		0	1300	10	10	tanyao
+3	18	y2	base	1	s9p1p4m2m7m2s2s3p4p4p8m0p7	和了	0	0	ツモ	立直+門前清自摸和+赤ドラ+裏ドラ		0	8900	8	7	tanyao
+3	18	y3	push	1	s1z2p9p7p7s5s4s3m3s3p5p4s4	無関係						1	0	7	7	tanyao
+3	18	y3	pushM	1	s1z2p9p7p7s5s4s3m3s3p5p4s4	無関係						1	0	7	7	tanyao
+3	18	y3	base	1	s1z2p9p7p7s5s4s3m3s3p5p4s4	無関係						1	0	7	7	tanyao
+3	18	y4	push	2	m9m9p1m1m5m6s6s3p6p8m3s2s0	被ツモ						1	-4000	12	12	tanyao
+3	18	y4	pushM	2	m9m9p1m1m5m6s6s3p6p8m3s2s0	被ツモ						1	-2000	13	12	tanyao
+3	18	y4	base	2	m9m9p1m1m5m6s6s3p6p8m3s2s0	被ツモ						1	-2000	13	12	tanyao
+3	18	y5	push	1	p9m9p9z2s1s4m3s6m2p2p6p7s0	流局						0	-1000	18	17	tanyao
+3	18	y5	pushM	1	p9m9p9z2s1s4m3s6m2p2p6p7s0	流局						0	-1000	18	16	tanyao
+3	18	y5	base	1	p9m9p9z2s1s4m3s6m2p2p6p7s0	流局						0	1500	18	16	tanyao
+3	19	y0	push	2	p2s4s3s7m8m5p6m2p2s2s8s4s6	和了	0	1	ロン	断幺九+ドラ		1	3000	13	14	tanyao
+3	19	y0	pushM	2	p2s4s3s7m8m5p6m2p2s2s8s4s6	放銃					1	1	-8000	12	12	tanyao
+3	19	y0	base	2	p2s4s3s7m8m5p6m2p2s2s8s4s6	無関係						1	0	13	12	tanyao
+3	19	y1	push	3	m9m6p6s6s4m8m8p6s8s7m5p2p3	被ツモ						0	-500	11	11	tanyao
+3	19	y1	pushM	3	m9m6p6s6s4m8m8p6s8s7m5p2p3	無関係						0	0	11	10	tanyao
+3	19	y1	base	3	m9m6p6s6s4m8m8p6s8s7m5p2p3	被ツモ						0	-500	11	11	tanyao
+3	19	y2	push	1	z3z1s7m8m3p8s4s3s5p7s8p2m4	無関係						1	0	11	11	tanyao
+3	19	y2	pushM	1	z3z1s7m8m3p8s4s3s5p7s8p2m4	放銃					1	1	-2600	17	17	tanyao
+3	19	y2	base	1	z3z1s7m8m3p8s4s3s5p7s8p2m4	和了	0	0	ロン	場風 東+ドラ		0	3900	10	10	tanyao
+3	19	y3	push	1	z2z7z3m5p3p5p6m4p8p7m7m2m6	無関係						1	0	10	10	tanyao
+3	19	y3	pushM	1	z2z7z3m5p3p5p6m4p8p7m7m2m6	無関係						1	0	9	8	tanyao
+3	19	y3	base	1	z2z7z3m5p3p5p6m4p8p7m7m2m6	無関係						1	0	9	8	tanyao
+3	19	y4	push	3	p1p1m9z6s4s3s0p5s6s5m0s6p7	被ツモ						1	-3900	15	14	tanyao
+3	19	y4	pushM	3	p1p1m9z6s4s3s0p5s6s5m0s6p7	被ツモ						1	-700	12	11	tanyao
+3	19	y4	base	3	p1p1m9z6s4s3s0p5s6s5m0s6p7	和了	0	0	ロン	立直+赤ドラ		1	4600	8	7	tanyao
+3	19	y5	push	3	z4z2z5z6m9p3p6m6s4s4m7m5p2	流局						1	-1000	18	18	tanyao
+3	19	y5	pushM	3	z4z2z5z6m9p3p6m6s4s4m7m5p2	無関係						1	0	16	15	tanyao
+3	19	y5	base	3	z4z2z5z6m9p3p6m6s4s4m7m5p2	流局						1	-1000	18	17	tanyao
+3	20	y0	push	3	m6s8m0p7p4p6s3s8s3p2p3p2m5	流局						1	1500	18	17	tanyao
+3	20	y0	pushM	3	m6s8m0p7p4p6s3s8s3p2p3p2m5	流局						1	1500	18	17	tanyao
+3	20	y0	base	3	m6s8m0p7p4p6s3s8s3p2p3p2m5	流局						1	-1000	18	17	tanyao
+3	20	y1	push	1	z2m2p4p4m2m5s3s8m6m7p2p3m0	被ツモ						0	-400	10	9	tanyao
+3	20	y1	pushM	1	z2m2p4p4m2m5s3s8m6m7p2p3m0	無関係						0	0	8	6	tanyao
+3	20	y1	base	1	z2m2p4p4m2m5s3s8m6m7p2p3m0	無関係						0	0	8	6	tanyao
+3	20	y2	push	1	p9z1m3p8m6p3p2m8m0s3s2m6p7	無関係						1	0	10	11	tanyao
+3	20	y2	pushM	1	p9z1m3p8m6p3p2m8m0s3s2m6p7	無関係						1	0	9	8	tanyao
+3	20	y2	base	1	p9z1m3p8m6p3p2m8m0s3s2m6p7	被ツモ						1	-500	14	14	tanyao
+3	20	y3	push	2	m1m9s1s7p7s5s6m7m6m3s7s8p2	無関係						0	0	13	13	tanyao
+3	20	y3	pushM	2	m1m9s1s7p7s5s6m7m6m3s7s8p2	放銃					1	1	-5200	13	14	tanyao
+3	20	y3	base	2	m1m9s1s7p7s5s6m7m6m3s7s8p2	和了	0	0	ツモ	三色同順		0	1100	10	10	tanyao
+3	20	y4	push	2	p1z4z1z4m8s3p8m8p4s6p3s6p4	無関係						1	0	9	9	tanyao
+3	20	y4	pushM	2	p1z4z1z4m8s3p8m8p4s6p3s6p4	無関係						1	0	9	9	tanyao
+3	20	y4	base	2	p1z4z1z4m8s3p8m8p4s6p3s6p4	無関係						1	0	9	9	tanyao
+3	20	y5	push	2	z4z3z5p1z4p7m0s7s2p8p7s5m4	被ツモ						1	-6000	14	13	tanyao
+3	20	y5	pushM	2	z4z3z5p1z4p7m0s7s2p8p7s5m4	被ツモ						1	-2600	8	7	tanyao
+3	20	y5	base	2	z4z3z5p1z4p7m0s7s2p8p7s5m4	和了	0	0	ロン	立直+平和+ドラ+赤ドラ+裏ドラ		1	11000	10	9	tanyao
+3	21	y0	push	2	m8s6p6s2s8p4s2s3m6s2m4s7p3	和了	0	1	ロン	断幺九		0	1300	10	9	tanyao
+3	21	y0	pushM	2	m8s6p6s2s8p4s2s3m6s2m4s7p3	和了	0	1	ロン	断幺九		0	1300	10	9	tanyao
+3	21	y0	base	2	m8s6p6s2s8p4s2s3m6s2m4s7p3	流局						1	1500	18	17	tanyao
+3	21	y1	push	3	m1s3p5p2m0s2p8m3p0s0m6m8s2	被ツモ						0	-300	16	16	tanyao
+3	21	y1	pushM	3	m1s3p5p2m0s2p8m3p0s0m6m8s2	流局						1	-1500	18	17	tanyao
+3	21	y1	base	3	m1s3p5p2m0s2p8m3p0s0m6m8s2	流局						1	1000	18	18	tanyao
+3	21	y2	push	2	z6p1m8p2m6s3p4m6m4m7s2p2p6	被ツモ						1	-2000	12	12	tanyao
+3	21	y2	pushM	2	z6p1m8p2m6s3p4m6m4m7s2p2p6	被ツモ						1	-2000	12	12	tanyao
+3	21	y2	base	2	z6p1m8p2m6s3p4m6m4m7s2p2p6	被ツモ						1	-2000	12	12	tanyao
+3	21	y3	push	3	z3z4z1s8p0p2m5p7s5p3s6s5m3	和了	0	1	ロン	断幺九+赤ドラ		1	3000	9	10	tanyao
+3	21	y3	pushM	3	z3z4z1s8p0p2m5p7s5p3s6s5m3	被ツモ						1	-1300	12	12	tanyao
+3	21	y3	base	3	z3z4z1s8p0p2m5p7s5p3s6s5m3	被ツモ						1	-1300	12	13	tanyao
+3	21	y4	push	3	z5z7p1s9s8m5p3m5m5s3p7p4p5	被ツモ						0	-500	13	13	tanyao
+3	21	y4	pushM	3	z5z7p1s9s8m5p3m5m5s3p7p4p5	無関係						0	0	13	13	tanyao
+3	21	y4	base	3	z5z7p1s9s8m5p3m5m5s3p7p4p5	和了	0	1	ツモ	立直+一発+門前清自摸和+断幺九		0	8900	11	11	tanyao
+3	21	y5	push	1	m9z5s9s9p9p6m8s2m2s6s7s3s8	被ツモ						1	-2000	17	17	tanyao
+3	21	y5	pushM	1	m9z5s9s9p9p6m8s2m2s6s7s3s8	被ツモ						1	-2000	17	17	tanyao
+3	21	y5	base	1	m9z5s9s9p9p6m8s2m2s6s7s3s8	流局						1	-1500	18	18	tanyao
+3	22	y0	push	1	p2m6m5p6m2s2m7s5s4s6m6s5p8	無関係						1	0	10	11	tanyao
+3	22	y0	pushM	1	p2m6m5p6m2s2m7s5s4s6m6s5p8	流局						1	1500	18	18	tanyao
+3	22	y0	base	1	p2m6m5p6m2s2m7s5s4s6m6s5p8	和了	0	0	ロン	立直		1	3300	16	16	tanyao
+3	22	y1	push	3	z3m5s4p0p3p7s5p7s8s4m7p6m7	和了	0	1	ロン	断幺九+ドラ+赤ドラ		0	7700	10	9	tanyao
+3	22	y1	pushM	3	z3m5s4p0p3p7s5p7s8s4m7p6m7	無関係						1	0	15	15	tanyao
+3	22	y1	base	3	z3m5s4p0p3p7s5p7s8s4m7p6m7	放銃					0	0	-5200	7	7	tanyao
+3	22	y2	push	3	p1s9m2p3m3s7s6p8m5m7p7s2m6	無関係						0	0	6	5	tanyao
+3	22	y2	pushM	3	p1s9m2p3m3s7s6p8m5m7p7s2m6	無関係						0	0	6	5	tanyao
+3	22	y2	base	3	p1s9m2p3m3s7s6p8m5m7p7s2m6	無関係						0	0	6	5	tanyao
+3	22	y3	push	3	p1s1z1m4s5p6p7s4p4m3p0m2s6	放銃					1	1	-2900	17	17	tanyao
+3	22	y3	pushM	3	p1s1z1m4s5p6p7s4p4m3p0m2s6	放銃					1	1	-2900	17	17	tanyao
+3	22	y3	base	3	p1s1z1m4s5p6p7s4p4m3p0m2s6	流局						0	3000	18	17	tanyao
+3	22	y4	push	2	z5z6s9s1p3m7p4p3p3s2s7s3s5	無関係						1	0	13	13	tanyao
+3	22	y4	pushM	2	z5z6s9s1p3m7p4p3p3s2s7s3s5	被ツモ						1	-4000	16	15	tanyao
+3	22	y4	base	2	z5z6s9s1p3m7p4p3p3s2s7s3s5	被ツモ						1	-4000	18	18	tanyao
+3	22	y5	push	1	m1z6z2z5z4p6p5m8s8p7m6s6m0	放銃					1	1	-2900	10	10	tanyao
+3	22	y5	pushM	1	m1z6z2z5z4p6p5m8s8p7m6s6m0	被ツモ						1	-2600	10	9	tanyao
+3	22	y5	base	1	m1z6z2z5z4p6p5m8s8p7m6s6m0	被ツモ						1	-2600	10	9	tanyao
+3	23	y0	push	1	s6m5p3m3m4m2p3s7m3m4s3s2m7	和了	0	1	ツモ	門前清自摸和+平和+断幺九		0	2700	6	6	tanyao
+3	23	y0	pushM	1	s6m5p3m3m4m2p3s7m3m4s3s2m7	和了	0	1	ツモ	門前清自摸和+平和+断幺九		0	2700	6	6	tanyao
+3	23	y0	base	1	s6m5p3m3m4m2p3s7m3m4s3s2m7	和了	0	1	ツモ	立直+一発+門前清自摸和+平和+断幺九		0	9000	6	6	tanyao
+3	23	y1	push	3	z3m2p2s8m4p8p5m5p4s4m2s6s7	被ツモ						0	-2000	13	14	tanyao
+3	23	y1	pushM	3	z3m2p2s8m4p8p5m5p4s4m2s6s7	無関係						0	0	13	14	tanyao
+3	23	y1	base	3	z3m2p2s8m4p8p5m5p4s4m2s6s7	被ツモ						0	-500	12	13	tanyao
+3	23	y2	push	3	z7m9m0p4s6m3s8p3p5p0s7s4p7	和了	0	1	ツモ	断幺九+赤ドラ		0	4000	11	11	tanyao
+3	23	y2	pushM	3	z7m9m0p4s6m3s8p3p5p0s7s4p7	被ツモ						1	-3200	16	15	tanyao
+3	23	y2	base	3	z7m9m0p4s6m3s8p3p5p0s7s4p7	和了	0	1	ツモ	断幺九+赤ドラ		0	4000	11	11	tanyao
+3	23	y3	push	2	z1z2z3m3p2p5s5p4s8m7s5m2p6	流局						1	1000	18	18	tanyao
+3	23	y3	pushM	2	z1z2z3m3p2p5s5p4s8m7s5m2p6	流局						1	-3000	17	16	tanyao
+3	23	y3	base	2	z1z2z3m3p2p5s5p4s8m7s5m2p6	和了	0	1	ロン	断幺九+ドラ		0	2000	13	13	tanyao
+3	23	y4	push	2	z4m9z5p1p3s3m2p2s2s2m4p8s7	放銃					1	1	-7700	11	12	tanyao
+3	23	y4	pushM	2	z4m9z5p1p3s3m2p2s2s2m4p8s7	被ツモ						1	-3900	11	11	tanyao
+3	23	y4	base	2	z4m9z5p1p3s3m2p2s2s2m4p8s7	被ツモ						1	-3900	11	11	tanyao
+3	23	y5	push	2	z7p9p9z7p1m2p6m2s5m8p8s5m8	和了	0	0	ロン	七対子+ドラ		0	6400	3	2	tanyao
+3	23	y5	pushM	2	z7p9p9z7p1m2p6m2s5m8p8s5m8	和了	0	0	ロン	七対子+ドラ		0	6400	3	2	tanyao
+3	23	y5	base	2	z7p9p9z7p1m2p6m2s5m8p8s5m8	無関係						1	0	10	11	tanyao
+3	24	y0	push	2	p6m3s7m4m6m3s5s8p5s6p3m6s4	放銃					1	1	-8000	13	13	tanyao
+3	24	y0	pushM	2	p6m3s7m4m6m3s5s8p5s6p3m6s4	被ツモ						1	-2000	14	13	tanyao
+3	24	y0	base	2	p6m3s7m4m6m3s5s8p5s6p3m6s4	被ツモ						1	-2000	14	13	tanyao
+3	24	y1	push	2	z7p2s8s2s6p5p8p3s4p2s7m7s3	放銃					0	0	-5800	9	9	tanyao
+3	24	y1	pushM	2	z7p2s8s2s6p5p8p3s4p2s7m7s3	放銃					0	0	-5800	9	9	tanyao
+3	24	y1	base	2	z7p2s8s2s6p5p8p3s4p2s7m7s3	和了	0	0	ツモ	立直+門前清自摸和+ドラ		0	5000	13	12	tanyao
+3	24	y2	push	2	z5z3m4s5m3m7m8s4s3p8p5m2m5	無関係						0	0	15	14	tanyao
+3	24	y2	pushM	2	z5z3m4s5m3m7m8s4s3p8p5m2m5	無関係						0	0	12	12	tanyao
+3	24	y2	base	2	z5z3m4s5m3m7m8s4s3p8p5m2m5	被ツモ						1	-4000	17	17	tanyao
+3	24	y3	push	3	m1z6m9m2p2s4m3p2m5m0s6p5p6	和了	0	1	ロン	断幺九		0	1000	14	14	tanyao
+3	24	y3	pushM	3	m1z6m9m2p2s4m3p2m5m0s6p5p6	流局						1	-1000	18	18	tanyao
+3	24	y3	base	3	m1z6m9m2p2s4m3p2m5m0s6p5p6	被ツモ						1	-1000	14	13	tanyao
+3	24	y4	push	2	z2m1z6s9p5m7m3m8s6m7p5p6s4	被ツモ						0	-300	6	6	tanyao
+3	24	y4	pushM	2	z2m1z6s9p5m7m3m8s6m7p5p6s4	無関係						0	0	5	5	tanyao
+3	24	y4	base	2	z2m1z6s9p5m7m3m8s6m7p5p6s4	無関係						0	0	5	6	tanyao
+3	24	y5	push	3	z6m9s9z4z7s2p4p4m7s5s8m4m3	無関係						1	0	11	11	tanyao
+3	24	y5	pushM	3	z6m9s9z4z7s2p4p4m7s5s8m4m3	無関係						1	0	14	14	tanyao
+3	24	y5	base	3	z6m9s9z4z7s2p4p4m7s5s8m4m3	無関係						1	0	14	14	tanyao
+3	25	y0	push	1	s4p7m3p4p0s2m2m2p4s8s4m6m3	被ツモ						0	-1000	9	9	tanyao
+3	25	y0	pushM	1	s4p7m3p4p0s2m2m2p4s8s4m6m3	被ツモ						0	-1000	9	9	tanyao
+3	25	y0	base	1	s4p7m3p4p0s2m2m2p4s8s4m6m3	和了	0	1	ロン	立直+断幺九+赤ドラ+裏ドラ		0	9000	9	10	tanyao
+3	25	y1	push	1	s1p4p0p7s6s2p7m2m6m4m3m6m5	和了	0	1	ツモ	断幺九+赤ドラ		1	3000	8	7	tanyao
+3	25	y1	pushM	1	s1p4p0p7s6s2p7m2m6m4m3m6m5	無関係						1	0	15	14	tanyao
+3	25	y1	base	1	s1p4p0p7s6s2p7m2m6m4m3m6m5	和了	0	0	ツモ	立直+門前清自摸和+平和+赤ドラ+裏ドラ		0	9000	6	5	tanyao
+3	25	y2	push	3	z7z2p5p4p4s8m2m6s4s5m8m5m4	和了	0	1	ロン	断幺九+ドラ		1	2000	10	10	tanyao
+3	25	y2	pushM	3	z7z2p5p4p4s8m2m6s4s5m8m5m4	被ツモ						1	-2000	10	9	tanyao
+3	25	y2	base	3	z7z2p5p4p4s8m2m6s4s5m8m5m4	和了	0	1	ロン	断幺九+ドラ		0	2000	8	8	tanyao
+3	25	y3	push	3	z5s9z1m5p0s8p6p6m0p3p8m8s5	放銃					1	1	-7700	8	9	tanyao
+3	25	y3	pushM	3	z5s9z1m5p0s8p6p6m0p3p8m8s5	無関係						1	0	10	9	tanyao
+3	25	y3	base	3	z5s9z1m5p0s8p6p6m0p3p8m8s5	無関係						1	0	10	9	tanyao
+3	25	y4	push	1	z3s1z3m9m3p0m6p5p8p4m6m7s5	和了	0	1	ロン	断幺九+赤ドラ		0	2600	10	10	tanyao
+3	25	y4	pushM	1	z3s1z3m9m3p0m6p5p8p4m6m7s5	和了	0	1	ロン	断幺九+赤ドラ		0	2600	10	10	tanyao
+3	25	y4	base	1	z3s1z3m9m3p0m6p5p8p4m6m7s5	流局						1	1500	18	18	tanyao
+3	25	y5	push	2	s1m1z1z2z4s4m5p6m7m2m6s2m4	放銃					0	0	-2900	17	17	tanyao
+3	25	y5	pushM	2	s1m1z1z2z4s4m5p6m7m2m6s2m4	放銃					0	0	-2900	17	17	tanyao
+3	25	y5	base	2	s1m1z1z2z4s4m5p6m7m2m6s2m4	被ツモ						1	-4000	13	14	tanyao
+3	26	y0	push	2	m8m2m7s3m3m2p5m6m4s8m3s4m6	放銃					0	1	-2000	12	13	tanyao
+3	26	y0	pushM	2	m8m2m7s3m3m2p5m6m4s8m3s4m6	放銃					0	1	-2000	14	15	tanyao
+3	26	y0	base	2	m8m2m7s3m3m2p5m6m4s8m3s4m6	和了	0	1	ツモ	断幺九+ドラ+赤ドラ		0	7900	10	10	tanyao
+3	26	y1	push	1	z5m4m0m2s4s7p2s3p6p0p7m4m8	放銃					1	1	-2000	15	15	tanyao
+3	26	y1	pushM	1	z5m4m0m2s4s7p2s3p6p0p7m4m8	流局						1	-1500	18	18	tanyao
+3	26	y1	base	1	z5m4m0m2s4s7p2s3p6p0p7m4m8	流局						0	0	18	18	tanyao
+3	26	y2	push	2	m1z2m2p6s5s2s4s6p2p4p7m3m8	無関係						0	0	11	11	tanyao
+3	26	y2	pushM	2	m1z2m2p6s5s2s4s6p2p4p7m3m8	被ツモ						0	-500	11	11	tanyao
+3	26	y2	base	2	m1z2m2p6s5s2s4s6p2p4p7m3m8	放銃					1	1	-8000	17	17	tanyao
+3	26	y3	push	3	z3z5z1p7m5p5s8m7s6m4s8s2m8	放銃					1	1	-8000	14	14	tanyao
+3	26	y3	pushM	3	z3z5z1p7m5p5s8m7s6m4s8s2m8	放銃					1	1	-8000	14	14	tanyao
+3	26	y3	base	3	z3z5z1p7m5p5s8m7s6m4s8s2m8	被ツモ						1	-2000	18	17	tanyao
+3	26	y4	push	3	z6s1z3m9m7m7s7s5p4s2s0p2m6	流局						1	-1000	18	17	tanyao
+3	26	y4	pushM	3	z6s1z3m9m7m7s7s5p4s2s0p2m6	放銃					0	0	-12000	11	11	tanyao
+3	26	y4	base	3	z6s1z3m9m7m7s7s5p4s2s0p2m6	放銃					0	1	-8000	13	14	tanyao
+3	26	y5	push	1	z4s9z6z6m1p5m2p8s3m6s7p3p2	無関係						0	0	12	12	tanyao
+3	26	y5	pushM	1	z4s9z6z6m1p5m2p8s3m6s7p3p2	無関係						0	0	12	12	tanyao
+3	26	y5	base	1	z4s9z6z6m1p5m2p8s3m6s7p3p2	和了	0	0	ツモ	立直+門前清自摸和+赤ドラ		0	5000	9	9	tanyao
+3	27	y0	push	3	s7s2p2p2m7m8m5p6m7s8s2m6s8	無関係						1	0	16	15	tanyao
+3	27	y0	pushM	3	s7s2p2p2m7m8m5p6m7s8s2m6s8	無関係						1	0	8	8	tanyao
+3	27	y0	base	3	s7s2p2p2m7m8m5p6m7s8s2m6s8	無関係						1	0	8	8	tanyao
+3	27	y1	push	3	s9p2p2s4s8p5s6m5s5s2p8p3p5	和了	0	1	ロン	断幺九		0	1000	6	7	tanyao
+3	27	y1	pushM	3	s9p2p2s4s8p5s6m5s5s2p8p3p5	流局						1	1500	18	18	tanyao
+3	27	y1	base	3	s9p2p2s4s8p5s6m5s5s2p8p3p5	無関係						0	0	8	9	tanyao
+3	27	y2	push	2	s9z7s3p2m5s5p3m6s2s8p7p8s3	放銃					0	0	-3900	12	13	tanyao
+3	27	y2	pushM	2	s9z7s3p2m5s5p3m6s2s8p7p8s3	流局						0	-1500	18	18	tanyao
+3	27	y2	base	2	s9z7s3p2m5s5p3m6s2s8p7p8s3	和了	0	1	ツモ	立直+門前清自摸和+断幺九+七対子+赤ドラ		0	13000	16	15	tanyao
+3	27	y3	push	3	z6m9z5m6p5s8p8p7s6s7s7m8p2	無関係						0	0	11	11	tanyao
+3	27	y3	pushM	3	z6m9z5m6p5s8p8p7s6s7s7m8p2	無関係						0	0	11	11	tanyao
+3	27	y3	base	3	z6m9z5m6p5s8p8p7s6s7s7m8p2	被ツモ						0	-500	7	7	tanyao
+3	27	y4	push	2	z6z6s1m1s3p2s5m6p5s6m4p8m8	和了	0	1	ロン	断幺九		0	1000	8	9	tanyao
+3	27	y4	pushM	2	z6z6s1m1s3p2s5m6p5s6m4p8m8	放銃					0	0	-3900	9	11	tanyao
+3	27	y4	base	2	z6z6s1m1s3p2s5m6p5s6m4p8m8	和了	0	0	ロン	翻牌 發		0	1000	7	7	tanyao
+3	27	y5	push	1	s1p9z1z4s9s2s2m3p4m7p2m3p4	無関係						1	0	10	10	tanyao
+3	27	y5	pushM	1	s1p9z1z4s9s2s2m3p4m7p2m3p4	放銃					1	1	-12000	13	13	tanyao
+3	27	y5	base	1	s1p9z1z4s9s2s2m3p4m7p2m3p4	被ツモ						1	-6000	13	13	tanyao
+3	28	y0	push	3	p3s3m3p8s6s6s4m2m4p5m7p7s4	被ツモ						1	-400	15	15	tanyao
+3	28	y0	pushM	3	p3s3m3p8s6s6s4m2m4p5m7p7s4	被ツモ						1	-400	15	15	tanyao
+3	28	y0	base	3	p3s3m3p8s6s6s4m2m4p5m7p7s4	流局						0	3000	18	17	tanyao
+3	28	y1	push	3	z1p4p2s5p3m6p3p7m7m2p8p3m4	無関係						0	0	13	15	tanyao
+3	28	y1	pushM	3	z1p4p2s5p3m6p3p7m7m2p8p3m4	被ツモ						0	-2000	13	14	tanyao
+3	28	y1	base	3	z1p4p2s5p3m6p3p7m7m2p8p3m4	放銃					0	0	-2000	9	10	tanyao
+3	28	y2	push	3	z3s1p4s0p2s6s4m4s4p4s2m3s2	放銃					0	1	-2900	11	11	tanyao
+3	28	y2	pushM	3	z3s1p4s0p2s6s4m4s4p4s2m3s2	放銃					0	1	-2900	11	11	tanyao
+3	28	y2	base	3	z3s1p4s0p2s6s4m4s4p4s2m3s2	被ツモ						1	-1000	11	11	tanyao
+3	28	y3	push	1	z4z5z6m3p0m8s2s7s3p8p7p7s6	無関係						1	0	15	16	tanyao
+3	28	y3	pushM	1	z4z5z6m3p0m8s2s7s3p8p7p7s6	無関係						0	0	8	8	tanyao
+3	28	y3	base	1	z4z5z6m3p0m8s2s7s3p8p7p7s6	無関係						0	0	8	9	tanyao
+3	28	y4	push	2	m9z1p1z6s2m6s7m8m8s5p7p4s2	無関係						1	0	15	15	tanyao
+3	28	y4	pushM	2	m9z1p1z6s2m6s7m8m8s5p7p4s2	流局						1	-1000	18	17	tanyao
+3	28	y4	base	2	m9z1p1z6s2m6s7m8m8s5p7p4s2	和了	0	0	ロン	場風 東		0	1000	5	5	tanyao
+3	28	y5	push	2	m9z6s9z5z7m8s3s8m2p6p8s6m3	被ツモ						1	-1000	8	7	tanyao
+3	28	y5	pushM	2	m9z6s9z5z7m8s3s8m2p6p8s6m3	被ツモ						1	-1000	8	7	tanyao
+3	28	y5	base	2	m9z6s9z5z7m8s3s8m2p6p8s6m3	被ツモ						1	-1000	8	7	tanyao
+3	29	y0	push	1	m2s3m2p4m8p3s6s7m3p0m4s0s2	和了	0	1	ツモ	門前清自摸和+平和+断幺九+赤ドラ		0	8000	7	7	tanyao
+3	29	y0	pushM	1	m2s3m2p4m8p3s6s7m3p0m4s0s2	和了	0	1	ツモ	門前清自摸和+平和+断幺九+赤ドラ		0	8000	7	7	tanyao
+3	29	y0	base	1	m2s3m2p4m8p3s6s7m3p0m4s0s2	被ツモ						1	-4000	16	16	tanyao
+3	29	y1	push	1	p9s2m4s2m7p2p0p5m2m7m8m0m3	無関係						0	0	11	11	tanyao
+3	29	y1	pushM	1	p9s2m4s2m7p2p0p5m2m7m8m0m3	無関係						0	0	11	11	tanyao
+3	29	y1	base	1	p9s2m4s2m7p2p0p5m2m7m8m0m3	和了	0	1	ツモ	断幺九+赤ドラ		1	6200	14	14	tanyao
+3	29	y2	push	3	z3s9m7p8s2p6m2p4s8m4p3m6m8	放銃					1	1	-12000	7	7	tanyao
+3	29	y2	pushM	3	z3s9m7p8s2p6m2p4s8m4p3m6m8	被ツモ						1	-3900	13	13	tanyao
+3	29	y2	base	3	z3s9m7p8s2p6m2p4s8m4p3m6m8	被ツモ						1	-3900	13	13	tanyao
+3	29	y3	push	1	s9z1z6p4p5p6p4s8m6p4m7p3p2	流局						0	3000	18	18	tanyao
+3	29	y3	pushM	1	s9z1z6p4p5p6p4s8m6p4m7p3p2	流局						0	3000	18	18	tanyao
+3	29	y3	base	1	s9z1z6p4p5p6p4s8m6p4m7p3p2	流局						0	3000	18	18	tanyao
+3	29	y4	push	1	z6z7m1m9s0m6m4m8s8s2p7p4p6	被ツモ						1	-1000	15	15	tanyao
+3	29	y4	pushM	1	z6z7m1m9s0m6m4m8s8s2p7p4p6	被ツモ						1	-1000	15	15	tanyao
+3	29	y4	base	1	z6z7m1m9s0m6m4m8s8s2p7p4p6	流局						1	-1500	18	18	tanyao
+3	29	y5	push	1	z7m9p1z6s1m2m7s5p2p4s8p5m2	被ツモ						1	-300	13	13	tanyao
+3	29	y5	pushM	1	z7m9p1z6s1m2m7s5p2p4s8p5m2	被ツモ						1	-1000	8	7	tanyao
+3	29	y5	base	1	z7m9p1z6s1m2m7s5p2p4s8p5m2	被ツモ						1	-1000	8	7	tanyao
+3	30	y0	push	1	s7p6m5p2m2m7s4p3p8p2m2p7p6	放銃					0	1	-1000	16	16	tanyao
+3	30	y0	pushM	1	s7p6m5p2m2m7s4p3p8p2m2p7p6	放銃					0	1	-1000	16	16	tanyao
+3	30	y0	base	1	s7p6m5p2m2m7s4p3p8p2m2p7p6	無関係						0	0	8	7	tanyao
+3	30	y1	push	1	s9s7s5s7s2p3s8p5m7s6s5m6s0	和了	0	1	ツモ	門前清自摸和+断幺九		0	2000	14	13	tanyao
+3	30	y1	pushM	1	s9s7s5s7s2p3s8p5m7s6s5m6s0	和了	0	1	ツモ	門前清自摸和+断幺九		0	2000	14	13	tanyao
