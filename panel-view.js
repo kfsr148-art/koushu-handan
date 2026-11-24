@@ -108,7 +108,7 @@ function shelfOnly() {
     if (!s || !Array.isArray(s.items)) { return null; }
     let sw = ''; try { sw = sweepLine(JSON.parse(fs.readFileSync(path.join(home, 'shelf-run.json'), 'utf8').replace(/^﻿/, '')), s.items); } catch (e) { sw = ''; }
     let cap = null, hist = []; try { const sh = tsvRows(path.join(home, 'shelf-history.tsv')); hist = sh.map(c => ({ no: c[1], s: Number(c[2]), w: Number(c[3]), type: String(c[6] || ''), title: String(c[7] || '') })); cap = shelfCapacity(sh.map(c => ({ s: Number(c[2]), w: Number(c[3]) })).concat(windowRows(home), cloudRows())); } catch (e) { cap = shelfCapacity([]); }   // 枠 二百四十八：棚の実測に窓の仕事・雲の走りの組も足す
-    return { n: s.items.length, sweep: sw, capacity: cap, pct: Math.round(sizeItems(s.items.slice(0, 30).map(x => ({ title: String(x.title || ''), type: String(x.type || ''), pct: Number(x.pct) || 0 })), hist).reduce((t, x) => t + x.pct, 0) * 10) / 10, items: sizeItems(s.items.slice(0, 30).map(x => ({ no: x.no, title: String(x.title || '').slice(0, 80), pct: Number(x.pct) || 0, type: String(x.type || '').slice(0, 30) })), hist) };
+    return { n: s.items.length, ideas: Number(s.ideas) || 0, sweep: sw, capacity: cap, pct: Math.round(sizeItems(s.items.slice(0, 30).map(x => ({ title: String(x.title || ''), type: String(x.type || ''), pct: Number(x.pct) || 0 })), hist).reduce((t, x) => t + x.pct, 0) * 10) / 10, items: sizeItems(s.items.slice(0, 30).map(x => ({ no: x.no, title: String(x.title || '').slice(0, 80), pct: Number(x.pct) || 0, type: String(x.type || '').slice(0, 30) })), hist) };
   } catch (e) { return null; }
 }
 // v236（枠 二百三十一）：雲の待ち（雲に並んでまだ終わっていない枠）。~/.claude/cloud-queue.json（cloud-queue.js が60秒に一度組む）。無い・900秒より古い時は null。棚（shelf.json）とは別の欄で、棚を消さない。

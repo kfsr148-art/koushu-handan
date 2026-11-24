@@ -1504,7 +1504,7 @@ try {
     }
     const rp = run(tmp, Object.assign({}, sc, { pressRecent: true }), 390, 844);
     if (!rp) { ng('測れない（直近の釦を押す）'); }
-    else if (/^棚 0件$/.test(String(rp.recBefore || '')) && rp.shelfOpen === true && rp.shelfClosed === true && /寝ている枠はありません/.test(String(rp.shelfText || ''))) { ok('v225：二段目の釦は「棚 N件・約M%」（棚が無ければ「棚 0件」・雲の待ちは横に「・雲 N件・M%」と足すだけ）・押すと棚の一覧が開き、もう一度押すと閉じる（押す前「' + rp.recBefore + '」）'); }
+    else if (/^棚 0件$/.test(String(rp.recBefore || '')) && rp.shelfOpen === true && rp.shelfClosed === true && /寝ているものはありません/.test(String(rp.shelfText || ''))) { ok('v225：二段目の釦は「棚 N件・約M%」（棚が無ければ「棚 0件」・雲の待ちは横に「・雲 N件・M%」と足すだけ）・押すと棚の一覧が開き、もう一度押すと閉じる（押す前「' + rp.recBefore + '」）'); }
     else { ng('棚の釦の字・開閉が違う（前「' + rp.recBefore + '」・後「' + rp.recAfter + '」・開 ' + rp.shelfOpen + '・閉 ' + rp.shelfClosed + '・中「' + String(rp.shelfText || '').slice(0, 40) + '」）'); }
   }
   /* ---- ⑤の二十六の二 v211（本人の枠 七十八・七十九）：底の八つは、まとめて写すが0件・1件・10件以上の時も、押し通知が有る時も無い時も、場所が少しも動かない（390・375・320） ---- */
