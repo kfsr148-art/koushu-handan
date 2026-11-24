@@ -593,6 +593,12 @@ function staticParts() {
           if (p1 === '👈 ヨシが通った' && p2 === '👈 ヨシ待ち 0件' && x1 === '👈 送れなかった' && x2 === '👈 送れなかった' && x3 === '👈 ヨシ待ち 2件') { ok('ヨシの釦：通った字は約2秒（押して2秒後→元の字 0件）・しくじった字は約4秒で元の字（件数つき）'); } else { ng('ヨシの釦の戻りが違う：' + [p1, p2, x1, x2, x3].join(' | ')); }
         }
       }
+      /* v255（枠 二百七十七）：一番古い待ちが60分を過ぎたら赤く『枠 N が 何分 待ち』（作り値：61分前→出る・59分前→出ない） */
+      {
+        const mkW = (n, since, label, nowS) => { const wo = { n: n, since: since, label: label }, wmin = (wo && typeof wo.since === 'number') ? Math.floor((nowS - wo.since) / 60) : 0; return (wo && wo.n > 0 && wmin >= 60) ? (String(wo.label || '枠') + ' が ' + wmin + '分 待ち') : ''; };
+        const w1 = mkW(1, 1000000 - 61 * 60, '枠 二百六十二', 1000000), w2 = mkW(1, 1000000 - 59 * 60, '枠 二百六十二', 1000000), w3 = mkW(0, 0, '', 1000000);
+        if (w1 === '枠 二百六十二 が 61分 待ち' && w2 === '' && w3 === '' && html.indexOf('id="wjLate"') >= 0 && html.indexOf("(wo && wo.n > 0 && wmin >= 60) ? (String(wo.label || '枠') + ' が ' + wmin + '分 待ち') : ''") >= 0) { ok('古い待ちの時間：60分から赤く『枠 N が 何分 待ち』・59分では出ない（panel.html の式と同じ）'); } else { ng('古い待ちの表示が違う：' + [w1, w2, w3].join(' | ')); }
+      }
       if (SH0 === undefined) { delete process.env.SHADOW_HOME; } else { process.env.SHADOW_HOME = SH0; } try { fs.rmSync(tmpHome, { recursive: true, force: true }); } catch (e) { }
       /* v206（枠 五十八）：待ちでも下請けか雲が動いていれば「裏方作業中、、、。（下請け N本・雲 N本）」＋次「…」・どちらも動いていない時だけ「待ち：…」 */
       const hw = (ura, det) => PV.panelView({ stat: '待ち', detail: det, ura: ura }, [], [], NOW).head;
