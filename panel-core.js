@@ -16,7 +16,7 @@
   else { root.PanelCore = m; }
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
-  var VER = '249';
+  var VER = '250';
   var WAIT_TEXT = '待機中、、、。', POINT_TEXT = 'まとめて写すヨシ！', WORK_TEXT = '作業中、、、。', LOST_TEXT = '接続不良、、、。', YOSHI_TEXT = 'ヨシ待ち、、、。', CHECK_TEXT = '検査中、、、。';
 
   /* ---- 刻 ---- */
@@ -105,6 +105,7 @@
     var stat = String(o.stat || ''), lost = !!o.lost, running = isRunning(stat, lost);
     if (/^止まり/.test(stat)) { return '止まり'; }
     if (stat === '動きなし') { return '動きなし'; }
+    if ((Number(o.yoshiN) || 0) > 0) { return YOSHI_TEXT; }   /* v250（枠 二百七十一）：順は ヨシ待ち＞作業中＞まとめて写す＞待機中＞接続不良。ヨシ待ちが一件でもあれば、作業中でもヨシ待ち */
     if (stat === '検査中') { return CHECK_TEXT; }
     if (stat === '待ち') { var ub = uraBusyText(o.ura || null, o.detail); return ub || WAIT_TEXT; }
     if (stat === '作業中') { return WORK_TEXT; }

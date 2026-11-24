@@ -539,18 +539,19 @@ function staticParts() {
   head('⑤の十六 panelView の頭の字・残りは panel.html の headText と同じ（作り値・総当たり）');
   {
     const fn = (name) => cutFn(html, name);   /* v210：包み（一行）も切り出せる */
-    const names = ['core', 'cardArg', 'pad2s', 'newestTime', 'cardsPending', 'cardEtaSec', 'cardLate', 'cardPendText', 'kumoEtaSec', 'isRunning', 'uraBusyText', 'headText'];   /* v210：パネルの包み（state.json から控えた値と端末の刻を panel-core.js へ渡す）を回し、VAIO の panelView と同じ字になるか */
+    const names = ['core', 'cardArg', 'pad2s', 'newestTime', 'cardsPending', 'cardEtaSec', 'cardLate', 'cardPendText', 'kumoEtaSec', 'isRunning', 'uraBusyText', 'yoshiWaitN', 'headText'];   /* v210：パネルの包み（state.json から控えた値と端末の刻を panel-core.js へ渡す）を回し、VAIO の panelView と同じ字になるか */
     const src = names.map(fn);
     if (src.some(s => !s)) { ng('panel.html の関数が拾えない：' + names.filter((n, i) => !src[i]).join('・')); }
     else {
       const PV = require(path.join(path.dirname(SRC), 'panel-view.js'));
       const NOW = 1795200000;
       const pre = "var WAIT_TEXT='待機中、、、。',POINT_TEXT='まとめて写すヨシ！',WORK_TEXT='作業中、、、。',LOST_TEXT='接続不良、、、。',YOSHI_TEXT='ヨシ待ち、、、。',CHECK_TEXT='検査中、、、。';";
-      const mk = (d, left, rows) => new Function('window', 'Date0', 'lastStat', 'lastDetail', 'lastCloud', 'lastHelp', 'lastKumo', 'lastEvAt', 'lastCardOwedAt', 'lastCardOwedEta', 'allRows', 'copyLeft', 'lastLost', 'lastUra',
+      const mk = (d, left, rows) => new Function('window', 'Date0', 'lastStat', 'lastDetail', 'lastCloud', 'lastHelp', 'lastKumo', 'lastEvAt', 'lastCardOwedAt', 'lastCardOwedEta', 'allRows', 'copyLeft', 'lastLost', 'lastUra', 'lastYoshiOpen',
         'var Date=Date0;' + pre + src.join(String.fromCharCode(10)) + String.fromCharCode(10) + 'return headText();')(
         WIN, class extends global.Date { constructor(...a) { if (a.length) { super(...a); } else { super(NOW * 1000); } } static now() { return NOW * 1000; } },
-        String(d.stat || ''), String(d.detail || ''), String(d.cloud || ''), String(d.help || ''), String(d.kumo || ''), d.evAt || 0, d.cardOwedAt || 0, d.cardOwedEta || 0, rows, left, false, d.ura || null);
+        String(d.stat || ''), String(d.detail || ''), String(d.cloud || ''), String(d.help || ''), String(d.kumo || ''), d.evAt || 0, d.cardOwedAt || 0, d.cardOwedEta || 0, rows, left, false, d.ura || null, d.yoshiOpen || []);
       let n = 0, bad0 = 0;
+      const SH0 = process.env.SHADOW_HOME, tmpHome = fs.mkdtempSync(path.join(require('os').tmpdir(), 'pc-yo-')); process.env.SHADOW_HOME = tmpHome;   /* v250（枠 二百七十一）：ヨシ待ちの一覧は空の置き場で数える */
       const stats = ['', '作業中', '検査中', '待ち', 'ヨシ待ち', '動きなし', '止まり（使用量・13:00 にリセット）', '待機中'];
       const rowsOf = (t) => t ? [{ time: t, title: 'x', message: 'y' }] : [];
       const URAS = [null, { sub: { running: 2, items: [{ id: 'a' }, { id: 'b' }], recent: [] }, cloud: { running: [], recent: [] } }, { sub: { items: [], recent: [{ id: 'c' }] }, cloud: { running: [{ id: 1, name: 'x' }], recent: [] } }];   // v206（枠 五十八）：裏方なし／下請け2本／雲1本
@@ -563,6 +564,15 @@ function staticParts() {
         if (pv.head !== want) { bad0++; if (bad0 <= 3) { console.log('   差：' + JSON.stringify({ stat, det, owed, kum, newest }) + '／見張り「' + pv.head + '」／panel「' + want + '」'); } }
       }))))));
       if (bad0 === 0) { ok('頭の字：' + n + '組すべて panel.html の headText と同じ'); } else { ng('頭の字がずれた組 ' + bad0 + '／' + n); }
+      /* v250（枠 二百七十一）：順は ヨシ待ち＞作業中＞まとめて写す＞待機中＞接続不良。作業中＋ヨシ待ち→ヨシ待ちの字（panel.html の headText も panelView も） */
+      {
+        const dW = { stat: '作業中', detail: '', cloud: '', ura: null, cardOwedAt: 0, cardOwedEta: 0, kumo: '', evAt: NOW - 30, help: '' };
+        const pYes = mk(Object.assign({ yoshiOpen: ['y1124-9999'] }, dW), 0, []), pNo = mk(dW, 0, []);
+        fs.writeFileSync(path.join(tmpHome, 'yoshi-open.tsv'), 'y1124-9999' + String.fromCharCode(9) + '2026-11-24 21:30:00' + String.fromCharCode(9) + 'テスト\n');
+        const vYes = PV.panelView(dW, [], [], NOW).head; fs.writeFileSync(path.join(tmpHome, 'yoshi-open.tsv'), ''); const vNo = PV.panelView(dW, [], [], NOW).head;
+        if (pYes === 'ヨシ待ち、、、。' && pNo === '作業中、、、。' && vYes === 'ヨシ待ち、、、。' && vNo === '作業中、、、。') { ok('猫と字の順：作業中でもヨシ待ちが一件あればヨシ待ち（panel.html と panelView・ヨシ待ちが無ければ作業中）'); } else { ng('猫と字の順が違う：' + [pYes, pNo, vYes, vNo].join(' | ')); }
+      }
+      if (SH0 === undefined) { delete process.env.SHADOW_HOME; } else { process.env.SHADOW_HOME = SH0; } try { fs.rmSync(tmpHome, { recursive: true, force: true }); } catch (e) { }
       /* v206（枠 五十八）：待ちでも下請けか雲が動いていれば「裏方作業中、、、。（下請け N本・雲 N本）」＋次「…」・どちらも動いていない時だけ「待ち：…」 */
       const hw = (ura, det) => PV.panelView({ stat: '待ち', detail: det, ura: ura }, [], [], NOW).head;
       const w1 = hw(URAS[1], '残りの段 2・次「作り値の段」'), w2 = hw(URAS[2], '残りの段 1・次「x」'), w3 = hw(URAS[2], '窓が閉じている'), w4 = hw(null, '残りの段 2・次「作り値の段」'), w5 = hw({ sub: { running: 0, items: [], recent: [{ id: 'z' }] }, cloud: { running: [], recent: [{ id: 2 }] } }, '残りの段 2');
@@ -830,7 +840,7 @@ function staticParts() {
     /* v214（本人の枠 九十）：二枚は縁から繋がる外側の白だけを透明にした新しい名の絵（yoshi-machi2-t-240.png・yoshi-machi-t-240.png）。前の絵（soroe・240）と原版は残す */
     if (H.indexOf('var YOSHI_FLIP_MS = 500;') >= 0 && H.indexOf("var YOSHI_FRAMES = ['yoshi-machi2-t-240.png', 'yoshi-machi-t-240.png'];") >= 0 && H.indexOf('var yf = YOSHI_FRAMES[Math.floor(Date.now() / YOSHI_FLIP_MS) % YOSHI_FRAMES.length];') >= 0 && H.indexOf('if (el.src.indexOf(yf) < 0) { el.src = yf; }') >= 0 && H.indexOf("'genba-taiki-80.png'], YOSHI_FRAMES)") >= 0 && png('yoshi-machi2-t-240.png') === '240x240' && png('yoshi-machi-t-240.png') === '240x240' && ex('yoshi-machi2-soroe-240.png') > 0 && ex('yoshi-machi-240.png') > 0 && ex('yoshi-machi2-240.png') > 0 && ex('yoshi-machi2_src.jpeg') > 0 && ex('yoshi-machi_src.jpeg') > 0) { ok('ヨシ待ちの猫は二枚（yoshi-machi2-t-240.png・yoshi-machi-t-240.png・どちらも 240x240）を YOSHI_FLIP_MS＝500ms ごとに交互に・二枚とも先読み・前の絵（soroe・240）と原版は残る'); } else { ng('ヨシ待ちの二枚の置き方が違う（' + png('yoshi-machi2-t-240.png') + '・' + png('yoshi-machi-t-240.png') + '・前の絵 ' + ex('yoshi-machi2-soroe-240.png') + '/' + ex('yoshi-machi-240.png') + '・原版 ' + ex('yoshi-machi2_src.jpeg') + '/' + ex('yoshi-machi_src.jpeg') + '）'); }
     /* v214（本人の枠 九十）・v215：絵の全体を枠に収める（contain）・箱の地はパネルの黒い地（--bg）・ヨシ待ちの間だけ class="yoshi-fit"・枠の 80x80 は今のまま */
-    if (H.indexOf('#runcat.yoshi-fit{object-fit:contain; background:var(--bg);}') >= 0 && H.indexOf("var yoshiNow = !isRunning() && lastStat === 'ヨシ待ち';") >= 0 && H.indexOf("if (el.className !== (yoshiNow ? 'yoshi-fit' : '')) { el.className = yoshiNow ? 'yoshi-fit' : ''; }") >= 0 && /html,body\{margin:0; background:var\(--bg\);/.test(H) && /#runcat\{width:80px; height:80px; flex:0 0 auto;/.test(H)) { ok('ヨシ待ちの絵は object-fit:contain で全体が 80x80 の枠に収まる・箱の地は body と同じ --bg・class="yoshi-fit" はヨシ待ちの間だけ（ほかの猫は object-fit:none のまま）'); } else { ng('ヨシ待ちの絵の収め方（contain・地の色・class の付け外し）が無い／違う'); }
+    if (H.indexOf('#runcat.yoshi-fit{object-fit:contain; background:var(--bg);}') >= 0 && H.indexOf('var yoshiNow = yoshiWaitN() > 0;') >= 0 && H.indexOf("if (el.className !== (yoshiNow ? 'yoshi-fit' : '')) { el.className = yoshiNow ? 'yoshi-fit' : ''; }") >= 0 && /html,body\{margin:0; background:var\(--bg\);/.test(H) && /#runcat\{width:80px; height:80px; flex:0 0 auto;/.test(H)) { ok('ヨシ待ちの絵は object-fit:contain で全体が 80x80 の枠に収まる・箱の地は body と同じ --bg・class="yoshi-fit" はヨシ待ちの間だけ（ほかの猫は object-fit:none のまま）'); } else { ng('ヨシ待ちの絵の収め方（contain・地の色・class の付け外し）が無い／違う'); }
     /* v215（雲の ⑤の二十二で落ちた：ヨシ待ちだけ猫の上端が 10 → 5）：v214 の class="yoshi" はヨシの釦の .yoshi（display:block・min-height:76px・margin:0 0 10px）にも当たり、
        h1（flex・align-items:center・高さ 80px）の中で猫の余白の箱が 90px になって 5px 上へずれた。#runcat に付ける class に当たる CSS の決まりを全部拾い、
        ①その名だけの決まり（.名{…}）が無い ②#runcat.名 の決まりは描き方（object-fit・background・image-rendering）だけで、箱の寸法・位置・余白を持たない、を字面で見る。
@@ -954,11 +964,11 @@ function staticParts() {
       const skip = (PS.match(/SKIP_TOP = new Set\(\[([^\]]*)\]\)/) || [])[1] || '';
       if (skip && skip.indexOf('panel-core') < 0 && !pk.isManaged('panel-core.js') && sp.pick('panel-core.js').heavy === 1 && sp.pick('panel-core.js').body === 0) { ok('公開の荷に入る（pack-site.js は直下の panel-core.js を載せる）・panel-core.js だけの押しでもパネルの検査を回してから配る（scope-pick）'); } else { ng('panel-core.js が公開の荷に入らない／雲の振り分けでパネルの物と見られない'); } }
     /* 四、同じ作り値の総当たり：パネルの包み（mergedTodo・headText）を panel-core.js と一緒に回した残り・頭の字・釦の字と、panelView の left・head・label が全部同じか */
-    const PN = ['core', 'cardArg', 'cardsPending', 'cardEtaSec', 'cardLate', 'cardPendText', 'kumoEtaSec', 'uraBusyText', 'headText', 'mergedTodo', 'senkoEpoch'], psrc = PN.map(n => cutFn(H, n));
+    const PN = ['core', 'cardArg', 'cardsPending', 'cardEtaSec', 'cardLate', 'cardPendText', 'kumoEtaSec', 'uraBusyText', 'yoshiWaitN', 'headText', 'mergedTodo', 'senkoEpoch'], psrc = PN.map(n => cutFn(H, n));
     if (psrc.some(x => !x)) { ng('パネルの包みが切り出せない（' + PN.filter((n, i) => !psrc[i]).join('・') + '）'); }
     else {
       const VV = ['lastStat', 'lastCloud', 'lastDetail', 'lastUra', 'lastLost', 'lastCardOwedAt', 'lastCardOwedEta', 'allRows', 'lastKumo', 'ntfySent', 'copied', 'ntfyCopied', 'Date'];
-      const pf = new Function('S', 'var window = S.win, keyOf = S.keyOf, ntfyKeyOf = S.keyOf, copyLeft = 0, ' + VV.map(v => v + ' = S.' + v).join(', ') + ';' + LF + psrc.join(LF) + LF + 'var lastSenkoReadAt = senkoEpoch(S.senkoReadAt);' + LF + 'copyLeft = mergedTodo().length;' + LF + 'return { left: copyLeft, head: headText(), label: core().todoLabel(copyLeft) };');
+      const pf = new Function('S', 'var window = S.win, keyOf = S.keyOf, ntfyKeyOf = S.keyOf, copyLeft = 0, lastYoshiOpen = [], ' + VV.map(v => v + ' = S.' + v).join(', ') + ';' + LF + psrc.join(LF) + LF + 'var lastSenkoReadAt = senkoEpoch(S.senkoReadAt);' + LF + 'copyLeft = mergedTodo().length;' + LF + 'return { left: copyLeft, head: headText(), label: core().todoLabel(copyLeft) };');
       const NOW = 1795290000, Dfix = class extends global.Date { constructor(...a) { if (a.length) { super(...a); } else { super(NOW * 1000); } } static now() { return NOW * 1000; } };
       const keyOf = (d) => String(d.time || 0) + '|' + String(d.title || '');
       const panelOf = (d, cards, ntfys, cp) => { const c = {}; (cp || []).forEach(k => { c[k] = 1; }); return pf({ win: WIN, keyOf: keyOf, Date: Dfix, senkoReadAt: d.senkoReadAt, lastStat: String(d.stat || ''), lastCloud: (typeof d.cloud === 'string') ? d.cloud : '', lastDetail: (typeof d.detail === 'string') ? d.detail.replace(/（なし）/g, '') : '', lastUra: (d.ura && typeof d.ura === 'object') ? d.ura : null, lastLost: false, lastCardOwedAt: (typeof d.cardOwedAt === 'number') ? d.cardOwedAt : 0, lastCardOwedEta: (typeof d.cardOwedEta === 'number') ? d.cardOwedEta : 0, allRows: cards, lastKumo: (typeof d.kumo === 'string') ? d.kumo : '', ntfySent: ntfys, copied: c, ntfyCopied: {} }); };
