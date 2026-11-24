@@ -892,7 +892,7 @@ function staticParts() {
     }
     if (H.indexOf("el.src = 'genba-cat-80.png'") >= 0 && H.indexOf("'cat-sleep-w.png', 'genba-cat-80.png', 'genba-taiki-80.png'") >= 0) { ok('ほかの猫（作業中・待ち・指差し）の絵は今のまま'); } else { ng('ほかの猫の絵が変わった'); }
     /* 六十六：見出しの「返事パネル」は一行・固定幅・猫は 80x80 で縮まない・行の高さは 80px 固定 */
-    const hOk = H.indexOf('<h1><span id="hTitle">返事パネル</span><img id="runcat"') >= 0 && /#hTitle\{flex:0 0 auto; white-space:nowrap; width:6em;/.test(H) && H.indexOf('h1{height:80px;') >= 0 && /#runcat\{width:80px; height:80px; flex:0 0 auto;/.test(H);
+    const hOk = H.indexOf('<h1><span id="hTitle"></span><img id="runcat"') >= 0 && /#hTitle\{flex:0 0 auto; white-space:nowrap; width:6em;/.test(H) && H.indexOf('h1{height:80px;') >= 0 && /#runcat\{width:80px; height:80px; flex:0 0 auto;/.test(H);
     if (hOk) { ok('見出し：「返事パネル」は white-space:nowrap・幅 6em 固定・縮まない（flex:0 0 auto）／猫は 80x80・縮まない／行の高さ 80px 固定'); } else { ng('見出しの固定の指定が無い／違う'); }
     /* 頭の字は短い一言だけ：総当たりで出る字の種類を数え、括弧・次「・刻が一つも無いこと */
     {
@@ -2037,7 +2037,7 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
       if (okc) { ok('週の使用量を小数で：換算 k が立てば「今まで 0.3%」「見込み 約0.2%」・点が1つなら k なし・k が立たない間は整数のまま・終わると額の差が実測に残る'); }
       else { ng('週の使用量の小数が違う：' + JSON.stringify([kk, k0, c1.view, c2.view, c3.finish, c4.view])); }
     }
-    if (html.indexOf('id="weekJob"') >= 0 && html.indexOf('id="wjEst"') >= 0 && html.indexOf('panelView.weekJob') >= 0 && html.indexOf('.weekjob[hidden]{display:none;}') >= 0) { ok('パネル：「返事パネル」の字の下に #weekJob（見込み・今まで）を state.json の panelView.weekJob から出す字面がある'); }
+    if (html.indexOf('id="weekJob"') >= 0 && html.indexOf('id="wjEst"') >= 0 && html.indexOf('panelView.weekJob') >= 0 && html.indexOf('.weekjob[hidden]{display:none;}') >= 0 && html.indexOf('id="wjEnd"') >= 0 && html.indexOf("'終了予定 ' + (eAt || '0:00')") >= 0) { ok('パネル：「返事パネル」の字の下に #weekJob（見込み・今まで）を state.json の panelView.weekJob から出す字面がある'); }
     else { ng('パネルの週の使用量の字面が無い'); }
   }
   /* v225（枠 百六十二）：棚（panelView.shelf）。shelf.json から n・pct・items が組まれ、無ければ null。パネルは釦を「棚 N件・約M%」にし、直近に終わった三件は「くわしく」の rows に入る字面がある */
