@@ -2048,7 +2048,7 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
       // v237（枠 二百三十五）：送った枠（窓＋雲を合わせて）の件数と使用予定%。窓＝作業中の一件＋順番待ち、雲＝待ち・走行中。窓の一件は fb（既定3）で数え、小数一桁。
       { const sv = PV2.sentView, st1 = sv({ stat: '作業中', foot: { wait: 3 } }, { n: 2, pct: 9.5, fb: 3 }), st2 = sv({ stat: '待機中', foot: { wait: 0 } }, null), st3 = sv({ stat: '作業中', foot: { wait: 1 } }, { n: 0, pct: 0, fb: 1.5 });
         const hp = fs2.readFileSync(SRC, 'utf8');
-        if (st1.n === 6 && st1.nw === 4 && st1.nc === 2 && st1.pct === 21.5 && st2.n === 0 && st2.pct === 0 && st3.n === 2 && st3.pct === 3 && hp.indexOf("'枠 ' + (sn.n | 0) + '件・予定 '") >= 0 && hp.indexOf("$('wjNow').textContent = '';") >= 0) { ok('送った枠：窓（作業中＋順番待ち）と雲を合わせた件数と使用予定%（窓の一件は fb・小数一桁）・返事パネルの下は「送った枠 N件・使用予定 M%」で「見込み」「今まで」は出さない'); }
+        if (st1.n === 6 && st1.nw === 4 && st1.nc === 2 && st1.pct === 21.5 && st2.n === 0 && st2.pct === 0 && st3.n === 2 && st3.pct === 3 && hp.indexOf("'枠 ' + (sn.n | 0) + '件・予定 '") >= 0 && st1.sess === 134 && sv({ stat: '作業中', foot: { wait: 3 } }, { n: 2, pct: 9.5, fb: 3 }, 20).sess === 108 && st2.sess === 0 && hp.indexOf("'セッション ' + (sn.sess | 0) + '%'") >= 0) {   /* 枠 二百四十二：セッション N% ＝ 予定% ÷ 1セッション≒棚 N% ×100（既定16・整数・約なし）が wjNow に出る */ ok('送った枠：窓（作業中＋順番待ち）と雲を合わせた件数と使用予定%（窓の一件は fb・小数一桁）・返事パネルの下は「送った枠 N件・使用予定 M%」で「見込み」「今まで」は出さない'); }
         else { ng('送った枠の数えが違う：' + JSON.stringify([st1, st2, st3])); } }
       if (c1 && c1.n === 2 && c1.pct === 18 && c1.items[1].title === '通し読み' && c1.cloud && c1.cloud.n === 2 && c1.cloud.pct === 9.5 && c1.cloud.items[0].type === '走行中・見込み推定' && c1.cloud.items[1].type === '待ち' &&
         c0 && c0.n === 2 && c0.cloud && c0.cloud.n === 0 && c2 && c2.n === 2 && c2.cloud === null && c3 && c3.n === 0 && c3.cloud && c3.cloud.n === 1 &&
