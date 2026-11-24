@@ -16,7 +16,7 @@ add('adv-teiseki', '定石では、');
 /* 攻め・ふつうの型 */
 add('adva-head', '攻めなのだ。');
 add('adva-from', 'から切るといいのだ。');
-add('adva-weak', 'つながりの薄い牌から切って、');
+add('adva-weak', 'つながりの薄い牌から切るといいのだ。');
 add('adva-w-butler', 'ドラがあって、打点が高いのだ。', 'ドラがあって、ダテンが高いのだ。');
 add('adva-w-strategist', '受け入れが広いのだ。', 'うけいれが広いのだ。');
 add('adva-w-blunt', '良い形がそろっているのだ。');

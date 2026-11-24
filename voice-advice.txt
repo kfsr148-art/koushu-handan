@@ -3,7 +3,7 @@
 adv-teiseki.wav.wav	定石では、
 adva-head.wav.wav	攻めなのだ。
 adva-from.wav.wav	から切るといいのだ。
-adva-weak.wav.wav	つながりの薄い牌から切って、
+adva-weak.wav.wav	つながりの薄い牌から切るといいのだ。
 adva-w-butler.wav.wav	ドラがあって、ダテンが高いのだ。
 adva-w-strategist.wav.wav	うけいれが広いのだ。
 adva-w-blunt.wav.wav	良い形がそろっているのだ。
@@ -364,6 +364,7 @@ advh-sensei-a.wav.wav	攻めです。
 advh-sensei-d.wav.wav	守りです。
 advx-butler-advd-kyu.wav.wav	きゅうしゅきゅうはいでございますから、流すのが基本でございます。
 advx-butler-adva-from.wav.wav	から切るのがようございます。
+advx-butler-adva-weak.wav.wav	つながりの薄いハイから切るのがようございます。
 advx-butler-advd-cut.wav.wav	から切るのがようございます。
 advx-butler-adva-w-butler.wav.wav	ドラがあって、ダテンがたこうございます。
 advx-butler-adva-w-strategist.wav.wav	うけいれが広うございます。
@@ -557,6 +558,7 @@ advx-butler-adva-s-soba-s.wav.wav	ドラの近くのハイは残して、遠い�
 advx-butler-adva-s-jihai-s.wav.wav	ジハイのトイツはジャントウの候補に残して、押します。
 advx-strategist-advd-kyu.wav.wav	きゅうしゅきゅうはいだから、流すのが基本だ。
 advx-strategist-adva-from.wav.wav	から切るといい。
+advx-strategist-adva-weak.wav.wav	つながりの薄いハイから切るといい。
 advx-strategist-advd-cut.wav.wav	から切るといい。
 advx-strategist-adva-w-butler.wav.wav	ドラがあって、ダテンが高いぞ。
 advx-strategist-adva-w-strategist.wav.wav	うけいれが広いぞ。
@@ -750,6 +752,7 @@ advx-strategist-adva-s-soba-s.wav.wav	ドラの近くのハイは残して、遠
 advx-strategist-adva-s-jihai-s.wav.wav	ジハイのトイツはジャントウの候補に残して、押すぞ。
 advx-lady-advd-kyu.wav.wav	きゅうしゅきゅうはいですから、流すのが基本ですわ。
 advx-lady-adva-from.wav.wav	から切るといいですわ。
+advx-lady-adva-weak.wav.wav	つながりの薄いハイから切るといいですわ。
 advx-lady-advd-cut.wav.wav	から切るといいですわ。
 advx-lady-adva-w-butler.wav.wav	ドラがあって、ダテンが高いですわ。
 advx-lady-adva-w-strategist.wav.wav	うけいれが広いですわ。
@@ -862,11 +865,11 @@ advx-lady-advw-w031.wav.wav	「ポン材」と申しますわ。やくハイの�
 advx-lady-advw-w032.wav.wav	「やくハイが二組」と申しますわ。三元ハイのトイツが二つという事ですわ。
 advx-lady-advw-w033.wav.wav	「大三元の入り口」と申しますわ。白ハツ中が三種そろって、うち一つがトイツ以上という事ですわ。
 advx-lady-advw-w034.wav.wav	「小三元の気配」と申しますわ。三元ハイのトイツといちまいで二種以上、もう一種ありという事ですわ。
-advx-lady-advw-w035.wav.wav	トンパツつきものと申しますが、トンとハツはセットで来ると言われる。ただの言い伝えですわ。
-advx-lady-advw-w036.wav.wav	トンパツつきもの・両方トイツと申しますが、トンとハツのトイツが両方。ただの言い伝えですわ。
+advx-lady-advw-w035.wav.wav	トンパツつきものと申しますが、トンとハツはセットで来ると言われていますわ。ただの言い伝えですわ。
+advx-lady-advw-w036.wav.wav	トンパツつきもの・両方トイツと申しますが、トンとハツのトイツが両方ですわ。ただの言い伝えですわ。
 advx-lady-advw-w037.wav.wav	「フウハイは客風」と申しますわ。南西北のトイツはやくにならない風の気配という事ですわ。
 advx-lady-advw-w038.wav.wav	「フウハイが四種そろい」と申しますわ。東南西北が全部あるという事ですわ。
-advx-lady-advw-w039.wav.wav	四喜の夢と申しますが、フウハイのトイツが二種以上。ただの言い伝えですわ。
+advx-lady-advw-w039.wav.wav	四喜の夢と申しますが、フウハイのトイツが二種以上ですわ。ただの言い伝えですわ。
 advx-lady-advw-w040.wav.wav	「白ポッチ」と呼ぶ方もいらっしゃいますわ。
 advx-lady-advw-w041.wav.wav	「ハツは緑のやつ」と呼ぶ方もいらっしゃいますわ。
 advx-lady-advw-w042.wav.wav	「北はペー」と呼ぶ方もいらっしゃいますわ。
@@ -893,8 +896,8 @@ advx-lady-advw-w063.wav.wav	「赤が二枚」と申しますわ。赤い五を�
 advx-lady-advw-w064.wav.wav	「赤ドラ三枚」と申しますわ。赤い五を三枚持っているという事ですわ。
 advx-lady-advw-w065.wav.wav	「ダテンが見える」と申しますわ。やくがある上にドラが乗るという事ですわ。
 advx-lady-advw-w066.wav.wav	「配ハイイーシャンテンは天の恵み」と申しますわ。配ハイからイーシャンテン以下という事ですわ。
-advx-lady-advw-w067.wav.wav	配ハイテンパイは夢物語と申しますが、配ハイからテンパイのかたち。ただの言い伝えですわ。
-advx-lady-advw-w068.wav.wav	テンホーを和がると死ぬと申しますが、運を使い果たすと言われる。ただの言い伝えですわ。
+advx-lady-advw-w067.wav.wav	配ハイテンパイは夢物語と申しますが、配ハイからテンパイのかたちですわ。ただの言い伝えですわ。
+advx-lady-advw-w068.wav.wav	テンホーを和がると死ぬと申しますが、運を使い果たすと言われていますわ。ただの言い伝えですわ。
 advx-lady-advw-w069.wav.wav	「三シャンテンは見切り所」と申しますわ。三シャンテン以上は早めに見切る手もという事ですわ。
 advx-lady-advw-w070.wav.wav	「四シャンテンはほぼ配り直し」と申しますわ。四シャンテン以上という事ですわ。
 advx-lady-advw-w071.wav.wav	「五シャンテンは祈るだけ」と申しますわ。五シャンテン以上という事ですわ。
@@ -921,13 +924,13 @@ advx-lady-advw-w094.wav.wav	「混一色の道・ジハイ多め」と申しま�
 advx-lady-advw-w095.wav.wav	「猫ハイが出た」と申しますわ。猫ハイがあるという事ですわ。
 advx-lady-advw-w096.wav.wav	「猫ハイが二枚」と申しますわ。猫ハイが二枚以上という事ですわ。
 advx-lady-advw-w097.wav.wav	「猫ハイが四枚」と申しますわ。猫ハイが四枚以上という事ですわ。
-advx-lady-advw-w098.wav.wav	ペンチャンツモなら即リーチと申しますが、ペンチャンでテンパイしたら勢いがあると言われる。ただの言い伝えですわ。
-advx-lady-advw-w099.wav.wav	早いリーチは一・四索と申しますが、早いリーチは一索・四索待ちが多いと言われる。ただの言い伝えですわ。
-advx-lady-advw-w100.wav.wav	裏目ハイは当たりハイと申しますが、裏目を引くと、そのハイが当たりになると言われる。ただの言い伝えですわ。
-advx-lady-advw-w101.wav.wav	五索はえんぎがいいと申しますが、五索を二枚以上持つと運が向くと言われる。ただの言い伝えですわ。
-advx-lady-advw-w102.wav.wav	九萬が来れば和了ると申しますが、九萬を二枚持つと和了ると言われる。ただの言い伝えですわ。
-advx-lady-advw-w103.wav.wav	東南西北そろえば運が回ると申しますが、フウハイの四種がそろうと運が回ると言われる。ただの言い伝えですわ。
-advx-lady-advw-w104.wav.wav	二五八は鳴くなと申しますが、終盤に出やすいハイは鳴かない。ただの言い伝えですわ。
+advx-lady-advw-w098.wav.wav	ペンチャンツモなら即リーチと申しますが、ペンチャンでテンパイしたら勢いがあると言われていますわ。ただの言い伝えですわ。
+advx-lady-advw-w099.wav.wav	早いリーチは一・四索と申しますが、早いリーチは一索・四索待ちが多いと言われていますわ。ただの言い伝えですわ。
+advx-lady-advw-w100.wav.wav	裏目ハイは当たりハイと申しますが、裏目を引くと、そのハイが当たりになると言われていますわ。ただの言い伝えですわ。
+advx-lady-advw-w101.wav.wav	五索はえんぎがいいと申しますが、五索を二枚以上持つと運が向くと言われていますわ。ただの言い伝えですわ。
+advx-lady-advw-w102.wav.wav	九萬が来れば和了ると申しますが、九萬を二枚持つと和了ると言われていますわ。ただの言い伝えですわ。
+advx-lady-advw-w103.wav.wav	東南西北そろえば運が回ると申しますが、フウハイの四種がそろうと運が回ると言われていますわ。ただの言い伝えですわ。
+advx-lady-advw-w104.wav.wav	二五八は鳴くなと申しますが、終盤に出やすいハイは鳴かないものですわ。ただの言い伝えですわ。
 advx-lady-advw-w105.wav.wav	「真ん中が多い」と申しますわ。4・5・6のハイが五枚以上という事ですわ。
 advx-lady-adva-kok-a-s.wav.wav	コクシの芽ですわ。はしとジハイが
 advx-lady-adva-kok-c-s.wav.wav	真ん中から切り、はしとジハイを残すといいですわ。
@@ -943,6 +946,7 @@ advx-lady-adva-s-soba-s.wav.wav	ドラの近くのハイは残して、遠いハ
 advx-lady-adva-s-jihai-s.wav.wav	ジハイのトイツはジャントウの候補に残して、押しますの。
 advx-french-advd-kyu.wav.wav	きゅうしゅきゅうはいですから、流すのが基本ですの。
 advx-french-adva-from.wav.wav	から切るといいですわ。
+advx-french-adva-weak.wav.wav	つながりの薄いハイから切るといいですわ。
 advx-french-advd-cut.wav.wav	から切るといいですわ。
 advx-french-adva-w-butler.wav.wav	ドラがあって、ダテンが高いんですの。
 advx-french-adva-w-strategist.wav.wav	うけいれが広いんですの。
@@ -1136,6 +1140,7 @@ advx-french-adva-s-soba-s.wav.wav	ドラの近くのハイは残して、遠い�
 advx-french-adva-s-jihai-s.wav.wav	ジハイのトイツはジャントウの候補に残して、押しますわ。
 advx-ichihime-advd-kyu.wav.wav	きゅうしゅきゅうはいだから、流すのが基本だにゃ。
 advx-ichihime-adva-from.wav.wav	から切るといいにゃ。
+advx-ichihime-adva-weak.wav.wav	つながりの薄いハイから切るといいにゃ。
 advx-ichihime-advd-cut.wav.wav	から切るといいにゃ。
 advx-ichihime-adva-w-butler.wav.wav	ドラがあって、ダテンが高いにゃ。
 advx-ichihime-adva-w-strategist.wav.wav	うけいれが広いにゃ。
@@ -1329,6 +1334,7 @@ advx-ichihime-adva-s-soba-s.wav.wav	ドラの近くのハイは残して、遠�
 advx-ichihime-adva-s-jihai-s.wav.wav	ジハイのトイツはジャントウの候補に残して、押すにゃ。
 advx-sensei-advd-kyu.wav.wav	きゅうしゅきゅうはいですから、流すのが基本です。
 advx-sensei-adva-from.wav.wav	から切りなさい。
+advx-sensei-adva-weak.wav.wav	つながりの薄いハイから切りなさい。
 advx-sensei-advd-cut.wav.wav	から切りなさい。
 advx-sensei-adva-w-butler.wav.wav	ドラがあって、ダテンが高いです。
 advx-sensei-adva-w-strategist.wav.wav	うけいれが広いです。
