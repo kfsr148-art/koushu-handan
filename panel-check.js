@@ -572,6 +572,15 @@ function staticParts() {
         const vYes = PV.panelView(dW, [], [], NOW).head; fs.writeFileSync(path.join(tmpHome, 'yoshi-open.tsv'), ''); const vNo = PV.panelView(dW, [], [], NOW).head;
         if (pYes === 'ヨシ待ち、、、。' && pNo === '作業中、、、。' && vYes === 'ヨシ待ち、、、。' && vNo === '作業中、、、。') { ok('猫と字の順：作業中でもヨシ待ちが一件あればヨシ待ち（panel.html と panelView・ヨシ待ちが無ければ作業中）'); } else { ng('猫と字の順が違う：' + [pYes, pNo, vYes, vNo].join(' | ')); }
       }
+      /* v251（枠 二百七十二）：見張りの記録が途切れたら（lost）、作業中・ヨシ待ちより上に接続不良。戻れば（lost でない）元の順 */
+      {
+        const PCx = require(path.join(path.dirname(SRC), 'panel-core.js'));
+        const a1 = PCx.headText({ stat: '作業中', lost: true, yoshiN: 1, rows: [], left: 0, now: NOW }), a2 = PCx.headText({ stat: '作業中', lost: false, yoshiN: 1, rows: [], left: 0, now: NOW }), a3 = PCx.headText({ stat: '作業中', lost: false, yoshiN: 0, rows: [], left: 0, now: NOW });
+        const tx = PCx.TEXT;
+        if (a1 === tx.LOST && a2 === tx.YOSHI && a3 === tx.WORK && html.indexOf('lastLost = (sec > LOST_SEC);') >= 0 && html.indexOf('LOST_SEC = 180') >= 0 && html.indexOf("el.src.indexOf('cat-sleep-w') < 0") >= 0) { ok('接続不良の猫：記録が3分（LOST_SEC=180）途切れたら作業中・ヨシ待ちより上に接続不良（作業中＋記録4分前→寝姿の猫）・戻れば元の順'); } else { ng('接続不良の猫の順が違う：' + [a1, a2, a3].join(' | ')); }
+        /* 枠 二百七十三：画面の写し取り一覧の釦（btnShots）を公開の大きさの釦に替えた */
+        if (html.indexOf('id="btnShots" aria-expanded="false">公開 —MB／1GB</button>') >= 0 && html.indexOf('site-size.json') >= 0 && html.indexOf('lastSite.mb >= 900') >= 0 && html.indexOf('shots/index.html') < 0) { ok('公開の大きさの釦：btnShots は『公開 NNNMB／1GB』（900MB から赤・押すと内訳・site-size.json を読む）・shots への番地は無い'); } else { ng('公開の大きさの釦が違う'); }
+      }
       if (SH0 === undefined) { delete process.env.SHADOW_HOME; } else { process.env.SHADOW_HOME = SH0; } try { fs.rmSync(tmpHome, { recursive: true, force: true }); } catch (e) { }
       /* v206（枠 五十八）：待ちでも下請けか雲が動いていれば「裏方作業中、、、。（下請け N本・雲 N本）」＋次「…」・どちらも動いていない時だけ「待ち：…」 */
       const hw = (ura, det) => PV.panelView({ stat: '待ち', detail: det, ura: ura }, [], [], NOW).head;
@@ -840,7 +849,7 @@ function staticParts() {
     /* v214（本人の枠 九十）：二枚は縁から繋がる外側の白だけを透明にした新しい名の絵（yoshi-machi2-t-240.png・yoshi-machi-t-240.png）。前の絵（soroe・240）と原版は残す */
     if (H.indexOf('var YOSHI_FLIP_MS = 500;') >= 0 && H.indexOf("var YOSHI_FRAMES = ['yoshi-machi2-t-240.png', 'yoshi-machi-t-240.png'];") >= 0 && H.indexOf('var yf = YOSHI_FRAMES[Math.floor(Date.now() / YOSHI_FLIP_MS) % YOSHI_FRAMES.length];') >= 0 && H.indexOf('if (el.src.indexOf(yf) < 0) { el.src = yf; }') >= 0 && H.indexOf("'genba-taiki-80.png'], YOSHI_FRAMES)") >= 0 && png('yoshi-machi2-t-240.png') === '240x240' && png('yoshi-machi-t-240.png') === '240x240' && ex('yoshi-machi2-soroe-240.png') > 0 && ex('yoshi-machi-240.png') > 0 && ex('yoshi-machi2-240.png') > 0 && ex('yoshi-machi2_src.jpeg') > 0 && ex('yoshi-machi_src.jpeg') > 0) { ok('ヨシ待ちの猫は二枚（yoshi-machi2-t-240.png・yoshi-machi-t-240.png・どちらも 240x240）を YOSHI_FLIP_MS＝500ms ごとに交互に・二枚とも先読み・前の絵（soroe・240）と原版は残る'); } else { ng('ヨシ待ちの二枚の置き方が違う（' + png('yoshi-machi2-t-240.png') + '・' + png('yoshi-machi-t-240.png') + '・前の絵 ' + ex('yoshi-machi2-soroe-240.png') + '/' + ex('yoshi-machi-240.png') + '・原版 ' + ex('yoshi-machi2_src.jpeg') + '/' + ex('yoshi-machi_src.jpeg') + '）'); }
     /* v214（本人の枠 九十）・v215：絵の全体を枠に収める（contain）・箱の地はパネルの黒い地（--bg）・ヨシ待ちの間だけ class="yoshi-fit"・枠の 80x80 は今のまま */
-    if (H.indexOf('#runcat.yoshi-fit{object-fit:contain; background:var(--bg);}') >= 0 && H.indexOf('var yoshiNow = yoshiWaitN() > 0;') >= 0 && H.indexOf("if (el.className !== (yoshiNow ? 'yoshi-fit' : '')) { el.className = yoshiNow ? 'yoshi-fit' : ''; }") >= 0 && /html,body\{margin:0; background:var\(--bg\);/.test(H) && /#runcat\{width:80px; height:80px; flex:0 0 auto;/.test(H)) { ok('ヨシ待ちの絵は object-fit:contain で全体が 80x80 の枠に収まる・箱の地は body と同じ --bg・class="yoshi-fit" はヨシ待ちの間だけ（ほかの猫は object-fit:none のまま）'); } else { ng('ヨシ待ちの絵の収め方（contain・地の色・class の付け外し）が無い／違う'); }
+    if (H.indexOf('#runcat.yoshi-fit{object-fit:contain; background:var(--bg);}') >= 0 && H.indexOf('var yoshiNow = yoshiWaitN() > 0 && !lastLost;') >= 0 && H.indexOf("if (el.className !== (yoshiNow ? 'yoshi-fit' : '')) { el.className = yoshiNow ? 'yoshi-fit' : ''; }") >= 0 && /html,body\{margin:0; background:var\(--bg\);/.test(H) && /#runcat\{width:80px; height:80px; flex:0 0 auto;/.test(H)) { ok('ヨシ待ちの絵は object-fit:contain で全体が 80x80 の枠に収まる・箱の地は body と同じ --bg・class="yoshi-fit" はヨシ待ちの間だけ（ほかの猫は object-fit:none のまま）'); } else { ng('ヨシ待ちの絵の収め方（contain・地の色・class の付け外し）が無い／違う'); }
     /* v215（雲の ⑤の二十二で落ちた：ヨシ待ちだけ猫の上端が 10 → 5）：v214 の class="yoshi" はヨシの釦の .yoshi（display:block・min-height:76px・margin:0 0 10px）にも当たり、
        h1（flex・align-items:center・高さ 80px）の中で猫の余白の箱が 90px になって 5px 上へずれた。#runcat に付ける class に当たる CSS の決まりを全部拾い、
        ①その名だけの決まり（.名{…}）が無い ②#runcat.名 の決まりは描き方（object-fit・background・image-rendering）だけで、箱の寸法・位置・余白を持たない、を字面で見る。

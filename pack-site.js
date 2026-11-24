@@ -36,17 +36,21 @@ function walk(dir, rel, cb) {
     if (e.isDirectory()) { walk(path.join(dir, e.name), r, cb); } else if (e.isFile()) { cb(path.join(dir, e.name), r, e.name); }
   });
 }
+const DRY = process.argv.indexOf('--dry') >= 0;
 function pack() {
   const man = readManifest();
   if (!man) { console.error('voice-used.txt が無い'); process.exit(1); }
-  fs.rmSync(OUT, { recursive: true, force: true }); fs.mkdirSync(OUT, { recursive: true });
+  if (!DRY) { fs.rmSync(OUT, { recursive: true, force: true }); fs.mkdirSync(OUT, { recursive: true }); }
+  const parts = { advy: { n: 0, b: 0 }, advx: { n: 0, b: 0 }, html: { n: 0, b: 0 }, other: { n: 0, b: 0 } };   // 枠 二百七十三：公開の内訳（声・本体と画面・ほか）
   let skipTsv = 0, skipTsvBytes = 0; let n = 0, bytes = 0, skipReports = 0, skipManaged = 0, skipManagedBytes = 0, skipReportsBytes = 0; const have = new Set();
   walk(ROOT, '', (full, rel, name) => {
     const size = fs.statSync(full).size;
     if (/^reports\//.test(rel) && /\.(wav(\.wav)?|m4a)$/.test(name)) { skipReports++; skipReportsBytes += size; return; }
     if (rel === name && /\.tsv$/.test(name)) { skipTsv++; skipTsvBytes += size; return; }   // 直下の記録（.tsv）は公開に載せない
     if (rel === name && isManaged(name)) { if (!man.has(name)) { skipManaged++; skipManagedBytes += size; return; } have.add(name); }
-    const to = path.join(OUT, rel); fs.mkdirSync(path.dirname(to), { recursive: true }); fs.copyFileSync(full, to); n++; bytes += size;
+    const kind = /^advy-/.test(name) && rel === name ? 'advy' : (/^advx-/.test(name) && rel === name ? 'advx' : (/^(koushu-handan|panel)\.html$/.test(rel) ? 'html' : 'other')); parts[kind].n++; parts[kind].b += size;
+    if (!DRY) { const to = path.join(OUT, rel); fs.mkdirSync(path.dirname(to), { recursive: true }); fs.copyFileSync(full, to); }
+    n++; bytes += size;
   });
   const missing = [...man].filter(x => !have.has(x));
   const mb = Math.round(bytes / 1048576);
@@ -54,7 +58,12 @@ function pack() {
   console.log('載せなかった物：作りかけの声 ' + skipReports + '本・' + Math.round(skipReportsBytes / 1048576) + 'MB／台帳に無い advy-・advx- の声 ' + skipManaged + '本・' + Math.round(skipManagedBytes / 1048576) + 'MB');
   console.log('載せなかった物（記録）：直下の .tsv ' + skipTsv + '本・' + Math.round(skipTsvBytes / 1048576) + 'MB／reports/・shots/ は丸ごと載せない');
   console.log('台帳の声 ' + man.size + '本のうち、荷に入った ' + have.size + '本／直下に無い ' + missing.length + '本');
-  fs.writeFileSync(path.join(ROOT, 'site-size.txt'), mb + '\n');
+  const mbOf = o => Math.round(o.b / 1048576 * 10) / 10;
+  const info = { at: Math.floor(Date.now() / 1000), mb: mb, n: n, limit: 1024, voices: { advy: { n: parts.advy.n, mb: mbOf(parts.advy) }, advx: { n: parts.advx.n, mb: mbOf(parts.advx) } }, html: { n: parts.html.n, mb: mbOf(parts.html) }, other: { n: parts.other.n, mb: mbOf(parts.other) }, prevMb: null, prevAt: null };
+  try { const prev = JSON.parse(String(require('child_process').execFileSync('curl', ['-s', '--max-time', '10', 'https://kfsr148-art.github.io/koushu-handan/site-size.json?x=' + Date.now()], { encoding: 'utf8', timeout: 15000 }))); if (prev && typeof prev.mb === 'number') { info.prevMb = prev.mb; info.prevAt = prev.at || null; } } catch (e) { /* 取れなければ増え分は出さない */ }
+  if (!DRY) { fs.writeFileSync(path.join(OUT, 'site-size.json'), JSON.stringify(info)); }
+  console.log('内訳：方言の声 ' + parts.advy.n + '本 ' + mbOf(parts.advy) + 'MB・人格の声 ' + parts.advx.n + '本 ' + mbOf(parts.advx) + 'MB・本体と画面の html ' + mbOf(parts.html) + 'MB・ほか ' + parts.other.n + '本 ' + mbOf(parts.other) + 'MB' + (info.prevMb !== null ? '／前の配信 ' + info.prevMb + 'MB から ' + (mb - info.prevMb) + 'MB' : ''));
+  if (!DRY) { fs.writeFileSync(path.join(ROOT, 'site-size.txt'), mb + '\n'); }
   if (missing.length) { console.error('台帳の声が直下に無い（荷から欠ける）：' + missing.slice(0, 5).join(', ')); process.exit(2); }
 }
 module.exports = { isManaged, readManifest };

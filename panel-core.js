@@ -16,7 +16,7 @@
   else { root.PanelCore = m; }
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
-  var VER = '250';
+  var VER = '251';
   var WAIT_TEXT = '待機中、、、。', POINT_TEXT = 'まとめて写すヨシ！', WORK_TEXT = '作業中、、、。', LOST_TEXT = '接続不良、、、。', YOSHI_TEXT = 'ヨシ待ち、、、。', CHECK_TEXT = '検査中、、、。';
 
   /* ---- 刻 ---- */
@@ -103,6 +103,7 @@
   function headText(o) {
     o = o || {};
     var stat = String(o.stat || ''), lost = !!o.lost, running = isRunning(stat, lost);
+    if (lost) { return LOST_TEXT; }   /* v251（枠 二百七十二）：見張りの記録が3分途切れたら、作業中・ヨシ待ちより上に接続不良（凍った『作業中』を出し続けない） */
     if (/^止まり/.test(stat)) { return '止まり'; }
     if (stat === '動きなし') { return '動きなし'; }
     if ((Number(o.yoshiN) || 0) > 0) { return YOSHI_TEXT; }   /* v250（枠 二百七十一）：順は ヨシ待ち＞作業中＞まとめて写す＞待機中＞接続不良。ヨシ待ちが一件でもあれば、作業中でもヨシ待ち */
