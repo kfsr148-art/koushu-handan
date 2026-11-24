@@ -30,6 +30,10 @@ function scenarios(vk) {   // 助言の行の場面（頭・終わりを除く�
   A.push([['adva-ikk-a'], [TEI, 'adva-ikk-b']]);
   A.push([['adva-neko-a', { n: 4 }, 'adva-neko-b'], [TEI, 'adva-neko-c'], ['adva-tc']]);   // v1506：猫牌4枚以上は「期限は引けない」
   A.push([['adva-yak-a'], [TEI, 'adva-yak-b']]);
+  /* v1534（枠 二百五十七）：役満五つの『普通に打て』の一文と、字牌の取り合い（国士の手で字牌6枚以上）＝本体 advLines0 と同じ並び */
+  ['adva-jz-1', 'adva-sx-1', 'adva-kr-1', 'adva-ry-1', 'adva-ro-1'].forEach(c => { A.push([['adva-yak-a'], [TEI, 'adva-yak-b'], [c]]); });
+  A.push([['adva-kok-a', { n: 11 }, 'adva-kok-b'], [TEI, 'adva-kok-c'], ['adva-yk-1'], ['adva-zk-1']]);
+  A.push([['adva-kok-a', { n: 10 }, 'adva-kok-b', 'adva-kok-m'], [TEI, 'adva-kok-c'], ['adva-yk-3'], ['adva-zk-1']]);
   /* v1531（棚 #21・枠 二百五十五）：七対子・対々・染めの測った数の一文＝本体 advLines0（withT の第二引数）と同じ並び。巡目は t6（向聴2以上）と tn の両方 */
   ['adva-ch-1', 'adva-ch-2', 'adva-ch-3', 'adva-ch-4'].forEach(c => ['', 'adva-fl-1', 'adva-fl-2', 'adva-ss-1', 'adva-it-1', 'adva-sn-1'].forEach(fl => ['adva-t6', 'adva-tn'].forEach(tt => { A.push([['adva-chi-a', { n: 4 }, 'adva-chi-b'], [TEI, 'adva-chi-c'], [c]].concat(fl ? [[fl]] : [], [[tt]])); })));
   ['adva-tt-1', 'adva-tt-2'].forEach(c => ['', 'adva-fl-1', 'adva-fl-2', 'adva-ss-1', 'adva-it-1', 'adva-sn-1'].forEach(fl => ['adva-t6', 'adva-tn'].forEach(tt => { A.push([['adva-toi-a', { n: 2 }, 'adva-toi-b', { n: 3 }, 'adva-toi-c'], [TEI, 'adva-toi-d'], [c]].concat(fl ? [[fl]] : [], [[tt]])); })));
@@ -138,7 +142,7 @@ function each(cb, opt) {   // 全組み合わせを回して cb(結果, 条件) 
     const big = C.advBigLine(tone, dial, sd === 'a');   // v1509：大物／惜しむ（本体は ctx.big の時だけ。字が空なら出ない）
     const hb = headSamples(dial, tone, m, sd, qsBase), hx = headSamples(dial, tone, m, sd, qsX);
     VK.forEach(vk => {
-    const sc = scenarios(vk), list0 = sd === 'a' ? sc.A : sc.D, list = process.env.YK_ONLY ? list0.filter(ls => /adva-(yk|ch|tt|fl|ty|ss|it|sn)-/.test(JSON.stringify(ls))) : list0;   // v1529：YK_ONLY＝七文を含む並びだけ回す
+    const sc = scenarios(vk), list0 = sd === 'a' ? sc.A : sc.D, list = process.env.YK_ONLY ? list0.filter(ls => /adva-(yk|ch|tt|fl|ty|ss|it|sn|jz|sx|kr|ry|ro|zk)-/.test(JSON.stringify(ls))) : list0;   // v1529：YK_ONLY＝七文を含む並びだけ回す
     for (let i = 0; i < (process.env.YK_ONLY ? 1 : 3); i++) list.forEach((ls, k) => {   /* v1529：YK_ONLY はくじ一つ */
       const c0 = { tone: tone, dial: dial, m: m, sd: sd, vk: vk, i: i, k: k };
       hb.forEach(h => {
