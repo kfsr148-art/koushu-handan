@@ -2112,6 +2112,17 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     if (okPrompt && okHash && okHint && noKey) { ok('ヨシの釦の鍵：開いた時の #k= を覚えて # を消す・鍵が無い時はヨシの釦を押した所で入れ口（prompt・一か所だけ）を出して覚える・「知らせを一度押す」の案内は無い・パネルに鍵は書かれていない（枠 二百四十一）'); }
     else { ng('ヨシの釦の鍵の渡し方の字面が違う（入れ口一か所 ' + okPrompt + '・#k= ' + okHash + '・案内 ' + okHint + '・鍵なし ' + noKey + '）'); }
   }
+  /* v243（枠 二百四十五）：ヨシの釦を押すと中身と四つの釦（ヨシを送る・直して・後で・やめる）。ヨシ＝『yoshi <印>』・直して＝『yoshi-fix <印> <一言>』・後で＝送らず次の待ちへ・やめる＝閉じるだけ。宛先の名前は公開に書かない */
+  {
+    const bi = html.indexOf('function ybPopOpen('), bj = html.indexOf('function paintYoshiBtn') > bi ? html.length : html.indexOf('/* ---- 過去の札', bi), pop = bi >= 0 ? html.slice(bi, bj > bi ? bj : bi + 6000) : '';
+    const okBtns = ['data-yb="go"', 'data-yb="fix"', 'data-yb="later"', 'data-yb="close"'].every(x => pop.indexOf(x) >= 0);
+    const okGo = pop.indexOf("ybPost('yoshi ' + mark, mark)") >= 0, okFix = pop.indexOf("ybPost('yoshi-fix ' + mark + ' '") >= 0;
+    const okLater = /act === 'later'\) \{ ybPopOpen\(idx \+ 1\); \}/.test(pop), okClose = /act === 'close'\) \{ ybPopClose\(\); \}/.test(pop);
+    const okNoSend = pop.indexOf("act === 'later'") >= 0 && !/act === 'later'[^}]*ybPost/.test(pop) && !/act === 'close'[^}]*ybPost/.test(pop);
+    const okOnclick = html.indexOf('ybPopOpen(0);') >= 0 && html.indexOf("body: 'yoshi ' + mark }") < 0;
+    if (okBtns && okGo && okFix && okLater && okClose && okNoSend && okOnclick) { ok('ヨシの釦の中身：押すと待ちの題と本文＋四つの釦・ヨシ＝yoshi <印>／直して＝yoshi-fix <印> <一言>／後で・やめるは何も送らない（枠 二百四十五）'); }
+    else { ng('ヨシの釦の中身の字面が違う（四釦 ' + okBtns + '・ヨシ ' + okGo + '・直して ' + okFix + '・後で ' + okLater + '・やめる ' + okClose + '・送らない ' + okNoSend + '・釦 ' + okOnclick + '）'); }
+  }
   /* v224（枠 百五十六）：影の仕事の箱（panelView.shadowBox）。走っている間だけ載る・済んだら null・金額の字が無い・パネルが箱を出す字面がある */
   {
     const os = require('os'), fsx = require('fs'), pth = require('path');
