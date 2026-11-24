@@ -577,7 +577,7 @@ function staticParts() {
         const PCx = require(path.join(path.dirname(SRC), 'panel-core.js'));
         const a1 = PCx.headText({ stat: '作業中', lost: true, yoshiN: 1, rows: [], left: 0, now: NOW }), a2 = PCx.headText({ stat: '作業中', lost: false, yoshiN: 1, rows: [], left: 0, now: NOW }), a3 = PCx.headText({ stat: '作業中', lost: false, yoshiN: 0, rows: [], left: 0, now: NOW });
         const tx = PCx.TEXT;
-        if (a1 === tx.LOST && a2 === tx.YOSHI && a3 === tx.WORK && html.indexOf('lastLost = (sec > LOST_SEC);') >= 0 && html.indexOf('LOST_SEC = 180') >= 0 && html.indexOf("el.src.indexOf('cat-sleep-w') < 0") >= 0) { ok('接続不良の猫：記録が3分（LOST_SEC=180）途切れたら作業中・ヨシ待ちより上に接続不良（作業中＋記録4分前→寝姿の猫）・戻れば元の順'); } else { ng('接続不良の猫の順が違う：' + [a1, a2, a3].join(' | ')); }
+        if (a1 === tx.LOST && a2 === tx.YOSHI && a3 === tx.WORK && html.indexOf('lastLost = (sec > LOST_SEC);') >= 0 && html.indexOf('LOST_SEC = 300') >= 0 && (function () { var m = /LOST_SEC = ([0-9]+)/.exec(html); return !!m && !(240 > +m[1]) && (360 > +m[1]); })() && html.indexOf("el.src.indexOf('cat-sleep-w') < 0") >= 0) { ok('接続不良の猫：記録が5分（LOST_SEC=300）途切れたら作業中・ヨシ待ちより上に接続不良（作業中＋記録4分前→元の猫・6分前→寝姿の猫）・戻れば元の順'); } else { ng('接続不良の猫の順が違う：' + [a1, a2, a3].join(' | ')); }
         /* 枠 二百七十三：画面の写し取り一覧の釦（btnShots）を公開の大きさの釦に替えた */
         if (html.indexOf('id="btnShots" aria-expanded="false">公開 —MB／1GB</button>') >= 0 && html.indexOf('site-size.json') >= 0 && html.indexOf('lastSite.mb >= 900') >= 0 && html.indexOf('shots/index.html') < 0) { ok('公開の大きさの釦：btnShots は『公開 NNNMB／1GB』（900MB から赤・押すと内訳・site-size.json を読む）・shots への番地は無い'); } else { ng('公開の大きさの釦が違う'); }
       }
