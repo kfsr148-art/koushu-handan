@@ -855,7 +855,7 @@ function staticParts() {
     /* 六十三 → v211（本人の枠 七十八）：くわしくは上の段（#halfRow）の三つ目。三行（#stLine）・終わりましたの一覧（#doneList）は底の八つの下に開く */
     const iH = H.indexOf('<div class="halfrow btn4row" id="halfRow">'), iE = H.indexOf('</div>', H.indexOf('id="doneBox"')), iB = H.indexOf('id="btnSteps"'), iC = H.indexOf(LF + '  </div>', iE), iSh = H.indexOf('<div class="shotsrow btn4row">'), iS = H.indexOf('<ul id="stLine" hidden>'), iD = H.indexOf('<ul id="doneList">');
     if (iH > 0 && iB > iE && iB < iC && iSh > iC && iS > iSh && iD > iS && (H.match(/id="btnSteps"/g) || []).length === 1) { ok('くわしく（#btnSteps）は #halfRow の中の三つ目（遠隔→終わりました→くわしく→まとめて写す）・三行と一覧は底の八つの下・一段まるごとの釦は無い'); } else { ng('くわしくの置き場が違う（' + [iH, iE, iB, iC, iSh, iS, iD].join('・') + '）'); }
-    const cssOk = H.indexOf('.btn4row > .cpall, .btn4row > .done-box{flex:1 1 25%; min-width:0; width:auto; margin:0; box-sizing:border-box; min-height:72px;}') >= 0 && H.indexOf('.btn4row > .cpall.steps-t{margin:0; font-size:13px;}') >= 0 && /\.btn4row > \.cpall, \.btn4row > \.done-box > \.cpall\{display:flex;[^}]*font-size:13px;[^}]*overflow-wrap:anywhere;[^}]*\}/.test(H);
+    const cssOk = H.indexOf('.btn4row > .cpall, .btn4row > .done-box{flex:1 1 25%; min-width:0; width:auto; margin:0; box-sizing:border-box; min-height:72px; height:72px;}') >= 0 && H.indexOf('.btn4row > .cpall.steps-t{margin:0; font-size:13px;}') >= 0 && /\.btn4row > \.cpall, \.btn4row > \.done-box > \.cpall\{display:flex;[^}]*font-size:13px;[^}]*overflow-wrap:anywhere;[^}]*\}/.test(H);
     if (cssOk) { ok('四つ並びの CSS（v211）：flex:1 1 25%・min-width:0・box-sizing:border-box で四つ等分・高さ72px以上（359px 以下は88px）・字は13pxで折り返す（overflow-wrap:anywhere）・くわしくも同じ字の大きさ'); } else { ng('四つ並びの CSS が無い／違う'); }
     /* 字数の見積もり：320px の視野で一つの釦の幅＝(320−左右の余白28−隙間8×3)÷4＝67px。「くわしく」「とじる」は13px×4字＝52px＋左右8pxで収まる */
     const bw = Math.floor((320 - 28 - 24) / 4), lw = Math.max('くわしく'.length, 'とじる'.length) * 13 + 8;
@@ -1034,7 +1034,7 @@ function staticParts() {
     const gap = (iHe > 0 && iS > iHe) ? H.slice(iHe + 9, iS).replace(/<!--[\s\S]*?-->/g, '').trim() : 'x';
     if (hi.join(',') === 'rcLink,doneBox,doneHead,btnSteps,btnCopyBoard' && si.join(',') === 'btnShots,btnRecent,btnCopyUrl,btnPoint' && gap === '') { ok('八つ：上の段 遠隔→終わりました→くわしく→まとめて写す ／ すぐ下の段 写し取り一覧→直近に終わった仕事→様子を写す→指さす（二つの段の間に何も無い）'); } else { ng('八つの並びが違う（上 ' + hi.join(',') + '／下 ' + si.join(',') + '／間 ' + JSON.stringify(gap.slice(0, 40)) + '）'); }
     /* 二、一つの決め：二つの段とも class に btn4row・中の四つは同じ指定（25%・border-box・min-height・13px）・折り返さない・隠す物は場所を取る */
-    const css = ['.btn4row{display:flex; flex-wrap:nowrap; gap:8px; margin:8px 14px 0; align-items:stretch;}', '.btn4row > .cpall, .btn4row > .done-box{flex:1 1 25%; min-width:0; width:auto; margin:0; box-sizing:border-box; min-height:72px;}', '.btn4row > a.cpall.rc{display:flex; padding:6px 4px; line-height:1.25;}', '.btn4row > .cpall.hide, .btn4row > a.cpall.rc.hide, .btn4row > .cpall.steps-t.hide, .btn4row > .done-box.hide{display:flex; visibility:hidden;}', '@media (max-width: 359px) { .btn4row > .cpall, .btn4row > .done-box{min-height:88px;} }'];
+    const css = ['.btn4row{display:flex; flex-wrap:nowrap; gap:8px; margin:8px 14px 0; align-items:stretch;}', '.btn4row > .cpall, .btn4row > .done-box{flex:1 1 25%; min-width:0; width:auto; margin:0; box-sizing:border-box; min-height:72px; height:72px;}', '.btn4row > a.cpall.rc{display:flex; padding:6px 4px; line-height:1.25;}', '.btn4row > .cpall.hide, .btn4row > a.cpall.rc.hide, .btn4row > .cpall.steps-t.hide, .btn4row > .done-box.hide{display:flex; visibility:hidden;}', '@media (max-width: 359px) { .btn4row > .cpall, .btn4row > .done-box{min-height:88px; height:88px;} }'];
     const missC = css.filter(c => H.indexOf(c) < 0);
     const oldC = ['.halfrow > .cpall, .halfrow > .done-box{', '.shotsrow > .cpall{', '.shotsrow{flex-wrap:wrap;}'].filter(c => H.indexOf(c) >= 0);
     if (!missC.length && !oldC.length && (H.match(/class="[^"]*btn4row[^"]*"/g) || []).length === 2) { ok('二つの段は同じ一つの決め（.btn4row：四つ等分 flex:1 1 25%・border-box・高さ72px以上（359px 以下は88px）・折り返さない・隠す物は visibility:hidden で場所を取る）・前の段ごとの指定（.halfrow／.shotsrow）は残っていない'); } else { ng('四つ並びの決めが揃っていない（無い ' + missC.length + '件：' + missC.map(c => c.slice(0, 30)).join('｜') + '／残る前の指定 ' + oldC.join('｜') + '）'); }
@@ -2154,10 +2154,10 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     const bi = html.indexOf('function ybPopOpen('), bj = html.indexOf('function paintYoshiBtn') > bi ? html.length : html.indexOf('/* ---- 過去の札', bi), pop = bi >= 0 ? html.slice(bi, bj > bi ? bj : bi + 6000) : '';
     const okBtns = ['data-yb="go"', 'data-yb="fix"', 'data-yb="later"', 'data-yb="close"'].every(x => pop.indexOf(x) >= 0);
     const okGo = pop.indexOf("ybPost('yoshi ' + mark, mark)") >= 0, okFix = pop.indexOf("ybPost('yoshi-fix ' + mark + ' '") >= 0;
-    const okLater = /act === 'later'\) \{ ybPopOpen\(idx \+ 1\); \}/.test(pop), okClose = /act === 'close'\) \{ ybPopClose\(\); \}/.test(pop);
-    const okNoSend = pop.indexOf("act === 'later'") >= 0 && !/act === 'later'[^}]*ybPost/.test(pop) && !/act === 'close'[^}]*ybPost/.test(pop);
+    const okLater = /act === 'later'\) \{ ybPopOpen\(idx \+ 1\); \}/.test(pop), okClose = /act === 'close'\) \{ ybPost\('yoshi-stop ' \+ mark, mark, 'stop'\); ybPopClose\(\); \}/.test(pop);
+    const okNoSend = pop.indexOf("act === 'later'") >= 0 && !/act === 'later'[^}]*ybPost/.test(pop) && true;   /* v257：やめるは『yoshi-stop』を送る（後では何も送らない） */
     const okOnclick = html.indexOf('ybPopOpen(0);') >= 0 && html.indexOf("body: 'yoshi ' + mark }") < 0;
-    if (okBtns && okGo && okFix && okLater && okClose && okNoSend && okOnclick) { ok('ヨシの釦の中身：押すと待ちの題と本文＋四つの釦・ヨシ＝yoshi <印>／直して＝yoshi-fix <印> <一言>／後で・やめるは何も送らない（枠 二百四十五）'); }
+    if (okBtns && okGo && okFix && okLater && okClose && okNoSend && okOnclick) { ok('ヨシの釦の中身：押すと待ちの題と本文＋四つの釦・ヨシ＝yoshi <印>／直して＝yoshi-fix <印> <一言>／後では何も送らない・やめる＝yoshi-stop <印>（枠 二百八十九）'); }
     else { ng('ヨシの釦の中身の字面が違う（四釦 ' + okBtns + '・ヨシ ' + okGo + '・直して ' + okFix + '・後で ' + okLater + '・やめる ' + okClose + '・送らない ' + okNoSend + '・釦 ' + okOnclick + '）'); }
   }
   /* v224（枠 百五十六）：影の仕事の箱（panelView.shadowBox）。走っている間だけ載る・済んだら null・金額の字が無い・パネルが箱を出す字面がある */
