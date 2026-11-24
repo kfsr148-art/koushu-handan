@@ -14,7 +14,7 @@
 const fs = require('fs'), path = require('path');
 const ROOT = __dirname, OUT = process.env.PACK_OUT || path.join(ROOT, '_site');
 const MANAGED = /^(advy|advx)-.*\.(wav\.wav|m4a)$/;   // 台帳で絞る声（方言の声・人格の部品の声）。v1506 から声は m4a（AAC）。古い .wav.wav も台帳に無ければ載せない
-const SKIP_TOP = new Set(['.git', '.github', 'node_modules', 'scratchpad', '_site']);
+const SKIP_TOP = new Set(['.git', '.github', 'node_modules', 'scratchpad', '_site', 'reports', 'shots']);   // 枠 二百六十七（本人の答え y1124-2117）：記録（reports/）と画面写し（shots/）は公開に載せない（ツールに要らない物・約50MB）。直下の .tsv も外す（下の walk）
 const isManaged = f => MANAGED.test(f);
 function readManifest() {
   const p = path.join(ROOT, 'voice-used.txt');
@@ -40,10 +40,11 @@ function pack() {
   const man = readManifest();
   if (!man) { console.error('voice-used.txt が無い'); process.exit(1); }
   fs.rmSync(OUT, { recursive: true, force: true }); fs.mkdirSync(OUT, { recursive: true });
-  let n = 0, bytes = 0, skipReports = 0, skipManaged = 0, skipManagedBytes = 0, skipReportsBytes = 0; const have = new Set();
+  let skipTsv = 0, skipTsvBytes = 0; let n = 0, bytes = 0, skipReports = 0, skipManaged = 0, skipManagedBytes = 0, skipReportsBytes = 0; const have = new Set();
   walk(ROOT, '', (full, rel, name) => {
     const size = fs.statSync(full).size;
     if (/^reports\//.test(rel) && /\.(wav(\.wav)?|m4a)$/.test(name)) { skipReports++; skipReportsBytes += size; return; }
+    if (rel === name && /\.tsv$/.test(name)) { skipTsv++; skipTsvBytes += size; return; }   // 直下の記録（.tsv）は公開に載せない
     if (rel === name && isManaged(name)) { if (!man.has(name)) { skipManaged++; skipManagedBytes += size; return; } have.add(name); }
     const to = path.join(OUT, rel); fs.mkdirSync(path.dirname(to), { recursive: true }); fs.copyFileSync(full, to); n++; bytes += size;
   });
@@ -51,6 +52,7 @@ function pack() {
   const mb = Math.round(bytes / 1048576);
   console.log('公開の荷：' + n + '本・' + mb + 'MB（上限の目安 1024MB）');
   console.log('載せなかった物：作りかけの声 ' + skipReports + '本・' + Math.round(skipReportsBytes / 1048576) + 'MB／台帳に無い advy-・advx- の声 ' + skipManaged + '本・' + Math.round(skipManagedBytes / 1048576) + 'MB');
+  console.log('載せなかった物（記録）：直下の .tsv ' + skipTsv + '本・' + Math.round(skipTsvBytes / 1048576) + 'MB／reports/・shots/ は丸ごと載せない');
   console.log('台帳の声 ' + man.size + '本のうち、荷に入った ' + have.size + '本／直下に無い ' + missing.length + '本');
   fs.writeFileSync(path.join(ROOT, 'site-size.txt'), mb + '\n');
   if (missing.length) { console.error('台帳の声が直下に無い（荷から欠ける）：' + missing.slice(0, 5).join(', ')); process.exit(2); }
