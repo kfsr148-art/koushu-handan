@@ -233,13 +233,11 @@
   .btn4row > .done-box > .cpall{flex:1 1 auto; width:100%; margin:0; min-height:0;}
   .btn4row > a.cpall.rc{display:flex; padding:6px 4px; line-height:1.25;}
   .btn4row > a.cpall.rc .rc-top{font-size:13px; line-height:1.25;}
-  .btn4row > a.cpall.rc .rc-sub{font-size:11px; line-height:14px;}
+  .btn4row > a.cpall.rc .rc-sub{font-size:9px; line-height:11px;}   /* v257（枠 二百八十八）：決め打ちの高さに収まるよう、遠隔の下の行を詰めた（11px/14px→9px/11px・三行でも収まる） */
   .btn4row > .cpall.steps-t{margin:0; font-size:13px;}
   .btn4row > .cpall.hide, .btn4row > a.cpall.rc.hide, .btn4row > .cpall.steps-t.hide, .btn4row > .done-box.hide{display:flex; visibility:hidden;}
   .shotsrow.btn4row{margin-bottom:12px;}
   @media (max-width: 359px) { .btn4row > .cpall, .btn4row > .done-box{min-height:88px; height:88px;} }
-  .btn4row > a.cpall.rc .rc-top{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;}   /* v257：遠隔の字は二行に収める（名前は一行・「…」で切る／下の行は二行まで） */
-  .btn4row > a.cpall.rc .rc-sub{display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; max-width:100%;}
   /* まとめて写すの二行：上＝「まとめて写す」・下＝小さく「N件」。0件の時も下の行の高さと幅（二桁が入る3字分）を取っておく */
   #btnCopyBoard .cb-top{display:block;}
   #btnCopyBoard .cb-sub{display:block; font-size:11px; line-height:14px; min-height:14px; min-width:3em;}
