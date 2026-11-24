@@ -1585,11 +1585,11 @@ try {
       let base = null; const why = [], words = [];
       for (const [nm, st, nt] of CASES) {
         const r = run(tmp, { state: Object.assign({}, st, { at: nh }), notices: nt, usage: U_OK, settle: 1500 }, w, h);
-        if (!r || !r.hTitleR || !r.catR) { why.push(nm + '：測れない'); continue; }
+        if (!r || !r.catR) { why.push(nm + '：測れない'); continue; }   /* v253 で題の字を消したので hTitle は幅0（測れない）。猫の位置・大きさで見る */
         words.push(String(r.headWait || ''));
         if (r.hTitleSpill) { why.push(nm + '：「返事パネル」が折り返す／はみ出す'); }
         if (Math.round(r.catR.w) !== 80 || Math.round(r.catR.h) !== 80) { why.push(nm + '：猫が80x80でない（' + Math.round(r.catR.w) + 'x' + Math.round(r.catR.h) + '）'); }
-        const k = [r.hTitleR.l, r.hTitleR.t, r.hTitleR.w, r.hTitleR.h, r.catR.l, r.catR.t].map(x => Math.round(x)).join(',');
+        const k = [(r.hTitleR || {}).l, (r.hTitleR || {}).t, (r.hTitleR || {}).w, (r.hTitleR || {}).h, r.catR.l, r.catR.t].map(x => Math.round(x)).join(',');
         if (base === null) { base = k; } else if (k !== base) { why.push(nm + '：見出しか猫が動いた（' + base + ' → ' + k + '）'); }
         /* v207（枠 六十八）：版の行の右端は「更新 HH:MM」。最終確認と同じ行に一行で収まる */
         if (!/^更新 [0-9]{2}:[0-9]{2}$/.test(r.statTxt)) { why.push(nm + '：右端が「更新 HH:MM」でない（' + r.statTxt + '）'); }
@@ -1924,7 +1924,7 @@ try {
     const cards = [{ time: now - 600, title: '✅ 終わりました（返事不要）', message: '印より前の札' }, { time: now - 300, title: '🔎 調べました', message: '印より後の札' }, { time: now - 60, title: '✅ 終わりました（返事不要）', message: '写せます（2件）' }];
     const ntfys = [{ time: now - 250, title: '🔎 調べました', eid: '' }, { time: now - 200, title: '☁️ 雲の走りが落ちた（x）', eid: '' }, { time: now - 500, title: '🕒 延びています', eid: '' }];
     [['印 now-400', jst(now - 400)], ['印 now（全部読んだ）', jst(now)]].forEach(([nm, rd]) => {
-      const stt = Object.assign({}, ST['手待ち'], { senkoReadAt: rd });
+      const stt = Object.assign({}, ST['手待ち'], { senkoReadAt: rd, at: Math.floor(Date.now() / 1000) });   /* 検査が長く回った後でも記録が新しい（LOST_SEC=300 で接続不良に倒れない） */
       const r = run(tmp, { state: stt, notices: cards, ntfy: ntfys, settle: 1800 }, 390, 844);
       const v = PV.panelView(stt, cards, ntfys, now);
       if (!r) { ng(nm + '：測れない'); return; }
