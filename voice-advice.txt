@@ -446,7 +446,7 @@ advx-butler-advd-s-jihaio.wav.wav	ジハイは、降りる時に切るために�
 advx-butler-advd-w-chi-n.wav.wav	トイツが3組以上ございます。
 advx-butler-advd-w-chi-t.wav.wav	トイツは、同じハイを2回続けて切れますので、降りる時の盾になります。
 advx-butler-advd-w-chi-f.wav.wav	トイツは、同じハイを2回続けて切れますので、アンゼンパイの代わりになります。
-advx-butler-adva-yk-1.wav.wav	ヤオチュウハイが11種そろえば約27%、12種なら約75%がコクシになるのでございます（相手のいる卓で18巡まで）。
+advx-butler-adva-yk-1.wav.wav	ヤオチュウハイが11種そろえば約27%、12種なら約75%がコクシになるのでございます、相手のいる卓で18巡まで。
 advx-butler-adva-yk-2.wav.wav	9種では約2%でございますから、追う値打ちは薄うございます。
 advx-butler-adva-yk-3.wav.wav	押し切りましても、和了は増えず、放銃だけが増えるのでございます。
 advx-butler-adva-yk-4.wav.wav	暗刻3つにトイツ2つなれば、リーチして普通にお打ちになっても約27%が四暗刻になります。
@@ -647,7 +647,7 @@ advx-strategist-advd-s-jihaio.wav.wav	ジハイは、降りる時に切るため
 advx-strategist-advd-w-chi-n.wav.wav	トイツが3組以上ある。
 advx-strategist-advd-w-chi-t.wav.wav	トイツは、同じハイを2回続けて切れるので、降りる時の盾になるぞ。
 advx-strategist-advd-w-chi-f.wav.wav	トイツは、同じハイを2回続けて切れるので、アンゼンパイの代わりになるぞ。
-advx-strategist-adva-yk-1.wav.wav	ヤオチュウハイが11種そろえば約27%、12種なら約75%がコクシになるぞ（相手のいる卓で18巡まで）。
+advx-strategist-adva-yk-1.wav.wav	ヤオチュウハイが11種そろえば約27%、12種なら約75%がコクシになるぞ、相手のいる卓で18巡まで。
 advx-strategist-adva-yk-2.wav.wav	9種だと約2%、追う値打ちは薄い。
 advx-strategist-adva-yk-3.wav.wav	押し切っても和了は増えず、放銃だけが増えるぞ。
 advx-strategist-adva-yk-4.wav.wav	暗刻3つ＋トイツ2つなら、リーチして普通に打っても約27%が四暗刻になるぞ。
@@ -848,7 +848,7 @@ advx-lady-advd-s-jihaio.wav.wav	ジハイは、降りる時に切るために、
 advx-lady-advd-w-chi-n.wav.wav	トイツが3組以上ありますわ。
 advx-lady-advd-w-chi-t.wav.wav	トイツは、同じハイを2回続けて切れますから、降りる時の盾になりますわ。
 advx-lady-advd-w-chi-f.wav.wav	トイツは、同じハイを2回続けて切れますから、アンゼンパイの代わりになりますわ。
-advx-lady-adva-yk-1.wav.wav	ヤオチュウハイが11種そろえば約27%、12種なら約75%がコクシになりますわ（相手のいる卓で18巡まで）。
+advx-lady-adva-yk-1.wav.wav	ヤオチュウハイが11種そろえば約27%、12種なら約75%がコクシになりますわ、相手のいる卓で18巡まで。
 advx-lady-adva-yk-2.wav.wav	9種は約2%ですから、追うほどの値打ちはございませんわ。
 advx-lady-adva-yk-3.wav.wav	押し切っても和了は増えず、放銃だけが増えますの。
 advx-lady-adva-yk-4.wav.wav	暗刻3つにトイツ2つなら、リーチして普通に打っても約27%が四暗刻になりますわ。
@@ -1049,7 +1049,7 @@ advx-french-advd-s-jihaio.wav.wav	ジハイは、降りる時に切るために�
 advx-french-advd-w-chi-n.wav.wav	トイツが3組以上あるんですの。
 advx-french-advd-w-chi-t.wav.wav	トイツは、同じハイを2回続けて切れるので、降りる時の盾になるんですの。
 advx-french-advd-w-chi-f.wav.wav	トイツは、同じハイを2回続けて切れるので、アンゼンパイの代わりになるんですの。
-advx-french-adva-yk-1.wav.wav	ヤオチュウハイが11種そろえば約27%、12種なら約75%がコクシになりますの（相手のいる卓で18巡まで）。
+advx-french-adva-yk-1.wav.wav	ヤオチュウハイが11種そろえば約27%、12種なら約75%がコクシになりますの、相手のいる卓で18巡まで。
 advx-french-adva-yk-2.wav.wav	9種は約2%ですから、追っても薄いですわ。
 advx-french-adva-yk-3.wav.wav	押し切っても和了は増えず、放銃だけが増えますの。
 advx-french-adva-yk-4.wav.wav	暗刻3つにトイツ2つなら、リーチして普通に打っても約27%が四暗刻になりますわ。
@@ -1250,7 +1250,7 @@ advx-ichihime-advd-s-jihaio.wav.wav	ジハイは、降りる時に切るため�
 advx-ichihime-advd-w-chi-n.wav.wav	トイツが3組以上あるにゃ。
 advx-ichihime-advd-w-chi-t.wav.wav	トイツは、同じハイを2回続けて切れるから、降りる時の盾になるにゃ。
 advx-ichihime-advd-w-chi-f.wav.wav	トイツは、同じハイを2回続けて切れるから、アンゼンパイの代わりになるにゃ。
-advx-ichihime-adva-yk-1.wav.wav	ヤオチュウハイが11種そろえば約27%、12種なら約75%がコクシになるにゃ（相手のいる卓で18巡まで）。
+advx-ichihime-adva-yk-1.wav.wav	ヤオチュウハイが11種そろえば約27%、12種なら約75%がコクシになるにゃ、相手のいる卓で18巡まで。
 advx-ichihime-adva-yk-2.wav.wav	9種だと約2%で、追っても薄いにゃ。
 advx-ichihime-adva-yk-3.wav.wav	押し切っても和了は増えず、放銃だけ増えるにゃ！
 advx-ichihime-adva-yk-4.wav.wav	暗刻3つ＋トイツ2つなら、リーチして普通に打っても約27%が四暗刻になるにゃ。
@@ -1451,7 +1451,7 @@ advx-sensei-advd-s-jihaio.wav.wav	ジハイは、降りる時に切るために�
 advx-sensei-advd-w-chi-n.wav.wav	トイツが3組以上あります。
 advx-sensei-advd-w-chi-t.wav.wav	トイツは、同じハイを2回続けて切れますので、降りる時の盾になります。
 advx-sensei-advd-w-chi-f.wav.wav	トイツは、同じハイを2回続けて切れますので、アンゼンパイの代わりになります。
-advx-sensei-adva-yk-1.wav.wav	ヤオチュウハイが11種そろえば約27%、12種なら約75%がコクシになります（相手のいる卓で18巡まで）。
+advx-sensei-adva-yk-1.wav.wav	ヤオチュウハイが11種そろえば約27%、12種なら約75%がコクシになります、相手のいる卓で18巡まで。
 advx-sensei-adva-yk-2.wav.wav	9種は約2%で、追う値打ちは薄いですよ。
 advx-sensei-adva-yk-3.wav.wav	押し切っても和了は増えず、放銃だけが増えます。
 advx-sensei-adva-yk-4.wav.wav	暗刻3つ＋トイツ2つなら、リーチして普通に打っても約27%が四暗刻になります。
@@ -1633,7 +1633,7 @@ advd-s-jihaio.wav.wav	ジハイは、降りる時に切るために、最後ま�
 advd-w-chi-n.wav.wav	トイツが3組以上あるのだ。
 advd-w-chi-t.wav.wav	トイツは、同じハイを2回続けて切れるので、降りる時の盾になるのだ。
 advd-w-chi-f.wav.wav	トイツは、同じハイを2回続けて切れるので、アンゼンパイの代わりになるのだ。
-adva-yk-1.wav.wav	ヤオチュウハイが11種そろえば約27%、12種なら約75%がコクシになるのだ（相手のいる卓で18巡まで）。
+adva-yk-1.wav.wav	ヤオチュウハイが11種そろえば約27%、12種なら約75%がコクシになるのだ、相手のいる卓で18巡まで。
 adva-yk-2.wav.wav	9種だと約2%で、追う値打ちは薄いのだ。
 adva-yk-3.wav.wav	押し切っても和了は増えなくて、放銃だけが増えるのだ。
 adva-yk-4.wav.wav	暗刻3つ＋トイツ2つなら、リーチして普通に打っても約27%が四暗刻になるのだ。
