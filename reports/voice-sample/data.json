@@ -1,0 +1,98 @@
+{
+ "at": "2026-11-25T02:32:06.283Z",
+ "tot": {
+  "advy": {
+   "n": 22948,
+   "b": 799654043
+  },
+  "advx": {
+   "n": 1343,
+   "b": 43749538
+  },
+  "voicesMb": 804.3
+ },
+ "pack": "公開の荷：25115本・878MB（上限の目安 1024MB） / 内訳：方言の声 22948本 762.6MB・人格の声 1343本 41.7MB・本体と画面の html 11.4MB・ほか 822本 62.6MB／前の配信 878MB から 0MB",
+ "current": {
+  "codec": "aac",
+  "profile": "LC",
+  "rate": "24000",
+  "ch": "1",
+  "avgKbps": 52,
+  "avgSec": 5.38,
+  "sampleN": 40
+ },
+ "voices": [
+  {
+   "n": "advy-036457b2.m4a",
+   "cur": {
+    "n": "advy-036457b2.m4a",
+    "codec": "aac",
+    "profile": "LC",
+    "rate": 24000,
+    "ch": 1,
+    "kbps": 51,
+    "sec": 5.76,
+    "bytes": 36463
+   },
+   "f": {
+    "k40": 30597,
+    "k32": 24899,
+    "k24": 19083
+   }
+  },
+  {
+   "n": "advx-sensei-advw-w056.m4a",
+   "cur": {
+    "n": "advx-sensei-advw-w056.m4a",
+    "codec": "aac",
+    "profile": "LC",
+    "rate": 24000,
+    "ch": 1,
+    "kbps": 51,
+    "sec": 5.13,
+    "bytes": 32795
+   },
+   "f": {
+    "k40": 27543,
+    "k32": 22405,
+    "k24": 17071
+   }
+  },
+  {
+   "n": "advx-ichihime-advw-w012.m4a",
+   "cur": {
+    "n": "advx-ichihime-advw-w012.m4a",
+    "codec": "aac",
+    "profile": "LC",
+    "rate": 24000,
+    "ch": 1,
+    "kbps": 55,
+    "sec": 4.72,
+    "bytes": 32301
+   },
+   "f": {
+    "k40": 25401,
+    "k32": 20593,
+    "k24": 15954
+   }
+  }
+ ],
+ "est": {
+  "k40": {
+   "ratio": 0.832,
+   "voicesMb": 669,
+   "totalMb": 743
+  },
+  "k32": {
+   "ratio": 0.679,
+   "voicesMb": 546,
+   "totalMb": 620
+  },
+  "k24": {
+   "ratio": 0.518,
+   "voicesMb": 417,
+   "totalMb": 491
+  }
+ },
+ "restMb": 878
+}
