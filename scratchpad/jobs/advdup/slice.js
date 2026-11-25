@@ -19,7 +19,7 @@ const dcnt = {}, dex = {}, seenT = new Set();   // 通し読み：出来上が�
 const add = (tx, kind, ok) => { const nm = C.advDialVoice(tx); const o = out[nm] || (out[nm] = { text: tx, kind: kind, ok: false }); if (ok) { o.ok = true; } };
 S.each(function (r, c) {
   n++; if (!c.ok) { ngN++; }
-  if (!seenT.has(r.text)) { seenT.add(r.text); D.scan(r.text).forEach(function (i) { dcnt[i.k] = (dcnt[i.k] || 0) + 1; const a = (dex[i.k] = dex[i.k] || []); if (a.length < 25) { a.push(i.s + (i.w ? '  [' + i.w + ']' : '')); } }); }
+  if (!seenT.has(r.text)) { seenT.add(r.text); D.scan(r.text, process.env.DIAL, process.env.TONE).forEach(function (i) { dcnt[i.k] = (dcnt[i.k] || 0) + 1; const a = (dex[i.k] = dex[i.k] || []); if (a.length < 25) { a.push(i.s + (i.w ? '  [' + i.w + ']' : '')); } }); }
   r.items.forEach(function (x) {
     if (x.conn) { add(x.text, 'conn', c.ok); return; }
     if (x.changed) { add(x.text, 'chg', c.ok); return; }

@@ -7,18 +7,19 @@ const STOP = new Set(['場合', '今回', 'です', 'ます', '一枚', '二枚'
 function sentences(t) { return String(t || '').split(/(?<=[。！？])/).map(s => s.trim()).filter(Boolean); }
 function words(s) {
   const out = new Set();
-  (s.match(/[一-龥々]{2,}|[ァ-ヶー]{3,}/g) || []).forEach(w => { if (!STOP.has(w)) { out.add(w); } });
+  /* 隣り合う二文の重なりは、理由の言葉（形容詞の語幹：遠い・安い・悪い・多い・少ない…）だけを数える。対子・字牌・七対子のような話題の名詞は、続けて出てよい */
   (s.match(/[遠安高多少早速悪広薄厚強弱近長短]([いくうき]|ければ|かった)/g) || []).forEach(w => out.add(w[0]));   // 形容詞の語幹（遠い→遠く＝同じ語）
   return out;
 }
 const ENDS = /(のでございます|でございます|のでござる|でござる|のでおます|でおます|ですわ|ですの|ですよ|ですね|です|ます|にゃ|のだ|だ|ぞ|ぜよ|ばい|たい|けん|やけん|やん|やんか|やで|で|どす|どすえ|やわ|だべ|んだ|だっぺ|びょん|さー|ねー|さ|よ|ね|な|わ)(?=[。！？])/;
 function tailOf(s) { const m = ENDS.exec(s.replace(/[、，]+[^、。]*$/, m2 => m2)); const x = s.replace(/[。！？]$/, ''); const k = (/(.{1,4})$/.exec(x) || [, ''])[1]; return k; }
-function scan(text) {
+function scan(text, dial, tone) {
   const ss = sentences(text), out = [];
   for (let i = 0; i < ss.length; i++) {
-    const s = ss[i], body = s.replace(/[。！？]$/, '');
-    if (/^(なの|な|の|ので|のだ|なのだ|だ|です)[^一-龥ァ-ヶー0-9]{0,6}$/.test(body) || (body.length <= 8 && !/[一-龥ァ-ヶー0-9]/.test(body))) { out.push({ k: 'empty', s: s }); }
-    if (/(のだ|なのだ)(でござる|だんや|やで|やけん|ばい|たい|どす|やわ|ですけん|だべ|でおます|ぜよ|びょん|さー|ですたい|ですばい|なんや|ちゃう|やんか|ねー)/.test(body)) { out.push({ k: 'dbl', s: s }); }
+    const s = ss[i], body = s.replace(/[。！？…]+$/, '');
+    if (!body) { continue; }   // 「？」だけの切れ端は文として数えない
+    if (/^(なの|な|の|ので|のだ|なのだ|だ|です)[^一-龥ァ-ヶー0-9]{0,6}$/.test(body)) { out.push({ k: 'empty', s: s }); }
+    if (/(のだ|なのだ)(でござる|なり|じゃ|んや|や|やん|で|ですけん|ですたい|ですばい)/.test(body) && (dial === 'bushi' || dial === 'osaka')) { out.push({ k: 'dbl', s: s }); }
     if (i > 0) {
       const a = words(ss[i - 1]), b = words(s); const common = [...b].filter(w => a.has(w));
       if (common.length) { out.push({ k: 'dup', s: ss[i - 1] + ' / ' + s, w: common.join('・') }); }
