@@ -71,6 +71,8 @@ function scenarios(vk) {   // 助言の行の場面（頭・終わりを除く�
   });
   /* v1535（棚 #29・枠 三百十）：守りの手でドラ4枚＝本体 advLines0 の advd-sen のあと advd-riichi の前 */
   ['far', 'cheap', 'shape', 'honor', 'few', 'pair'].forEach(k => { D.push([['advd-w-' + k], KEEP_ES, [{ t: 'E' }, 'advd-s-jihai'], ['advd-sen'], ['advd-dr-1'], ['advd-riichi'], ['advd-r2a', { t: 'E' }, 'advd-r2b']]); });
+  /* v1536（棚 #28・枠 三百十六）：四枚＝本体 advLines0 の advd-dr-1 のあと advd-riichi の前（攻めは行の最後） */
+  ['advk-z-1', 'advk-n-1'].forEach(q => { D.push([['advd-w-far'], KEEP_ES, [{ t: 'E' }, 'advd-s-jihai'], ['advd-sen'], [q], ['advd-riichi'], ['advd-r2a', { t: 'E' }, 'advd-r2b']]); A.push([[w], ['adva-weak', 'adva-tn'], [q]]); });
   D.push([['advd-kyu'], KEEP_ES, [{ t: 'E' }, 'advd-s-jihai'], ['advd-riichi'], ['advd-r2a', { t: 'E' }, 'advd-r2b']]);
   D.push([['advd-kyu'], KEEP_ES, [{ t: 'E' }, 'advd-s-jihai'], ['adva-yk-2'], ['advd-riichi'], ['advd-r2a', { t: 'E' }, 'advd-r2b']]);   // v1529（棚 #9）：九種九牌の守りに yk-2
   D.push([['advd-kyu'], KEEP_ES, ['adva-yk-2'], ['advd-riichi'], ['advd-r2a', { t: 'E' }, 'advd-r2b']]);
@@ -144,7 +146,7 @@ function each(cb, opt) {   // 全組み合わせを回して cb(結果, 条件) 
     const big = C.advBigLine(tone, dial, sd === 'a');   // v1509：大物／惜しむ（本体は ctx.big の時だけ。字が空なら出ない）
     const hb = headSamples(dial, tone, m, sd, qsBase), hx = headSamples(dial, tone, m, sd, qsX);
     VK.forEach(vk => {
-    const sc = scenarios(vk), list0 = sd === 'a' ? sc.A : sc.D, list = process.env.YK_ONLY ? list0.filter(ls => /adv[ad]-(yk|ch|tt|fl|ty|ss|it|sn|jz|sx|kr|ry|ro|zk|dr)-/.test(JSON.stringify(ls))) : list0;   // v1529：YK_ONLY＝七文を含む並びだけ回す
+    const sc = scenarios(vk), list0 = sd === 'a' ? sc.A : sc.D, list = process.env.YK_ONLY ? list0.filter(ls => /adv[ad]-(yk|ch|tt|fl|ty|ss|it|sn|jz|sx|kr|ry|ro|zk|dr)-|advk-(z|n)-1/.test(JSON.stringify(ls))) : list0;   // v1529：YK_ONLY＝七文を含む並びだけ回す
     for (let i = 0; i < (process.env.YK_ONLY ? 1 : 3); i++) list.forEach((ls, k) => {   /* v1529：YK_ONLY はくじ一つ */
       const c0 = { tone: tone, dial: dial, m: m, sd: sd, vk: vk, i: i, k: k };
       hb.forEach(h => {

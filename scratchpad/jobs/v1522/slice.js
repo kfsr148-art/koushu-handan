@@ -5,7 +5,7 @@
    使い方  TONE=butler DIAL=osaka node slice.js <出力.json> */
 'use strict';
 const fs = require('fs'), path = require('path');
-process.env.SIDE = 'd';
+process.env.SIDE = process.env.SIDE_OVR || 'd';
 process.env.QS = process.env.QS || '0,1';
 const ROOT = process.env.KH_ROOT || path.join(__dirname, '..', '..', '..');
 process.env.KH_ROOT = ROOT;
