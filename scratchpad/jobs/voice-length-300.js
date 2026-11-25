@@ -14,13 +14,13 @@ const SPECIAL = /adva-kok|adva-chi|adva-toi|adva-tan|adva-ikk|adva-neko|adva-yak
 const cats = { 'ふつう（攻め）': [], '特殊な形（攻め）': [], '守り': [] };
 const byKind = {};
 S.TONES.forEach(tone => S.DIALS.forEach(dial => ['n', 'd', 't'].forEach(m => ['a', 'd'].forEach(sd => {
-  const hs = S.headSamples(dial, tone, m, sd, [0, 0.5, 1]);
+  const hs = S.headSamples(dial, tone, m, sd, [0, 0.25, 0.5, 0.75, 1]);
   S.VK.forEach(vk => {
     const sc = S.scenarios(vk), list = sd === 'a' ? sc.A : sc.D;
-    list.forEach((ls, k) => {
+    for (let ii = 0; ii < 3; ii++) list.forEach((ls, k) => {
       const cat = sd === 'd' ? '守り' : (SPECIAL.test(JSON.stringify(ls)) ? '特殊な形（攻め）' : 'ふつう（攻め）');
       hs.forEach(h => {
-        const f = S.compose(ls, { tone, dial, m, sd, vk, i: 0, k }, null, null, h.head);
+        const f = S.compose(ls, { tone, dial, m, sd, vk, i: ii, k }, null, null, h.head);
         const e = C.advEst(f.r.text, f.lines.length);
         cats[cat].push({ e, ok: f.ok, len: f.r.text.length });
         const kk = cat + ' 場面' + k; (byKind[kk] = byKind[kk] || []).push(e);
@@ -28,12 +28,13 @@ S.TONES.forEach(tone => S.DIALS.forEach(dial => ['n', 'd', 't'].forEach(m => ['a
     });
   });
 }))));
+const mx = a => a.reduce((m, x) => x > m ? x : m, -1e9);
 const q = (a, p) => { const s = a.slice().sort((x, y) => x - y); return +s[Math.min(s.length - 1, Math.floor(s.length * p))].toFixed(1); };
 const out = {};
 Object.keys(cats).forEach(c => { const a = cats[c].map(x => x.e); const n = a.length; if (!n) { return; }
-  out[c] = { 標本: n, 収まった: cats[c].filter(x => x.ok).length, 平均秒: +(a.reduce((x, y) => x + y, 0) / n).toFixed(1), 中央: q(a, 0.5), 九割: q(a, 0.9), 最長: +Math.max.apply(null, a).toFixed(1), 越20秒の割合: +(a.filter(x => x > 20).length / n * 100).toFixed(1), 越30秒の割合: +(a.filter(x => x > 30).length / n * 100).toFixed(1), 平均字数: Math.round(cats[c].reduce((x, y) => x + y.len, 0) / n), 最長字数: Math.max.apply(null, cats[c].map(x => x.len)), '20秒までの空き（平均）': +(20 - a.reduce((x, y) => x + y, 0) / n).toFixed(1), '30秒までの空き（平均）': +(30 - a.reduce((x, y) => x + y, 0) / n).toFixed(1) };
+  out[c] = { 標本: n, 収まった: cats[c].filter(x => x.ok).length, 平均秒: +(a.reduce((x, y) => x + y, 0) / n).toFixed(1), 中央: q(a, 0.5), 九割: q(a, 0.9), 最長: +mx(a).toFixed(1), 越20秒の割合: +(a.filter(x => x > 20).length / n * 100).toFixed(1), 越30秒の割合: +(a.filter(x => x > 30).length / n * 100).toFixed(1), 平均字数: Math.round(cats[c].reduce((x, y) => x + y.len, 0) / n), 最長字数: mx(cats[c].map(x => x.len)), '20秒までの空き（平均）': +(20 - a.reduce((x, y) => x + y, 0) / n).toFixed(1), '30秒までの空き（平均）': +(30 - a.reduce((x, y) => x + y, 0) / n).toFixed(1) };
 });
-const kinds = Object.keys(byKind).sort().map(k => { const a = byKind[k]; return k + '：平均' + (a.reduce((x, y) => x + y, 0) / a.length).toFixed(1) + '秒・最長' + Math.max.apply(null, a).toFixed(1) + '秒（' + a.length + '）'; });
+const kinds = Object.keys(byKind).sort().map(k => { const a = byKind[k]; return k + '：平均' + (a.reduce((x, y) => x + y, 0) / a.length).toFixed(1) + '秒・最長' + mx(a).toFixed(1) + '秒（' + a.length + '）'; });
 console.log(JSON.stringify(out, null, 1)); console.log(kinds.join('\\n'));
 `;
 fs.writeFileSync(path.join(tmp, 'len300.js'), body);
