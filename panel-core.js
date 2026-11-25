@@ -16,8 +16,8 @@
   else { root.PanelCore = m; }
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
-  var VER = '258';
-  var WAIT_TEXT = '待機中、、、。', POINT_TEXT = 'まとめて写すヨシ！', WORK_TEXT = '作業中、、、。', LOST_TEXT = '接続不良、、、。', CHECKING_TEXT = '確認中、、、。', YOSHI_TEXT = 'ヨシ待ち、、、。', CHECK_TEXT = '検査中、、、。';
+  var VER = '259';
+  var WAIT_TEXT = '待機中、、、。', POINT_TEXT = 'まとめて写すヨシ！', WORK_TEXT = '作業中、、、。', LOST_TEXT = '接続不良、、、。', CHECKING_TEXT = '確認中、、、。', REST_TEXT = '休憩中、、、。', YOSHI_TEXT = 'ヨシ待ち、、、。', CHECK_TEXT = '検査中、、、。';
 
   /* ---- 刻 ---- */
   /* センコが読んだ刻（state.json の senkoReadAt「YYYY-MM-DD HH:mm:ss」・日本の時計）を epoch 秒に。読めなければ 0（v200） */
@@ -103,6 +103,7 @@
   function headText(o) {
     o = o || {};
     var stat = String(o.stat || ''), lost = !!o.lost, running = isRunning(stat, lost);
+    if (o.resting && (stat === '待ち' || stat === '') && !((Number(o.yoshiN) || 0) > 0)) { return REST_TEXT; }   /* 枠 三百五：最後の合図が idle_prompt で窓が生きていて枠0件なら、記録が古くても『休憩中』（確認中・接続不良にしない） */
     if (!lost && o.checking) { return CHECKING_TEXT; }   /* v256（枠 二百八十七）：記録が5分途切れたら『確認中』（15分戻らない時だけ下の『接続不良』） */
     if (lost) { return LOST_TEXT; }   /* v251（枠 二百七十二）：見張りの記録が3分途切れたら、作業中・ヨシ待ちより上に接続不良（凍った『作業中』を出し続けない） */
     if (/^止まり/.test(stat)) { return '止まり'; }
@@ -245,7 +246,7 @@
   }
 
   return {
-    VER: VER, TEXT: { WAIT: WAIT_TEXT, POINT: POINT_TEXT, WORK: WORK_TEXT, LOST: LOST_TEXT, CHECKING: CHECKING_TEXT, YOSHI: YOSHI_TEXT, CHECK: CHECK_TEXT },
+    VER: VER, TEXT: { WAIT: WAIT_TEXT, POINT: POINT_TEXT, WORK: WORK_TEXT, LOST: LOST_TEXT, CHECKING: CHECKING_TEXT, REST: REST_TEXT, YOSHI: YOSHI_TEXT, CHECK: CHECK_TEXT },
     senkoEpoch: senkoEpoch, pad2s: pad2s, newestTime: newestTime,
     isCountCard: isCountCard, ntfyOfCard: ntfyOfCard, todoList: todoList, todoLabel: todoLabel,
     cardsPending: cardsPending, cardEtaSec: cardEtaSec, cardLate: cardLate, cardPendText: cardPendText, kumoEtaSec: kumoEtaSec, uraBusyText: uraBusyText, isRunning: isRunning, headText: headText,
