@@ -603,7 +603,7 @@ function staticParts() {
       /* v206（枠 五十八）：待ちでも下請けか雲が動いていれば「裏方作業中、、、。（下請け N本・雲 N本）」＋次「…」・どちらも動いていない時だけ「待ち：…」 */
       const hw = (ura, det) => PV.panelView({ stat: '待ち', detail: det, ura: ura }, [], [], NOW).head;
       const w1 = hw(URAS[1], '残りの段 2・次「作り値の段」'), w2 = hw(URAS[2], '残りの段 1・次「x」'), w3 = hw(URAS[2], '窓が閉じている'), w4 = hw(null, '残りの段 2・次「作り値の段」'), w5 = hw({ sub: { running: 0, items: [], recent: [{ id: 'z' }] }, cloud: { running: [], recent: [{ id: 2 }] } }, '残りの段 2');
-      if (w1 === '裏方作業中、、、。' && w2 === '裏方作業中、、、。' && w3 === '裏方作業中、、、。' && w4 === '待機中、、、。' && w5 === '待機中、、、。') { ok('待ちの頭の字（v207・枠 六十六）：下請けか雲が動いていれば「' + w1 + '」・何も動いていなければ「' + w4 + '」（括弧・次「…」は付けない・済んだ物だけでは裏方作業中にしない）'); } else { ng('待ちの頭の字が違う：' + [w1, w2, w3, w4, w5].join('｜')); }
+      if (w1 === '裏方作業中、、、。' && w2 === '裏方作業中、、、。' && w3 === '裏方作業中、、、。' && w4 === '休憩中、、、。' && w5 === '休憩中、、、。') { ok('待ちの頭の字（v207・枠 六十六）：下請けか雲が動いていれば「' + w1 + '」・何も動いていなければ「' + w4 + '」（括弧・次「…」は付けない・済んだ物だけでは裏方作業中にしない）'); } else { ng('待ちの頭の字が違う：' + [w1, w2, w3, w4, w5].join('｜')); }
       const pvc = PV.panelView({ senkoReadAt: '2026-11-20 21:12:17' }, [{ time: Date.parse('2026-11-20T21:00:00+09:00') / 1000, title: 'a', message: 'b' }, { time: Date.parse('2026-11-20T22:00:00+09:00') / 1000, title: 'c', message: 'd' }, { time: Date.parse('2026-11-20T22:01:00+09:00') / 1000, title: 'e', message: '写せます（2件）' }], [], NOW);
       if (pvc.left === 1 && pvc.label === 'まとめて写す（残1／1件）') { ok('残り：刻までの札は数えず、刻より新しい札だけ・「写せます（N件）」は数えない'); } else { ng('残りの数え方が違う：' + JSON.stringify(pvc)); }
       if (/senkoReadAt/.test(pvc.basis)) { ok('中身に「センコの読みだけで数えた」の一言が入る'); } else { ng('basis が無い'); }
@@ -923,7 +923,7 @@ function staticParts() {
       const ks = Object.keys(seen), badK = ks.filter(t => /[（(「：:]|[0-9]/.test(t) || t.length > 10);
       if (!badK.length) { ok('頭の字は短い一言だけ（' + ks.length + '種：' + ks.join('／') + '）・括弧・次「…」・件名・刻は付かない'); } else { ng('頭の字に括弧・刻などが残る：' + badK.join('／')); }
       const h1 = PV.panelView({ stat: '作業中', ura: URAS[1] }, [], [], NOW).head, h2 = PV.panelView({ stat: '待ち', ura: URAS[1] }, [], [], NOW).head, h3 = PV.panelView({ stat: '待ち', ura: null }, [], [], NOW).head;
-      if (h1 === '作業中、、、。' && h2 === '裏方作業中、、、。' && h3 === '待機中、、、。') { ok('出し分け：窓が手を動かす＝「' + h1 + '」（下請けが動いていてもこちらが先）／窓は待つが裏方が動く＝「' + h2 + '」／何も動かない＝「' + h3 + '」'); } else { ng('出し分けが違う：' + [h1, h2, h3].join('｜')); }
+      if (h1 === '作業中、、、。' && h2 === '裏方作業中、、、。' && h3 === '休憩中、、、。') { ok('出し分け：窓が手を動かす＝「' + h1 + '」（下請けが動いていてもこちらが先）／窓は待つが裏方が動く＝「' + h2 + '」／何も動かない＝「' + h3 + '」'); } else { ng('出し分けが違う：' + [h1, h2, h3].join('｜')); }
     }
     /* 六十八：版の行の右端は「更新 HH:MM」（字が前・刻が後ろ）。行は今までどおり flex-wrap（版の字が長いので「版…」の下の行に「最終確認 HH:MM」と並ぶ）。下の行の見積もり：最終確認 HH:MM（4字×13px＋5字×7px）＋隙間14px＋更新 HH:MM（2字×13px＋6字×7px）≦ 320px の行幅 292px */
     {
@@ -1213,11 +1213,11 @@ try {
     const SIX = {
       '作業中': [{ stat: '作業中', detail: '裏で手伝い1本・雲1本' }, /^作業中、、、。$/],   /* v207（本人の枠 六十六）：頭の字は短い一言だけ */
       '検査中': [{ stat: '検査中', detail: 'v1508 検査と配信・終了予定 12:30' }, /^検査中、、、。$/],
-      '待ち':   [{ stat: '待ち', detail: '残りの段 2・次「声の繋ぎ」' }, /^待機中、、、。$/],
+      '待ち':   [{ stat: '待ち', detail: '残りの段 2・次「声の繋ぎ」' }, /^休憩中、、、。$/],
       '裏方':   [{ stat: '待ち', detail: '残りの段 2・次「声の繋ぎ」', ura: { sub: { running: 1, items: [{ id: 'a', desc: 'x', start: '02:00' }], recent: [] }, cloud: { running: [], recent: [] } } }, /^裏方作業中、、、。$/],
       'ヨシ待ち': [{ stat: 'ヨシ待ち', detail: 'まとめ札' }, /ヨシ待ち、、、。/],
       '止まり': [{ stat: '止まり（使用量・13:00 にリセット）', detail: '' }, /^止まり$/],
-      '待機中': [{ stat: '待機中', detail: '' }, /待機中、、、。|まとめて写すヨシ/]
+      '待機中': [{ stat: '待機中', detail: '' }, /休憩中、、、。|待機中、、、。|まとめて写すヨシ/]
     };
     for (const k of Object.keys(SIX)) {
       const r = run(tmp, { state: Object.assign({}, base, SIX[k][0]), notices: MIX, settle: 1500 }, 390, 844);
@@ -1620,10 +1620,10 @@ try {
     else if (/まとめて写すヨシ！/.test(String(r.headWait || '')) && !/まとめ中|遅れ/.test(String(r.headWait || ''))) { ok('札が一覧に出たら「まとめて写すヨシ！」へ（頭の字「' + r.headWait + '」）'); } else { ng('札が出ても「まとめて写すヨシ！」にならない（頭の字「' + String(r.headWait) + '」）'); }
     r = run1({ cardOwedAt: 0 }, []);
     if (!r) { ng('測れない（印なし）'); }
-    else if (/待機中/.test(String(r.headWait || '')) && !/まとめ中|遅れ/.test(String(r.headWait || ''))) { ok('印が無ければ今までどおり「待機中」'); } else { ng('印が無いのに待機中でない（頭の字「' + String(r.headWait) + '」）'); }
+    else if (/待機中|休憩中/.test(String(r.headWait || '')) && !/まとめ中|遅れ/.test(String(r.headWait || ''))) { ok('印が無ければ今までどおり「待機中」'); } else { ng('印が無いのに待機中でない（頭の字「' + String(r.headWait) + '」）'); }
     r = run1({ cardOwedAt: nf() - 700 }, []);
     if (!r) { ng('測れない（印が古い）'); }
-    else if (/待機中/.test(String(r.headWait || ''))) { ok('10分たった印は消えて「待機中」に戻る（永久に居座らない）'); } else { ng('10分たった印が居座っている（頭の字「' + String(r.headWait) + '」）'); }
+    else if (/待機中|休憩中/.test(String(r.headWait || ''))) { ok('10分たった印は消えて「待機中」に戻る（永久に居座らない）'); } else { ng('10分たった印が居座っている（頭の字「' + String(r.headWait) + '」）'); }
     const hit1 = run1({ cardOwedAt: nf() - 20 }, MIX, 390, 844, 12500), hit0 = run1({ cardOwedAt: 0 }, MIX, 390, 844, 12500);
     if (!hit1 || !hit0) { ng('測れない（読み直し）'); }
     else if (hit1.noticeHits >= hit0.noticeHits + 1) { ok('印がある間は10秒おきに札を読み直す（札の取得 ' + hit1.noticeHits + '回・印なしは ' + hit0.noticeHits + '回）'); } else { ng('印があっても読み直しが増えない（' + hit1.noticeHits + '回・印なし ' + hit0.noticeHits + '回）'); }

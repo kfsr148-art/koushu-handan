@@ -16,7 +16,7 @@
   else { root.PanelCore = m; }
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
-  var VER = '260';
+  var VER = '261';
   var WAIT_TEXT = '待機中、、、。', POINT_TEXT = 'まとめて写すヨシ！', WORK_TEXT = '作業中、、、。', LOST_TEXT = '接続不良、、、。', CHECKING_TEXT = '確認中、、、。', REST_TEXT = '休憩中、、、。', YOSHI_TEXT = 'ヨシ待ち、、、。', CHECK_TEXT = '検査中、、、。';
 
   /* ---- 刻 ---- */
@@ -103,14 +103,14 @@
   function headText(o) {
     o = o || {};
     var stat = String(o.stat || ''), lost = !!o.lost, running = isRunning(stat, lost);
-    if (o.resting && (stat === '待ち' || stat === '') && !((Number(o.yoshiN) || 0) > 0)) { return REST_TEXT; }   /* 枠 三百五：最後の合図が idle_prompt で窓が生きていて枠0件なら、記録が古くても『休憩中』（確認中・接続不良にしない） */
+    if ((o.resting || o.checking) && (stat === '待ち' || stat === '') && !lost && !((Number(o.yoshiN) || 0) > 0) && !uraBusyText(o.ura || null, o.detail)) { return REST_TEXT; }   /* 枠 三百十四：窓が待ちの時（寝ている猫）は、記録が5分途切れて『確認中』の時も『休憩中』（接続不良は残す） */   /* 枠 三百五：最後の合図が idle_prompt で窓が生きていて枠0件なら、記録が古くても『休憩中』（確認中・接続不良にしない） */
     if (!lost && o.checking) { return CHECKING_TEXT; }   /* v256（枠 二百八十七）：記録が5分途切れたら『確認中』（15分戻らない時だけ下の『接続不良』） */
     if (lost) { return LOST_TEXT; }   /* v251（枠 二百七十二）：見張りの記録が3分途切れたら、作業中・ヨシ待ちより上に接続不良（凍った『作業中』を出し続けない） */
     if (/^止まり/.test(stat)) { return '止まり'; }
     if (stat === '動きなし') { return '動きなし'; }
     if ((Number(o.yoshiN) || 0) > 0) { return YOSHI_TEXT; }   /* v250（枠 二百七十一）：順は ヨシ待ち＞作業中＞まとめて写す＞待機中＞接続不良。ヨシ待ちが一件でもあれば、作業中でもヨシ待ち */
     if (stat === '検査中') { return CHECK_TEXT; }
-    if (stat === '待ち') { var ub = uraBusyText(o.ura || null, o.detail); return ub || WAIT_TEXT; }
+    if (stat === '待ち') { var ub = uraBusyText(o.ura || null, o.detail); return ub || REST_TEXT; }   /* 枠 三百十四：待ちの時の字は『待機中』でなく『休憩中』（brief.txt の head も同じ） */
     if (stat === '作業中') { return WORK_TEXT; }
     if (running && /^検査中：/.test(String(o.cloud || ''))) { return CHECK_TEXT; }
     if (running) { return WORK_TEXT; }
@@ -119,7 +119,7 @@
     if (kumoEtaSec(o.kumo, o.now) > 0) { return POINT_TEXT; }
     if ((Number(o.left) || 0) > 0) { return POINT_TEXT; }
     if (lost) { return LOST_TEXT; }
-    return WAIT_TEXT;
+    return REST_TEXT;
   }
 
   /* ---- 段（v212・本人の枠 七十七）：段の数・今の段は state.json の生の段（steps＝{job, rows:[{k, t}]}・見張りが job-steps.txt から写す）から毎回数える ----
