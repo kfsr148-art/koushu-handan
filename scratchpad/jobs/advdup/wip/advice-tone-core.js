@@ -289,6 +289,7 @@ function advDialSentenceV(core, dk, polite, v) {   // v＝0（今までの形）
 /* 枠 三百十九〜三百二十三（2026-11-26）：語尾の見分け。方言（と人物）の語尾だけを見て、同じ語尾が続くかを調べる（です・ます は除く）。 */
 const ADV_DE = /(ございますぞ|でござるぞ|でござる|ござるぞ|ござる|のじゃ|じゃ|なり|ぜよ|ばい|たい|やけん|けん|やで|やんか|やん|やわ|どすえ|どす|びょん|さー|ねー|っちゃ|とよ|だべ|っぺ|だす|でおます|おます|ですわ|ですの|ますわ|にゃ|ぞ|のう|わい)$/;
 function advEndKey(s) { const b = String(s || '').replace(/[。！？…、 ー〜]+$/g, ''); const m = ADV_DE.exec(b); return m ? m[1] : ''; }
+const ADV_DE_SAFE = /^(ばい|たい|けん|やけん|やで|やん|やんか|やわ|どすえ|どす|びょん|さー|ねー|っちゃ|とよ|だべ|っぺ|だす|でおます|おます|にゃ)$/;   // 語尾を取って体言止めにしても文が崩れない語尾（ござる・じゃ・なり は取ると崩れるので取らない）
 function advKuseOk(k, tone, dial) {   // 口癖（頭の短い一言）が、一文として立つか：語尾だけ（なのだ…）・途中で切れた言い方（…が／…に／…な／…ね）・呼びかけと同じ意味（執事×武士の「殿に申し上げる」）は使わない
   if (!k) { return false; }
   if (/^なの|^のだ/.test(k)) { return false; }
@@ -1094,11 +1095,12 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
     items.forEach(function (it) {
       const ss0 = (it.text || '').match(/[^。！？]*[。！？]+/g) || [];
       if (!ss0.length) { return; }   // つなぎ（文の終わりが無い）は前の語尾を覚えたまま
+      if (origOf(it) === null && ss0.length > 1) { const j0 = ss0.join(''), rem = it.text.slice(j0.length); let ch = false; for (let j = 1; j < ss0.length; j++) { const kj = advEndKey(ss0[j]); if (kj && kj === advEndKey(ss0[j - 1]) && ADV_DE_SAFE.test(kj)) { const m1 = /^(.*?)([。！？…]*)$/.exec(ss0[j - 1]); if (m1[1].length > kj.length) { ss0[j - 1] = m1[1].slice(0, -kj.length) + m1[2]; ch = true; } } } if (ch) { it.text = ss0.join('') + rem; it.changed = true; } }   // 書いた字の中の隣り合う二文が同じ語尾なら、前の文を体言止めにする
       const k0 = advEndKey(ss0[0]), o = origOf(it);
       if (k0 && k0 === prevKey) {
         if (o !== null) { it.text = o; it.v = -1; it.changed = false; it.alt = true; }
         else if (prevIt && origOf(prevIt) !== null && lastKey(prevIt.text) === prevKey) { const po = origOf(prevIt); prevIt.text = po; prevIt.v = -1; prevIt.changed = false; prevIt.alt = true; }   // あとが書いた字なら、前の方を外す
-        else if (prevIt && lastKey(prevIt.text) === prevKey) { const qs = prevIt.text.match(/[^。！？]*[。！？]+/g) || [], ls = qs[qs.length - 1], mk = /^(.*?)([。！？…]*)$/.exec(ls), bd = mk[1], kk = advEndKey(bd); if (kk && bd.length > kk.length) { qs[qs.length - 1] = bd.slice(0, -kk.length) + mk[2]; prevIt.text = qs.join(''); prevIt.changed = true; } }   // どちらも書いた字なら、前の文を体言止めにする（語尾を取る）
+        else if (prevIt && lastKey(prevIt.text) === prevKey) { const qs = prevIt.text.match(/[^。！？]*[。！？]+/g) || [], ls = qs[qs.length - 1], mk = /^(.*?)([。！？…]*)$/.exec(ls), bd = mk[1], kk = advEndKey(bd); if (kk && ADV_DE_SAFE.test(kk) && bd.length > kk.length) { qs[qs.length - 1] = bd.slice(0, -kk.length) + mk[2]; prevIt.text = qs.join(''); prevIt.changed = true; } }   // どちらも書いた字なら、前の文を体言止めにする（語尾を取る）
       }
       const lk = lastKey(it.text);
       prevKey = lk === null ? '' : lk; prevIt = it;

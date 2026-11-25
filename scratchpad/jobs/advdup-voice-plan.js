@@ -22,6 +22,8 @@ if (fs.existsSync(path.join(WIP, WIP_FILES[0]))) {
 const SUB = path.join(__dirname, 'advdup');
 const TAG = process.env.PLAN_TAG ? '-' + process.env.PLAN_TAG : '';   // 速い通し読み（PLAN_TAG=fast・DUP_FAST）は別の置き場に残す
 const OD = path.join(ROOT, 'reports', 'advdup-voice-plan' + TAG), SD = path.join(OD, 'slices');
+/* 結果は main でなく枝 cloud-out にある（枠 三百二十七）。前の走りで済んだ切れ端を取り込んで、続きから回す */
+try { const cp0 = require('child_process'); if (cp0.spawnSync('git', ['fetch', '-q', 'origin', 'cloud-out'], { cwd: ROOT }).status === 0) { cp0.spawnSync('git', ['checkout', 'FETCH_HEAD', '--', path.relative(ROOT, SD).split(path.sep).join('/')], { cwd: ROOT }); } } catch (e) { /* 無ければ最初から */ }
 fs.mkdirSync(SD, { recursive: true });
 const ENV = Object.assign({}, process.env, { KH_ROOT: ROOT, HEAD_HTML: path.join(ROOT, 'koushu-handan.html'), QS: '0,1' });
 const C = require(path.join(ROOT, 'advice-tone-core.js'));
