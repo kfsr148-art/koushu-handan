@@ -18,7 +18,7 @@ function scan(text, dial, tone) {
   for (let i = 0; i < ss.length; i++) {
     const s = ss[i], body = s.replace(/[。！？…]+$/, '');
     if (!body) { continue; }   // 「？」だけの切れ端は文として数えない
-    if (/^(なの|な|の|ので|のだ|なのだ|だ|です)[^一-龥ァ-ヶー0-9]{0,6}$/.test(body)) { out.push({ k: 'empty', s: s }); }
+    if (/^(なの|のだ|ので)[ぁ-んー]{0,6}$/.test(body)) { out.push({ k: 'empty', s: s }); }
     if (/(のだ|なのだ)(でござる|なり|じゃ|んや|や|やん|で|ですけん|ですたい|ですばい)/.test(body) && (dial === 'bushi' || dial === 'osaka')) { out.push({ k: 'dbl', s: s }); }
     if (i > 0) {
       const a = words(ss[i - 1]), b = words(s); const common = [...b].filter(w => a.has(w));
@@ -27,7 +27,7 @@ function scan(text, dial, tone) {
       const DE = /(ばい|たい|けん|やん|やで|どす|やわ|だべ|っぺ|ぜよ|びょん|さー|ねー|っちゃ|とよ|やろ|だす|ござる)$/;
       if (t1.length >= 2 && DE.test(ss[i - 1].replace(/[。！？…]+$/, '')) && DE.test(s.replace(/[。！？…]+$/, '')) && DE.exec(ss[i - 1].replace(/[。！？…]+$/, ''))[0] === DE.exec(s.replace(/[。！？…]+$/, ''))[0]) { out.push({ k: 'rep', s: ss[i - 1] + ' / ' + s, w: t2.slice(-2) }); }
     }
-    if (body.length <= 9 && /(が|は|を|に|の)ね?$/.test(body) && !/[。]/.test(body)) { out.push({ k: 'frag', s: s }); }
+    if (/^(うちの猫がね|陣を読むに|損得で言うたらな|星の巡りではな)$/.test(body)) { out.push({ k: 'frag', s: s }); }
   }
   return out;
 }

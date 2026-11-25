@@ -13,6 +13,12 @@
 'use strict';
 const fs = require('fs'), path = require('path'), cp = require('child_process'), os = require('os');
 const ROOT = path.join(__dirname, '..', '..');
+/* 作りかけの本体・核は advdup/wip/ に置き、走る間だけ直下へ写す（枝に直下の本体を置くと、結果の押し戻しで main へ入って配信の検査が落ちる＝2026-11-26 に起きた）。終わったら git checkout で元に戻す */
+const WIP = path.join(__dirname, 'advdup', 'wip'), WIP_FILES = ['koushu-handan.html', 'advice-tone-core.js'];
+if (fs.existsSync(path.join(WIP, WIP_FILES[0]))) {
+  WIP_FILES.forEach(n => fs.copyFileSync(path.join(WIP, n), path.join(ROOT, n)));
+  process.on('exit', () => { try { require('child_process').spawnSync('git', ['checkout', '--'].concat(WIP_FILES), { cwd: ROOT }); } catch (e) { /* 戻せなくても結果は書いてある */ } });
+}
 const SUB = path.join(__dirname, 'advdup');
 const TAG = process.env.PLAN_TAG ? '-' + process.env.PLAN_TAG : '';   // 速い通し読み（PLAN_TAG=fast・DUP_FAST）は別の置き場に残す
 const OD = path.join(ROOT, 'reports', 'advdup-voice-plan' + TAG), SD = path.join(OD, 'slices');
