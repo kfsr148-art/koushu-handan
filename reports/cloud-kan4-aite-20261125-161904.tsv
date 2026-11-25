@@ -1,0 +1,2941 @@
+# 雲で回した同じ牌四枚の相手あり測り（20261125-161904 UTC・kan/nokan/base の腕・同じ山）。
+本	周	枠	腕	席	配牌	槓数	結果	点棒	和了型	放銃先リーチ	受リーチ	巡目	打数	件
+0	1	z	kan	3	z6z6z6z6s8z4m5z5p6m9m9m0s7	1	被ツモ	-6000			1	7	8	kan4
+0	1	z	nokan	3	z6z6z6z6s8z4m5z5p6m9m9m0s7	0	被ツモ	-6000			1	7	8	kan4
+0	1	z	base	3	z6z6z6z6s8z4m5z5p6m9m9m0s7	1	被ツモ	-6000			1	7	8	kan4
+0	1	y	kan	2	m1m1m1m1m4s6s8m5s3m6m2z7p2	1	放銃	-3900		0	1	10	11	kan4
+0	1	y	nokan	2	m1m1m1m1m4s6s8m5s3m6m2z7p2	0	放銃	-2000		0	0	10	11	kan4
+0	1	y	base	2	m1m1m1m1m4s6s8m5s3m6m2z7p2	1	無関係	0			0	5	5	kan4
+0	1	c	kan	3	m8m8m8m8z3s4s2m7p3z7s7s8p1	1	放銃	-2000		0	0	8	9	kan4
+0	1	c	nokan	3	m8m8m8m8z3s4s2m7p3z7s7s8p1	0	無関係	0			0	5	6	kan4
+0	1	c	base	3	m8m8m8m8z3s4s2m7p3z7s7s8p1	1	放銃	-2000		0	0	8	9	kan4
+0	2	z	kan	3	z3z3z3z3z4s2m2p1p8s4z1z6s6	1	放銃	-12000		0	0	11	11	kan4
+0	2	z	nokan	3	z3z3z3z3z4s2m2p1p8s4z1z6s6	0	放銃	-12000		0	0	8	9	kan4
+0	2	z	base	3	z3z3z3z3z4s2m2p1p8s4z1z6s6	1	放銃	-12000		0	0	11	11	kan4
+0	2	y	kan	1	s9s9s9s9z6m6s8s7m3p8s4p1s2	1	被ツモ	-4000			1	11	12	kan4
+0	2	y	nokan	1	s9s9s9s9z6m6s8s7m3p8s4p1s2	0	和了	6200	ツモ		0	13	12	kan4
+0	2	y	base	1	s9s9s9s9z6m6s8s7m3p8s4p1s2	0	和了	6200	ツモ		0	13	12	kan4
+0	2	c	kan	1	p0p5p5p5s8s5p4z2s9p9p1m9z6	1	被ツモ	-1000			1	17	18	kan4
+0	2	c	nokan	1	p0p5p5p5s8s5p4z2s9p9p1m9z6	0	放銃	-2000		0	0	16	18	kan4
+0	2	c	base	1	p0p5p5p5s8s5p4z2s9p9p1m9z6	0	放銃	-2000		0	0	16	18	kan4
+0	3	z	kan	1	z6z6z6z6z3s7p5m3s6p7z2z7s4	1	無関係	0			0	7	8	kan4
+0	3	z	nokan	1	z6z6z6z6z3s7p5m3s6p7z2z7s4	0	放銃	-1000		0	0	7	9	kan4
+0	3	z	base	1	z6z6z6z6z3s7p5m3s6p7z2z7s4	1	無関係	0			0	7	8	kan4
+0	3	y	kan	2	m9m9m9m9s6s9z7s4z5m2s2m3p6	1	和了	3900	ロン		0	9	9	kan4
+0	3	y	nokan	2	m9m9m9m9s6s9z7s4z5m2s2m3p6	0	流局	1500			1	18	17	kan4
+0	3	y	base	2	m9m9m9m9s6s9z7s4z5m2s2m3p6	1	和了	3900	ロン		0	9	9	kan4
+0	3	c	kan	3	m8m8m8m8p5m1m2p4p6p4s9m7m6	1	和了	13000	ツモ		0	11	10	kan4
+0	3	c	nokan	3	m8m8m8m8p5m1m2p4p6p4s9m7m6	0	被ツモ	-2000			0	10	11	kan4
+0	3	c	base	3	m8m8m8m8p5m1m2p4p6p4s9m7m6	1	和了	9000	ツモ		0	14	13	kan4
+0	4	z	kan	1	z6z6z6z6p3p4p5p8m5s3m1p5z2	1	放銃	-8000		0	1	12	13	kan4
+0	4	z	nokan	1	z6z6z6z6p3p4p5p8m5s3m1p5z2	0	和了	14000	ツモ		1	13	12	kan4
+0	4	z	base	1	z6z6z6z6p3p4p5p8m5s3m1p5z2	1	放銃	-8000		0	1	12	13	kan4
+0	4	y	kan	3	s1s1s1s1p7m9p1p3m5m1s3z2s0	1	放銃	-1000		0	0	8	8	kan4
+0	4	y	nokan	3	s1s1s1s1p7m9p1p3m5m1s3z2s0	0	無関係	0			0	6	7	kan4
+0	4	y	base	3	s1s1s1s1p7m9p1p3m5m1s3z2s0	0	無関係	0			0	6	7	kan4
+0	4	c	kan	1	p4p4p4p4z7s3m3m5p1m4m3p3z2	1	放銃	-2600		1	1	13	13	kan4
+0	4	c	nokan	1	p4p4p4p4z7s3m3m5p1m4m3p3z2	0	和了	10000	ツモ		1	10	9	kan4
+0	4	c	base	1	p4p4p4p4z7s3m3m5p1m4m3p3z2	1	放銃	-2600		1	1	13	13	kan4
+0	5	z	kan	1	z2z2z2z2s7z4m4s2m6z7p8m1m8	0	無関係	0			0	10	11	kan4
+0	5	z	nokan	1	z2z2z2z2s7z4m4s2m6z7p8m1m8	0	無関係	0			0	10	11	kan4
+0	5	z	base	1	z2z2z2z2s7z4m4s2m6z7p8m1m8	0	無関係	0			0	10	11	kan4
+0	5	y	kan	2	m1m1m1m1s3z2s1z4p2s2z5z1s7	1	放銃	-12000		0	0	8	9	kan4
+0	5	y	nokan	2	m1m1m1m1s3z2s1z4p2s2z5z1s7	0	流局	-1000			1	18	17	kan4
+0	5	y	base	2	m1m1m1m1s3z2s1z4p2s2z5z1s7	1	放銃	-12000		0	0	8	9	kan4
+0	5	c	kan	2	m6m6m6m6z1m3p7p4s9p2z5p1m4	1	放銃	-8000		1	1	10	10	kan4
+0	5	c	nokan	2	m6m6m6m6z1m3p7p4s9p2z5p1m4	0	無関係	0			0	11	10	kan4
+0	5	c	base	2	m6m6m6m6z1m3p7p4s9p2z5p1m4	1	放銃	-8000		1	1	10	10	kan4
+0	6	z	kan	2	z2z2z2z2p7m2s4s3p2m7m3z6m8	1	和了	5000	ツモ		0	8	7	kan4
+0	6	z	nokan	2	z2z2z2z2p7m2s4s3p2m7m3z6m8	0	和了	3000	ツモ		0	9	8	kan4
+0	6	z	base	2	z2z2z2z2p7m2s4s3p2m7m3z6m8	1	和了	5000	ツモ		0	8	7	kan4
+0	6	y	kan	1	p9p9p9p9s7s3m2p5m8z6m8p8s9	1	被ツモ	-2000			0	9	9	kan4
+0	6	y	nokan	1	p9p9p9p9s7s3m2p5m8z6m8p8s9	0	流局	-1000			1	18	18	kan4
+0	6	y	base	1	p9p9p9p9s7s3m2p5m8z6m8p8s9	0	流局	-1000			1	18	18	kan4
+0	6	c	kan	2	m6m6m6m6s8s1m3m4z5s8p4p7p0	1	被ツモ	-800			0	8	9	kan4
+0	6	c	nokan	2	m6m6m6m6s8s1m3m4z5s8p4p7p0	0	被ツモ	-800			0	8	8	kan4
+0	6	c	base	2	m6m6m6m6s8s1m3m4z5s8p4p7p0	1	被ツモ	-800			0	8	9	kan4
+0	7	z	kan	1	z2z2z2z2s2s2p2s4z4m9p7s1p4	1	被ツモ	-1000			1	9	9	kan4
+0	7	z	nokan	1	z2z2z2z2s2s2p2s4z4m9p7s1p4	0	流局	0			0	1	1	kan4
+0	7	z	base	1	z2z2z2z2s2s2p2s4z4m9p7s1p4	1	被ツモ	-1000			1	9	9	kan4
+0	7	y	kan	2	s9s9s9s9s1m1z5s8p7m2z3z4p6	1	無関係	0			1	14	14	kan4
+0	7	y	nokan	2	s9s9s9s9s1m1z5s8p7m2z3z4p6	0	被ツモ	-2000			1	11	10	kan4
+0	7	y	base	2	s9s9s9s9s1m1z5s8p7m2z3z4p6	1	被ツモ	-3000			1	11	10	kan4
+0	7	c	kan	2	s0s5s5s5s7z4s7p3s1s2m8s9p4	1	和了	16000	ロン		0	17	18	kan4
+0	7	c	nokan	2	s0s5s5s5s7z4s7p3s1s2m8s9p4	0	流局	1500			0	18	18	kan4
+0	7	c	base	2	s0s5s5s5s7z4s7p3s1s2m8s9p4	1	和了	16000	ロン		0	17	18	kan4
+0	8	z	kan	1	z4z4z4z4s4p2s6p5p6m8m7s6p6	1	和了	10000	ロン		1	10	10	kan4
+0	8	z	nokan	1	z4z4z4z4s4p2s6p5p6m8m7s6p6	0	無関係	0			1	6	6	kan4
+0	8	z	base	1	z4z4z4z4s4p2s6p5p6m8m7s6p6	1	和了	10000	ロン		1	10	10	kan4
+0	8	y	kan	3	p9p9p9p9p6z4p0p7z6s1s8s4s6	1	和了	13000	ロン		0	6	6	kan4
+0	8	y	nokan	3	p9p9p9p9p6z4p0p7z6s1s8s4s6	0	和了	9000	ツモ		0	9	8	kan4
+0	8	y	base	3	p9p9p9p9p6z4p0p7z6s1s8s4s6	1	和了	13000	ロン		0	6	6	kan4
+0	8	c	kan	1	p6p6p6p6z5s3m3s9z3z1s5m4m5	1	放銃	-26600		1	1	8	8	kan4
+0	8	c	nokan	1	p6p6p6p6z5s3m3s9z3z1s5m4m5	0	無関係	0			0	13	14	kan4
+0	8	c	base	1	p6p6p6p6z5s3m3s9z3z1s5m4m5	1	放銃	-26600		1	1	8	8	kan4
+0	9	z	kan	1	z2z2z2z2z4m7m3p6m9s2z5p3s8	1	無関係	0			1	14	15	kan4
+0	9	z	nokan	1	z2z2z2z2z4m7m3p6m9s2z5p3s8	0	被ツモ	-1300			1	6	6	kan4
+0	9	z	base	1	z2z2z2z2z4m7m3p6m9s2z5p3s8	1	無関係	0			1	14	15	kan4
+0	9	y	kan	3	m9m9m9m9z2s8p3s6m3p5s9p5s6	1	被ツモ	-2000			0	9	9	kan4
+0	9	y	nokan	3	m9m9m9m9z2s8p3s6m3p5s9p5s6	0	無関係	0			0	12	13	kan4
+0	9	y	base	3	m9m9m9m9z2s8p3s6m3p5s9p5s6	1	被ツモ	-2000			0	9	9	kan4
+0	9	c	kan	2	s7s7s7s7m8p3z5p1z1m0p8s2z6	1	放銃	-8000		0	0	12	12	kan4
+0	9	c	nokan	2	s7s7s7s7m8p3z5p1z1m0p8s2z6	0	流局	1500			0	18	18	kan4
+0	9	c	base	2	s7s7s7s7m8p3z5p1z1m0p8s2z6	0	流局	1500			0	18	18	kan4
+0	10	z	kan	1	z7z7z7z7z2m7p1z3s3p7z5s9p3	1	被ツモ	-2000			0	10	10	kan4
+0	10	z	nokan	1	z7z7z7z7z2m7p1z3s3p7z5s9p3	0	無関係	0			0	8	9	kan4
+0	10	z	base	1	z7z7z7z7z2m7p1z3s3p7z5s9p3	1	被ツモ	-2000			0	10	10	kan4
+0	10	y	kan	2	s9s9s9s9p9z6m2p3z5p1p5m2z7	1	無関係	0			1	14	14	kan4
+0	10	y	nokan	2	s9s9s9s9p9z6m2p3z5p1p5m2z7	0	被ツモ	-2000			1	14	14	kan4
+0	10	y	base	2	s9s9s9s9p9z6m2p3z5p1p5m2z7	1	無関係	0			1	14	14	kan4
+0	10	c	kan	1	p8p8p8p8p1z7s2s5z4s4z4z3p1	1	和了	9000	ツモ		0	6	5	kan4
+0	10	c	nokan	1	p8p8p8p8p1z7s2s5z4s4z4z3p1	0	和了	3000	ツモ		0	12	11	kan4
+0	10	c	base	1	p8p8p8p8p1z7s2s5z4s4z4z3p1	1	和了	9000	ツモ		0	6	5	kan4
+0	11	z	kan	3	z2z2z2z2m3p6s7m1p9s3s2p6p9	1	被ツモ	-1000			1	12	11	kan4
+0	11	z	nokan	3	z2z2z2z2m3p6s7m1p9s3s2p6p9	0	被ツモ	-1000			1	12	11	kan4
+0	11	z	base	3	z2z2z2z2m3p6s7m1p9s3s2p6p9	0	被ツモ	-1000			1	12	11	kan4
+0	11	y	kan	2	p1p1p1p1z1z5p6s2s3p5m1z2m8	1	流局	-1000			1	18	17	kan4
+0	11	y	nokan	2	p1p1p1p1z1z5p6s2s3p5m1z2m8	0	被ツモ	-4000			1	18	17	kan4
+0	11	y	base	2	p1p1p1p1z1z5p6s2s3p5m1z2m8	1	流局	-1000			1	18	17	kan4
+0	11	c	kan	2	m7m7m7m7p7m4m2s6p2p8p8m1z4	1	和了	13000	ツモ		0	6	5	kan4
+0	11	c	nokan	2	m7m7m7m7p7m4m2s6p2p8p8m1z4	0	和了	3000	ロン		1	9	9	kan4
+0	11	c	base	2	m7m7m7m7p7m4m2s6p2p8p8m1z4	1	和了	13000	ツモ		0	6	5	kan4
+0	12	z	kan	3	z7z7z7z7p7s7p6s6p3m9s4p2m7	1	放銃	-8000		1	1	7	7	kan4
+0	12	z	nokan	3	z7z7z7z7p7s7p6s6p3m9s4p2m7	0	和了	1000	ロン		0	7	7	kan4
+0	12	z	base	3	z7z7z7z7p7s7p6s6p3m9s4p2m7	1	放銃	-8000		1	1	7	7	kan4
+0	12	y	kan	1	s1s1s1s1p5p2s3m1m7s6z1p9p1	1	和了	18000	ロン		1	14	14	kan4
+0	12	y	nokan	1	s1s1s1s1p5p2s3m1m7s6z1p9p1	0	和了	10000	ロン		1	14	14	kan4
+0	12	y	base	1	s1s1s1s1p5p2s3m1m7s6z1p9p1	1	和了	18000	ロン		1	14	14	kan4
+0	12	c	kan	3	s4s4s4s4p8z3z2s3p1z4m5p9z2	1	流局	1500			1	17	16	kan4
+0	12	c	nokan	3	s4s4s4s4p8z3z2s3p1z4m5p9z2	0	流局	-1000			1	18	17	kan4
+0	12	c	base	3	s4s4s4s4p8z3z2s3p1z4m5p9z2	0	流局	-1000			1	18	17	kan4
+0	13	z	kan	2	z4z4z4z4z2s3s2m2m8z7m2s4z7	1	和了	2000	ロン		0	4	4	kan4
+0	13	z	nokan	2	z4z4z4z4z2s3s2m2m8z7m2s4z7	0	和了	1300	ロン		0	2	2	kan4
+0	13	z	base	2	z4z4z4z4z2s3s2m2m8z7m2s4z7	1	和了	2000	ロン		0	4	4	kan4
+0	13	y	kan	2	s1s1s1s1s9m8m2z1p8s3p3z1z7	1	被ツモ	-6000			1	9	9	kan4
+0	13	y	nokan	2	s1s1s1s1s9m8m2z1p8s3p3z1z7	0	放銃	-12000		1	1	8	9	kan4
+0	13	y	base	2	s1s1s1s1s9m8m2z1p8s3p3z1z7	0	放銃	-12000		1	1	8	9	kan4
+0	13	c	kan	1	s0s5s5s5p4m4z6m1s6z4p7p8m3	1	和了	6200	ロン		1	13	13	kan4
+0	13	c	nokan	1	s0s5s5s5p4m4z6m1s6z4p7p8m3	0	被ツモ	-2000			1	9	9	kan4
+0	13	c	base	1	s0s5s5s5p4m4z6m1s6z4p7p8m3	0	被ツモ	-2000			1	9	9	kan4
+0	14	z	kan	2	z7z7z7z7p8s4p2p1m5p1s9p6m9	1	放銃	-3900		0	0	6	7	kan4
+0	14	z	nokan	2	z7z7z7z7p8s4p2p1m5p1s9p6m9	0	和了	8000	ロン		0	14	15	kan4
+0	14	z	base	2	z7z7z7z7p8s4p2p1m5p1s9p6m9	1	放銃	-3900		0	0	6	7	kan4
+0	14	y	kan	3	m9m9m9m9z4p3z5s6s7m3p2m3m5	1	流局	-1000			1	18	17	kan4
+0	14	y	nokan	3	m9m9m9m9z4p3z5s6s7m3p2m3m5	0	放銃	-3900		0	0	11	12	kan4
+0	14	y	base	3	m9m9m9m9z4p3z5s6s7m3p2m3m5	1	流局	-1000			1	18	17	kan4
+0	14	c	kan	3	m3m3m3m3p8m4s2p4s8m1m2s4p4	1	流局	-1000			1	18	17	kan4
+0	14	c	nokan	3	m3m3m3m3p8m4s2p4s8m1m2s4p4	0	無関係	0			1	15	14	kan4
+0	14	c	base	3	m3m3m3m3p8m4s2p4s8m1m2s4p4	0	無関係	0			1	15	14	kan4
+0	15	z	kan	3	z1z1z1z1p1z5m1p7m9s2z2m7s4	1	放銃	-2900		0	1	10	9	kan4
+0	15	z	nokan	3	z1z1z1z1p1z5m1p7m9s2z2m7s4	0	無関係	0			0	10	10	kan4
+0	15	z	base	3	z1z1z1z1p1z5m1p7m9s2z2m7s4	1	放銃	-2900		0	1	10	9	kan4
+0	15	y	kan	1	p9p9p9p9m6p1z7m6s1p1m2m7m2	1	被ツモ	-500			1	6	6	kan4
+0	15	y	nokan	1	p9p9p9p9m6p1z7m6s1p1m2m7m2	0	被ツモ	-500			1	6	6	kan4
+0	15	y	base	1	p9p9p9p9m6p1z7m6s1p1m2m7m2	0	被ツモ	-500			1	6	6	kan4
+0	15	c	kan	3	p4p4p4p4s6z3z2p6m7p2p8p5m6	1	無関係	0			1	9	8	kan4
+0	15	c	nokan	3	p4p4p4p4s6z3z2p6m7p2p8p5m6	0	無関係	0			0	11	10	kan4
+0	15	c	base	3	p4p4p4p4s6z3z2p6m7p2p8p5m6	0	無関係	0			0	11	10	kan4
+0	16	z	kan	1	z5z5z5z5z4s7s6z7z3s4z6s3s7	1	和了	8000	ロン		0	5	6	kan4
+0	16	z	nokan	1	z5z5z5z5z4s7s6z7z3s4z6s3s7	0	放銃	-3900		0	1	7	9	kan4
+0	16	z	base	1	z5z5z5z5z4s7s6z7z3s4z6s3s7	1	和了	8000	ロン		0	5	6	kan4
+0	16	y	kan	3	m9m9m9m9z3z7m4s7m7s3p8p2p8	1	無関係	0			1	10	9	kan4
+0	16	y	nokan	3	m9m9m9m9z3z7m4s7m7s3p8p2p8	0	無関係	0			1	10	9	kan4
+0	16	y	base	3	m9m9m9m9z3z7m4s7m7s3p8p2p8	0	無関係	0			1	10	9	kan4
+0	16	c	kan	2	s4s4s4s4s2s9z3p3z3z7s6m2p9	1	放銃	-2600		1	1	8	9	kan4
+0	16	c	nokan	2	s4s4s4s4s2s9z3p3z3z7s6m2p9	0	和了	1000	ロン		0	5	6	kan4
+0	16	c	base	2	s4s4s4s4s2s9z3p3z3z7s6m2p9	0	和了	1000	ロン		0	5	6	kan4
+0	17	z	kan	1	z5z5z5z5s9z4p1m8m6s6s4p4s1	1	流局	0			1	18	18	kan4
+0	17	z	nokan	1	z5z5z5z5s9z4p1m8m6s6s4p4s1	0	流局	0			1	18	18	kan4
+0	17	z	base	1	z5z5z5z5s9z4p1m8m6s6s4p4s1	1	流局	0			1	18	18	kan4
+0	17	y	kan	1	p1p1p1p1s4z6z5s7m9s8m8s6s7	1	放銃	-5200		0	0	17	17	kan4
+0	17	y	nokan	1	p1p1p1p1s4z6z5s7m9s8m8s6s7	0	放銃	-1000		0	0	7	7	kan4
+0	17	y	base	1	p1p1p1p1s4z6z5s7m9s8m8s6s7	1	放銃	-5200		0	0	17	17	kan4
+0	17	c	kan	3	m7m7m7m7p5p4p3p3z6z4m6p1m3	1	被ツモ	-2000			1	10	10	kan4
+0	17	c	nokan	3	m7m7m7m7p5p4p3p3z6z4m6p1m3	0	和了	1000	ロン		0	5	5	kan4
+0	17	c	base	3	m7m7m7m7p5p4p3p3z6z4m6p1m3	0	和了	1000	ロン		0	5	5	kan4
+0	18	z	kan	1	z3z3z3z3p3s2s6s1m7p6s3z2m7	1	和了	10000	ロン		1	11	10	kan4
+0	18	z	nokan	1	z3z3z3z3p3s2s6s1m7p6s3z2m7	0	被ツモ	-3000			1	18	18	kan4
+0	18	z	base	1	z3z3z3z3p3s2s6s1m7p6s3z2m7	1	和了	10000	ロン		1	11	10	kan4
+0	18	y	kan	3	p1p1p1p1m4z2p8s8m3p9s4z7p8	1	被ツモ	-3000			0	14	14	kan4
+0	18	y	nokan	3	p1p1p1p1m4z2p8s8m3p9s4z7p8	0	被ツモ	-3000			1	18	17	kan4
+0	18	y	base	3	p1p1p1p1m4z2p8s8m3p9s4z7p8	1	被ツモ	-3000			0	14	14	kan4
+0	18	c	kan	2	p3p3p3p3p5s2p4z3p8m7p6m6p6	1	無関係	0			0	9	9	kan4
+0	18	c	nokan	2	p3p3p3p3p5s2p4z3p8m7p6m6p6	0	無関係	0			1	16	16	kan4
+0	18	c	base	2	p3p3p3p3p5s2p4z3p8m7p6m6p6	1	無関係	0			1	16	16	kan4
+0	19	z	kan	2	z1z1z1z1m3s4m9s9p3s2s3p2m3	1	流局	1500			1	18	17	kan4
+0	19	z	nokan	2	z1z1z1z1m3s4m9s9p3s2s3p2m3	0	放銃	-5200		1	1	16	16	kan4
+0	19	z	base	2	z1z1z1z1m3s4m9s9p3s2s3p2m3	1	流局	1500			1	18	17	kan4
+0	19	y	kan	3	p9p9p9p9p8m1s6s7z6z3s7s0z5	1	無関係	0			1	9	9	kan4
+0	19	y	nokan	3	p9p9p9p9p8m1s6s7z6z3s7s0z5	0	無関係	0			1	9	9	kan4
+0	19	y	base	3	p9p9p9p9p8m1s6s7z6z3s7s0z5	0	無関係	0			1	9	9	kan4
+0	19	c	kan	2	s8s8s8s8p7s3z4p8p2m5p7m4s2	1	放銃	-24000		0	0	9	9	kan4
+0	19	c	nokan	2	s8s8s8s8p7s3z4p8p2m5p7m4s2	0	放銃	-12000		0	0	9	9	kan4
+0	19	c	base	2	s8s8s8s8p7s3z4p8p2m5p7m4s2	1	放銃	-24000		0	0	9	9	kan4
+0	20	z	kan	1	z4z4z4z4p8m9p4m7p6s4p6m1p9	1	被ツモ	-2000			1	11	11	kan4
+0	20	z	nokan	1	z4z4z4z4p8m9p4m7p6s4p6m1p9	0	被ツモ	-2000			1	11	11	kan4
+0	20	z	base	1	z4z4z4z4p8m9p4m7p6s4p6m1p9	1	被ツモ	-2000			1	11	11	kan4
+0	20	y	kan	3	p9p9p9p9m8m6p8z3z1z5p5s9z1	1	放銃	-7700		0	1	9	9	kan4
+0	20	y	nokan	3	p9p9p9p9m8m6p8z3z1z5p5s9z1	0	被ツモ	-2000			1	9	8	kan4
+0	20	y	base	3	p9p9p9p9m8m6p8z3z1z5p5s9z1	0	被ツモ	-2000			1	9	8	kan4
+0	20	c	kan	3	s4s4s4s4p3s5s0s6m5s2p6s8m7	1	被ツモ	-4000			1	8	7	kan4
+0	20	c	nokan	3	s4s4s4s4p3s5s0s6m5s2p6s8m7	0	放銃	-1000		0	0	13	13	kan4
+0	20	c	base	3	s4s4s4s4p3s5s0s6m5s2p6s8m7	0	放銃	-1000		0	0	13	13	kan4
+0	21	z	kan	1	z5z5z5z5p4m3p0s5s1z6m6s5p3	1	和了	14000	ツモ		1	10	9	kan4
+0	21	z	nokan	1	z5z5z5z5p4m3p0s5s1z6m6s5p3	0	和了	10000	ツモ		1	10	9	kan4
+0	21	z	base	1	z5z5z5z5p4m3p0s5s1z6m6s5p3	1	和了	14000	ツモ		1	10	9	kan4
+0	21	y	kan	1	s9s9s9s9s6m5s3p4m6z3s2m7p7	1	和了	5500	ロン		0	7	7	kan4
+0	21	y	nokan	1	s9s9s9s9s6m5s3p4m6z3s2m7p7	0	和了	2300	ロン		0	8	8	kan4
+0	21	y	base	1	s9s9s9s9s6m5s3p4m6z3s2m7p7	1	和了	5500	ロン		0	7	7	kan4
+0	21	c	kan	3	s3s3s3s3m8s8p1z4p2z3m1s2s1	1	流局	-1000			0	18	18	kan4
+0	21	c	nokan	3	s3s3s3s3m8s8p1z4p2z3m1s2s1	0	無関係	0			0	5	6	kan4
+0	21	c	base	3	s3s3s3s3m8s8p1z4p2z3m1s2s1	0	無関係	0			0	5	6	kan4
+0	22	z	kan	1	z5z5z5z5z1m4m2s4p4m9m0m4p1	1	和了	2000	ツモ		0	13	13	kan4
+0	22	z	nokan	1	z5z5z5z5z1m4m2s4p4m9m0m4p1	0	被ツモ	-4000			1	14	15	kan4
+0	22	z	base	1	z5z5z5z5z1m4m2s4p4m9m0m4p1	1	和了	2000	ツモ		0	13	13	kan4
+0	22	y	kan	2	m9m9m9m9m3s6p2s7z6z6s2m5s4	0	無関係	0			0	9	9	kan4
+0	22	y	nokan	2	m9m9m9m9m3s6p2s7z6z6s2m5s4	0	無関係	0			0	9	9	kan4
+0	22	y	base	2	m9m9m9m9m3s6p2s7z6z6s2m5s4	0	無関係	0			0	9	9	kan4
+0	22	c	kan	1	s4s4s4s4m9s5s3s1z4p7z5s8z5	1	無関係	0			1	9	9	kan4
+0	22	c	nokan	1	s4s4s4s4m9s5s3s1z4p7z5s8z5	0	無関係	0			1	9	9	kan4
+0	22	c	base	1	s4s4s4s4m9s5s3s1z4p7z5s8z5	0	無関係	0			1	9	9	kan4
+0	23	z	kan	2	z7z7z7z7m9p8z4m8s3m2z3m8p5	1	流局	-1000			1	18	17	kan4
+0	23	z	nokan	2	z7z7z7z7m9p8z4m8s3m2z3m8p5	0	流局	-1000			1	18	17	kan4
+0	23	z	base	2	z7z7z7z7m9p8z4m8s3m2z3m8p5	0	流局	-1000			1	18	17	kan4
+0	23	y	kan	1	p1p1p1p1m1m3m7z1p8p9m2p7m4	1	和了	3300	ロン		0	6	6	kan4
+0	23	y	nokan	1	p1p1p1p1m1m3m7z1p8p9m2p7m4	0	和了	2300	ロン		0	6	6	kan4
+0	23	y	base	1	p1p1p1p1m1m3m7z1p8p9m2p7m4	1	和了	3300	ロン		0	6	6	kan4
+0	23	c	kan	3	p3p3p3p3s3m2p2s7z4z3p4s8m2	1	被ツモ	-1300			1	12	11	kan4
+0	23	c	nokan	3	p3p3p3p3s3m2p2s7z4z3p4s8m2	0	和了	7200	ロン		1	10	9	kan4
+0	23	c	base	3	p3p3p3p3s3m2p2s7z4z3p4s8m2	0	和了	7200	ロン		1	10	9	kan4
+0	24	z	kan	1	z4z4z4z4m2z3p5m4z1z6m3p8z7	1	和了	17000	ツモ		0	11	11	kan4
+0	24	z	nokan	1	z4z4z4z4m2z3p5m4z1z6m3p8z7	0	無関係	0			1	8	8	kan4
+0	24	z	base	1	z4z4z4z4m2z3p5m4z1z6m3p8z7	1	和了	17000	ツモ		0	11	11	kan4
+0	24	y	kan	2	s1s1s1s1z4p5s6z2s2s4p6p9p2	1	被ツモ	-500			1	12	12	kan4
+0	24	y	nokan	2	s1s1s1s1z4p5s6z2s2s4p6p9p2	0	被ツモ	-500			1	12	12	kan4
+0	24	y	base	2	s1s1s1s1z4p5s6z2s2s4p6p9p2	1	被ツモ	-500			1	12	12	kan4
+0	24	c	kan	3	p4p4p4p4m3s1p1z3m1m3s9s5z6	1	和了	10000	ツモ		1	9	8	kan4
+0	24	c	nokan	3	p4p4p4p4m3s1p1z3m1m3s9s5z6	0	流局	1500			1	18	17	kan4
+0	24	c	base	3	p4p4p4p4m3s1p1z3m1m3s9s5z6	1	和了	10000	ツモ		1	9	8	kan4
+0	25	z	kan	1	z6z6z6z6m5s4s5m1z4s0m7z3p9	1	無関係	0			1	9	10	kan4
+0	25	z	nokan	1	z6z6z6z6m5s4s5m1z4s0m7z3p9	0	和了	2600	ロン		0	7	9	kan4
+0	25	z	base	1	z6z6z6z6m5s4s5m1z4s0m7z3p9	1	無関係	0			1	9	10	kan4
+0	25	y	kan	2	p9p9p9p9s5z5z3m8p6p3s8s2m7	1	無関係	0			1	12	12	kan4
+0	25	y	nokan	2	p9p9p9p9s5z5z3m8p6p3s8s2m7	0	無関係	0			0	13	13	kan4
+0	25	y	base	2	p9p9p9p9s5z5z3m8p6p3s8s2m7	1	無関係	0			1	12	12	kan4
+0	25	c	kan	1	s0s5s5s5s3s1p8p5p1s4s9m7z7	1	被ツモ	-2000			0	14	15	kan4
+0	25	c	nokan	1	s0s5s5s5s3s1p8p5p1s4s9m7z7	0	被ツモ	-300			1	13	13	kan4
+0	25	c	base	1	s0s5s5s5s3s1p8p5p1s4s9m7z7	0	被ツモ	-300			1	13	13	kan4
+0	26	z	kan	2	z3z3z3z3p4p4p1p5s2p7s8z1z4	1	被ツモ	-3900			1	10	10	kan4
+0	26	z	nokan	2	z3z3z3z3p4p4p1p5s2p7s8z1z4	0	和了	1000	ロン		0	8	9	kan4
+0	26	z	base	2	z3z3z3z3p4p4p1p5s2p7s8z1z4	1	被ツモ	-3900			1	10	10	kan4
+0	26	y	kan	2	p1p1p1p1m3z7s1m4m7s1z3p7z3	1	被ツモ	-400			0	6	7	kan4
+0	26	y	nokan	2	p1p1p1p1m3z7s1m4m7s1z3p7z3	0	被ツモ	-400			0	6	7	kan4
+0	26	y	base	2	p1p1p1p1m3z7s1m4m7s1z3p7z3	1	被ツモ	-400			0	6	7	kan4
+0	26	c	kan	3	s7s7s7s7m6z4m2p3p6m7s3s6s2	1	被ツモ	-6000			0	14	15	kan4
+0	26	c	nokan	3	s7s7s7s7m6z4m2p3p6m7s3s6s2	0	被ツモ	-1000			0	10	10	kan4
+0	26	c	base	3	s7s7s7s7m6z4m2p3p6m7s3s6s2	0	被ツモ	-1000			0	10	10	kan4
+0	27	z	kan	3	z1z1z1z1z6p7s6s5s8p7m1p9p1	1	無関係	0			0	13	12	kan4
+0	27	z	nokan	3	z1z1z1z1z6p7s6s5s8p7m1p9p1	0	無関係	0			0	13	12	kan4
+0	27	z	base	3	z1z1z1z1z6p7s6s5s8p7m1p9p1	1	無関係	0			0	13	12	kan4
+0	27	y	kan	2	s9s9s9s9z4z6s5p7p6p0z4z7p8	1	流局	-1500			1	18	17	kan4
+0	27	y	nokan	2	s9s9s9s9z4z6s5p7p6p0z4z7p8	0	被ツモ	-500			1	14	13	kan4
+0	27	y	base	2	s9s9s9s9z4z6s5p7p6p0z4z7p8	1	流局	-1500			1	18	17	kan4
+0	27	c	kan	3	s3s3s3s3s4p6z6m9p8p2m8s1s7	1	被ツモ	-3000			1	9	9	kan4
+0	27	c	nokan	3	s3s3s3s3s4p6z6m9p8p2m8s1s7	0	和了	3600	ロン		0	8	8	kan4
+0	27	c	base	3	s3s3s3s3s4p6z6m9p8p2m8s1s7	0	和了	3600	ロン		0	8	8	kan4
+0	28	z	kan	3	z2z2z2z2p6z4p2m6m7m7p5s2z5	1	放銃	-3900		0	0	7	7	kan4
+0	28	z	nokan	3	z2z2z2z2p6z4p2m6m7m7p5s2z5	0	無関係	0			0	5	4	kan4
+0	28	z	base	3	z2z2z2z2p6z4p2m6m7m7p5s2z5	1	放銃	-3900		0	0	7	7	kan4
+0	28	y	kan	3	m9m9m9m9m8m1p0p4s5m4m3z2p7	1	放銃	-5200		1	1	8	7	kan4
+0	28	y	nokan	3	m9m9m9m9m8m1p0p4s5m4m3z2p7	0	和了	4200	ロン		0	17	16	kan4
+0	28	y	base	3	m9m9m9m9m8m1p0p4s5m4m3z2p7	1	放銃	-5200		1	1	8	7	kan4
+0	28	c	kan	2	p0p5p5p5s9p7m8m3p6p4z1s2s4	1	和了	10000	ロン		1	10	10	kan4
+0	28	c	nokan	2	p0p5p5p5s9p7m8m3p6p4z1s2s4	0	和了	7200	ロン		1	12	11	kan4
+0	28	c	base	2	p0p5p5p5s9p7m8m3p6p4z1s2s4	0	和了	7200	ロン		1	12	11	kan4
+0	29	z	kan	2	z6z6z6z6m5s9m9p0p1p1s6s3p2	1	和了	7700	ロン		1	8	8	kan4
+0	29	z	nokan	2	z6z6z6z6m5s9m9p0p1p1s6s3p2	0	流局	-1000			1	18	17	kan4
+0	29	z	base	2	z6z6z6z6m5s9m9p0p1p1s6s3p2	0	流局	-1000			1	18	17	kan4
+0	29	y	kan	1	m1m1m1m1s6m8m4m7s6s6m2m6p2	1	和了	5500	ロン		0	8	9	kan4
+0	29	y	nokan	1	m1m1m1m1s6m8m4m7s6s6m2m6p2	0	和了	3700	ツモ		0	9	9	kan4
+0	29	y	base	1	m1m1m1m1s6m8m4m7s6s6m2m6p2	1	和了	5500	ロン		0	8	9	kan4
+0	29	c	kan	1	p2p2p2p2m6s3m9p5s2z6p8z2s2	1	流局	-1500			1	18	18	kan4
+0	29	c	nokan	1	p2p2p2p2m6s3m9p5s2z6p8z2s2	0	放銃	-5200		0	0	12	13	kan4
+0	29	c	base	1	p2p2p2p2m6s3m9p5s2z6p8z2s2	0	放銃	-5200		0	0	12	13	kan4
+0	30	z	kan	2	z2z2z2z2p7m5m2z1p3z4m0s4m5	1	和了	10000	ツモ		1	12	11	kan4
+0	30	z	nokan	2	z2z2z2z2p7m5m2z1p3z4m0s4m5	0	和了	8400	ロン		1	17	17	kan4
+0	30	z	base	2	z2z2z2z2p7m5m2z1p3z4m0s4m5	1	和了	10000	ツモ		1	12	11	kan4
+0	30	y	kan	2	s1s1s1s1p7m2m0z7s4z6m1m1s8	1	無関係	0			1	7	7	kan4
+0	30	y	nokan	2	s1s1s1s1p7m2m0z7s4z6m1m1s8	0	無関係	0			1	7	7	kan4
+0	30	y	base	2	s1s1s1s1p7m2m0z7s4z6m1m1s8	1	無関係	0			1	7	7	kan4
+0	30	c	kan	2	s3s3s3s3s2s8m7s8s6m2m8s9z2	1	放銃	-8000		1	1	7	7	kan4
+0	30	c	nokan	2	s3s3s3s3s2s8m7s8s6m2m8s9z2	0	和了	2300	ロン		1	6	6	kan4
+0	30	c	base	2	s3s3s3s3s2s8m7s8s6m2m8s9z2	1	放銃	-8000		1	1	7	7	kan4
+0	31	z	kan	3	z6z6z6z6p8z7p2m4p2p4s0p4p5	1	流局	1500			0	17	18	kan4
+0	31	z	nokan	3	z6z6z6z6p8z7p2m4p2p4s0p4p5	0	無関係	0			1	8	8	kan4
+0	31	z	base	3	z6z6z6z6p8z7p2m4p2p4s0p4p5	0	無関係	0			1	8	8	kan4
+0	31	y	kan	3	m9m9m9m9p6s9z6s9m3p3s8m8p4	1	和了	8900	ツモ		0	13	12	kan4
+0	31	y	nokan	3	m9m9m9m9p6s9z6s9m3p3s8m8p4	0	和了	7200	ツモ		1	14	13	kan4
+0	31	y	base	3	m9m9m9m9p6s9z6s9m3p3s8m8p4	1	和了	8900	ツモ		0	13	12	kan4
+0	31	c	kan	3	m5m5m5m0m9s1p6z6s7s4z7m3z4	1	被ツモ	-2000			1	13	12	kan4
+0	31	c	nokan	3	m5m5m5m0m9s1p6z6s7s4z7m3z4	0	被ツモ	-2000			1	13	12	kan4
+0	31	c	base	3	m5m5m5m0m9s1p6z6s7s4z7m3z4	1	被ツモ	-2000			1	13	12	kan4
+0	32	z	kan	1	z3z3z3z3m9m6s8m3m4s2m6p4s9	1	放銃	-1000		0	0	10	10	kan4
+0	32	z	nokan	1	z3z3z3z3m9m6s8m3m4s2m6p4s9	0	放銃	-1000		0	0	10	10	kan4
+0	32	z	base	1	z3z3z3z3m9m6s8m3m4s2m6p4s9	1	放銃	-1000		0	0	10	10	kan4
+0	32	y	kan	3	m1m1m1m1s1m8p7m4z7z5s8p8p9	1	流局	-1500			1	18	17	kan4
+0	32	y	nokan	3	m1m1m1m1s1m8p7m4z7z5s8p8p9	0	流局	-1000			1	18	17	kan4
+0	32	y	base	3	m1m1m1m1s1m8p7m4z7z5s8p8p9	1	流局	-1500			1	18	17	kan4
+0	32	c	kan	3	p5p5p0p5m2z1p6p7z2s3z3z7z1	1	放銃	-12000		1	1	6	6	kan4
+0	32	c	nokan	3	p5p5p0p5m2z1p6p7z2s3z3z7z1	0	和了	3000	ツモ		1	6	5	kan4
+0	32	c	base	3	p5p5p0p5m2z1p6p7z2s3z3z7z1	0	和了	3000	ツモ		1	6	5	kan4
+0	33	z	kan	2	z2z2z2z2s5s6p8p3p3z6m8m5z4	1	和了	14000	ツモ		1	12	11	kan4
+0	33	z	nokan	2	z2z2z2z2s5s6p8p3p3z6m8m5z4	0	無関係	0			1	14	14	kan4
+0	33	z	base	2	z2z2z2z2s5s6p8p3p3z6m8m5z4	1	和了	14000	ツモ		1	12	11	kan4
+0	33	y	kan	1	m1m1m1m1p7z2m7s7m3s2s6m2s6	1	被ツモ	-4000			0	9	9	kan4
+0	33	y	nokan	1	m1m1m1m1p7z2m7s7m3s2s6m2s6	0	被ツモ	-4000			1	10	10	kan4
+0	33	y	base	1	m1m1m1m1p7z2m7s7m3s2s6m2s6	1	被ツモ	-4000			0	9	9	kan4
+0	33	c	kan	1	m4m4m4m4s8m7m6p2z4s5p7z6m1	1	無関係	0			0	13	14	kan4
+0	33	c	nokan	1	m4m4m4m4s8m7m6p2z4s5p7z6m1	0	放銃	-11600		0	0	11	13	kan4
+0	33	c	base	1	m4m4m4m4s8m7m6p2z4s5p7z6m1	1	無関係	0			0	13	14	kan4
+0	34	z	kan	2	z7z7z7z7m9s5z1s3p3p8p8m4m8	1	被ツモ	-2000			0	15	16	kan4
+0	34	z	nokan	2	z7z7z7z7m9s5z1s3p3p8p8m4m8	0	放銃	-3900		0	0	12	12	kan4
+0	34	z	base	2	z7z7z7z7m9s5z1s3p3p8p8m4m8	1	被ツモ	-2000			0	15	16	kan4
+0	34	y	kan	1	p9p9p9p9z1m8s3s7p4p2z7s6m7	1	被ツモ	-300			0	11	12	kan4
+0	34	y	nokan	1	p9p9p9p9z1m8s3s7p4p2z7s6m7	0	和了	1300	ロン		1	14	15	kan4
+0	34	y	base	1	p9p9p9p9z1m8s3s7p4p2z7s6m7	1	被ツモ	-300			0	11	12	kan4
+0	34	c	kan	2	s4s4s4s4p6m3s9s8s6m7p8s5p8	1	和了	18000	ツモ		1	12	11	kan4
+0	34	c	nokan	2	s4s4s4s4p6m3s9s8s6m7p8s5p8	0	和了	6000	ツモ		1	12	11	kan4
+0	34	c	base	2	s4s4s4s4p6m3s9s8s6m7p8s5p8	0	和了	6000	ツモ		1	12	11	kan4
+0	35	z	kan	1	z4z4z4z4s6p6s8m6s2p4m4s6z7	1	無関係	0			1	6	5	kan4
+0	35	z	nokan	1	z4z4z4z4s6p6s8m6s2p4m4s6z7	0	流局	-1000			1	18	18	kan4
+0	35	z	base	1	z4z4z4z4s6p6s8m6s2p4m4s6z7	1	無関係	0			1	6	5	kan4
+0	35	y	kan	2	s9s9s9s9s5s3m2z7p1p7p3p6s2	1	和了	26000	ツモ		1	16	15	kan4
+0	35	y	nokan	2	s9s9s9s9s5s3m2z7p1p7p3p6s2	0	和了	17000	ロン		1	8	8	kan4
+0	35	y	base	2	s9s9s9s9s5s3m2z7p1p7p3p6s2	1	和了	26000	ツモ		1	16	15	kan4
+0	35	c	kan	3	p2p2p2p2m9p4p9m6m6m7s9s1z2	1	無関係	0			0	10	9	kan4
+0	35	c	nokan	3	p2p2p2p2m9p4p9m6m6m7s9s1z2	0	無関係	0			0	10	9	kan4
+0	35	c	base	3	p2p2p2p2m9p4p9m6m6m7s9s1z2	0	無関係	0			0	10	9	kan4
+0	36	z	kan	1	z6z6z6z6z5s9z1p7z4s4m3z1m4	1	被ツモ	-4000			1	6	6	kan4
+0	36	z	nokan	1	z6z6z6z6z5s9z1p7z4s4m3z1m4	0	被ツモ	-3000			1	6	6	kan4
+0	36	z	base	1	z6z6z6z6z5s9z1p7z4s4m3z1m4	1	被ツモ	-4000			1	6	6	kan4
+0	36	y	kan	3	s1s1s1s1m9z2s6m3z3s4s9p5p7	1	流局	1500			1	18	17	kan4
+0	36	y	nokan	3	s1s1s1s1m9z2s6m3z3s4s9p5p7	0	流局	1500			1	18	17	kan4
+0	36	y	base	3	s1s1s1s1m9z2s6m3z3s4s9p5p7	1	流局	1500			1	18	17	kan4
+0	36	c	kan	2	m2m2m2m2m3s4p3m4s0p3m5z5p2	1	無関係	0			1	6	5	kan4
+0	36	c	nokan	2	m2m2m2m2m3s4p3m4s0p3m5z5p2	0	無関係	0			1	6	5	kan4
+0	36	c	base	2	m2m2m2m2m3s4p3m4s0p3m5z5p2	0	無関係	0			1	6	5	kan4
+0	37	z	kan	3	z7z7z7z7z3p1s4z5p6m8p3s7s1	1	放銃	-5200		1	1	8	8	kan4
+0	37	z	nokan	3	z7z7z7z7z3p1s4z5p6m8p3s7s1	0	被ツモ	-2000			1	15	15	kan4
+0	37	z	base	3	z7z7z7z7z3p1s4z5p6m8p3s7s1	1	放銃	-5200		1	1	8	8	kan4
+0	37	y	kan	2	s1s1s1s1p8s9s7p6s3p0m0z6z4	1	無関係	0			1	15	15	kan4
+0	37	y	nokan	2	s1s1s1s1p8s9s7p6s3p0m0z6z4	0	放銃	-8000		1	1	6	6	kan4
+0	37	y	base	2	s1s1s1s1p8s9s7p6s3p0m0z6z4	1	無関係	0			1	15	15	kan4
+0	37	c	kan	1	p6p6p6p6s1z4m2m1m9s1s1m5s2	1	和了	8400	ロン		1	9	9	kan4
+0	37	c	nokan	1	p6p6p6p6s1z4m2m1m9s1s1m5s2	0	流局	-1000			1	18	18	kan4
+0	37	c	base	1	p6p6p6p6s1z4m2m1m9s1s1m5s2	1	和了	8400	ロン		1	9	9	kan4
+0	38	z	kan	2	z5z5z5z5z7s3p7s5p2p9s7p5s2	1	和了	9000	ロン		1	13	12	kan4
+0	38	z	nokan	2	z5z5z5z5z7s3p7s5p2p9s7p5s2	0	流局	1500			1	18	17	kan4
+0	38	z	base	2	z5z5z5z5z7s3p7s5p2p9s7p5s2	1	和了	9000	ロン		1	13	12	kan4
+0	38	y	kan	1	m9m9m9m9p8m1z1z3s3s4s2m1m5	1	放銃	-12000		0	1	14	14	kan4
+0	38	y	nokan	1	m9m9m9m9p8m1z1z3s3s4s2m1m5	0	放銃	-7700		0	1	14	14	kan4
+0	38	y	base	1	m9m9m9m9p8m1z1z3s3s4s2m1m5	1	放銃	-12000		0	1	14	14	kan4
+0	38	c	kan	1	s4s4s4s4z3z7p4m1m9m4p3z6s7	1	被ツモ	-2600			1	10	10	kan4
+0	38	c	nokan	1	s4s4s4s4z3z7p4m1m9m4p3z6s7	0	被ツモ	-2600			1	10	10	kan4
+0	38	c	base	1	s4s4s4s4z3z7p4m1m9m4p3z6s7	1	被ツモ	-2600			1	10	10	kan4
+0	39	z	kan	3	z3z3z3z3m1m1p9z4z7m5z5p1z1	1	無関係	0			1	6	5	kan4
+0	39	z	nokan	3	z3z3z3z3m1m1p9z4z7m5z5p1z1	0	被ツモ	-2000			1	12	11	kan4
+0	39	z	base	3	z3z3z3z3m1m1p9z4z7m5z5p1z1	0	被ツモ	-2000			1	12	11	kan4
+0	39	y	kan	1	p1p1p1p1s5z3m5s6s1m3z4m1m1	1	和了	5500	ロン		0	11	11	kan4
+0	39	y	nokan	1	p1p1p1p1s5z3m5s6s1m3z4m1m1	0	無関係	0			0	12	12	kan4
+0	39	y	base	1	p1p1p1p1s5z3m5s6s1m3z4m1m1	1	和了	5500	ロン		0	11	11	kan4
+0	39	c	kan	3	p3p3p3p3p7m9z1s8s6z3m1s5m2	1	流局	-1000			1	18	17	kan4
+0	39	c	nokan	3	p3p3p3p3p7m9z1s8s6z3m1s5m2	0	流局	-1000			1	18	17	kan4
+0	39	c	base	3	p3p3p3p3p7m9z1s8s6z3m1s5m2	1	流局	-1000			1	18	17	kan4
+0	40	z	kan	1	z2z2z2z2p8z1p1s5s1s7s3p2m3	1	和了	16000	ロン		1	11	11	kan4
+0	40	z	nokan	1	z2z2z2z2p8z1p1s5s1s7s3p2m3	0	流局	-1000			1	18	18	kan4
+0	40	z	base	1	z2z2z2z2p8z1p1s5s1s7s3p2m3	1	和了	16000	ロン		1	11	11	kan4
+0	40	y	kan	1	p9p9p9p9s8p4s5m7z1m2p5m5s6	1	流局	-1500			1	18	19	kan4
+0	40	y	nokan	1	p9p9p9p9s8p4s5m7z1m2p5m5s6	0	和了	10000	ツモ		1	14	13	kan4
+0	40	y	base	1	p9p9p9p9s8p4s5m7z1m2p5m5s6	1	流局	-1500			1	18	19	kan4
+0	40	c	kan	2	s4s4s4s4s6z4p5z1p4z3m9m2m5	1	放銃	-11600		0	1	10	11	kan4
+0	40	c	nokan	2	s4s4s4s4s6z4p5z1p4z3m9m2m5	0	放銃	-12000		0	0	11	12	kan4
+0	40	c	base	2	s4s4s4s4s6z4p5z1p4z3m9m2m5	1	放銃	-11600		0	1	10	11	kan4
+0	41	z	kan	2	z6z6z6z6s6p3p3z7m5m7m6z3s7	1	無関係	0			0	6	6	kan4
+0	41	z	nokan	2	z6z6z6z6s6p3p3z7m5m7m6z3s7	0	和了	2000	ロン		0	6	6	kan4
+0	41	z	base	2	z6z6z6z6s6p3p3z7m5m7m6z3s7	1	無関係	0			0	6	6	kan4
+0	41	y	kan	1	m9m9m9m9s7z6p9s2s4m6s1m5s9	1	和了	8900	ツモ		0	12	11	kan4
+0	41	y	nokan	1	m9m9m9m9s7z6p9s2s4m6s1m5s9	0	無関係	0			1	12	11	kan4
+0	41	y	base	1	m9m9m9m9s7z6p9s2s4m6s1m5s9	1	和了	8900	ツモ		0	12	11	kan4
+0	41	c	kan	3	p7p7p7p7m3z5z5z3s7z1z6s4s8	1	和了	8000	ツモ		0	14	13	kan4
+0	41	c	nokan	3	p7p7p7p7m3z5z5z3s7z1z6s4s8	0	和了	3000	ツモ		1	15	15	kan4
+0	41	c	base	3	p7p7p7p7m3z5z5z3s7z1z6s4s8	1	和了	9000	ツモ		1	14	13	kan4
+0	42	z	kan	1	z3z3z3z3p3m5z6p2m9s2p0m1m6	1	無関係	0			1	11	11	kan4
+0	42	z	nokan	1	z3z3z3z3p3m5z6p2m9s2p0m1m6	0	無関係	0			1	5	5	kan4
+0	42	z	base	1	z3z3z3z3p3m5z6p2m9s2p0m1m6	1	無関係	0			1	11	11	kan4
+0	42	y	kan	1	m9m9m9m9m1z1z4m7m8p9p0m6p6	1	流局	3000			0	18	17	kan4
+0	42	y	nokan	1	m9m9m9m9m1z1z4m7m8p9p0m6p6	0	和了	9000	ツモ		0	9	8	kan4
+0	42	y	base	1	m9m9m9m9m1z1z4m7m8p9p0m6p6	0	和了	9000	ツモ		0	9	8	kan4
+0	42	c	kan	3	m5m5m5m0s4p8s9s5s4p3p8z1z7	1	和了	2600	ロン		0	11	11	kan4
+0	42	c	nokan	3	m5m5m5m0s4p8s9s5s4p3p8z1z7	0	被ツモ	-500			0	7	8	kan4
+0	42	c	base	3	m5m5m5m0s4p8s9s5s4p3p8z1z7	0	被ツモ	-500			0	7	8	kan4
+0	43	z	kan	1	z3z3z3z3m8m9m8m1m7m2p1m7s6	1	和了	8000	ロン		0	9	9	kan4
+0	43	z	nokan	1	z3z3z3z3m8m9m8m1m7m2p1m7s6	0	和了	9000	ロン		1	12	12	kan4
+0	43	z	base	1	z3z3z3z3m8m9m8m1m7m2p1m7s6	1	和了	8000	ロン		0	9	9	kan4
+0	43	y	kan	1	p9p9p9p9s0m9z6s4m6z3m2z5m0	1	無関係	0			1	8	8	kan4
+0	43	y	nokan	1	p9p9p9p9s0m9z6s4m6z3m2z5m0	0	和了	6200	ロン		1	11	11	kan4
+0	43	y	base	1	p9p9p9p9s0m9z6s4m6z3m2z5m0	1	無関係	0			1	8	8	kan4
+0	43	c	kan	2	s2s2s2s2m2p9p9s8m6z7p7p1z4	1	被ツモ	-4000			1	11	12	kan4
+0	43	c	nokan	2	s2s2s2s2m2p9p9s8m6z7p7p1z4	0	無関係	0			1	12	12	kan4
+0	43	c	base	2	s2s2s2s2m2p9p9s8m6z7p7p1z4	0	無関係	0			1	12	12	kan4
+0	44	z	kan	2	z4z4z4z4z6m3z2m5p1s2p2s5p1	1	放銃	-3900		0	0	7	8	kan4
+0	44	z	nokan	2	z4z4z4z4z6m3z2m5p1s2p2s5p1	0	放銃	-2000		0	0	7	8	kan4
+0	44	z	base	2	z4z4z4z4z6m3z2m5p1s2p2s5p1	1	放銃	-3900		0	0	7	8	kan4
+0	44	y	kan	3	p1p1p1p1m8p2s4m6z5s8m3p7m8	1	無関係	0			1	10	10	kan4
+0	44	y	nokan	3	p1p1p1p1m8p2s4m6z5s8m3p7m8	0	無関係	0			1	9	9	kan4
+0	44	y	base	3	p1p1p1p1m8p2s4m6z5s8m3p7m8	0	無関係	0			1	9	9	kan4
+0	44	c	kan	2	p5p5p5p0p4z4m6z5m5s8s4z7s1	1	被ツモ	-1000			0	14	14	kan4
+0	44	c	nokan	2	p5p5p5p0p4z4m6z5m5s8s4z7s1	0	和了	4000	ツモ		0	9	9	kan4
+0	44	c	base	2	p5p5p5p0p4z4m6z5m5s8s4z7s1	1	被ツモ	-1000			0	14	14	kan4
+0	45	z	kan	3	z5z5z5z5p0m8m5z6m4s4p1s7s3	1	被ツモ	-1000			1	11	10	kan4
+0	45	z	nokan	3	z5z5z5z5p0m8m5z6m4s4p1s7s3	0	流局	-1000			1	18	17	kan4
+0	45	z	base	3	z5z5z5z5p0m8m5z6m4s4p1s7s3	1	被ツモ	-1000			1	11	10	kan4
+0	45	y	kan	3	s1s1s1s1m9s2m4s8m0p2z7z6s7	1	和了	8900	ツモ		0	9	9	kan4
+0	45	y	nokan	3	s1s1s1s1m9s2m4s8m0p2z7z6s7	0	流局	1500			0	18	18	kan4
+0	45	y	base	3	s1s1s1s1m9s2m4s8m0p2z7z6s7	1	和了	8900	ツモ		0	16	15	kan4
+0	45	c	kan	3	p7p7p7p7s1m4s9s5m8p6s4z1m4	1	流局	-1000			1	18	17	kan4
+0	45	c	nokan	3	p7p7p7p7s1m4s9s5m8p6s4z1m4	0	放銃	-2000		1	1	16	16	kan4
+0	45	c	base	3	p7p7p7p7s1m4s9s5m8p6s4z1m4	1	流局	-1000			1	18	17	kan4
+0	46	z	kan	1	z5z5z5z5s6p2z1m8p3p9m1s4m3	1	無関係	0			1	14	14	kan4
+0	46	z	nokan	1	z5z5z5z5s6p2z1m8p3p9m1s4m3	0	被ツモ	-1000			1	12	12	kan4
+0	46	z	base	1	z5z5z5z5s6p2z1m8p3p9m1s4m3	1	無関係	0			1	14	14	kan4
+0	46	y	kan	2	s1s1s1s1z2m3m9p9z3m1z5z7s6	1	無関係	0			0	7	7	kan4
+0	46	y	nokan	2	s1s1s1s1z2m3m9p9z3m1z5z7s6	0	無関係	0			0	7	7	kan4
+0	46	y	base	2	s1s1s1s1z2m3m9p9z3m1z5z7s6	1	無関係	0			0	7	7	kan4
+0	46	c	kan	1	p2p2p2p2z5p4m7z6z1m6s1m3m3	1	被ツモ	-500			0	10	10	kan4
+0	46	c	nokan	1	p2p2p2p2z5p4m7z6z1m6s1m3m3	0	放銃	-2000		0	0	8	9	kan4
+0	46	c	base	1	p2p2p2p2z5p4m7z6z1m6s1m3m3	1	放銃	-2000		0	0	5	6	kan4
+0	47	z	kan	2	z4z4z4z4m2s4m2m2s7m4p2s2m5	1	無関係	0			1	9	10	kan4
+0	47	z	nokan	2	z4z4z4z4m2s4m2m2s7m4p2s2m5	0	無関係	0			0	4	5	kan4
+0	47	z	base	2	z4z4z4z4m2s4m2m2s7m4p2s2m5	1	無関係	0			1	9	10	kan4
+0	47	y	kan	3	m1m1m1m1p3z6m4m5s9p8z1s8z7	1	放銃	-12000		1	1	11	11	kan4
+0	47	y	nokan	3	m1m1m1m1p3z6m4m5s9p8z1s8z7	0	被ツモ	-2600			1	15	14	kan4
+0	47	y	base	3	m1m1m1m1p3z6m4m5s9p8z1s8z7	1	放銃	-12000		1	1	11	11	kan4
+0	47	c	kan	2	p6p6p6p6p1m1m6s5p4z1m7z6m6	1	被ツモ	-300			0	17	18	kan4
+0	47	c	nokan	2	p6p6p6p6p1m1m6s5p4z1m7z6m6	0	被ツモ	-6000			1	13	14	kan4
+0	47	c	base	2	p6p6p6p6p1m1m6s5p4z1m7z6m6	0	被ツモ	-6000			1	13	14	kan4
+0	48	z	kan	1	z5z5z5z5p9s4s6p5s4m9s7p5m8	1	和了	9000	ツモ		1	11	11	kan4
+0	48	z	nokan	1	z5z5z5z5p9s4s6p5s4m9s7p5m8	0	和了	4900	ロン		1	11	11	kan4
+0	48	z	base	1	z5z5z5z5p9s4s6p5s4m9s7p5m8	1	和了	9000	ツモ		1	11	11	kan4
+0	48	y	kan	1	s9s9s9s9s5s4m7m6s7p4m5s8s1	1	被ツモ	-500			0	5	5	kan4
+0	48	y	nokan	1	s9s9s9s9s5s4m7m6s7p4m5s8s1	0	被ツモ	-500			0	5	5	kan4
+0	48	y	base	1	s9s9s9s9s5s4m7m6s7p4m5s8s1	0	被ツモ	-500			0	5	5	kan4
+0	48	c	kan	1	m3m3m3m3m1p2z6p5s6p8m4m0m4	1	被ツモ	-700			0	9	10	kan4
+0	48	c	nokan	1	m3m3m3m3m1p2z6p5s6p8m4m0m4	0	放銃	-2600		0	0	7	7	kan4
+0	48	c	base	1	m3m3m3m3m1p2z6p5s6p8m4m0m4	0	放銃	-2600		0	0	7	7	kan4
+0	49	z	kan	3	z4z4z4z4s2z3s1p7z5s4s8m5p8	1	被ツモ	-1000			1	14	14	kan4
+0	49	z	nokan	3	z4z4z4z4s2z3s1p7z5s4s8m5p8	0	和了	1500	ツモ		0	9	9	kan4
+0	49	z	base	3	z4z4z4z4s2z3s1p7z5s4s8m5p8	1	被ツモ	-1000			1	14	14	kan4
+0	49	y	kan	3	p9p9p9p9p2z5s8s1s8z6m9m7m5	1	無関係	0			1	11	11	kan4
+0	49	y	nokan	3	p9p9p9p9p2z5s8s1s8z6m9m7m5	0	無関係	0			1	11	11	kan4
+0	49	y	base	3	p9p9p9p9p2z5s8s1s8z6m9m7m5	1	無関係	0			1	11	11	kan4
+0	49	c	kan	3	s3s3s3s3s9s2m6m9s4z5p0m7m2	1	流局	-1000			1	18	17	kan4
+0	49	c	nokan	3	s3s3s3s3s9s2m6m9s4z5p0m7m2	0	流局	1500			1	18	17	kan4
+0	49	c	base	3	s3s3s3s3s9s2m6m9s4z5p0m7m2	0	流局	1500			1	18	17	kan4
+0	50	z	kan	1	z6z6z6z6s4m8p3s9m6s2p1z2m7	1	和了	7900	ツモ		0	4	4	kan4
+0	50	z	nokan	1	z6z6z6z6s4m8p3s9m6s2p1z2m7	0	放銃	-8000		1	1	5	6	kan4
+0	50	z	base	1	z6z6z6z6s4m8p3s9m6s2p1z2m7	1	和了	7900	ツモ		0	4	4	kan4
+0	50	y	kan	3	s1s1s1s1z1p9s2s5s8p4z2p4s8	1	無関係	0			0	6	3	kan4
+0	50	y	nokan	3	s1s1s1s1z1p9s2s5s8p4z2p4s8	0	被ツモ	-4000			0	9	7	kan4
+0	50	y	base	3	s1s1s1s1z1p9s2s5s8p4z2p4s8	1	被ツモ	-4000			0	9	7	kan4
+0	50	c	kan	2	m5m5m5m0z4m3p1s3p7p3p2p4m4	1	和了	4200	ロン		0	6	5	kan4
+0	50	c	nokan	2	m5m5m5m0z4m3p1s3p7p3p2p4m4	0	流局	3000			0	18	17	kan4
+0	50	c	base	2	m5m5m5m0z4m3p1s3p7p3p2p4m4	0	流局	3000			0	18	17	kan4
+0	51	z	kan	3	z5z5z5z5m4m3p4p3s1s7p9s5p5	0	和了	3000	ツモ		1	14	13	kan4
+0	51	z	nokan	3	z5z5z5z5m4m3p4p3s1s7p9s5p5	0	和了	3000	ツモ		1	14	13	kan4
+0	51	z	base	3	z5z5z5z5m4m3p4p3s1s7p9s5p5	0	和了	3000	ツモ		1	14	13	kan4
+0	51	y	kan	2	p9p9p9p9s1m1p4z6s9s6z2m9p4	1	流局	-1500			0	18	18	kan4
+0	51	y	nokan	2	p9p9p9p9s1m1p4z6s9s6z2m9p4	0	無関係	0			1	8	9	kan4
+0	51	y	base	2	p9p9p9p9s1m1p4z6s9s6z2m9p4	1	流局	-1500			0	18	18	kan4
+0	51	c	kan	3	s4s4s4s4z5p7m7m3p3s1s8m9s0	2	和了	10000	ツモ		1	11	10	kan4
+0	51	c	nokan	3	s4s4s4s4z5p7m7m3p3s1s8m9s0	0	和了	7200	ツモ		1	11	10	kan4
+0	51	c	base	3	s4s4s4s4z5p7m7m3p3s1s8m9s0	2	和了	10000	ツモ		1	11	10	kan4
+0	52	z	kan	2	z5z5z5z5m8m8p9m7m7s7m5z2m8	1	無関係	0			0	10	10	kan4
+0	52	z	nokan	2	z5z5z5z5m8m8p9m7m7s7m5z2m8	0	無関係	0			0	10	10	kan4
+0	52	z	base	2	z5z5z5z5m8m8p9m7m7s7m5z2m8	1	無関係	0			0	10	10	kan4
+0	52	y	kan	1	m9m9m9m9p9z4z2s4p5s4p1m6s8	1	被ツモ	-2000			1	10	10	kan4
+0	52	y	nokan	1	m9m9m9m9p9z4z2s4p5s4p1m6s8	0	和了	1300	ロン		0	9	9	kan4
+0	52	y	base	1	m9m9m9m9p9z4z2s4p5s4p1m6s8	0	和了	1300	ロン		0	9	9	kan4
+0	52	c	kan	3	p2p2p2p2s3z5z5s6p1s0m7p5m6	1	被ツモ	-1000			0	12	13	kan4
+0	52	c	nokan	3	p2p2p2p2s3z5z5s6p1s0m7p5m6	0	流局	3000			0	18	17	kan4
+0	52	c	base	3	p2p2p2p2s3z5z5s6p1s0m7p5m6	0	流局	3000			0	18	17	kan4
+0	53	z	kan	1	z3z3z3z3m6p2z7s9m9p1s4s2s9	1	被ツモ	-4000			1	16	15	kan4
+0	53	z	nokan	1	z3z3z3z3m6p2z7s9m9p1s4s2s9	0	被ツモ	-1000			0	12	11	kan4
+0	53	z	base	1	z3z3z3z3m6p2z7s9m9p1s4s2s9	1	被ツモ	-4000			1	16	15	kan4
+0	53	y	kan	2	m9m9m9m9s3z5p4s4p9m1m8s2p1	1	被ツモ	-4000			0	11	11	kan4
+0	53	y	nokan	2	m9m9m9m9s3z5p4s4p9m1m8s2p1	0	被ツモ	-1300			1	11	10	kan4
+0	53	y	base	2	m9m9m9m9s3z5p4s4p9m1m8s2p1	0	被ツモ	-1300			1	11	10	kan4
+0	53	c	kan	2	s6s6s6s6m3s2m7p9m3s1p8z4p3	1	無関係	0			1	12	11	kan4
+0	53	c	nokan	2	s6s6s6s6m3s2m7p9m3s1p8z4p3	0	放銃	-6400		1	1	10	10	kan4
+0	53	c	base	2	s6s6s6s6m3s2m7p9m3s1p8z4p3	1	無関係	0			1	12	11	kan4
+0	54	z	kan	2	z5z5z5z5m3s2z1m6p9p1p7p5s8	1	和了	4000	ツモ		0	13	12	kan4
+0	54	z	nokan	2	z5z5z5z5m3s2z1m6p9p1p7p5s8	0	被ツモ	-500			0	8	7	kan4
+0	54	z	base	2	z5z5z5z5m3s2z1m6p9p1p7p5s8	1	和了	4000	ツモ		0	13	12	kan4
+0	54	y	kan	2	m1m1m1m1s3m9s4p4z7m4z6p8s9	1	放銃	-11600		0	0	7	8	kan4
+0	54	y	nokan	2	m1m1m1m1s3m9s4p4z7m4z6p8s9	0	無関係	0			1	9	10	kan4
+0	54	y	base	2	m1m1m1m1s3m9s4p4z7m4z6p8s9	1	放銃	-11600		0	0	7	8	kan4
+0	54	c	kan	1	m4m4m4m4p4p4p3p1z3m7s3m9m2	1	和了	9000	ロン		0	17	16	kan4
+0	54	c	nokan	1	m4m4m4m4p4p4p3p1z3m7s3m9m2	0	流局	1500			0	18	17	kan4
+0	54	c	base	1	m4m4m4m4p4p4p3p1z3m7s3m9m2	0	流局	1500			0	18	17	kan4
+0	55	z	kan	1	z1z1z1z1s2s5m6s2m3s7s1p8p9	1	流局	1000			1	18	19	kan4
+0	55	z	nokan	1	z1z1z1z1s2s5m6s2m3s7s1p8p9	0	放銃	-7700		0	0	7	8	kan4
+0	55	z	base	1	z1z1z1z1s2s5m6s2m3s7s1p8p9	1	流局	1000			1	18	19	kan4
+0	55	y	kan	3	s1s1s1s1s3p8s6p6m3p3p5m7s2	1	無関係	0			0	11	11	kan4
+0	55	y	nokan	3	s1s1s1s1s3p8s6p6m3p3p5m7s2	0	被ツモ	-2000			1	15	14	kan4
+0	55	y	base	3	s1s1s1s1s3p8s6p6m3p3p5m7s2	0	被ツモ	-2000			1	15	14	kan4
+0	55	c	kan	3	m6m6m6m6s8s6s1m8p3z5m8p3p6	1	和了	8400	ツモ		1	12	11	kan4
+0	55	c	nokan	3	m6m6m6m6s8s6s1m8p3z5m8p3p6	0	和了	7200	ツモ		1	15	14	kan4
+0	55	c	base	3	m6m6m6m6s8s6s1m8p3z5m8p3p6	1	和了	8400	ツモ		1	12	11	kan4
+0	56	z	kan	2	z6z6z6z6p9p6s4z5m2z1s3p7m1	1	被ツモ	-1000			1	15	15	kan4
+0	56	z	nokan	2	z6z6z6z6p9p6s4z5m2z1s3p7m1	0	流局	1500			1	18	18	kan4
+0	56	z	base	2	z6z6z6z6p9p6s4z5m2z1s3p7m1	1	被ツモ	-1000			1	15	15	kan4
+0	56	y	kan	1	p9p9p9p9m7m5p8z2s8z3s6z7s4	1	流局	1500			1	18	17	kan4
+0	56	y	nokan	1	p9p9p9p9m7m5p8z2s8z3s6z7s4	0	被ツモ	-3000			1	15	15	kan4
+0	56	y	base	1	p9p9p9p9m7m5p8z2s8z3s6z7s4	1	流局	1500			1	18	17	kan4
+0	56	c	kan	1	p4p4p4p4p2p8p8m3s3s2m1z1s5	1	放銃	-3900		0	0	9	10	kan4
+0	56	c	nokan	1	p4p4p4p4p2p8p8m3s3s2m1z1s5	0	被ツモ	-2000			1	16	17	kan4
+0	56	c	base	1	p4p4p4p4p2p8p8m3s3s2m1z1s5	0	被ツモ	-2000			1	16	17	kan4
+0	57	z	kan	1	z7z7z7z7m4s1p6z1z6s2m3m9s6	1	無関係	0			1	6	6	kan4
+0	57	z	nokan	1	z7z7z7z7m4s1p6z1z6s2m3m9s6	0	和了	5900	ロン		1	15	15	kan4
+0	57	z	base	1	z7z7z7z7m4s1p6z1z6s2m3m9s6	1	無関係	0			1	6	6	kan4
+0	57	y	kan	3	m1m1m1m1s3z7m3s4m8p4p3m2s1	1	流局	-1500			1	18	17	kan4
+0	57	y	nokan	3	m1m1m1m1s3z7m3s4m8p4p3m2s1	0	和了	14000	ツモ		1	17	16	kan4
+0	57	y	base	3	m1m1m1m1s3z7m3s4m8p4p3m2s1	0	和了	14000	ツモ		1	17	16	kan4
+0	57	c	kan	1	p8p8p8p8m9s4z5p3m3m6z3z4s6	1	無関係	0			1	13	14	kan4
+0	57	c	nokan	1	p8p8p8p8m9s4z5p3m3m6z3z4s6	0	放銃	-2900		0	0	11	12	kan4
+0	57	c	base	1	p8p8p8p8m9s4z5p3m3m6z3z4s6	1	無関係	0			1	13	14	kan4
+0	58	z	kan	1	z3z3z3z3s2z4p2s5s1p8p6p9s3	1	被ツモ	-2000			1	9	9	kan4
+0	58	z	nokan	1	z3z3z3z3s2z4p2s5s1p8p6p9s3	0	被ツモ	-1300			1	9	9	kan4
+0	58	z	base	1	z3z3z3z3s2z4p2s5s1p8p6p9s3	1	被ツモ	-2000			1	9	9	kan4
+0	58	y	kan	1	p9p9p9p9p8s2p1s1p6m9z3p6s4	1	被ツモ	-500			0	11	14	kan4
+0	58	y	nokan	1	p9p9p9p9p8s2p1s1p6m9z3p6s4	0	放銃	-1000		0	0	6	8	kan4
+0	58	y	base	1	p9p9p9p9p8s2p1s1p6m9z3p6s4	1	放銃	-1000		0	0	5	6	kan4
+0	58	c	kan	2	s4s4s4s4m6m0z7z6p4p1m2s9z6	1	和了	13000	ロン		0	10	9	kan4
+0	58	c	nokan	2	s4s4s4s4m6m0z7z6p4p1m2s9z6	0	和了	6200	ロン		0	10	9	kan4
+0	58	c	base	2	s4s4s4s4m6m0z7z6p4p1m2s9z6	0	和了	6200	ロン		0	10	9	kan4
+0	59	z	kan	2	z1z1z1z1s1p1p3p1z4p1s3m4z5	1	和了	14000	ツモ		1	8	7	kan4
+0	59	z	nokan	2	z1z1z1z1s1p1p3p1z4p1s3m4z5	0	無関係	0			1	8	8	kan4
+0	59	z	base	2	z1z1z1z1s1p1p3p1z4p1s3m4z5	1	和了	14000	ツモ		1	8	7	kan4
+0	59	y	kan	2	s9s9s9s9m4m2p1m1s7m5m8s1p9	1	流局	-1500			1	17	17	kan4
+0	59	y	nokan	2	s9s9s9s9m4m2p1m1s7m5m8s1p9	0	無関係	0			0	11	10	kan4
+0	59	y	base	2	s9s9s9s9m4m2p1m1s7m5m8s1p9	1	流局	-1500			1	17	17	kan4
+0	59	c	kan	1	p7p7p7p7s8m8m7m5p8s8z5z3m8	1	放銃	-12000		1	1	8	9	kan4
+0	59	c	nokan	1	p7p7p7p7s8m8m7m5p8s8z5z3m8	0	被ツモ	-700			1	9	10	kan4
+0	59	c	base	1	p7p7p7p7s8m8m7m5p8s8z5z3m8	1	被ツモ	-1300			1	9	10	kan4
+0	60	z	kan	1	z5z5z5z5s8p9s8s9s6m1m6s9s3	1	和了	2000	ロン		0	7	8	kan4
+0	60	z	nokan	1	z5z5z5z5s8p9s8s9s6m1m6s9s3	0	和了	1300	ロン		0	8	8	kan4
+0	60	z	base	1	z5z5z5z5s8p9s8s9s6m1m6s9s3	1	和了	2000	ロン		0	7	8	kan4
+0	60	y	kan	2	p1p1p1p1s2s9p3s1s2p9p7m9s9	1	和了	8000	ツモ		0	9	9	kan4
+0	60	y	nokan	2	p1p1p1p1s2s9p3s1s2p9p7m9s9	0	和了	3600	ロン		1	14	14	kan4
+0	60	y	base	2	p1p1p1p1s2s9p3s1s2p9p7m9s9	0	和了	3600	ロン		1	14	14	kan4
+0	60	c	kan	3	s5s5s0s5m3s2p5s3m5p4p8m3s1	1	流局	3000			0	18	17	kan4
+0	60	c	nokan	3	s5s5s0s5m3s2p5s3m5p4p8m3s1	0	流局	3000			0	18	17	kan4
+0	60	c	base	3	s5s5s0s5m3s2p5s3m5p4p8m3s1	1	流局	3000			0	18	17	kan4
+0	61	z	kan	1	z1z1z1z1s8m1p7s6p4z3m3m4p3	1	流局	-1000			1	18	17	kan4
+0	61	z	nokan	1	z1z1z1z1s8m1p7s6p4z3m3m4p3	0	流局	-1000			1	18	18	kan4
+0	61	z	base	1	z1z1z1z1s8m1p7s6p4z3m3m4p3	1	流局	-1000			1	18	17	kan4
+0	61	y	kan	2	p1p1p1p1z7z5s4z7m4m2z3p2s8	1	和了	5000	ツモ		1	9	9	kan4
+0	61	y	nokan	2	p1p1p1p1z7z5s4z7m4m2z3p2s8	0	和了	3600	ロン		1	14	14	kan4
+0	61	y	base	2	p1p1p1p1z7z5s4z7m4m2z3p2s8	1	和了	5000	ツモ		1	9	9	kan4
+0	61	c	kan	3	p3p3p3p3s9s5s0p9s6m5z7m8m3	1	流局	1500			0	18	18	kan4
+0	61	c	nokan	3	p3p3p3p3s9s5s0p9s6m5z7m8m3	0	放銃	-3900		1	1	10	10	kan4
+0	61	c	base	3	p3p3p3p3s9s5s0p9s6m5z7m8m3	1	流局	1500			0	18	18	kan4
+0	62	z	kan	1	z2z2z2z2m3p4z1s1z6s1s7p3s6	1	和了	15000	ロン		1	10	10	kan4
+0	62	z	nokan	1	z2z2z2z2m3p4z1s1z6s1s7p3s6	0	無関係	0			1	10	10	kan4
+0	62	z	base	1	z2z2z2z2m3p4z1s1z6s1s7p3s6	1	和了	15000	ロン		1	10	10	kan4
+0	62	y	kan	1	p1p1p1p1s4s9m9s7p5s1m7m0m4	1	被ツモ	-6000			1	12	11	kan4
+0	62	y	nokan	1	p1p1p1p1s4s9m9s7p5s1m7m0m4	0	無関係	0			1	13	13	kan4
+0	62	y	base	1	p1p1p1p1s4s9m9s7p5s1m7m0m4	1	被ツモ	-6000			1	12	11	kan4
+0	62	c	kan	1	s6s6s6s6p2s5m1p7z2m5s2p9s9	1	流局	-1000			1	18	18	kan4
+0	62	c	nokan	1	s6s6s6s6p2s5m1p7z2m5s2p9s9	0	無関係	0			1	11	10	kan4
+0	62	c	base	1	s6s6s6s6p2s5m1p7z2m5s2p9s9	0	無関係	0			1	11	10	kan4
+0	63	z	kan	1	z1z1z1z1z7m5p0m6m3p6p9m4p1	0	放銃	-11600		1	1	7	8	kan4
+0	63	z	nokan	1	z1z1z1z1z7m5p0m6m3p6p9m4p1	0	放銃	-11600		1	1	7	8	kan4
+0	63	z	base	1	z1z1z1z1z7m5p0m6m3p6p9m4p1	0	放銃	-11600		1	1	7	8	kan4
+0	63	y	kan	2	p9p9p9p9p2z1z4p8s3z4p5m7s6	1	被ツモ	-500			0	10	10	kan4
+0	63	y	nokan	2	p9p9p9p9p2z1z4p8s3z4p5m7s6	0	無関係	0			1	10	10	kan4
+0	63	y	base	2	p9p9p9p9p2z1z4p8s3z4p5m7s6	0	無関係	0			1	10	10	kan4
+0	63	c	kan	2	p7p7p7p7s3p4m6z4z4p3s2m5m2	1	放銃	-16000		1	1	8	8	kan4
+0	63	c	nokan	2	p7p7p7p7s3p4m6z4z4p3s2m5m2	0	和了	2300	ロン		0	7	6	kan4
+0	63	c	base	2	p7p7p7p7s3p4m6z4z4p3s2m5m2	1	放銃	-16000		1	1	8	8	kan4
+0	64	z	kan	1	z6z6z6z6p6m7p8m7z4s2s9z7p7	1	放銃	-20000		0	0	8	9	kan4
+0	64	z	nokan	1	z6z6z6z6p6m7p8m7z4s2s9z7p7	0	放銃	-2000		0	0	8	9	kan4
+0	64	z	base	1	z6z6z6z6p6m7p8m7z4s2s9z7p7	1	放銃	-20000		0	0	8	9	kan4
+0	64	y	kan	1	s1s1s1s1p4s2p7z4z2p6z3z4s4	1	無関係	0			1	15	15	kan4
+0	64	y	nokan	1	s1s1s1s1p4s2p7z4z2p6z3z4s4	0	無関係	0			1	10	10	kan4
+0	64	y	base	1	s1s1s1s1p4s2p7z4z2p6z3z4s4	1	無関係	0			1	15	15	kan4
+0	64	c	kan	1	m6m6m6m6s7z7m3p4p9m4p6z2s5	1	被ツモ	-400			0	11	11	kan4
+0	64	c	nokan	1	m6m6m6m6s7z7m3p4p9m4p6z2s5	0	和了	3600	ロン		0	9	9	kan4
+0	64	c	base	1	m6m6m6m6s7z7m3p4p9m4p6z2s5	1	和了	5200	ロン		1	11	12	kan4
+0	65	z	kan	1	z7z7z7z7p1s6m1m3m9m7s2z1p3	1	和了	3000	ロン		1	9	9	kan4
+0	65	z	nokan	1	z7z7z7z7p1s6m1m3m9m7s2z1p3	0	無関係	0			0	8	9	kan4
+0	65	z	base	1	z7z7z7z7p1s6m1m3m9m7s2z1p3	1	和了	3000	ロン		1	9	9	kan4
+0	65	y	kan	2	m1m1m1m1s8s3s9s4m9p2p3s6s2	0	流局	0			0	1	0	kan4
+0	65	y	nokan	2	m1m1m1m1s8s3s9s4m9p2p3s6s2	0	流局	0			0	1	0	kan4
+0	65	y	base	2	m1m1m1m1s8s3s9s4m9p2p3s6s2	0	流局	0			0	1	0	kan4
+0	65	c	kan	1	p3p3p3p3p4s7s9p4p7z1m4z1z4	1	和了	8000	ロン		0	8	9	kan4
+0	65	c	nokan	1	p3p3p3p3p4s7s9p4p7z1m4z1z4	0	和了	1300	ロン		0	9	9	kan4
+0	65	c	base	1	p3p3p3p3p4s7s9p4p7z1m4z1z4	0	和了	1300	ロン		0	9	9	kan4
+0	66	z	kan	2	z5z5z5z5s6z3p2m4z6z2s9s3p4	1	和了	2000	ツモ		0	9	8	kan4
+0	66	z	nokan	2	z5z5z5z5s6z3p2m4z6z2s9s3p4	0	和了	1500	ツモ		0	9	8	kan4
+0	66	z	base	2	z5z5z5z5s6z3p2m4z6z2s9s3p4	1	和了	2000	ツモ		0	9	8	kan4
+0	66	y	kan	1	m1m1m1m1z3m5s1z2m2s2s1p3s8	1	和了	9000	ロン		0	11	12	kan4
+0	66	y	nokan	1	m1m1m1m1z3m5s1z2m2s2s1p3s8	0	無関係	0			1	16	16	kan4
+0	66	y	base	1	m1m1m1m1z3m5s1z2m2s2s1p3s8	1	和了	9000	ロン		0	11	12	kan4
+0	66	c	kan	1	p3p3p3p3z2m1m2p9s5m9s7s4s8	1	無関係	0			1	9	10	kan4
+0	66	c	nokan	1	p3p3p3p3z2m1m2p9s5m9s7s4s8	0	無関係	0			1	6	6	kan4
+0	66	c	base	1	p3p3p3p3z2m1m2p9s5m9s7s4s8	1	無関係	0			1	9	10	kan4
+0	67	z	kan	2	z2z2z2z2m6p3p7s9z5z1m5p8s3	1	和了	9000	ロン		0	11	10	kan4
+0	67	z	nokan	2	z2z2z2z2m6p3p7s9z5z1m5p8s3	0	流局	-1000			1	18	17	kan4
+0	67	z	base	2	z2z2z2z2m6p3p7s9z5z1m5p8s3	1	和了	9000	ロン		0	11	10	kan4
+0	67	y	kan	2	p1p1p1p1m8s3z5m8m2z2m9p6p3	1	被ツモ	-3000			1	12	12	kan4
+0	67	y	nokan	2	p1p1p1p1m8s3z5m8m2z2m9p6p3	0	被ツモ	-3000			1	12	12	kan4
+0	67	y	base	2	p1p1p1p1m8s3z5m8m2z2m9p6p3	1	被ツモ	-3000			1	12	12	kan4
+0	67	c	kan	2	s8s8s8s8m8s2z1m6z2z4z6p2m1	1	被ツモ	-1000			0	7	7	kan4
+0	67	c	nokan	2	s8s8s8s8m8s2z1m6z2z4z6p2m1	0	無関係	0			0	6	5	kan4
+0	67	c	base	2	s8s8s8s8m8s2z1m6z2z4z6p2m1	1	被ツモ	-1000			0	7	7	kan4
+0	68	z	kan	2	z1z1z1z1z6z5s4s3p1p4p2z6z4	1	流局	1500			1	18	17	kan4
+0	68	z	nokan	2	z1z1z1z1z6z5s4s3p1p4p2z6z4	0	和了	5200	ロン		1	10	10	kan4
+0	68	z	base	2	z1z1z1z1z6z5s4s3p1p4p2z6z4	1	流局	1500			1	18	17	kan4
+0	68	y	kan	1	s9s9s9s9z6z5z2s6p9s2p6m9m9	1	無関係	0			1	10	10	kan4
+0	68	y	nokan	1	s9s9s9s9z6z5z2s6p9s2p6m9m9	0	無関係	0			1	10	10	kan4
+0	68	y	base	1	s9s9s9s9z6z5z2s6p9s2p6m9m9	0	無関係	0			1	10	10	kan4
+0	68	c	kan	2	s4s4s4s4s7z4p5s0z7s1p3m3z6	1	放銃	-9600		1	1	10	10	kan4
+0	68	c	nokan	2	s4s4s4s4s7z4p5s0z7s1p3m3z6	0	流局	1000			0	18	18	kan4
+0	68	c	base	2	s4s4s4s4s7z4p5s0z7s1p3m3z6	1	放銃	-9600		1	1	10	10	kan4
+0	69	z	kan	3	z6z6z6z6z4p3z3z7p2m6z7m2m2	1	和了	3900	ロン		0	14	15	kan4
+0	69	z	nokan	3	z6z6z6z6z4p3z3z7p2m6z7m2m2	0	無関係	0			1	8	8	kan4
+0	69	z	base	3	z6z6z6z6z4p3z3z7p2m6z7m2m2	1	和了	3900	ロン		0	14	15	kan4
+0	69	y	kan	2	s9s9s9s9p1s2p3z2p5p6s2p4p5	1	無関係	0			1	4	4	kan4
+0	69	y	nokan	2	s9s9s9s9p1s2p3z2p5p6s2p4p5	0	被ツモ	-500			1	8	7	kan4
+0	69	y	base	2	s9s9s9s9p1s2p3z2p5p6s2p4p5	1	無関係	0			1	4	4	kan4
+0	69	c	kan	3	s7s7s7s7p9s1s2p1m6m8m5z6m6	1	放銃	-1000		0	1	10	11	kan4
+0	69	c	nokan	3	s7s7s7s7p9s1s2p1m6m8m5z6m6	0	被ツモ	-3200			1	12	12	kan4
+0	69	c	base	3	s7s7s7s7p9s1s2p1m6m8m5z6m6	1	放銃	-1000		0	1	10	11	kan4
+0	70	z	kan	2	z4z4z4z4m3p5z1p6s4z6m3p2s1	1	和了	13000	ロン		1	9	11	kan4
+0	70	z	nokan	2	z4z4z4z4m3p5z1p6s4z6m3p2s1	0	無関係	0			0	12	12	kan4
+0	70	z	base	2	z4z4z4z4m3p5z1p6s4z6m3p2s1	1	和了	13000	ロン		1	9	11	kan4
+0	70	y	kan	1	p9p9p9p9s6s5z7z5z6p4z7m9s2	1	和了	2000	ツモ		0	8	9	kan4
+0	70	y	nokan	1	p9p9p9p9s6s5z7z5z6p4z7m9s2	0	和了	1500	ツモ		0	8	9	kan4
+0	70	y	base	1	p9p9p9p9s6s5z7z5z6p4z7m9s2	1	放銃	-11600		0	0	7	9	kan4
+0	70	c	kan	1	s7s7s7s7m8m3p2z1m7s5m8s4s8	1	放銃	-12000		0	0	15	16	kan4
+0	70	c	nokan	1	s7s7s7s7m8m3p2z1m7s5m8s4s8	0	放銃	-1000		0	0	8	10	kan4
+0	70	c	base	1	s7s7s7s7m8m3p2z1m7s5m8s4s8	0	放銃	-1000		0	0	8	10	kan4
+0	71	z	kan	3	z7z7z7z7s7m8s2z6m1p6m7s8s0	1	和了	8700	ロン		1	17	16	kan4
+0	71	z	nokan	3	z7z7z7z7s7m8s2z6m1p6m7s8s0	0	放銃	-2600		1	1	16	16	kan4
+0	71	z	base	3	z7z7z7z7s7m8s2z6m1p6m7s8s0	1	和了	8700	ロン		1	17	16	kan4
+0	71	y	kan	2	p1p1p1p1m1s8m7s2m9m3m4z5p7	1	被ツモ	-8000			1	14	13	kan4
+0	71	y	nokan	2	p1p1p1p1m1s8m7s2m9m3m4z5p7	0	無関係	0			0	7	7	kan4
+0	71	y	base	2	p1p1p1p1m1s8m7s2m9m3m4z5p7	1	被ツモ	-8000			1	14	13	kan4
+0	71	c	kan	2	m4m4m4m4p5m8s2s4p8s7s4s6z4	1	被ツモ	-1000			0	12	12	kan4
+0	71	c	nokan	2	m4m4m4m4p5m8s2s4p8s7s4s6z4	0	和了	3900	ロン		1	11	11	kan4
+0	71	c	base	2	m4m4m4m4p5m8s2s4p8s7s4s6z4	1	被ツモ	-1000			0	12	12	kan4
+0	72	z	kan	3	z1z1z1z1s1m7s8z2p8m5z5s6m4	1	無関係	0			1	11	10	kan4
+0	72	z	nokan	3	z1z1z1z1s1m7s8z2p8m5z5s6m4	0	和了	6200	ロン		1	9	8	kan4
+0	72	z	base	3	z1z1z1z1s1m7s8z2p8m5z5s6m4	1	無関係	0			1	11	10	kan4
+0	72	y	kan	3	s9s9s9s9s7s4p9m1s5s3m2z3z5	1	無関係	0			0	5	5	kan4
+0	72	y	nokan	3	s9s9s9s9s7s4p9m1s5s3m2z3z5	0	無関係	0			0	5	5	kan4
+0	72	y	base	3	s9s9s9s9s7s4p9m1s5s3m2z3z5	0	無関係	0			0	5	5	kan4
+0	72	c	kan	1	p3p3p3p3s5p2p8m9p7p9z3m8p6	1	流局	1500			0	18	18	kan4
+0	72	c	nokan	1	p3p3p3p3s5p2p8m9p7p9z3m8p6	0	流局	-1000			1	18	18	kan4
+0	72	c	base	1	p3p3p3p3s5p2p8m9p7p9z3m8p6	0	流局	-1000			1	18	18	kan4
+0	73	z	kan	1	z1z1z1z1p8p9z4p9m1m9z7m8s9	1	無関係	0			1	14	14	kan4
+0	73	z	nokan	1	z1z1z1z1p8p9z4p9m1m9z7m8s9	0	和了	9000	ロン		0	14	14	kan4
+0	73	z	base	1	z1z1z1z1p8p9z4p9m1m9z7m8s9	1	無関係	0			1	14	14	kan4
+0	73	y	kan	2	m9m9m9m9z1m7p9s8p7p7s5s1m5	1	無関係	0			1	11	10	kan4
+0	73	y	nokan	2	m9m9m9m9z1m7p9s8p7p7s5s1m5	0	被ツモ	-4000			1	12	11	kan4
+0	73	y	base	2	m9m9m9m9z1m7p9s8p7p7s5s1m5	1	無関係	0			1	11	10	kan4
+0	73	c	kan	1	s4s4s4s4m7p6p7m3s5p7z3z2p6	1	被ツモ	-6000			1	5	4	kan4
+0	73	c	nokan	1	s4s4s4s4m7p6p7m3s5p7z3z2p6	0	被ツモ	-6000			1	5	4	kan4
+0	73	c	base	1	s4s4s4s4m7p6p7m3s5p7z3z2p6	0	被ツモ	-6000			1	5	4	kan4
+0	74	z	kan	1	z2z2z2z2s0m2m1z1p7s8m4m1s1	1	和了	3900	ロン		0	9	9	kan4
+0	74	z	nokan	1	z2z2z2z2s0m2m1z1p7s8m4m1s1	0	和了	3000	ロン		1	9	9	kan4
+0	74	z	base	1	z2z2z2z2s0m2m1z1p7s8m4m1s1	1	和了	3900	ロン		0	9	9	kan4
+0	74	y	kan	1	m9m9m9m9z7z1p3s3s9p7m8s8p8	1	和了	2000	ロン		0	5	6	kan4
+0	74	y	nokan	1	m9m9m9m9z7z1p3s3s9p7m8s8p8	0	和了	1300	ロン		0	5	6	kan4
+0	74	y	base	1	m9m9m9m9z7z1p3s3s9p7m8s8p8	1	和了	2000	ロン		0	5	6	kan4
+0	74	c	kan	2	m3m3m3m3z7s4m7p8s5m8s5m9p6	1	和了	13000	ツモ		0	10	9	kan4
+0	74	c	nokan	2	m3m3m3m3z7s4m7p8s5m8s5m9p6	0	流局	3000			0	18	17	kan4
+0	74	c	base	2	m3m3m3m3z7s4m7p8s5m8s5m9p6	1	流局	3000			0	17	17	kan4
+0	75	z	kan	3	z2z2z2z2p5z4m8z4z5z1p7s6s5	0	流局	1000			1	18	20	kan4
+0	75	z	nokan	3	z2z2z2z2p5z4m8z4z5z1p7s6s5	0	流局	1000			1	18	20	kan4
+0	75	z	base	3	z2z2z2z2p5z4m8z4z5z1p7s6s5	0	被ツモ	-3000			1	13	15	kan4
+0	75	y	kan	1	p9p9p9p9m6m6s4s8m9p8s4z2m4	1	流局	-1000			1	17	17	kan4
+0	75	y	nokan	1	p9p9p9p9m6m6s4s8m9p8s4z2m4	0	流局	-1000			1	18	17	kan4
+0	75	y	base	1	p9p9p9p9m6m6s4s8m9p8s4z2m4	1	流局	-1000			1	17	17	kan4
+0	75	c	kan	1	p7p7p7p7m3p2p2s1m2z5m7s3z5	0	被ツモ	-2600			0	10	11	kan4
+0	75	c	nokan	1	p7p7p7p7m3p2p2s1m2z5m7s3z5	0	被ツモ	-2600			0	10	11	kan4
+0	75	c	base	1	p7p7p7p7m3p2p2s1m2z5m7s3z5	0	被ツモ	-2600			0	10	11	kan4
+0	76	z	kan	3	z5z5z5z5m1m2p6s7z1s1z3s2p6	1	放銃	-3900		0	1	10	10	kan4
+0	76	z	nokan	3	z5z5z5z5m1m2p6s7z1s1z3s2p6	0	流局	3000			0	18	17	kan4
+0	76	z	base	3	z5z5z5z5m1m2p6s7z1s1z3s2p6	1	放銃	-3900		0	1	10	10	kan4
+0	76	y	kan	1	p1p1p1p1s3s9s8z2m8p0z2p8m6	0	無関係	0			1	16	16	kan4
+0	76	y	nokan	1	p1p1p1p1s3s9s8z2m8p0z2p8m6	0	無関係	0			1	16	16	kan4
+0	76	y	base	1	p1p1p1p1s3s9s8z2m8p0z2p8m6	0	無関係	0			1	16	16	kan4
+0	76	c	kan	1	p0p5p5p5p1s7p6z7s7s3s8s8s6	1	流局	-1000			1	18	17	kan4
+0	76	c	nokan	1	p0p5p5p5p1s7p6z7s7s3s8s8s6	0	和了	9700	ロン		1	13	13	kan4
+0	76	c	base	1	p0p5p5p5p1s7p6z7s7s3s8s8s6	0	和了	9700	ロン		1	13	13	kan4
+0	77	z	kan	3	z3z3z3z3p8m4z7m2p6p2s9z5s5	1	和了	10000	ロン		1	17	16	kan4
+0	77	z	nokan	3	z3z3z3z3p8m4z7m2p6p2s9z5s5	0	無関係	0			1	13	12	kan4
+0	77	z	base	3	z3z3z3z3p8m4z7m2p6p2s9z5s5	1	和了	10000	ロン		1	17	16	kan4
+0	77	y	kan	3	p1p1p1p1m3s5p8p7s8s2p7p3z7	1	和了	10000	ロン		1	10	9	kan4
+0	77	y	nokan	3	p1p1p1p1m3s5p8p7s8s2p7p3z7	0	被ツモ	-2000			1	15	14	kan4
+0	77	y	base	3	p1p1p1p1m3s5p8p7s8s2p7p3z7	0	被ツモ	-2000			1	15	14	kan4
+0	77	c	kan	1	s8s8s8s8p5z3p3s5s1m7s1z2m3	1	流局	3000			0	17	17	kan4
+0	77	c	nokan	1	s8s8s8s8p5z3p3s5s1m7s1z2m3	0	和了	8900	ツモ		0	15	14	kan4
+0	77	c	base	1	s8s8s8s8p5z3p3s5s1m7s1z2m3	0	和了	8900	ツモ		0	15	14	kan4
+0	78	z	kan	2	z7z7z7z7p3m3m6s0m9p0z1m1p4	1	無関係	0			1	10	10	kan4
+0	78	z	nokan	2	z7z7z7z7p3m3m6s0m9p0z1m1p4	0	被ツモ	-500			1	11	10	kan4
+0	78	z	base	2	z7z7z7z7p3m3m6s0m9p0z1m1p4	1	無関係	0			1	10	10	kan4
+0	78	y	kan	2	p1p1p1p1z2z4s3s8z1m7p4m6s1	1	被ツモ	-3000			0	9	8	kan4
+0	78	y	nokan	2	p1p1p1p1z2z4s3s8z1m7p4m6s1	0	被ツモ	-2000			1	12	12	kan4
+0	78	y	base	2	p1p1p1p1z2z4s3s8z1m7p4m6s1	1	被ツモ	-3000			0	9	8	kan4
+0	78	c	kan	1	s2s2s2s2m5p3m5s3s6s3p7m5s1	1	被ツモ	-500			0	12	11	kan4
+0	78	c	nokan	1	s2s2s2s2m5p3m5s3s6s3p7m5s1	0	和了	5000	ツモ		0	13	12	kan4
+0	78	c	base	1	s2s2s2s2m5p3m5s3s6s3p7m5s1	0	和了	5000	ツモ		0	13	12	kan4
+0	79	z	kan	1	z6z6z6z6z5p5s1z2p2s8p6z1p4	1	和了	8000	ロン		0	6	6	kan4
+0	79	z	nokan	1	z6z6z6z6z5p5s1z2p2s8p6z1p4	0	無関係	0			0	10	10	kan4
+0	79	z	base	1	z6z6z6z6z5p5s1z2p2s8p6z1p4	1	和了	8000	ロン		0	6	6	kan4
+0	79	y	kan	2	s9s9s9s9m3s8z2p3m4m6z5z3p5	1	無関係	0			0	6	6	kan4
+0	79	y	nokan	2	s9s9s9s9m3s8z2p3m4m6z5z3p5	0	無関係	0			0	6	6	kan4
+0	79	y	base	2	s9s9s9s9m3s8z2p3m4m6z5z3p5	1	無関係	0			0	6	6	kan4
+0	79	c	kan	3	m6m6m6m6m4p3p2s7s5p8m3s3p2	1	無関係	0			1	7	6	kan4
+0	79	c	nokan	3	m6m6m6m6m4p3p2s7s5p8m3s3p2	0	無関係	0			1	14	15	kan4
+0	79	c	base	3	m6m6m6m6m4p3p2s7s5p8m3s3p2	1	無関係	0			1	7	6	kan4
+0	80	z	kan	2	z6z6z6z6m6s4p1z3p9s6m7m5p5	1	流局	-1000			1	18	17	kan4
+0	80	z	nokan	2	z6z6z6z6m6s4p1z3p9s6m7m5p5	0	流局	-1000			1	18	17	kan4
+0	80	z	base	2	z6z6z6z6m6s4p1z3p9s6m7m5p5	1	流局	-1000			1	18	17	kan4
+0	80	y	kan	2	p9p9p9p9p6m6p4s9s8m7s5p2z6	1	和了	9000	ロン		0	7	7	kan4
+0	80	y	nokan	2	p9p9p9p9p6m6p4s9s8m7s5p2z6	0	被ツモ	-4000			1	14	14	kan4
+0	80	y	base	2	p9p9p9p9p6m6p4s9s8m7s5p2z6	1	和了	9000	ロン		0	7	7	kan4
+0	80	c	kan	1	m8m8m8m8p8m4p6z5s7s5p6s9z3	1	放銃	-5200		1	1	11	11	kan4
+0	80	c	nokan	1	m8m8m8m8p8m4p6z5s7s5p6s9z3	0	放銃	-12000		1	1	14	14	kan4
+0	80	c	base	1	m8m8m8m8p8m4p6z5s7s5p6s9z3	1	放銃	-5200		1	1	11	11	kan4
+0	81	z	kan	2	z3z3z3z3m4m7z2m6s3p4p7m9p8	1	和了	9700	ロン		1	12	12	kan4
+0	81	z	nokan	2	z3z3z3z3m4m7z2m6s3p4p7m9p8	0	被ツモ	-2000			1	9	9	kan4
+0	81	z	base	2	z3z3z3z3m4m7z2m6s3p4p7m9p8	1	和了	9700	ロン		1	12	12	kan4
+0	81	y	kan	2	s9s9s9s9m9s5m4p2p4z4s1m2z1	1	無関係	0			0	7	6	kan4
+0	81	y	nokan	2	s9s9s9s9m9s5m4p2p4z4s1m2z1	0	無関係	0			0	12	12	kan4
+0	81	y	base	2	s9s9s9s9m9s5m4p2p4z4s1m2z1	1	無関係	0			0	7	6	kan4
+0	81	c	kan	1	p6p6p6p6z7m7p9p1z5m9s1m1s8	1	被ツモ	-2000			1	13	13	kan4
+0	81	c	nokan	1	p6p6p6p6z7m7p9p1z5m9s1m1s8	0	無関係	0			0	6	6	kan4
+0	81	c	base	1	p6p6p6p6z7m7p9p1z5m9s1m1s8	1	被ツモ	-2000			1	13	13	kan4
+0	82	z	kan	2	z1z1z1z1p7m9p1z3p6z6s7m7m7	1	無関係	0			0	8	8	kan4
+0	82	z	nokan	2	z1z1z1z1p7m9p1z3p6z6s7m7m7	0	無関係	0			0	8	7	kan4
+0	82	z	base	2	z1z1z1z1p7m9p1z3p6z6s7m7m7	1	無関係	0			0	8	8	kan4
+0	82	y	kan	3	m9m9m9m9m6z3m4m6z7m8z7m6m1	1	放銃	-7700		1	1	10	11	kan4
+0	82	y	nokan	3	m9m9m9m9m6z3m4m6z7m8z7m6m1	0	和了	5200	ロン		0	10	10	kan4
+0	82	y	base	3	m9m9m9m9m6z3m4m6z7m8z7m6m1	0	和了	5200	ロン		0	10	10	kan4
+0	82	c	kan	3	s7s7s7s7m1m5p1s8p2p7s5p1m6	1	無関係	0			0	10	10	kan4
+0	82	c	nokan	3	s7s7s7s7m1m5p1s8p2p7s5p1m6	0	無関係	0			0	14	13	kan4
+0	82	c	base	3	s7s7s7s7m1m5p1s8p2p7s5p1m6	0	無関係	0			0	14	13	kan4
+0	83	z	kan	3	z4z4z4z4s6m9p6p4p5m5z7m8s8	1	放銃	-3900		0	1	13	13	kan4
+0	83	z	nokan	3	z4z4z4z4s6m9p6p4p5m5z7m8s8	0	流局	1500			1	18	17	kan4
+0	83	z	base	3	z4z4z4z4s6m9p6p4p5m5z7m8s8	1	放銃	-3900		0	1	13	13	kan4
+0	83	y	kan	3	p9p9p9p9z6s4s3m8z6z7s4m5s5	1	被ツモ	-4000			1	12	11	kan4
+0	83	y	nokan	3	p9p9p9p9z6s4s3m8z6z7s4m5s5	0	和了	9000	ツモ		0	10	9	kan4
+0	83	y	base	3	p9p9p9p9z6s4s3m8z6z7s4m5s5	1	被ツモ	-4000			1	12	11	kan4
+0	83	c	kan	2	s3s3s3s3s1m8z2p8s8m1p1z5s2	1	無関係	0			1	11	10	kan4
+0	83	c	nokan	2	s3s3s3s3s1m8z2p8s8m1p1z5s2	0	被ツモ	-3000			1	10	9	kan4
+0	83	c	base	2	s3s3s3s3s1m8z2p8s8m1p1z5s2	0	被ツモ	-3000			1	10	9	kan4
+0	84	z	kan	3	z7z7z7z7m4p3s4m3m9p2z2m3m1	1	放銃	-11600		0	0	9	9	kan4
+0	84	z	nokan	3	z7z7z7z7m4p3s4m3m9p2z2m3m1	0	無関係	0			0	12	11	kan4
+0	84	z	base	3	z7z7z7z7m4p3s4m3m9p2z2m3m1	1	放銃	-11600		0	0	9	9	kan4
+0	84	y	kan	1	s9s9s9s9p6p2s3p6p4p4p1p8z5	1	和了	9000	ツモ		0	6	5	kan4
+0	84	y	nokan	1	s9s9s9s9p6p2s3p6p4p4p1p8z5	0	無関係	0			1	9	10	kan4
+0	84	y	base	1	s9s9s9s9p6p2s3p6p4p4p1p8z5	1	和了	9000	ツモ		0	6	5	kan4
+0	84	c	kan	2	s5s5s5s0z7p2m7p0m6s4p3p5m6	1	放銃	-4800		1	1	16	16	kan4
+0	84	c	nokan	2	s5s5s5s0z7p2m7p0m6s4p3p5m6	0	流局	3000			0	18	17	kan4
+0	84	c	base	2	s5s5s5s0z7p2m7p0m6s4p3p5m6	0	流局	3000			0	18	17	kan4
+0	85	z	kan	2	z5z5z5z5m6z7m8m1s4s5m2p7p4	1	被ツモ	-3000			1	15	16	kan4
+0	85	z	nokan	2	z5z5z5z5m6z7m8m1s4s5m2p7p4	0	和了	2000	ロン		1	9	10	kan4
+0	85	z	base	2	z5z5z5z5m6z7m8m1s4s5m2p7p4	1	被ツモ	-3000			1	15	16	kan4
+0	85	y	kan	3	m1m1m1m1z3p4s1s2m6m5m4z5p2	1	無関係	0			1	6	6	kan4
+0	85	y	nokan	3	m1m1m1m1z3p4s1s2m6m5m4z5p2	0	放銃	-3900		0	1	7	7	kan4
+0	85	y	base	3	m1m1m1m1z3p4s1s2m6m5m4z5p2	1	無関係	0			1	6	6	kan4
+0	85	c	kan	2	m4m4m4m4s0s2p5m2z3s6z7z1p6	1	和了	5200	ロン		1	4	4	kan4
+0	85	c	nokan	2	m4m4m4m4s0s2p5m2z3s6z7z1p6	0	被ツモ	-700			1	6	7	kan4
+0	85	c	base	2	m4m4m4m4s0s2p5m2z3s6z7z1p6	0	被ツモ	-700			1	6	7	kan4
+0	86	z	kan	2	z4z4z4z4p0z6s2z1p6p8s1s0m7	1	放銃	-1500		0	0	7	8	kan4
+0	86	z	nokan	2	z4z4z4z4p0z6s2z1p6p8s1s0m7	0	被ツモ	-500			1	11	11	kan4
+0	86	z	base	2	z4z4z4z4p0z6s2z1p6p8s1s0m7	1	放銃	-1500		0	0	7	8	kan4
+0	86	y	kan	1	m1m1m1m1m6p5p2s7p1m9z5z5s9	1	無関係	0			1	12	12	kan4
+0	86	y	nokan	1	m1m1m1m1m6p5p2s7p1m9z5z5s9	0	和了	2000	ロン		1	10	11	kan4
+0	86	y	base	1	m1m1m1m1m6p5p2s7p1m9z5z5s9	1	無関係	0			1	12	12	kan4
+0	86	c	kan	3	s3s3s3s3m9p6s0m4s7s5p4z2p3	1	無関係	0			1	15	14	kan4
+0	86	c	nokan	3	s3s3s3s3m9p6s0m4s7s5p4z2p3	0	流局	1500			0	18	18	kan4
+0	86	c	base	3	s3s3s3s3m9p6s0m4s7s5p4z2p3	1	無関係	0			1	15	14	kan4
+0	87	z	kan	3	z7z7z7z7p6z1s7m9z4p1m0m6m5	1	被ツモ	-1000			0	10	9	kan4
+0	87	z	nokan	3	z7z7z7z7p6z1s7m9z4p1m0m6m5	0	被ツモ	-1600			1	9	8	kan4
+0	87	z	base	3	z7z7z7z7p6z1s7m9z4p1m0m6m5	0	被ツモ	-1600			1	9	8	kan4
+0	87	y	kan	3	p1p1p1p1s6s3p7z4z7s7m3s8p2	1	被ツモ	-1000			1	17	18	kan4
+0	87	y	nokan	3	p1p1p1p1s6s3p7z4z7s7m3s8p2	0	無関係	0			1	11	11	kan4
+0	87	y	base	3	p1p1p1p1s6s3p7z4z7s7m3s8p2	1	被ツモ	-1000			1	17	18	kan4
+0	87	c	kan	2	m0m5m5m5p6s6z2p2m8p5p8s9p9	1	被ツモ	-1600			1	11	11	kan4
+0	87	c	nokan	2	m0m5m5m5p6s6z2p2m8p5p8s9p9	0	被ツモ	-1300			1	8	7	kan4
+0	87	c	base	2	m0m5m5m5p6s6z2p2m8p5p8s9p9	1	被ツモ	-1600			1	11	11	kan4
+0	88	z	kan	2	z7z7z7z7s7p6p8z5p3s9z1s8s2	1	無関係	0			1	9	9	kan4
+0	88	z	nokan	2	z7z7z7z7s7p6p8z5p3s9z1s8s2	0	被ツモ	-2000			0	9	9	kan4
+0	88	z	base	2	z7z7z7z7s7p6p8z5p3s9z1s8s2	1	無関係	0			1	9	9	kan4
+0	88	y	kan	2	m1m1m1m1m2z6s6m5p6m2p7p1z6	1	放銃	-2600		0	0	4	5	kan4
+0	88	y	nokan	2	m1m1m1m1m2z6s6m5p6m2p7p1z6	0	和了	8000	ロン		0	4	6	kan4
+0	88	y	base	2	m1m1m1m1m2z6s6m5p6m2p7p1z6	0	和了	8000	ロン		0	4	6	kan4
+0	88	c	kan	1	m2m2m2m2p3p3s2z7s1m9z1m8s6	1	被ツモ	-1300			1	12	12	kan4
+0	88	c	nokan	1	m2m2m2m2p3p3s2z7s1m9z1m8s6	0	被ツモ	-700			1	12	12	kan4
+1	1	z	kan	1	z4z4z4z4m3m6p8z3p8s5m7s9p6	1	被ツモ	-3000			1	7	8	kan4
+1	1	z	nokan	1	z4z4z4z4m3m6p8z3p8s5m7s9p6	0	被ツモ	-3000			1	16	16	kan4
+1	1	z	base	1	z4z4z4z4m3m6p8z3p8s5m7s9p6	1	被ツモ	-3000			1	7	8	kan4
+1	1	y	kan	2	s1s1s1s1m3p6m3z5m9z7p5p3m4	1	流局	-1000			1	18	17	kan4
+1	1	y	nokan	2	s1s1s1s1m3p6m3z5m9z7p5p3m4	0	無関係	0			1	9	8	kan4
+1	1	y	base	2	s1s1s1s1m3p6m3z5m9z7p5p3m4	1	無関係	0			1	9	8	kan4
+1	1	c	kan	2	p7p7p7p7z3s3s9m6p1p9p6p5s6	1	流局	1500			1	18	18	kan4
+1	1	c	nokan	2	p7p7p7p7z3s3s9m6p1p9p6p5s6	0	和了	8900	ツモ		0	14	13	kan4
+1	1	c	base	2	p7p7p7p7z3s3s9m6p1p9p6p5s6	0	和了	8900	ツモ		0	14	13	kan4
+1	2	z	kan	1	z2z2z2z2p1s9p3p5s9z7m8m2s8	1	無関係	0			1	14	13	kan4
+1	2	z	nokan	1	z2z2z2z2p1s9p3p5s9z7m8m2s8	0	無関係	0			1	14	13	kan4
+1	2	z	base	1	z2z2z2z2p1s9p3p5s9z7m8m2s8	1	無関係	0			1	14	13	kan4
+1	2	y	kan	1	m1m1m1m1s2z4p8z5s7s7s2z4p5	1	流局	3000			0	18	18	kan4
+1	2	y	nokan	1	m1m1m1m1s2z4p8z5s7s7s2z4p5	0	放銃	-1000		0	0	4	5	kan4
+1	2	y	base	1	m1m1m1m1s2z4p8z5s7s7s2z4p5	0	放銃	-1000		0	0	4	5	kan4
+1	2	c	kan	3	p5p0p5p5z4z2p3p1s6s2s1z4p3	1	無関係	0			1	16	16	kan4
+1	2	c	nokan	3	p5p0p5p5z4z2p3p1s6s2s1z4p3	0	被ツモ	-1300			1	14	13	kan4
+1	2	c	base	3	p5p0p5p5z4z2p3p1s6s2s1z4p3	1	放銃	-8000		1	1	8	8	kan4
+1	3	z	kan	2	z4z4z4z4p8s4m4z2m4s7p6z2s6	1	被ツモ	-2000			0	9	9	kan4
+1	3	z	nokan	2	z4z4z4z4p8s4m4z2m4s7p6z2s6	0	流局	-1000			1	18	18	kan4
+1	3	z	base	2	z4z4z4z4p8s4m4z2m4s7p6z2s6	1	被ツモ	-2000			0	9	9	kan4
+1	3	y	kan	1	p9p9p9p9m3s2s1p8m9p1s4s1p6	1	被ツモ	-3000			1	13	13	kan4
+1	3	y	nokan	1	p9p9p9p9m3s2s1p8m9p1s4s1p6	0	被ツモ	-3000			1	13	13	kan4
+1	3	y	base	1	p9p9p9p9m3s2s1p8m9p1s4s1p6	1	被ツモ	-3000			1	13	13	kan4
+1	3	c	kan	1	m6m6m6m6m2s3p1s8p5z3s9s6p4	1	被ツモ	-1000			0	7	7	kan4
+1	3	c	nokan	1	m6m6m6m6m2s3p1s8p5z3s9s6p4	0	無関係	0			0	7	6	kan4
+1	3	c	base	1	m6m6m6m6m2s3p1s8p5z3s9s6p4	1	被ツモ	-1000			0	7	7	kan4
+1	4	z	kan	1	z4z4z4z4p8s7p7s9p4s5s8m1s1	1	被ツモ	-8000			1	11	10	kan4
+1	4	z	nokan	1	z4z4z4z4p8s7p7s9p4s5s8m1s1	0	和了	9000	ツモ		0	16	16	kan4
+1	4	z	base	1	z4z4z4z4p8s7p7s9p4s5s8m1s1	1	被ツモ	-8000			1	11	10	kan4
+1	4	y	kan	3	p9p9p9p9p7m6s7p5s3m7p4s1m4	1	和了	17000	ツモ		0	14	13	kan4
+1	4	y	nokan	3	p9p9p9p9p7m6s7p5s3m7p4s1m4	0	放銃	-5800		0	0	15	15	kan4
+1	4	y	base	3	p9p9p9p9p7m6s7p5s3m7p4s1m4	1	被ツモ	-500			0	11	11	kan4
+1	4	c	kan	1	p6p6p6p6m7p9z6s6m5z1p5z2m3	1	流局	3000			0	18	17	kan4
+1	4	c	nokan	1	p6p6p6p6m7p9z6s6m5z1p5z2m3	0	放銃	-12000		1	1	14	15	kan4
+1	4	c	base	1	p6p6p6p6m7p9z6s6m5z1p5z2m3	0	放銃	-12000		1	1	14	15	kan4
+1	5	z	kan	2	z1z1z1z1p7s7m8p4s6p6p8p7m1	1	和了	5500	ロン		0	5	5	kan4
+1	5	z	nokan	2	z1z1z1z1p7s7m8p4s6p6p8p7m1	0	被ツモ	-2000			1	9	9	kan4
+1	5	z	base	2	z1z1z1z1p7s7m8p4s6p6p8p7m1	1	和了	5500	ロン		0	5	5	kan4
+1	5	y	kan	3	p9p9p9p9p4s8p1z6m4p6s6p7p3	1	被ツモ	-2000			1	16	16	kan4
+1	5	y	nokan	3	p9p9p9p9p4s8p1z6m4p6s6p7p3	0	放銃	-12000		1	1	10	10	kan4
+1	5	y	base	3	p9p9p9p9p4s8p1z6m4p6s6p7p3	1	被ツモ	-2000			1	16	16	kan4
+1	5	c	kan	3	p4p4p4p4p6z7m3m7z3s7p2p1p2	1	無関係	0			1	9	8	kan4
+1	5	c	nokan	3	p4p4p4p4p6z7m3m7z3s7p2p1p2	0	無関係	0			1	9	8	kan4
+1	5	c	base	3	p4p4p4p4p6z7m3m7z3s7p2p1p2	0	無関係	0			1	9	8	kan4
+1	6	z	kan	1	z3z3z3z3m9z4m3m1m4m7z4s5s2	0	流局	1000			1	18	19	kan4
+1	6	z	nokan	1	z3z3z3z3m9z4m3m1m4m7z4s5s2	0	流局	1000			1	18	19	kan4
+1	6	z	base	1	z3z3z3z3m9z4m3m1m4m7z4s5s2	0	流局	1000			1	18	19	kan4
+1	6	y	kan	1	p1p1p1p1p7s7p4p7s3z1m3m4z1	1	流局	-1000			1	18	18	kan4
+1	6	y	nokan	1	p1p1p1p1p7s7p4p7s3z1m3m4z1	0	流局	-1000			1	18	18	kan4
+1	6	y	base	1	p1p1p1p1p7s7p4p7s3z1m3m4z1	1	流局	-1000			1	18	18	kan4
+1	6	c	kan	3	p8p8p8p8m7z7m8s4z5z2m6p4z3	1	被ツモ	-2000			0	15	14	kan4
+1	6	c	nokan	3	p8p8p8p8m7z7m8s4z5z2m6p4z3	0	流局	0			0	1	1	kan4
+1	6	c	base	3	p8p8p8p8m7z7m8s4z5z2m6p4z3	0	流局	0			0	1	1	kan4
+1	7	z	kan	1	z7z7z7z7s7m0s2s6m2z3s1s3m8	1	流局	1000			0	18	18	kan4
+1	7	z	nokan	1	z7z7z7z7s7m0s2s6m2z3s1s3m8	0	無関係	0			0	5	6	kan4
+1	7	z	base	1	z7z7z7z7s7m0s2s6m2z3s1s3m8	1	流局	1000			0	18	18	kan4
+1	7	y	kan	2	s9s9s9s9m3s3p6m1p1z6z6z5p8	1	無関係	0			1	17	17	kan4
+1	7	y	nokan	2	s9s9s9s9m3s3p6m1p1z6z6z5p8	0	和了	14000	ツモ		1	13	12	kan4
+1	7	y	base	2	s9s9s9s9m3s3p6m1p1z6z6z5p8	1	無関係	0			1	17	17	kan4
+1	7	c	kan	3	s8s8s8s8s3m7m8s3m8p7s3p4s1	1	無関係	0			1	8	9	kan4
+1	7	c	nokan	3	s8s8s8s8s3m7m8s3m8p7s3p4s1	0	流局	1000			1	18	19	kan4
+1	7	c	base	3	s8s8s8s8s3m7m8s3m8p7s3p4s1	0	流局	1000			1	18	19	kan4
+1	8	z	kan	1	z5z5z5z5z4m0s7z1z4s4p7p8p4	1	和了	7900	ツモ		0	15	15	kan4
+1	8	z	nokan	1	z5z5z5z5z4m0s7z1z4s4p7p8p4	0	被ツモ	-2000			1	16	16	kan4
+1	8	z	base	1	z5z5z5z5z4m0s7z1z4s4p7p8p4	1	和了	7900	ツモ		0	15	15	kan4
+1	8	y	kan	3	p1p1p1p1m2s7p5s5p4p3z6m8p2	1	無関係	0			1	3	2	kan4
+1	8	y	nokan	3	p1p1p1p1m2s7p5s5p4p3z6m8p2	0	無関係	0			1	3	2	kan4
+1	8	y	base	3	p1p1p1p1m2s7p5s5p4p3z6m8p2	0	無関係	0			1	3	2	kan4
+1	8	c	kan	2	p8p8p8p8s6z7s3p1m1s6p1p5z6	1	無関係	0			1	13	13	kan4
+1	8	c	nokan	2	p8p8p8p8s6z7s3p1m1s6p1p5z6	0	被ツモ	-3000			1	11	11	kan4
+1	8	c	base	2	p8p8p8p8s6z7s3p1m1s6p1p5z6	0	被ツモ	-3000			1	11	11	kan4
+1	9	z	kan	2	z2z2z2z2z1p1s9p9s9s5m3z6s7	1	被ツモ	-4000			1	8	8	kan4
+1	9	z	nokan	2	z2z2z2z2z1p1s9p9s9s5m3z6s7	0	被ツモ	-2600			1	8	8	kan4
+1	9	z	base	2	z2z2z2z2z1p1s9p9s9s5m3z6s7	1	被ツモ	-4000			1	8	8	kan4
+1	9	y	kan	2	s9s9s9s9s5z1s2m7m1m5s0z3p3	1	放銃	-11600		0	0	13	15	kan4
+1	9	y	nokan	2	s9s9s9s9s5z1s2m7m1m5s0z3p3	0	和了	4700	ツモ		1	14	14	kan4
+1	9	y	base	2	s9s9s9s9s5z1s2m7m1m5s0z3p3	1	放銃	-11600		0	0	13	15	kan4
+1	9	c	kan	3	p2p2p2p2p4s9z4z4s2m3s4p4z3	1	和了	4200	ロン		1	11	11	kan4
+1	9	c	nokan	3	p2p2p2p2p4s9z4z4s2m3s4p4z3	0	和了	3000	ロン		1	14	14	kan4
+1	9	c	base	3	p2p2p2p2p4s9z4z4s2m3s4p4z3	1	和了	4200	ロン		1	11	11	kan4
+1	10	z	kan	2	z4z4z4z4p8z7s1m8s4p6m0m9p7	1	和了	18000	ツモ		1	10	9	kan4
+1	10	z	nokan	2	z4z4z4z4p8z7s1m8s4p6m0m9p7	0	放銃	-1000		0	0	9	10	kan4
+1	10	z	base	2	z4z4z4z4p8z7s1m8s4p6m0m9p7	1	和了	18000	ツモ		1	10	9	kan4
+1	10	y	kan	3	p1p1p1p1p8m4z3m6p9m4m1m2z2	1	無関係	0			1	9	9	kan4
+1	10	y	nokan	3	p1p1p1p1p8m4z3m6p9m4m1m2z2	0	流局	-1000			1	18	17	kan4
+1	10	y	base	3	p1p1p1p1p8m4z3m6p9m4m1m2z2	1	無関係	0			1	9	9	kan4
+1	10	c	kan	2	m6m6m6m6s9p4s1z5z1s7s7p9s1	1	無関係	0			1	8	8	kan4
+1	10	c	nokan	2	m6m6m6m6s9p4s1z5z1s7s7p9s1	0	被ツモ	-3000			1	14	14	kan4
+1	10	c	base	2	m6m6m6m6s9p4s1z5z1s7s7p9s1	1	無関係	0			1	8	8	kan4
+1	11	z	kan	3	z3z3z3z3m7p7z2m5p7p0z4p2s9	1	流局	-1500			1	18	17	kan4
+1	11	z	nokan	3	z3z3z3z3m7p7z2m5p7p0z4p2s9	0	流局	-1500			1	18	17	kan4
+1	11	z	base	3	z3z3z3z3m7p7z2m5p7p0z4p2s9	1	流局	-1500			1	18	17	kan4
+1	11	y	kan	1	s1s1s1s1s7z7z3m4z3z6z2z5p9	1	被ツモ	-2000			1	11	11	kan4
+1	11	y	nokan	1	s1s1s1s1s7z7z3m4z3z6z2z5p9	0	無関係	0			1	10	10	kan4
+1	11	y	base	1	s1s1s1s1s7z7z3m4z3z6z2z5p9	0	無関係	0			1	10	10	kan4
+1	11	c	kan	2	p2p2p2p2m7m7m9z5p3m2p6s4s6	1	被ツモ	-3900			1	6	6	kan4
+1	11	c	nokan	2	p2p2p2p2m7m7m9z5p3m2p6s4s6	0	和了	2300	ロン		1	9	8	kan4
+1	11	c	base	2	p2p2p2p2m7m7m9z5p3m2p6s4s6	0	和了	2300	ロン		1	9	8	kan4
+1	12	z	kan	3	z3z3z3z3p2s5m8s5m6s6s7m9p7	1	無関係	0			1	10	10	kan4
+1	12	z	nokan	3	z3z3z3z3p2s5m8s5m6s6s7m9p7	0	無関係	0			1	10	10	kan4
+1	12	z	base	3	z3z3z3z3p2s5m8s5m6s6s7m9p7	1	無関係	0			1	10	10	kan4
+1	12	y	kan	3	s1s1s1s1p6m6s7m9p8m7z2p5p7	1	被ツモ	-500			0	14	13	kan4
+1	12	y	nokan	3	s1s1s1s1p6m6s7m9p8m7z2p5p7	0	和了	4700	ツモ		1	16	14	kan4
+1	12	y	base	3	s1s1s1s1p6m6s7m9p8m7z2p5p7	1	被ツモ	-500			0	14	13	kan4
+1	12	c	kan	3	m8m8m8m8z1m3p8p0p1m9m7s2p9	1	無関係	0			1	7	6	kan4
+1	12	c	nokan	3	m8m8m8m8z1m3p8p0p1m9m7s2p9	0	無関係	0			1	7	6	kan4
+1	12	c	base	3	m8m8m8m8z1m3p8p0p1m9m7s2p9	0	無関係	0			1	7	6	kan4
+1	13	z	kan	2	z6z6z6z6p9s7s7z4s4p6s9m9z1	1	和了	7700	ロン		0	12	12	kan4
+1	13	z	nokan	2	z6z6z6z6p9s7s7z4s4p6s9m9z1	0	放銃	-3900		0	0	12	13	kan4
+1	13	z	base	2	z6z6z6z6p9s7s7z4s4p6s9m9z1	1	和了	7700	ロン		0	12	12	kan4
+1	13	y	kan	2	m1m1m1m1p1p6s1z4p2p5p9p6m8	1	無関係	0			1	13	13	kan4
+1	13	y	nokan	2	m1m1m1m1p1p6s1z4p2p5p9p6m8	0	無関係	0			1	13	13	kan4
+1	13	y	base	2	m1m1m1m1p1p6s1z4p2p5p9p6m8	1	無関係	0			1	13	13	kan4
+1	13	c	kan	2	s2s2s2s2m7s4m2z6p6z2z3s3p9	1	流局	-3000			1	18	18	kan4
+1	13	c	nokan	2	s2s2s2s2m7s4m2z6p6z2z3s3p9	0	和了	2000	ロン		0	8	9	kan4
+1	13	c	base	2	s2s2s2s2m7s4m2z6p6z2z3s3p9	0	和了	3700	ツモ		1	12	12	kan4
+1	14	z	kan	1	z5z5z5z5s5m3z2s3s7m8p7z1z4	1	放銃	-18000		0	0	6	7	kan4
+1	14	z	nokan	1	z5z5z5z5s5m3z2s3s7m8p7z1z4	0	被ツモ	-2000			0	6	6	kan4
+1	14	z	base	1	z5z5z5z5s5m3z2s3s7m8p7z1z4	1	放銃	-18000		0	0	6	7	kan4
+1	14	y	kan	2	p9p9p9p9s4m8z1m2s6s9p7s0s2	1	流局	1500			1	18	17	kan4
+1	14	y	nokan	2	p9p9p9p9s4m8z1m2s6s9p7s0s2	0	被ツモ	-1000			1	13	12	kan4
+1	14	y	base	2	p9p9p9p9s4m8z1m2s6s9p7s0s2	0	被ツモ	-1000			1	13	12	kan4
+1	14	c	kan	1	s4s4s4s4m5m5z4s5s3z3m9s1z2	1	和了	9000	ツモ		0	17	16	kan4
+1	14	c	nokan	1	s4s4s4s4m5m5z4s5s3z3m9s1z2	0	和了	2300	ロン		1	11	10	kan4
+1	14	c	base	1	s4s4s4s4m5m5z4s5s3z3m9s1z2	0	和了	2300	ロン		1	11	10	kan4
+1	15	z	kan	1	z4z4z4z4p5p1m4p0p6z1p9z6p9	1	和了	16000	ロン		1	8	9	kan4
+1	15	z	nokan	1	z4z4z4z4p5p1m4p0p6z1p9z6p9	0	被ツモ	-2000			1	8	9	kan4
+1	15	z	base	1	z4z4z4z4p5p1m4p0p6z1p9z6p9	0	被ツモ	-2000			1	8	9	kan4
+1	15	y	kan	1	m1m1m1m1m7m2s4p6m7s5m6m3p3	1	和了	6500	ロン		1	12	12	kan4
+1	15	y	nokan	1	m1m1m1m1m7m2s4p6m7s5m6m3p3	0	和了	3300	ロン		1	12	12	kan4
+1	15	y	base	1	m1m1m1m1m7m2s4p6m7s5m6m3p3	0	和了	3300	ロン		1	12	12	kan4
+1	15	c	kan	2	p0p5p5p5m5z2p3s9z3p2m6m7m1	1	和了	13000	ロン		0	10	9	kan4
+1	15	c	nokan	2	p0p5p5p5m5z2p3s9z3p2m6m7m1	0	和了	3000	ツモ		1	11	11	kan4
+1	15	c	base	2	p0p5p5p5m5z2p3s9z3p2m6m7m1	1	和了	13000	ロン		0	10	9	kan4
+1	16	z	kan	1	z7z7z7z7p3s3z6m7p6m1p6p8p0	1	無関係	0			1	7	6	kan4
+1	16	z	nokan	1	z7z7z7z7p3s3z6m7p6m1p6p8p0	0	放銃	-3200		1	1	9	9	kan4
+1	16	z	base	1	z7z7z7z7p3s3z6m7p6m1p6p8p0	1	無関係	0			1	7	6	kan4
+1	16	y	kan	3	m9m9m9m9s8m2s1s2m6s8p6s0m0	1	無関係	0			0	9	9	kan4
+1	16	y	nokan	3	m9m9m9m9s8m2s1s2m6s8p6s0m0	0	放銃	-5800		0	0	8	9	kan4
+1	16	y	base	3	m9m9m9m9s8m2s1s2m6s8p6s0m0	1	無関係	0			0	9	9	kan4
+1	16	c	kan	3	m5m5m0m5p2p3z1s7m3p1z5m7m9	1	和了	9000	ツモ		0	14	13	kan4
+1	16	c	nokan	3	m5m5m0m5p2p3z1s7m3p1z5m7m9	0	流局	1500			1	18	17	kan4
+1	16	c	base	3	m5m5m0m5p2p3z1s7m3p1z5m7m9	1	和了	9000	ツモ		0	14	13	kan4
+1	17	z	kan	1	z3z3z3z3p4p8m8p3s7z4s9p6p8	1	無関係	0			1	12	12	kan4
+1	17	z	nokan	1	z3z3z3z3p4p8m8p3s7z4s9p6p8	0	流局	-1000			1	18	18	kan4
+1	17	z	base	1	z3z3z3z3p4p8m8p3s7z4s9p6p8	1	無関係	0			1	12	12	kan4
+1	17	y	kan	3	m1m1m1m1z6z3m5p4z2z2p7m6p3	1	被ツモ	-2000			0	16	15	kan4
+1	17	y	nokan	3	m1m1m1m1z6z3m5p4z2z2p7m6p3	0	無関係	0			0	5	5	kan4
+1	17	y	base	3	m1m1m1m1z6z3m5p4z2z2p7m6p3	1	被ツモ	-2000			0	16	15	kan4
+1	17	c	kan	2	p6p6p6p6z2z1m1z4m5s6z5m8m1	1	無関係	0			1	9	10	kan4
+1	17	c	nokan	2	p6p6p6p6z2z1m1z4m5s6z5m8m1	0	和了	7400	ツモ		0	17	16	kan4
+1	17	c	base	2	p6p6p6p6z2z1m1z4m5s6z5m8m1	0	和了	7400	ツモ		0	17	16	kan4
+1	18	z	kan	2	z1z1z1z1z6p9s8m6s1p4z5s1m7	1	和了	4900	ロン		1	9	9	kan4
+1	18	z	nokan	2	z1z1z1z1z6p9s8m6s1p4z5s1m7	0	和了	6200	ロン		1	9	9	kan4
+1	18	z	base	2	z1z1z1z1z6p9s8m6s1p4z5s1m7	1	和了	4900	ロン		1	9	9	kan4
+1	18	y	kan	1	p9p9p9p9p6s2m2m5z1s9p3s3s6	1	和了	13000	ツモ		0	12	11	kan4
+1	18	y	nokan	1	p9p9p9p9p6s2m2m5z1s9p3s3s6	0	無関係	0			1	12	12	kan4
+1	18	y	base	1	p9p9p9p9p6s2m2m5z1s9p3s3s6	1	和了	13000	ツモ		0	12	11	kan4
+1	18	c	kan	1	s4s4s4s4m2z7z1m3p8p4m6p8p3	1	流局	1500			1	18	18	kan4
+1	18	c	nokan	1	s4s4s4s4m2z7z1m3p8p4m6p8p3	0	和了	2000	ロン		1	10	10	kan4
+1	18	c	base	1	s4s4s4s4m2z7z1m3p8p4m6p8p3	1	流局	1500			1	18	18	kan4
+1	19	z	kan	3	z3z3z3z3m6m6p6p9p9z4m2z1p1	1	流局	1000			1	18	17	kan4
+1	19	z	nokan	3	z3z3z3z3m6m6p6p9p9z4m2z1p1	0	流局	-1000			1	18	17	kan4
+1	19	z	base	3	z3z3z3z3m6m6p6p9p9z4m2z1p1	0	流局	-1000			1	18	17	kan4
+1	19	y	kan	3	s9s9s9s9s2m3p0p5p9m2z3z1z1	1	和了	4700	ツモ		0	7	8	kan4
+1	19	y	nokan	3	s9s9s9s9s2m3p0p5p9m2z3z1z1	0	和了	2600	ロン		0	10	10	kan4
+1	19	y	base	3	s9s9s9s9s2m3p0p5p9m2z3z1z1	1	和了	4700	ツモ		0	7	8	kan4
+1	19	c	kan	2	p7p7p7p7z7s2s4m8m8z2p2s4s1	1	被ツモ	-2000			1	17	17	kan4
+1	19	c	nokan	2	p7p7p7p7z7s2s4m8m8z2p2s4s1	0	和了	2100	ツモ		1	13	13	kan4
+1	19	c	base	2	p7p7p7p7z7s2s4m8m8z2p2s4s1	0	和了	2100	ツモ		1	13	13	kan4
+1	20	z	kan	2	z5z5z5z5p0s7m8s5s1m2p2p3m4	1	流局	1000			1	17	19	kan4
+1	20	z	nokan	2	z5z5z5z5p0s7m8s5s1m2p2p3m4	0	放銃	-5200		1	1	14	15	kan4
+1	20	z	base	2	z5z5z5z5p0s7m8s5s1m2p2p3m4	1	流局	1000			1	17	19	kan4
+1	20	y	kan	2	p1p1p1p1s9p3m6m4s4m0z4s1p8	1	被ツモ	-2000			0	9	9	kan4
+1	20	y	nokan	2	p1p1p1p1s9p3m6m4s4m0z4s1p8	0	被ツモ	-2000			0	9	9	kan4
+1	20	y	base	2	p1p1p1p1s9p3m6m4s4m0z4s1p8	0	被ツモ	-2000			0	9	9	kan4
+1	20	c	kan	1	p8p8p8p8m4s4p9m6m8s1s4z5s7	1	放銃	-2900		0	0	9	11	kan4
+1	20	c	nokan	1	p8p8p8p8m4s4p9m6m8s1s4z5s7	0	流局	-1500			1	18	19	kan4
+1	20	c	base	1	p8p8p8p8m4s4p9m6m8s1s4z5s7	0	流局	-1500			1	18	19	kan4
+1	21	z	kan	1	z3z3z3z3s9m7s7m4m2p4p3p1p8	1	和了	3300	ロン		0	10	10	kan4
+1	21	z	nokan	1	z3z3z3z3s9m7s7m4m2p4p3p1p8	0	無関係	0			1	15	14	kan4
+1	21	z	base	1	z3z3z3z3s9m7s7m4m2p4p3p1p8	1	和了	3300	ロン		0	10	10	kan4
+1	21	y	kan	2	s9s9s9s9p2s6p2p6p1m7p8s8z2	1	被ツモ	-6000			1	8	8	kan4
+1	21	y	nokan	2	s9s9s9s9p2s6p2p6p1m7p8s8z2	0	被ツモ	-6000			1	8	8	kan4
+1	21	y	base	2	s9s9s9s9p2s6p2p6p1m7p8s8z2	1	被ツモ	-6000			1	8	8	kan4
+1	21	c	kan	2	s7s7s7s7s2s1m2m6p1m4m2m1z5	1	和了	4900	ロン		0	13	13	kan4
+1	21	c	nokan	2	s7s7s7s7s2s1m2m6p1m4m2m1z5	0	被ツモ	-2000			0	13	12	kan4
+1	21	c	base	2	s7s7s7s7s2s1m2m6p1m4m2m1z5	1	和了	4900	ロン		0	13	13	kan4
+1	22	z	kan	3	z7z7z7z7p4p5s1m3s6s7p2s0m8	1	放銃	-8000		1	1	14	15	kan4
+1	22	z	nokan	3	z7z7z7z7p4p5s1m3s6s7p2s0m8	0	被ツモ	-3000			1	8	8	kan4
+1	22	z	base	3	z7z7z7z7p4p5s1m3s6s7p2s0m8	1	放銃	-8000		1	1	14	15	kan4
+1	22	y	kan	2	s9s9s9s9z6s2m1z7m1m2m1m7z6	1	和了	4000	ツモ		0	5	5	kan4
+1	22	y	nokan	2	s9s9s9s9z6s2m1z7m1m2m1m7z6	0	和了	2300	ロン		1	8	8	kan4
+1	22	y	base	2	s9s9s9s9z6s2m1z7m1m2m1m7z6	1	和了	5200	ツモ		0	5	5	kan4
+1	22	c	kan	2	p8p8p8p8p3s9s0p1z6s2z4m2p3	1	被ツモ	-800			0	12	12	kan4
+1	22	c	nokan	2	p8p8p8p8p3s9s0p1z6s2z4m2p3	0	無関係	0			1	15	15	kan4
+1	22	c	base	2	p8p8p8p8p3s9s0p1z6s2z4m2p3	1	被ツモ	-800			0	12	12	kan4
+1	23	z	kan	2	z3z3z3z3z1p2z7p7s1m4p2m6s8	1	放銃	-12000		0	0	10	12	kan4
+1	23	z	nokan	2	z3z3z3z3z1p2z7p7s1m4p2m6s8	0	和了	6200	ツモ		1	14	14	kan4
+1	23	z	base	2	z3z3z3z3z1p2z7p7s1m4p2m6s8	1	放銃	-12000		0	0	10	12	kan4
+1	23	y	kan	3	s1s1s1s1m7s4s6s7m8p7z6z2m2	1	放銃	-5200		1	1	7	7	kan4
+1	23	y	nokan	3	s1s1s1s1m7s4s6s7m8p7z6z2m2	0	放銃	-2600		1	1	7	7	kan4
+1	23	y	base	3	s1s1s1s1m7s4s6s7m8p7z6z2m2	1	放銃	-5200		1	1	7	7	kan4
+1	23	c	kan	3	s2s2s2s2m2m5m1z4m6z6s5s9s7	1	被ツモ	-3000			1	16	15	kan4
+1	23	c	nokan	3	s2s2s2s2m2m5m1z4m6z6s5s9s7	0	流局	-1500			1	18	17	kan4
+1	23	c	base	3	s2s2s2s2m2m5m1z4m6z6s5s9s7	1	被ツモ	-3000			1	16	15	kan4
+1	24	z	kan	2	z5z5z5z5p0s1s7p2z3z4m7p7s6	1	無関係	0			1	10	10	kan4
+1	24	z	nokan	2	z5z5z5z5p0s1s7p2z3z4m7p7s6	0	放銃	-1500		0	0	10	11	kan4
+1	24	z	base	2	z5z5z5z5p0s1s7p2z3z4m7p7s6	1	無関係	0			1	10	10	kan4
+1	24	y	kan	3	m1m1m1m1s1p5z7z1s2s2z5z1s7	1	放銃	-5200		1	1	15	15	kan4
+1	24	y	nokan	3	m1m1m1m1s1p5z7z1s2s2z5z1s7	0	無関係	0			1	17	17	kan4
+1	24	y	base	3	m1m1m1m1s1p5z7z1s2s2z5z1s7	0	無関係	0			1	17	17	kan4
+1	24	c	kan	3	p2p2p2p2s5s8p9p4m3m4p8z1p1	1	流局	1500			1	18	17	kan4
+1	24	c	nokan	3	p2p2p2p2s5s8p9p4m3m4p8z1p1	0	和了	10000	ロン		1	12	11	kan4
+1	24	c	base	3	p2p2p2p2s5s8p9p4m3m4p8z1p1	1	和了	14000	ロン		1	12	11	kan4
+1	25	z	kan	3	z6z6z6z6m5p1p8p8z5s7p6s3m7	1	放銃	-12000		1	1	13	13	kan4
+1	25	z	nokan	3	z6z6z6z6m5p1p8p8z5s7p6s3m7	0	流局	-1000			1	18	17	kan4
+1	25	z	base	3	z6z6z6z6m5p1p8p8z5s7p6s3m7	0	流局	-1000			1	18	17	kan4
+1	25	y	kan	3	s9s9s9s9z3p2m8s2p3p4z1s4m2	1	放銃	-12000		0	0	9	9	kan4
+1	25	y	nokan	3	s9s9s9s9z3p2m8s2p3p4z1s4m2	0	和了	10000	ツモ		1	11	10	kan4
+1	25	y	base	3	s9s9s9s9z3p2m8s2p3p4z1s4m2	1	放銃	-12000		0	0	9	9	kan4
+1	25	c	kan	3	p4p4p4p4s8p6z2p2s3s7z7z4m5	1	流局	1000			1	17	18	kan4
+1	25	c	nokan	3	p4p4p4p4s8p6z2p2s3s7z7z4m5	0	流局	1500			0	18	17	kan4
+1	25	c	base	3	p4p4p4p4s8p6z2p2s3s7z7z4m5	0	流局	1500			0	18	17	kan4
+1	26	z	kan	2	z3z3z3z3p2z4z2m9m4s1s8z5s2	1	無関係	0			1	17	16	kan4
+1	26	z	nokan	2	z3z3z3z3p2z4z2m9m4s1s8z5s2	0	無関係	0			1	17	16	kan4
+1	26	z	base	2	z3z3z3z3p2z4z2m9m4s1s8z5s2	1	無関係	0			1	17	16	kan4
+1	26	y	kan	2	m1m1m1m1m9s5s1p8m9s9z4p8s6	1	和了	13000	ロン		0	7	6	kan4
+1	26	y	nokan	2	m1m1m1m1m9s5s1p8m9s9z4p8s6	0	無関係	0			1	14	14	kan4
+1	26	y	base	2	m1m1m1m1m9s5s1p8m9s9z4p8s6	1	和了	13000	ロン		0	7	6	kan4
+1	26	c	kan	1	s2s2s2s2m5p6p9z1s4z6p1s3z7	1	被ツモ	-4000			1	13	13	kan4
+1	26	c	nokan	1	s2s2s2s2m5p6p9z1s4z6p1s3z7	0	無関係	0			0	10	11	kan4
+1	26	c	base	1	s2s2s2s2m5p6p9z1s4z6p1s3z7	0	無関係	0			0	10	11	kan4
+1	27	z	kan	3	z3z3z3z3s4m4m6p4p9z1p5z2s3	1	流局	3000			0	18	17	kan4
+1	27	z	nokan	3	z3z3z3z3s4m4m6p4p9z1p5z2s3	0	流局	3000			0	18	18	kan4
+1	27	z	base	3	z3z3z3z3s4m4m6p4p9z1p5z2s3	1	流局	3000			0	18	17	kan4
+1	27	y	kan	1	s1s1s1s1s9m1s6z1m6s7m5p8s7	1	放銃	-7700		0	0	9	9	kan4
+1	27	y	nokan	1	s1s1s1s1s9m1s6z1m6s7m5p8s7	0	和了	9000	ロン		0	10	10	kan4
+1	27	y	base	1	s1s1s1s1s9m1s6z1m6s7m5p8s7	1	放銃	-7700		0	0	9	9	kan4
+1	27	c	kan	3	p6p6p6p6s4s4m6p9s5m9z2z7p3	1	被ツモ	-4000			1	11	11	kan4
+1	27	c	nokan	3	p6p6p6p6s4s4m6p9s5m9z2z7p3	0	和了	13000	ロン		0	9	9	kan4
+1	27	c	base	3	p6p6p6p6s4s4m6p9s5m9z2z7p3	0	和了	13000	ロン		0	9	9	kan4
+1	28	z	kan	1	z7z7z7z7p4m8z2z3s7m8m4s6z1	1	和了	13000	ツモ		1	15	15	kan4
+1	28	z	nokan	1	z7z7z7z7p4m8z2z3s7m8m4s6z1	0	流局	1000			1	18	18	kan4
+1	28	z	base	1	z7z7z7z7p4m8z2z3s7m8m4s6z1	0	流局	1000			1	18	18	kan4
+1	28	y	kan	1	p1p1p1p1z6s4p2z3s2p8p0m5p5	1	和了	5500	ロン		0	12	11	kan4
+1	28	y	nokan	1	p1p1p1p1z6s4p2z3s2p8p0m5p5	0	和了	5000	ツモ		0	11	10	kan4
+1	28	y	base	1	p1p1p1p1z6s4p2z3s2p8p0m5p5	1	和了	5500	ロン		0	12	11	kan4
+1	28	c	kan	3	m8m8m8m8m7s9p7m4z7s8z6p4p9	1	被ツモ	-2000			1	17	16	kan4
+1	28	c	nokan	3	m8m8m8m8m7s9p7m4z7s8z6p4p9	0	和了	1000	ロン		0	8	8	kan4
+1	28	c	base	3	m8m8m8m8m7s9p7m4z7s8z6p4p9	0	和了	1000	ロン		0	8	8	kan4
+1	29	z	kan	1	z1z1z1z1m8m6p9s6p6z3p1p4s2	1	和了	3000	ロン		1	16	16	kan4
+1	29	z	nokan	1	z1z1z1z1m8m6p9s6p6z3p1p4s2	0	放銃	-7700		0	1	14	14	kan4
+1	29	z	base	1	z1z1z1z1m8m6p9s6p6z3p1p4s2	1	和了	3000	ロン		1	16	16	kan4
+1	29	y	kan	1	p1p1p1p1p4m4z4m6p3m9s8m8p7	1	和了	10000	ロン		1	11	12	kan4
+1	29	y	nokan	1	p1p1p1p1p4m4z4m6p3m9s8m8p7	0	流局	-3000			1	18	18	kan4
+1	29	y	base	1	p1p1p1p1p4m4z4m6p3m9s8m8p7	1	和了	10000	ロン		1	11	12	kan4
+1	29	c	kan	3	s7s7s7s7z1p6m9s8p2p7p4p9z3	1	流局	-1000			1	18	17	kan4
+1	29	c	nokan	3	s7s7s7s7z1p6m9s8p2p7p4p9z3	0	流局	-1500			1	18	17	kan4
+1	29	c	base	3	s7s7s7s7z1p6m9s8p2p7p4p9z3	1	流局	-1000			1	18	17	kan4
+1	30	z	kan	2	z7z7z7z7m8p5z3s7z1s4m9s9s5	1	和了	3900	ロン		1	12	12	kan4
+1	30	z	nokan	2	z7z7z7z7m8p5z3s7z1s4m9s9s5	0	被ツモ	-2000			1	12	11	kan4
+1	30	z	base	2	z7z7z7z7m8p5z3s7z1s4m9s9s5	1	和了	3900	ロン		1	12	12	kan4
+1	30	y	kan	2	s1s1s1s1p8s4m5p9p7s2z6z2s6	1	被ツモ	-500			0	13	13	kan4
+1	30	y	nokan	2	s1s1s1s1p8s4m5p9p7s2z6z2s6	0	放銃	-2000		0	0	6	7	kan4
+1	30	y	base	2	s1s1s1s1p8s4m5p9p7s2z6z2s6	1	被ツモ	-1000			0	11	11	kan4
+1	30	c	kan	3	p3p3p3p3s3z4p5m7p4z6z1m6p6	1	被ツモ	-4000			0	15	16	kan4
+1	30	c	nokan	3	p3p3p3p3s3z4p5m7p4z6z1m6p6	0	和了	3900	ロン		1	7	6	kan4
+1	30	c	base	3	p3p3p3p3s3z4p5m7p4z6z1m6p6	1	被ツモ	-4000			0	15	16	kan4
+1	31	z	kan	1	z3z3z3z3s1p2z4s8s3p6p7z2z7	1	和了	2000	ロン		0	5	6	kan4
+1	31	z	nokan	1	z3z3z3z3s1p2z4s8s3p6p7z2z7	0	和了	1300	ロン		0	9	10	kan4
+1	31	z	base	1	z3z3z3z3s1p2z4s8s3p6p7z2z7	1	和了	2000	ロン		0	5	6	kan4
+1	31	y	kan	3	p1p1p1p1p9z3z2m6z6p6m0m6p6	1	被ツモ	-4000			1	14	13	kan4
+1	31	y	nokan	3	p1p1p1p1p9z3z2m6z6p6m0m6p6	0	被ツモ	-2600			1	14	13	kan4
+1	31	y	base	3	p1p1p1p1p9z3z2m6z6p6m0m6p6	0	被ツモ	-2600			1	14	13	kan4
+1	31	c	kan	1	m4m4m4m4m7m9m7s4z7p7s3s2m8	1	和了	3600	ロン		1	8	8	kan4
+1	31	c	nokan	1	m4m4m4m4m7m9m7s4z7p7s3s2m8	0	和了	14000	ツモ		1	9	8	kan4
+1	31	c	base	1	m4m4m4m4m7m9m7s4z7p7s3s2m8	0	和了	14000	ツモ		1	9	8	kan4
+1	32	z	kan	3	z2z2z2z2p2m7s9m9p7p7z1z6z4	1	被ツモ	-1000			0	9	10	kan4
+1	32	z	nokan	3	z2z2z2z2p2m7s9m9p7p7z1z6z4	0	無関係	0			0	10	10	kan4
+1	32	z	base	3	z2z2z2z2p2m7s9m9p7p7z1z6z4	1	被ツモ	-1000			0	9	10	kan4
+1	32	y	kan	3	p1p1p1p1m5z1z4s4s9s7m6m4z4	1	和了	5000	ツモ		1	11	10	kan4
+1	32	y	nokan	3	p1p1p1p1m5z1z4s4s9s7m6m4z4	0	和了	2500	ツモ		1	11	10	kan4
+1	32	y	base	3	p1p1p1p1m5z1z4s4s9s7m6m4z4	1	和了	5000	ツモ		1	11	10	kan4
+1	32	c	kan	3	m2m2m2m2p9p6z6z1s4p7p7z6z5	1	被ツモ	-3000			1	13	12	kan4
+1	32	c	nokan	3	m2m2m2m2p9p6z6z1s4p7p7z6z5	0	被ツモ	-2000			1	10	10	kan4
+1	32	c	base	3	m2m2m2m2p9p6z6z1s4p7p7z6z5	1	被ツモ	-3000			1	13	12	kan4
+1	33	z	kan	2	z7z7z7z7p9m2m1m6p5s6m7m3m9	1	被ツモ	-2000			1	13	12	kan4
+1	33	z	nokan	2	z7z7z7z7p9m2m1m6p5s6m7m3m9	0	被ツモ	-2000			1	13	12	kan4
+1	33	z	base	2	z7z7z7z7p9m2m1m6p5s6m7m3m9	1	被ツモ	-2000			1	13	12	kan4
+1	33	y	kan	3	p1p1p1p1z2s3m8z4s2s9p8p2z2	1	被ツモ	-4000			1	6	5	kan4
+1	33	y	nokan	3	p1p1p1p1z2s3m8z4s2s9p8p2z2	0	被ツモ	-2000			1	8	8	kan4
+1	33	y	base	3	p1p1p1p1z2s3m8z4s2s9p8p2z2	0	被ツモ	-2000			1	8	8	kan4
+1	33	c	kan	3	s6s6s6s6m6p4z1m2p0m4s8s1z3	1	放銃	-11600		0	0	12	12	kan4
+1	33	c	nokan	3	s6s6s6s6m6p4z1m2p0m4s8s1z3	0	無関係	0			1	12	12	kan4
+1	33	c	base	3	s6s6s6s6m6p4z1m2p0m4s8s1z3	1	放銃	-11600		0	0	12	12	kan4
+1	34	z	kan	2	z4z4z4z4p5s6p1m7s4p2p1z3s7	1	被ツモ	-2000			1	8	8	kan4
+1	34	z	nokan	2	z4z4z4z4p5s6p1m7s4p2p1z3s7	0	被ツモ	-500			1	8	8	kan4
+1	34	z	base	2	z4z4z4z4p5s6p1m7s4p2p1z3s7	1	被ツモ	-2000			1	8	8	kan4
+1	34	y	kan	2	s9s9s9s9p1p9m0m5z5z4p2s6m3	1	流局	1500			1	18	17	kan4
+1	34	y	nokan	2	s9s9s9s9p1p9m0m5z5z4p2s6m3	0	和了	9000	ロン		1	15	14	kan4
+1	34	y	base	2	s9s9s9s9p1p9m0m5z5z4p2s6m3	1	流局	1500			1	18	17	kan4
+1	34	c	kan	1	p5p5p0p5m2z5m6s2s4p3m3p7p3	1	流局	3000			0	18	17	kan4
+1	34	c	nokan	1	p5p5p0p5m2z5m6s2s4p3m3p7p3	0	和了	2700	ツモ		0	14	14	kan4
+1	34	c	base	1	p5p5p0p5m2z5m6s2s4p3m3p7p3	1	和了	7400	ロン		0	8	8	kan4
+1	35	z	kan	2	z1z1z1z1s0m1m1s5m3s9z2z4p6	1	被ツモ	-2000			0	11	10	kan4
+1	35	z	nokan	2	z1z1z1z1s0m1m1s5m3s9z2z4p6	0	流局	-1000			1	18	19	kan4
+1	35	z	base	2	z1z1z1z1s0m1m1s5m3s9z2z4p6	1	被ツモ	-2000			0	11	10	kan4
+1	35	y	kan	2	p9p9p9p9p3z3p4p4z1s2p5s5m1	1	流局	-1500			1	18	17	kan4
+1	35	y	nokan	2	p9p9p9p9p3z3p4p4z1s2p5s5m1	0	流局	-1000			1	18	17	kan4
+1	35	y	base	2	p9p9p9p9p3z3p4p4z1s2p5s5m1	1	流局	-1500			1	18	17	kan4
+1	35	c	kan	3	m5m5m5m0z7z1p2m7z2p6p9s1m2	1	無関係	0			0	8	8	kan4
+1	35	c	nokan	3	m5m5m5m0z7z1p2m7z2p6p9s1m2	0	無関係	0			0	8	8	kan4
+1	35	c	base	3	m5m5m5m0z7z1p2m7z2p6p9s1m2	0	無関係	0			0	8	8	kan4
+1	36	z	kan	3	z1z1z1z1p7s1z6z6s9s2p7m3z4	1	和了	7900	ツモ		0	6	5	kan4
+1	36	z	nokan	3	z1z1z1z1p7s1z6z6s9s2p7m3z4	0	流局	-1500			1	18	18	kan4
+1	36	z	base	3	z1z1z1z1p7s1z6z6s9s2p7m3z4	1	和了	7900	ツモ		0	6	5	kan4
+1	36	y	kan	1	m1m1m1m1m2s3s8s4s4p7z5s7p5	1	無関係	0			0	7	6	kan4
+1	36	y	nokan	1	m1m1m1m1m2s3s8s4s4p7z5s7p5	0	無関係	0			0	12	12	kan4
+1	36	y	base	1	m1m1m1m1m2s3s8s4s4p7z5s7p5	1	無関係	0			0	7	6	kan4
+1	36	c	kan	3	p5p0p5p5m7z2s9m1z1m1z5s2z4	1	流局	-1500			1	18	17	kan4
+1	36	c	nokan	3	p5p0p5p5m7z2s9m1z1m1z5s2z4	0	被ツモ	-1300			1	17	17	kan4
+1	36	c	base	3	p5p0p5p5m7z2s9m1z1m1z5s2z4	0	被ツモ	-1300			1	17	17	kan4
+1	37	z	kan	3	z1z1z1z1m7m9s2z5p8m3p4p4m4	1	被ツモ	-3000			0	14	14	kan4
+1	37	z	nokan	3	z1z1z1z1m7m9s2z5p8m3p4p4m4	0	被ツモ	-3000			1	13	12	kan4
+1	37	z	base	3	z1z1z1z1m7m9s2z5p8m3p4p4m4	1	被ツモ	-3000			0	14	14	kan4
+1	37	y	kan	2	p9p9p9p9s4s7m1s4p2p5m8s2m0	1	無関係	0			0	13	14	kan4
+1	37	y	nokan	2	p9p9p9p9s4s7m1s4p2p5m8s2m0	0	和了	6400	ロン		0	12	12	kan4
+1	37	y	base	2	p9p9p9p9s4s7m1s4p2p5m8s2m0	1	無関係	0			0	13	14	kan4
+1	37	c	kan	2	m4m4m4m4p9m5z6p2p6p6s9z6p4	1	和了	12000	ロン		0	11	11	kan4
+1	37	c	nokan	2	m4m4m4m4p9m5z6p2p6p6s9z6p4	0	和了	3000	ロン		1	12	11	kan4
+1	37	c	base	2	m4m4m4m4p9m5z6p2p6p6s9z6p4	0	和了	3000	ロン		1	12	11	kan4
+1	38	z	kan	2	z1z1z1z1p7s9m6s6z6z7s1s2p6	1	和了	2000	ロン		0	8	8	kan4
+1	38	z	nokan	2	z1z1z1z1p7s9m6s6z6z7s1s2p6	0	被ツモ	-500			0	11	12	kan4
+1	38	z	base	2	z1z1z1z1p7s9m6s6z6z7s1s2p6	1	和了	2000	ロン		0	8	8	kan4
+1	38	y	kan	2	p9p9p9p9m1s9p8s6z6s4z3p8z5	1	被ツモ	-3000			1	13	13	kan4
+1	38	y	nokan	2	p9p9p9p9m1s9p8s6z6s4z3p8z5	0	被ツモ	-2000			1	13	13	kan4
+1	38	y	base	2	p9p9p9p9m1s9p8s6z6s4z3p8z5	1	被ツモ	-3000			1	13	13	kan4
+1	38	c	kan	2	p6p6p6p6m1s4m3m8m5p5p1s9m8	1	被ツモ	-4000			1	14	14	kan4
+1	38	c	nokan	2	p6p6p6p6m1s4m3m8m5p5p1s9m8	0	流局	3000			0	18	18	kan4
+1	38	c	base	2	p6p6p6p6m1s4m3m8m5p5p1s9m8	0	流局	3000			0	18	18	kan4
+1	39	z	kan	1	z7z7z7z7z3p6m3s2m4s7m6s4s2	1	無関係	0			0	8	8	kan4
+1	39	z	nokan	1	z7z7z7z7z3p6m3s2m4s7m6s4s2	0	和了	5200	ロン		0	11	11	kan4
+1	39	z	base	1	z7z7z7z7z3p6m3s2m4s7m6s4s2	1	無関係	0			0	8	8	kan4
+1	39	y	kan	1	s1s1s1s1p2s2m6z3m4p1p9m5z6	1	無関係	0			1	11	11	kan4
+1	39	y	nokan	1	s1s1s1s1p2s2m6z3m4p1p9m5z6	0	無関係	0			0	11	11	kan4
+1	39	y	base	1	s1s1s1s1p2s2m6z3m4p1p9m5z6	1	無関係	0			1	11	11	kan4
+1	39	c	kan	3	p8p8p8p8m9m4p5s9s7m2z4m7s4	1	無関係	0			0	14	14	kan4
+1	39	c	nokan	3	p8p8p8p8m9m4p5s9s7m2z4m7s4	0	被ツモ	-1000			0	14	14	kan4
+1	39	c	base	3	p8p8p8p8m9m4p5s9s7m2z4m7s4	1	無関係	0			0	14	14	kan4
+1	40	z	kan	3	z3z3z3z3m3m1z7p1p8m4z6m6s7	1	無関係	0			1	9	9	kan4
+1	40	z	nokan	3	z3z3z3z3m3m1z7p1p8m4z6m6s7	0	無関係	0			1	7	6	kan4
+1	40	z	base	3	z3z3z3z3m3m1z7p1p8m4z6m6s7	1	無関係	0			1	9	9	kan4
+1	40	y	kan	1	m1m1m1m1p2z5s3s9p8s4s6z2p1	1	無関係	0			0	9	9	kan4
+1	40	y	nokan	1	m1m1m1m1p2z5s3s9p8s4s6z2p1	0	流局	-1500			0	18	18	kan4
+1	40	y	base	1	m1m1m1m1p2z5s3s9p8s4s6z2p1	1	無関係	0			0	9	9	kan4
+1	40	c	kan	1	p6p6p6p6m8s6m8m9p7p3m2s7z6	1	無関係	0			0	5	5	kan4
+1	40	c	nokan	1	p6p6p6p6m8s6m8m9p7p3m2s7z6	0	無関係	0			0	5	5	kan4
+1	40	c	base	1	p6p6p6p6m8s6m8m9p7p3m2s7z6	0	無関係	0			0	5	5	kan4
+1	41	z	kan	2	z1z1z1z1p1s7p8p4m2s5m8z6s3	1	流局	3000			0	18	17	kan4
+1	41	z	nokan	2	z1z1z1z1p1s7p8p4m2s5m8z6s3	0	流局	1000			0	18	18	kan4
+1	41	z	base	2	z1z1z1z1p1s7p8p4m2s5m8z6s3	1	流局	3000			0	18	17	kan4
+1	41	y	kan	2	s1s1s1s1z3p5p6z7m3m3s0p1m5	1	無関係	0			1	5	7	kan4
+1	41	y	nokan	2	s1s1s1s1z3p5p6z7m3m3s0p1m5	0	流局	1000			0	18	18	kan4
+1	41	y	base	2	s1s1s1s1z3p5p6z7m3m3s0p1m5	1	流局	1000			0	18	18	kan4
+1	41	c	kan	2	m6m6m6m6m3p4z5p9z7p3z6p4z4	1	和了	1600	ロン		0	12	12	kan4
+1	41	c	nokan	2	m6m6m6m6m3p4z5p9z7p3z6p4z4	0	被ツモ	-2000			1	11	11	kan4
+1	41	c	base	2	m6m6m6m6m3p4z5p9z7p3z6p4z4	0	被ツモ	-2000			1	11	11	kan4
+1	42	z	kan	3	z3z3z3z3p9z1p4s0z7p1m7p9m9	1	放銃	-2600		0	0	8	8	kan4
+1	42	z	nokan	3	z3z3z3z3p9z1p4s0z7p1m7p9m9	0	被ツモ	-1300			1	14	13	kan4
+1	42	z	base	3	z3z3z3z3p9z1p4s0z7p1m7p9m9	1	放銃	-2600		0	0	8	8	kan4
+1	42	y	kan	2	p1p1p1p1s3m1p6m0m7z3z2m9s8	1	被ツモ	-500			0	13	13	kan4
+1	42	y	nokan	2	p1p1p1p1s3m1p6m0m7z3z2m9s8	0	被ツモ	-2000			1	12	12	kan4
+1	42	y	base	2	p1p1p1p1s3m1p6m0m7z3z2m9s8	1	被ツモ	-500			0	13	13	kan4
+1	42	c	kan	2	p8p8p8p8s6p4m9m2z4m3z7z1m4	1	放銃	-12000		1	1	15	15	kan4
+1	42	c	nokan	2	p8p8p8p8s6p4m9m2z4m3z7z1m4	0	和了	9000	ロン		0	8	7	kan4
+1	42	c	base	2	p8p8p8p8s6p4m9m2z4m3z7z1m4	1	放銃	-12000		1	1	15	15	kan4
+1	43	z	kan	1	z7z7z7z7s6m1s2p1m3p2s7p7m4	1	放銃	-11600		1	1	12	13	kan4
+1	43	z	nokan	1	z7z7z7z7s6m1s2p1m3p2s7p7m4	0	流局	-1000			1	18	17	kan4
+1	43	z	base	1	z7z7z7z7s6m1s2p1m3p2s7p7m4	1	放銃	-11600		1	1	12	13	kan4
+1	43	y	kan	2	s1s1s1s1p8p1z4s9p6z7p4m4m6	1	無関係	0			0	7	7	kan4
+1	43	y	nokan	2	s1s1s1s1p8p1z4s9p6z7p4m4m6	0	無関係	0			0	7	7	kan4
+1	43	y	base	2	s1s1s1s1p8p1z4s9p6z7p4m4m6	1	無関係	0			0	7	7	kan4
+1	43	c	kan	1	s3s3s3s3m8p2z6s0s1p3z7m4m5	1	無関係	0			0	12	12	kan4
+1	43	c	nokan	1	s3s3s3s3m8p2z6s0s1p3z7m4m5	0	和了	5000	ツモ		0	14	13	kan4
+1	43	c	base	1	s3s3s3s3m8p2z6s0s1p3z7m4m5	0	和了	5000	ツモ		0	14	13	kan4
+1	44	z	kan	3	z5z5z5z5m6p3s6p1s1s2m3m8z2	1	流局	-1500			1	18	17	kan4
+1	44	z	nokan	3	z5z5z5z5m6p3s6p1s1s2m3m8z2	0	被ツモ	-500			0	15	15	kan4
+1	44	z	base	3	z5z5z5z5m6p3s6p1s1s2m3m8z2	1	流局	-1500			1	18	17	kan4
+1	44	y	kan	3	p9p9p9p9p3m5p7s4z6s9m4m3z4	1	流局	-1000			1	18	17	kan4
+1	44	y	nokan	3	p9p9p9p9p3m5p7s4z6s9m4m3z4	0	無関係	0			0	13	12	kan4
+1	44	y	base	3	p9p9p9p9p3m5p7s4z6s9m4m3z4	1	被ツモ	-1300			1	13	12	kan4
+1	44	c	kan	2	p4p4p4p4p0p6m5m1m4s9s7p7m9	1	被ツモ	-500			0	14	14	kan4
+1	44	c	nokan	2	p4p4p4p4p0p6m5m1m4s9s7p7m9	0	和了	7700	ロン		0	14	15	kan4
+1	44	c	base	2	p4p4p4p4p0p6m5m1m4s9s7p7m9	0	和了	7700	ロン		0	14	15	kan4
+1	45	z	kan	3	z1z1z1z1m8p7z7p9p5s3s9m2m3	1	無関係	0			0	14	15	kan4
+1	45	z	nokan	3	z1z1z1z1m8p7z7p9p5s3s9m2m3	0	被ツモ	-3900			1	8	8	kan4
+1	45	z	base	3	z1z1z1z1m8p7z7p9p5s3s9m2m3	1	無関係	0			0	14	15	kan4
+1	45	y	kan	2	s1s1s1s1m4m7p7z6m6s4p4m6s7	1	放銃	-11600		0	0	9	10	kan4
+1	45	y	nokan	2	s1s1s1s1m4m7p7z6m6s4p4m6s7	0	和了	3300	ロン		1	11	11	kan4
+1	45	y	base	2	s1s1s1s1m4m7p7z6m6s4p4m6s7	1	放銃	-11600		0	0	9	10	kan4
+1	45	c	kan	3	m4m4m4m4p1m2p5z4z6m1p6m9s8	1	被ツモ	-4000			1	5	4	kan4
+1	45	c	nokan	3	m4m4m4m4p1m2p5z4z6m1p6m9s8	0	被ツモ	-4000			1	5	4	kan4
+1	45	c	base	3	m4m4m4m4p1m2p5z4z6m1p6m9s8	0	被ツモ	-4000			1	5	4	kan4
+1	46	z	kan	3	z6z6z6z6s1z1s8m3m5s3z7m3s1	1	放銃	-12000		1	1	10	10	kan4
+1	46	z	nokan	3	z6z6z6z6s1z1s8m3m5s3z7m3s1	0	流局	-1000			1	18	17	kan4
+1	46	z	base	3	z6z6z6z6s1z1s8m3m5s3z7m3s1	1	放銃	-12000		1	1	10	10	kan4
+1	46	y	kan	3	m1m1m1m1z3m3s9p1z2s6p2s8m3	1	被ツモ	-1000			0	8	8	kan4
+1	46	y	nokan	3	m1m1m1m1z3m3s9p1z2s6p2s8m3	0	被ツモ	-1000			1	8	8	kan4
+1	46	y	base	3	m1m1m1m1z3m3s9p1z2s6p2s8m3	1	被ツモ	-1000			0	8	8	kan4
+1	46	c	kan	3	m5m5m5m0s7m7s6s6m4p4m1m9p1	0	流局	0			0	1	0	kan4
+1	46	c	nokan	3	m5m5m5m0s7m7s6s6m4p4m1m9p1	0	流局	0			0	1	0	kan4
+1	46	c	base	3	m5m5m5m0s7m7s6s6m4p4m1m9p1	0	流局	0			0	1	0	kan4
+1	47	z	kan	2	z7z7z7z7m1p9m4s9m3p0p3s9m3	1	無関係	0			1	10	10	kan4
+1	47	z	nokan	2	z7z7z7z7m1p9m4s9m3p0p3s9m3	0	和了	13000	ツモ		0	10	9	kan4
+1	47	z	base	2	z7z7z7z7m1p9m4s9m3p0p3s9m3	1	無関係	0			1	10	10	kan4
+1	47	y	kan	1	m9m9m9m9s3p7z6p3m5m0p6m1m4	1	被ツモ	-500			0	9	8	kan4
+1	47	y	nokan	1	m9m9m9m9s3p7z6p3m5m0p6m1m4	0	無関係	0			0	13	14	kan4
+1	47	y	base	1	m9m9m9m9s3p7z6p3m5m0p6m1m4	1	被ツモ	-500			0	9	8	kan4
+1	47	c	kan	3	s4s4s4s4s1p8m8m8z5s6m1p2s7	1	流局	-1500			1	18	17	kan4
+1	47	c	nokan	3	s4s4s4s4s1p8m8m8z5s6m1p2s7	0	流局	-1000			1	18	18	kan4
+1	47	c	base	3	s4s4s4s4s1p8m8m8z5s6m1p2s7	1	流局	-1500			1	18	17	kan4
+1	48	z	kan	3	z5z5z5z5p2p4m2m4m5m7m7s1z3	1	無関係	0			1	8	8	kan4
+1	48	z	nokan	3	z5z5z5z5p2p4m2m4m5m7m7s1z3	0	被ツモ	-3000			1	8	7	kan4
+1	48	z	base	3	z5z5z5z5p2p4m2m4m5m7m7s1z3	1	無関係	0			1	8	8	kan4
+1	48	y	kan	1	m1m1m1m1p8p5s2p9s2m8s4s1m8	1	和了	12000	ロン		0	7	7	kan4
+1	48	y	nokan	1	m1m1m1m1p8p5s2p9s2m8s4s1m8	0	被ツモ	-2000			1	12	12	kan4
+1	48	y	base	1	m1m1m1m1p8p5s2p9s2m8s4s1m8	1	和了	12000	ロン		0	7	7	kan4
+1	48	c	kan	3	m4m4m4m4m9m1z5p7z5s8z6s4s2	1	和了	4200	ツモ		1	8	7	kan4
+1	48	c	nokan	3	m4m4m4m4m9m1z5p7z5s8z6s4s2	0	放銃	-7700		1	1	8	8	kan4
+1	48	c	base	3	m4m4m4m4m9m1z5p7z5s8z6s4s2	1	和了	4200	ツモ		1	8	7	kan4
+1	49	z	kan	3	z4z4z4z4s2z7s5s5p7p6m8m8m4	0	和了	2000	ロン		0	5	6	kan4
+1	49	z	nokan	3	z4z4z4z4s2z7s5s5p7p6m8m8m4	0	和了	2000	ロン		0	5	6	kan4
+1	49	z	base	3	z4z4z4z4s2z7s5s5p7p6m8m8m4	0	和了	2000	ロン		0	5	6	kan4
+1	49	y	kan	1	p9p9p9p9m1p7p3z6p1m3s0m7p8	1	放銃	-7700		0	0	9	9	kan4
+1	49	y	nokan	1	p9p9p9p9m1p7p3z6p1m3s0m7p8	0	無関係	0			1	11	10	kan4
+1	49	y	base	1	p9p9p9p9m1p7p3z6p1m3s0m7p8	0	無関係	0			1	11	10	kan4
+1	49	c	kan	3	s4s4s4s4m9s3m3p5p7p2z2z5m1	1	無関係	0			0	12	12	kan4
+1	49	c	nokan	3	s4s4s4s4m9s3m3p5p7p2z2z5m1	0	和了	5000	ツモ		0	15	14	kan4
+1	49	c	base	3	s4s4s4s4m9s3m3p5p7p2z2z5m1	0	和了	5000	ツモ		0	15	14	kan4
+1	50	z	kan	1	z3z3z3z3p6m9m5z5m3z5z7z4s3	0	和了	3700	ツモ		1	14	14	kan4
+1	50	z	nokan	1	z3z3z3z3p6m9m5z5m3z5z7z4s3	0	和了	3700	ツモ		1	14	14	kan4
+1	50	z	base	1	z3z3z3z3p6m9m5z5m3z5z7z4s3	0	和了	3700	ツモ		1	14	14	kan4
+1	50	y	kan	2	s1s1s1s1s9s3p7s7p2p3m3p7s2	1	流局	-1000			1	18	17	kan4
+1	50	y	nokan	2	s1s1s1s1s9s3p7s7p2p3m3p7s2	0	流局	-1000			1	18	17	kan4
+1	50	y	base	2	s1s1s1s1s9s3p7s7p2p3m3p7s2	0	流局	-1000			1	18	17	kan4
+1	50	c	kan	2	m7m7m7m7z3m8m3p9m8m6z1m2z7	1	無関係	0			1	17	16	kan4
+1	50	c	nokan	2	m7m7m7m7z3m8m3p9m8m6z1m2z7	0	被ツモ	-2000			1	18	17	kan4
+1	50	c	base	2	m7m7m7m7z3m8m3p9m8m6z1m2z7	0	被ツモ	-2000			1	18	17	kan4
+1	51	z	kan	2	z3z3z3z3s1s1m8s8p9p4z1z7m6	1	流局	-1000			1	18	17	kan4
+1	51	z	nokan	2	z3z3z3z3s1s1m8s8p9p4z1z7m6	0	流局	-1000			1	18	17	kan4
+1	51	z	base	2	z3z3z3z3s1s1m8s8p9p4z1z7m6	0	流局	-1000			1	18	17	kan4
+1	51	y	kan	3	s9s9s9s9s3z6p9m5m6z7s4s2s1	1	流局	-1000			1	18	17	kan4
+1	51	y	nokan	3	s9s9s9s9s3z6p9m5m6z7s4s2s1	0	流局	-1000			1	18	17	kan4
+1	51	y	base	3	s9s9s9s9s3z6p9m5m6z7s4s2s1	1	流局	-1000			1	18	17	kan4
+1	51	c	kan	1	s0s5s5s5m9z2p5s3p7m7z3s3p5	1	被ツモ	-6000			1	11	10	kan4
+1	51	c	nokan	1	s0s5s5s5m9z2p5s3p7m7z3s3p5	0	流局	3000			0	18	18	kan4
+1	51	c	base	1	s0s5s5s5m9z2p5s3p7m7z3s3p5	1	被ツモ	-6000			1	11	10	kan4
+1	52	z	kan	2	z4z4z4z4m3m1s2p1s2m1m2z5z3	1	和了	8000	ロン		1	12	12	kan4
+1	52	z	nokan	2	z4z4z4z4m3m1s2p1s2m1m2z5z3	0	被ツモ	-2000			0	14	15	kan4
+1	52	z	base	2	z4z4z4z4m3m1s2p1s2m1m2z5z3	1	和了	8000	ロン		1	12	12	kan4
+1	52	y	kan	2	m1m1m1m1m2p7s9m3p2z4z7m6s8	1	和了	8900	ツモ		0	7	7	kan4
+1	52	y	nokan	2	m1m1m1m1m2p7s9m3p2z4z7m6s8	0	和了	6200	ロン		1	12	13	kan4
+1	52	y	base	2	m1m1m1m1m2p7s9m3p2z4z7m6s8	0	和了	6200	ロン		1	12	13	kan4
+1	52	c	kan	1	p8p8p8p8m9z2z7m6m4p3p4m1z4	1	和了	10000	ツモ		1	8	7	kan4
+1	52	c	nokan	1	p8p8p8p8m9z2z7m6m4p3p4m1z4	0	放銃	-12000		1	1	15	15	kan4
+1	52	c	base	1	p8p8p8p8m9z2z7m6m4p3p4m1z4	1	和了	10000	ツモ		1	8	7	kan4
+1	53	z	kan	1	z1z1z1z1s2s9z2z7p2z2s6p4p3	1	被ツモ	-1000			1	13	13	kan4
+1	53	z	nokan	1	z1z1z1z1s2s9z2z7p2z2s6p4p3	0	被ツモ	-3000			1	13	14	kan4
+1	53	z	base	1	z1z1z1z1s2s9z2z7p2z2s6p4p3	1	被ツモ	-1000			1	13	13	kan4
+1	53	y	kan	2	p9p9p9p9m9s8s4p3m4p8p8z1p7	1	放銃	-8000		0	0	11	11	kan4
+1	53	y	nokan	2	p9p9p9p9m9s8s4p3m4p8p8z1p7	0	無関係	0			1	10	10	kan4
+1	53	y	base	2	p9p9p9p9m9s8s4p3m4p8p8z1p7	1	被ツモ	-2000			1	15	15	kan4
+1	53	c	kan	2	m3m3m3m3z5z1z6s2p3s6m4z7s5	1	被ツモ	-2000			0	9	9	kan4
+1	53	c	nokan	2	m3m3m3m3z5z1z6s2p3s6m4z7s5	0	放銃	-2000		0	0	12	14	kan4
+1	53	c	base	2	m3m3m3m3z5z1z6s2p3s6m4z7s5	2	和了	9000	ロン		0	14	14	kan4
+1	54	z	kan	1	z4z4z4z4p2m6s8s7s1m5m3s5m2	1	放銃	-2600		0	1	8	8	kan4
+1	54	z	nokan	1	z4z4z4z4p2m6s8s7s1m5m3s5m2	0	放銃	-2600		0	1	8	8	kan4
+1	54	z	base	1	z4z4z4z4p2m6s8s7s1m5m3s5m2	1	放銃	-2600		0	1	8	8	kan4
+1	54	y	kan	3	s1s1s1s1m2s4p7s5z6m1s9s2s6	1	被ツモ	-3900			1	13	13	kan4
+1	54	y	nokan	3	s1s1s1s1m2s4p7s5z6m1s9s2s6	0	無関係	0			0	8	8	kan4
+1	54	y	base	3	s1s1s1s1m2s4p7s5z6m1s9s2s6	1	無関係	0			1	8	8	kan4
+1	54	c	kan	1	s6s6s6s6m0p8p4z3s3m2p3z3z2	1	流局	-1000			1	18	17	kan4
+1	54	c	nokan	1	s6s6s6s6m0p8p4z3s3m2p3z3z2	0	放銃	-2900		0	0	3	4	kan4
+1	54	c	base	1	s6s6s6s6m0p8p4z3s3m2p3z3z2	0	放銃	-2900		0	0	3	4	kan4
+1	55	z	kan	2	z3z3z3z3p1p3p8s4z5s1m6m7p8	1	和了	4000	ツモ		0	5	5	kan4
+1	55	z	nokan	2	z3z3z3z3p1p3p8s4z5s1m6m7p8	0	和了	3700	ツモ		1	13	13	kan4
+1	55	z	base	2	z3z3z3z3p1p3p8s4z5s1m6m7p8	1	和了	4000	ツモ		0	5	5	kan4
+1	55	y	kan	1	m9m9m9m9z2z3s8p3m5s1z6s3m7	1	和了	18000	ツモ		1	12	12	kan4
+1	55	y	nokan	1	m9m9m9m9z2z3s8p3m5s1z6s3m7	0	和了	13000	ツモ		0	14	13	kan4
+1	55	y	base	1	m9m9m9m9z2z3s8p3m5s1z6s3m7	1	和了	18000	ツモ		1	12	12	kan4
+1	55	c	kan	1	p7p7p7p7s7m1z2p9p3m1m2p2z6	1	和了	9400	ロン		1	14	14	kan4
+1	55	c	nokan	1	p7p7p7p7s7m1z2p9p3m1m2p2z6	0	被ツモ	-3000			1	10	10	kan4
+1	55	c	base	1	p7p7p7p7s7m1z2p9p3m1m2p2z6	1	被ツモ	-4000			1	10	10	kan4
+1	56	z	kan	1	z4z4z4z4m8m5z5z3p5m4p3z1m7	1	和了	8000	ロン		0	9	9	kan4
+1	56	z	nokan	1	z4z4z4z4m8m5z5z3p5m4p3z1m7	0	和了	7200	ロン		1	9	10	kan4
+1	56	z	base	1	z4z4z4z4m8m5z5z3p5m4p3z1m7	1	和了	8000	ロン		0	9	9	kan4
+1	56	y	kan	3	m9m9m9m9z5m5s1z6z6s1m3s3p8	1	和了	6000	ツモ		1	11	10	kan4
+1	56	y	nokan	3	m9m9m9m9z5m5s1z6z6s1m3s3p8	0	被ツモ	-4000			1	15	14	kan4
+1	56	y	base	3	m9m9m9m9z5m5s1z6z6s1m3s3p8	1	和了	6000	ツモ		1	11	10	kan4
+1	56	c	kan	2	s4s4s4s4s5z4p7p6p1p6p7m1z4	1	流局	-1000			1	17	18	kan4
+1	56	c	nokan	2	s4s4s4s4s5z4p7p6p1p6p7m1z4	0	無関係	0			0	11	11	kan4
+1	56	c	base	2	s4s4s4s4s5z4p7p6p1p6p7m1z4	0	無関係	0			0	11	11	kan4
+1	57	z	kan	2	z3z3z3z3m6s4m3p6m1m6p1z7p6	1	和了	7700	ロン		0	4	4	kan4
+1	57	z	nokan	2	z3z3z3z3m6s4m3p6m1m6p1z7p6	0	和了	2000	ロン		0	4	4	kan4
+1	57	z	base	2	z3z3z3z3m6s4m3p6m1m6p1z7p6	1	和了	7700	ロン		0	4	4	kan4
+1	57	y	kan	1	s9s9s9s9p6z5s1s4s8p7p6p8m8	1	和了	9000	ロン		0	9	9	kan4
+1	57	y	nokan	1	s9s9s9s9p6z5s1s4s8p7p6p8m8	0	被ツモ	-1300			1	10	9	kan4
+1	57	y	base	1	s9s9s9s9p6z5s1s4s8p7p6p8m8	0	被ツモ	-1300			1	10	9	kan4
+1	57	c	kan	1	p7p7p7p7z3s7s3s1p1m7s8p5p2	1	和了	7400	ロン		0	6	7	kan4
+1	57	c	nokan	1	p7p7p7p7z3s7s3s1p1m7s8p5p2	0	無関係	0			0	6	7	kan4
+1	57	c	base	1	p7p7p7p7z3s7s3s1p1m7s8p5p2	0	無関係	0			0	6	7	kan4
+1	58	z	kan	3	z6z6z6z6s4m0s8m3s7p2m6s5p9	1	和了	14000	ツモ		1	17	16	kan4
+1	58	z	nokan	3	z6z6z6z6s4m0s8m3s7p2m6s5p9	0	放銃	-1300		1	1	15	15	kan4
+1	58	z	base	3	z6z6z6z6s4m0s8m3s7p2m6s5p9	1	和了	14000	ツモ		1	17	16	kan4
+1	58	y	kan	3	s9s9s9s9p8s3p2s6m9z2s4p4p6	1	無関係	0			1	16	14	kan4
+1	58	y	nokan	3	s9s9s9s9p8s3p2s6m9z2s4p4p6	0	無関係	0			1	11	11	kan4
+1	58	y	base	3	s9s9s9s9p8s3p2s6m9z2s4p4p6	1	無関係	0			1	16	14	kan4
+1	58	c	kan	3	p5p0p5p5z1s1s8p9p1s0m7s1p6	1	放銃	-1500		0	1	12	14	kan4
+1	58	c	nokan	3	p5p0p5p5z1s1s8p9p1s0m7s1p6	0	無関係	0			0	16	16	kan4
+1	58	c	base	3	p5p0p5p5z1s1s8p9p1s0m7s1p6	0	無関係	0			0	16	16	kan4
+1	59	z	kan	3	z4z4z4z4z5s3m7s1m7z1m2s5m8	1	被ツモ	-1300			1	10	10	kan4
+1	59	z	nokan	3	z4z4z4z4z5s3m7s1m7z1m2s5m8	0	無関係	0			0	7	7	kan4
+1	59	z	base	3	z4z4z4z4z5s3m7s1m7z1m2s5m8	1	被ツモ	-1300			1	10	10	kan4
+1	59	y	kan	1	m9m9m9m9m7m7z7s9m3z2m8m6s4	1	無関係	0			1	13	13	kan4
+1	59	y	nokan	1	m9m9m9m9m7m7z7s9m3z2m8m6s4	0	放銃	-2000		1	1	10	10	kan4
+1	59	y	base	1	m9m9m9m9m7m7z7s9m3z2m8m6s4	0	放銃	-2000		1	1	10	10	kan4
+1	59	c	kan	1	s8s8s8s8z1z1s5z1s0p4p5z4z7	1	和了	8000	ロン		0	2	3	kan4
+1	59	c	nokan	1	s8s8s8s8z1z1s5z1s0p4p5z4z7	0	和了	5200	ロン		0	2	3	kan4
+1	59	c	base	1	s8s8s8s8z1z1s5z1s0p4p5z4z7	1	和了	8000	ロン		0	2	3	kan4
+1	60	z	kan	2	z1z1z1z1s2p4p1z4p7s6p2p8p6	1	和了	4900	ロン		1	7	7	kan4
+1	60	z	nokan	2	z1z1z1z1s2p4p1z4p7s6p2p8p6	0	無関係	0			1	9	9	kan4
+1	60	z	base	2	z1z1z1z1s2p4p1z4p7s6p2p8p6	1	和了	4900	ロン		1	7	7	kan4
+1	60	y	kan	1	s9s9s9s9m5z1s2m6p2s0s5z1p6	1	和了	5000	ツモ		1	10	10	kan4
+1	60	y	nokan	1	s9s9s9s9m5z1s2m6p2s0s5z1p6	0	和了	3600	ロン		1	7	7	kan4
+1	60	y	base	1	s9s9s9s9m5z1s2m6p2s0s5z1p6	1	和了	5000	ツモ		1	10	10	kan4
+1	60	c	kan	3	m8m8m8m8s8s5m2s2z1m6p2p2z7	1	放銃	-2000		0	0	8	9	kan4
+1	60	c	nokan	3	m8m8m8m8s8s5m2s2z1m6p2p2z7	0	無関係	0			1	10	11	kan4
+1	60	c	base	3	m8m8m8m8s8s5m2s2z1m6p2p2z7	1	放銃	-3900		0	0	7	8	kan4
+1	61	z	kan	3	z7z7z7z7m6z6m8z1p5p1s2p6m2	1	和了	8700	ロン		1	15	15	kan4
+1	61	z	nokan	3	z7z7z7z7m6z6m8z1p5p1s2p6m2	0	被ツモ	-6000			1	9	9	kan4
+1	61	z	base	3	z7z7z7z7m6z6m8z1p5p1s2p6m2	1	和了	8700	ロン		1	15	15	kan4
+1	61	y	kan	3	p9p9p9p9p7s0s6p1z3m9s1p3m8	1	流局	-1000			1	18	17	kan4
+1	61	y	nokan	3	p9p9p9p9p7s0s6p1z3m9s1p3m8	0	和了	10000	ロン		1	15	14	kan4
+1	61	y	base	3	p9p9p9p9p7s0s6p1z3m9s1p3m8	1	流局	-1000			1	18	17	kan4
+1	61	c	kan	2	s4s4s4s4m6p2m9s8m3p6s9p6s6	1	無関係	0			0	15	16	kan4
+1	61	c	nokan	2	s4s4s4s4m6p2m9s8m3p6s9p6s6	0	無関係	0			0	14	14	kan4
+1	61	c	base	2	s4s4s4s4m6p2m9s8m3p6s9p6s6	0	無関係	0			0	14	14	kan4
+1	62	z	kan	3	z4z4z4z4m8z5m5p8z7p5m7s9s4	1	和了	7700	ロン		0	10	10	kan4
+1	62	z	nokan	3	z4z4z4z4m8z5m5p8z7p5m7s9s4	0	和了	10000	ツモ		1	12	10	kan4
+1	62	z	base	3	z4z4z4z4m8z5m5p8z7p5m7s9s4	1	和了	7700	ロン		0	10	10	kan4
+1	62	y	kan	1	m9m9m9m9m8m6s3z5s1z6p7z7m6	1	被ツモ	-4000			1	16	15	kan4
+1	62	y	nokan	1	m9m9m9m9m8m6s3z5s1z6p7z7m6	0	被ツモ	-3900			1	16	15	kan4
+1	62	y	base	1	m9m9m9m9m8m6s3z5s1z6p7z7m6	1	被ツモ	-4000			1	16	15	kan4
+1	62	c	kan	3	p3p3p3p3m4z6z7z4z7z5s6s3s6	1	被ツモ	-3900			1	17	17	kan4
+1	62	c	nokan	3	p3p3p3p3m4z6z7z4z7z5s6s3s6	0	流局	0			0	1	1	kan4
+1	62	c	base	3	p3p3p3p3m4z6z7z4z7z5s6s3s6	0	流局	0			0	1	1	kan4
+1	63	z	kan	1	z1z1z1z1m9p9s6m4m1s2p2s9z3	1	和了	10000	ロン		1	12	12	kan4
+1	63	z	nokan	1	z1z1z1z1m9p9s6m4m1s2p2s9z3	0	流局	1500			1	18	18	kan4
+1	63	z	base	1	z1z1z1z1m9p9s6m4m1s2p2s9z3	1	和了	10000	ロン		1	12	12	kan4
+1	63	y	kan	1	p1p1p1p1s4z1z3p9p4m7s8m1s4	1	被ツモ	-4000			1	11	10	kan4
+1	63	y	nokan	1	p1p1p1p1s4z1z3p9p4m7s8m1s4	0	被ツモ	-4000			1	11	10	kan4
+1	63	y	base	1	p1p1p1p1s4z1z3p9p4m7s8m1s4	1	被ツモ	-4000			1	11	10	kan4
+1	63	c	kan	1	s3s3s3s3s4z2m1p2m8z6m3p7m9	1	流局	-1000			1	17	17	kan4
+1	63	c	nokan	1	s3s3s3s3s4z2m1p2m8z6m3p7m9	0	放銃	-3200		1	1	11	11	kan4
+1	63	c	base	1	s3s3s3s3s4z2m1p2m8z6m3p7m9	0	放銃	-3200		1	1	11	11	kan4
+1	64	z	kan	1	z1z1z1z1p3s4p3p4p9m3s6s2p6	1	和了	8000	ロン		0	8	9	kan4
+1	64	z	nokan	1	z1z1z1z1p3s4p3p4p9m3s6s2p6	0	和了	3900	ロン		0	8	9	kan4
+1	64	z	base	1	z1z1z1z1p3s4p3p4p9m3s6s2p6	1	和了	8000	ロン		0	8	9	kan4
+1	64	y	kan	3	s1s1s1s1z2p4m6z4z7s9p9p3s7	1	和了	10000	ロン		1	15	15	kan4
+1	64	y	nokan	3	s1s1s1s1z2p4m6z4z7s9p9p3s7	0	和了	10000	ロン		1	14	14	kan4
+1	64	y	base	3	s1s1s1s1z2p4m6z4z7s9p9p3s7	1	和了	10000	ロン		1	15	15	kan4
+1	64	c	kan	2	m3m3m3m3s8s5z6m8z2s4p8p1s4	1	無関係	0			0	13	13	kan4
+1	64	c	nokan	2	m3m3m3m3s8s5z6m8z2s4p8p1s4	0	被ツモ	-300			0	7	7	kan4
+1	64	c	base	2	m3m3m3m3s8s5z6m8z2s4p8p1s4	0	被ツモ	-300			0	7	7	kan4
+1	65	z	kan	1	z2z2z2z2p4m9p8p5z7p0s8m4m2	1	放銃	-3900		0	0	11	13	kan4
+1	65	z	nokan	1	z2z2z2z2p4m9p8p5z7p0s8m4m2	0	和了	2600	ロン		0	9	10	kan4
+1	65	z	base	1	z2z2z2z2p4m9p8p5z7p0s8m4m2	1	放銃	-3900		0	0	11	13	kan4
+1	65	y	kan	2	p9p9p9p9z3s2s8z6p7p8p8m2p5	1	流局	1500			1	18	18	kan4
+1	65	y	nokan	2	p9p9p9p9z3s2s8z6p7p8p8m2p5	0	被ツモ	-2000			1	12	11	kan4
+1	65	y	base	2	p9p9p9p9z3s2s8z6p7p8p8m2p5	1	流局	1500			1	18	18	kan4
+1	65	c	kan	2	p5p5p0p5s3p6s4z1s5p3s2s3p2	1	和了	9000	ツモ		0	11	10	kan4
+1	65	c	nokan	2	p5p5p0p5s3p6s4z1s5p3s2s3p2	0	和了	9000	ロン		0	3	3	kan4
+1	65	c	base	2	p5p5p0p5s3p6s4z1s5p3s2s3p2	0	和了	9000	ロン		0	3	3	kan4
+1	66	z	kan	1	z1z1z1z1p9p1s3s8m6s4s6z7z4	1	和了	7700	ロン		0	13	14	kan4
+1	66	z	nokan	1	z1z1z1z1p9p1s3s8m6s4s6z7z4	0	被ツモ	-1300			1	16	18	kan4
+1	66	z	base	1	z1z1z1z1p9p1s3s8m6s4s6z7z4	1	和了	7700	ロン		0	13	14	kan4
+1	66	y	kan	3	m1m1m1m1m8p0p4m6z2z2p4s8m4	1	流局	-1000			1	18	17	kan4
+1	66	y	nokan	3	m1m1m1m1m8p0p4m6z2z2p4s8m4	0	放銃	-18000		1	1	15	15	kan4
+1	66	y	base	3	m1m1m1m1m8p0p4m6z2z2p4s8m4	0	放銃	-18000		1	1	15	15	kan4
+1	66	c	kan	3	s6s6s6s6p5m2m3m9z5z3z7m2z7	1	流局	-3000			1	18	17	kan4
+1	66	c	nokan	3	s6s6s6s6p5m2m3m9z5z3z7m2z7	0	流局	1000			0	18	18	kan4
+1	66	c	base	3	s6s6s6s6p5m2m3m9z5z3z7m2z7	1	流局	1000			0	18	18	kan4
+1	67	z	kan	3	z2z2z2z2s5m4s7m2z6m0p7z1z1	1	和了	3900	ロン		0	11	11	kan4
+1	67	z	nokan	3	z2z2z2z2s5m4s7m2z6m0p7z1z1	0	和了	2600	ロン		0	11	11	kan4
+1	67	z	base	3	z2z2z2z2s5m4s7m2z6m0p7z1z1	1	和了	3900	ロン		0	11	11	kan4
+1	67	y	kan	3	m9m9m9m9m3z2z3p8z2z1s1m7m1	1	無関係	0			1	7	7	kan4
+1	67	y	nokan	3	m9m9m9m9m3z2z3p8z2z1s1m7m1	0	無関係	0			1	7	7	kan4
+1	67	y	base	3	m9m9m9m9m3z2z3p8z2z1s1m7m1	0	無関係	0			1	7	7	kan4
+1	67	c	kan	2	s4s4s4s4m2z1p6m8m4p8p8z2p0	1	和了	26000	ツモ		1	14	13	kan4
+1	67	c	nokan	2	s4s4s4s4m2z1p6m8m4p8p8z2p0	0	放銃	-7700		1	1	7	7	kan4
+1	67	c	base	2	s4s4s4s4m2z1p6m8m4p8p8z2p0	1	和了	26000	ツモ		1	14	13	kan4
+1	68	z	kan	3	z1z1z1z1p3m4p4s2p7s0z4z7z3	1	無関係	0			1	8	8	kan4
+1	68	z	nokan	3	z1z1z1z1p3m4p4s2p7s0z4z7z3	0	被ツモ	-3200			1	16	16	kan4
+1	68	z	base	3	z1z1z1z1p3m4p4s2p7s0z4z7z3	1	無関係	0			1	8	8	kan4
+1	68	y	kan	1	m1m1m1m1s5s8z6s4z1p1s2s7z4	1	流局	3000			0	18	18	kan4
+1	68	y	nokan	1	m1m1m1m1s5s8z6s4z1p1s2s7z4	0	無関係	0			1	11	11	kan4
+1	68	y	base	1	m1m1m1m1s5s8z6s4z1p1s2s7z4	1	流局	3000			0	18	18	kan4
+1	68	c	kan	3	m8m8m8m8s6m3s1s2s3z7s9z1m4	1	放銃	-8000		0	0	14	13	kan4
+1	68	c	nokan	3	m8m8m8m8s6m3s1s2s3z7s9z1m4	0	流局	-1000			1	18	17	kan4
+1	68	c	base	3	m8m8m8m8s6m3s1s2s3z7s9z1m4	1	放銃	-8000		0	0	14	13	kan4
+1	69	z	kan	3	z1z1z1z1z7z2m7z6p9z7m1s6m4	1	無関係	0			1	15	15	kan4
+1	69	z	nokan	3	z1z1z1z1z7z2m7z6p9z7m1s6m4	0	無関係	0			1	15	15	kan4
+1	69	z	base	3	z1z1z1z1z7z2m7z6p9z7m1s6m4	1	無関係	0			1	15	15	kan4
+1	69	y	kan	2	s1s1s1s1p2m4p6s5m1z5s2p8z3	1	無関係	0			0	15	14	kan4
+1	69	y	nokan	2	s1s1s1s1p2m4p6s5m1z5s2p8z3	0	被ツモ	-700			0	7	6	kan4
+1	69	y	base	2	s1s1s1s1p2m4p6s5m1z5s2p8z3	0	被ツモ	-700			0	7	6	kan4
+1	69	c	kan	1	m3m3m3m3z4m4p2p4p9p3z3s1s9	1	放銃	-2900		0	0	11	12	kan4
+1	69	c	nokan	1	m3m3m3m3z4m4p2p4p9p3z3s1s9	0	和了	3000	ツモ		0	9	8	kan4
+1	69	c	base	1	m3m3m3m3z4m4p2p4p9p3z3s1s9	0	和了	3000	ツモ		0	9	8	kan4
+1	70	z	kan	3	z7z7z7z7m6s3m9z2s5s3p2p1z3	1	和了	9000	ロン		0	10	10	kan4
+1	70	z	nokan	3	z7z7z7z7m6s3m9z2s5s3p2p1z3	0	被ツモ	-3900			1	12	11	kan4
+1	70	z	base	3	z7z7z7z7m6s3m9z2s5s3p2p1z3	1	和了	9000	ロン		0	10	10	kan4
+1	70	y	kan	1	p1p1p1p1z3m2s8p5s4z7z6m7s6	1	被ツモ	-1300			0	12	12	kan4
+1	70	y	nokan	1	p1p1p1p1z3m2s8p5s4z7z6m7s6	0	無関係	0			0	12	12	kan4
+1	70	y	base	1	p1p1p1p1z3m2s8p5s4z7z6m7s6	1	被ツモ	-1300			0	12	12	kan4
+1	70	c	kan	1	m4m4m4m4p3z4s9z4m6p9s7p3z1	1	流局	0			0	18	18	kan4
+1	70	c	nokan	1	m4m4m4m4p3z4s9z4m6p9s7p3z1	0	和了	6200	ツモ		1	13	13	kan4
+1	70	c	base	1	m4m4m4m4p3z4s9z4m6p9s7p3z1	0	和了	6200	ツモ		1	13	13	kan4
+1	71	z	kan	1	z3z3z3z3m4s3p8m3s8p3s6m2m2	1	和了	13000	ツモ		0	10	9	kan4
+1	71	z	nokan	1	z3z3z3z3m4s3p8m3s8p3s6m2m2	0	被ツモ	-2000			0	8	8	kan4
+1	71	z	base	1	z3z3z3z3m4s3p8m3s8p3s6m2m2	1	和了	13000	ツモ		0	10	9	kan4
+1	71	y	kan	1	m1m1m1m1p5z2p6p3s1p1z1m3p7	1	無関係	0			1	6	6	kan4
+1	71	y	nokan	1	m1m1m1m1p5z2p6p3s1p1z1m3p7	0	無関係	0			1	6	6	kan4
+1	71	y	base	1	m1m1m1m1p5z2p6p3s1p1z1m3p7	1	無関係	0			1	6	6	kan4
+1	71	c	kan	2	m4m4m4m4z2p9p6z7m6z1p9m6z3	1	無関係	0			1	14	14	kan4
+1	71	c	nokan	2	m4m4m4m4z2p9p6z7m6z1p9m6z3	0	放銃	-2000		1	1	13	13	kan4
+1	71	c	base	2	m4m4m4m4z2p9p6z7m6z1p9m6z3	0	放銃	-2000		1	1	13	13	kan4
+1	72	z	kan	2	z1z1z1z1m7z6m3s1m2p4m7p5z3	1	無関係	0			1	7	7	kan4
+1	72	z	nokan	2	z1z1z1z1m7z6m3s1m2p4m7p5z3	0	放銃	-8000		0	1	13	13	kan4
+1	72	z	base	2	z1z1z1z1m7z6m3s1m2p4m7p5z3	1	無関係	0			1	7	7	kan4
+1	72	y	kan	2	p9p9p9p9z7s8p8m5m3s3z6z4s7	1	無関係	0			1	13	13	kan4
+1	72	y	nokan	2	p9p9p9p9z7s8p8m5m3s3z6z4s7	0	無関係	0			0	7	7	kan4
+1	72	y	base	2	p9p9p9p9z7s8p8m5m3s3z6z4s7	1	無関係	0			1	13	13	kan4
+1	72	c	kan	3	s5s0s5s5p9s4m4s7s4m9p9s1m8	1	放銃	-3900		0	0	6	6	kan4
+1	72	c	nokan	3	s5s0s5s5p9s4m4s7s4m9p9s1m8	0	無関係	0			0	4	4	kan4
+1	72	c	base	3	s5s0s5s5p9s4m4s7s4m9p9s1m8	0	無関係	0			0	4	4	kan4
+1	73	z	kan	1	z5z5z5z5p5z1m2s0p8m3z3p7z2	1	和了	15000	ツモ		1	10	9	kan4
+1	73	z	nokan	1	z5z5z5z5p5z1m2s0p8m3z3p7z2	0	和了	6200	ロン		0	8	8	kan4
+1	73	z	base	1	z5z5z5z5p5z1m2s0p8m3z3p7z2	1	和了	15000	ツモ		1	10	9	kan4
+1	73	y	kan	2	m9m9m9m9p8s5m5z2m3m1z4m6s2	1	被ツモ	-8000			1	10	10	kan4
+1	73	y	nokan	2	m9m9m9m9p8s5m5z2m3m1z4m6s2	0	放銃	-5200		1	1	12	12	kan4
+1	73	y	base	2	m9m9m9m9p8s5m5z2m3m1z4m6s2	1	被ツモ	-8000			1	10	10	kan4
+1	73	c	kan	2	m7m7m7m7m6p8z3s6z4p7z7p9z6	1	放銃	-5800		0	0	13	14	kan4
+1	73	c	nokan	2	m7m7m7m7m6p8z3s6z4p7z7p9z6	0	無関係	0			1	15	14	kan4
+1	73	c	base	2	m7m7m7m7m6p8z3s6z4p7z7p9z6	0	無関係	0			1	15	14	kan4
+1	74	z	kan	2	z6z6z6z6m4p2s1s4z5z4p1p4m3	1	放銃	-12000		1	1	11	12	kan4
+1	74	z	nokan	2	z6z6z6z6m4p2s1s4z5z4p1p4m3	0	流局	-1000			1	18	18	kan4
+1	74	z	base	2	z6z6z6z6m4p2s1s4z5z4p1p4m3	1	放銃	-12000		1	1	11	12	kan4
+1	74	y	kan	1	s1s1s1s1z6p4m9p9s0p8m8s3m6	1	無関係	0			1	12	12	kan4
+1	74	y	nokan	1	s1s1s1s1z6p4m9p9s0p8m8s3m6	0	無関係	0			1	12	12	kan4
+1	74	y	base	1	s1s1s1s1z6p4m9p9s0p8m8s3m6	1	無関係	0			1	12	12	kan4
+1	74	c	kan	2	p7p7p7p7p3z6s9m3m4z2s2p3m7	1	放銃	-9600		0	0	8	9	kan4
+2	1	z	kan	3	z4z4z4z4m9p3m7s8m2z5s6z7p3	1	和了	17000	ツモ		0	5	4	kan4
+2	1	z	nokan	3	z4z4z4z4m9p3m7s8m2z5s6z7p3	0	和了	9000	ロン		0	6	5	kan4
+2	1	z	base	3	z4z4z4z4m9p3m7s8m2z5s6z7p3	1	和了	17000	ツモ		0	5	4	kan4
+2	1	y	kan	3	m9m9m9m9z2z6p9p8m7s1p2m5z1	1	無関係	0			0	9	9	kan4
+2	1	y	nokan	3	m9m9m9m9z2z6p9p8m7s1p2m5z1	0	被ツモ	-4000			0	8	8	kan4
+2	1	y	base	3	m9m9m9m9z2z6p9p8m7s1p2m5z1	1	無関係	0			0	9	9	kan4
+2	1	c	kan	2	s2s2s2s2s9m4p4s1z5s8p6p3s7	1	無関係	0			0	10	10	kan4
+2	1	c	nokan	2	s2s2s2s2s9m4p4s1z5s8p6p3s7	0	放銃	-2900		0	0	7	8	kan4
+2	1	c	base	2	s2s2s2s2s9m4p4s1z5s8p6p3s7	0	放銃	-2900		0	0	7	8	kan4
+2	2	z	kan	1	z7z7z7z7p7m2s2z3m4p8p6z1s3	1	和了	7900	ツモ		0	7	7	kan4
+2	2	z	nokan	1	z7z7z7z7p7m2s2z3m4p8p6z1s3	0	和了	2600	ロン		0	7	7	kan4
+2	2	z	base	1	z7z7z7z7p7m2s2z3m4p8p6z1s3	1	和了	7900	ツモ		0	7	7	kan4
+2	2	y	kan	1	p9p9p9p9s1p3p6p8z4s5m7m4z6	1	被ツモ	-500			0	12	13	kan4
+2	2	y	nokan	1	p9p9p9p9s1p3p6p8z4s5m7m4z6	0	放銃	-2600		1	1	11	11	kan4
+2	2	y	base	1	p9p9p9p9s1p3p6p8z4s5m7m4z6	1	被ツモ	-500			0	12	13	kan4
+2	2	c	kan	3	m8m8m8m8s8p2m1p9m9z4m1z5p1	1	無関係	0			1	10	10	kan4
+2	2	c	nokan	3	m8m8m8m8s8p2m1p9m9z4m1z5p1	0	無関係	0			1	12	11	kan4
+2	2	c	base	3	m8m8m8m8s8p2m1p9m9z4m1z5p1	0	無関係	0			1	12	11	kan4
+2	3	z	kan	3	z4z4z4z4p6m8s4z2p7p5m6p8s2	1	和了	5500	ロン		0	8	9	kan4
+2	3	z	nokan	3	z4z4z4z4p6m8s4z2p7p5m6p8s2	0	放銃	-2000		0	0	6	7	kan4
+2	3	z	base	3	z4z4z4z4p6m8s4z2p7p5m6p8s2	1	和了	5500	ロン		0	8	9	kan4
+2	3	y	kan	1	s1s1s1s1p9z7s6p3p6s9p2p5m1	1	被ツモ	-500			1	12	12	kan4
+2	3	y	nokan	1	s1s1s1s1p9z7s6p3p6s9p2p5m1	0	放銃	-7700		0	0	17	17	kan4
+2	3	y	base	1	s1s1s1s1p9z7s6p3p6s9p2p5m1	1	被ツモ	-500			1	12	12	kan4
+2	3	c	kan	3	p8p8p8p8z2s5z5z5s3s9z6z3p6	1	放銃	-18000		1	1	11	11	kan4
+2	3	c	nokan	3	p8p8p8p8z2s5z5z5s3s9z6z3p6	0	無関係	0			1	10	11	kan4
+2	3	c	base	3	p8p8p8p8z2s5z5z5s3s9z6z3p6	0	無関係	0			1	10	11	kan4
+2	4	z	kan	2	z5z5z5z5z7m9m5p9p0p7m7s6m0	1	和了	8900	ツモ		1	9	8	kan4
+2	4	z	nokan	2	z5z5z5z5z7m9m5p9p0p7m7s6m0	0	和了	3900	ロン		0	8	8	kan4
+2	4	z	base	2	z5z5z5z5z7m9m5p9p0p7m7s6m0	1	和了	8900	ツモ		1	9	8	kan4
+2	4	y	kan	2	s1s1s1s1z6p4s5p2p8p4p4p5z1	1	被ツモ	-500			1	10	9	kan4
+2	4	y	nokan	2	s1s1s1s1z6p4s5p2p8p4p4p5z1	0	被ツモ	-500			1	10	9	kan4
+2	4	y	base	2	s1s1s1s1z6p4s5p2p8p4p4p5z1	1	被ツモ	-500			1	10	9	kan4
+2	4	c	kan	3	m2m2m2m2m6p7z1m4s5p2p4z7p9	1	放銃	-1000		0	0	6	6	kan4
+2	4	c	nokan	3	m2m2m2m2m6p7z1m4s5p2p4z7p9	0	被ツモ	-500			1	11	11	kan4
+2	4	c	base	3	m2m2m2m2m6p7z1m4s5p2p4z7p9	1	放銃	-1000		0	0	6	6	kan4
+2	5	z	kan	2	z6z6z6z6s9s2s4z4s0m4z4m1s6	0	被ツモ	-3000			1	7	7	kan4
+2	5	z	nokan	2	z6z6z6z6s9s2s4z4s0m4z4m1s6	0	被ツモ	-3000			1	7	7	kan4
+2	5	z	base	2	z6z6z6z6s9s2s4z4s0m4z4m1s6	0	被ツモ	-3000			1	7	7	kan4
+2	5	y	kan	2	p1p1p1p1z3m9s8z2m4p4z5p9m8	1	流局	-1000			1	18	17	kan4
+2	5	y	nokan	2	p1p1p1p1z3m9s8z2m4p4z5p9m8	0	被ツモ	-700			0	8	8	kan4
+2	5	y	base	2	p1p1p1p1z3m9s8z2m4p4z5p9m8	1	流局	-1000			1	18	17	kan4
+2	5	c	kan	1	m3m3m3m3m6z5z3m9z7p3p7s8z4	1	放銃	-12000		1	1	16	18	kan4
+2	5	c	nokan	1	m3m3m3m3m6z5z3m9z7p3p7s8z4	0	被ツモ	-1000			1	16	17	kan4
+2	5	c	base	1	m3m3m3m3m6z5z3m9z7p3p7s8z4	1	放銃	-12000		1	1	16	18	kan4
+2	6	z	kan	2	z1z1z1z1p1p5s2z6s9m6z5s7s3	1	被ツモ	-4000			1	14	14	kan4
+2	6	z	nokan	2	z1z1z1z1p1p5s2z6s9m6z5s7s3	0	被ツモ	-4000			1	14	14	kan4
+2	6	z	base	2	z1z1z1z1p1p5s2z6s9m6z5s7s3	1	被ツモ	-4000			1	14	14	kan4
+2	6	y	kan	3	s9s9s9s9p6z5s7m4p4s1m4m5p1	1	被ツモ	-4000			1	8	7	kan4
+2	6	y	nokan	3	s9s9s9s9p6z5s7m4p4s1m4m5p1	0	被ツモ	-4000			1	8	7	kan4
+2	6	y	base	3	s9s9s9s9p6z5s7m4p4s1m4m5p1	1	被ツモ	-4000			1	8	7	kan4
+2	6	c	kan	1	p2p2p2p2z7m3s2m7z3s5p9s6z5	1	和了	7400	ツモ		1	11	11	kan4
+2	6	c	nokan	1	p2p2p2p2z7m3s2m7z3s5p9s6z5	0	流局	-1000			1	18	19	kan4
+2	6	c	base	1	p2p2p2p2z7m3s2m7z3s5p9s6z5	1	和了	7400	ツモ		1	11	11	kan4
+2	7	z	kan	2	z3z3z3z3z6p6z5m0p9s4p5s1p1	1	和了	4900	ロン		1	7	7	kan4
+2	7	z	nokan	2	z3z3z3z3z6p6z5m0p9s4p5s1p1	0	無関係	0			1	5	5	kan4
+2	7	z	base	2	z3z3z3z3z6p6z5m0p9s4p5s1p1	1	和了	4900	ロン		1	7	7	kan4
+2	7	y	kan	3	m9m9m9m9s6z5s4s8p7s6z3m8s1	1	被ツモ	-500			0	9	9	kan4
+2	7	y	nokan	3	m9m9m9m9s6z5s4s8p7s6z3m8s1	0	被ツモ	-500			1	9	9	kan4
+2	7	y	base	3	m9m9m9m9s6z5s4s8p7s6z3m8s1	1	被ツモ	-500			1	9	9	kan4
+2	7	c	kan	2	s7s7s7s7p7z6m1p6p3s4p9m9m7	1	被ツモ	-3000			1	13	13	kan4
+2	7	c	nokan	2	s7s7s7s7p7z6m1p6p3s4p9m9m7	0	和了	9000	ツモ		0	17	17	kan4
+2	7	c	base	2	s7s7s7s7p7z6m1p6p3s4p9m9m7	1	被ツモ	-3000			1	13	13	kan4
+2	8	z	kan	3	z5z5z5z5s6p1m3s2m2m6p3z6p2	1	流局	1500			0	18	18	kan4
+2	8	z	nokan	3	z5z5z5z5s6p1m3s2m2m6p3z6p2	0	被ツモ	-3900			1	12	12	kan4
+2	8	z	base	3	z5z5z5z5s6p1m3s2m2m6p3z6p2	1	流局	1500			0	18	18	kan4
+2	8	y	kan	3	p9p9p9p9s8z3z6p4p7s7z2p1s9	1	無関係	0			1	12	11	kan4
+2	8	y	nokan	3	p9p9p9p9s8z3z6p4p7s7z2p1s9	0	無関係	0			1	11	10	kan4
+2	8	y	base	3	p9p9p9p9s8z3z6p4p7s7z2p1s9	0	無関係	0			1	11	10	kan4
+2	8	c	kan	3	m7m7m7m7s3s1p9p1p2m8p8z7p6	1	放銃	-3900		0	0	9	10	kan4
+2	8	c	nokan	3	m7m7m7m7s3s1p9p1p2m8p8z7p6	0	無関係	0			1	14	13	kan4
+2	8	c	base	3	m7m7m7m7s3s1p9p1p2m8p8z7p6	1	放銃	-3900		0	0	9	10	kan4
+2	9	z	kan	3	z2z2z2z2z6z4m1s3p4z1s4s1m1	1	被ツモ	-6000			1	9	9	kan4
+2	9	z	nokan	3	z2z2z2z2z6z4m1s3p4z1s4s1m1	0	無関係	0			1	7	7	kan4
+2	9	z	base	3	z2z2z2z2z6z4m1s3p4z1s4s1m1	1	被ツモ	-6000			1	9	9	kan4
+2	9	y	kan	3	m1m1m1m1z3m6s9m4p7m3p4s2p2	1	被ツモ	-4000			0	7	7	kan4
+2	9	y	nokan	3	m1m1m1m1z3m6s9m4p7m3p4s2p2	0	無関係	0			0	7	6	kan4
+2	9	y	base	3	m1m1m1m1z3m6s9m4p7m3p4s2p2	1	被ツモ	-4000			0	7	7	kan4
+2	9	c	kan	3	p6p6p6p6s8m7m5p4s9m9p3z6z7	1	無関係	0			1	11	12	kan4
+2	9	c	nokan	3	p6p6p6p6s8m7m5p4s9m9p3z6z7	0	放銃	-7700		1	1	9	9	kan4
+2	9	c	base	3	p6p6p6p6s8m7m5p4s9m9p3z6z7	1	無関係	0			1	11	12	kan4
+2	10	z	kan	3	z2z2z2z2z1s9z7m8s9s3s6z6s9	1	和了	8000	ロン		0	5	4	kan4
+2	10	z	nokan	3	z2z2z2z2z1s9z7m8s9s3s6z6s9	0	無関係	0			0	6	6	kan4
+2	10	z	base	3	z2z2z2z2z1s9z7m8s9s3s6z6s9	1	和了	8000	ロン		0	5	4	kan4
+2	10	y	kan	3	p1p1p1p1m2m7p6m2s9s6m9m6s3	1	被ツモ	-2000			1	15	16	kan4
+2	10	y	nokan	3	p1p1p1p1m2m7p6m2s9s6m9m6s3	0	被ツモ	-2000			1	15	15	kan4
+2	10	y	base	3	p1p1p1p1m2m7p6m2s9s6m9m6s3	1	被ツモ	-2000			1	15	16	kan4
+2	10	c	kan	2	p5p5p5p0m7z7z6m1z7m4p9p7m8	1	流局	-1000			1	18	18	kan4
+2	10	c	nokan	2	p5p5p5p0m7z7z6m1z7m4p9p7m8	0	放銃	-2000		0	0	9	10	kan4
+2	10	c	base	2	p5p5p5p0m7z7z6m1z7m4p9p7m8	1	和了	8000	ロン		0	7	8	kan4
+2	11	z	kan	1	z7z7z7z7z6m3p7p5p5m1p3s4m1	1	和了	8000	ツモ		0	13	14	kan4
+2	11	z	nokan	1	z7z7z7z7z6m3p7p5p5m1p3s4m1	0	流局	0			0	1	1	kan4
+2	11	z	base	1	z7z7z7z7z6m3p7p5p5m1p3s4m1	1	和了	8000	ツモ		0	13	14	kan4
+2	11	y	kan	3	p9p9p9p9p1m3z1m9p7s2s2m4z6	1	無関係	0			0	14	15	kan4
+2	11	y	nokan	3	p9p9p9p9p1m3z1m9p7s2s2m4z6	0	和了	1300	ロン		1	9	10	kan4
+2	11	y	base	3	p9p9p9p9p1m3z1m9p7s2s2m4z6	1	放銃	-1000		0	0	10	11	kan4
+2	11	c	kan	2	p5p5p0p5m2z7m9p2m2m4m6m7s7	1	流局	1000			1	18	17	kan4
+2	11	c	nokan	2	p5p5p0p5m2z7m9p2m2m4m6m7s7	0	放銃	-1000		0	0	13	14	kan4
+2	11	c	base	2	p5p5p0p5m2z7m9p2m2m4m6m7s7	1	流局	1000			1	18	17	kan4
+2	12	z	kan	1	z3z3z3z3s3p9p7z7s3p6m2s7p3	1	被ツモ	-1300			0	10	9	kan4
+2	12	z	nokan	1	z3z3z3z3s3p9p7z7s3p6m2s7p3	0	放銃	-5800		0	0	14	14	kan4
+2	12	z	base	1	z3z3z3z3s3p9p7z7s3p6m2s7p3	1	被ツモ	-1300			0	10	9	kan4
+2	12	y	kan	3	m9m9m9m9s1z7s6s4m2p9s2s8s9	1	被ツモ	-1000			1	9	8	kan4
+2	12	y	nokan	3	m9m9m9m9s1z7s6s4m2p9s2s8s9	0	被ツモ	-1000			1	9	8	kan4
+2	12	y	base	3	m9m9m9m9s1z7s6s4m2p9s2s8s9	1	被ツモ	-1000			1	9	8	kan4
+2	12	c	kan	1	p5p5p5p0m9s1m6p9s7p3m6s2m5	1	和了	8000	ロン		0	13	14	kan4
+2	12	c	nokan	1	p5p5p5p0m9s1m6p9s7p3m6s2m5	0	流局	1500			0	18	18	kan4
+2	12	c	base	1	p5p5p5p0m9s1m6p9s7p3m6s2m5	1	和了	3200	ツモ		0	11	11	kan4
+2	13	z	kan	3	z2z2z2z2z1z6s1m7s3z4p1s1s7	1	無関係	0			1	5	4	kan4
+2	13	z	nokan	3	z2z2z2z2z1z6s1m7s3z4p1s1s7	0	無関係	0			1	7	7	kan4
+2	13	z	base	3	z2z2z2z2z1z6s1m7s3z4p1s1s7	0	無関係	0			1	7	7	kan4
+2	13	y	kan	3	s1s1s1s1z5m2p4z2m7p4s3z5p0	1	無関係	0			0	8	8	kan4
+2	13	y	nokan	3	s1s1s1s1z5m2p4z2m7p4s3z5p0	0	流局	1500			0	18	19	kan4
+2	13	y	base	3	s1s1s1s1z5m2p4z2m7p4s3z5p0	1	無関係	0			1	12	12	kan4
+2	13	c	kan	2	m5m0m5m5s9p7s5p9z1p1p4p8s7	1	無関係	0			1	16	15	kan4
+2	13	c	nokan	2	m5m0m5m5s9p7s5p9z1p1p4p8s7	0	無関係	0			1	7	6	kan4
+2	13	c	base	2	m5m0m5m5s9p7s5p9z1p1p4p8s7	1	無関係	0			1	16	15	kan4
+2	14	z	kan	2	z6z6z6z6p7z4m8p8m8m2z2p2p4	1	無関係	0			0	7	7	kan4
+2	14	z	nokan	2	z6z6z6z6p7z4m8p8m8m2z2p2p4	0	被ツモ	-4000			1	14	14	kan4
+2	14	z	base	2	z6z6z6z6p7z4m8p8m8m2z2p2p4	1	無関係	0			0	7	7	kan4
+2	14	y	kan	3	p9p9p9p9z3z7m5s2z4p6z7s6m8	1	被ツモ	-500			0	6	6	kan4
+2	14	y	nokan	3	p9p9p9p9z3z7m5s2z4p6z7s6m8	0	無関係	0			1	5	5	kan4
+2	14	y	base	3	p9p9p9p9z3z7m5s2z4p6z7s6m8	1	被ツモ	-500			0	6	6	kan4
+2	14	c	kan	3	m6m6m6m6z3p2m8m5s1s9s7p9s8	1	無関係	0			1	14	13	kan4
+2	14	c	nokan	3	m6m6m6m6z3p2m8m5s1s9s7p9s8	0	和了	3000	ツモ		0	12	11	kan4
+2	14	c	base	3	m6m6m6m6z3p2m8m5s1s9s7p9s8	0	和了	3000	ツモ		0	12	11	kan4
+2	15	z	kan	1	z4z4z4z4p3m1p7m7m5m8m4m4z2	1	和了	10000	ロン		1	8	7	kan4
+2	15	z	nokan	1	z4z4z4z4p3m1p7m7m5m8m4m4z2	0	被ツモ	-700			1	12	12	kan4
+2	15	z	base	1	z4z4z4z4p3m1p7m7m5m8m4m4z2	1	和了	10000	ロン		1	8	7	kan4
+2	15	y	kan	1	s1s1s1s1s9m8s7p8m7m5s4s3m7	1	無関係	0			1	16	16	kan4
+2	15	y	nokan	1	s1s1s1s1s9m8s7p8m7m5s4s3m7	0	放銃	-2000		0	0	12	12	kan4
+2	15	y	base	1	s1s1s1s1s9m8s7p8m7m5s4s3m7	1	無関係	0			1	16	16	kan4
+2	15	c	kan	3	s8s8s8s8p1m7z5z3z1z6s3s4s6	1	和了	8400	ロン		1	14	13	kan4
+2	15	c	nokan	3	s8s8s8s8p1m7z5z3z1z6s3s4s6	0	和了	7200	ロン		1	14	13	kan4
+2	15	c	base	3	s8s8s8s8p1m7z5z3z1z6s3s4s6	0	和了	7200	ロン		1	14	13	kan4
+2	16	z	kan	1	z4z4z4z4z5z5m4p6z2m9m8s2z2	0	放銃	-7200		0	0	10	12	kan4
+2	16	z	nokan	1	z4z4z4z4z5z5m4p6z2m9m8s2z2	0	放銃	-7200		0	0	10	12	kan4
+2	16	z	base	1	z4z4z4z4z5z5m4p6z2m9m8s2z2	0	放銃	-7200		0	0	10	12	kan4
+2	16	y	kan	1	m1m1m1m1s2m7p1p9m2z3m6m8p7	1	和了	11000	ツモ		1	7	6	kan4
+2	16	y	nokan	1	m1m1m1m1s2m7p1p9m2z3m6m8p7	0	被ツモ	-6000			1	9	8	kan4
+2	16	y	base	1	m1m1m1m1s2m7p1p9m2z3m6m8p7	0	被ツモ	-6000			1	9	8	kan4
+2	16	c	kan	1	m8m8m8m8z5s3z1p9s3z5p2z3m1	1	無関係	0			0	10	10	kan4
+2	16	c	nokan	1	m8m8m8m8z5s3z1p9s3z5p2z3m1	0	無関係	0			0	10	10	kan4
+2	16	c	base	1	m8m8m8m8z5s3z1p9s3z5p2z3m1	0	無関係	0			0	10	10	kan4
+2	17	z	kan	1	z6z6z6z6z2s9z4m3p1m1z3s3s5	1	和了	4000	ツモ		0	10	10	kan4
+2	17	z	nokan	1	z6z6z6z6z2s9z4m3p1m1z3s3s5	0	和了	9000	ロン		0	11	11	kan4
+2	17	z	base	1	z6z6z6z6z2s9z4m3p1m1z3s3s5	1	和了	4000	ツモ		0	10	10	kan4
+2	17	y	kan	1	m9m9m9m9m6z2z5p1s3z3m2p8m1	1	放銃	-5200		0	0	10	10	kan4
+2	17	y	nokan	1	m9m9m9m9m6z2z5p1s3z3m2p8m1	0	無関係	0			1	12	11	kan4
+2	17	y	base	1	m9m9m9m9m6z2z5p1s3z3m2p8m1	1	放銃	-5200		0	0	10	10	kan4
+2	17	c	kan	1	s5s5s5s0m9m5s1m9z1z2z1p6p6	1	和了	6400	ロン		0	6	7	kan4
+2	17	c	nokan	1	s5s5s5s0m9m5s1m9z1z2z1p6p6	0	和了	3900	ロン		0	2	3	kan4
+2	17	c	base	1	s5s5s5s0m9m5s1m9z1z2z1p6p6	1	和了	6400	ロン		0	6	7	kan4
+2	18	z	kan	3	z1z1z1z1m5p6s5p5m5s4m8z6m5	1	和了	7700	ロン		0	5	6	kan4
+2	18	z	nokan	3	z1z1z1z1m5p6s5p5m5s4m8z6m5	0	放銃	-1300		0	0	5	6	kan4
+2	18	z	base	3	z1z1z1z1m5p6s5p5m5s4m8z6m5	1	和了	7700	ロン		0	5	6	kan4
+2	18	y	kan	3	s1s1s1s1p3p1m6m7p4m7p4s9p2	1	和了	13000	ツモ		0	7	6	kan4
+2	18	y	nokan	3	s1s1s1s1p3p1m6m7p4m7p4s9p2	0	被ツモ	-1000			0	12	12	kan4
+2	18	y	base	3	s1s1s1s1p3p1m6m7p4m7p4s9p2	1	和了	13000	ツモ		0	7	6	kan4
+2	18	c	kan	3	p8p8p8p8m4m8p2p5s6p6z1s6p9	1	無関係	0			1	9	9	kan4
+2	18	c	nokan	3	p8p8p8p8m4m8p2p5s6p6z1s6p9	0	被ツモ	-1300			1	9	9	kan4
+2	18	c	base	3	p8p8p8p8m4m8p2p5s6p6z1s6p9	1	無関係	0			1	9	9	kan4
+2	19	z	kan	2	z5z5z5z5m4z3m6z1p4s3p5m7m2	1	無関係	0			0	7	8	kan4
+2	19	z	nokan	2	z5z5z5z5m4z3m6z1p4s3p5m7m2	0	無関係	0			1	9	9	kan4
+2	19	z	base	2	z5z5z5z5m4z3m6z1p4s3p5m7m2	1	無関係	0			0	7	8	kan4
+2	19	y	kan	1	p9p9p9p9p1z1s5s1z6p7z3p6z6	1	和了	2000	ツモ		0	11	12	kan4
+2	19	y	nokan	1	p9p9p9p9p1z1s5s1z6p7z3p6z6	0	流局	-1000			1	18	17	kan4
+2	19	y	base	1	p9p9p9p9p1z1s5s1z6p7z3p6z6	1	和了	2000	ツモ		0	11	12	kan4
+2	19	c	kan	3	s2s2s2s2m5m8m1z7s9m9s1s3p6	1	無関係	0			0	15	15	kan4
+2	19	c	nokan	3	s2s2s2s2m5m8m1z7s9m9s1s3p6	0	放銃	-1000		0	0	12	12	kan4
+2	19	c	base	3	s2s2s2s2m5m8m1z7s9m9s1s3p6	0	放銃	-1000		0	0	12	12	kan4
+2	20	z	kan	1	z3z3z3z3z2p3z7p1s8s7p3s7s8	1	放銃	-2000		0	0	7	7	kan4
+2	20	z	nokan	1	z3z3z3z3z2p3z7p1s8s7p3s7s8	0	被ツモ	-500			0	13	12	kan4
+2	20	z	base	1	z3z3z3z3z2p3z7p1s8s7p3s7s8	0	被ツモ	-500			0	13	12	kan4
+2	20	y	kan	2	s9s9s9s9p3z5m6s4m5m6p7s8z1	1	被ツモ	-2000			1	10	10	kan4
+2	20	y	nokan	2	s9s9s9s9p3z5m6s4m5m6p7s8z1	0	被ツモ	-1300			1	10	10	kan4
+2	20	y	base	2	s9s9s9s9p3z5m6s4m5m6p7s8z1	1	被ツモ	-2000			1	10	10	kan4
+2	20	c	kan	2	p7p7p7p7m9p9p2s6m3m1p9z2s4	1	被ツモ	-1000			1	8	7	kan4
+2	20	c	nokan	2	p7p7p7p7m9p9p2s6m3m1p9z2s4	0	無関係	0			0	9	8	kan4
+2	20	c	base	2	p7p7p7p7m9p9p2s6m3m1p9z2s4	0	無関係	0			0	9	8	kan4
+2	21	z	kan	1	z4z4z4z4p1z6s5p2s4m9p8m2m9	1	無関係	0			0	10	10	kan4
+2	21	z	nokan	1	z4z4z4z4p1z6s5p2s4m9p8m2m9	0	無関係	0			1	7	7	kan4
+2	21	z	base	1	z4z4z4z4p1z6s5p2s4m9p8m2m9	1	無関係	0			0	10	10	kan4
+2	21	y	kan	1	m9m9m9m9z7z7p2m4p1p7m7s0s1	1	被ツモ	-8000			1	10	10	kan4
+2	21	y	nokan	1	m9m9m9m9z7z7p2m4p1p7m7s0s1	0	放銃	-1300		0	0	18	18	kan4
+2	21	y	base	1	m9m9m9m9z7z7p2m4p1p7m7s0s1	1	和了	4700	ツモ		0	15	14	kan4
+2	21	c	kan	3	s3s3s3s3p2m1m4p5z2z4z7s4m9	1	和了	6400	ロン		0	9	11	kan4
+2	21	c	nokan	3	s3s3s3s3p2m1m4p5z2z4z7s4m9	0	無関係	0			1	11	13	kan4
+2	21	c	base	3	s3s3s3s3p2m1m4p5z2z4z7s4m9	1	無関係	0			1	11	13	kan4
+2	22	z	kan	1	z3z3z3z3m2p2m6m3m1m9p2s6s5	1	和了	9000	ロン		0	1	1	kan4
+2	22	z	nokan	1	z3z3z3z3m2p2m6m3m1m9p2s6s5	0	和了	3600	ロン		0	5	4	kan4
+2	22	z	base	1	z3z3z3z3m2p2m6m3m1m9p2s6s5	1	和了	9000	ロン		0	1	1	kan4
+2	22	y	kan	1	m1m1m1m1z6z2p2z1m0s5z2m2s4	1	被ツモ	-800			0	12	13	kan4
+2	22	y	nokan	1	m1m1m1m1z6z2p2z1m0s5z2m2s4	0	和了	1300	ロン		0	9	11	kan4
+2	22	y	base	1	m1m1m1m1z6z2p2z1m0s5z2m2s4	1	無関係	0			0	9	10	kan4
+2	22	c	kan	2	m3m3m3m3p4s5p4m2s4z4z3p3s4	1	放銃	-2000		0	0	7	8	kan4
+2	22	c	nokan	2	m3m3m3m3p4s5p4m2s4z4z3p3s4	0	被ツモ	-300			0	10	10	kan4
+2	22	c	base	2	m3m3m3m3p4s5p4m2s4z4z3p3s4	1	和了	6400	ロン		0	9	10	kan4
+2	23	z	kan	1	z3z3z3z3p3z7s4p8p6p9z2m9m6	1	放銃	-18000		1	1	5	5	kan4
+2	23	z	nokan	1	z3z3z3z3p3z7s4p8p6p9z2m9m6	0	無関係	0			0	6	7	kan4
+2	23	z	base	1	z3z3z3z3p3z7s4p8p6p9z2m9m6	1	放銃	-18000		1	1	5	5	kan4
+2	23	y	kan	3	m1m1m1m1p6z2z4m8s5z1m6s8m5	1	被ツモ	-3000			1	13	12	kan4
+2	23	y	nokan	3	m1m1m1m1p6z2z4m8s5z1m6s8m5	0	流局	-1000			1	18	17	kan4
+2	23	y	base	3	m1m1m1m1p6z2z4m8s5z1m6s8m5	1	被ツモ	-3000			1	13	12	kan4
+2	23	c	kan	3	m5m5m0m5m2m8z7z6m8s3s6z1p2	1	被ツモ	-4000			1	17	16	kan4
+2	23	c	nokan	3	m5m5m0m5m2m8z7z6m8s3s6z1p2	0	和了	9000	ロン		0	12	12	kan4
+2	23	c	base	3	m5m5m0m5m2m8z7z6m8s3s6z1p2	0	和了	9000	ロン		0	12	12	kan4
+2	24	z	kan	2	z7z7z7z7p2s7s5p3m6z6p7s1z6	1	和了	4900	ロン		1	8	9	kan4
+2	24	z	nokan	2	z7z7z7z7p2s7s5p3m6z6p7s1z6	0	和了	2000	ロン		0	8	9	kan4
+2	24	z	base	2	z7z7z7z7p2s7s5p3m6z6p7s1z6	1	和了	9000	ロン		1	8	9	kan4
+2	24	y	kan	1	p9p9p9p9m2m3m8s3z1s7s6z5p5	1	放銃	-2000		0	0	9	10	kan4
+2	24	y	nokan	1	p9p9p9p9m2m3m8s3z1s7s6z5p5	0	無関係	0			0	12	12	kan4
+2	24	y	base	1	p9p9p9p9m2m3m8s3z1s7s6z5p5	1	放銃	-2000		0	0	9	10	kan4
+2	24	c	kan	2	s3s3s3s3z4p4s9m9z1z1p0p9z4	1	和了	2600	ロン		0	9	10	kan4
+2	24	c	nokan	2	s3s3s3s3z4p4s9m9z1z1p0p9z4	0	和了	7400	ツモ		1	14	14	kan4
+2	24	c	base	2	s3s3s3s3z4p4s9m9z1z1p0p9z4	1	和了	2600	ロン		0	9	10	kan4
+2	25	z	kan	3	z2z2z2z2p7z4z5s4s8m1m6m4z1	1	無関係	0			1	6	5	kan4
+2	25	z	nokan	3	z2z2z2z2p7z4z5s4s8m1m6m4z1	0	無関係	0			1	6	5	kan4
+2	25	z	base	3	z2z2z2z2p7z4z5s4s8m1m6m4z1	1	無関係	0			1	6	5	kan4
+2	25	y	kan	1	m9m9m9m9m4s8s4z3s4m8s9s7z5	1	流局	-1000			1	18	17	kan4
+2	25	y	nokan	1	m9m9m9m9m4s8s4z3s4m8s9s7z5	0	流局	-1000			1	18	18	kan4
+2	25	y	base	1	m9m9m9m9m4s8s4z3s4m8s9s7z5	0	流局	-1000			1	18	18	kan4
+2	25	c	kan	2	m8m8m8m8z2z1p8z7s2m1m6s4m1	1	被ツモ	-3900			1	13	13	kan4
+2	25	c	nokan	2	m8m8m8m8z2z1p8z7s2m1m6s4m1	0	流局	-1000			1	18	17	kan4
+2	25	c	base	2	m8m8m8m8z2z1p8z7s2m1m6s4m1	0	流局	-1000			1	18	17	kan4
+2	26	z	kan	2	z7z7z7z7m3s9s3m3m4z2p1z5s8	1	被ツモ	-700			1	6	8	kan4
+2	26	z	nokan	2	z7z7z7z7m3s9s3m3m4z2p1z5s8	0	被ツモ	-700			1	7	7	kan4
+2	26	z	base	2	z7z7z7z7m3s9s3m3m4z2p1z5s8	0	被ツモ	-700			1	7	7	kan4
+2	26	y	kan	3	p1p1p1p1s4p7p8p3m2s1z2z3z7	1	流局	1500			0	18	17	kan4
+2	26	y	nokan	3	p1p1p1p1s4p7p8p3m2s1z2z3z7	0	流局	1500			0	18	18	kan4
+2	26	y	base	3	p1p1p1p1s4p7p8p3m2s1z2z3z7	0	流局	1500			0	18	18	kan4
+2	26	c	kan	3	s2s2s2s2z6s5m1p7p2m6p6z4z7	1	無関係	0			1	13	12	kan4
+2	26	c	nokan	3	s2s2s2s2z6s5m1p7p2m6p6z4z7	0	無関係	0			1	12	12	kan4
+2	26	c	base	3	s2s2s2s2z6s5m1p7p2m6p6z4z7	1	無関係	0			1	13	12	kan4
+2	27	z	kan	2	z3z3z3z3z4m6s6p2m3m7s3p2p9	2	放銃	-8000		1	1	11	11	kan4
+2	27	z	nokan	2	z3z3z3z3z4m6s6p2m3m7s3p2p9	0	流局	-1000			1	18	17	kan4
+2	27	z	base	2	z3z3z3z3z4m6s6p2m3m7s3p2p9	1	流局	-1000			1	18	17	kan4
+2	27	y	kan	2	m1m1m1m1s7z2p3z5p6m3p4m7z4	1	被ツモ	-1300			1	13	12	kan4
+2	27	y	nokan	2	m1m1m1m1s7z2p3z5p6m3p4m7z4	0	和了	10900	ツモ		1	12	11	kan4
+2	27	y	base	2	m1m1m1m1s7z2p3z5p6m3p4m7z4	1	被ツモ	-1300			1	13	12	kan4
+2	27	c	kan	1	p4p4p4p4s1z7m4p6z2p3m7m7s2	1	被ツモ	-500			0	12	14	kan4
+2	27	c	nokan	1	p4p4p4p4s1z7m4p6z2p3m7m7s2	0	被ツモ	-1300			1	9	9	kan4
+2	27	c	base	1	p4p4p4p4s1z7m4p6z2p3m7m7s2	0	被ツモ	-1300			1	9	9	kan4
+2	28	z	kan	2	z3z3z3z3m9p6p2s2s3p4s4s6m5	1	被ツモ	-1000			0	11	11	kan4
+2	28	z	nokan	2	z3z3z3z3m9p6p2s2s3p4s4s6m5	0	被ツモ	-1000			0	11	11	kan4
+2	28	z	base	2	z3z3z3z3m9p6p2s2s3p4s4s6m5	1	被ツモ	-1000			0	11	11	kan4
+2	28	y	kan	1	p1p1p1p1m5s2p6z7z1p5s7s4m9	1	無関係	0			0	6	5	kan4
+2	28	y	nokan	1	p1p1p1p1m5s2p6z7z1p5s7s4m9	0	無関係	0			0	5	4	kan4
+2	28	y	base	1	p1p1p1p1m5s2p6z7z1p5s7s4m9	1	無関係	0			0	6	5	kan4
+2	28	c	kan	3	p5p5p5p0m9s8s4p3p7s4s1m7m8	1	流局	3000			0	18	17	kan4
+2	28	c	nokan	3	p5p5p5p0m9s8s4p3p7s4s1m7m8	0	和了	5000	ツモ		0	13	12	kan4
+2	28	c	base	3	p5p5p5p0m9s8s4p3p7s4s1m7m8	0	和了	5000	ツモ		0	13	12	kan4
+2	29	z	kan	2	z5z5z5z5p3m2s9z4p2p6m2z2s8	1	放銃	-2000		0	0	12	14	kan4
+2	29	z	nokan	2	z5z5z5z5p3m2s9z4p2p6m2z2s8	0	被ツモ	-3900			1	7	6	kan4
+2	29	z	base	2	z5z5z5z5p3m2s9z4p2p6m2z2s8	1	放銃	-2000		0	0	12	14	kan4
+2	29	y	kan	3	p1p1p1p1p9z2p7s8m2m4s5m4s9	1	無関係	0			0	8	9	kan4
+2	29	y	nokan	3	p1p1p1p1p9z2p7s8m2m4s5m4s9	0	無関係	0			0	8	9	kan4
+2	29	y	base	3	p1p1p1p1p9z2p7s8m2m4s5m4s9	1	無関係	0			0	8	9	kan4
+2	29	c	kan	1	p7p7p7p7m2s4s2p9m7p3p5p0s3	1	和了	7400	ロン		1	6	6	kan4
+2	29	c	nokan	1	p7p7p7p7m2s4s2p9m7p3p5p0s3	0	和了	6200	ツモ		0	15	14	kan4
+2	29	c	base	1	p7p7p7p7m2s4s2p9m7p3p5p0s3	0	和了	6200	ツモ		0	15	14	kan4
+2	30	z	kan	1	z6z6z6z6z7s6z3m0p3m5z2p1s8	2	放銃	-12000		1	1	5	6	kan4
+2	30	z	nokan	1	z6z6z6z6z7s6z3m0p3m5z2p1s8	0	放銃	-11600		1	1	6	6	kan4
+2	30	z	base	1	z6z6z6z6z7s6z3m0p3m5z2p1s8	1	放銃	-12000		1	1	5	5	kan4
+2	30	y	kan	3	s1s1s1s1p6m7m5z4s2s9p3m8z6	1	和了	9000	ロン		1	9	8	kan4
+2	30	y	nokan	3	s1s1s1s1p6m7m5z4s2s9p3m8z6	0	流局	-1500			1	18	17	kan4
+2	30	y	base	3	s1s1s1s1p6m7m5z4s2s9p3m8z6	1	和了	6500	ロン		1	11	10	kan4
+2	30	c	kan	1	p6p6p6p6z6p7m2s9m1z6z5z2m9	1	放銃	-2000		0	0	4	6	kan4
+2	30	c	nokan	1	p6p6p6p6z6p7m2s9m1z6z5z2m9	0	被ツモ	-700			0	7	9	kan4
+2	30	c	base	1	p6p6p6p6z6p7m2s9m1z6z5z2m9	0	被ツモ	-700			0	7	9	kan4
+2	31	z	kan	1	z2z2z2z2p8z6p3p2p3p8s4z3m1	1	被ツモ	-2600			1	8	7	kan4
+2	31	z	nokan	1	z2z2z2z2p8z6p3p2p3p8s4z3m1	0	被ツモ	-2000			1	7	7	kan4
+2	31	z	base	1	z2z2z2z2p8z6p3p2p3p8s4z3m1	0	被ツモ	-2000			1	7	7	kan4
+2	31	y	kan	2	p1p1p1p1p9m4s9z1z5s9s4m2z6	1	無関係	0			1	12	12	kan4
+2	31	y	nokan	2	p1p1p1p1p9m4s9z1z5s9s4m2z6	0	無関係	0			1	14	13	kan4
+2	31	y	base	2	p1p1p1p1p9m4s9z1z5s9s4m2z6	1	無関係	0			1	12	12	kan4
+2	31	c	kan	3	s6s6s6s6s1p1m2s4m8s1z1z1p2	1	無関係	0			0	3	3	kan4
+2	31	c	nokan	3	s6s6s6s6s1p1m2s4m8s1z1z1p2	0	放銃	-2600		1	1	9	9	kan4
+2	31	c	base	3	s6s6s6s6s1p1m2s4m8s1z1z1p2	0	放銃	-2600		1	1	9	9	kan4
+2	32	z	kan	2	z1z1z1z1p9s5p7p4z6z4s3m7s3	1	放銃	-2000		0	0	9	11	kan4
+2	32	z	nokan	2	z1z1z1z1p9s5p7p4z6z4s3m7s3	0	被ツモ	-300			0	15	15	kan4
+2	32	z	base	2	z1z1z1z1p9s5p7p4z6z4s3m7s3	1	放銃	-2000		0	0	9	11	kan4
+2	32	y	kan	3	m1m1m1m1s3p7p9s9m5s8m8s4z6	1	和了	10000	ツモ		1	16	15	kan4
+2	32	y	nokan	3	m1m1m1m1s3p7p9s9m5s8m8s4z6	0	無関係	0			1	9	8	kan4
+2	32	y	base	3	m1m1m1m1s3p7p9s9m5s8m8s4z6	1	和了	10000	ツモ		1	16	15	kan4
+2	32	c	kan	2	p4p4p4p4z1p8z3z7z3p3z1z6m7	1	無関係	0			0	6	7	kan4
+2	32	c	nokan	2	p4p4p4p4z1p8z3z7z3p3z1z6m7	0	無関係	0			0	6	6	kan4
+2	32	c	base	2	p4p4p4p4z1p8z3z7z3p3z1z6m7	0	無関係	0			0	6	6	kan4
+2	33	z	kan	3	z2z2z2z2p7z7m1m1p9m7m9m2p2	1	無関係	0			1	8	8	kan4
+2	33	z	nokan	3	z2z2z2z2p7z7m1m1p9m7m9m2p2	0	無関係	0			1	8	8	kan4
+2	33	z	base	3	z2z2z2z2p7z7m1m1p9m7m9m2p2	1	無関係	0			1	8	8	kan4
+2	33	y	kan	2	p9p9p9p9m4m2p3m6z7s4s7m7m5	1	和了	13000	ロン		0	11	12	kan4
+2	33	y	nokan	2	p9p9p9p9m4m2p3m6z7s4s7m7m5	0	放銃	-1000		0	0	5	5	kan4
+2	33	y	base	2	p9p9p9p9m4m2p3m6z7s4s7m7m5	1	和了	13000	ロン		0	11	12	kan4
+2	33	c	kan	2	p3p3p3p3s5z3s8m0m5m7s4z2s8	1	無関係	0			0	8	8	kan4
+2	33	c	nokan	2	p3p3p3p3s5z3s8m0m5m7s4z2s8	0	和了	2000	ロン		0	6	6	kan4
+2	33	c	base	2	p3p3p3p3s5z3s8m0m5m7s4z2s8	1	無関係	0			0	8	8	kan4
+2	34	z	kan	3	z4z4z4z4m3p7m7s4m5m5m8s8m9	1	和了	9000	ツモ		0	10	9	kan4
+2	34	z	nokan	3	z4z4z4z4m3p7m7s4m5m5m8s8m9	0	和了	6200	ツモ		0	16	15	kan4
+2	34	z	base	3	z4z4z4z4m3p7m7s4m5m5m8s8m9	1	和了	9000	ツモ		0	10	9	kan4
+2	34	y	kan	3	m1m1m1m1p1p6p5m3z6m0s9z7s9	1	被ツモ	-400			1	6	5	kan4
+2	34	y	nokan	3	m1m1m1m1p1p6p5m3z6m0s9z7s9	0	無関係	0			0	6	6	kan4
+2	34	y	base	3	m1m1m1m1p1p6p5m3z6m0s9z7s9	1	被ツモ	-400			1	6	5	kan4
+2	34	c	kan	1	s8s8s8s8s1p9m2z7s7m8s0p4z5	1	和了	6200	ツモ		0	8	7	kan4
+2	34	c	nokan	1	s8s8s8s8s1p9m2z7s7m8s0p4z5	0	和了	5000	ツモ		0	8	7	kan4
+2	34	c	base	1	s8s8s8s8s1p9m2z7s7m8s0p4z5	1	和了	6200	ツモ		0	8	7	kan4
+2	35	z	kan	3	z1z1z1z1p1s3p4p3z7m3s3m8z6	1	和了	9000	ツモ		0	9	8	kan4
+2	35	z	nokan	3	z1z1z1z1p1s3p4p3z7m3s3m8z6	0	和了	9000	ツモ		0	9	8	kan4
+2	35	z	base	3	z1z1z1z1p1s3p4p3z7m3s3m8z6	1	和了	9000	ツモ		0	9	8	kan4
+2	35	y	kan	2	p1p1p1p1s7s5m3p8s9s8s2m4m3	1	被ツモ	-4000			1	11	10	kan4
+2	35	y	nokan	2	p1p1p1p1s7s5m3p8s9s8s2m4m3	0	被ツモ	-2000			1	13	12	kan4
+2	35	y	base	2	p1p1p1p1s7s5m3p8s9s8s2m4m3	1	被ツモ	-4000			1	11	10	kan4
+2	35	c	kan	2	p3p3p3p3z6z4m9p5s6m7p8s3s2	1	和了	3000	ロン		0	12	12	kan4
+2	35	c	nokan	2	p3p3p3p3z6z4m9p5s6m7p8s3s2	0	和了	2600	ロン		0	12	12	kan4
+2	35	c	base	2	p3p3p3p3z6z4m9p5s6m7p8s3s2	1	和了	3000	ロン		0	12	12	kan4
+2	36	z	kan	3	z7z7z7z7z6s5m9m1s5m4s1m6p1	1	流局	-1000			1	18	18	kan4
+2	36	z	nokan	3	z7z7z7z7z6s5m9m1s5m4s1m6p1	0	和了	6200	ツモ		0	15	14	kan4
+2	36	z	base	3	z7z7z7z7z6s5m9m1s5m4s1m6p1	1	流局	-1000			1	18	18	kan4
+2	36	y	kan	1	p1p1p1p1s1m3z3m2m3m1m3s5p4	1	無関係	0			1	10	10	kan4
+2	36	y	nokan	1	p1p1p1p1s1m3z3m2m3m1m3s5p4	0	無関係	0			1	10	10	kan4
+2	36	y	base	1	p1p1p1p1s1m3z3m2m3m1m3s5p4	1	無関係	0			1	10	10	kan4
+2	36	c	kan	1	p7p7p7p7s7z5p5s2m2m9m7z2s6	1	和了	13000	ツモ		0	10	9	kan4
+2	36	c	nokan	1	p7p7p7p7s7z5p5s2m2m9m7z2s6	0	和了	13000	ツモ		0	14	14	kan4
+2	36	c	base	1	p7p7p7p7s7z5p5s2m2m9m7z2s6	0	和了	13000	ツモ		0	14	14	kan4
+2	37	z	kan	1	z6z6z6z6p3m2s7m0z2s7s2m4s4	1	流局	1000			1	18	18	kan4
+2	37	z	nokan	1	z6z6z6z6p3m2s7m0z2s7s2m4s4	0	放銃	-7700		1	1	13	14	kan4
+2	37	z	base	1	z6z6z6z6p3m2s7m0z2s7s2m4s4	1	流局	1000			1	18	18	kan4
+2	37	y	kan	1	p1p1p1p1m6z7z7p9m3s7s6p5m8	1	放銃	-5200		0	0	10	12	kan4
+2	37	y	nokan	1	p1p1p1p1m6z7z7p9m3s7s6p5m8	0	和了	3600	ロン		0	10	10	kan4
+2	37	y	base	1	p1p1p1p1m6z7z7p9m3s7s6p5m8	1	放銃	-5200		0	0	10	12	kan4
+2	37	c	kan	2	s5s5s0s5p1z6s7s8m6z1m4s6m7	1	被ツモ	-2600			1	5	5	kan4
+2	37	c	nokan	2	s5s5s0s5p1z6s7s8m6z1m4s6m7	0	被ツモ	-500			0	14	15	kan4
+2	37	c	base	2	s5s5s0s5p1z6s7s8m6z1m4s6m7	0	被ツモ	-500			0	14	15	kan4
+2	38	z	kan	3	z5z5z5z5p4z6m9m7p9p8s6m2m3	1	被ツモ	-2000			0	7	7	kan4
+2	38	z	nokan	3	z5z5z5z5p4z6m9m7p9p8s6m2m3	0	無関係	0			0	7	6	kan4
+2	38	z	base	3	z5z5z5z5p4z6m9m7p9p8s6m2m3	1	被ツモ	-2000			0	7	7	kan4
+2	38	y	kan	3	p1p1p1p1s0m1m8m4s4s1z2m3m0	1	流局	-1500			1	17	17	kan4
+2	38	y	nokan	3	p1p1p1p1s0m1m8m4s4s1z2m3m0	0	流局	-1000			1	18	17	kan4
+2	38	y	base	3	p1p1p1p1s0m1m8m4s4s1z2m3m0	0	流局	-1000			1	18	17	kan4
+2	38	c	kan	1	p4p4p4p4s3p9p5z7s6m6p8p8z1	1	流局	-1500			1	18	17	kan4
+2	38	c	nokan	1	p4p4p4p4s3p9p5z7s6m6p8p8z1	0	流局	-1000			1	18	18	kan4
+2	38	c	base	1	p4p4p4p4s3p9p5z7s6m6p8p8z1	0	流局	-1000			1	18	18	kan4
+2	39	z	kan	3	z7z7z7z7z4p8s1s9m3p6m7p0s7	1	被ツモ	-1300			1	11	11	kan4
+2	39	z	nokan	3	z7z7z7z7z4p8s1s9m3p6m7p0s7	0	被ツモ	-3900			1	9	9	kan4
+2	39	z	base	3	z7z7z7z7z4p8s1s9m3p6m7p0s7	1	被ツモ	-1300			1	11	11	kan4
+2	39	y	kan	3	p1p1p1p1z6m8s5z1m2m5m2m7z2	1	無関係	0			1	13	13	kan4
+2	39	y	nokan	3	p1p1p1p1z6m8s5z1m2m5m2m7z2	0	無関係	0			0	2	2	kan4
+2	39	y	base	3	p1p1p1p1z6m8s5z1m2m5m2m7z2	1	無関係	0			1	13	13	kan4
+2	39	c	kan	1	s7s7s7s7p6s9m8m9s9z4s4z3m2	1	和了	13000	ツモ		0	11	10	kan4
+2	39	c	nokan	1	s7s7s7s7p6s9m8m9s9z4s4z3m2	0	和了	3600	ロン		0	10	9	kan4
+2	39	c	base	1	s7s7s7s7p6s9m8m9s9z4s4z3m2	1	和了	13000	ツモ		0	11	10	kan4
+2	40	z	kan	3	z4z4z4z4z5p2s3s4p9s6m9s1z3	1	和了	8900	ツモ		1	6	5	kan4
+2	40	z	nokan	3	z4z4z4z4z5p2s3s4p9s6m9s1z3	0	和了	6200	ツモ		1	6	5	kan4
+2	40	z	base	3	z4z4z4z4z5p2s3s4p9s6m9s1z3	1	和了	8900	ツモ		1	6	5	kan4
+2	40	y	kan	2	s9s9s9s9p1m4p7z4s7p3p7z1p7	1	無関係	0			1	7	8	kan4
+2	40	y	nokan	2	s9s9s9s9p1m4p7z4s7p3p7z1p7	0	和了	4600	ロン		1	10	10	kan4
+2	40	y	base	2	s9s9s9s9p1m4p7z4s7p3p7z1p7	1	和了	3300	ロン		0	6	6	kan4
+2	40	c	kan	1	p8p8p8p8s8p2p2s5m1s9z2p9s3	1	和了	2300	ロン		1	13	13	kan4
+2	40	c	nokan	1	p8p8p8p8s8p2p2s5m1s9z2p9s3	0	被ツモ	-2000			1	13	13	kan4
+2	40	c	base	1	p8p8p8p8s8p2p2s5m1s9z2p9s3	0	被ツモ	-2000			1	13	13	kan4
+2	41	z	kan	3	z3z3z3z3p8s2s8s1s6p2p5z5z7	1	被ツモ	-3000			0	10	10	kan4
+2	41	z	nokan	3	z3z3z3z3p8s2s8s1s6p2p5z5z7	0	無関係	0			1	12	12	kan4
+2	41	z	base	3	z3z3z3z3p8s2s8s1s6p2p5z5z7	1	被ツモ	-3000			0	10	10	kan4
+2	41	y	kan	3	p9p9p9p9s6z1m5p4m9s7p8z4s6	1	被ツモ	-300			0	11	11	kan4
+2	41	y	nokan	3	p9p9p9p9s6z1m5p4m9s7p8z4s6	0	被ツモ	-300			0	11	11	kan4
+2	41	y	base	3	p9p9p9p9s6z1m5p4m9s7p8z4s6	1	被ツモ	-300			0	11	11	kan4
+2	41	c	kan	1	p2p2p2p2s8m2p9m4s1z3m8s5z7	1	被ツモ	-4000			1	11	10	kan4
+2	41	c	nokan	1	p2p2p2p2s8m2p9m4s1z3m8s5z7	0	被ツモ	-3000			1	12	11	kan4
+2	41	c	base	1	p2p2p2p2s8m2p9m4s1z3m8s5z7	1	被ツモ	-4000			1	11	10	kan4
+2	42	z	kan	1	z2z2z2z2m5m2p8m6p5m7s4s4z1	1	被ツモ	-500			0	9	9	kan4
+2	42	z	nokan	1	z2z2z2z2m5m2p8m6p5m7s4s4z1	0	流局	-1500			1	18	18	kan4
+2	42	z	base	1	z2z2z2z2m5m2p8m6p5m7s4s4z1	1	被ツモ	-500			0	9	9	kan4
+2	42	y	kan	2	p9p9p9p9z6s1z2z5p6s6p4m4s7	1	被ツモ	-4000			0	9	9	kan4
+2	42	y	nokan	2	p9p9p9p9z6s1z2z5p6s6p4m4s7	0	和了	9000	ツモ		0	9	8	kan4
+2	42	y	base	2	p9p9p9p9z6s1z2z5p6s6p4m4s7	1	被ツモ	-4000			0	9	9	kan4
+2	42	c	kan	2	s6s6s6s6s0s5p9s7m9p5s4m2p3	1	無関係	0			1	12	12	kan4
+2	42	c	nokan	2	s6s6s6s6s0s5p9s7m9p5s4m2p3	0	被ツモ	-1300			1	12	11	kan4
+2	42	c	base	2	s6s6s6s6s0s5p9s7m9p5s4m2p3	0	被ツモ	-1300			1	12	11	kan4
+2	43	z	kan	3	z2z2z2z2s5p3s8m1s4z1m8m5m9	0	流局	0			0	1	0	kan4
+2	43	z	nokan	3	z2z2z2z2s5p3s8m1s4z1m8m5m9	0	流局	0			0	1	0	kan4
+2	43	z	base	3	z2z2z2z2s5p3s8m1s4z1m8m5m9	0	流局	0			0	1	0	kan4
+2	43	y	kan	1	p1p1p1p1p6p9s9s6m8m9p5s1s4	1	流局	-1000			0	18	18	kan4
+2	43	y	nokan	1	p1p1p1p1p6p9s9s6m8m9p5s1s4	0	被ツモ	-2000			0	11	11	kan4
+2	43	y	base	1	p1p1p1p1p6p9s9s6m8m9p5s1s4	1	流局	-1000			0	18	18	kan4
+2	43	c	kan	2	p2p2p2p2z4m6m5p8z7m0m8z1p1	1	流局	-1000			1	18	17	kan4
+2	43	c	nokan	2	p2p2p2p2z4m6m5p8z7m0m8z1p1	0	流局	-1000			1	18	17	kan4
+2	43	c	base	2	p2p2p2p2z4m6m5p8z7m0m8z1p1	0	流局	-1000			1	18	17	kan4
+2	44	z	kan	1	z4z4z4z4p4s4p4s2z7p5p2m3p2	1	被ツモ	-8000			1	7	6	kan4
+2	44	z	nokan	1	z4z4z4z4p4s4p4s2z7p5p2m3p2	0	無関係	0			1	14	14	kan4
+2	44	z	base	1	z4z4z4z4p4s4p4s2z7p5p2m3p2	1	被ツモ	-8000			1	7	6	kan4
+2	44	y	kan	2	m1m1m1m1z5s5s9z1z2p7z4z7m4	1	和了	10000	ツモ		1	12	12	kan4
+2	44	y	nokan	2	m1m1m1m1z5s5s9z1z2p7z4z7m4	0	流局	-1000			1	18	17	kan4
+2	44	y	base	2	m1m1m1m1z5s5s9z1z2p7z4z7m4	0	流局	-1000			1	18	17	kan4
+2	44	c	kan	1	p6p6p6p6z7z1s5p5z5s0p0z1p1	1	和了	6400	ツモ		0	10	10	kan4
+2	44	c	nokan	1	p6p6p6p6z7z1s5p5z5s0p0z1p1	0	和了	3900	ロン		0	8	9	kan4
+2	44	c	base	1	p6p6p6p6z7z1s5p5z5s0p0z1p1	0	和了	3900	ロン		0	8	9	kan4
+2	45	z	kan	3	z1z1z1z1p5s4p6z7z3m9s9m8s7	1	被ツモ	-2000			1	12	11	kan4
+2	45	z	nokan	3	z1z1z1z1p5s4p6z7z3m9s9m8s7	0	無関係	0			1	11	11	kan4
+2	45	z	base	3	z1z1z1z1p5s4p6z7z3m9s9m8s7	1	被ツモ	-2000			1	12	11	kan4
+2	45	y	kan	3	m1m1m1m1p8z7m3s5p8s5z7s7s2	1	無関係	0			1	11	10	kan4
+2	45	y	nokan	3	m1m1m1m1p8z7m3s5p8s5z7s7s2	0	放銃	-8000		1	1	11	11	kan4
+2	45	y	base	3	m1m1m1m1p8z7m3s5p8s5z7s7s2	1	無関係	0			1	11	10	kan4
+2	45	c	kan	2	m0m5m5m5z1z6z6s1p0s6p2z7s8	1	和了	8000	ツモ		0	12	11	kan4
+2	45	c	nokan	2	m0m5m5m5z1z6z6s1p0s6p2z7s8	0	被ツモ	-2000			1	13	12	kan4
+2	45	c	base	2	m0m5m5m5z1z6z6s1p0s6p2z7s8	1	和了	8000	ツモ		0	12	11	kan4
+2	46	z	kan	2	z7z7z7z7p2z1z5s5z1m4s8m3s1	1	和了	14000	ツモ		1	10	8	kan4
+2	46	z	nokan	2	z7z7z7z7p2z1z5s5z1m4s8m3s1	0	流局	-1000			1	18	17	kan4
+2	46	z	base	2	z7z7z7z7p2z1z5s5z1m4s8m3s1	1	和了	14000	ツモ		1	10	8	kan4
+2	46	y	kan	1	p1p1p1p1s1s0p6s8z7p2z1p8p4	0	流局	-1000			1	18	18	kan4
+2	46	y	nokan	1	p1p1p1p1s1s0p6s8z7p2z1p8p4	0	流局	-1000			1	18	18	kan4
+2	46	y	base	1	p1p1p1p1s1s0p6s8z7p2z1p8p4	0	流局	-1000			1	18	18	kan4
+2	46	c	kan	1	p6p6p6p6s7p4p7m4p7z7m8s5s9	1	和了	17000	ツモ		0	9	8	kan4
+2	46	c	nokan	1	p6p6p6p6s7p4p7m4p7z7m8s5s9	0	和了	9000	ツモ		0	11	10	kan4
+2	46	c	base	1	p6p6p6p6s7p4p7m4p7z7m8s5s9	0	和了	9000	ツモ		0	11	10	kan4
+2	47	z	kan	2	z5z5z5z5p6m7p9m2s3z4s2p8m6	1	無関係	0			1	7	6	kan4
+2	47	z	nokan	2	z5z5z5z5p6m7p9m2s3z4s2p8m6	0	無関係	0			1	7	6	kan4
+2	47	z	base	2	z5z5z5z5p6m7p9m2s3z4s2p8m6	1	無関係	0			1	7	6	kan4
+2	47	y	kan	3	s9s9s9s9s0p1p8p5p9s4z1z5m2	1	被ツモ	-700			0	11	12	kan4
+2	47	y	nokan	3	s9s9s9s9s0p1p8p5p9s4z1z5m2	0	流局	3000			0	18	18	kan4
+2	47	y	base	3	s9s9s9s9s0p1p8p5p9s4z1z5m2	1	被ツモ	-700			0	11	12	kan4
+2	47	c	kan	2	p4p4p4p4m4m7s6m2s1z4s7p7m8	1	被ツモ	-2600			1	8	8	kan4
+2	47	c	nokan	2	p4p4p4p4m4m7s6m2s1z4s7p7m8	0	被ツモ	-2600			1	8	8	kan4
+2	47	c	base	2	p4p4p4p4m4m7s6m2s1z4s7p7m8	1	被ツモ	-2600			1	8	8	kan4
+2	48	z	kan	2	z6z6z6z6z2s7p0z7s1z4s3m1z3	1	和了	8000	ロン		0	9	11	kan4
+2	48	z	nokan	2	z6z6z6z6z2s7p0z7s1z4s3m1z3	0	放銃	-12000		0	0	5	6	kan4
+2	48	z	base	2	z6z6z6z6z2s7p0z7s1z4s3m1z3	1	和了	8000	ロン		0	9	11	kan4
+2	48	y	kan	2	p9p9p9p9m6s3m1p1m5p3p6s7s8	1	流局	1000			1	18	17	kan4
+2	48	y	nokan	2	p9p9p9p9m6s3m1p1m5p3p6s7s8	0	流局	1000			1	18	18	kan4
+2	48	y	base	2	p9p9p9p9m6s3m1p1m5p3p6s7s8	1	流局	1000			1	18	17	kan4
+2	48	c	kan	1	m2m2m2m2p3p2z2m7p1p3p4p8m6	1	和了	10000	ロン		1	13	13	kan4
+2	48	c	nokan	1	m2m2m2m2p3p2z2m7p1p3p4p8m6	0	和了	9900	ツモ		1	13	13	kan4
+2	48	c	base	1	m2m2m2m2p3p2z2m7p1p3p4p8m6	1	和了	10000	ロン		1	13	13	kan4
+2	49	z	kan	3	z4z4z4z4m3p9m0m9s4z7z2p7s8	1	無関係	0			1	6	5	kan4
+2	49	z	nokan	3	z4z4z4z4m3p9m0m9s4z7z2p7s8	0	無関係	0			1	6	5	kan4
+2	49	z	base	3	z4z4z4z4m3p9m0m9s4z7z2p7s8	1	無関係	0			1	6	5	kan4
+2	49	y	kan	3	s9s9s9s9s2z4m1p2s4p6p6z6z6	1	被ツモ	-3900			0	15	16	kan4
+2	49	y	nokan	3	s9s9s9s9s2z4m1p2s4p6p6z6z6	0	被ツモ	-4000			1	17	18	kan4
+2	49	y	base	3	s9s9s9s9s2z4m1p2s4p6p6z6z6	1	被ツモ	-3900			0	15	16	kan4
+2	49	c	kan	2	m8m8m8m8m9s5m9p1m6s8z2m7m6	1	和了	6400	ロン		0	7	7	kan4
+2	49	c	nokan	2	m8m8m8m8m9s5m9p1m6s8z2m7m6	0	和了	3900	ロン		0	5	4	kan4
+2	49	c	base	2	m8m8m8m8m9s5m9p1m6s8z2m7m6	0	和了	3900	ロン		0	5	4	kan4
+2	50	z	kan	2	z2z2z2z2p8s8z6m6m2m4z7p7s7	1	和了	7000	ツモ		1	12	11	kan4
+2	50	z	nokan	2	z2z2z2z2p8s8z6m6m2m4z7p7s7	0	無関係	0			1	14	13	kan4
+2	50	z	base	2	z2z2z2z2p8s8z6m6m2m4z7p7s7	1	和了	7000	ツモ		1	12	11	kan4
+2	50	y	kan	3	m9m9m9m9p7p8p9p1m7p1m8p9m0	1	被ツモ	-3000			1	6	6	kan4
+2	50	y	nokan	3	m9m9m9m9p7p8p9p1m7p1m8p9m0	0	和了	2600	ロン		0	6	5	kan4
+2	50	y	base	3	m9m9m9m9p7p8p9p1m7p1m8p9m0	0	和了	2600	ロン		0	6	5	kan4
+2	50	c	kan	3	s4s4s4s4m7p8s8m3z3p5m1m4p7	1	無関係	0			0	13	13	kan4
+2	50	c	nokan	3	s4s4s4s4m7p8s8m3z3p5m1m4p7	0	無関係	0			1	14	14	kan4
+2	50	c	base	3	s4s4s4s4m7p8s8m3z3p5m1m4p7	1	無関係	0			0	13	13	kan4
+2	51	z	kan	3	z7z7z7z7s2p7m3m2s5s6s3s6s1	1	無関係	0			1	13	13	kan4
+2	51	z	nokan	3	z7z7z7z7s2p7m3m2s5s6s3s6s1	0	無関係	0			0	10	11	kan4
+2	51	z	base	3	z7z7z7z7s2p7m3m2s5s6s3s6s1	1	無関係	0			1	13	13	kan4
+2	51	y	kan	2	p1p1p1p1m8s4s6s3p0z5z3s5p3	1	被ツモ	-300			0	11	12	kan4
+2	51	y	nokan	2	p1p1p1p1m8s4s6s3p0z5z3s5p3	0	無関係	0			0	9	9	kan4
+2	51	y	base	2	p1p1p1p1m8s4s6s3p0z5z3s5p3	1	和了	9000	ツモ		0	9	9	kan4
+2	51	c	kan	1	p4p4p4p4z6p6s5s4s3p7s8p2s1	1	流局	3000			0	18	18	kan4
+2	51	c	nokan	1	p4p4p4p4z6p6s5s4s3p7s8p2s1	0	和了	5000	ツモ		0	11	10	kan4
+2	51	c	base	1	p4p4p4p4z6p6s5s4s3p7s8p2s1	0	和了	5000	ツモ		0	11	10	kan4
+2	52	z	kan	1	z3z3z3z3p3s1s5s8m7p8p1p7m4	1	無関係	0			1	8	8	kan4
+2	52	z	nokan	1	z3z3z3z3p3s1s5s8m7p8p1p7m4	0	流局	1000			1	18	18	kan4
+2	52	z	base	1	z3z3z3z3p3s1s5s8m7p8p1p7m4	1	無関係	0			1	8	8	kan4
+2	52	y	kan	3	s9s9s9s9s2p1z5m9m0s6p8s1p3	1	被ツモ	-4000			1	11	12	kan4
+2	52	y	nokan	3	s9s9s9s9s2p1z5m9m0s6p8s1p3	0	被ツモ	-3900			1	11	11	kan4
+2	52	y	base	3	s9s9s9s9s2p1z5m9m0s6p8s1p3	1	被ツモ	-4000			1	11	12	kan4
+2	52	c	kan	3	p7p7p7p7z4m8s2m2s9z4p4m5p5	1	被ツモ	-500			0	6	7	kan4
+2	52	c	nokan	3	p7p7p7p7z4m8s2m2s9z4p4m5p5	0	被ツモ	-1000			0	9	9	kan4
+2	52	c	base	3	p7p7p7p7z4m8s2m2s9z4p4m5p5	0	被ツモ	-1000			0	9	9	kan4
+2	53	z	kan	3	z7z7z7z7s0s4p4m2p3s5s8z2m2	1	被ツモ	-4000			1	12	11	kan4
+2	53	z	nokan	3	z7z7z7z7s0s4p4m2p3s5s8z2m2	0	被ツモ	-3000			1	12	11	kan4
+2	53	z	base	3	z7z7z7z7s0s4p4m2p3s5s8z2m2	0	被ツモ	-3000			1	12	11	kan4
+2	53	y	kan	1	p9p9p9p9p6p3z5m6z2s9p3m5m1	1	和了	15000	ロン		1	11	11	kan4
+2	53	y	nokan	1	p9p9p9p9p6p3z5m6z2s9p3m5m1	0	放銃	-7700		1	1	12	12	kan4
+2	53	y	base	1	p9p9p9p9p6p3z5m6z2s9p3m5m1	1	和了	15000	ロン		1	11	11	kan4
+2	53	c	kan	3	p3p3p3p3s9s4p8m0m9p1m6p8p5	1	流局	-1500			0	17	18	kan4
+2	53	c	nokan	3	p3p3p3p3s9s4p8m0m9p1m6p8p5	0	無関係	0			1	12	11	kan4
+2	53	c	base	3	p3p3p3p3s9s4p8m0m9p1m6p8p5	0	無関係	0			1	12	11	kan4
+2	54	z	kan	1	z5z5z5z5p2p8s2s8p3m7s1p4s6	1	被ツモ	-500			1	17	18	kan4
+2	54	z	nokan	1	z5z5z5z5p2p8s2s8p3m7s1p4s6	0	被ツモ	-300			1	11	12	kan4
+2	54	z	base	1	z5z5z5z5p2p8s2s8p3m7s1p4s6	1	被ツモ	-500			1	17	18	kan4
+2	54	y	kan	3	p1p1p1p1s1p6z3z6z2p2s9p7m3	1	無関係	0			1	14	13	kan4
+2	54	y	nokan	3	p1p1p1p1s1p6z3z6z2p2s9p7m3	0	無関係	0			1	8	6	kan4
+2	54	y	base	3	p1p1p1p1s1p6z3z6z2p2s9p7m3	0	無関係	0			1	8	6	kan4
+2	54	c	kan	2	p5p0p5p5z6s2z2p8m4p6p9s8m5	1	放銃	-7700		1	1	7	7	kan4
+2	54	c	nokan	2	p5p0p5p5z6s2z2p8m4p6p9s8m5	0	放銃	-3900		1	1	7	7	kan4
+2	54	c	base	2	p5p0p5p5z6s2z2p8m4p6p9s8m5	1	放銃	-7700		1	1	7	7	kan4
+2	55	z	kan	3	z5z5z5z5s8s6p6s3s2p4m2z2s7	1	被ツモ	-2000			0	10	10	kan4
+2	55	z	nokan	3	z5z5z5z5s8s6p6s3s2p4m2z2s7	0	無関係	0			0	8	8	kan4
+2	55	z	base	3	z5z5z5z5s8s6p6s3s2p4m2z2s7	1	被ツモ	-2000			0	10	10	kan4
+2	55	y	kan	2	s9s9s9s9s7s4z2s8z6p7p1s3s0	1	流局	-1500			1	18	17	kan4
+2	55	y	nokan	2	s9s9s9s9s7s4z2s8z6p7p1s3s0	0	流局	3000			0	18	17	kan4
+2	55	y	base	2	s9s9s9s9s7s4z2s8z6p7p1s3s0	0	流局	3000			0	18	17	kan4
+2	55	c	kan	2	s4s4s4s4m2z3m9m8m7z7m6p8s3	1	被ツモ	-3900			1	9	9	kan4
+2	55	c	nokan	2	s4s4s4s4m2z3m9m8m7z7m6p8s3	0	放銃	-5800		0	0	8	8	kan4
+2	55	c	base	2	s4s4s4s4m2z3m9m8m7z7m6p8s3	0	放銃	-5800		0	0	8	8	kan4
+2	56	z	kan	2	z1z1z1z1p9m1p6m3s1s8p1m8p2	1	被ツモ	-2000			1	5	4	kan4
+2	56	z	nokan	2	z1z1z1z1p9m1p6m3s1s8p1m8p2	0	被ツモ	-500			1	5	4	kan4
+2	56	z	base	2	z1z1z1z1p9m1p6m3s1s8p1m8p2	1	被ツモ	-2000			1	5	4	kan4
+2	56	y	kan	2	p1p1p1p1s2p6s4m7m2z1m9z1p0	1	流局	1000			0	17	18	kan4
+2	56	y	nokan	2	p1p1p1p1s2p6s4m7m2z1m9z1p0	0	被ツモ	-1000			0	7	7	kan4
+2	56	y	base	2	p1p1p1p1s2p6s4m7m2z1m9z1p0	1	流局	1000			0	17	18	kan4
+2	56	c	kan	1	m7m7m7m7z6s6m6s1z3p4m3z5s3	1	流局	-1000			0	18	19	kan4
+2	56	c	nokan	1	m7m7m7m7z6s6m6s1z3p4m3z5s3	0	被ツモ	-4000			1	13	14	kan4
+2	56	c	base	1	m7m7m7m7z6s6m6s1z3p4m3z5s3	0	被ツモ	-4000			1	13	14	kan4
+2	57	z	kan	2	z3z3z3z3z5z4p8z4s4m3s1z6p7	1	無関係	0			0	8	9	kan4
+2	57	z	nokan	2	z3z3z3z3z5z4p8z4s4m3s1z6p7	0	和了	3300	ロン		1	16	16	kan4
+2	57	z	base	2	z3z3z3z3z5z4p8z4s4m3s1z6p7	1	無関係	0			0	8	9	kan4
+2	57	y	kan	2	s9s9s9s9p1s6s0m5z1z3s2z2m1	1	和了	3900	ロン		0	9	10	kan4
+2	57	y	nokan	2	s9s9s9s9p1s6s0m5z1z3s2z2m1	0	放銃	-7700		1	1	14	15	kan4
+2	57	y	base	2	s9s9s9s9p1s6s0m5z1z3s2z2m1	1	和了	3900	ロン		0	9	10	kan4
+2	57	c	kan	3	p6p6p6p6p7s7p9m4z7m6z3s3m3	1	放銃	-7700		1	1	15	15	kan4
+2	57	c	nokan	3	p6p6p6p6p7s7p9m4z7m6z3s3m3	0	流局	-1500			1	18	17	kan4
+2	57	c	base	3	p6p6p6p6p7s7p9m4z7m6z3s3m3	1	流局	-1500			1	17	17	kan4
+2	58	z	kan	1	z2z2z2z2s4m2m7s9p6p8m1z4z3	1	無関係	0			1	11	11	kan4
+2	58	z	nokan	1	z2z2z2z2s4m2m7s9p6p8m1z4z3	0	放銃	-5200		1	1	13	13	kan4
+2	58	z	base	1	z2z2z2z2s4m2m7s9p6p8m1z4z3	1	無関係	0			1	11	11	kan4
+2	58	y	kan	1	p9p9p9p9m6s4s7s9m5p7z7p1m6	1	無関係	0			0	9	9	kan4
+2	58	y	nokan	1	p9p9p9p9m6s4s7s9m5p7z7p1m6	0	無関係	0			0	7	8	kan4
+2	58	y	base	1	p9p9p9p9m6s4s7s9m5p7z7p1m6	1	無関係	0			0	9	9	kan4
+2	58	c	kan	1	s2s2s2s2z3s8m8p7s8m1s1p4s1	1	流局	-1000			1	18	17	kan4
+2	58	c	nokan	1	s2s2s2s2z3s8m8p7s8m1s1p4s1	0	被ツモ	-2000			1	12	12	kan4
+2	58	c	base	1	s2s2s2s2z3s8m8p7s8m1s1p4s1	0	被ツモ	-2000			1	12	12	kan4
+2	59	z	kan	1	z7z7z7z7s5m9m5m9p7s2s6p5s7	0	被ツモ	-2000			1	7	7	kan4
+2	59	z	nokan	1	z7z7z7z7s5m9m5m9p7s2s6p5s7	0	被ツモ	-2000			1	7	7	kan4
+2	59	z	base	1	z7z7z7z7s5m9m5m9p7s2s6p5s7	0	被ツモ	-2000			1	7	7	kan4
+2	59	y	kan	2	p1p1p1p1s3m7m2s4m6z3m6p3p3	1	被ツモ	-1000			1	7	7	kan4
+2	59	y	nokan	2	p1p1p1p1s3m7m2s4m6z3m6p3p3	0	被ツモ	-2000			1	12	11	kan4
+2	59	y	base	2	p1p1p1p1s3m7m2s4m6z3m6p3p3	1	被ツモ	-1000			1	7	7	kan4
+2	59	c	kan	3	s7s7s7s7s2m3p0p6m5s5z2m2z7	1	無関係	0			0	5	5	kan4
+2	59	c	nokan	3	s7s7s7s7s2m3p0p6m5s5z2m2z7	0	無関係	0			0	6	6	kan4
+2	59	c	base	3	s7s7s7s7s2m3p0p6m5s5z2m2z7	0	無関係	0			0	6	6	kan4
+2	60	z	kan	2	z3z3z3z3s3m0s5z5z7p0s2p6m4	1	和了	8000	ロン		0	13	13	kan4
+2	60	z	nokan	2	z3z3z3z3s3m0s5z5z7p0s2p6m4	0	無関係	0			0	10	11	kan4
+2	60	z	base	2	z3z3z3z3s3m0s5z5z7p0s2p6m4	1	和了	8000	ロン		0	13	13	kan4
+2	60	y	kan	3	p9p9p9p9s7p7m6s6z6s4s4s3s4	1	和了	5000	ツモ		0	8	7	kan4
+2	60	y	nokan	3	p9p9p9p9s7p7m6s6z6s4s4s3s4	0	和了	3000	ツモ		0	11	10	kan4
+2	60	y	base	3	p9p9p9p9s7p7m6s6z6s4s4s3s4	1	和了	5000	ツモ		0	8	7	kan4
+2	60	c	kan	2	m8m8m8m8p8z1s3p6s7p4m3p7s6	1	被ツモ	-2000			0	7	6	kan4
+2	60	c	nokan	2	m8m8m8m8p8z1s3p6s7p4m3p7s6	0	被ツモ	-2000			0	7	6	kan4
+2	60	c	base	2	m8m8m8m8p8z1s3p6s7p4m3p7s6	1	被ツモ	-2000			0	7	6	kan4
+2	61	z	kan	2	z4z4z4z4s9p1z5s7m2s6s0s9z5	1	和了	8000	ロン		0	6	6	kan4
+2	61	z	nokan	2	z4z4z4z4s9p1z5s7m2s6s0s9z5	0	和了	8000	ロン		0	6	6	kan4
+2	61	z	base	2	z4z4z4z4s9p1z5s7m2s6s0s9z5	1	和了	8000	ロン		0	6	6	kan4
+2	61	y	kan	2	m9m9m9m9z6p7p4z6p2m7s9p7p1	1	放銃	-12000		1	1	6	7	kan4
+2	61	y	nokan	2	m9m9m9m9z6p7p4z6p2m7s9p7p1	0	被ツモ	-1000			0	13	14	kan4
+2	61	y	base	2	m9m9m9m9z6p7p4z6p2m7s9p7p1	0	被ツモ	-1000			0	13	14	kan4
+2	61	c	kan	1	s2s2s2s2m7s6m3m2z5s7s4m9s4	1	被ツモ	-8000			1	10	11	kan4
+2	61	c	nokan	1	s2s2s2s2m7s6m3m2z5s7s4m9s4	0	無関係	0			1	13	14	kan4
+2	61	c	base	1	s2s2s2s2m7s6m3m2z5s7s4m9s4	1	被ツモ	-1000			1	11	11	kan4
+2	62	z	kan	1	z2z2z2z2p9m1p2s4m3s8m2m4p3	1	和了	4000	ツモ		0	7	6	kan4
+2	62	z	nokan	1	z2z2z2z2p9m1p2s4m3s8m2m4p3	0	和了	4900	ロン		1	12	12	kan4
+2	62	z	base	1	z2z2z2z2p9m1p2s4m3s8m2m4p3	1	和了	4000	ツモ		0	7	6	kan4
+2	62	y	kan	1	s9s9s9s9z7p6s8z6m1s4s4p7p9	1	流局	-1000			1	18	17	kan4
+2	62	y	nokan	1	s9s9s9s9z7p6s8z6m1s4s4p7p9	0	放銃	-8000		0	0	15	16	kan4
+2	62	y	base	1	s9s9s9s9z7p6s8z6m1s4s4p7p9	0	放銃	-8000		0	0	15	16	kan4
+2	62	c	kan	3	s5s5s5s0p4p5m2s8p1s1z7s7z5	1	無関係	0			0	9	8	kan4
+2	62	c	nokan	3	s5s5s5s0p4p5m2s8p1s1z7s7z5	0	放銃	-1000		0	0	8	8	kan4
+2	62	c	base	3	s5s5s5s0p4p5m2s8p1s1z7s7z5	1	無関係	0			0	9	8	kan4
+2	63	z	kan	1	z7z7z7z7s3z1m1m7s6m3z1s5s8	1	和了	9700	ロン		1	11	11	kan4
+2	63	z	nokan	1	z7z7z7z7s3z1m1m7s6m3z1s5s8	0	和了	7200	ロン		1	11	11	kan4
+2	63	z	base	1	z7z7z7z7s3z1m1m7s6m3z1s5s8	1	和了	9700	ロン		1	11	11	kan4
+2	63	y	kan	2	p9p9p9p9p1m0z6p8z1s7p3p8s1	1	被ツモ	-1000			0	9	8	kan4
+2	63	y	nokan	2	p9p9p9p9p1m0z6p8z1s7p3p8s1	0	被ツモ	-1000			0	9	8	kan4
+2	63	y	base	2	p9p9p9p9p1m0z6p8z1s7p3p8s1	1	被ツモ	-1000			0	9	8	kan4
+2	63	c	kan	1	m6m6m6m6p1s3p8p5s7s9z6m0z6	1	和了	1600	ツモ		0	10	9	kan4
+2	63	c	nokan	1	m6m6m6m6p1s3p8p5s7s9z6m0z6	0	無関係	0			1	15	15	kan4
+2	63	c	base	1	m6m6m6m6p1s3p8p5s7s9z6m0z6	0	無関係	0			1	15	15	kan4
+2	64	z	kan	2	z2z2z2z2z1p1p4z3p8m9z4p4z3	1	被ツモ	-3900			1	17	16	kan4
+2	64	z	nokan	2	z2z2z2z2z1p1p4z3p8m9z4p4z3	0	流局	-1500			1	18	17	kan4
+2	64	z	base	2	z2z2z2z2z1p1p4z3p8m9z4p4z3	0	流局	-1500			1	18	17	kan4
+2	64	y	kan	1	s1s1s1s1p8s4m6m1s8z3s0m9m7	1	被ツモ	-2000			0	17	17	kan4
+2	64	y	nokan	1	s1s1s1s1p8s4m6m1s8z3s0m9m7	0	流局	1500			0	18	18	kan4
+2	64	y	base	1	s1s1s1s1p8s4m6m1s8z3s0m9m7	1	被ツモ	-2000			0	17	17	kan4
+2	64	c	kan	3	s2s2s2s2m7p8p6m5s7m8m9z5z4	1	和了	13000	ロン		0	8	8	kan4
+2	64	c	nokan	3	s2s2s2s2m7p8p6m5s7m8m9z5z4	0	無関係	0			0	9	9	kan4
+2	64	c	base	3	s2s2s2s2m7p8p6m5s7m8m9z5z4	1	和了	13000	ロン		0	8	8	kan4
+2	65	z	kan	1	z3z3z3z3z2s1s2s8p1z5s4z4s4	1	放銃	-2600		1	1	8	8	kan4
+2	65	z	nokan	1	z3z3z3z3z2s1s2s8p1z5s4z4s4	0	無関係	0			1	8	7	kan4
+2	65	z	base	1	z3z3z3z3z2s1s2s8p1z5s4z4s4	1	放銃	-2600		1	1	8	8	kan4
+2	65	y	kan	3	m1m1m1m1m8s6p9p7z4z5p4p8m6	1	無関係	0			0	7	7	kan4
+2	65	y	nokan	3	m1m1m1m1m8s6p9p7z4z5p4p8m6	0	被ツモ	-500			0	9	9	kan4
+2	65	y	base	3	m1m1m1m1m8s6p9p7z4z5p4p8m6	1	無関係	0			0	7	7	kan4
+2	65	c	kan	1	m8m8m8m8p7s7s4s6s6m4p4p5p9	1	和了	9000	ツモ		0	6	6	kan4
+2	65	c	nokan	1	m8m8m8m8p7s7s4s6s6m4p4p5p9	0	和了	8900	ツモ		0	6	6	kan4
+2	65	c	base	1	m8m8m8m8p7s7s4s6s6m4p4p5p9	1	和了	9000	ツモ		0	6	6	kan4
+2	66	z	kan	1	z2z2z2z2z5s1s4m4p1p0m7p6m3	1	流局	1000			1	18	18	kan4
+2	66	z	nokan	1	z2z2z2z2z5s1s4m4p1p0m7p6m3	0	和了	9000	ツモ		0	12	11	kan4
+2	66	z	base	1	z2z2z2z2z5s1s4m4p1p0m7p6m3	1	流局	1000			1	18	18	kan4
+2	66	y	kan	3	m1m1m1m1s3p3s1p6p9m3p6s1s8	1	和了	5500	ロン		1	11	11	kan4
+2	66	y	nokan	3	m1m1m1m1s3p3s1p6p9m3p6s1s8	0	無関係	0			0	10	10	kan4
+2	66	y	base	3	m1m1m1m1s3p3s1p6p9m3p6s1s8	0	無関係	0			0	10	10	kan4
+2	66	c	kan	3	s6s6s6s6m9s8m1p8p5s0p4m9m6	1	無関係	0			0	10	9	kan4
+2	66	c	nokan	3	s6s6s6s6m9s8m1p8p5s0p4m9m6	0	被ツモ	-300			0	10	10	kan4
+2	66	c	base	3	s6s6s6s6m9s8m1p8p5s0p4m9m6	1	被ツモ	-1000			0	10	10	kan4
+2	67	z	kan	3	z2z2z2z2p6m1z4m6p6p9z1z6z6	1	和了	14000	ロン		1	10	10	kan4
+2	67	z	nokan	3	z2z2z2z2p6m1z4m6p6p9z1z6z6	0	被ツモ	-2000			1	11	10	kan4
+2	67	z	base	3	z2z2z2z2p6m1z4m6p6p9z1z6z6	0	被ツモ	-2000			1	11	10	kan4
+2	67	y	kan	1	p9p9p9p9m8p8m3s2m8s1s3m5z4	1	放銃	-12000		1	1	5	5	kan4
+2	67	y	nokan	1	p9p9p9p9m8p8m3s2m8s1s3m5z4	0	和了	10000	ツモ		1	4	3	kan4
+2	67	y	base	1	p9p9p9p9m8p8m3s2m8s1s3m5z4	0	和了	10000	ツモ		1	4	3	kan4
+2	67	c	kan	1	s4s4s4s4p2m9p6m2m4p8s8z7z4	1	放銃	-12000		1	1	14	15	kan4
+2	67	c	nokan	1	s4s4s4s4p2m9p6m2m4p8s8z7z4	0	放銃	-7700		1	1	17	18	kan4
+2	67	c	base	1	s4s4s4s4p2m9p6m2m4p8s8z7z4	1	和了	7400	ツモ		1	17	17	kan4
+2	68	z	kan	1	z2z2z2z2p3z4z7z5m5p2s4m4m6	1	和了	2000	ロン		0	6	7	kan4
+2	68	z	nokan	1	z2z2z2z2p3z4z7z5m5p2s4m4m6	0	和了	1100	ツモ		0	7	7	kan4
+2	68	z	base	1	z2z2z2z2p3z4z7z5m5p2s4m4m6	1	和了	2000	ロン		0	6	7	kan4
+2	68	y	kan	2	m9m9m9m9p1s2s7m8z3p6z1s1p8	1	被ツモ	-4000			1	4	3	kan4
+2	68	y	nokan	2	m9m9m9m9p1s2s7m8z3p6z1s1p8	0	被ツモ	-3000			1	4	3	kan4
+2	68	y	base	2	m9m9m9m9p1s2s7m8z3p6z1s1p8	1	被ツモ	-4000			1	4	3	kan4
+2	68	c	kan	2	m7m7m7m7m6s9m3p2p1s1p8s7z7	1	無関係	0			0	10	10	kan4
+2	68	c	nokan	2	m7m7m7m7m6s9m3p2p1s1p8s7z7	0	被ツモ	-6000			1	8	8	kan4
+2	68	c	base	2	m7m7m7m7m6s9m3p2p1s1p8s7z7	1	無関係	0			0	10	10	kan4
+2	69	z	kan	2	z4z4z4z4m3p5z6s1s0z2p2m9s8	1	無関係	0			0	12	12	kan4
+2	69	z	nokan	2	z4z4z4z4m3p5z6s1s0z2p2m9s8	0	無関係	0			0	14	15	kan4
+2	69	z	base	2	z4z4z4z4m3p5z6s1s0z2p2m9s8	1	無関係	0			0	12	12	kan4
+2	69	y	kan	2	s1s1s1s1m5p7s8z5m9z3m9z4s4	1	放銃	-1500		0	1	9	10	kan4
+2	69	y	nokan	2	s1s1s1s1m5p7s8z5m9z3m9z4s4	0	無関係	0			1	9	9	kan4
+2	69	y	base	2	s1s1s1s1m5p7s8z5m9z3m9z4s4	1	放銃	-1500		0	1	9	10	kan4
+2	69	c	kan	2	m7m7m7m7s7z6p5p6z5s4p4p8z3	1	被ツモ	-300			1	4	4	kan4
+2	69	c	nokan	2	m7m7m7m7s7z6p5p6z5s4p4p8z3	0	被ツモ	-300			0	4	4	kan4
+2	69	c	base	2	m7m7m7m7s7z6p5p6z5s4p4p8z3	1	被ツモ	-300			1	4	4	kan4
+2	70	z	kan	1	z3z3z3z3s9z1s3m9p5p4m4s2p2	1	放銃	-12000		1	1	6	7	kan4
+2	70	z	nokan	1	z3z3z3z3s9z1s3m9p5p4m4s2p2	0	放銃	-7700		1	1	11	12	kan4
+2	70	z	base	1	z3z3z3z3s9z1s3m9p5p4m4s2p2	1	放銃	-12000		1	1	6	7	kan4
+2	70	y	kan	1	m1m1m1m1m8s9s4z3m2s9p9s8p5	1	流局	-1000			1	18	18	kan4
+2	70	y	nokan	1	m1m1m1m1m8s9s4z3m2s9p9s8p5	0	和了	3600	ロン		0	10	10	kan4
+2	70	y	base	1	m1m1m1m1m8s9s4z3m2s9p9s8p5	0	和了	3600	ロン		0	10	10	kan4
+2	70	c	kan	2	p6p6p6p6s4z7m4m3p8z2s3z1m2	1	和了	11000	ツモ		1	9	8	kan4
+2	70	c	nokan	2	p6p6p6p6s4z7m4m3p8z2s3z1m2	0	和了	9900	ツモ		1	9	8	kan4
+2	70	c	base	2	p6p6p6p6s4z7m4m3p8z2s3z1m2	1	和了	10000	ツモ		1	9	8	kan4
+2	71	z	kan	1	z4z4z4z4p7s4m7s5s6z6z2s8z3	1	被ツモ	-4000			1	10	9	kan4
+2	71	z	nokan	1	z4z4z4z4p7s4m7s5s6z6z2s8z3	0	被ツモ	-4000			1	10	9	kan4
+2	71	z	base	1	z4z4z4z4p7s4m7s5s6z6z2s8z3	1	被ツモ	-4000			1	10	9	kan4
+2	71	y	kan	1	m1m1m1m1z4z7p3s9p8p8p0z4p4	1	被ツモ	-4000			1	9	9	kan4
+2	71	y	nokan	1	m1m1m1m1z4z7p3s9p8p8p0z4p4	0	無関係	0			0	5	5	kan4
+2	71	y	base	1	m1m1m1m1z4z7p3s9p8p8p0z4p4	1	被ツモ	-4000			1	9	9	kan4
+2	71	c	kan	1	p6p6p6p6m1s7p2p7p8m2m7s1m0	1	流局	-1500			1	18	17	kan4
+2	71	c	nokan	1	p6p6p6p6m1s7p2p7p8m2m7s1m0	0	被ツモ	-2000			1	7	7	kan4
+2	71	c	base	1	p6p6p6p6m1s7p2p7p8m2m7s1m0	0	被ツモ	-2000			1	7	7	kan4
+2	72	z	kan	1	z2z2z2z2z5s4m6s2s7p4p2z7p4	1	被ツモ	-500			0	12	13	kan4
+2	72	z	nokan	1	z2z2z2z2z5s4m6s2s7p4p2z7p4	0	和了	1500	ツモ		0	6	8	kan4
+2	72	z	base	1	z2z2z2z2z5s4m6s2s7p4p2z7p4	1	被ツモ	-500			0	12	13	kan4
+2	72	y	kan	1	p9p9p9p9z5m9s2z2p5z3s2m3p7	1	被ツモ	-3000			1	5	5	kan4
+2	72	y	nokan	1	p9p9p9p9z5m9s2z2p5z3s2m3p7	0	被ツモ	-2000			1	5	5	kan4
+2	72	y	base	1	p9p9p9p9z5m9s2z2p5z3s2m3p7	1	被ツモ	-3000			1	5	5	kan4
+2	72	c	kan	1	m8m8m8m8m5p8p6s2s3m4z5m5p3	1	和了	2600	ロン		0	14	14	kan4
+2	72	c	nokan	1	m8m8m8m8m5p8p6s2s3m4z5m5p3	0	無関係	0			0	8	8	kan4
+2	72	c	base	1	m8m8m8m8m5p8p6s2s3m4z5m5p3	1	和了	2600	ロン		0	14	14	kan4
+2	73	z	kan	3	z3z3z3z3m5s8z4p3m7s6s7p8s0	1	放銃	-3900		0	0	5	5	kan4
+2	73	z	nokan	3	z3z3z3z3m5s8z4p3m7s6s7p8s0	0	放銃	-3900		0	0	5	5	kan4
+2	73	z	base	3	z3z3z3z3m5s8z4p3m7s6s7p8s0	1	放銃	-3900		0	0	5	5	kan4
+2	73	y	kan	1	p9p9p9p9m3s4s4z6m6s2p1s2p1	1	和了	8000	ロン		1	14	14	kan4
+2	73	y	nokan	1	p9p9p9p9m3s4s4z6m6s2p1s2p1	0	被ツモ	-3200			1	11	11	kan4
+2	73	y	base	1	p9p9p9p9m3s4s4z6m6s2p1s2p1	0	被ツモ	-3200			1	11	11	kan4
+2	73	c	kan	1	m7m7m7m7z2p7z5s6m5p5s9s2p9	1	被ツモ	-1000			1	14	14	kan4
+2	73	c	nokan	1	m7m7m7m7z2p7z5s6m5p5s9s2p9	0	被ツモ	-2000			1	12	12	kan4
+2	73	c	base	1	m7m7m7m7z2p7z5s6m5p5s9s2p9	1	被ツモ	-1000			1	14	14	kan4
+2	74	z	kan	2	z5z5z5z5p6z2m8s8p8p2p4p3m6	1	和了	5500	ロン		0	6	6	kan4
+2	74	z	nokan	2	z5z5z5z5p6z2m8s8p8p2p4p3m6	0	放銃	-1000		0	0	5	6	kan4
+2	74	z	base	2	z5z5z5z5p6z2m8s8p8p2p4p3m6	1	和了	5500	ロン		0	6	6	kan4
+2	74	y	kan	3	s1s1s1s1s7p6z5p9s4p1p5p3z3	1	放銃	-2000		0	0	7	7	kan4
+2	74	y	nokan	3	s1s1s1s1s7p6z5p9s4p1p5p3z3	0	被ツモ	-4000			1	18	18	kan4
+2	74	y	base	3	s1s1s1s1s7p6z5p9s4p1p5p3z3	1	放銃	-2000		0	0	7	7	kan4
+2	74	c	kan	3	p3p3p3p3p2s5z5m3z7z7s6z3m5	1	無関係	0			1	14	13	kan4
+2	74	c	nokan	3	p3p3p3p3p2s5z5m3z7z7s6z3m5	0	放銃	-1000		0	0	11	11	kan4
+2	74	c	base	3	p3p3p3p3p2s5z5m3z7z7s6z3m5	0	放銃	-1000		0	0	11	11	kan4
+2	75	z	kan	2	z5z5z5z5p9z7m1z7p9p7m3z4z3	1	放銃	-1300		1	1	11	12	kan4
+2	75	z	nokan	2	z5z5z5z5p9z7m1z7p9p7m3z4z3	0	和了	3600	ロン		1	10	10	kan4
+2	75	z	base	2	z5z5z5z5p9z7m1z7p9p7m3z4z3	1	放銃	-1300		1	1	11	12	kan4
+2	75	y	kan	1	s1s1s1s1p6p2m6p3m6m8s4z3s3	1	和了	9000	ツモ		0	14	13	kan4
+2	75	y	nokan	1	s1s1s1s1p6p2m6p3m6m8s4z3s3	0	流局	3000			0	18	18	kan4
+2	75	y	base	1	s1s1s1s1p6p2m6p3m6m8s4z3s3	1	和了	9000	ツモ		0	14	13	kan4
+2	75	c	kan	1	s2s2s2s2m9m5m3s3p3z4p3m0s4	1	被ツモ	-2000			1	9	10	kan4
+2	75	c	nokan	1	s2s2s2s2m9m5m3s3p3z4p3m0s4	0	流局	3000			0	18	18	kan4
+2	75	c	base	1	s2s2s2s2m9m5m3s3p3z4p3m0s4	0	流局	3000			0	18	18	kan4
+2	76	z	kan	1	z5z5z5z5z2s3z3m6m8s7p3p1s9	1	和了	10000	ロン		1	7	7	kan4
+2	76	z	nokan	1	z5z5z5z5z2s3z3m6m8s7p3p1s9	0	被ツモ	-1000			1	11	11	kan4
+2	76	z	base	1	z5z5z5z5z2s3z3m6m8s7p3p1s9	1	和了	10000	ロン		1	7	7	kan4
+2	76	y	kan	3	m1m1m1m1p1s5s2z7m5s8z4z5p3	1	無関係	0			1	10	10	kan4
+2	76	y	nokan	3	m1m1m1m1p1s5s2z7m5s8z4z5p3	0	被ツモ	-1000			0	13	13	kan4
+2	76	y	base	3	m1m1m1m1p1s5s2z7m5s8z4z5p3	1	無関係	0			1	10	10	kan4
+2	76	c	kan	2	s4s4s4s4m1z4s5m4m3z3s2z3m1	1	被ツモ	-4000			1	12	13	kan4
+2	76	c	nokan	2	s4s4s4s4m1z4s5m4m3z3s2z3m1	0	放銃	-3900		0	0	7	8	kan4
+2	76	c	base	2	s4s4s4s4m1z4s5m4m3z3s2z3m1	1	和了	5200	ロン		0	6	8	kan4
+2	77	z	kan	2	z2z2z2z2p7z1p7s2s5p1z7m1s4	1	和了	9000	ロン		0	8	8	kan4
+2	77	z	nokan	2	z2z2z2z2p7z1p7s2s5p1z7m1s4	0	被ツモ	-500			0	16	15	kan4
+2	77	z	base	2	z2z2z2z2p7z1p7s2s5p1z7m1s4	1	和了	9000	ロン		0	8	8	kan4
+2	77	y	kan	3	s1s1s1s1m0s2s6p1s4p4m6m4p8	1	和了	10000	ツモ		1	15	14	kan4
+2	77	y	nokan	3	s1s1s1s1m0s2s6p1s4p4m6m4p8	0	流局	1500			0	18	17	kan4
+2	77	y	base	3	s1s1s1s1m0s2s6p1s4p4m6m4p8	1	和了	10000	ツモ		1	15	14	kan4
+2	77	c	kan	3	s4s4s4s4s6z2p5z6s3p5m7m6p5	1	放銃	-12000		1	1	12	12	kan4
+2	77	c	nokan	3	s4s4s4s4s6z2p5z6s3p5m7m6p5	0	和了	7200	ツモ		1	10	9	kan4
+2	77	c	base	3	s4s4s4s4s6z2p5z6s3p5m7m6p5	0	和了	7200	ツモ		1	10	9	kan4
+2	78	z	kan	2	z7z7z7z7z5p4s6s2m2p4s5m6s7	1	和了	2000	ロン		0	12	12	kan4
+2	78	z	nokan	2	z7z7z7z7z5p4s6s2m2p4s5m6s7	0	被ツモ	-1000			1	8	7	kan4
+2	78	z	base	2	z7z7z7z7z5p4s6s2m2p4s5m6s7	1	和了	2000	ロン		0	12	12	kan4
+2	78	y	kan	2	s9s9s9s9p6z5z2m3p2s7z3p6p7	1	被ツモ	-6000			1	18	17	kan4
+2	78	y	nokan	2	s9s9s9s9p6z5z2m3p2s7z3p6p7	0	被ツモ	-2000			1	18	17	kan4
+2	78	y	base	2	s9s9s9s9p6z5z2m3p2s7z3p6p7	1	被ツモ	-6000			1	18	17	kan4
+2	78	c	kan	1	p6p6p6p6z6s9s9z5s3p7p1m9p5	1	和了	3200	ロン		0	7	7	kan4
+2	78	c	nokan	1	p6p6p6p6z6s9s9z5s3p7p1m9p5	0	無関係	0			1	11	10	kan4
+2	78	c	base	1	p6p6p6p6z6s9s9z5s3p7p1m9p5	0	無関係	0			1	11	10	kan4
+2	79	z	kan	2	z5z5z5z5s6z7s7z2s3m9s1m8m9	1	和了	3900	ロン		0	5	5	kan4
+2	79	z	nokan	2	z5z5z5z5s6z7s7z2s3m9s1m8m9	0	流局	3000			0	18	17	kan4
+2	79	z	base	2	z5z5z5z5s6z7s7z2s3m9s1m8m9	1	和了	3900	ロン		0	5	5	kan4
+2	79	y	kan	1	p1p1p1p1s9s9z4p2s1z6s8p3p6	1	被ツモ	-2000			1	17	17	kan4
+2	79	y	nokan	1	p1p1p1p1s9s9z4p2s1z6s8p3p6	0	和了	3700	ツモ		0	15	15	kan4
+2	79	y	base	1	p1p1p1p1s9s9z4p2s1z6s8p3p6	0	和了	3700	ツモ		0	15	15	kan4
+2	79	c	kan	2	s4s4s4s4p1z7p9s1z7p9s3p3z3	1	無関係	0			1	8	8	kan4
+2	79	c	nokan	2	s4s4s4s4p1z7p9s1z7p9s3p3z3	0	和了	11000	ツモ		1	9	8	kan4
+2	79	c	base	2	s4s4s4s4p1z7p9s1z7p9s3p3z3	0	和了	11000	ツモ		1	9	8	kan4
+2	80	z	kan	2	z7z7z7z7p4z1s2s9s6p4m3p7p8	1	和了	3900	ロン		0	8	7	kan4
+2	80	z	nokan	2	z7z7z7z7p4z1s2s9s6p4m3p7p8	0	和了	1000	ロン		0	6	6	kan4
+2	80	z	base	2	z7z7z7z7p4z1s2s9s6p4m3p7p8	1	和了	3900	ロン		0	8	7	kan4
+2	80	y	kan	2	p1p1p1p1m0p7z5s1m4m6s8s6p2	1	和了	12000	ロン		1	10	9	kan4
+2	80	y	nokan	2	p1p1p1p1m0p7z5s1m4m6s8s6p2	0	被ツモ	-1000			1	13	12	kan4
+2	80	y	base	2	p1p1p1p1m0p7z5s1m4m6s8s6p2	1	被ツモ	-1000			1	13	12	kan4
+2	80	c	kan	3	p3p3p3p3m3m5m3m5z1m1z7s4m6	1	和了	25000	ツモ		0	9	8	kan4
+2	80	c	nokan	3	p3p3p3p3m3m5m3m5z1m1z7s4m6	0	和了	13000	ロン		0	7	7	kan4
+2	80	c	base	3	p3p3p3p3m3m5m3m5z1m1z7s4m6	0	和了	13000	ロン		0	7	7	kan4
+2	81	z	kan	3	z2z2z2z2s3s6z3m5z3z1s2z3p9	1	無関係	0			1	10	9	kan4
+2	81	z	nokan	3	z2z2z2z2s3s6z3m5z3z1s2z3p9	0	無関係	0			1	8	7	kan4
+2	81	z	base	3	z2z2z2z2s3s6z3m5z3z1s2z3p9	1	無関係	0			1	10	9	kan4
+2	81	y	kan	2	s9s9s9s9z6s1s4z1p8p3z7z2z6	1	無関係	0			1	12	13	kan4
+2	81	y	nokan	2	s9s9s9s9z6s1s4z1p8p3z7z2z6	0	流局	-1500			1	18	17	kan4
+2	81	y	base	2	s9s9s9s9z6s1s4z1p8p3z7z2z6	0	流局	-1500			1	18	17	kan4
+2	81	c	kan	1	s4s4s4s4s6p8m7p3p7m8p3m4m8	1	流局	1500			0	18	17	kan4
+2	81	c	nokan	1	s4s4s4s4s6p8m7p3p7m8p3m4m8	0	流局	3000			0	18	18	kan4
+2	81	c	base	1	s4s4s4s4s6p8m7p3p7m8p3m4m8	0	流局	3000			0	18	18	kan4
+2	82	z	kan	2	z1z1z1z1s8m7z7s3m6s9m7z6m3	1	無関係	0			1	11	11	kan4
+2	82	z	nokan	2	z1z1z1z1s8m7z7s3m6s9m7z6m3	0	無関係	0			1	11	11	kan4
+2	82	z	base	2	z1z1z1z1s8m7z7s3m6s9m7z6m3	1	無関係	0			1	11	11	kan4
+2	82	y	kan	1	m1m1m1m1z6p4m7m4s6s3s6p4m6	1	無関係	0			1	11	11	kan4
+2	82	y	nokan	1	m1m1m1m1z6p4m7m4s6s3s6p4m6	0	無関係	0			0	11	11	kan4
+2	82	y	base	1	m1m1m1m1z6p4m7m4s6s3s6p4m6	1	無関係	0			1	11	11	kan4
+2	82	c	kan	2	s5s0s5s5p7p8s3z4z7s6p7s6m2	1	無関係	0			0	10	10	kan4
+2	82	c	nokan	2	s5s0s5s5p7p8s3z4z7s6p7s6m2	0	無関係	0			0	8	9	kan4
+2	82	c	base	2	s5s0s5s5p7p8s3z4z7s6p7s6m2	1	放銃	-2900		0	0	10	12	kan4
+2	83	z	kan	1	z3z3z3z3m5p1z7p4p9m4z4m7z7	1	放銃	-5800		0	0	16	17	kan4
+2	83	z	nokan	1	z3z3z3z3m5p1z7p4p9m4z4m7z7	0	放銃	-1000		0	0	13	14	kan4
+2	83	z	base	1	z3z3z3z3m5p1z7p4p9m4z4m7z7	1	放銃	-5800		0	0	16	17	kan4
+2	83	y	kan	2	p1p1p1p1z1m7p9p3p2p8m4z2p5	1	被ツモ	-300			0	8	7	kan4
+2	83	y	nokan	2	p1p1p1p1z1m7p9p3p2p8m4z2p5	0	被ツモ	-300			0	8	7	kan4
+2	83	y	base	2	p1p1p1p1z1m7p9p3p2p8m4z2p5	0	被ツモ	-300			0	8	7	kan4
+2	83	c	kan	3	p2p2p2p2z7m6m2m9s1s5p1s7s7	1	被ツモ	-3200			0	9	8	kan4
+2	83	c	nokan	3	p2p2p2p2z7m6m2m9s1s5p1s7s7	0	無関係	0			0	4	3	kan4
+2	83	c	base	3	p2p2p2p2z7m6m2m9s1s5p1s7s7	0	無関係	0			0	4	3	kan4
+2	84	z	kan	1	z5z5z5z5p9p3z2m1s7m6m9s1p6	1	放銃	-11600		0	0	6	7	kan4
+2	84	z	nokan	1	z5z5z5z5p9p3z2m1s7m6m9s1p6	0	被ツモ	-500			0	9	10	kan4
+2	84	z	base	1	z5z5z5z5p9p3z2m1s7m6m9s1p6	0	被ツモ	-500			0	9	10	kan4
+2	84	y	kan	3	m9m9m9m9m7m2s7m0z5p7z3s6s9	1	被ツモ	-2000			1	15	15	kan4
+2	84	y	nokan	3	m9m9m9m9m7m2s7m0z5p7z3s6s9	0	無関係	0			1	15	14	kan4
+2	84	y	base	3	m9m9m9m9m7m2s7m0z5p7z3s6s9	1	被ツモ	-2000			1	15	15	kan4
+2	84	c	kan	2	m8m8m8m8z2s9p2s8z7p5p7p4m2	1	和了	5200	ロン		0	10	11	kan4
+2	84	c	nokan	2	m8m8m8m8z2s9p2s8z7p5p7p4m2	0	和了	9900	ツモ		1	14	13	kan4
+2	84	c	base	2	m8m8m8m8z2s9p2s8z7p5p7p4m2	1	和了	5200	ロン		0	10	11	kan4
+2	85	z	kan	2	z1z1z1z1m5p4p3z2s4m8s8s5s9	1	和了	2000	ロン		0	4	3	kan4
+2	85	z	nokan	2	z1z1z1z1m5p4p3z2s4m8s8s5s9	0	和了	1000	ロン		0	8	7	kan4
+2	85	z	base	2	z1z1z1z1m5p4p3z2s4m8s8s5s9	1	和了	2000	ロン		0	4	3	kan4
+2	85	y	kan	3	m9m9m9m9s2m4m4m7z1z6s5p9m2	1	無関係	0			1	11	10	kan4
+2	85	y	nokan	3	m9m9m9m9s2m4m4m7z1z6s5p9m2	0	無関係	0			1	11	11	kan4
+2	85	y	base	3	m9m9m9m9s2m4m4m7z1z6s5p9m2	0	無関係	0			1	11	11	kan4
+2	85	c	kan	2	s4s4s4s4m7z6m4m7z7z2z6p8m6	1	和了	3600	ロン		1	13	13	kan4
+2	85	c	nokan	2	s4s4s4s4m7z6m4m7z7z2z6p8m6	0	被ツモ	-4000			1	12	12	kan4
+2	85	c	base	2	s4s4s4s4m7z6m4m7z7z2z6p8m6	1	和了	3600	ロン		1	13	13	kan4
+2	86	z	kan	3	z5z5z5z5m3m6p3p8p2s6m1p7s1	1	放銃	-1500		0	0	12	13	kan4
+2	86	z	nokan	3	z5z5z5z5m3m6p3p8p2s6m1p7s1	0	無関係	0			0	11	11	kan4
+2	86	z	base	3	z5z5z5z5m3m6p3p8p2s6m1p7s1	1	放銃	-1500		0	0	12	13	kan4
+2	86	y	kan	2	s9s9s9s9p2p8p8p1p3z5m9p2z3	1	流局	-1500			1	17	18	kan4
+3	1	z	kan	2	z1z1z1z1m2m8p7s6m7s9z3s7s8	1	和了	9000	ツモ		0	7	6	kan4
+3	1	z	nokan	2	z1z1z1z1m2m8p7s6m7s9z3s7s8	0	流局	1500			1	18	17	kan4
+3	1	z	base	2	z1z1z1z1m2m8p7s6m7s9z3s7s8	1	和了	9000	ツモ		0	7	6	kan4
+3	1	y	kan	1	s1s1s1s1m7s3s8p6m2s7z4s5p1	1	和了	6000	ツモ		1	13	12	kan4
+3	1	y	nokan	1	s1s1s1s1m7s3s8p6m2s7z4s5p1	0	和了	7200	ロン		1	12	12	kan4
+3	1	y	base	1	s1s1s1s1m7s3s8p6m2s7z4s5p1	1	和了	6000	ツモ		1	13	12	kan4
+3	1	c	kan	1	m4m4m4m4p7p4z4m6m3s7p9m5p4	1	無関係	0			0	13	12	kan4
+3	1	c	nokan	1	m4m4m4m4p7p4z4m6m3s7p9m5p4	0	被ツモ	-2000			0	7	7	kan4
+3	1	c	base	1	m4m4m4m4p7p4z4m6m3s7p9m5p4	0	被ツモ	-2000			0	7	7	kan4
+3	2	z	kan	2	z1z1z1z1s7z3s4p3m8m8z3s6p2	0	和了	2600	ロン		0	3	3	kan4
+3	2	z	nokan	2	z1z1z1z1s7z3s4p3m8m8z3s6p2	0	和了	2600	ロン		0	3	3	kan4
+3	2	z	base	2	z1z1z1z1s7z3s4p3m8m8z3s6p2	0	和了	2600	ロン		0	3	3	kan4
+3	2	y	kan	2	m1m1m1m1s4s9s0m6z3p8s9p4p4	1	流局	-1000			1	18	17	kan4
+3	2	y	nokan	2	m1m1m1m1s4s9s0m6z3p8s9p4p4	0	流局	-1000			1	18	17	kan4
+3	2	y	base	2	m1m1m1m1s4s9s0m6z3p8s9p4p4	0	流局	-1000			1	18	17	kan4
+3	2	c	kan	2	m8m8m8m8p3s9z3z3m7z4s6p4m6	1	無関係	0			1	12	11	kan4
+3	2	c	nokan	2	m8m8m8m8p3s9z3z3m7z4s6p4m6	0	和了	3000	ツモ		0	14	13	kan4
+3	2	c	base	2	m8m8m8m8p3s9z3z3m7z4s6p4m6	0	和了	3000	ツモ		0	14	13	kan4
+3	3	z	kan	1	z4z4z4z4m7z1z5p2m1m6s1p6p4	1	無関係	0			0	11	12	kan4
+3	3	z	nokan	1	z4z4z4z4m7z1z5p2m1m6s1p6p4	0	無関係	0			0	6	7	kan4
+3	3	z	base	1	z4z4z4z4m7z1z5p2m1m6s1p6p4	1	無関係	0			0	11	12	kan4
+3	3	y	kan	2	p9p9p9p9s8s2m1p1s6m1p1m8p8	1	放銃	-7700		0	1	7	8	kan4
+3	3	y	nokan	2	p9p9p9p9s8s2m1p1s6m1p1m8p8	0	無関係	0			1	8	9	kan4
+3	3	y	base	2	p9p9p9p9s8s2m1p1s6m1p1m8p8	1	被ツモ	-6000			1	9	10	kan4
+3	3	c	kan	2	s2s2s2s2m1p6z2s6m2p8s5p3s1	1	和了	9000	ツモ		0	16	16	kan4
+3	3	c	nokan	2	s2s2s2s2m1p6z2s6m2p8s5p3s1	0	無関係	0			1	11	12	kan4
+3	3	c	base	2	s2s2s2s2m1p6z2s6m2p8s5p3s1	1	和了	9000	ツモ		0	16	16	kan4
+3	4	z	kan	3	z1z1z1z1s2z3p4p1m4s8s9p5p7	1	被ツモ	-500			0	8	8	kan4
+3	4	z	nokan	3	z1z1z1z1s2z3p4p1m4s8s9p5p7	0	流局	-1000			1	18	18	kan4
+3	4	z	base	3	z1z1z1z1s2z3p4p1m4s8s9p5p7	1	被ツモ	-500			0	8	8	kan4
+3	4	y	kan	2	m1m1m1m1z5m4p7p6z4s4s3m3p9	1	被ツモ	-1300			0	11	11	kan4
+3	4	y	nokan	2	m1m1m1m1z5m4p7p6z4s4s3m3p9	0	無関係	0			1	10	9	kan4
+3	4	y	base	2	m1m1m1m1z5m4p7p6z4s4s3m3p9	1	被ツモ	-1300			0	11	11	kan4
+3	4	c	kan	3	m3m3m3m3m5z5m6z1z7z7s8s4s7	0	放銃	-3200		0	1	16	17	kan4
+3	4	c	nokan	3	m3m3m3m3m5z5m6z1z7z7s8s4s7	0	放銃	-3200		0	1	16	17	kan4
+3	4	c	base	3	m3m3m3m3m5z5m6z1z7z7s8s4s7	0	放銃	-3200		0	1	16	17	kan4
+3	5	z	kan	1	z5z5z5z5z6s3z4m7p1s7s1s8m9	1	被ツモ	-500			1	13	14	kan4
+3	5	z	nokan	1	z5z5z5z5z6s3z4m7p1s7s1s8m9	0	被ツモ	-2600			1	13	13	kan4
+3	5	z	base	1	z5z5z5z5z6s3z4m7p1s7s1s8m9	1	被ツモ	-500			1	13	14	kan4
+3	5	y	kan	2	p9p9p9p9m5p8z5p7p5m4p8z6m3	1	放銃	-7700		0	0	10	10	kan4
+3	5	y	nokan	2	p9p9p9p9m5p8z5p7p5m4p8z6m3	0	和了	6200	ツモ		0	9	7	kan4
+3	5	y	base	2	p9p9p9p9m5p8z5p7p5m4p8z6m3	0	和了	6200	ツモ		0	9	7	kan4
+3	5	c	kan	2	p2p2p2p2s2s4m0s4z7s1m3z5z5	1	被ツモ	-8000			1	10	10	kan4
+3	5	c	nokan	2	p2p2p2p2s2s4m0s4z7s1m3z5z5	0	被ツモ	-2000			1	9	9	kan4
+3	5	c	base	2	p2p2p2p2s2s4m0s4z7s1m3z5z5	1	被ツモ	-8000			1	10	10	kan4
+3	6	z	kan	1	z4z4z4z4m3p7p5z5m6m2s8m7s5	1	無関係	0			0	12	12	kan4
+3	6	z	nokan	1	z4z4z4z4m3p7p5z5m6m2s8m7s5	0	被ツモ	-3900			1	14	13	kan4
+3	6	z	base	1	z4z4z4z4m3p7p5z5m6m2s8m7s5	1	無関係	0			0	12	12	kan4
+3	6	y	kan	1	p9p9p9p9s2p1s3s0s8p4p6s7p3	1	流局	3000			0	18	17	kan4
+3	6	y	nokan	1	p9p9p9p9s2p1s3s0s8p4p6s7p3	0	和了	9000	ツモ		0	16	15	kan4
+3	6	y	base	1	p9p9p9p9s2p1s3s0s8p4p6s7p3	1	流局	3000			0	18	17	kan4
+3	6	c	kan	2	p3p3p3p3s2p2m1p9m9p1m1m8p1	1	被ツモ	-4000			1	14	14	kan4
+3	6	c	nokan	2	p3p3p3p3s2p2m1p9m9p1m1m8p1	0	流局	-1500			1	18	17	kan4
+3	6	c	base	2	p3p3p3p3s2p2m1p9m9p1m1m8p1	0	流局	-1500			1	18	17	kan4
+3	7	z	kan	3	z2z2z2z2s3s5s4p4z4s8p8p6z7	1	被ツモ	-3000			1	13	12	kan4
+3	7	z	nokan	3	z2z2z2z2s3s5s4p4z4s8p8p6z7	0	被ツモ	-2000			1	13	12	kan4
+3	7	z	base	3	z2z2z2z2s3s5s4p4z4s8p8p6z7	1	被ツモ	-3000			1	13	12	kan4
+3	7	y	kan	2	m9m9m9m9z3p5z4s1m1z7s8m6m8	1	放銃	-1000		0	0	14	14	kan4
+3	7	y	nokan	2	m9m9m9m9z3p5z4s1m1z7s8m6m8	0	無関係	0			1	11	10	kan4
+3	7	y	base	2	m9m9m9m9z3p5z4s1m1z7s8m6m8	1	放銃	-1000		0	0	14	14	kan4
+3	7	c	kan	1	s4s4s4s4p4m6m9s3s1m0z3s5s9	1	流局	3000			0	18	18	kan4
+3	7	c	nokan	1	s4s4s4s4p4m6m9s3s1m0z3s5s9	0	和了	6200	ロン		1	8	8	kan4
+3	7	c	base	1	s4s4s4s4p4m6m9s3s1m0z3s5s9	0	和了	6200	ロン		1	8	8	kan4
+3	8	z	kan	3	z6z6z6z6m3p5p1s6s5z1s2p1m1	0	無関係	0			0	9	9	kan4
+3	8	z	nokan	3	z6z6z6z6m3p5p1s6s5z1s2p1m1	0	無関係	0			0	9	9	kan4
+3	8	z	base	3	z6z6z6z6m3p5p1s6s5z1s2p1m1	0	無関係	0			0	9	9	kan4
+3	8	y	kan	2	p9p9p9p9s7p6p2p8p7z4m5s7s9	1	放銃	-9600		1	1	14	14	kan4
+3	8	y	nokan	2	p9p9p9p9s7p6p2p8p7z4m5s7s9	0	流局	-1500			1	18	17	kan4
+3	8	y	base	2	p9p9p9p9s7p6p2p8p7z4m5s7s9	1	放銃	-9600		1	1	14	14	kan4
+3	8	c	kan	2	s3s3s3s3m6m8p8p1z5z4m4p9p9	1	被ツモ	-6000			1	18	17	kan4
+3	8	c	nokan	2	s3s3s3s3m6m8p8p1z5z4m4p9p9	0	流局	-1000			1	18	18	kan4
+3	8	c	base	2	s3s3s3s3m6m8p8p1z5z4m4p9p9	1	被ツモ	-6000			1	18	17	kan4
+3	9	z	kan	1	z3z3z3z3p4z4p1p8z6m0p2s3z5	1	無関係	0			0	16	17	kan4
+3	9	z	nokan	1	z3z3z3z3p4z4p1p8z6m0p2s3z5	0	放銃	-1000		0	0	8	10	kan4
+3	9	z	base	1	z3z3z3z3p4z4p1p8z6m0p2s3z5	1	無関係	0			0	16	17	kan4
+3	9	y	kan	3	m9m9m9m9z6s7s9p2s7m7p2s9m1	1	放銃	-8000		1	1	7	7	kan4
+3	9	y	nokan	3	m9m9m9m9z6s7s9p2s7m7p2s9m1	0	放銃	-5200		1	1	7	7	kan4
+3	9	y	base	3	m9m9m9m9z6s7s9p2s7m7p2s9m1	0	放銃	-5200		1	1	7	7	kan4
+3	9	c	kan	1	m6m6m6m6z3p1z6z3z5z2m7s5p2	1	和了	4700	ツモ		1	13	12	kan4
+3	9	c	nokan	1	m6m6m6m6z3p1z6z3z5z2m7s5p2	0	放銃	-2000		0	0	14	14	kan4
+3	9	c	base	1	m6m6m6m6z3p1z6z3z5z2m7s5p2	1	和了	3700	ツモ		0	13	12	kan4
+3	10	z	kan	3	z5z5z5z5z3z7p7p8m7p1s3m5p3	1	被ツモ	-3000			1	12	11	kan4
+3	10	z	nokan	3	z5z5z5z5z3z7p7p8m7p1s3m5p3	0	被ツモ	-3000			1	12	11	kan4
+3	10	z	base	3	z5z5z5z5z3z7p7p8m7p1s3m5p3	1	被ツモ	-3000			1	12	11	kan4
+3	10	y	kan	2	p1p1p1p1s8p2m6m8z1s5m6s8s6	1	和了	9900	ツモ		1	17	16	kan4
+3	10	y	nokan	2	p1p1p1p1s8p2m6m8z1s5m6s8s6	0	和了	9000	ツモ		0	17	16	kan4
+3	10	y	base	2	p1p1p1p1s8p2m6m8z1s5m6s8s6	1	流局	3000			0	18	17	kan4
+3	10	c	kan	1	p6p6p6p6p3p1p2m4m7m2z3p3m3	1	和了	9000	ツモ		0	5	4	kan4
+3	10	c	nokan	1	p6p6p6p6p3p1p2m4m7m2z3p3m3	0	和了	8900	ツモ		0	6	5	kan4
+3	10	c	base	1	p6p6p6p6p3p1p2m4m7m2z3p3m3	1	和了	9000	ツモ		0	5	4	kan4
+3	11	z	kan	3	z6z6z6z6m1m8m4s3p9p7m1m2p5	1	無関係	0			0	15	16	kan4
+3	11	z	nokan	3	z6z6z6z6m1m8m4s3p9p7m1m2p5	0	被ツモ	-500			1	15	15	kan4
+3	11	z	base	3	z6z6z6z6m1m8m4s3p9p7m1m2p5	1	無関係	0			0	15	16	kan4
+3	11	y	kan	3	p9p9p9p9m3s3m7m2p8p7m0m8m4	1	被ツモ	-3000			1	12	11	kan4
+3	11	y	nokan	3	p9p9p9p9m3s3m7m2p8p7m0m8m4	0	無関係	0			1	10	9	kan4
+3	11	y	base	3	p9p9p9p9m3s3m7m2p8p7m0m8m4	0	無関係	0			1	10	9	kan4
+3	11	c	kan	1	s5s0s5s5z2z3m7z5z3p8z4z6m8	1	無関係	0			1	13	12	kan4
+3	11	c	nokan	1	s5s0s5s5z2z3m7z5z3p8z4z6m8	0	無関係	0			1	13	12	kan4
+3	11	c	base	1	s5s0s5s5z2z3m7z5z3p8z4z6m8	1	無関係	0			1	13	12	kan4
+3	12	z	kan	1	z2z2z2z2s9m2z5p3m2m1s3s7s6	1	和了	9000	ロン		0	9	9	kan4
+3	12	z	nokan	1	z2z2z2z2s9m2z5p3m2m1s3s7s6	0	放銃	-8000		1	1	9	9	kan4
+3	12	z	base	1	z2z2z2z2s9m2z5p3m2m1s3s7s6	1	和了	9000	ロン		0	9	9	kan4
+3	12	y	kan	3	p1p1p1p1p7p4m5m5m1z1m7s8m2	1	無関係	0			0	11	11	kan4
+3	12	y	nokan	3	p1p1p1p1p7p4m5m5m1z1m7s8m2	0	和了	6200	ツモ		0	9	8	kan4
+3	12	y	base	3	p1p1p1p1p7p4m5m5m1z1m7s8m2	1	無関係	0			0	11	11	kan4
+3	12	c	kan	2	s3s3s3s3p3z7p9p8m5p7s8m1s6	1	和了	10000	ロン		1	18	17	kan4
+3	12	c	nokan	2	s3s3s3s3p3z7p9p8m5p7s8m1s6	0	被ツモ	-300			0	15	15	kan4
+3	12	c	base	2	s3s3s3s3p3z7p9p8m5p7s8m1s6	1	和了	10000	ロン		1	18	17	kan4
+3	13	z	kan	1	z7z7z7z7s1p6m7z6p3p7z4z2m2	1	被ツモ	-500			0	7	7	kan4
+3	13	z	nokan	1	z7z7z7z7s1p6m7z6p3p7z4z2m2	0	被ツモ	-700			0	7	7	kan4
+3	13	z	base	1	z7z7z7z7s1p6m7z6p3p7z4z2m2	1	被ツモ	-500			0	7	7	kan4
+3	13	y	kan	1	p9p9p9p9z6m1s3z5z2m4z3m2m2	1	無関係	0			0	10	10	kan4
+3	13	y	nokan	1	p9p9p9p9z6m1s3z5z2m4z3m2m2	0	無関係	0			1	15	15	kan4
+3	13	y	base	1	p9p9p9p9z6m1s3z5z2m4z3m2m2	1	無関係	0			0	10	10	kan4
+3	13	c	kan	1	s4s4s4s4z7z5m9p3s1s3p2p2s3	1	無関係	0			0	16	17	kan4
+3	13	c	nokan	1	s4s4s4s4z7z5m9p3s1s3p2p2s3	0	和了	5000	ツモ		1	16	16	kan4
+3	13	c	base	1	s4s4s4s4z7z5m9p3s1s3p2p2s3	1	和了	12000	ツモ		0	16	16	kan4
+3	14	z	kan	2	z5z5z5z5z1s6z6p4m2z3p5s8m4	1	和了	3000	ツモ		1	8	7	kan4
+3	14	z	nokan	2	z5z5z5z5z1s6z6p4m2z3p5s8m4	0	和了	1300	ロン		0	7	6	kan4
+3	14	z	base	2	z5z5z5z5z1s6z6p4m2z3p5s8m4	1	和了	3000	ツモ		1	8	7	kan4
+3	14	y	kan	1	p1p1p1p1s9z6s4s3p7p8s1m4z2	1	無関係	0			0	14	15	kan4
+3	14	y	nokan	1	p1p1p1p1s9z6s4s3p7p8s1m4z2	0	無関係	0			0	14	15	kan4
+3	14	y	base	1	p1p1p1p1s9z6s4s3p7p8s1m4z2	1	無関係	0			0	14	15	kan4
+3	14	c	kan	2	s2s2s2s2s3p2p5s9z6s8p9s3z3	1	無関係	0			0	6	6	kan4
+3	14	c	nokan	2	s2s2s2s2s3p2p5s9z6s8p9s3z3	0	無関係	0			0	6	6	kan4
+3	14	c	base	2	s2s2s2s2s3p2p5s9z6s8p9s3z3	1	無関係	0			0	6	6	kan4
+3	15	z	kan	3	z1z1z1z1m7s2p7p3m1s3m0m2p7	1	被ツモ	-4000			1	12	12	kan4
+3	15	z	nokan	3	z1z1z1z1m7s2p7p3m1s3m0m2p7	0	無関係	0			1	15	14	kan4
+3	15	z	base	3	z1z1z1z1m7s2p7p3m1s3m0m2p7	1	被ツモ	-6000			1	12	12	kan4
+3	15	y	kan	2	m1m1m1m1z1z4p9p7s3s2s4p2z3	1	放銃	-7700		0	1	11	11	kan4
+3	15	y	nokan	2	m1m1m1m1z1z4p9p7s3s2s4p2z3	0	和了	3600	ロン		0	5	5	kan4
+3	15	y	base	2	m1m1m1m1z1z4p9p7s3s2s4p2z3	1	放銃	-7700		0	1	11	11	kan4
+3	15	c	kan	2	m2m2m2m2z1p2m8m3p5s7z2p9s2	1	無関係	0			1	16	16	kan4
+3	15	c	nokan	2	m2m2m2m2z1p2m8m3p5s7z2p9s2	0	無関係	0			1	6	6	kan4
+3	15	c	base	2	m2m2m2m2z1p2m8m3p5s7z2p9s2	0	無関係	0			1	6	6	kan4
+3	16	z	kan	2	z7z7z7z7s4p4m8m6z3m6s6z5z2	1	和了	4000	ツモ		0	8	8	kan4
+3	16	z	nokan	2	z7z7z7z7s4p4m8m6z3m6s6z5z2	0	被ツモ	-3000			1	16	16	kan4
+3	16	z	base	2	z7z7z7z7s4p4m8m6z3m6s6z5z2	1	和了	4000	ツモ		0	8	8	kan4
+3	16	y	kan	3	m9m9m9m9m4s7z3s7p2m8m2s5s9	1	無関係	0			1	5	4	kan4
+3	16	y	nokan	3	m9m9m9m9m4s7z3s7p2m8m2s5s9	0	無関係	0			1	6	5	kan4
+3	16	y	base	3	m9m9m9m9m4s7z3s7p2m8m2s5s9	0	無関係	0			1	6	5	kan4
+3	16	c	kan	1	m8m8m8m8p8z3s6m4m5s7z2z6z5	1	和了	9000	ツモ		0	16	15	kan4
+3	16	c	nokan	1	m8m8m8m8p8z3s6m4m5s7z2z6z5	0	放銃	-12000		1	1	15	16	kan4
+3	16	c	base	1	m8m8m8m8p8z3s6m4m5s7z2z6z5	1	和了	9000	ツモ		0	16	15	kan4
+3	17	z	kan	1	z3z3z3z3p3m3m5p3z4m4s5m5s7	1	被ツモ	-2000			1	9	9	kan4
+3	17	z	nokan	1	z3z3z3z3p3m3m5p3z4m4s5m5s7	0	被ツモ	-2000			1	9	9	kan4
+3	17	z	base	1	z3z3z3z3p3m3m5p3z4m4s5m5s7	1	被ツモ	-2000			1	9	9	kan4
+3	17	y	kan	1	m9m9m9m9z3m7s4m3s8z5p6p5z4	1	和了	9000	ツモ		0	6	6	kan4
+3	17	y	nokan	1	m9m9m9m9z3m7s4m3s8z5p6p5z4	0	無関係	0			0	10	11	kan4
+3	17	y	base	1	m9m9m9m9z3m7s4m3s8z5p6p5z4	1	和了	9000	ツモ		0	11	11	kan4
+3	17	c	kan	1	m4m4m4m4s1p1p2p1z7s5s4p1s1	1	被ツモ	-6000			1	13	12	kan4
+3	17	c	nokan	1	m4m4m4m4s1p1p2p1z7s5s4p1s1	0	無関係	0			1	7	7	kan4
+3	17	c	base	1	m4m4m4m4s1p1p2p1z7s5s4p1s1	1	被ツモ	-6000			1	13	12	kan4
+3	18	z	kan	2	z2z2z2z2z1p5s6p2m7p4p0s7z5	1	無関係	0			0	9	11	kan4
+3	18	z	nokan	2	z2z2z2z2z1p5s6p2m7p4p0s7z5	0	和了	2600	ロン		0	10	11	kan4
+3	18	z	base	2	z2z2z2z2z1p5s6p2m7p4p0s7z5	1	無関係	0			0	9	11	kan4
+3	18	y	kan	1	p1p1p1p1m7m9s4p2m7m1m2m5m3	1	和了	5500	ロン		1	7	6	kan4
+3	18	y	nokan	1	p1p1p1p1m7m9s4p2m7m1m2m5m3	0	流局	1500			1	18	17	kan4
+3	18	y	base	1	p1p1p1p1m7m9s4p2m7m1m2m5m3	1	和了	5500	ロン		1	7	6	kan4
+3	18	c	kan	1	p5p5p5p0p7s8p6s4p4s1p4m1s4	1	和了	2600	ロン		0	8	9	kan4
+3	18	c	nokan	1	p5p5p5p0p7s8p6s4p4s1p4m1s4	0	和了	10000	ロン		1	11	11	kan4
+3	18	c	base	1	p5p5p5p0p7s8p6s4p4s1p4m1s4	0	和了	10000	ロン		1	11	11	kan4
+3	19	z	kan	1	z7z7z7z7m8p1m5m1p4p7m6z5p8	1	和了	9000	ツモ		0	9	8	kan4
+3	19	z	nokan	1	z7z7z7z7m8p1m5m1p4p7m6z5p8	0	和了	9900	ツモ		1	9	8	kan4
+3	19	z	base	1	z7z7z7z7m8p1m5m1p4p7m6z5p8	1	和了	9000	ツモ		0	9	8	kan4
+3	19	y	kan	1	p1p1p1p1z6m2m6p3s6m9s8s3p8	1	放銃	-8000		1	1	8	9	kan4
+3	19	y	nokan	1	p1p1p1p1z6m2m6p3s6m9s8s3p8	0	放銃	-8000		1	1	8	9	kan4
+3	19	y	base	1	p1p1p1p1z6m2m6p3s6m9s8s3p8	0	放銃	-8000		1	1	8	9	kan4
+3	19	c	kan	1	p4p4p4p4s9m1s9m8s6m6m1m1s8	1	放銃	-1500		0	0	10	11	kan4
+3	19	c	nokan	1	p4p4p4p4s9m1s9m8s6m6m1m1s8	0	和了	4200	ロン		0	9	8	kan4
+3	19	c	base	1	p4p4p4p4s9m1s9m8s6m6m1m1s8	1	放銃	-1500		0	0	10	11	kan4
+3	20	z	kan	2	z2z2z2z2m7z7s8s2s7p3s4z5s4	1	無関係	0			0	5	4	kan4
+3	20	z	nokan	2	z2z2z2z2m7z7s8s2s7p3s4z5s4	0	無関係	0			0	5	4	kan4
+3	20	z	base	2	z2z2z2z2m7z7s8s2s7p3s4z5s4	1	無関係	0			0	5	4	kan4
+3	20	y	kan	2	m1m1m1m1m7z2m8p9m8p0s4m3s9	1	無関係	0			1	12	12	kan4
+3	20	y	nokan	2	m1m1m1m1m7z2m8p9m8p0s4m3s9	0	被ツモ	-6000			1	10	10	kan4
+3	20	y	base	2	m1m1m1m1m7z2m8p9m8p0s4m3s9	0	被ツモ	-6000			1	10	10	kan4
+3	20	c	kan	2	m7m7m7m7z3m1p7s8p3p3z7m6p5	1	和了	9000	ツモ		0	12	11	kan4
+3	20	c	nokan	2	m7m7m7m7z3m1p7s8p3p3z7m6p5	0	被ツモ	-300			0	16	16	kan4
+3	20	c	base	2	m7m7m7m7z3m1p7s8p3p3z7m6p5	1	放銃	-2000		0	0	12	11	kan4
+3	21	z	kan	3	z6z6z6z6m7m9s3m3s4p5p2p9m5	1	無関係	0			1	7	8	kan4
+3	21	z	nokan	3	z6z6z6z6m7m9s3m3s4p5p2p9m5	0	和了	1000	ロン		1	9	9	kan4
+3	21	z	base	3	z6z6z6z6m7m9s3m3s4p5p2p9m5	1	無関係	0			1	7	8	kan4
+3	21	y	kan	3	p1p1p1p1z4m7p7p3s2m3z1s4s8	1	無関係	0			0	8	7	kan4
+3	21	y	nokan	3	p1p1p1p1z4m7p7p3s2m3z1s4s8	0	被ツモ	-500			0	9	9	kan4
+3	21	y	base	3	p1p1p1p1z4m7p7p3s2m3z1s4s8	0	被ツモ	-500			0	9	9	kan4
+3	21	c	kan	1	p3p3p3p3m4p1m5s8z1p9p5z2s3	1	無関係	0			1	14	14	kan4
+3	21	c	nokan	1	p3p3p3p3m4p1m5s8z1p9p5z2s3	0	無関係	0			1	15	14	kan4
+3	21	c	base	1	p3p3p3p3m4p1m5s8z1p9p5z2s3	0	無関係	0			1	15	14	kan4
+3	22	z	kan	3	z3z3z3z3s0s8m8s4s6p6p6p1m4	1	和了	13000	ロン		0	4	4	kan4
+3	22	z	nokan	3	z3z3z3z3s0s8m8s4s6p6p6p1m4	0	被ツモ	-1300			0	6	6	kan4
+3	22	z	base	3	z3z3z3z3s0s8m8s4s6p6p6p1m4	1	和了	13000	ロン		0	4	4	kan4
+3	22	y	kan	2	p1p1p1p1m8z2m6z1p4m4s2p3p6	1	無関係	0			1	6	6	kan4
+3	22	y	nokan	2	p1p1p1p1m8z2m6z1p4m4s2p3p6	0	無関係	0			1	6	6	kan4
+3	22	y	base	2	p1p1p1p1m8z2m6z1p4m4s2p3p6	1	無関係	0			1	6	6	kan4
+3	22	c	kan	2	m3m3m3m3p8m8s1p3p4p2z7m5s0	1	流局	3000			0	18	17	kan4
+3	22	c	nokan	2	m3m3m3m3p8m8s1p3p4p2z7m5s0	0	流局	-1500			1	18	18	kan4
+3	22	c	base	2	m3m3m3m3p8m8s1p3p4p2z7m5s0	0	流局	-1500			1	18	18	kan4
+3	23	z	kan	1	z4z4z4z4p1p7z5s5p7m8m7s8m7	1	和了	11000	ロン		1	17	16	kan4
+3	23	z	nokan	1	z4z4z4z4p1p7z5s5p7m8m7s8m7	0	被ツモ	-300			0	14	14	kan4
+3	23	z	base	1	z4z4z4z4p1p7z5s5p7m8m7s8m7	0	被ツモ	-300			0	14	14	kan4
+3	23	y	kan	1	s1s1s1s1m9z2m5m4m8s8p1p5z2	1	被ツモ	-2000			0	11	13	kan4
+3	23	y	nokan	1	s1s1s1s1m9z2m5m4m8s8p1p5z2	0	和了	2600	ロン		0	4	5	kan4
+3	23	y	base	1	s1s1s1s1m9z2m5m4m8s8p1p5z2	1	被ツモ	-2000			0	11	13	kan4
+3	23	c	kan	3	p4p4p4p4z4s5p5m8p8z3z1s2z6	1	無関係	0			1	7	7	kan4
+3	23	c	nokan	3	p4p4p4p4z4s5p5m8p8z3z1s2z6	0	被ツモ	-1300			1	13	12	kan4
+3	23	c	base	3	p4p4p4p4z4s5p5m8p8z3z1s2z6	0	被ツモ	-1300			1	13	12	kan4
+3	24	z	kan	2	z7z7z7z7p7p5p6m9s6z3p0z4s9	1	無関係	0			0	6	7	kan4
+3	24	z	nokan	2	z7z7z7z7p7p5p6m9s6z3p0z4s9	0	被ツモ	-4000			1	6	6	kan4
+3	24	z	base	2	z7z7z7z7p7p5p6m9s6z3p0z4s9	1	無関係	0			0	6	7	kan4
+3	24	y	kan	2	s9s9s9s9z1m7m1s4s3p3p3z3m4	1	被ツモ	-1300			0	16	16	kan4
+3	24	y	nokan	2	s9s9s9s9z1m7m1s4s3p3p3z3m4	0	無関係	0			0	13	13	kan4
+3	24	y	base	2	s9s9s9s9z1m7m1s4s3p3p3z3m4	1	被ツモ	-1300			0	16	16	kan4
+3	24	c	kan	2	p7p7p7p7m2s8p8p5p0z4p9s2z7	1	流局	1500			1	18	18	kan4
+3	24	c	nokan	2	p7p7p7p7m2s8p8p5p0z4p9s2z7	0	被ツモ	-500			0	15	15	kan4
+3	24	c	base	2	p7p7p7p7m2s8p8p5p0z4p9s2z7	0	被ツモ	-500			0	15	15	kan4
+3	25	z	kan	1	z2z2z2z2p8z5z5z4p0z5z3p2m8	1	被ツモ	-3000			1	4	4	kan4
+3	25	z	nokan	1	z2z2z2z2p8z5z5z4p0z5z3p2m8	0	被ツモ	-1600			1	9	9	kan4
+3	25	z	base	1	z2z2z2z2p8z5z5z4p0z5z3p2m8	1	被ツモ	-3000			1	4	4	kan4
+3	25	y	kan	2	m9m9m9m9s7z4p7z6z5z1m1p6s4	1	流局	-1500			1	18	17	kan4
+3	25	y	nokan	2	m9m9m9m9s7z4p7z6z5z1m1p6s4	0	流局	-1000			1	18	17	kan4
+3	25	y	base	2	m9m9m9m9s7z4p7z6z5z1m1p6s4	1	流局	-1500			1	18	17	kan4
+3	25	c	kan	3	s6s6s6s6z1z5z3s3s5s2z5s8s1	1	放銃	-3900		0	0	10	11	kan4
+3	25	c	nokan	3	s6s6s6s6z1z5z3s3s5s2z5s8s1	0	和了	4900	ロン		1	9	9	kan4
+3	25	c	base	3	s6s6s6s6z1z5z3s3s5s2z5s8s1	0	和了	4900	ロン		1	9	9	kan4
+3	26	z	kan	2	z5z5z5z5s3p7m1s6z1s0m1s5z7	1	無関係	0			1	7	8	kan4
+3	26	z	nokan	2	z5z5z5z5s3p7m1s6z1s0m1s5z7	0	和了	3600	ロン		1	11	12	kan4
+3	26	z	base	2	z5z5z5z5s3p7m1s6z1s0m1s5z7	1	無関係	0			1	7	8	kan4
+3	26	y	kan	1	m1m1m1m1p6z5z1s2m9p6p5z6m2	1	被ツモ	-3000			1	7	7	kan4
+3	26	y	nokan	1	m1m1m1m1p6z5z1s2m9p6p5z6m2	0	和了	7700	ロン		0	11	12	kan4
+3	26	y	base	1	m1m1m1m1p6z5z1s2m9p6p5z6m2	1	和了	8000	ロン		0	11	11	kan4
+3	26	c	kan	3	m6m6m6m6s3m5p4z4z2m4p9m8s7	1	流局	1500			0	18	17	kan4
+3	26	c	nokan	3	m6m6m6m6s3m5p4z4z2m4p9m8s7	0	和了	2000	ロン		0	13	12	kan4
+3	26	c	base	3	m6m6m6m6s3m5p4z4z2m4p9m8s7	0	和了	2000	ロン		0	13	12	kan4
+3	27	z	kan	2	z3z3z3z3m4m2m7p3z5m3s7s4z7	1	被ツモ	-3900			1	11	11	kan4
+3	27	z	nokan	2	z3z3z3z3m4m2m7p3z5m3s7s4z7	0	被ツモ	-2000			1	11	11	kan4
+3	27	z	base	2	z3z3z3z3m4m2m7p3z5m3s7s4z7	1	被ツモ	-3900			1	11	11	kan4
+3	27	y	kan	1	m1m1m1m1z4z7s9p3p6m7p9m7s9	1	放銃	-7700		1	1	9	9	kan4
+3	27	y	nokan	1	m1m1m1m1z4z7s9p3p6m7p9m7s9	0	流局	1500			1	18	18	kan4
+3	27	y	base	1	m1m1m1m1z4z7s9p3p6m7p9m7s9	0	流局	1500			1	18	18	kan4
+3	27	c	kan	2	m3m3m3m3m1s3m6z4s6z7p2m1p7	1	無関係	0			0	11	11	kan4
+3	27	c	nokan	2	m3m3m3m3m1s3m6z4s6z7p2m1p7	0	放銃	-1000		0	0	13	14	kan4
+3	27	c	base	2	m3m3m3m3m1s3m6z4s6z7p2m1p7	1	無関係	0			0	11	11	kan4
+3	28	z	kan	1	z3z3z3z3m7p1m9s4p6z7s4s8m9	1	和了	10000	ツモ		1	12	11	kan4
+3	28	z	nokan	1	z3z3z3z3m7p1m9s4p6z7s4s8m9	0	和了	9000	ツモ		0	15	15	kan4
+3	28	z	base	1	z3z3z3z3m7p1m9s4p6z7s4s8m9	0	和了	9000	ツモ		0	15	15	kan4
+3	28	y	kan	1	p9p9p9p9m0p6s3s8p4s6s8m3s8	1	和了	14000	ロン		1	9	9	kan4
+3	28	y	nokan	1	p9p9p9p9m0p6s3s8p4s6s8m3s8	0	和了	10000	ロン		1	9	9	kan4
+3	28	y	base	1	p9p9p9p9m0p6s3s8p4s6s8m3s8	1	和了	14000	ロン		1	9	9	kan4
+3	28	c	kan	2	p7p7p7p7p2s8z5z2m7p1z5s2s4	1	無関係	0			1	10	10	kan4
+3	28	c	nokan	2	p7p7p7p7p2s8z5z2m7p1z5s2s4	0	被ツモ	-700			0	12	12	kan4
+3	28	c	base	2	p7p7p7p7p2s8z5z2m7p1z5s2s4	1	無関係	0			1	10	10	kan4
+3	29	z	kan	3	z3z3z3z3s2p3s7s5m3z5s6s2m1	1	被ツモ	-2000			1	10	9	kan4
+3	29	z	nokan	3	z3z3z3z3s2p3s7s5m3z5s6s2m1	0	被ツモ	-2000			1	10	9	kan4
+3	29	z	base	3	z3z3z3z3s2p3s7s5m3z5s6s2m1	1	被ツモ	-2000			1	10	9	kan4
+3	29	y	kan	2	m9m9m9m9p2s8m3z4s6p6p4m0s8	1	無関係	0			1	17	17	kan4
+3	29	y	nokan	2	m9m9m9m9p2s8m3z4s6p6p4m0s8	0	流局	-1000			1	18	17	kan4
+3	29	y	base	2	m9m9m9m9p2s8m3z4s6p6p4m0s8	1	無関係	0			1	17	17	kan4
+3	29	c	kan	1	s6s6s6s6m7s2p3s4m6s3p6z5z4	1	和了	8400	ロン		1	8	7	kan4
+3	29	c	nokan	1	s6s6s6s6m7s2p3s4m6s3p6z5z4	0	流局	1500			1	18	18	kan4
+3	29	c	base	1	s6s6s6s6m7s2p3s4m6s3p6z5z4	1	和了	8400	ロン		1	8	7	kan4
+3	30	z	kan	2	z7z7z7z7s0p2m2m6m7p2p7z1p6	1	和了	8700	ロン		1	8	7	kan4
+3	30	z	nokan	2	z7z7z7z7s0p2m2m6m7p2p7z1p6	0	和了	4900	ロン		1	8	7	kan4
+3	30	z	base	2	z7z7z7z7s0p2m2m6m7p2p7z1p6	1	和了	8700	ロン		1	8	7	kan4
+3	30	y	kan	2	p9p9p9p9z5s6p7s6p1p2m1m4z7	1	被ツモ	-4000			0	10	10	kan4
+3	30	y	nokan	2	p9p9p9p9z5s6p7s6p1p2m1m4z7	0	被ツモ	-700			0	6	7	kan4
+3	30	y	base	2	p9p9p9p9z5s6p7s6p1p2m1m4z7	1	無関係	0			0	8	9	kan4
+3	30	c	kan	3	p3p3p3p3z3z1z4z7s1s0m1m5m9	1	和了	6400	ロン		0	14	14	kan4
+3	30	c	nokan	3	p3p3p3p3z3z1z4z7s1s0m1m5m9	0	被ツモ	-2000			1	15	14	kan4
+3	30	c	base	3	p3p3p3p3z3z1z4z7s1s0m1m5m9	1	和了	6400	ロン		0	14	14	kan4
+3	31	z	kan	3	z1z1z1z1m4m3m8m1s8m1s0s3m8	1	和了	7700	ロン		0	5	5	kan4
+3	31	z	nokan	3	z1z1z1z1m4m3m8m1s8m1s0s3m8	0	放銃	-2000		0	0	8	9	kan4
+3	31	z	base	3	z1z1z1z1m4m3m8m1s8m1s0s3m8	1	和了	7700	ロン		0	5	5	kan4
+3	31	y	kan	3	m1m1m1m1m7p7z4s8m2m8s1z5s2	1	被ツモ	-3000			1	9	8	kan4
+3	31	y	nokan	3	m1m1m1m1m7p7z4s8m2m8s1z5s2	0	被ツモ	-3000			1	9	8	kan4
+3	31	y	base	3	m1m1m1m1m7p7z4s8m2m8s1z5s2	0	被ツモ	-3000			1	9	8	kan4
+3	31	c	kan	2	p3p3p3p3z3p2s6m4p9z5p0s8m8	1	無関係	0			1	12	11	kan4
+3	31	c	nokan	2	p3p3p3p3z3p2s6m4p9z5p0s8m8	0	無関係	0			1	9	9	kan4
+3	31	c	base	2	p3p3p3p3z3p2s6m4p9z5p0s8m8	0	無関係	0			1	9	9	kan4
+3	32	z	kan	3	z2z2z2z2s4z5z3m0p5s1z7s6m2	1	被ツモ	-1000			0	12	11	kan4
+3	32	z	nokan	3	z2z2z2z2s4z5z3m0p5s1z7s6m2	0	無関係	0			0	12	11	kan4
+3	32	z	base	3	z2z2z2z2s4z5z3m0p5s1z7s6m2	1	被ツモ	-1000			0	12	11	kan4
+3	32	y	kan	1	m9m9m9m9s8s8s2m5s4s4p2p2z2	1	無関係	0			1	8	8	kan4
+3	32	y	nokan	1	m9m9m9m9s8s8s2m5s4s4p2p2z2	0	流局	-1000			1	18	18	kan4
+3	32	y	base	1	m9m9m9m9s8s8s2m5s4s4p2p2z2	0	流局	-1000			1	18	18	kan4
+3	32	c	kan	3	s4s4s4s4m7s7m5z1m1m7z1s3p4	1	被ツモ	-1000			1	10	10	kan4
+3	32	c	nokan	3	s4s4s4s4m7s7m5z1m1m7z1s3p4	0	放銃	-3900		1	1	6	6	kan4
+3	32	c	base	3	s4s4s4s4m7s7m5z1m1m7z1s3p4	0	放銃	-3900		1	1	6	6	kan4
+3	33	z	kan	2	z3z3z3z3m8z1z6s3p3s7s3p8p9	1	放銃	-16000		1	1	7	7	kan4
+3	33	z	nokan	2	z3z3z3z3m8z1z6s3p3s7s3p8p9	0	流局	-1000			1	18	17	kan4
+3	33	z	base	2	z3z3z3z3m8z1z6s3p3s7s3p8p9	1	放銃	-16000		1	1	7	7	kan4
+3	33	y	kan	2	p1p1p1p1z4m3s5z3m7z1m3s4m4	1	和了	17000	ツモ		0	11	11	kan4
+3	33	y	nokan	2	p1p1p1p1z4m3s5z3m7z1m3s4m4	0	和了	4200	ロン		0	12	12	kan4
+3	33	y	base	2	p1p1p1p1z4m3s5z3m7z1m3s4m4	1	和了	17000	ツモ		0	11	11	kan4
+3	33	c	kan	3	m4m4m4m4s3p7z5s4m6s2p7m5p4	1	被ツモ	-2000			1	12	12	kan4
+3	33	c	nokan	3	m4m4m4m4s3p7z5s4m6s2p7m5p4	0	無関係	0			1	10	9	kan4
+3	33	c	base	3	m4m4m4m4s3p7z5s4m6s2p7m5p4	0	無関係	0			1	10	9	kan4
+3	34	z	kan	3	z5z5z5z5s8z7m6s7z1s6s9s8s1	1	和了	13000	ツモ		0	13	12	kan4
+3	34	z	nokan	3	z5z5z5z5s8z7m6s7z1s6s9s8s1	0	被ツモ	-1000			1	17	17	kan4
+3	34	z	base	3	z5z5z5z5s8z7m6s7z1s6s9s8s1	1	和了	13000	ツモ		0	13	12	kan4
+3	34	y	kan	1	s1s1s1s1p3m2s3m6p4z2m4m1p1	1	流局	-1000			1	18	17	kan4
+3	34	y	nokan	1	s1s1s1s1p3m2s3m6p4z2m4m1p1	0	放銃	-12000		0	0	12	13	kan4
+3	34	y	base	1	s1s1s1s1p3m2s3m6p4z2m4m1p1	1	流局	-1000			1	18	17	kan4
+3	34	c	kan	2	p8p8p8p8s4p4p1p2m4m8s3z6m7	1	放銃	-7700		1	1	15	15	kan4
+3	34	c	nokan	2	p8p8p8p8s4p4p1p2m4m8s3z6m7	0	無関係	0			0	14	14	kan4
+3	34	c	base	2	p8p8p8p8s4p4p1p2m4m8s3z6m7	1	放銃	-7700		1	1	15	15	kan4
+3	35	z	kan	3	z3z3z3z3p9p7m4p0m8s3p6p6p9	1	被ツモ	-500			0	10	10	kan4
+3	35	z	nokan	3	z3z3z3z3p9p7m4p0m8s3p6p6p9	0	被ツモ	-1000			1	12	12	kan4
+3	35	z	base	3	z3z3z3z3p9p7m4p0m8s3p6p6p9	1	被ツモ	-500			0	10	10	kan4
+3	35	y	kan	1	s1s1s1s1p0m6m6z6s3p1s5s3z3	1	流局	1500			0	18	18	kan4
+3	35	y	nokan	1	s1s1s1s1p0m6m6z6s3p1s5s3z3	0	無関係	0			1	13	14	kan4
+3	35	y	base	1	s1s1s1s1p0m6m6z6s3p1s5s3z3	0	無関係	0			1	13	14	kan4
+3	35	c	kan	3	s3s3s3s3p8p7m7p7s7m9p2s4z7	1	和了	9000	ツモ		0	16	15	kan4
+3	35	c	nokan	3	s3s3s3s3p8p7m7p7s7m9p2s4z7	0	和了	6200	ツモ		0	12	11	kan4
+3	35	c	base	3	s3s3s3s3p8p7m7p7s7m9p2s4z7	0	和了	6200	ツモ		0	12	11	kan4
+3	36	z	kan	3	z6z6z6z6p8m6z4s2s0z2p4m2p7	1	和了	14000	ツモ		1	11	10	kan4
+3	36	z	nokan	3	z6z6z6z6p8m6z4s2s0z2p4m2p7	0	和了	2000	ロン		0	13	14	kan4
+3	36	z	base	3	z6z6z6z6p8m6z4s2s0z2p4m2p7	0	和了	2000	ロン		0	13	14	kan4
+3	36	y	kan	2	s9s9s9s9m6z7m3m9z1s7s5m2p1	1	無関係	0			0	7	8	kan4
+3	36	y	nokan	2	s9s9s9s9m6z7m3m9z1s7s5m2p1	0	和了	8900	ツモ		0	16	16	kan4
+3	36	y	base	2	s9s9s9s9m6z7m3m9z1s7s5m2p1	1	無関係	0			0	7	8	kan4
+3	36	c	kan	1	s6s6s6s6z7p6m2s7z4s5s3p7s7	1	放銃	-3900		0	0	12	14	kan4
+3	36	c	nokan	1	s6s6s6s6z7p6m2s7z4s5s3p7s7	0	流局	1500			0	18	18	kan4
+3	36	c	base	1	s6s6s6s6z7p6m2s7z4s5s3p7s7	1	放銃	-3900		0	0	12	14	kan4
+3	37	z	kan	2	z7z7z7z7p1p8s2p8p0p2m3s6m8	1	無関係	0			1	13	14	kan4
+3	37	z	nokan	2	z7z7z7z7p1p8s2p8p0p2m3s6m8	0	無関係	0			0	7	8	kan4
+3	37	z	base	2	z7z7z7z7p1p8s2p8p0p2m3s6m8	1	無関係	0			1	13	14	kan4
+3	37	y	kan	1	m1m1m1m1s7m3z2m9p1m9s5m5p3	1	被ツモ	-2000			0	9	10	kan4
+3	37	y	nokan	1	m1m1m1m1s7m3z2m9p1m9s5m5p3	0	被ツモ	-300			1	11	12	kan4
+3	37	y	base	1	m1m1m1m1s7m3z2m9p1m9s5m5p3	1	放銃	-3900		0	0	8	9	kan4
+3	37	c	kan	3	s2s2s2s2p7m1z5m7z3z5z4s5p1	1	被ツモ	-3000			1	18	17	kan4
+3	37	c	nokan	3	s2s2s2s2p7m1z5m7z3z5z4s5p1	0	被ツモ	-2000			1	17	18	kan4
+3	37	c	base	3	s2s2s2s2p7m1z5m7z3z5z4s5p1	1	被ツモ	-3000			1	18	17	kan4
+3	38	z	kan	3	z2z2z2z2z4m6s6p3m7m5s4z6p8	1	放銃	-3900		1	1	7	7	kan4
+3	38	z	nokan	3	z2z2z2z2z4m6s6p3m7m5s4z6p8	0	流局	-1000			1	18	17	kan4
+3	38	z	base	3	z2z2z2z2z4m6s6p3m7m5s4z6p8	1	放銃	-3900		1	1	7	7	kan4
+3	38	y	kan	3	m9m9m9m9s7m8s4s7s6p1s1s2z4	1	和了	10000	ロン		1	7	6	kan4
+3	38	y	nokan	3	m9m9m9m9s7m8s4s7s6p1s1s2z4	0	和了	4600	ロン		1	8	7	kan4
+3	38	y	base	3	m9m9m9m9s7m8s4s7s6p1s1s2z4	1	和了	10000	ロン		1	7	6	kan4
+3	38	c	kan	2	m2m2m2m2z7p5m5z1m9m9p2m8s3	1	無関係	0			0	6	7	kan4
+3	38	c	nokan	2	m2m2m2m2z7p5m5z1m9m9p2m8s3	0	和了	2300	ロン		0	8	8	kan4
+3	38	c	base	2	m2m2m2m2z7p5m5z1m9m9p2m8s3	0	和了	2300	ロン		0	8	8	kan4
+3	39	z	kan	1	z1z1z1z1z2p1m5s5p9z4z7p9m8	1	無関係	0			1	10	10	kan4
+3	39	z	nokan	1	z1z1z1z1z2p1m5s5p9z4z7p9m8	0	被ツモ	-700			1	17	17	kan4
+3	39	z	base	1	z1z1z1z1z2p1m5s5p9z4z7p9m8	0	被ツモ	-700			1	17	17	kan4
+3	39	y	kan	2	m9m9m9m9p7s3p8s9s3p1p9z7s7	1	被ツモ	-1000			0	9	9	kan4
+3	39	y	nokan	2	m9m9m9m9p7s3p8s9s3p1p9z7s7	0	無関係	0			0	9	9	kan4
+3	39	y	base	2	m9m9m9m9p7s3p8s9s3p1p9z7s7	1	被ツモ	-1000			0	9	9	kan4
+3	39	c	kan	1	m7m7m7m7p2p8z5s7m9p3p6z2p1	1	被ツモ	-3000			1	14	14	kan4
+3	39	c	nokan	1	m7m7m7m7p2p8z5s7m9p3p6z2p1	0	被ツモ	-3000			1	14	14	kan4
+3	39	c	base	1	m7m7m7m7p2p8z5s7m9p3p6z2p1	0	被ツモ	-3000			1	14	14	kan4
+3	40	z	kan	3	z5z5z5z5p4s4m9z7p9m8m9s2p7	1	放銃	-2600		1	1	9	9	kan4
+3	40	z	nokan	3	z5z5z5z5p4s4m9z7p9m8m9s2p7	0	和了	8400	ロン		1	14	13	kan4
+3	40	z	base	3	z5z5z5z5p4s4m9z7p9m8m9s2p7	1	放銃	-2600		1	1	9	9	kan4
+3	40	y	kan	2	p9p9p9p9m8z3m2p1m1m1s6p8s8	1	和了	8900	ツモ		0	15	14	kan4
+3	40	y	nokan	2	p9p9p9p9m8z3m2p1m1m1s6p8s8	0	無関係	0			1	11	11	kan4
+3	40	y	base	2	p9p9p9p9m8z3m2p1m1m1s6p8s8	0	無関係	0			1	11	11	kan4
+3	40	c	kan	2	s8s8s8s8p5z1m4s0m3m5p2p3s2	1	和了	7400	ロン		0	6	5	kan4
+3	40	c	nokan	2	s8s8s8s8p5z1m4s0m3m5p2p3s2	0	流局	3000			0	18	17	kan4
+3	40	c	base	2	s8s8s8s8p5z1m4s0m3m5p2p3s2	1	和了	7400	ロン		0	6	5	kan4
+3	41	z	kan	2	z7z7z7z7z6s6m2z6p1z5s5s9p2	1	被ツモ	-1000			1	12	12	kan4
+3	41	z	nokan	2	z7z7z7z7z6s6m2z6p1z5s5s9p2	0	和了	9000	ツモ		1	14	13	kan4
+3	41	z	base	2	z7z7z7z7z6s6m2z6p1z5s5s9p2	1	被ツモ	-1000			1	12	12	kan4
+3	41	y	kan	3	s9s9s9s9p5m4m7p6m8z5z4m6z4	0	無関係	0			0	12	12	kan4
+3	41	y	nokan	3	s9s9s9s9p5m4m7p6m8z5z4m6z4	0	無関係	0			0	12	12	kan4
+3	41	y	base	3	s9s9s9s9p5m4m7p6m8z5z4m6z4	0	無関係	0			0	12	12	kan4
+3	41	c	kan	1	s8s8s8s8s4s9z6s2m2m5s5m4s2	1	被ツモ	-2000			1	10	10	kan4
+3	41	c	nokan	1	s8s8s8s8s4s9z6s2m2m5s5m4s2	0	放銃	-12000		0	1	9	11	kan4
+3	41	c	base	1	s8s8s8s8s4s9z6s2m2m5s5m4s2	1	和了	8000	ツモ		0	10	11	kan4
+3	42	z	kan	1	z2z2z2z2m8s7m1p6p4p9p3s6s2	1	流局	-1500			1	18	18	kan4
+3	42	z	nokan	1	z2z2z2z2m8s7m1p6p4p9p3s6s2	0	無関係	0			0	11	11	kan4
+3	42	z	base	1	z2z2z2z2m8s7m1p6p4p9p3s6s2	1	流局	-1500			1	18	18	kan4
+3	42	y	kan	2	p9p9p9p9s7s8s1s6z7s3p4s3m4	1	放銃	-3200		0	0	12	12	kan4
+3	42	y	nokan	2	p9p9p9p9s7s8s1s6z7s3p4s3m4	0	無関係	0			1	7	6	kan4
+3	42	y	base	2	p9p9p9p9s7s8s1s6z7s3p4s3m4	1	放銃	-3200		0	0	12	12	kan4
+3	42	c	kan	3	p5p5p5p0p2s6p3p3z7p9z3p4p3	1	和了	18000	ロン		1	6	5	kan4
+3	42	c	nokan	3	p5p5p5p0p2s6p3p3z7p9z3p4p3	0	放銃	-3900		1	1	15	15	kan4
+3	42	c	base	3	p5p5p5p0p2s6p3p3z7p9z3p4p3	1	和了	18000	ロン		1	6	5	kan4
+3	43	z	kan	3	z5z5z5z5s8m4p1s1s6s3p9m8s4	1	放銃	-2600		1	1	11	11	kan4
+3	43	z	nokan	3	z5z5z5z5s8m4p1s1s6s3p9m8s4	0	和了	1000	ロン		0	9	9	kan4
+3	43	z	base	3	z5z5z5z5s8m4p1s1s6s3p9m8s4	1	放銃	-2600		1	1	11	11	kan4
+3	43	y	kan	3	m1m1m1m1p1z1z6s4m4s8m2m7s3	1	和了	4300	ロン		1	11	12	kan4
+3	43	y	nokan	3	m1m1m1m1p1z1z6s4m4s8m2m7s3	0	無関係	0			1	13	13	kan4
+3	43	y	base	3	m1m1m1m1p1z1z6s4m4s8m2m7s3	1	和了	4300	ロン		1	11	12	kan4
+3	43	c	kan	3	p7p7p7p7z3m6z1z6s5z3s9s2m2	1	被ツモ	-4000			1	11	11	kan4
+3	43	c	nokan	3	p7p7p7p7z3m6z1z6s5z3s9s2m2	0	和了	7400	ツモ		0	11	10	kan4
+3	43	c	base	3	p7p7p7p7z3m6z1z6s5z3s9s2m2	0	和了	7400	ツモ		0	11	10	kan4
+3	44	z	kan	3	z6z6z6z6s3s8p8z1m8s6p4p3s1	1	無関係	0			1	7	7	kan4
+3	44	z	nokan	3	z6z6z6z6s3s8p8z1m8s6p4p3s1	0	被ツモ	-1000			1	9	9	kan4
+3	44	z	base	3	z6z6z6z6s3s8p8z1m8s6p4p3s1	1	無関係	0			1	7	7	kan4
+3	44	y	kan	2	p1p1p1p1m3z4s6m8s1z4s8z3m6	1	無関係	0			0	6	6	kan4
+3	44	y	nokan	2	p1p1p1p1m3z4s6m8s1z4s8z3m6	0	無関係	0			0	6	6	kan4
+3	44	y	base	2	p1p1p1p1m3z4s6m8s1z4s8z3m6	1	無関係	0			0	6	6	kan4
+3	44	c	kan	3	s7s7s7s7m7p0m7p1s2p4p5z1z2	1	和了	17000	ツモ		0	15	14	kan4
+3	44	c	nokan	3	s7s7s7s7m7p0m7p1s2p4p5z1z2	0	被ツモ	-2600			1	17	16	kan4
+3	44	c	base	3	s7s7s7s7m7p0m7p1s2p4p5z1z2	0	被ツモ	-2600			1	17	16	kan4
+3	45	z	kan	3	z4z4z4z4z6m8m7p5p3p0s8p5s9	1	和了	9000	ロン		0	5	4	kan4
+3	45	z	nokan	3	z4z4z4z4z6m8m7p5p3p0s8p5s9	0	放銃	-12000		1	1	8	8	kan4
+3	45	z	base	3	z4z4z4z4z6m8m7p5p3p0s8p5s9	1	和了	9000	ロン		0	5	4	kan4
+3	45	y	kan	2	p9p9p9p9s5s5m1m9s7p3s6s7m8	1	放銃	-3900		0	0	10	10	kan4
+3	45	y	nokan	2	p9p9p9p9s5s5m1m9s7p3s6s7m8	0	被ツモ	-300			0	14	14	kan4
+3	45	y	base	2	p9p9p9p9s5s5m1m9s7p3s6s7m8	1	放銃	-3900		0	0	10	10	kan4
+3	45	c	kan	1	s4s4s4s4s8s3s9p4m2p2z7p7m5	1	和了	2600	ロン		0	10	10	kan4
+3	45	c	nokan	1	s4s4s4s4s8s3s9p4m2p2z7p7m5	0	和了	2100	ツモ		1	16	16	kan4
+3	45	c	base	1	s4s4s4s4s8s3s9p4m2p2z7p7m5	1	放銃	-2000		0	1	9	10	kan4
+3	46	z	kan	3	z6z6z6z6m1p1s6m5s8s7m9m8p2	1	放銃	-16000		1	1	18	17	kan4
+3	46	z	nokan	3	z6z6z6z6m1p1s6m5s8s7m9m8p2	0	無関係	0			0	17	17	kan4
+3	46	z	base	3	z6z6z6z6m1p1s6m5s8s7m9m8p2	1	放銃	-16000		1	1	18	17	kan4
+3	46	y	kan	1	s9s9s9s9p2z4s3s4p5m1m4m4p5	1	放銃	-2000		0	1	15	15	kan4
+3	46	y	nokan	1	s9s9s9s9p2z4s3s4p5m1m4m4p5	0	和了	7400	ツモ		0	12	11	kan4
+3	46	y	base	1	s9s9s9s9p2z4s3s4p5m1m4m4p5	0	和了	7400	ツモ		0	12	11	kan4
+3	46	c	kan	1	s2s2s2s2m3m0z3s1s4z6s5z6m1	1	和了	4200	ロン		1	9	10	kan4
+3	46	c	nokan	1	s2s2s2s2m3m0z3s1s4z6s5z6m1	0	和了	1000	ロン		1	7	8	kan4
+3	46	c	base	1	s2s2s2s2m3m0z3s1s4z6s5z6m1	1	和了	4200	ロン		1	9	10	kan4
+3	47	z	kan	3	z2z2z2z2s3m0p6m5s7z3s5z6m2	1	無関係	0			1	9	9	kan4
+3	47	z	nokan	3	z2z2z2z2s3m0p6m5s7z3s5z6m2	0	無関係	0			1	9	9	kan4
+3	47	z	base	3	z2z2z2z2s3m0p6m5s7z3s5z6m2	1	無関係	0			1	9	9	kan4
+3	47	y	kan	2	m1m1m1m1z4m6s9s7p2s2s7z4p3	1	和了	3900	ロン		0	6	7	kan4
+3	47	y	nokan	2	m1m1m1m1z4m6s9s7p2s2s7z4p3	0	被ツモ	-2000			0	11	10	kan4
+3	47	y	base	2	m1m1m1m1z4m6s9s7p2s2s7z4p3	1	和了	3900	ロン		0	6	7	kan4
+3	47	c	kan	2	s8s8s8s8z7s6z3z4z2p7s2m4m0	1	無関係	0			0	7	7	kan4
+3	47	c	nokan	2	s8s8s8s8z7s6z3z4z2p7s2m4m0	0	被ツモ	-1000			0	10	10	kan4
+3	47	c	base	2	s8s8s8s8z7s6z3z4z2p7s2m4m0	1	被ツモ	-1000			0	10	10	kan4
+3	48	z	kan	3	z7z7z7z7p7z1s2m7m7s1s0m9s3	1	被ツモ	-500			1	11	11	kan4
+3	48	z	nokan	3	z7z7z7z7p7z1s2m7m7s1s0m9s3	0	和了	2000	ロン		0	6	6	kan4
+3	48	z	base	3	z7z7z7z7p7z1s2m7m7s1s0m9s3	1	被ツモ	-500			1	11	11	kan4
+3	48	y	kan	2	s1s1s1s1s4p3m7s3s8z7z1p7z1	1	無関係	0			0	10	12	kan4
+3	48	y	nokan	2	s1s1s1s1s4p3m7s3s8z7z1p7z1	0	無関係	0			0	6	7	kan4
+3	48	y	base	2	s1s1s1s1s4p3m7s3s8z7z1p7z1	1	無関係	0			0	10	12	kan4
+3	48	c	kan	3	s4s4s4s4z2m4s5s3z4m9m2s6z1	1	被ツモ	-700			1	11	11	kan4
+3	48	c	nokan	3	s4s4s4s4z2m4s5s3z4m9m2s6z1	0	和了	3600	ロン		0	9	9	kan4
+3	48	c	base	3	s4s4s4s4z2m4s5s3z4m9m2s6z1	0	和了	3600	ロン		0	9	9	kan4
+3	49	z	kan	3	z2z2z2z2z5s9p5p1p8p6s4z5s6	1	放銃	-3900		0	0	9	9	kan4
+3	49	z	nokan	3	z2z2z2z2z5s9p5p1p8p6s4z5s6	0	無関係	0			1	10	10	kan4
+3	49	z	base	3	z2z2z2z2z5s9p5p1p8p6s4z5s6	1	放銃	-3900		0	0	9	9	kan4
+3	49	y	kan	3	m1m1m1m1s6s4m4s2z5p1m3s8z7	1	流局	3000			0	18	17	kan4
+3	49	y	nokan	3	m1m1m1m1s6s4m4s2z5p1m3s8z7	0	放銃	-3200		1	1	13	13	kan4
+3	49	y	base	3	m1m1m1m1s6s4m4s2z5p1m3s8z7	1	流局	3000			0	18	17	kan4
+3	49	c	kan	3	m3m3m3m3p6s1s4s2z6z2m4s5p3	1	被ツモ	-300			0	6	6	kan4
+3	49	c	nokan	3	m3m3m3m3p6s1s4s2z6z2m4s5p3	0	被ツモ	-300			0	6	6	kan4
+3	49	c	base	3	m3m3m3m3p6s1s4s2z6z2m4s5p3	1	被ツモ	-300			0	6	6	kan4
+3	50	z	kan	1	z3z3z3z3p7p2s4m3m9m8p3s1m1	1	無関係	0			0	8	8	kan4
+3	50	z	nokan	1	z3z3z3z3p7p2s4m3m9m8p3s1m1	0	被ツモ	-500			1	13	14	kan4
+3	50	z	base	1	z3z3z3z3p7p2s4m3m9m8p3s1m1	1	無関係	0			0	8	8	kan4
+3	50	y	kan	2	m1m1m1m1m7p9m5s2m4s5p5m5z5	1	被ツモ	-6000			1	15	15	kan4
+3	50	y	nokan	2	m1m1m1m1m7p9m5s2m4s5p5m5z5	0	被ツモ	-6000			1	15	15	kan4
+3	50	y	base	2	m1m1m1m1m7p9m5s2m4s5p5m5z5	1	被ツモ	-6000			1	15	15	kan4
+3	50	c	kan	2	s3s3s3s3m2p4p9m1s6z5z4s6z2	1	無関係	0			0	4	3	kan4
+3	50	c	nokan	2	s3s3s3s3m2p4p9m1s6z5z4s6z2	0	無関係	0			0	11	10	kan4
+3	50	c	base	2	s3s3s3s3m2p4p9m1s6z5z4s6z2	1	無関係	0			0	4	3	kan4
+3	51	z	kan	1	z4z4z4z4p7m7p4m8z3m2s3m9s7	1	無関係	0			0	8	9	kan4
+3	51	z	nokan	1	z4z4z4z4p7m7p4m8z3m2s3m9s7	0	無関係	0			1	16	16	kan4
+3	51	z	base	1	z4z4z4z4p7m7p4m8z3m2s3m9s7	1	無関係	0			0	8	9	kan4
+3	51	y	kan	3	m1m1m1m1m9s2m8p8p1s9s4z6p8	1	被ツモ	-3900			0	9	9	kan4
+3	51	y	nokan	3	m1m1m1m1m9s2m8p8p1s9s4z6p8	0	和了	7200	ツモ		1	6	5	kan4
+3	51	y	base	3	m1m1m1m1m9s2m8p8p1s9s4z6p8	1	被ツモ	-3900			0	9	9	kan4
+3	51	c	kan	2	p6p6p6p6m3p7m6s2m4s9s2z3m3	1	放銃	-2600		1	1	6	6	kan4
+3	51	c	nokan	2	p6p6p6p6m3p7m6s2m4s9s2z3m3	0	被ツモ	-1300			1	13	13	kan4
+3	51	c	base	2	p6p6p6p6m3p7m6s2m4s9s2z3m3	0	被ツモ	-1300			1	13	13	kan4
+3	52	z	kan	2	z6z6z6z6s7p6z5m9m4s6m1p1p8	1	無関係	0			0	6	6	kan4
+3	52	z	nokan	2	z6z6z6z6s7p6z5m9m4s6m1p1p8	0	和了	3600	ロン		0	11	11	kan4
+3	52	z	base	2	z6z6z6z6s7p6z5m9m4s6m1p1p8	1	無関係	0			0	6	6	kan4
+3	52	y	kan	1	s9s9s9s9s6z5p3p9s2p8z4s3m5	1	無関係	0			1	7	7	kan4
+3	52	y	nokan	1	s9s9s9s9s6z5p3p9s2p8z4s3m5	0	無関係	0			0	7	7	kan4
+3	52	y	base	1	s9s9s9s9s6z5p3p9s2p8z4s3m5	1	無関係	0			1	7	7	kan4
+3	52	c	kan	3	p6p6p6p6z1m9m7s2p7m6z5m5z4	1	流局	1000			1	17	16	kan4
+3	52	c	nokan	3	p6p6p6p6z1m9m7s2p7m6z5m5z4	0	無関係	0			1	12	11	kan4
+3	52	c	base	3	p6p6p6p6z1m9m7s2p7m6z5m5z4	0	無関係	0			1	12	11	kan4
+3	53	z	kan	1	z1z1z1z1m5s1p1p9p8s3p6z3s8	1	被ツモ	-1600			1	14	14	kan4
+3	53	z	nokan	1	z1z1z1z1m5s1p1p9p8s3p6z3s8	0	被ツモ	-2000			1	17	17	kan4
+3	53	z	base	1	z1z1z1z1m5s1p1p9p8s3p6z3s8	1	被ツモ	-1600			1	14	14	kan4
+3	53	y	kan	1	m1m1m1m1m9s6s3z2p8s7p6z2p2	0	無関係	0			0	5	5	kan4
+3	53	y	nokan	1	m1m1m1m1m9s6s3z2p8s7p6z2p2	0	無関係	0			0	5	5	kan4
+3	53	y	base	1	m1m1m1m1m9s6s3z2p8s7p6z2p2	0	無関係	0			0	5	5	kan4
+3	53	c	kan	3	m4m4m4m4s5s2p6p1s6p7p8p8s7	1	和了	9000	ツモ		0	7	6	kan4
+3	53	c	nokan	3	m4m4m4m4s5s2p6p1s6p7p8p8s7	0	和了	3700	ツモ		0	7	6	kan4
+3	53	c	base	3	m4m4m4m4s5s2p6p1s6p7p8p8s7	1	和了	9000	ツモ		0	7	6	kan4
+3	54	z	kan	3	z7z7z7z7z6s8z6s8m1z1p7z3s8	1	流局	1000			1	18	18	kan4
+3	54	z	nokan	3	z7z7z7z7z6s8z6s8m1z1p7z3s8	0	和了	8400	ロン		1	17	16	kan4
+3	54	z	base	3	z7z7z7z7z6s8z6s8m1z1p7z3s8	1	流局	1000			1	18	18	kan4
+3	54	y	kan	2	m1m1m1m1s5p4s3m4p5p1s3s1p7	1	和了	9000	ツモ		0	9	8	kan4
+3	54	y	nokan	2	m1m1m1m1s5p4s3m4p5p1s3s1p7	0	無関係	0			1	9	9	kan4
+3	54	y	base	2	m1m1m1m1s5p4s3m4p5p1s3s1p7	1	和了	9000	ツモ		0	9	8	kan4
+3	54	c	kan	3	m5m5m5m0s9m2m7p6m4s3z5p4s5	1	被ツモ	-3900			1	9	8	kan4
+3	54	c	nokan	3	m5m5m5m0s9m2m7p6m4s3z5p4s5	0	被ツモ	-300			1	11	12	kan4
+3	54	c	base	3	m5m5m5m0s9m2m7p6m4s3z5p4s5	1	被ツモ	-3900			1	9	8	kan4
+3	55	z	kan	1	z2z2z2z2z3m6p2z5p6m9p8p5s2	1	和了	18000	ツモ		1	10	9	kan4
+3	55	z	nokan	1	z2z2z2z2z3m6p2z5p6m9p8p5s2	0	和了	9000	ツモ		1	13	13	kan4
+3	55	z	base	1	z2z2z2z2z3m6p2z5p6m9p8p5s2	1	和了	18000	ツモ		1	10	9	kan4
+3	55	y	kan	2	p9p9p9p9m1m9m7s5m5m4z7z7m0	1	和了	9000	ロン		0	7	7	kan4
+3	55	y	nokan	2	p9p9p9p9m1m9m7s5m5m4z7z7m0	0	放銃	-2900		1	1	10	10	kan4
+3	55	y	base	2	p9p9p9p9m1m9m7s5m5m4z7z7m0	1	和了	9000	ロン		0	7	7	kan4
+3	55	c	kan	2	m7m7m7m7z1s9s8p8s0s1s3p9s4	1	和了	14000	ツモ		1	16	15	kan4
+3	55	c	nokan	2	m7m7m7m7z1s9s8p8s0s1s3p9s4	0	無関係	0			1	11	11	kan4
+3	55	c	base	2	m7m7m7m7z1s9s8p8s0s1s3p9s4	1	和了	14000	ツモ		1	16	15	kan4
+3	56	z	kan	1	z1z1z1z1p2p9z2m7p6s3p6p4s9	1	放銃	-8000		1	1	10	11	kan4
+3	56	z	nokan	1	z1z1z1z1p2p9z2m7p6s3p6p4s9	0	流局	3000			0	18	18	kan4
+3	56	z	base	1	z1z1z1z1p2p9z2m7p6s3p6p4s9	1	放銃	-8000		1	1	10	11	kan4
+3	56	y	kan	2	s9s9s9s9m4m1p6m1p4s1s3s3p1	1	放銃	-7700		0	0	9	11	kan4
+3	56	y	nokan	2	s9s9s9s9m4m1p6m1p4s1s3s3p1	0	無関係	0			1	14	14	kan4
+3	56	y	base	2	s9s9s9s9m4m1p6m1p4s1s3s3p1	1	放銃	-8000		0	0	17	18	kan4
+3	56	c	kan	2	s4s4s4s4m7s2p9m6p7m4p8m8z6	1	流局	3000			0	18	17	kan4
+3	56	c	nokan	2	s4s4s4s4m7s2p9m6p7m4p8m8z6	0	和了	6000	ツモ		1	8	7	kan4
+3	56	c	base	2	s4s4s4s4m7s2p9m6p7m4p8m8z6	0	和了	6000	ツモ		1	8	7	kan4
+3	57	z	kan	2	z5z5z5z5z6m5p9m8s6m7s7m1m4	1	流局	1500			1	18	18	kan4
+3	57	z	nokan	2	z5z5z5z5z6m5p9m8s6m7s7m1m4	0	無関係	0			1	13	13	kan4
+3	57	z	base	2	z5z5z5z5z6m5p9m8s6m7s7m1m4	1	流局	1500			1	18	18	kan4
+3	57	y	kan	2	s1s1s1s1z1z1m4m9s3s7z5p8m3	1	被ツモ	-6000			1	11	10	kan4
+3	57	y	nokan	2	s1s1s1s1z1z1m4m9s3s7z5p8m3	0	流局	-1500			1	18	17	kan4
+3	57	y	base	2	s1s1s1s1z1z1m4m9s3s7z5p8m3	1	被ツモ	-6000			1	11	10	kan4
+3	57	c	kan	2	s6s6s6s6p2p4s9z5p6m9p3z5m7	1	和了	7400	ロン		1	12	12	kan4
+3	57	c	nokan	2	s6s6s6s6p2p4s9z5p6m9p3z5m7	0	和了	2000	ロン		0	8	8	kan4
+3	57	c	base	2	s6s6s6s6p2p4s9z5p6m9p3z5m7	1	和了	7400	ロン		1	12	12	kan4
+3	58	z	kan	3	z2z2z2z2s5s5s3z6m5p1s1s4p8	1	無関係	0			1	15	14	kan4
+3	58	z	nokan	3	z2z2z2z2s5s5s3z6m5p1s1s4p8	0	無関係	0			1	15	14	kan4
+3	58	z	base	3	z2z2z2z2s5s5s3z6m5p1s1s4p8	1	無関係	0			1	15	14	kan4
+3	58	y	kan	1	p9p9p9p9z2z1p5s4m3p1z4z6m6	1	被ツモ	-2000			1	12	12	kan4
+3	58	y	nokan	1	p9p9p9p9z2z1p5s4m3p1z4z6m6	0	被ツモ	-2000			1	12	12	kan4
+3	58	y	base	1	p9p9p9p9z2z1p5s4m3p1z4z6m6	1	被ツモ	-2000			1	12	12	kan4
+3	58	c	kan	1	m8m8m8m8p7m6s2z1m5m7p1s8p8	1	和了	17000	ツモ		0	13	13	kan4
+3	58	c	nokan	1	m8m8m8m8p7m6s2z1m5m7p1s8p8	0	流局	3000			0	18	18	kan4
+3	58	c	base	1	m8m8m8m8p7m6s2z1m5m7p1s8p8	1	和了	17000	ツモ		0	13	13	kan4
+3	59	z	kan	1	z7z7z7z7s6m5m1m2p1z4m2p8p6	1	和了	9000	ロン		1	10	10	kan4
+3	59	z	nokan	1	z7z7z7z7s6m5m1m2p1z4m2p8p6	0	和了	8000	ロン		0	10	10	kan4
+3	59	z	base	1	z7z7z7z7s6m5m1m2p1z4m2p8p6	1	和了	9000	ロン		1	10	10	kan4
+3	59	y	kan	2	s1s1s1s1s6m7m8z2m6m5p4m3m9	1	放銃	-2600		0	0	2	3	kan4
+3	59	y	nokan	2	s1s1s1s1s6m7m8z2m6m5p4m3m9	0	和了	6200	ロン		0	5	4	kan4
+3	59	y	base	2	s1s1s1s1s6m7m8z2m6m5p4m3m9	1	放銃	-2600		0	0	2	3	kan4
+3	59	c	kan	3	p2p2p2p2p1s7p6s5p8s8m7m2p0	1	被ツモ	-700			0	7	6	kan4
+3	59	c	nokan	3	p2p2p2p2p1s7p6s5p8s8m7m2p0	0	被ツモ	-2000			1	12	11	kan4
+3	59	c	base	3	p2p2p2p2p1s7p6s5p8s8m7m2p0	1	被ツモ	-700			0	7	6	kan4
+3	60	z	kan	3	z1z1z1z1z4s2p5s9m7m7s8z6p9	1	無関係	0			0	9	11	kan4
+3	60	z	nokan	3	z1z1z1z1z4s2p5s9m7m7s8z6p9	0	被ツモ	-500			0	7	8	kan4
+3	60	z	base	3	z1z1z1z1z4s2p5s9m7m7s8z6p9	1	無関係	0			0	9	11	kan4
+3	60	y	kan	2	s1s1s1s1p6z4s9s7p7m9p2m8p9	1	流局	-1500			1	18	17	kan4
+3	60	y	nokan	2	s1s1s1s1p6z4s9s7p7m9p2m8p9	0	無関係	0			0	5	4	kan4
+3	60	y	base	2	s1s1s1s1p6z4s9s7p7m9p2m8p9	1	流局	-1500			1	18	17	kan4
+3	60	c	kan	1	p2p2p2p2s6s1m7m2s7m1m3m1s5	1	放銃	-1300		1	1	8	8	kan4
+3	60	c	nokan	1	p2p2p2p2s6s1m7m2s7m1m3m1s5	0	被ツモ	-2000			1	13	13	kan4
+3	60	c	base	1	p2p2p2p2s6s1m7m2s7m1m3m1s5	1	放銃	-1300		1	1	8	8	kan4
+3	61	z	kan	2	z7z7z7z7s7p9z6m4p2p9s5m4p8	1	放銃	-2000		0	0	8	8	kan4
+3	61	z	nokan	2	z7z7z7z7s7p9z6m4p2p9s5m4p8	0	被ツモ	-300			0	8	8	kan4
+3	61	z	base	2	z7z7z7z7s7p9z6m4p2p9s5m4p8	1	放銃	-2000		0	0	8	8	kan4
+3	61	y	kan	3	s1s1s1s1z4s8z5m2z5s3z3z1z3	1	被ツモ	-1600			0	9	9	kan4
+3	61	y	nokan	3	s1s1s1s1z4s8z5m2z5s3z3z1z3	0	被ツモ	-1600			0	6	5	kan4
+3	61	y	base	3	s1s1s1s1z4s8z5m2z5s3z3z1z3	0	被ツモ	-1600			0	6	5	kan4
+3	61	c	kan	2	s2s2s2s2s6z2z2m6z3m3s8p9p5	1	被ツモ	-1300			0	8	8	kan4
+3	61	c	nokan	2	s2s2s2s2s6z2z2m6z3m3s8p9p5	0	無関係	0			1	15	15	kan4
+3	61	c	base	2	s2s2s2s2s6z2z2m6z3m3s8p9p5	1	被ツモ	-1300			0	8	8	kan4
+3	62	z	kan	2	z3z3z3z3p3m6p6s1s9s6s8z1p6	1	放銃	-1500		0	0	9	11	kan4
+3	62	z	nokan	2	z3z3z3z3p3m6p6s1s9s6s8z1p6	0	流局	1500			1	18	18	kan4
+3	62	z	base	2	z3z3z3z3p3m6p6s1s9s6s8z1p6	1	放銃	-1500		0	0	9	11	kan4
+3	62	y	kan	2	p9p9p9p9p4m4s7m5s2s5s6m2m7	1	流局	3000			0	18	17	kan4
+3	62	y	nokan	2	p9p9p9p9p4m4s7m5s2s5s6m2m7	0	被ツモ	-4000			1	16	15	kan4
+3	62	y	base	2	p9p9p9p9p4m4s7m5s2s5s6m2m7	1	流局	3000			0	18	17	kan4
+3	62	c	kan	2	m8m8m8m8s4p8s2p2z5s6s4s7p3	1	被ツモ	-2000			0	10	10	kan4
+3	62	c	nokan	2	m8m8m8m8s4p8s2p2z5s6s4s7p3	0	被ツモ	-2000			1	10	10	kan4
+3	62	c	base	2	m8m8m8m8s4p8s2p2z5s6s4s7p3	1	被ツモ	-2000			0	10	10	kan4
+3	63	z	kan	3	z4z4z4z4z6m1p1p9p2m1p7s4s6	1	無関係	0			0	8	7	kan4
+3	63	z	nokan	3	z4z4z4z4z6m1p1p9p2m1p7s4s6	0	無関係	0			1	9	9	kan4
+3	63	z	base	3	z4z4z4z4z6m1p1p9p2m1p7s4s6	1	無関係	0			0	8	7	kan4
+3	63	y	kan	1	m9m9m9m9z4m1p2p7z5m2s7p3z4	1	無関係	0			1	7	7	kan4
+3	63	y	nokan	1	m9m9m9m9z4m1p2p7z5m2s7p3z4	0	被ツモ	-3000			1	13	12	kan4
+3	63	y	base	1	m9m9m9m9z4m1p2p7z5m2s7p3z4	1	無関係	0			1	7	7	kan4
+3	63	c	kan	2	p6p6p6p6z5s1m4z7m9z3z4m2m8	1	流局	-1000			1	18	17	kan4
+3	63	c	nokan	2	p6p6p6p6z5s1m4z7m9z3z4m2m8	0	被ツモ	-1600			1	15	14	kan4
+3	63	c	base	2	p6p6p6p6z5s1m4z7m9z3z4m2m8	1	流局	-1000			1	18	17	kan4
+3	64	z	kan	2	z5z5z5z5p3z2s9m6m4s5z1s6p5	1	和了	13000	ツモ		0	10	9	kan4
+3	64	z	nokan	2	z5z5z5z5p3z2s9m6m4s5z1s6p5	0	無関係	0			0	9	8	kan4
+3	64	z	base	2	z5z5z5z5p3z2s9m6m4s5z1s6p5	1	和了	13000	ツモ		0	10	9	kan4
+3	64	y	kan	2	s1s1s1s1m7s3z6z5m3z7m4z3z4	1	放銃	-8000		0	0	8	9	kan4
+3	64	y	nokan	2	s1s1s1s1m7s3z6z5m3z7m4z3z4	0	無関係	0			0	10	11	kan4
+3	64	y	base	2	s1s1s1s1m7s3z6z5m3z7m4z3z4	1	無関係	0			0	10	11	kan4
+3	64	c	kan	3	m6m6m6m6z1p9p7z3z3s1m5m7s4	1	無関係	0			0	9	9	kan4
+3	64	c	nokan	3	m6m6m6m6z1p9p7z3z3s1m5m7s4	0	被ツモ	-1000			0	7	7	kan4
+3	64	c	base	3	m6m6m6m6z1p9p7z3z3s1m5m7s4	0	被ツモ	-1000			0	7	7	kan4
+3	65	z	kan	2	z1z1z1z1m6m1m5p4z4s3z4z3p2	1	被ツモ	-3900			1	15	15	kan4
+3	65	z	nokan	2	z1z1z1z1m6m1m5p4z4s3z4z3p2	0	放銃	-3900		1	1	7	7	kan4
+3	65	z	base	2	z1z1z1z1m6m1m5p4z4s3z4z3p2	1	被ツモ	-3900			1	15	15	kan4
+3	65	y	kan	2	p9p9p9p9p7z4z1m5z2s9p6m3m5	1	被ツモ	-2000			1	8	8	kan4
+3	65	y	nokan	2	p9p9p9p9p7z4z1m5z2s9p6m3m5	0	被ツモ	-2000			1	8	8	kan4
+3	65	y	base	2	p9p9p9p9p7z4z1m5z2s9p6m3m5	1	被ツモ	-2000			1	8	8	kan4
+3	65	c	kan	2	p8p8p8p8z3p7z4p0m9z1m1z7s3	1	放銃	-8000		0	0	10	11	kan4
+3	65	c	nokan	2	p8p8p8p8z3p7z4p0m9z1m1z7s3	0	放銃	-12000		1	1	9	10	kan4
+3	65	c	base	2	p8p8p8p8z3p7z4p0m9z1m1z7s3	1	放銃	-8000		0	0	10	11	kan4
+3	66	z	kan	3	z2z2z2z2p2z4s5p4p1z4m4s8p9	1	放銃	-5800		0	0	13	14	kan4
+3	66	z	nokan	3	z2z2z2z2p2z4s5p4p1z4m4s8p9	0	和了	1300	ロン		0	12	12	kan4
+3	66	z	base	3	z2z2z2z2p2z4s5p4p1z4m4s8p9	1	放銃	-5800		0	0	13	14	kan4
+3	66	y	kan	2	m9m9m9m9p7m5p5p1z1m4s7p6z7	1	被ツモ	-1000			0	15	14	kan4
+3	66	y	nokan	2	m9m9m9m9p7m5p5p1z1m4s7p6z7	0	流局	1500			1	18	18	kan4
+3	66	y	base	2	m9m9m9m9p7m5p5p1z1m4s7p6z7	1	被ツモ	-1000			0	15	14	kan4
+3	66	c	kan	2	m5m5m5m0z3p6m2p4s2z1s9z5z7	1	被ツモ	-3000			1	8	8	kan4
+3	66	c	nokan	2	m5m5m5m0z3p6m2p4s2z1s9z5z7	0	無関係	0			1	11	11	kan4
+3	66	c	base	2	m5m5m5m0z3p6m2p4s2z1s9z5z7	1	被ツモ	-3000			1	8	8	kan4
+3	67	z	kan	2	z7z7z7z7s6s2s3p6z2s4p3s7s1	1	被ツモ	-3000			1	6	5	kan4
+3	67	z	nokan	2	z7z7z7z7s6s2s3p6z2s4p3s7s1	0	被ツモ	-2000			1	6	5	kan4
+3	67	z	base	2	z7z7z7z7s6s2s3p6z2s4p3s7s1	1	被ツモ	-3000			1	6	5	kan4
+3	67	y	kan	2	p1p1p1p1z7p8p6p7z6z5s3p2m6	1	和了	8900	ツモ		0	14	13	kan4
+3	67	y	nokan	2	p1p1p1p1z7p8p6p7z6z5s3p2m6	0	流局	3000			0	18	17	kan4
+3	67	y	base	2	p1p1p1p1z7p8p6p7z6z5s3p2m6	0	流局	3000			0	18	17	kan4
+3	67	c	kan	1	p4p4p4p4p7z7p7m0s9m1s9p2m8	1	流局	3000			0	17	19	kan4
+3	67	c	nokan	1	p4p4p4p4p7z7p7m0s9m1s9p2m8	0	流局	1000			0	18	18	kan4
+3	67	c	base	1	p4p4p4p4p7z7p7m0s9m1s9p2m8	0	流局	1000			0	18	18	kan4
+3	68	z	kan	1	z2z2z2z2s6z4m5s8s4p6z5s3p7	1	被ツモ	-3000			1	7	7	kan4
+3	68	z	nokan	1	z2z2z2z2s6z4m5s8s4p6z5s3p7	0	無関係	0			0	9	10	kan4
+3	68	z	base	1	z2z2z2z2s6z4m5s8s4p6z5s3p7	1	被ツモ	-3000			1	7	7	kan4
+3	68	y	kan	2	s9s9s9s9p4z7z6s8p8s8s5m4z6	1	放銃	-12000		1	1	5	5	kan4
+3	68	y	nokan	2	s9s9s9s9p4z7z6s8p8s8s5m4z6	0	被ツモ	-3000			1	10	9	kan4
+3	68	y	base	2	s9s9s9s9p4z7z6s8p8s8s5m4z6	1	放銃	-12000		1	1	5	5	kan4
+3	68	c	kan	3	p8p8p8p8s8z2p5s2p1z4m0m9s9	1	和了	14000	ロン		1	15	14	kan4
+3	68	c	nokan	3	p8p8p8p8s8z2p5s2p1z4m0m9s9	0	放銃	-7700		1	1	12	12	kan4
+3	68	c	base	3	p8p8p8p8s8z2p5s2p1z4m0m9s9	1	和了	14000	ロン		1	15	14	kan4
+3	69	z	kan	2	z7z7z7z7s5p1p6z1m1p8m3m1p4	1	被ツモ	-2000			0	13	13	kan4
+3	69	z	nokan	2	z7z7z7z7s5p1p6z1m1p8m3m1p4	0	流局	1000			1	18	18	kan4
+3	69	z	base	2	z7z7z7z7s5p1p6z1m1p8m3m1p4	1	被ツモ	-2000			0	13	13	kan4
+3	69	y	kan	2	s9s9s9s9p1m4s6m4z5z3m8z4p8	1	放銃	-1300		0	0	9	9	kan4
+3	69	y	nokan	2	s9s9s9s9p1m4s6m4z5z3m8z4p8	0	被ツモ	-2600			1	12	11	kan4
+3	69	y	base	2	s9s9s9s9p1m4s6m4z5z3m8z4p8	0	被ツモ	-2600			1	12	11	kan4
+3	69	c	kan	2	s2s2s2s2p4p2p2m1m7p1p4m2p9	1	和了	3000	ロン		0	14	14	kan4
+3	69	c	nokan	2	s2s2s2s2p4p2p2m1m7p1p4m2p9	0	和了	1100	ツモ		0	6	7	kan4
+3	69	c	base	2	s2s2s2s2p4p2p2m1m7p1p4m2p9	0	和了	1100	ツモ		0	6	7	kan4
+3	70	z	kan	2	z6z6z6z6m2m3z1m4m4s4m2m5m1	1	和了	2000	ツモ		0	6	5	kan4
+3	70	z	nokan	2	z6z6z6z6m2m3z1m4m4s4m2m5m1	0	和了	8000	ロン		0	11	12	kan4
+3	70	z	base	2	z6z6z6z6m2m3z1m4m4s4m2m5m1	1	和了	2000	ツモ		0	6	5	kan4
+3	70	y	kan	3	s1s1s1s1z2m1p5m4m8p1p5s8m3	1	無関係	0			0	12	12	kan4
+3	70	y	nokan	3	s1s1s1s1z2m1p5m4m8p1p5s8m3	0	和了	6200	ロン		0	9	10	kan4
+3	70	y	base	3	s1s1s1s1z2m1p5m4m8p1p5s8m3	1	無関係	0			0	12	12	kan4
+3	70	c	kan	2	m7m7m7m7m2s7m5m5p8p4m3m8z7	1	和了	1300	ロン		1	8	8	kan4
+3	70	c	nokan	2	m7m7m7m7m2s7m5m5p8p4m3m8z7	0	流局	3000			0	18	18	kan4
+3	70	c	base	2	m7m7m7m7m2s7m5m5p8p4m3m8z7	1	和了	1300	ロン		0	10	10	kan4
+3	71	z	kan	2	z5z5z5z5p9z4z3s7m3s9z7m2p2	1	和了	2000	ロン		0	11	12	kan4
+3	71	z	nokan	2	z5z5z5z5p9z4z3s7m3s9z7m2p2	0	流局	-1000			1	18	18	kan4
+3	71	z	base	2	z5z5z5z5p9z4z3s7m3s9z7m2p2	1	和了	2000	ロン		0	11	12	kan4
+3	71	y	kan	1	s9s9s9s9s2m1s4p9s3s8m4p1z1	1	被ツモ	-2000			1	14	13	kan4
+3	71	y	nokan	1	s9s9s9s9s2m1s4p9s3s8m4p1z1	0	和了	11000	ツモ		1	12	11	kan4
+3	71	y	base	1	s9s9s9s9s2m1s4p9s3s8m4p1z1	0	和了	11000	ツモ		1	12	11	kan4
+3	71	c	kan	1	s2s2s2s2p1p2m5s8m2p0z7p3m1	1	和了	13000	ツモ		0	14	14	kan4
+3	71	c	nokan	1	s2s2s2s2p1p2m5s8m2p0z7p3m1	0	被ツモ	-500			0	17	17	kan4
+3	71	c	base	1	s2s2s2s2p1p2m5s8m2p0z7p3m1	1	和了	13000	ツモ		0	14	14	kan4
+3	72	z	kan	3	z2z2z2z2m3m9z3s7p5m8m6z7p5	1	和了	19000	ツモ		1	9	7	kan4
+3	72	z	nokan	3	z2z2z2z2m3m9z3s7p5m8m6z7p5	0	被ツモ	-1300			1	7	6	kan4
+3	72	z	base	3	z2z2z2z2m3m9z3s7p5m8m6z7p5	1	和了	19000	ツモ		1	9	7	kan4
+3	72	y	kan	2	m9m9m9m9z4p7s6m0p1p4m7s4z6	1	被ツモ	-6000			1	14	14	kan4
+3	72	y	nokan	2	m9m9m9m9z4p7s6m0p1p4m7s4z6	0	無関係	0			1	14	13	kan4
+3	72	y	base	2	m9m9m9m9z4p7s6m0p1p4m7s4z6	0	無関係	0			1	14	13	kan4
+3	72	c	kan	1	s2s2s2s2p9p3z1m7m3z2s8z3z7	1	和了	14000	ツモ		1	16	15	kan4
+3	72	c	nokan	1	s2s2s2s2p9p3z1m7m3z2s8z3z7	0	流局	-1000			1	18	17	kan4
+3	72	c	base	1	s2s2s2s2p9p3z1m7m3z2s8z3z7	1	和了	14000	ツモ		1	16	15	kan4
+3	73	z	kan	3	z4z4z4z4s7m9m6p8m7s2m6m4z1	1	被ツモ	-3000			1	7	6	kan4
+3	73	z	nokan	3	z4z4z4z4s7m9m6p8m7s2m6m4z1	0	被ツモ	-6000			1	8	7	kan4
+3	73	z	base	3	z4z4z4z4s7m9m6p8m7s2m6m4z1	1	被ツモ	-3000			1	7	6	kan4
+3	73	y	kan	2	s1s1s1s1s3z1p2m2m2p9p6p0m1	1	無関係	0			1	8	8	kan4
+3	73	y	nokan	2	s1s1s1s1s3z1p2m2m2p9p6p0m1	0	被ツモ	-2000			1	15	14	kan4
+3	73	y	base	2	s1s1s1s1s3z1p2m2m2p9p6p0m1	1	無関係	0			1	8	8	kan4
+3	73	c	kan	2	p2p2p2p2z5m9s5z6z4z4p9m6m1	1	被ツモ	-3000			1	15	15	kan4
+3	73	c	nokan	2	p2p2p2p2z5m9s5z6z4z4p9m6m1	0	放銃	-2000		0	0	15	15	kan4
+3	73	c	base	2	p2p2p2p2z5m9s5z6z4z4p9m6m1	0	放銃	-2000		0	0	15	15	kan4
+3	74	z	kan	3	z3z3z3z3z1s5z7s1s3z6z1m6z2	1	放銃	-2600		1	1	11	11	kan4
+3	74	z	nokan	3	z3z3z3z3z1s5z7s1s3z6z1m6z2	0	放銃	-5800		0	0	14	14	kan4
+3	74	z	base	3	z3z3z3z3z1s5z7s1s3z6z1m6z2	1	放銃	-2600		1	1	11	11	kan4
+3	74	y	kan	2	p9p9p9p9p1z5p3z1s9p4m2z6s9	1	無関係	0			0	14	14	kan4
+3	74	y	nokan	2	p9p9p9p9p1z5p3z1s9p4m2z6s9	0	流局	-1500			1	18	18	kan4
+3	74	y	base	2	p9p9p9p9p1z5p3z1s9p4m2z6s9	1	無関係	0			0	14	14	kan4
+3	74	c	kan	3	p6p6p6p6s7z5p4s6s2m8s5z3s4	1	和了	10000	ツモ		1	13	12	kan4
+3	74	c	nokan	3	p6p6p6p6s7z5p4s6s2m8s5z3s4	0	無関係	0			1	15	14	kan4
+3	74	c	base	3	p6p6p6p6s7z5p4s6s2m8s5z3s4	0	無関係	0			1	15	14	kan4
+3	75	z	kan	2	z5z5z5z5m3p9z4p8s9s2s3p3p7	1	無関係	0			0	7	7	kan4
+3	75	z	nokan	2	z5z5z5z5m3p9z4p8s9s2s3p3p7	0	和了	7700	ロン		0	7	7	kan4
+3	75	z	base	2	z5z5z5z5m3p9z4p8s9s2s3p3p7	1	無関係	0			0	7	7	kan4
+3	75	y	kan	2	s1s1s1s1m9z1p6p7z1s4m1s8z3	1	和了	14000	ツモ		1	13	12	kan4
+3	75	y	nokan	2	s1s1s1s1m9z1p6p7z1s4m1s8z3	0	被ツモ	-2000			1	9	9	kan4
+3	75	y	base	2	s1s1s1s1m9z1p6p7z1s4m1s8z3	1	和了	14000	ツモ		1	13	12	kan4
+3	75	c	kan	3	p8p8p8p8p2z1s6m7p9m9s4m5s9	1	無関係	0			1	11	11	kan4
+3	75	c	nokan	3	p8p8p8p8p2z1s6m7p9m9s4m5s9	0	和了	6200	ロン		0	14	14	kan4
+3	75	c	base	3	p8p8p8p8p2z1s6m7p9m9s4m5s9	1	流局	3000			0	18	18	kan4
+3	76	z	kan	2	z4z4z4z4z5z1m3z3s8p4m6p4z2	1	無関係	0			1	12	12	kan4
+3	76	z	nokan	2	z4z4z4z4z5z1m3z3s8p4m6p4z2	0	無関係	0			1	8	8	kan4
+3	76	z	base	2	z4z4z4z4z5z1m3z3s8p4m6p4z2	0	無関係	0			1	8	8	kan4
+3	76	y	kan	1	p1p1p1p1s5p6m3s2m4z5m5z4m9	1	和了	8900	ツモ		0	10	10	kan4
+3	76	y	nokan	1	p1p1p1p1s5p6m3s2m4z5m5z4m9	0	放銃	-2000		0	0	9	10	kan4
+3	76	y	base	1	p1p1p1p1s5p6m3s2m4z5m5z4m9	1	和了	8900	ツモ		0	10	10	kan4
+3	76	c	kan	3	m4m4m4m4z1s6m8s2s1s6s7p4p8	1	放銃	-12000		1	1	8	8	kan4
+3	76	c	nokan	3	m4m4m4m4z1s6m8s2s1s6s7p4p8	0	被ツモ	-1300			1	14	13	kan4
+3	76	c	base	3	m4m4m4m4z1s6m8s2s1s6s7p4p8	1	放銃	-12000		1	1	8	8	kan4
+3	77	z	kan	1	z1z1z1z1z7s2p1p4p1m3p2z3s9	1	無関係	0			0	8	11	kan4
+3	77	z	nokan	1	z1z1z1z1z7s2p1p4p1m3p2z3s9	0	無関係	0			1	8	8	kan4
+3	77	z	base	1	z1z1z1z1z7s2p1p4p1m3p2z3s9	1	無関係	0			0	8	11	kan4
+3	77	y	kan	3	s1s1s1s1m3s3s3p9z2m6z6z3m6	1	無関係	0			1	16	16	kan4
+3	77	y	nokan	3	s1s1s1s1m3s3s3p9z2m6z6z3m6	0	流局	-3000			1	18	18	kan4
+3	77	y	base	3	s1s1s1s1m3s3s3p9z2m6z6z3m6	1	無関係	0			1	16	16	kan4
+3	77	c	kan	3	m6m6m6m6m4m8p1m5s4z3z4z4s3	1	被ツモ	-4000			1	7	6	kan4
+3	77	c	nokan	3	m6m6m6m6m4m8p1m5s4z3z4z4s3	0	和了	2000	ロン		1	10	9	kan4
+3	77	c	base	3	m6m6m6m6m4m8p1m5s4z3z4z4s3	0	和了	2000	ロン		1	10	9	kan4
+3	78	z	kan	2	z5z5z5z5z1z2s1z4s5p4p3s9m2	1	無関係	0			0	5	5	kan4
+3	78	z	nokan	2	z5z5z5z5z1z2s1z4s5p4p3s9m2	0	和了	8000	ツモ		0	10	10	kan4
+3	78	z	base	2	z5z5z5z5z1z2s1z4s5p4p3s9m2	1	無関係	0			0	5	5	kan4
+3	78	y	kan	1	p1p1p1p1s6m1z5s7p4m1m8s5s3	1	無関係	0			0	16	16	kan4
+3	78	y	nokan	1	p1p1p1p1s6m1z5s7p4m1m8s5s3	0	被ツモ	-1000			1	16	16	kan4
+3	78	y	base	1	p1p1p1p1s6m1z5s7p4m1m8s5s3	1	無関係	0			0	16	16	kan4
+3	78	c	kan	2	s5s0s5s5z6m4p6m1p8s8p5z6s1	1	無関係	0			0	7	8	kan4
+3	78	c	nokan	2	s5s0s5s5z6m4p6m1p8s8p5z6s1	0	無関係	0			0	9	11	kan4
+3	78	c	base	2	s5s0s5s5z6m4p6m1p8s8p5z6s1	1	無関係	0			0	7	8	kan4
+3	79	z	kan	3	z1z1z1z1p6z4s8m7s2s6m5s8p2	1	被ツモ	-4000			1	7	7	kan4
+3	79	z	nokan	3	z1z1z1z1p6z4s8m7s2s6m5s8p2	0	被ツモ	-4000			1	7	7	kan4
+3	79	z	base	3	z1z1z1z1p6z4s8m7s2s6m5s8p2	1	被ツモ	-4000			1	7	7	kan4
+3	79	y	kan	2	p9p9p9p9s5m3m3s3z3z7p2m7s4	1	無関係	0			1	4	4	kan4
+3	79	y	nokan	2	p9p9p9p9s5m3m3s3z3z7p2m7s4	0	放銃	-12000		1	1	12	12	kan4
+3	79	y	base	2	p9p9p9p9s5m3m3s3z3z7p2m7s4	1	無関係	0			1	4	4	kan4
+3	79	c	kan	1	s7s7s7s7s1m3m2z5p7m1p8p9p1	1	和了	4200	ツモ		0	16	15	kan4
+3	79	c	nokan	1	s7s7s7s7s1m3m2z5p7m1p8p9p1	0	無関係	0			1	8	8	kan4
+3	79	c	base	1	s7s7s7s7s1m3m2z5p7m1p8p9p1	1	和了	4200	ツモ		0	16	15	kan4
+3	80	z	kan	1	z6z6z6z6s2m2s6z7z1s2m6s9s3	1	被ツモ	-1000			0	10	11	kan4
+3	80	z	nokan	1	z6z6z6z6s2m2s6z7z1s2m6s9s3	0	和了	5200	ロン		0	17	17	kan4
+3	80	z	base	1	z6z6z6z6s2m2s6z7z1s2m6s9s3	1	被ツモ	-1000			0	10	11	kan4
+3	80	y	kan	1	p1p1p1p1m6m2s8s5z3p9s2p9m7	1	無関係	0			1	13	14	kan4
