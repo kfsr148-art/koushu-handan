@@ -164,28 +164,34 @@ jobs:
           fi
           echo "any=$any" >> "$GITHUB_OUTPUT"
 
-      - name: 結果を押し戻す
+      # 枠 三百二十七（2026-11-26・本人の決め）：結果は main に直に書かない。専用の枝 cloud-out へ置く。
+      #   元：前は「git pull --rebase origin main && git push HEAD:main」で、枝から走らせた時の作りかけの本体・核まで main へ入り、配信の検査（ADV_TEXT の食い違い）が落ちて配信が止まった。
+      #   ここでは、走りで増えた・変わった reports/ の物だけを取り出し、cloud-out の先頭の上に載せて押す（main にも走らせた枝にも書かない）。
+      #   読む側：git fetch origin cloud-out → git show origin/cloud-out:reports/<名>。raw なら https://raw.githubusercontent.com/<リポジトリ>/cloud-out/reports/<名>。
+      - name: 結果を専用の枝 cloud-out へ置く（main には書かない）
         if: steps.run.outputs.any == '1'
         shell: bash
         run: |
           set -eu
           git config user.name  'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add reports/
-          if git diff --cached --quiet; then
-            echo '書き戻す物が無い'
-            exit 0
-          fi
-          git commit -m '雲で回した結果を reports/ へ'
+          git ls-files -m -o --exclude-standard -- reports/ > /tmp/chg.txt
+          if [ ! -s /tmp/chg.txt ]; then echo '置く物が無い'; exit 0; fi
+          tar cf /tmp/chg.tar -T /tmp/chg.txt
           for i in 1 2 3; do
-            if git pull --rebase -q origin main && git push -q origin HEAD:main; then
-              echo '押した'
-              # 押し戻した commit は GITHUB_TOKEN の押しなので走りを起こさない。配りの走りを workflow_dispatch で一本呼ぶ（GITHUB_TOKEN でも起こせる例外・2026-11-19）
-              GH_TOKEN="${{ github.token }}" gh workflow run state-deploy.yml --ref main -R "$GITHUB_REPOSITORY" && echo '配りの走りを呼んだ' || echo '配りの走りを呼べなかった'
-              exit 0
+            if git fetch -q origin cloud-out 2>/dev/null; then
+              git checkout -q -f -B cloud-out FETCH_HEAD
+            else
+              git checkout -q -f --orphan cloud-out
+              git rm -rf -q --ignore-unmatch . || true
             fi
-            echo "押し直す（$i 回目）"
+            tar xf /tmp/chg.tar
+            git add reports/
+            if git diff --cached --quiet; then echo '置く物が無い'; exit 0; fi
+            git commit -q -m '雲で回した結果を reports/ へ（専用の枝 cloud-out）'
+            if git push -q origin cloud-out; then echo '置いた：枝 cloud-out'; exit 0; fi
+            echo "置き直す（$i 回目）"
             sleep 5
           done
-          echo '押せなかった'
+          echo '置けなかった'
           exit 1
