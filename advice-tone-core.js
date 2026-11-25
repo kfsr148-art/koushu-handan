@@ -286,6 +286,17 @@ function advDialSentenceV(core, dk, polite, v) {   // v＝0（今までの形）
 /* 部品の字の、全部の文に人物の語尾を付ける（v1497）。二文を持つ部品も、前の文を人格の語尾のまま残さない。
    ＊文ごとに、直前の二文と同じ語尾（末尾4字）にならない語尾（v・v+1・v+2）を選ぶ。ends4＝ここまでの文の末尾4字の控え（呼ぶ側と共有）。
    ＊返すのは字と、最後の文の語尾の番号。部品が「。」「！」「？」で終わらない時は変えない。 */
+/* 枠 三百十九〜三百二十三（2026-11-26）：語尾の見分け。方言（と人物）の語尾だけを見て、同じ語尾が続くかを調べる（です・ます は除く）。 */
+const ADV_DE = /(ございますぞ|でござるぞ|でござる|ござるぞ|ござる|のじゃ|じゃ|なり|ぜよ|ばい|たい|やけん|けん|やで|やんか|やん|やわ|どすえ|どす|びょん|さー|ねー|っちゃ|とよ|だべ|っぺ|だす|でおます|おます|ですわ|ですの|ますわ|にゃ|ぞ|のう|わい)$/;
+function advEndKey(s) { const b = String(s || '').replace(/[。！？…、 ー〜]+$/g, ''); const m = ADV_DE.exec(b); return m ? (/ござる/.test(m[1]) ? 'ござる' : m[1]) : ''; }   // ござる系（でござる・ござるぞ…）は同じ語尾として数える
+const ADV_DE_SAFE = /^(ばい|たい|けん|やけん|やで|やん|やんか|やわ|どすえ|どす|びょん|さー|ねー|っちゃ|とよ|だべ|っぺ|だす|でおます|おます|にゃ)$/;   // 語尾を取って体言止めにしても文が崩れない語尾（ござる・じゃ・なり は取ると崩れるので取らない）
+function advKuseOk(k, tone, dial) {   // 口癖（頭の短い一言）が、一文として立つか：語尾だけ（なのだ…）・途中で切れた言い方（…が／…に／…な／…ね）・呼びかけと同じ意味（執事×武士の「殿に申し上げる」）は使わない
+  if (!k) { return false; }
+  if (/^なの|^のだ/.test(k)) { return false; }
+  if (/[がにはでなね]$|たらな$/.test(k) && !/(ばい|ます|です|まする|ござる|なさい|なはれ|けん|やけん)$/.test(k)) { return false; }
+  if (tone === 'butler' && dial === 'bushi') { return false; }
+  return true;
+}
 function advDialAll(text, dk, polite, v, ends4) {
   if (!text || !/[。！？]/.test(text)) { return { text: text, v: v }; }
   const sents = text.match(/[^。！？]*[。！？]|[^。！？]+$/g) || []; let out = '', lastV = v;
@@ -293,12 +304,12 @@ function advDialAll(text, dk, polite, v, ends4) {
     if (!/[。！？]$/.test(st)) { out += st; return; }   // 文の途中で終わる切れ端（数や牌の名の前まで）は、そのまま
     const body = st.slice(0, -1), end = st.slice(-1); let pick = null;
     for (let d = 0; d < 3; d++) {
-      const vv = (v + d) % 3, cand = advDialSentenceV(body, dk, polite, vv) + end, k4 = cand.slice(-4);
+      const vv = (v + d) % 3, cand = advDialSentenceV(body, dk, polite, vv) + end, k4 = advEndKey(cand);
       const n = ends4.length;
-      if (n >= 2 && ends4[n - 1] === k4 && ends4[n - 2] === k4 && d < 2) { continue; }
+      if (k4 && n >= 1 && ends4[n - 1] === k4 && d < 2) { continue; }
       pick = { t: cand, v: vv }; break;
     }
-    ends4.push(pick.t.slice(-4)); out += pick.t; lastV = pick.v;
+    ends4.push(advEndKey(pick.t)); out += pick.t; lastV = pick.v;
   });
   return { text: out, v: lastV };
 }
@@ -1057,7 +1068,7 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
   units.forEach(function (u, k) { pv[u[0] + ',' + u[1]] = dial ? plan[k] : -1; });
   const items = [], last = lines.length - 1, ends4 = []; let text = '', nconn = 0;
   lines.forEach(function (l, li) {
-    if (li >= 1 && !l.nc) { const slot = (hasEnd && li === last) ? 3 : (nconn === 0 ? 0 : 1 + ((nconn - 1) % 2)); nconn++; let c = advConn(tone, dial, slot); if (chara && slot === 0) { c = chara.k + '。'; }   /* v1509 口癖は頭の短い一言で「。」で切る（口調表 決め四） */ if (bk && bk.yoji) { c = bk.fx(c); } items.push({ conn: true, slot: slot, text: c }); text += c; }
+    if (li >= 1 && !l.nc) { const slot = (hasEnd && li === last) ? 3 : (nconn === 0 ? 0 : 1 + ((nconn - 1) % 2)); nconn++; let c = advConn(tone, dial, slot); if (chara && slot === 0 && advKuseOk(chara.k, tone, dial) && !(advEndKey(chara.k) && advEndKey((text.match(/[^。！？]*[。！？]+$/) || [''])[0]) === advEndKey(chara.k))) { c = chara.k + '。'; ends4.push(advEndKey(c)); }   /* v1509 口癖は頭の短い一言で「。」で切る（口調表 決め四） */ if (bk && bk.yoji) { c = bk.fx(c); } items.push({ conn: true, slot: slot, text: c }); text += c; }
     l.forEach(function (tk, ti) {
       const v = tk.lit ? -1 : ((pv[li + ',' + ti] === undefined) ? (dial ? 0 : -1) : pv[li + ',' + ti]);   // 方言ありは、文の終わりを持たない部品の中の文にも人物の語尾を付ける（0から）
       let base = (v >= 0) ? tk.t.replace(/、(?:ウィ|モナミ)(?=[。！？])/g, '') : tk.t;   // 方言の世界の人物は、外国語の呼びかけを言わない
@@ -1071,11 +1082,48 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
         if (pd && pd.kfx && kd && pd.kfx[kd] !== undefined) { x = pd.kfx[kd] ? pd.kfx[kd](tk.t) : tk.t; kfix = true; }
         if (kl && (kl[tk.id] !== undefined || (kd && kl[kd] !== undefined))) { x = (kl[tk.id] !== undefined) ? kl[tk.id] : kl[kd]; kfix = true; }
       }
-      if (tk.head) { (x.match(/[^。！？]*[。！？]/g) || []).forEach(function (q) { ends4.push(q.slice(-4)); }); }   // v1506：頭の一言の語尾も、続く文の語尾選びの控えに入れる（同じ語尾が三文続かないように）
+      if (tk.head) { (x.match(/[^。！？]*[。！？]/g) || []).forEach(function (q) { ends4.push(advEndKey(q)); }); }   // v1506：頭の一言の語尾も、続く文の語尾選びの控えに入れる（同じ語尾が三文続かないように）
       items.push({ li: li, ti: ti, text: x, v: kfix ? -2 : (v >= 0 ? vv : v), alt: kfix, term: !!tk.term, changed: x !== tk.t }); text += x;
     });
   });
   if (chara && chara.c && !lines.noAddr) { for (let q = items.length - 1; q >= 0; q--) { const it = items[q]; if (!it.conn && it.term && (it.v >= 0 || it.v === -2)) { if (/[。！？]$/.test(it.text)) { it.text = it.text.slice(0, -1) + '、' + chara.c + it.text.slice(-1); it.changed = true; text = ''; } break; } } }
+  /* 枠 三百二十四（2026-11-26）：隣り合う二文が同じ方言の語尾で終わる時は、あとの文の方言を外して人物の語尾のままにする（語尾をすげ替えるだけにしない）。
+     前の文が書いた字（頭の一言・口癖）でも同じ。三つ続く時は真ん中が外れて、方言の語尾は一つおきになる。 */
+  { let prevKey = '', prevIt = null, sawConn = false;
+    const origOf = function (it) { return (!it.conn && (it.v >= 0 || it.v === -2) && it.li !== undefined && lines[it.li] && lines[it.li][it.ti] && !lines[it.li][it.ti].lit && !lines[it.li][it.ti].head && !lines[it.li][it.ti].fx) ? lines[it.li][it.ti].t : null; };
+    const lastKey = function (t) { const q = (t || '').match(/[^。！？]*[。！？]+/g) || []; return q.length ? advEndKey(q[q.length - 1]) : null; };
+    items.forEach(function (it) {
+      const ss0 = (it.text || '').match(/[^。！？]*[。！？]+/g) || [];
+      if (!ss0.length) { if (it.conn) { sawConn = true; } return; }   // つなぎ（文の終わりが無い）は前の語尾を覚えたまま。間につなぎが入ったかは sawConn
+      if (origOf(it) === null && ss0.length > 1) { const j0 = ss0.join(''), rem = it.text.slice(j0.length); let ch = false; for (let j = 1; j < ss0.length; j++) { const kj = advEndKey(ss0[j]); if (kj && kj === advEndKey(ss0[j - 1]) && ADV_DE_SAFE.test(kj)) { const m1 = /^(.*?)([。！？…]*)$/.exec(ss0[j - 1]); if (m1[1].length > kj.length) { ss0[j - 1] = m1[1].slice(0, -kj.length) + m1[2]; ch = true; } } } if (ch) { it.text = ss0.join('') + rem; it.changed = true; } }   // 書いた字の中の隣り合う二文が同じ語尾なら、前の文を体言止めにする
+      const k0 = advEndKey(ss0[0]), o = origOf(it);
+      if (k0 && k0 === prevKey) {
+        if (o !== null) { it.text = o; it.v = -1; it.changed = false; it.alt = true; }
+        else if (prevIt && origOf(prevIt) !== null && lastKey(prevIt.text) === prevKey) { const po = origOf(prevIt); prevIt.text = po; prevIt.v = -1; prevIt.changed = false; prevIt.alt = true; }   // あとが書いた字なら、前の方を外す
+        else if (prevIt && lastKey(prevIt.text) === prevKey) {   // どちらも書いた字：語尾ごとに ①つなぐ（前の文の語尾を取って「、」でつなぎ、語尾は最後に一回）②体言止め ③問いかけ の順で直す（枠 三百二十八）
+          const qs = prevIt.text.match(/[^。！？]*[。！？]+/g) || [], ls = qs[qs.length - 1], mk = /^(.*?)([。！？…]*)$/.exec(ls), bd = mk[1], kk0 = advEndKey(bd), kk = (kk0 === 'ござる') ? ((/(でござるぞ|ござるぞ|でござる|ござる)$/.exec(bd) || [])[1] || kk0) : kk0, rl = function (to) { const p = prevIt.text.lastIndexOf(ls); if (p >= 0) { prevIt.text = prevIt.text.slice(0, p) + to + prevIt.text.slice(p + ls.length); prevIt.changed = true; } };
+          if (kk && ADV_DE_SAFE.test(kk) && bd.length > kk.length) { rl(bd.slice(0, -kk.length) + mk[2]); }   // ②語尾を取って体言止め
+          else if (kk) {
+            let st = null;   // 語尾を取った形（取ると文が崩れる語尾は、崩れない形だけ）
+            if (!/ようござる$/.test(bd) && bd.length > kk.length + 1) {
+              if (kk === 'でござる' || kk === 'でござるぞ') { st = bd.slice(0, -kk.length); }
+              else if (kk === 'ござる' || kk === 'ござるぞ') { st = /にござる(ぞ)?$/.test(bd) ? bd.replace(/にござる(ぞ)?$/, '') : bd.slice(0, -kk.length); }
+              else if (kk === 'じゃ') { st = bd.replace(/(の)?じゃ$/, ''); }
+              else if (kk === 'なり' || kk === 'ぞ' || kk === 'のう' || kk === 'わい') { st = bd.slice(0, -kk.length); }
+            }
+            if (st && st.length >= 2 && !sawConn && /。$/.test(mk[2])) { rl(st + '、'); }   // ①つなぐ（間につなぎ言葉が無い時）
+            else if (st && st.length >= 2 && /[。！]/.test(mk[2])) { rl(st + mk[2]); }   // ②体言止め（つなげない時）
+            else {   // ③問いかけ（あとの文の語尾を問いにする）
+              const m0 = /^(.*?)([。！？…]*)$/.exec(ss0[0]), b0 = m0[1]; let q = null;
+              if (/(ござる|ござるぞ)$/.test(b0)) { q = b0.replace(/ぞ$/, '') + 'か？'; } else if (/じゃ$/.test(b0)) { q = b0 + 'ろう？'; } else if (/なり$/.test(b0)) { q = b0 + 'や？'; }
+              if (q) { it.text = q + it.text.slice(ss0[0].length); it.changed = true; }
+            }
+          }
+        }
+      }
+      const lk = lastKey(it.text);
+      prevKey = lk === null ? '' : lk; prevIt = it; sawConn = false;
+    }); }
   // 同じ語尾が三文続いたら、直せる文（付けていない部品の最後の文）の語尾を変えて切る。文ごとに見る（二文を持つ部品の中の文は直せない）。
   for (let it = 0; it < 6; it++) {
     const segs = []; let pos = 0, all = '';
@@ -1134,12 +1182,12 @@ advRow7("adva-t8", ["8巡目までに一向聴、届かなければ守りに回�
 advRow7("adva-tn", ["何巡目まで、とは決めておりません。","何巡目まで、とは決めないぞ。","何巡目まで、とは決めませんわ。","何巡目まで、とは決めませんの。","何巡目まで、とは決めないにゃ。","何巡目まで、とは決めません。","何巡目まで、とは決めないのだ。"]);
 advRow7("adva-tc", ["期限は引けません。伸びなければ、早めに守りに回ります。","期限は引けないぞ。伸びなければ、早めに守りに回る。","期限は引けませんわ。伸びなければ、早めに守りに回りますの。","期限は引けませんの。伸びなければ、早めに守りに回りますわ。","期限は引けないにゃ。伸びなければ、早めに守りに回るにゃ。","期限は引けません。伸びなければ、早めに守りに回ります。","期限は引けないのだ。伸びなければ、早めに守りに回るのだ。"]);
 advRow7("adva-neko-c", ["そこから切って形を作ります。","そこから切って形を作る。","そこから切って形を作りますの。","そこから切って形を作りますわ。","そこから切って形を作るにゃ。","そこから切って形を作ります。","そこから切って形を作るのだ。"]);
-advRow7("advd-e-far", ["遠いので、","遠いから、","遠いので、","遠いので、","遠いから、","遠いので、","遠いから、"]);
-advRow7("advd-e-cheap", ["安いので、","安いから、","安いので、","安いので、","安いから、","安いので、","安いから、"]);
-advRow7("advd-e-shape", ["形が悪いので、","形が悪いから、","形が悪いので、","形が悪いので、","形が悪いから、","形が悪いので、","形が悪いから、"]);
-advRow7("advd-e-honor", ["字牌と端が多いので、","字牌と端が多いから、","字牌と端が多いので、","字牌と端が多いので、","字牌と端が多いから、","字牌と端が多いので、","字牌と端が多いから、"]);
-advRow7("advd-e-few", ["安全牌が少ないので、","安全牌が少ないから、","安全牌が少ないので、","安全牌が少ないので、","安全牌が少ないから、","安全牌が少ないので、","安全牌が少ないから、"]);
-advRow7("advd-e-pair", ["対子が多いので、","対子が多いから、","対子が多いので、","対子が多いので、","対子が多いから、","対子が多いので、","対子が多いから、"]);
+advRow7("advd-e-far", ["ですから、","ゆえに、","ですから、","だから、","だからね、","ですから、","だから、"]);
+advRow7("advd-e-cheap", ["ですから、","ゆえに、","ですから、","だから、","だからね、","ですから、","だから、"]);
+advRow7("advd-e-shape", ["ですから、","ゆえに、","ですから、","だから、","だからね、","ですから、","だから、"]);
+advRow7("advd-e-honor", ["ですから、","ゆえに、","ですから、","だから、","だからね、","ですから、","だから、"]);
+advRow7("advd-e-few", ["ですから、","ゆえに、","ですから、","だから、","だからね、","ですから、","だから、"]);
+advRow7("advd-e-pair", ["ですから、","ゆえに、","ですから、","だから、","だからね、","ですから、","だから、"]);
 advRow7("advd-e-kyu", ["流すなら、","流すなら、","流すなら、","流すなら、","流すなら、","流すなら、","流すなら、"]);
 advRow7("adva-e", ["その形なら、","その形なら、","その形なら、","その形なら、","その形なら、","その形なら、","その形なら、"]);
 advRow7("advd-rq1", ["リーチには、捨て牌、","リーチには、捨て牌、","リーチには、捨て牌、","リーチには、捨て牌、","リーチには、捨て牌、","リーチには、捨て牌、","リーチには、捨て牌、"]);
