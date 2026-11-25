@@ -14,7 +14,7 @@ const ROOT = path.join(__dirname, '..');
 const ADPCM = require(path.join(ROOT, 'adpcm.js'));
 const KIND = process.env.KIND || 'dial', SHARD = Number(process.env.SHARD || 0), SHARDS = Number(process.env.SHARDS || 1);
 const OUT = process.env.OUT_DIR || path.join(ROOT, 'reports', 'voice-m4a-out-s' + SHARD);
-const MAX_SEC = Number(process.env.MAX_SEC || 1380), BITRATE = process.env.BITRATE || '48k';
+const MAX_SEC = Number(process.env.MAX_SEC || 1380), BITRATE = process.env.BITRATE || '24k'   /* 2026-11-25（枠 二百九十六）：48k → 24k（公開の荷を軽く保つ・本人の決め） */;
 const BASE = 'http://127.0.0.1:50021', SPEAKER = Number(process.env.VV_SPEAKER || 3);
 const RATE = 24000, THR = 500, TARGET_RMS = 1700, PAD = 0.03, FADE = 0.008;
 fs.mkdirSync(OUT, { recursive: true });

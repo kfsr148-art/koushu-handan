@@ -1,0 +1,87 @@
+# 公開の声を 24kbps へ作り直す（2026-11-25・橋の枠 二百九十六）。手で起こす：gh workflow run voice-24k.yml
+#   ＊10分割で並べて回し、最後の段が出来た声を直下へ上書きして押し戻し、検査と配信を起こす。続きから回せる（30kbps 以下は飛ばす）。
+name: 声を24kbpsにする
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: koushu-voice-m4a
+  cancel-in-progress: false
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            /tools/
+            /voice-used.txt
+            /*.m4a
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: ffmpeg を用意する
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1; then sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg; fi
+          ffmpeg -version | head -1
+      - name: 声を作り直す
+        env:
+          SHARD: ${{ matrix.shard }}
+          SHARDS: '10'
+          OUT_DIR: ${{ github.workspace }}/out
+        run: node tools/voice-24k.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: out-${{ matrix.shard }}
+          path: out
+          if-no-files-found: ignore
+          retention-days: 3
+  collect:
+    needs: make
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            /voice-used.txt
+            /*.m4a
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: out-*
+          path: collected
+          merge-multiple: true
+      - name: 直下へ上書きして押し戻す
+        run: |
+          N=$(find collected -name '*.m4a' 2>/dev/null | wc -l)
+          echo "作り直した声 ${N}本"
+          if [ "$N" -eq 0 ]; then echo "作り直す声は無かった"; exit 0; fi
+          cp collected/*.m4a .
+          MISSING=$(while read -r f; do if [ -n "$f" ] && [ ! -f "$f" ]; then echo "$f"; fi; done < voice-used.txt | wc -l)
+          echo "台帳の欠け ${MISSING}本"
+          git config user.name "koushu-voice-bot"
+          git config user.email "koushu-voice-bot@users.noreply.github.com"
+          git add -- ./*.m4a
+          git commit -q -m "voice-24k: ${N}本を 24kbps へ（台帳の欠け ${MISSING}本）"
+          for i in 1 2 3 4 5; do
+            if git push -q origin HEAD:main; then
+              echo "押し戻した"
+              if [ "$MISSING" -ne 0 ]; then echo "欠けがあるので配りは呼ばない"; exit 1; fi
+              GH_TOKEN="${{ github.token }}" gh workflow run check.yml --ref main -R "$GITHUB_REPOSITORY" && echo '検査と配信を起こした' || { echo '検査と配信を起こせなかった'; exit 1; }
+              exit 0
+            fi
+            git pull -q --rebase origin main || true
+            sleep 5
+          done
+          echo "押せなかった"; exit 1
