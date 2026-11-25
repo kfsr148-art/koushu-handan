@@ -16,7 +16,7 @@
   else { root.PanelCore = m; }
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
-  var VER = '262';
+  var VER = '263';
   var WAIT_TEXT = '待機中、、、。', POINT_TEXT = 'まとめて写すヨシ！', WORK_TEXT = '作業中、、、。', LOST_TEXT = '接続不良、、、。', CHECKING_TEXT = '確認中、、、。', REST_TEXT = '休憩中、、、。', YOSHI_TEXT = 'ヨシ待ち、、、。', CHECK_TEXT = '検査中、、、。';
 
   /* ---- 刻 ---- */
@@ -100,17 +100,22 @@
      o＝{ stat, cloud, detail, ura, lost（生存の途切れ）, owedAt, owedEta, rows（札の全件）, kumo, left（まとめて写すの残り）, now } */
   /* 走る猫の間か（v172：作業中と検査中。生存が途切れていたら走らせない） */
   function isRunning(stat, lost) { return !lost && (String(stat || '') === '作業中' || String(stat || '') === '検査中'); }
+  /* 枠 三百二十六（v263）：仕事が残っているか＝表の仕事の段（stepTotal>stepDone）・順番待ち（waitN）・裏方（ura）・ヨシ待ち・作業中／検査中／止まり／動きなし。頭の字と猫の絵（headCat）が同じ一つの判定を使う */
+  function workLeft(o) {
+    o = o || {}; var stat = String(o.stat || '');
+    return (Number(o.yoshiN) || 0) > 0 || (Number(o.waitN) || 0) > 0 || (Number(o.stepTotal) || 0) > (Number(o.stepDone) || 0) || !!uraBusyText(o.ura || null, o.detail) || stat === '作業中' || stat === '検査中' || /^止まり/.test(stat) || stat === '動きなし' || stat === 'ヨシ待ち';
+  }
   function headText(o) {
     o = o || {};
     var stat = String(o.stat || ''), lost = !!o.lost, running = isRunning(stat, lost);
-    if ((o.resting || o.checking) && (stat === '待ち' || stat === '') && !lost && !((Number(o.yoshiN) || 0) > 0) && !uraBusyText(o.ura || null, o.detail)) { return REST_TEXT; }   /* 枠 三百十四：窓が待ちの時（寝ている猫）は、記録が5分途切れて『確認中』の時も『休憩中』（接続不良は残す） */   /* 枠 三百五：最後の合図が idle_prompt で窓が生きていて枠0件なら、記録が古くても『休憩中』（確認中・接続不良にしない） */
+    if ((o.resting || o.checking) && (stat === '待ち' || stat === '') && !lost && !workLeft(o)) { return REST_TEXT; }   /* 枠 三百二十六（v263）：『休憩中』（寝ている猫）は、表の仕事の段・裏方・順番待ち・ヨシ待ちが全部無い時だけ */   /* 枠 三百十四：窓が待ちの時（寝ている猫）は、記録が5分途切れて『確認中』の時も『休憩中』（接続不良は残す） */   /* 枠 三百五：最後の合図が idle_prompt で窓が生きていて枠0件なら、記録が古くても『休憩中』（確認中・接続不良にしない） */
     if (!lost && o.checking) { return CHECKING_TEXT; }   /* v256（枠 二百八十七）：記録が5分途切れたら『確認中』（15分戻らない時だけ下の『接続不良』） */
     if (lost) { return LOST_TEXT; }   /* v251（枠 二百七十二）：見張りの記録が3分途切れたら、作業中・ヨシ待ちより上に接続不良（凍った『作業中』を出し続けない） */
     if (/^止まり/.test(stat)) { return '止まり'; }
     if (stat === '動きなし') { return '動きなし'; }
     if ((Number(o.yoshiN) || 0) > 0) { return YOSHI_TEXT; }   /* v250（枠 二百七十一）：順は ヨシ待ち＞作業中＞まとめて写す＞待機中＞接続不良。ヨシ待ちが一件でもあれば、作業中でもヨシ待ち */
     if (stat === '検査中') { return CHECK_TEXT; }
-    if (stat === '待ち') { var ub = uraBusyText(o.ura || null, o.detail); return ub || REST_TEXT; }   /* 枠 三百十四：待ちの時の字は『待機中』でなく『休憩中』（brief.txt の head も同じ） */
+    if (stat === '待ち') { var ub = uraBusyText(o.ura || null, o.detail); return ub || (workLeft(o) ? WAIT_TEXT : REST_TEXT); }   /* 枠 三百十四：待ちの時の字は『待機中』でなく『休憩中』（brief.txt の head も同じ） */
     if (stat === '作業中') { return WORK_TEXT; }
     if (running && /^検査中：/.test(String(o.cloud || ''))) { return CHECK_TEXT; }
     if (running) { return WORK_TEXT; }
@@ -119,7 +124,13 @@
     if (kumoEtaSec(o.kumo, o.now) > 0) { return POINT_TEXT; }
     if ((Number(o.left) || 0) > 0) { return POINT_TEXT; }
     if (lost) { return LOST_TEXT; }
-    return REST_TEXT;
+    return workLeft(o) ? WAIT_TEXT : REST_TEXT;   /* 枠 三百二十六（v263）：仕事が残るのに休憩中と出さない */
+  }
+
+  /* 枠 三百二十六（v263）：頭の猫の絵を、頭の字と同じ判定から決める。'sleep'＝寝ている猫（休憩中・接続不良）／'green'＝緑の服の猫（確認中・待機中＝仕事が残っている）／''＝ほかの絵は今までの順（作業中のコマ送り・指差し・ヨシ待ち） */
+  function headCat(o) {
+    var t = headText(o);
+    return (t === REST_TEXT || t === LOST_TEXT) ? 'sleep' : ((t === CHECKING_TEXT || t === WAIT_TEXT) ? 'green' : '');
   }
 
   /* ---- 段（v212・本人の枠 七十七）：段の数・今の段は state.json の生の段（steps＝{job, rows:[{k, t}]}・見張りが job-steps.txt から写す）から毎回数える ----
@@ -249,7 +260,7 @@
     VER: VER, TEXT: { WAIT: WAIT_TEXT, POINT: POINT_TEXT, WORK: WORK_TEXT, LOST: LOST_TEXT, CHECKING: CHECKING_TEXT, REST: REST_TEXT, YOSHI: YOSHI_TEXT, CHECK: CHECK_TEXT },
     senkoEpoch: senkoEpoch, pad2s: pad2s, newestTime: newestTime,
     isCountCard: isCountCard, ntfyOfCard: ntfyOfCard, todoList: todoList, todoLabel: todoLabel,
-    cardsPending: cardsPending, cardEtaSec: cardEtaSec, cardLate: cardLate, cardPendText: cardPendText, kumoEtaSec: kumoEtaSec, uraBusyText: uraBusyText, isRunning: isRunning, headText: headText,
+    cardsPending: cardsPending, cardEtaSec: cardEtaSec, cardLate: cardLate, cardPendText: cardPendText, kumoEtaSec: kumoEtaSec, uraBusyText: uraBusyText, isRunning: isRunning, headText: headText, headCat: headCat, workLeft: workLeft,
     stepsOf: stepsOf, pubLine: pubLine, omoteLines: omoteLines, endLine: endLine, uraLines: uraLines,
     endShort: endShort, uraCount: uraCount, uraGauge: uraGauge, stepLab: stepLab, omoteGauge: omoteGauge, boxSpec: boxSpec, mikomiEnd: mikomiEnd, workLate: workLate, headEta: headEta, etaRow: etaRow
   };

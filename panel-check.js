@@ -539,17 +539,17 @@ function staticParts() {
   head('⑤の十六 panelView の頭の字・残りは panel.html の headText と同じ（作り値・総当たり）');
   {
     const fn = (name) => cutFn(html, name);   /* v210：包み（一行）も切り出せる */
-    const names = ['core', 'cardArg', 'pad2s', 'newestTime', 'cardsPending', 'cardEtaSec', 'cardLate', 'cardPendText', 'kumoEtaSec', 'isRunning', 'uraBusyText', 'yoshiWaitN', 'headText'];   /* v210：パネルの包み（state.json から控えた値と端末の刻を panel-core.js へ渡す）を回し、VAIO の panelView と同じ字になるか */
+    const names = ['core', 'cardArg', 'pad2s', 'newestTime', 'cardsPending', 'cardEtaSec', 'cardLate', 'cardPendText', 'kumoEtaSec', 'isRunning', 'uraBusyText', 'yoshiWaitN', 'headObj', 'headText'];   /* v210：パネルの包み（state.json から控えた値と端末の刻を panel-core.js へ渡す）を回し、VAIO の panelView と同じ字になるか */
     const src = names.map(fn);
     if (src.some(s => !s)) { ng('panel.html の関数が拾えない：' + names.filter((n, i) => !src[i]).join('・')); }
     else {
       const PV = require(path.join(path.dirname(SRC), 'panel-view.js'));
       const NOW = 1795200000;
       const pre = "var WAIT_TEXT='待機中、、、。',POINT_TEXT='まとめて写すヨシ！',WORK_TEXT='作業中、、、。',LOST_TEXT='接続不良、、、。',CHECKING_TEXT='確認中、、、。',REST_TEXT='休憩中、、、。',YOSHI_TEXT='ヨシ待ち、、、。',CHECK_TEXT='検査中、、、。';";
-      const mk = (d, left, rows) => new Function('window', 'Date0', 'lastStat', 'lastDetail', 'lastCloud', 'lastHelp', 'lastKumo', 'lastEvAt', 'lastCardOwedAt', 'lastCardOwedEta', 'allRows', 'copyLeft', 'lastLost', 'lastChecking', 'lastResting', 'lastUra', 'lastYoshiOpen',
+      const mk = (d, left, rows) => new Function('window', 'Date0', 'lastStat', 'lastDetail', 'lastCloud', 'lastHelp', 'lastKumo', 'lastEvAt', 'lastCardOwedAt', 'lastCardOwedEta', 'allRows', 'copyLeft', 'lastLost', 'lastChecking', 'lastResting', 'lastUra', 'lastYoshiOpen', 'lastStepTotal', 'lastStepDone', 'lastFoot',
         'var Date=Date0;' + pre + src.join(String.fromCharCode(10)) + String.fromCharCode(10) + 'return headText();')(
         WIN, class extends global.Date { constructor(...a) { if (a.length) { super(...a); } else { super(NOW * 1000); } } static now() { return NOW * 1000; } },
-        String(d.stat || ''), String(d.detail || ''), String(d.cloud || ''), String(d.help || ''), String(d.kumo || ''), d.evAt || 0, d.cardOwedAt || 0, d.cardOwedEta || 0, rows, left, false, false, false, d.ura || null, d.yoshiOpen || []);
+        String(d.stat || ''), String(d.detail || ''), String(d.cloud || ''), String(d.help || ''), String(d.kumo || ''), d.evAt || 0, d.cardOwedAt || 0, d.cardOwedEta || 0, rows, left, false, false, false, d.ura || null, d.yoshiOpen || [], require(path.join(path.dirname(SRC), 'panel-core.js')).stepsOf(d).total, require(path.join(path.dirname(SRC), 'panel-core.js')).stepsOf(d).done, d.foot || {});
       let n = 0, bad0 = 0;
       const SH0 = process.env.SHADOW_HOME, tmpHome = fs.mkdtempSync(path.join(require('os').tmpdir(), 'pc-yo-')); process.env.SHADOW_HOME = tmpHome;   /* v250（枠 二百七十一）：ヨシ待ちの一覧は空の置き場で数える */
       const stats = ['', '作業中', '検査中', '待ち', 'ヨシ待ち', '動きなし', '止まり（使用量・13:00 にリセット）', '待機中'];
@@ -580,6 +580,24 @@ function staticParts() {
         if (a1 === tx.LOST && a2 === tx.YOSHI && a3 === tx.WORK && html.indexOf('lastLost = (sec > LOST_SEC);') >= 0 && html.indexOf('CHECK_SEC = 300') >= 0 && (function () { var m = /LOST_SEC = ([0-9]+)/.exec(html), n = /CHECK_SEC = ([0-9]+)/.exec(html); return !!m && !!n && !(840 > +m[1]) && (960 > +m[1]) && !(240 > +n[1]) && (360 > +n[1]); })() && PCx.headText({ stat: '作業中', lost: false, checking: true, yoshiN: 1, rows: [], left: 0, now: NOW }) === tx.CHECKING && html.indexOf('lastChecking = (!lastLost && sec > CHECK_SEC);') >= 0 && html.indexOf("el.src.indexOf('cat-sleep-w') < 0") >= 0) { ok('接続不良の猫：記録が5分（LOST_SEC=300）途切れたら作業中・ヨシ待ちより上に接続不良（作業中＋記録4分前→元の猫・6分前→寝姿の猫）・戻れば元の順'); } else { ng('接続不良の猫の順が違う：' + [a1, a2, a3].join(' | ')); }
         /* 枠 二百七十三：画面の写し取り一覧の釦（btnShots）を公開の大きさの釦に替えた */
         if (html.indexOf('id="btnShots" aria-expanded="false">公開 —MB／1GB</button>') >= 0 && html.indexOf('site-size.json') >= 0 && html.indexOf('lastSite.mb >= 900') >= 0 && html.indexOf('shots/index.html') < 0) { ok('公開の大きさの釦：btnShots は『公開 NNNMB／1GB』（900MB から赤・押すと内訳・site-size.json を読む）・shots への番地は無い'); } else { ng('公開の大きさの釦が違う'); }
+      }
+      /* 枠 三百二十六（v263）：頭の猫の絵（headCat）と頭の字（headText）は同じ判定。食い違い 0 件：寝ている猫は『休憩中』『接続不良』だけ／仕事が残る確認中・待機中は緑の服の猫／休憩中は仕事（段・順番待ち・裏方・ヨシ待ち）が全部無い時だけ */
+      {
+        const PCh = require(path.join(path.dirname(SRC), 'panel-core.js')), TX = PCh.TEXT;
+        let n = 0, bad = [];
+        ['待ち', '', '作業中', '検査中', '止まり', '動きなし', 'ヨシ待ち'].forEach(stat => [false, true].forEach(lost => [false, true].forEach(checking => [false, true].forEach(resting => [0, 1].forEach(yoshiN => [null, { sub: { running: 1 } }].forEach(ura => [0, 2].forEach(waitN => [[0, 0], [3, 1], [3, 3]].forEach(st => {
+          const o = { stat: stat, lost: lost, checking: checking, resting: resting, yoshiN: yoshiN, ura: ura, waitN: waitN, stepTotal: st[0], stepDone: st[1], rows: [], left: 0, now: 1700000000 };
+          const t = PCh.headText(o), c = PCh.headCat(o), left = PCh.workLeft(o); n++;
+          const sleepT = (t === TX.REST || t === TX.LOST), greenT = (t === TX.CHECKING || t === TX.WAIT);
+          if ((c === 'sleep') !== sleepT || (c === 'green') !== greenT) { bad.push(JSON.stringify(o) + ' → ' + t + '／' + c); }
+          if (t === TX.REST && left && !lost) { bad.push('仕事が残るのに休憩中：' + JSON.stringify(o)); }
+          if (!lost && (resting || checking) && (stat === '待ち' || stat === '') && !left && t !== TX.REST) { bad.push('仕事が無いのに休憩中でない：' + JSON.stringify(o) + ' → ' + t); }
+          if (!lost && checking && (stat === '待ち' || stat === '') && left && t !== TX.CHECKING && t !== TX.YOSHI && t !== TX.WORK && t !== TX.CHECK) { bad.push('仕事が残る確認中が確認中でない：' + JSON.stringify(o) + ' → ' + t); }
+        }))))))));
+        const hsrc = fs.readFileSync(SRC, 'utf8');
+        const wired = hsrc.indexOf('core().headCat(headObj())') >= 0 && hsrc.indexOf("el.src = 'genba-taiki-80.png'") >= 0 && hsrc.indexOf('function headObj()') >= 0;
+        if (!bad.length && wired) { ok('頭の猫と字の食い違い：' + n + '通りで 0 件（寝ている猫＝休憩中・接続不良だけ／仕事が残る確認中・待機中＝緑の服の猫／休憩中は仕事が全部無い時だけ）・panel.html は headCat を使う'); }
+        else { ng('頭の猫と字の食い違い ' + bad.length + ' 件' + (wired ? '' : '（panel.html が headCat を使っていない）') + '：' + bad.slice(0, 3).join(' ／ ')); }
       }
       /* v254（枠 二百七十八）：ヨシの釦の『通った』は約2秒・『送れなかった』は約4秒で元の『ヨシ待ち N件』へ戻る（押して2秒後→元の字） */
       {
@@ -991,11 +1009,11 @@ function staticParts() {
       const skip = (PS.match(/SKIP_TOP = new Set\(\[([^\]]*)\]\)/) || [])[1] || '';
       if (skip && skip.indexOf('panel-core') < 0 && !pk.isManaged('panel-core.js') && sp.pick('panel-core.js').heavy === 1 && sp.pick('panel-core.js').body === 0) { ok('公開の荷に入る（pack-site.js は直下の panel-core.js を載せる）・panel-core.js だけの押しでもパネルの検査を回してから配る（scope-pick）'); } else { ng('panel-core.js が公開の荷に入らない／雲の振り分けでパネルの物と見られない'); } }
     /* 四、同じ作り値の総当たり：パネルの包み（mergedTodo・headText）を panel-core.js と一緒に回した残り・頭の字・釦の字と、panelView の left・head・label が全部同じか */
-    const PN = ['core', 'cardArg', 'cardsPending', 'cardEtaSec', 'cardLate', 'cardPendText', 'kumoEtaSec', 'uraBusyText', 'yoshiWaitN', 'headText', 'mergedTodo', 'senkoEpoch'], psrc = PN.map(n => cutFn(H, n));
+    const PN = ['core', 'cardArg', 'cardsPending', 'cardEtaSec', 'cardLate', 'cardPendText', 'kumoEtaSec', 'uraBusyText', 'yoshiWaitN', 'headObj', 'headText', 'mergedTodo', 'senkoEpoch'], psrc = PN.map(n => cutFn(H, n));
     if (psrc.some(x => !x)) { ng('パネルの包みが切り出せない（' + PN.filter((n, i) => !psrc[i]).join('・') + '）'); }
     else {
       const VV = ['lastStat', 'lastCloud', 'lastDetail', 'lastUra', 'lastLost', 'lastChecking', 'lastResting', 'lastCardOwedAt', 'lastCardOwedEta', 'allRows', 'lastKumo', 'ntfySent', 'copied', 'ntfyCopied', 'Date'];
-      const pf = new Function('S', 'var window = S.win, keyOf = S.keyOf, ntfyKeyOf = S.keyOf, copyLeft = 0, lastYoshiOpen = [], ' + VV.map(v => v + ' = S.' + v).join(', ') + ';' + LF + psrc.join(LF) + LF + 'var lastSenkoReadAt = senkoEpoch(S.senkoReadAt);' + LF + 'copyLeft = mergedTodo().length;' + LF + 'return { left: copyLeft, head: headText(), label: core().todoLabel(copyLeft) };');
+      const pf = new Function('S', 'var window = S.win, keyOf = S.keyOf, ntfyKeyOf = S.keyOf, copyLeft = 0, lastYoshiOpen = [], lastStepTotal = 0, lastStepDone = 0, lastFoot = {}, ' + VV.map(v => v + ' = S.' + v).join(', ') + ';' + LF + psrc.join(LF) + LF + 'var lastSenkoReadAt = senkoEpoch(S.senkoReadAt);' + LF + 'copyLeft = mergedTodo().length;' + LF + 'return { left: copyLeft, head: headText(), label: core().todoLabel(copyLeft) };');
       const NOW = 1795290000, Dfix = class extends global.Date { constructor(...a) { if (a.length) { super(...a); } else { super(NOW * 1000); } } static now() { return NOW * 1000; } };
       const keyOf = (d) => String(d.time || 0) + '|' + String(d.title || '');
       const panelOf = (d, cards, ntfys, cp) => { const c = {}; (cp || []).forEach(k => { c[k] = 1; }); return pf({ win: WIN, keyOf: keyOf, Date: Dfix, senkoReadAt: d.senkoReadAt, lastStat: String(d.stat || ''), lastCloud: (typeof d.cloud === 'string') ? d.cloud : '', lastDetail: (typeof d.detail === 'string') ? d.detail.replace(/（なし）/g, '') : '', lastUra: (d.ura && typeof d.ura === 'object') ? d.ura : null, lastLost: false, lastChecking: false, lastResting: false, lastCardOwedAt: (typeof d.cardOwedAt === 'number') ? d.cardOwedAt : 0, lastCardOwedEta: (typeof d.cardOwedEta === 'number') ? d.cardOwedEta : 0, allRows: cards, lastKumo: (typeof d.kumo === 'string') ? d.kumo : '', ntfySent: ntfys, copied: c, ntfyCopied: {} }); };
