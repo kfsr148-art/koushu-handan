@@ -2329,7 +2329,7 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
       const empty = PV.panelView({}, [], [], NOWS).nya;
       if (none !== '' || got !== SAY || empty !== '') { bad.push('panelView.nya が違う：' + JSON.stringify([none, got, empty])); }
     } finally { if (keep === undefined) { delete process.env.SHADOW_HOME; } else { process.env.SHADOW_HOME = keep; } try { fsx.rmSync(dir, { recursive: true, force: true }); } catch (e) { } }
-    const wired = html.indexOf("nya: (typeof lastNya !== 'undefined') ? lastNya : ''") >= 0 && html.indexOf('lastNya = (d.panelView && typeof d.panelView.nya') >= 0 && /#headWait\{display:block;[^}]*font-size:15px;/.test(html) && html.indexOf('</h1>' + String.fromCharCode(13, 10) + '    <span id="headWait"></span>') >= 0;
+    const wired = html.indexOf("nya: (typeof lastNya !== 'undefined') ? lastNya : ''") >= 0 && html.indexOf('lastNya = (d.panelView && typeof d.panelView.nya') >= 0 && /#headWait\{display:block;[^}]*font-size:15px;/.test(html) && /<\/h1>\s*<span id="headWait"><\/span>/.test(html);   /* 雲は LF で取り出すので改行は CRLF・LF の両方 */
     if (!bad.length && wired) { ok('頭の字の猫の口ぶり：' + SC.length + '場面とも文は「にゃ」で終わり・枠の番号なし・nya は作業中／検査中／待ちで使う・色の字は前のまま・panelView.nya は控えの「ねこ:」から・字は15pxで題の行の下の全幅（枠 三百七十五）'); }
     else { ng('頭の字の猫の口ぶりが違う ' + bad.length + ' 件' + (wired ? '' : '（panel.html の配り・置き場が足りない）') + '：' + bad.slice(0, 4).join(' ／ ')); }
   }
