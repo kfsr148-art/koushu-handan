@@ -15,3 +15,6 @@ site-size.txt
 
 # 最後の返事（turn-mark.js が書き、turn-push.ps1 が koushu-state へ押す。このリポジトリには入れない・橋の枠 十四）
 last-reply.txt
+
+# 枠 三百三十二〜三百三十五：VAIO の状態の写し（vaio-look.js が書き、koushu-state へ押す。このリポジトリには入れない）
+vaio-snap.md
