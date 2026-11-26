@@ -16,7 +16,7 @@
   else { root.PanelCore = m; }
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
-  var VER = '277';
+  var VER = '278';
   var WAIT_TEXT = '待機中、、、。', POINT_TEXT = 'まとめて写すヨシ！', WORK_TEXT = '作業中、、、。', LOST_TEXT = '接続不良、、、。', CHECKING_TEXT = '確認中、、、。', REST_TEXT = '休憩中、、、。', YOSHI_TEXT = 'ヨシ待ち、、、。', CHECK_TEXT = '検査中、、、。';
 
   /* ---- 刻 ---- */
@@ -142,7 +142,7 @@
       .replace(/^[ 　：:、。・]+/, '').trim();
   }
 
-  /* 枠 三百三十八（v267）：頭の字（猫の横）は状態の短い字でなく詳しい文。枠 三百七十五（v277）：猫の口ぶり（どの文も「にゃ」で終わる）・枠の番号は出さない・何をしているか／なぜか・いつ終わるか・本人がする事。色は g＝緑（何もしなくてよい）・y＝黄（見ておく）・r＝赤（手が要る）。
+  /* 枠 三百三十八（v267）：頭の字（猫の横）は状態の短い字でなく詳しい文。枠 三百八十九（v278）：普通の丁寧な言葉（三百七十五の猫の口ぶりはやめた・伝える中身は同じ）・枠の番号は出さない・何をしているか／なぜか・いつ終わるか・本人がする事。色は g＝緑（何もしなくてよい）・y＝黄（見ておく）・r＝赤（手が要る）。
      ＊元の判定は headText（状態の短い字）のまま使い、その字から場面を決める（絵の headCat・panelView の head と同じ一つの判定）。
      ＊「何をしているか・なぜか」は o.nya（窓が控えの「ねこ:」の行に平たい言葉で書き、panelView.nya で届く）。無ければ場面ごとの決まった一文。作業中・雲の検査・待ちの場面だけで使う。
      ＊終わる刻はある欄からだけ出す：o.endSec（今の仕事の見込みの終わり・秒）か o.etaMin（あと分）か雲の一行の「見込み HH:MM」（kumo）。どれも無ければ刻は書かない。
@@ -153,29 +153,29 @@
     var hm = function (sec) { var d = new Date(sec * 1000); return d.getHours() + '時' + ('0' + d.getMinutes()).slice(-2) + '分'; };
     var cloudEnd = kumoEtaSec(o.kumo, o.now);
     var jobEnd = n(o.endSec) > now ? n(o.endSec) : (n(o.etaMin) > 0 && now > 0 ? now + n(o.etaMin) * 60 : 0);
-    var nya = noFrame(o.nya).replace(/[ 　。．.！!]+$/, '');
-    var say = function (dflt) { if (!nya) { return dflt; } return /にゃ$/.test(nya) ? nya : nya + 'にゃ'; };
-    var wait = function (dflt, end, tail) { return '待っててにゃ。' + say(dflt) + '。' + (end > 0 ? hm(end) + 'ごろ' + (tail || '終わるにゃ') + '、' : '') + '何もしなくていいにゃ'; };
+    var nya = noFrame(o.nya).replace(/にゃ[ーぁ]*(?=[ 　。．.、！!？?」』）)]|$)/g, '').replace(/[ 　。．.！!]+$/, '');   /* v278（枠 三百八十九）：普通の言葉。控えに前の口ぶりが残っていても、文末の語尾は落とす */
+    var say = function (dflt) { return nya || dflt; };
+    var wait = function (dflt, end) { return say(dflt) + '。' + (end > 0 ? hm(end) + 'ごろ終わる見込みです。' : '') + '今は何もしなくて大丈夫です'; };
     var stepsLeft = n(o.stepTotal) > n(o.stepDone);
-    if (lab === REST_TEXT) { return { t: 'いまは休憩中にゃ。仕事は残っていないから、次の枠を送れるにゃ', c: 'g' }; }
-    if (lab === LOST_TEXT) { return { t: 'VAIOの記録が届いていないにゃ。VAIOの電源と網を見てほしいにゃ', c: 'r' }; }
-    if (lab === YOSHI_TEXT) { return { t: 'ヨシの返事を' + Math.max(1, n(o.yoshiN)) + '件待ってるにゃ。問いを読んで、Codeタブでヨシを返してほしいにゃ', c: 'r' }; }
-    if (lab === CHECKING_TEXT) { return { t: 'VAIOの記録が少し途切れてるにゃ。戻るかどうか見ておいてほしいにゃ', c: 'y' }; }
+    if (lab === REST_TEXT) { return { t: 'いまは休憩中です。残っている仕事は無いので、次の枠を送れます', c: 'g' }; }
+    if (lab === LOST_TEXT) { return { t: 'VAIOの記録が届いていません。VAIOの電源と網を確認してください', c: 'r' }; }
+    if (lab === YOSHI_TEXT) { return { t: 'ヨシの返事を' + Math.max(1, n(o.yoshiN)) + '件待っています。問いを読んで、Codeタブでヨシを返してください', c: 'r' }; }
+    if (lab === CHECKING_TEXT) { return { t: 'VAIOの記録が少し途切れています。戻るかどうか見ておいてください', c: 'y' }; }
     if (/^止まり/.test(lab) || lab === '動きなし') {
-      var what = lab === '動きなし' ? '窓が動いていないにゃ' : '窓が止まってるにゃ';
-      return stepsLeft ? { t: '仕事の段が残ってるのに' + what + '。Codeタブに一言打ってほしいにゃ', c: 'r' } : { t: what + '。残りの段は無いから、様子だけ見ておいてほしいにゃ', c: 'y' };
+      var what = lab === '動きなし' ? '窓が動いていません' : '窓が止まっています';
+      return stepsLeft ? { t: '仕事の段が残っているのに' + what + '。Codeタブに一言打ってください', c: 'r' } : { t: what + '。残りの段は無いので、様子だけ見ておいてください', c: 'y' };
     }
-    if (lab === CHECK_TEXT) { return { t: wait('直した物を雲で検査してるにゃ', cloudEnd || jobEnd), c: 'g' }; }
+    if (lab === CHECK_TEXT) { return { t: wait('直した物を雲で検査しています', cloudEnd || jobEnd), c: 'g' }; }
     if (lab === WORK_TEXT) {
-      if (cloudEnd > 0 && !(jobEnd > 0)) { return { t: wait('雲の結果を待ってるにゃ', cloudEnd), c: 'g' }; }
-      return { t: wait('頼まれた仕事を進めてるにゃ', jobEnd), c: 'g' };
+      if (cloudEnd > 0 && !(jobEnd > 0)) { return { t: wait('雲の結果を待っています', cloudEnd), c: 'g' }; }
+      return { t: wait('頼まれた仕事を進めています', jobEnd), c: 'g' };
     }
-    if (lab === POINT_TEXT) { return { t: '写していない札が' + (n(o.left) > 0 ? n(o.left) + '件' : '') + 'あるにゃ。まとめて写せるから見ておいてほしいにゃ' + (cloudEnd > 0 ? '。雲の結果は' + hm(cloudEnd) + 'ごろ出るにゃ' : ''), c: 'y' }; }
-    if (/^札が遅れている/.test(lab)) { return { t: '札が出るのが遅れてるにゃ。様子を見ておいてほしいにゃ', c: 'r' }; }
-    if (/^札まとめ中/.test(lab)) { return { t: '済んだ仕事の札をまとめてるにゃ。' + (cloudEnd > 0 ? hm(cloudEnd) + 'ごろ出るにゃ。' : '') + '札が出たら見ておいてほしいにゃ', c: 'y' }; }
-    if (/^裏方作業中/.test(lab)) { return { t: wait('裏方が手分けして働いてるにゃ', cloudEnd), c: 'g' }; }
-    if (lab === WAIT_TEXT) { return { t: wait(n(o.waitN) > 0 ? '次の仕事が' + n(o.waitN) + '件、順番を待ってるにゃ' : '仕事の続きが残ってるにゃ', cloudEnd), c: 'g' }; }
-    return { t: '様子を見ておいてほしいにゃ', c: 'y' };
+    if (lab === POINT_TEXT) { return { t: '写していない札が' + (n(o.left) > 0 ? n(o.left) + '件' : '') + 'あります。まとめて写せるので見ておいてください' + (cloudEnd > 0 ? '。雲の結果は' + hm(cloudEnd) + 'ごろ出ます' : ''), c: 'y' }; }
+    if (/^札が遅れている/.test(lab)) { return { t: '札が出るのが遅れています。様子を見ておいてください', c: 'r' }; }
+    if (/^札まとめ中/.test(lab)) { return { t: '済んだ仕事の札をまとめています。' + (cloudEnd > 0 ? hm(cloudEnd) + 'ごろ出ます。' : '') + '札が出たら見ておいてください', c: 'y' }; }
+    if (/^裏方作業中/.test(lab)) { return { t: wait('裏方が手分けして働いています', cloudEnd), c: 'g' }; }
+    if (lab === WAIT_TEXT) { return { t: wait(n(o.waitN) > 0 ? '次の仕事が' + n(o.waitN) + '件、順番を待っています' : '仕事の続きが残っています', cloudEnd), c: 'g' }; }
+    return { t: '様子を見ておいてください', c: 'y' };
   }
 
   /* ---- 段（v212・本人の枠 七十七）：段の数・今の段は state.json の生の段（steps＝{job, rows:[{k, t}]}・見張りが job-steps.txt から写す）から毎回数える ----
@@ -301,11 +301,18 @@
     return { t: '見込みを過ぎた ' + Math.floor((nowS - b.endSec) / 60) + '分', c: 'bad' };
   }
 
+  /* v278（枠 三百七十六）：直しの輪の一行。材料は fix-loop.json（輪の札を書く時に書き替える一つの元）{rounds:周, before:回す前の件数, after:残りの件数} */
+  function loopLine(L) {
+    var n = function (x) { return (typeof x === 'number' && x >= 0 && Math.floor(x) === x) ? x : -1; };
+    if (!L || typeof L !== 'object' || n(L.rounds) < 1 || n(L.before) < 0 || n(L.after) < 0) { return '直しの輪：まだ'; }
+    return L.after > 0 ? ('直しの輪：残り' + L.after + '件') : ('直しの輪：' + L.rounds + '周で' + L.before + '件→0件');
+  }
+
   return {
     VER: VER, TEXT: { WAIT: WAIT_TEXT, POINT: POINT_TEXT, WORK: WORK_TEXT, LOST: LOST_TEXT, CHECKING: CHECKING_TEXT, REST: REST_TEXT, YOSHI: YOSHI_TEXT, CHECK: CHECK_TEXT },
     senkoEpoch: senkoEpoch, pad2s: pad2s, newestTime: newestTime,
     isCountCard: isCountCard, ntfyOfCard: ntfyOfCard, todoList: todoList, todoLabel: todoLabel,
-    cardsPending: cardsPending, cardEtaSec: cardEtaSec, cardLate: cardLate, cardPendText: cardPendText, kumoEtaSec: kumoEtaSec, uraBusyText: uraBusyText, isRunning: isRunning, headText: headText, headCat: headCat, headAct: headAct, noFrame: noFrame, workLeft: workLeft,
+    cardsPending: cardsPending, cardEtaSec: cardEtaSec, cardLate: cardLate, cardPendText: cardPendText, kumoEtaSec: kumoEtaSec, uraBusyText: uraBusyText, isRunning: isRunning, headText: headText, headCat: headCat, headAct: headAct, noFrame: noFrame, loopLine: loopLine, workLeft: workLeft,
     stepsOf: stepsOf, pubLine: pubLine, omoteLines: omoteLines, endLine: endLine, uraLines: uraLines,
     endShort: endShort, uraCount: uraCount, uraGauge: uraGauge, stepLab: stepLab, omoteGauge: omoteGauge, boxSpec: boxSpec, mikomiEnd: mikomiEnd, workLate: workLate, headEta: headEta, etaRow: etaRow
   };
