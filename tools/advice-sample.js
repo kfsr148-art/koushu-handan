@@ -30,7 +30,7 @@ window.addEventListener('load', function(){ setTimeout(function(){
     if (rv) { a.revote = rv; a.verdict = rv.to; }
     var attack = a.verdict === 'attack';
     var r = null; try { r = adviceFor(a, hand, attack); } catch (e) { r = null; }
-    return { attack: attack, text: r ? String(r.text || '') : '' };
+    return { attack: attack, text: r ? String(r.text || '') : '', dirs: (a.directions || []).slice() };
   }
   try {
     var dials = [''].concat(Object.keys(ADV_DIALECT));
@@ -43,14 +43,14 @@ window.addEventListener('load', function(){ setTimeout(function(){
       khSeed(k);
       var j2 = judgeText();
       khUnseed();
-      res.fixed.push({ n: k + 1, tiles: tilesToInput(hand), tone: currentTone, dial: currentDialect, attack: j2.attack, text: j2.text });
+      res.fixed.push({ n: k + 1, tiles: tilesToInput(hand), tone: currentTone, dial: currentDialect, attack: j2.attack, text: j2.text, dirs: j2.dirs });
     }
     for (var i = 0; i < ${N}; i++) {
       shuffleHand();
       currentTone = ADV_TONE_KEYS[Math.floor(Math.random() * ADV_TONE_KEYS.length)];
       currentDialect = dials[Math.floor(Math.random() * dials.length)];
       var j = judgeText();
-      res.rows.push({ n: i + 1, tiles: tilesToInput(hand), tone: currentTone, dial: currentDialect, attack: j.attack, text: j.text });
+      res.rows.push({ n: i + 1, tiles: tilesToInput(hand), tone: currentTone, dial: currentDialect, attack: j.attack, text: j.text, dirs: j.dirs });
     }
   } catch (e) { res.err = String(e && e.message || e); }
   var d = document.createElement('div'); d.id = 'khas';

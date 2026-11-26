@@ -21,6 +21,33 @@ function outsideMeld(tiles) {
     return false;
   });
 }
+/* 枠 三百七十四の残る2型（2026-11-26・窓が選んだ条件。緩くしない側）
+   測り条件外：染め・七対子・対々・タンヤオの測りの一文が、見える手（directions）にその役の無い局に付く（directions が無い局は数えない）。
+   頭だけ方言：方言の局で、頭の一文にその方言の言い方があり、二文目より後のどの文にも一つも無い。 */
+const MEAS = [
+  ['染め', /染め.{0,3}寄せ|しょめ.{0,3}よせ/, /染め|混一色|清一色/],
+  ['七対子', /対子が(2〜3|[456])組.{0,30}(約[0-9,]+点|pt)|七対子(に|には)決め/, /七対子/],
+  ['対々', /対々に(向か|は決め)/, /対々/],
+  ['タンヤオ', /タンヤオに寄せ/, /タンヤオ/]
+];
+const DIAL_MARK = {
+  miyazaki: /っちゃ|とよ|ちゃが|じゃが|やっど|やが/, hakata: /ばい|たい[。、！]|けん|っちゃ|と[。！？]/, osaka: /やで|ねん|へん|やん|や[。！、]|な[。！]/,
+  kyoto: /どす|どすえ|え[。！]|なぁ|やす|はる|やおへん/, aomori: /びょん|だべ|はんで|だきゃ|んず|じゃ/, okinawa: /さー|ねー|やー|どー|やさ/,
+  bushi: /ござる|でござ|なり|ぞ[。！]|じゃ|まする/, yoji: /よー|ねー|でしゅ|ましゅ|ばぶ|のー/
+};
+function measMiss(row) {
+  if (!row.dirs) return [];
+  const t = String(row.text || '');
+  return MEAS.filter(m => m[1].test(t) && !row.dirs.some(d => m[2].test(d))).map(m => ({ k: '測り条件外', why: m[0] + 'の測りの一文があるが、見える手に無い（' + row.dirs.join('・') + '）' }));
+}
+function headOnly(row) {
+  const re = DIAL_MARK[row.dial];
+  if (!re) return [];
+  const s = String(row.text || '').split(/(?<=[。！？])/).map(x => x.trim()).filter(Boolean);
+  if (s.length < 3 || !re.test(s[0])) return [];
+  return s.slice(1).some(x => re.test(x)) ? [] : [{ k: '頭だけ方言', why: '頭の一言だけ方言：' + s[0].slice(0, 30) }];
+}
+
 function siftAdd(row) {
   const out = [], t = String(row.text || '');
   let m;
@@ -32,6 +59,8 @@ function siftAdd(row) {
   if ((m = NEVER.exec(t))) out.push({ k: '決まり文句', why: '場面の無い決まり文句が一文で入る：' + m[1] });
   if ((m = STUT.exec(t))) out.push({ k: '口ごもり', why: '頭の音が違う：' + m[1] });
   if (/残して染め/.test(t) && outsideMeld(row.tiles)) out.push({ k: '染め', why: '染め色の外に完成面子があるのに染めを勧める' });
+  measMiss(row).forEach(f => out.push(f));
+  headOnly(row).forEach(f => out.push(f));
   return out;
 }
 module.exports = { siftAdd, outsideMeld };
