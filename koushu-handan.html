@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1540">
+<html lang="ja" data-ver="1541">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1375,6 +1375,10 @@
   window.addEventListener('unhandledrejection', function(e){
     try { var r = e && e.reason; send('rejection：' + (r && r.message || r || ''), 'promise'); } catch(x){}
   });
+  /* v1541（枠 三百六十二）：助言の声の部品が欠けた時の合図（本体の playAdvice が出す）。送るのは部品の名と数だけ。 */
+  window.addEventListener('kh-voice-miss', function(e){
+    try { send('声の部品が欠けた：' + (e && e.detail || ''), 'voice'); } catch(x){}
+  });
 })();
 </script>
 </head>
@@ -1430,7 +1434,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1540</div>
+  <div id="verTag">v1541</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -4134,7 +4138,12 @@ function advDecodeWav(ab) {
         _advPcm[nm] = b;   // v1506：AAC（m4a）を復号した 24kHz の PCM（読めなければ ADPCM へ落ちる）
       });
     };
-    Promise.all(adv.audio.map(function(it){ return load(it.name).catch(function(e){ if(it.fb){ it.name = it.fb; return load(it.fb); } if(it.opt){ it.skip = true; return; } throw e; }); })).then(function(){   // v1494：方言の声が無ければ方言なしの声へ
+    /* v1541（枠 三百六十二）：欠けた部品は黙らず知らせる。印は (予)＝予備の声へ落ちた・(省)＝飛ばした・(止)＝助言を読めず判定の一言だけになった */
+    const miss = [];
+    const tellMiss = function(){ if(miss.length){ try { window.dispatchEvent(new CustomEvent('kh-voice-miss', { detail: miss.length + '本 ' + miss.join(' ') })); } catch(x){} miss.length = 0; } };
+    const stop = function(nm, e){ miss.unshift(nm + '(止)'); throw e; };
+    Promise.all(adv.audio.map(function(it){ const nm0 = it.name; return load(nm0).catch(function(e){ if(it.fb){ it.name = it.fb; return load(it.fb).then(function(){ miss.push(nm0 + '(予)'); }, function(e2){ return stop(nm0 + '/' + it.fb, e2); }); } if(it.opt){ it.skip = true; miss.push(nm0 + '(省)'); return; } return stop(nm0, e); }); })).then(function(){
+      tellMiss();   // v1494：方言の声が無ければ方言なしの声へ
       if(seq !== _advSeq || _frameHidden()) return;
       const parts = [];
       adv.audio.forEach(function(it){ if(it.skip) return; if(it.gap) parts.push(new Int16Array(Math.round(it.gap * 24000))); parts.push(_advPcm[it.name]); });
@@ -4145,7 +4154,7 @@ function advDecodeWav(ab) {
       au.addEventListener('ended', function(){ try { URL.revokeObjectURL(url); } catch(e){} }, { once: true });
       _showVoiceCredit();
       const p = au.play(); if(p && p.catch) p.catch(function(){});
-    }).catch(function(){ if(seq === _advSeq){ if(adv.scene) playVerdictOrScene(attack, adv.scene); else playVerdict(attack); } });
+    }).catch(function(){ tellMiss(); if(seq === _advSeq){ if(adv.scene) playVerdictOrScene(attack, adv.scene); else playVerdict(attack); } });
   }
   const _sceneAudio = {}, _sceneMiss = {};
   let _sceneSeq = 0;
