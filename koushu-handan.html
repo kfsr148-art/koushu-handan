@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1537">
+<html lang="ja" data-ver="1538">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1345,6 +1345,37 @@
     #portraitWarn .pw-text { font-size: 17px; letter-spacing: 0.06em; line-height: 1.7; }
   }
 </style>
+<script>
+/* v1538（枠 三百四十八）：拾われなかったエラー（error・unhandledrejection・読み込み失敗）を、センコ用の別の話題へ sendBeacon で送る。見た目と動きは変えない。
+   送るのは 版・画面の名・エラーの文と場所（ファイル名と行）だけ。打った牌・URL の問い・個人の物は送らない。同じエラーは1時間に1通まで。本人の通知の話題は鳴らさない（別の話題）。
+   宛先は公開のページに載る（別の話題で、本人の通知とは無関係。荒らされても読む側が数で見分ける）。 */
+(function(){
+  var T = 'khe-f4d5fa5e415224f075', KIND = '本体', seen = {}, LS = 'kh_err_sent';
+  function ver(){ try { var e = document.querySelector('[data-ver]'); if(e){ return e.getAttribute('data-ver'); } return document.documentElement.getAttribute('data-ver') || (typeof PANEL_VER !== 'undefined' ? PANEL_VER : '?'); } catch(x){ return '?'; } }
+  function screenName(){ try { var ids = []; var ch = document.body ? document.body.children : []; for(var i = 0; i < ch.length && ids.length < 2; i++){ var c = ch[i]; if(c.id && c.id !== 'errBar' && c.id !== 'verTag' && c.offsetParent !== null && c.offsetHeight > 40){ ids.push(c.id); } } return ids.join('+') || '-'; } catch(x){ return '-'; } }
+  function clean(s){ return String(s == null ? '' : s).replace(/https?:[^\s)]*/g, '<url>').replace(/[\r\n]+/g, ' ').slice(0, 160); }
+  function base(f){ try { return String(f || '').split('?')[0].split('#')[0].split('/').pop().slice(0, 40); } catch(x){ return ''; } }
+  function send(msg, where){
+    try {
+      var key = clean(msg) + '|' + where, now = Date.now(), last = 0;
+      if(seen[key] && now - seen[key] < 3600000){ return; }
+      try { var m = JSON.parse(localStorage.getItem(LS) || '{}'); last = m[key] || 0; if(last && now - last < 3600000){ seen[key] = last; return; } m[key] = now; var ks = Object.keys(m); if(ks.length > 40){ delete m[ks[0]]; } localStorage.setItem(LS, JSON.stringify(m)); } catch(x){}
+      seen[key] = now;
+      var body = 'ver=' + ver() + ' kind=' + KIND + ' screen=' + screenName() + '\nmsg=' + clean(msg) + '\nat=' + where;
+      if(navigator.sendBeacon){ navigator.sendBeacon('https://ntfy.sh/' + T, body); }
+    } catch(x){}
+  }
+  window.addEventListener('error', function(e){
+    try {
+      if(e && e.target && e.target !== window && (e.target.src || e.target.href)){ send('読み込み失敗：' + (e.target.tagName || '') + ' ' + base(e.target.src || e.target.href), 'resource'); return; }
+      send(e && e.message || 'error', base(e && e.filename) + ':' + (e && e.lineno || 0) + ':' + (e && e.colno || 0));
+    } catch(x){}
+  }, true);
+  window.addEventListener('unhandledrejection', function(e){
+    try { var r = e && e.reason; send('rejection：' + (r && r.message || r || ''), 'promise'); } catch(x){}
+  });
+})();
+</script>
 </head>
 <body>
 <!-- 画面内エラー窓。実機（iPhone）の画面写しだけで開発しているので、console の代わりに
@@ -1398,7 +1429,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1537</div>
+  <div id="verTag">v1538</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
