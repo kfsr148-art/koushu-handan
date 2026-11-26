@@ -602,7 +602,7 @@ function staticParts() {
       /* 枠 三百三十二〜三百三十五（v265）：「様子を写す」＝今まで通り写し、最後に vaio-snap.md の番地を一行足し、同時に ntfy の話題へ『vaio-look』＋写した字を送る（待たない）。「👆 指さす」はそのまま。VAIO の側（yoshi-btn-recv.js・vaio-look.js）は ~/.claude の台本で、手元の作り値で別に確かめた（字面の検査） */
       {
         const hv = fs.readFileSync(SRC, 'utf8');
-        const need = ["VAIO_SNAP_URL = 'https://kfsr148-art.github.io/koushu-state/vaio-snap.md'", "var body = 'vaio-look' + String.fromCharCode(10) + String(panelText || '')", 'vaioSignal(base);', "text + String.fromCharCode(10) + 'VAIOの状態：' + VAIO_SNAP_URL", 'id="btnPoint">👆 指さす</button>', "$('btnPoint').addEventListener('click', function () { pointToggle(); })"];
+        const need = ["VAIO_SNAP_URL = 'https://kfsr148-art.github.io/koushu-state/vaio-snap.md'", "var body = 'vaio-look' + String.fromCharCode(10) + String(panelText || '')", 'vaioSignal(base);', "text + String.fromCharCode(10) + 'VAIOの状態：' + VAIO_SNAP_URL", 'id="btnPoint">👆 指さす</button>', "$('btnPoint').addEventListener('click', function () { pointToggle(); })", 'try { vaioSignal(statusText()); } catch (xv) { }'];
         const miss = need.filter(x => hv.indexOf(x) < 0);
         if (!miss.length && hv.indexOf('function vaioLook') < 0) { ok('「様子を写す」＝写す字の最後に vaio-snap.md の番地を一行・同時に ntfy へ vaio-look＋字を送る／「👆 指さす」はそのまま（VAIOを見る釦は作らない）'); }
         else { ng('「様子を写す」の VAIO 合図の字面が足りない：' + miss.join(' ／ ') + (hv.indexOf('function vaioLook') >= 0 ? '（vaioLook が残っている）' : '')); }
