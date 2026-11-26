@@ -1055,6 +1055,12 @@ function advBigLine(tone, dial, attack) {
   const s = pd ? (attack ? pd.big : pd.bigDef) : '';
   return s ? String(s) : '';
 }
+/* 枠 三百六十五（v1543）：決まり文句（口癖 k）を使う場面。never＝礼・詫び・挨拶・合う場面の無い言葉（助言に入れない）／cheer＝励まし・肯定（攻めの締めだけ）／
+   fight＝勝負の掛け声（攻めの前置きだけ）／surprise＝驚き（大物手の攻めの前置きだけ）／表に無い言葉は前置き（pre・今の位置）。 */
+const ADV_K_SCENE = { 'にふぇーでーびる': 'never', 'おおきに': 'never', 'おそれいります': 'never', 'かんにんしてや': 'never', 'ごきげんよう': 'never', 'ごめんあそばせ': 'never', 'めっちゃ': 'never', 'ほんまに': 'never', 'うちの猫がね': 'never',
+  'ちばりよー': 'cheer', 'なんくるないさ': 'cheer', 'よかよか': 'cheer', 'ええやんか': 'cheer', 'ここが勝負ばい': 'fight', 'あいー': 'surprise', 'やんだー': 'surprise', 'にゃんと': 'surprise', 'あらまあ': 'surprise', 'まあまあ': 'surprise', 'あらあら': 'surprise' };
+function advKScene(k) { return ADV_K_SCENE[k] || 'pre'; }
+function advKHere(k, side, big) { const s = advKScene(k); return s === 'pre' || (s === 'fight' && side === 'a') || (s === 'surprise' && side === 'a' && !!big); }   // 前置きの位置に入れてよいか
 function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言の行が付いているか（v1500）
   const pd = (ADV_PERSONA_DIAL[tone] || {})[dial || 'std'] || null;   // v1509 人格×方言の決め（器）
   const kl = ADV_KIND_LIT[(dial || 'std') + ':' + tone] || null;
@@ -1068,7 +1074,7 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
   units.forEach(function (u, k) { pv[u[0] + ',' + u[1]] = dial ? plan[k] : -1; });
   const items = [], last = lines.length - 1, ends4 = []; let text = '', nconn = 0;
   lines.forEach(function (l, li) {
-    if (li >= 1 && !l.nc) { const slot = (hasEnd && li === last) ? 3 : (nconn === 0 ? 0 : 1 + ((nconn - 1) % 2)); nconn++; let c = advConn(tone, dial, slot); if (chara && slot === 0 && advKuseOk(chara.k, tone, dial) && !(advEndKey(chara.k) && advEndKey((text.match(/[^。！？]*[。！？]+$/) || [''])[0]) === advEndKey(chara.k))) { c = chara.k + '。'; ends4.push(advEndKey(c)); }   /* v1509 口癖は頭の短い一言で「。」で切る（口調表 決め四） */ if (bk && bk.yoji) { c = bk.fx(c); } items.push({ conn: true, slot: slot, text: c }); text += c; }
+    if (li >= 1 && !l.nc) { const slot = (hasEnd && li === last) ? 3 : (nconn === 0 ? 0 : 1 + ((nconn - 1) % 2)); nconn++; let c = advConn(tone, dial, slot); if (chara && slot === 0 && advKuseOk(chara.k, tone, dial) && advKHere(chara.k, lines.side, lines.big) && !(advEndKey(chara.k) && advEndKey((text.match(/[^。！？]*[。！？]+$/) || [''])[0]) === advEndKey(chara.k))) { c = chara.k + '。'; ends4.push(advEndKey(c)); }   /* v1509 口癖は頭の短い一言で「。」で切る（口調表 決め四） */ if (bk && bk.yoji) { c = bk.fx(c); } items.push({ conn: true, slot: slot, text: c }); text += c; }
     l.forEach(function (tk, ti) {
       const v = tk.lit ? -1 : ((pv[li + ',' + ti] === undefined) ? (dial ? 0 : -1) : pv[li + ',' + ti]);   // 方言ありは、文の終わりを持たない部品の中の文にも人物の語尾を付ける（0から）
       let base = (v >= 0) ? tk.t.replace(/、(?:ウィ|モナミ)(?=[。！？])/g, '') : tk.t;   // 方言の世界の人物は、外国語の呼びかけを言わない
@@ -1086,6 +1092,7 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
       items.push({ li: li, ti: ti, text: x, v: kfix ? -2 : (v >= 0 ? vv : v), alt: kfix, term: !!tk.term, changed: x !== tk.t }); text += x;
     });
   });
+  if (chara && lines.side === 'a' && advKScene(chara.k) === 'cheer' && advKuseOk(chara.k, tone, dial) && items.length) { let c = chara.k + '。'; if (bk && bk.yoji) { c = bk.fx(c); } items.push({ conn: true, slot: 3, text: c }); text += c; }   // 枠 三百六十五：励ましは攻めの締め
   if (chara && chara.c && !lines.noAddr) { for (let q = items.length - 1; q >= 0; q--) { const it = items[q]; if (!it.conn && it.term && (it.v >= 0 || it.v === -2)) { if (/[。！？]$/.test(it.text)) { it.text = it.text.slice(0, -1) + '、' + chara.c + it.text.slice(-1); it.changed = true; text = ''; } break; } } }
   /* 枠 三百二十四（2026-11-26）：隣り合う二文が同じ方言の語尾で終わる時は、あとの文の方言を外して人物の語尾のままにする（語尾をすげ替えるだけにしない）。
      前の文が書いた字（頭の一言・口癖）でも同じ。三つ続く時は真ん中が外れて、方言の語尾は一つおきになる。 */
