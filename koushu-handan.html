@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1543">
+<html lang="ja" data-ver="1544">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1434,7 +1434,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1543</div>
+  <div id="verTag">v1544</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -3623,6 +3623,7 @@ function advDecodeWav(ab) {
     const tl = advRetreatPart(a, attack);
     const MS = advMeas(F);
     const FB = flushBlocked(a, tiles); if(FB && MS.fl === 'adva-fl-2') MS.fl = '';   // 枠 三百六十一：染めを本線にしない手では、染めを勧める側の一文を出さない
+    if(/^adva-fl-/.test(MS.fl) && !dirs.some(function(d){ return /染め|混一色|清一色/.test(d); })) MS.fl = '';   // 枠 三百七十四（輪の1周目）：見える手に染めが無い手には、染めの測りの一文を付けない
     const qk = Object.keys(F.cnt).filter(function(k){ return F.cnt[k] >= 4; })[0];   // 枠 三百十六（棚 #28・v1536）：同じ牌4枚の時の暗槓の一文
     const kanL = !qk ? null : (/^[ESWNPFC]$/.test(qk) ? 'advk-z-1' : 'advk-n-1');
     const withT = function(r, xs){ (xs || []).forEach(function(p){ if(p){ r.push([p]); } }); r.push([tl || 'adva-tn']); return r; };   // 枠 二百五十五：第二引数＝測った数の一文（七対子・対々・染め）   // v1506：七対子・対々和・タンヤオの文のあとに、巡目の一文（向聴2以上）か「何巡目まで、とは決めない」（向聴1以下）を足す
