@@ -16,7 +16,7 @@
   else { root.PanelCore = m; }
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
-  var VER = '266';
+  var VER = '267';
   var WAIT_TEXT = '待機中、、、。', POINT_TEXT = 'まとめて写すヨシ！', WORK_TEXT = '作業中、、、。', LOST_TEXT = '接続不良、、、。', CHECKING_TEXT = '確認中、、、。', REST_TEXT = '休憩中、、、。', YOSHI_TEXT = 'ヨシ待ち、、、。', CHECK_TEXT = '検査中、、、。';
 
   /* ---- 刻 ---- */
@@ -131,6 +131,35 @@
   function headCat(o) {
     var t = headText(o);
     return (t === REST_TEXT || t === LOST_TEXT) ? 'sleep' : ((t === CHECKING_TEXT || t === WAIT_TEXT) ? 'green' : '');
+  }
+
+  /* 枠 三百三十八（v267）：頭の字（猫の横）を「本人が今する事」に替える。形は「する事。訳、いつまで」の一文、色は g＝緑（何もせんでよい）・y＝黄（見ておく）・r＝赤（手が要る）。
+     ＊元の判定は headText（状態の短い字）のまま使い、その字から場面を決める（絵の headCat・panelView の head と同じ一つの判定）。数はパネルにある物だけ：件名の枠の名・見込みのあと分（etaMin）・雲の見込みのあと分（kumo）・ヨシ待ちの件数（yoshiN）・写す物の数（left）・順番待ち（waitN）。
+     ＊返すのは {t, c}。元の字は headText で取れる（検査・様子を写す・brief.txt はそちらを読む）。 */
+  function headAct(o) {
+    o = o || {};
+    var lab = headText(o), stat = String(o.stat || ''), n = function (v) { return Number(v) || 0; };
+    var fm = String(o.subj || '').match(/枠[ 　]*[一二三四五六七八九十百〇零0-9A-Za-z]+/), frame = fm ? fm[0] : '';
+    var minsLeft = function (m) { return m > 0 ? '、あと' + m + '分' : ''; };
+    var kmin = (function () { var s = kumoEtaSec(o.kumo, o.now); return s > 0 ? Math.max(1, Math.ceil((s - (Number(o.now) || 0)) / 60)) : 0; })();
+    var stepsLeft = n(o.stepTotal) > n(o.stepDone);
+    if (lab === REST_TEXT) { return { t: '休憩中。次の枠を送れる', c: 'g' }; }
+    if (lab === LOST_TEXT) { return { t: 'VAIOの電源と網を見て', c: 'r' }; }
+    if (lab === YOSHI_TEXT) { return { t: 'Codeタブでヨシを。' + Math.max(1, n(o.yoshiN)) + '件', c: 'r' }; }
+    if (lab === CHECKING_TEXT) { return { t: '見ておく。VAIOの記録が少し途切れておる', c: 'y' }; }
+    if (/^止まり/.test(lab)) { return stepsLeft ? { t: 'Codeタブに一言打って。窓が止まっておる', c: 'r' } : { t: '見ておく。窓は止まっておるが、残りの段は無い', c: 'y' }; }
+    if (lab === '動きなし') { return stepsLeft ? { t: 'Codeタブに一言打って。窓が止まっておる', c: 'r' } : { t: '見ておく。窓の動きが無い', c: 'y' }; }
+    if (lab === CHECK_TEXT) { return { t: '待っておればよい。雲の検査待ち' + minsLeft(kmin || n(o.etaMin)), c: 'g' }; }
+    if (lab === WORK_TEXT) {
+      if (kmin > 0 && !(n(o.etaMin) > 0)) { return { t: '待っておればよい。雲の結果待ち' + minsLeft(kmin), c: 'g' }; }
+      return { t: '待っておればよい。' + (frame ? frame + 'をやっておる' : 'やっておる') + minsLeft(n(o.etaMin)), c: 'g' };
+    }
+    if (lab === POINT_TEXT) { return { t: '見ておく。写していない札が' + (n(o.left) > 0 ? n(o.left) + '件' : 'ある') + '、まとめて写せる' + (kmin > 0 ? '（雲の結果、あと' + kmin + '分）' : ''), c: 'y' }; }
+    if (/^札が遅れている/.test(lab)) { return { t: '見ておく。札が遅れておる', c: 'r' }; }
+    if (/^札まとめ中/.test(lab)) { return { t: '見ておく。札をまとめておる' + minsLeft(kmin), c: 'y' }; }
+    if (/^裏方作業中/.test(lab)) { return { t: '待っておればよい。裏方が働いておる' + minsLeft(kmin), c: 'g' }; }
+    if (lab === WAIT_TEXT) { return { t: '待っておればよい。' + (n(o.waitN) > 0 ? '次の枠が' + n(o.waitN) + '件待っておる' : '次の段が残っておる') + minsLeft(kmin), c: 'g' }; }
+    return { t: lab, c: 'y' };
   }
 
   /* ---- 段（v212・本人の枠 七十七）：段の数・今の段は state.json の生の段（steps＝{job, rows:[{k, t}]}・見張りが job-steps.txt から写す）から毎回数える ----
@@ -260,7 +289,7 @@
     VER: VER, TEXT: { WAIT: WAIT_TEXT, POINT: POINT_TEXT, WORK: WORK_TEXT, LOST: LOST_TEXT, CHECKING: CHECKING_TEXT, REST: REST_TEXT, YOSHI: YOSHI_TEXT, CHECK: CHECK_TEXT },
     senkoEpoch: senkoEpoch, pad2s: pad2s, newestTime: newestTime,
     isCountCard: isCountCard, ntfyOfCard: ntfyOfCard, todoList: todoList, todoLabel: todoLabel,
-    cardsPending: cardsPending, cardEtaSec: cardEtaSec, cardLate: cardLate, cardPendText: cardPendText, kumoEtaSec: kumoEtaSec, uraBusyText: uraBusyText, isRunning: isRunning, headText: headText, headCat: headCat, workLeft: workLeft,
+    cardsPending: cardsPending, cardEtaSec: cardEtaSec, cardLate: cardLate, cardPendText: cardPendText, kumoEtaSec: kumoEtaSec, uraBusyText: uraBusyText, isRunning: isRunning, headText: headText, headCat: headCat, headAct: headAct, workLeft: workLeft,
     stepsOf: stepsOf, pubLine: pubLine, omoteLines: omoteLines, endLine: endLine, uraLines: uraLines,
     endShort: endShort, uraCount: uraCount, uraGauge: uraGauge, stepLab: stepLab, omoteGauge: omoteGauge, boxSpec: boxSpec, mikomiEnd: mikomiEnd, workLate: workLate, headEta: headEta, etaRow: etaRow
   };

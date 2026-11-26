@@ -192,7 +192,7 @@ function probeSource(scene) {
     /* 視野の幅が言った幅より広がった時のために、右端が一番外にある要素を三つ控える（どこが溢れているかを辿る） */
     (function () { var all = [].slice.call(document.body.querySelectorAll('*')).filter(function (e) { var r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).display !== 'none'; }); all.sort(function (a, b) { return b.getBoundingClientRect().right - a.getBoundingClientRect().right; }); o.rightmost = all.slice(0, 3).map(function (e) { return e.tagName.toLowerCase() + (e.id ? '#' + e.id : '') + (e.className && typeof e.className === 'string' ? '.' + e.className.split(' ').join('.') : '') + '@' + Math.round(e.getBoundingClientRect().right) + '/w' + Math.round(e.getBoundingClientRect().width); }); })();
     /* v188：札まとめ中の頭の字（#headWait）の class・色・札の取得の数 */
-    o.hwText = txt(document.getElementById('headWait')); o.coreVer = (window.PanelCore && window.PanelCore.VER) || '';   /* v210：頭の字と、読めた panel-core.js の版 */
+    o.hwText = (function () { var h = document.getElementById('headWait'); return h ? (h.getAttribute('data-label') || txt(h)) : ''; })(); o.hwAct = txt(document.getElementById('headWait'));   /* v267：hwText は元の状態の字（data-label）・hwAct は本人が今する事の字 */ o.coreVer = (window.PanelCore && window.PanelCore.VER) || '';   /* v210：頭の字と、読めた panel-core.js の版 */
     (function () { var hw = document.getElementById('headWait'); o.hwCls = hw ? hw.className : ''; o.hwColor = hw ? getComputedStyle(hw).color : ''; o.hwWeight = hw ? getComputedStyle(hw).fontWeight : ''; o.noticeHits = window.__noticeHits || 0; })();
     o.evTag = txt(document.getElementById('evTag')); o.footTag = txt(document.getElementById('footTag')); o.footHidden = !!(document.getElementById('footTag') || {}).hidden;   /* v181 */
     o.stBad = [].map.call([].concat([].slice.call(pbx ? pbx.querySelectorAll('p.m.bad') : []), [].slice.call(st ? st.querySelectorAll('p.m.bad') : [])), function (x) { return x.textContent; }).join('／');   /* v180：赤の行 */
@@ -226,7 +226,8 @@ function probeSource(scene) {
     /* v175：釦を各スマホの幅（外の余白28pxを引いた幅）に絞り、折り返し込みで字が釦から溢れないか・「…」で切っていないかを見る（字の幅は電話と雲で違うので測って比べない） */
     o.rcFit = []; if (rcA) { var cs0 = getComputedStyle(rcA); o.rcEllipsis = (cs0.textOverflow === 'ellipsis'); var w0 = rcA.style.width; [390, 375, 360, 320].forEach(function (W) { rcA.style.width = (W - 28) + 'px'; var top = rcA.querySelector('.rc-top'), sub = rcA.querySelector('.rc-sub'); var over = (rcA.scrollWidth > rcA.clientWidth + 1) || (rcA.scrollHeight > rcA.clientHeight + 1); [top, sub].forEach(function (e) { if (e && (e.scrollWidth > e.clientWidth + 1)) { over = true; } }); o.rcFit.push({ w: W, over: over, h: Math.round(rcA.getBoundingClientRect().height), subLines: sub ? Math.round(sub.getBoundingClientRect().height / 16) : 0 }); }); rcA.style.width = w0; o.rcTop = (rcA.querySelector('.rc-top') || {}).textContent || ''; o.rcSub = (rcA.querySelector('.rc-sub') || {}).textContent || ''; }
     var hw = document.getElementById('headWait');
-    o.headWait = hw ? String(hw.textContent || '').trim() : null;
+    o.headWait = hw ? String(hw.getAttribute('data-label') || hw.textContent || '').trim() : null;   /* v267：元の状態の字（data-label）で測る */
+    o.headAct = hw ? String(hw.textContent || '').trim() : null; o.headActColor = hw ? hw.getAttribute('data-c') : null;
     o.headWaitColor = hw ? getComputedStyle(hw).color : null;
     o.headWaitSize = hw ? getComputedStyle(hw).fontSize : null;
     /* 使用量の三行と、その足元の一行 */
@@ -607,6 +608,37 @@ function staticParts() {
         if (!miss.length && hv.indexOf('function vaioLook') < 0) { ok('「様子を写す」＝写す字の最後に vaio-snap.md の番地を一行・同時に ntfy へ vaio-look＋字を送る／「👆 指さす」はそのまま（VAIOを見る釦は作らない）'); }
         else { ng('「様子を写す」の VAIO 合図の字面が足りない：' + miss.join(' ／ ') + (hv.indexOf('function vaioLook') >= 0 ? '（vaioLook が残っている）' : '')); }
       }
+      /* 枠 三百三十八（v267）：頭の字（猫の横）＝本人が今する事。形は「する事。訳、いつまで」・色は g＝緑・y＝黄・r＝赤。場面ごとの字と色・数はパネルにある物だけ・元の字（headText）はそのまま・全部の元の字に行き先がある、を総当たりで確かめる */
+      {
+        const PCa = require(path.join(path.dirname(SRC), 'panel-core.js'));
+        const NOWS = 1700000000, bad = [];
+        const case1 = (nm, o, wantT, wantC) => { const r = PCa.headAct(Object.assign({ now: NOWS, rows: [], left: 0 }, o)); if (!(wantT instanceof RegExp ? wantT.test(r.t) : r.t === wantT) || r.c !== wantC) { bad.push(nm + '：「' + r.t + '」' + r.c + '（想定 ' + wantT + ' ' + wantC + '）'); } };
+        case1('作業中（枠の名・あと分）', { stat: '作業中', subj: '枠 三百三十七：VAIOの写し', etaMin: 30 }, '待っておればよい。枠 三百三十七をやっておる、あと30分', 'g');
+        case1('作業中（見込み無し）', { stat: '作業中', subj: '枠 三百三十七' }, '待っておればよい。枠 三百三十七をやっておる', 'g');
+        case1('雲待ち（検査中）', { stat: '検査中', kumo: '雲：検査 見込み ' + (function () { const d = new Date((NOWS + 300) * 1000); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); })() }, /^待っておればよい。雲の検査待ち、あと[0-9]+分$/, 'g');
+        case1('止まり＋段が残る', { stat: '止まり（使用量）', stepTotal: 5, stepDone: 2 }, 'Codeタブに一言打って。窓が止まっておる', 'r');
+        case1('止まり＋段が無い', { stat: '止まり（使用量）', stepTotal: 0, stepDone: 0 }, /^見ておく。/, 'y');
+        case1('ヨシ待ち', { stat: '作業中', yoshiN: 1 }, 'Codeタブでヨシを。1件', 'r');
+        case1('ヨシ待ち（2件）', { stat: '待ち', yoshiN: 2 }, 'Codeタブでヨシを。2件', 'r');
+        case1('接続不良', { stat: '作業中', lost: true }, 'VAIOの電源と網を見て', 'r');
+        case1('全部無い', { stat: '待ち', resting: true }, '休憩中。次の枠を送れる', 'g');
+        case1('確認中（記録の途切れ）', { stat: '作業中', checking: true }, /^見ておく。/, 'y');
+        case1('写す物がある', { stat: '', left: 3 }, /^見ておく。写していない札が3件/, 'y');
+        const LABELS = new Set();
+        ['待ち', '', '作業中', '検査中', '止まり', '動きなし', 'ヨシ待ち'].forEach(stat => [false, true].forEach(lost => [false, true].forEach(checking => [false, true].forEach(resting => [0, 1].forEach(yoshiN => [null, { sub: { running: 1 } }].forEach(ura => [0, 2].forEach(waitN => [[0, 0], [3, 1]].forEach(st => [0, 4].forEach(left => {
+          const o = { stat: stat, lost: lost, checking: checking, resting: resting, yoshiN: yoshiN, ura: ura, waitN: waitN, stepTotal: st[0], stepDone: st[1], left: left, rows: [], now: NOWS };
+          const a = PCa.headAct(o), lab = PCa.headText(o); LABELS.add(lab);
+          if (!a || typeof a.t !== 'string' || !a.t || ['g', 'y', 'r'].indexOf(a.c) < 0) { bad.push('字か色が無い：' + lab); }
+          if (a && /、、、。|（なし）/.test(a.t)) { bad.push('元の字が残っている：' + a.t); }
+          if (lab === PCa.TEXT.YOSHI && a.c !== 'r') { bad.push('ヨシ待ちが赤でない'); }
+          if (lab === PCa.TEXT.LOST && a.c !== 'r') { bad.push('接続不良が赤でない'); }
+          if (lab === PCa.TEXT.REST && a.c !== 'g') { bad.push('休憩中が緑でない'); }
+        })))))))));
+        const hs = fs.readFileSync(SRC, 'utf8');
+        const wired = hs.indexOf('function paintHeadAct(hw)') >= 0 && hs.indexOf("hw.setAttribute('data-c', a.c)") >= 0 && hs.indexOf("hw.setAttribute('data-label', lb)") >= 0 && hs.indexOf('#headWait[data-c="r"]') >= 0;
+        if (!bad.length && wired) { ok('頭の字＝本人が今する事（場面ごとの字と色・赤＝ヨシ待ち・接続不良／緑＝休憩中・待つだけ／黄＝見ておく）：' + LABELS.size + ' 種の元の字すべてに行き先があり、数はパネルにある物だけ・panel.html は色と元の字を持つ'); }
+        else { ng('頭の字（本人が今する事）が違う ' + bad.length + ' 件' + (wired ? '' : '（panel.html の塗り手・色が足りない）') + '：' + bad.slice(0, 3).join(' ／ ')); }
+      }
       /* v254（枠 二百七十八）：ヨシの釦の『通った』は約2秒・『送れなかった』は約4秒で元の『ヨシ待ち N件』へ戻る（押して2秒後→元の字） */
       {
         const lblSrc = cutFn(html, 'ybLabel');
@@ -815,7 +847,7 @@ function staticParts() {
       if (src.some(x => !x)) { ng('切り出せない関数がある（' + SRCN.filter((n, i) => !src[i]).join('・') + '）'); }
       else {
         const VARS = ['lastEta', 'lastUra', 'lastSNow', 'lastStepTotal', 'lastStepDone', 'lastStat', 'lastStartedAt', 'lastMikomiMin', 'lastMikomiRaw', 'lastSDone', 'lastSNowAt', 'lastSNext', 'stepsOpen', 'lastKumo', 'lastDetail', 'lastMikomiAt', 'lastShadowBox'];
-        const fp = new Function('S', 'var window = S.win, ' + VARS.map(v => v + ' = S.' + v).join(', ') + ';' + LF + 'function $(id) { return S.el[id] || null; }' + LF + "function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }" + LF + "function stateLineText() { return ''; }" + LF + "function headText() { return ''; }" + LF + src.join(LF) + LF + 'paintStateLine();');
+        const fp = new Function('S', 'var window = S.win, ' + VARS.map(v => v + ' = S.' + v).join(', ') + ';' + LF + 'function $(id) { return S.el[id] || null; }' + LF + "function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }" + LF + "function stateLineText() { return ''; }" + LF + "function headText() { return ''; }" + LF + "function paintHeadAct(hw) { hw.textContent = headText(); }" + LF + src.join(LF) + LF + 'paintStateLine();');
         const paint = (d, ura, open, ov) => {
           const el = { progBox: { innerHTML: '', className: '' }, btnSteps: { className: '', textContent: '', setAttribute: function () { } }, stLine: { hidden: true, innerHTML: '' }, headWait: { textContent: '' } };
           const pv = d ? PV.panelView(Object.assign({ eta: d, ura: ura }, st({})), [], [], nS) : null;
