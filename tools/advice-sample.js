@@ -92,6 +92,7 @@ function sift(row) {
     const body = s.replace(/[。！？]$/, '');
     if (KIRE_RE.test(body) || /[、,]$/.test(body)) { out.push({ k: '切れ文', why: '接続の言葉・読点で終わる：' + s.slice(-24) }); }
   });
+  require('./advice-sift-extra.js').siftAdd(row).forEach(f => out.push(f));   // 枠 三百七十四：二重語尾・格言が逆・二度言い・決まり文句・口ごもり・染め
   let m; TILE_RE.lastIndex = 0;
   const said = new Set();
   while ((m = TILE_RE.exec(row.text))) { const nm = String(m[1]).replace(/^[^一二三四五六七八九東南西北白發発中]/, ''); if (!names.has(nm === '発' ? '發' : nm) && !said.has(nm)) { said.add(nm); out.push({ k: '牌の名', why: '配っていない牌の名「' + nm + '」を言っている（配牌：' + row.tiles + '）' }); } }
