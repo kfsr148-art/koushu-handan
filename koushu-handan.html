@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1539">
+<html lang="ja" data-ver="1540">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1430,7 +1430,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1539</div>
+  <div id="verTag">v1540</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -2019,11 +2019,40 @@ document.addEventListener('DOMContentLoaded', function () {
        ファイルが無い間は今までどおり attack の声を鳴らす（鳴らない・OS音声で読むことはしない）。
      ＊受付ページ（reader.html）から鳴らす経路は、受付ページが ssReaderHas(name) を持つまでは今までどおり attack の声。
      ＊判定（analyze）は読むだけ。 */
+  /* 枠 三百六十一（v1540）：染め色（いちばん多い数牌の色）の外に、出来上がった順子か刻子があるか。ある手は染めを本線に勧めない（「見える手」の並びは analyze のまま）。 */
+  function flushOutsideMeld(tiles){
+    const c = { man:{}, pin:{}, sou:{} }, n = { man:0, pin:0, sou:0 };
+    (tiles || []).forEach(function(t){ if(c[t.suit]){ c[t.suit][t.num] = (c[t.suit][t.num] || 0) + 1; n[t.suit]++; } });
+    const k = ['man','pin','sou'].reduce(function(x, y){ return n[y] > n[x] ? y : x; }, 'man');
+    return ['man','pin','sou'].some(function(su){
+      if(su === k) return false;
+      for(let i = 1; i <= 9; i++){ if(c[su][i] >= 3 || (c[su][i] && c[su][i + 1] && c[su][i + 2])) return true; }
+      return false;
+    });
+  }
+  /* 枠 三百六十一：染めを本線にしない手は、字牌より先に浮いた数牌（一枚きりで同じ色の二つ隣までに牌が無い・ドラと赤でない）を切る。向聴が悪くなる時は元の切る牌のまま。端が先。 */
+  function advFloatCut(a, tiles, cut){
+    if(!cut) return cut;
+    const codes = tiles.map(function(t){ return (t.suit === 'honor') ? t.code : (t.suit[0] + t.num); });
+    const fill = ['E','S','W','N','P','F','C'].filter(function(h){ return codes.indexOf(h) < 0; })[0] || 'C';
+    let best = null;
+    codes.forEach(function(code, i){
+      if(!/^[mps][1-9]$/.test(code) || tiles[i].red || code === a.doraCode) return;
+      if(codes.some(function(o, j){ return j !== i && o[0] === code[0] && Math.abs((+o[1]) - (+code[1])) <= 2; })) return;
+      const st = shanten(codes.slice(0, i).concat(codes.slice(i + 1), [fill]));
+      if(st > cut.st) return;
+      const key = [st, Math.min(+code[1], 10 - (+code[1])), i];
+      if(!best || cmp(key, best.key) < 0){ best = { key: key, code: code, st: st }; }
+    });
+    return best || cut;
+  }
+  function flushBlocked(a, tiles){ return (a.directions || []).some(function(d){ return /染め|混一色|清一色/.test(d); }) && flushOutsideMeld(tiles); }
   function sceneVoiceName(a, tiles){
     if(!a || a.tooMany || a.kokushiSeen || a.yakumanReach) return '';
     if(!tiles || tiles.some(function(t){ return t.suit === 'cat'; })) return '';
     const dirs = a.directions || [];
     if(dirs.some(function(d){ return /染め|混一色|清一色/.test(d); })){
+      if(flushOutsideMeld(tiles)) return '';   // 枠 三百六十一：他の色に出来上がった面子がある手は、場面の声と文を出さず型どおりの助言へ
       const c = { man:0, pin:0, sou:0 };
       tiles.forEach(function(t){ if(c[t.suit] !== undefined) c[t.suit]++; });
       const k = ['man','pin','sou'].reduce(function(x, y){ return c[y] > c[x] ? y : x; }, 'man');
@@ -3582,6 +3611,7 @@ function advDecodeWav(ab) {
     const dirs = a.directions || [];
     const tl = advRetreatPart(a, attack);
     const MS = advMeas(F);
+    const FB = flushBlocked(a, tiles); if(FB && MS.fl === 'adva-fl-2') MS.fl = '';   // 枠 三百六十一：染めを本線にしない手では、染めを勧める側の一文を出さない
     const qk = Object.keys(F.cnt).filter(function(k){ return F.cnt[k] >= 4; })[0];   // 枠 三百十六（棚 #28・v1536）：同じ牌4枚の時の暗槓の一文
     const kanL = !qk ? null : (/^[ESWNPFC]$/.test(qk) ? 'advk-z-1' : 'advk-n-1');
     const withT = function(r, xs){ (xs || []).forEach(function(p){ if(p){ r.push([p]); } }); r.push([tl || 'adva-tn']); return r; };   // 枠 二百五十五：第二引数＝測った数の一文（七対子・対々・染め）   // v1506：七対子・対々和・タンヤオの文のあとに、巡目の一文（向聴2以上）か「何巡目まで、とは決めない」（向聴1以下）を足す
@@ -3598,12 +3628,12 @@ function advDecodeWav(ab) {
       if(dirs.some(function(d){ return /タンヤオ/.test(d); })) return withT([['adva-tan-a', { n: Math.min(13, F.yaochuN) }, 'adva-tan-b']], ['adva-ty-1', MS.fl]);
       if(sh >= 0 && sh <= 1) return [['adva-ikk-a'], [TEI, 'adva-ikk-b']];
       if(F.catN >= 4) return [['adva-neko-a', { n: Math.min(13, F.catN) }, 'adva-neko-b'], [TEI, 'adva-neko-c'], ['adva-tc']];   // v1506：猫牌4枚以上は「期限は引けない」
-      const cut = pickCutTile(a, tiles);
+      const cut = FB ? advFloatCut(a, tiles, pickCutTile(a, tiles)) : pickCutTile(a, tiles);
       const l1 = [];   // v1491：頭の「攻めなのだ。」は adviceFor が一番最初に置く
       const hasCut = !!(cut && cut.code && ADV_TEXT['advt-' + cut.code]);   // v1500：話の順は 結論→訳→やる事→ひと言。訳（見立て）を先に、切る牌と巡目をひと続きに
       if(hasCut) l1.push({ t: cut.code }, 'adva-from'); else l1.push('adva-weak');
       if(sh >= 2){ const T = { 2: 3, 3: 6, 4: 7, 5: 8 }[sh] || 8; l1.push('adva-t' + T); } else if(!hasCut){ l1.push('adva-tn'); }   // v1506：切る牌が無い手にも巡目を続ける／向聴1以下は「何巡目まで、とは決めない」
-      const lines = [(key === 'sensei' && MS.fl === 'adva-fl-1') ? null : ['adva-w-' + key], l1].filter(Boolean);   // 枠 三百二十一（v1537）：測りが「染めに寄せると損」と言う時は、先生の「染めの形が見えている」を言わない。七対子（対子4組以下・6組）・対々（暗刻2組）・タンヤオは「向かえ」の文を外し、測りの『普通に打つ』を結論にする
+      const lines = [(key === 'sensei' && (FB || MS.fl === 'adva-fl-1')) ? null : ['adva-w-' + key], l1].filter(Boolean);   // 枠 三百二十一（v1537）：測りが「染めに寄せると損」と言う時は、先生の「染めの形が見えている」を言わない。七対子（対子4組以下・6組）・対々（暗刻2組）・タンヤオは「向かえ」の文を外し、測りの『普通に打つ』を結論にする
       if(F.pairs2 >= 3 && F.trip >= 1) lines.push(['adva-s-nito']);
       else if(F.quad || F.trip3 >= 2) { /* v1500：「重なった一組を先に切る」は上の「切る」と同じ事なので足さない */ }
       else if(sh >= 0 && sh <= 2 && F.def === 0) lines.push(['adva-s-nosafe']);
@@ -4073,7 +4103,7 @@ function advDecodeWav(ab) {
         key = advSpeaker(a, attack, catN);   // 金の丸＝見方の審判
         lines = advLines(a, sorted, attack, key);
       }
-      const ctx = { attack: attack, vkey: key, lines: lines, scene: scene, omo: advOmoScene(a, tiles, attack), wordc: advWordCands(a, tiles), big: (a.doraValue >= 3) };   // v1509：大物手（打点 3 以上）
+      const ctx = { attack: attack, vkey: key, lines: lines, scene: scene, omo: advOmoScene(a, tiles, attack), wordc: advWordCands(a, tiles).filter(function(x){ return !(/^w0(25|26|27|29|94)$/.test(x) && flushBlocked(a, tiles)); }), big: (a.doraValue >= 3) };   // v1509：大物手（打点 3 以上）
       window._advCtx = ctx;
       const r = advCompose(ctx, tone);
       return { key: key, text: r.text, audio: r.audio, scene: scene || undefined };
