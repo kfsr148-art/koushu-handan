@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1544">
+<html lang="ja" data-ver="1545">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1434,7 +1434,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1544</div>
+  <div id="verTag">v1545</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -3481,19 +3481,31 @@ function advEchoLs(ls, sd) {
   return o;
 }
 function advNcLine(l) { return l.some(function (t) { return typeof t === 'string' && /^(advd-e-|adva-e$)/.test(t); }); }
+/* 枠 三百九十：守りの線（advd-sen）が在る時に、毎回付くリーチを受けた時の行を外した並び */
+function advNoRiichiLs(ls) {
+  const sen = ls.some(function (l) { return l.indexOf('advd-sen') >= 0 || l.indexOf('advd-sen-s') >= 0; });
+  return sen ? ls.filter(function (l) { return !/^advd-r(iichi|2a|2c|q0|q1)/.test(l[0]); }) : ls;
+}
 /* 詰めの段（上から順に試し、収まった所で止める）。nc：0＝そのまま／1＝中ほどのつなぎを外す／2＝最初のつなぎも外す／3＝終わりの呼びかけも外す */
 function advVariants(ls, sd, hasOmo, hasWord) {
-  const out = [{ ls: ls, omo: hasOmo, word: hasWord, nc: 0 }];
-  if (hasOmo) { out.push({ ls: ls, omo: false, word: hasWord, nc: 0 }); }
-  if (hasWord) { out.push({ ls: ls, omo: false, word: false, nc: 0 }); }
+  const d = (sd === 'd');
   const s = advShortLs(ls);
-  out.push({ ls: s, omo: false, word: false, nc: 0 });
-  out.push({ ls: s, omo: false, word: false, nc: 1 });
-  const c = (sd === 'd') ? advCompactLs(s) : s;
-  if (sd === 'd') { out.push({ ls: c, omo: false, word: false, nc: 1 }); out.push({ ls: advDropSLs(c), omo: false, word: false, nc: 1 }); }
-  out.push({ ls: c, omo: false, word: false, nc: 2 });
-  const dc = (sd === 'd') ? advDropSLs(c) : c;   // 守りの「ひと言添え」（対子は抱える等）は、最後の三段では外す
-  out.push({ ls: dc, omo: false, word: false, nc: 3 });
+  const c = d ? advCompactLs(s) : s;
+  const dc = d ? advDropSLs(c) : c;   // 守りの「ひと言添え」（対子は抱える等）を外した形
+  /* 本文の詰めの段（上から順）。枠 三百九十：人格の言葉を付けたまま、本文を先にここまで詰める */
+  const body = [{ ls: ls, nc: 0 }, { ls: s, nc: 0 }, { ls: s, nc: 1 }];
+  if (d) { body.push({ ls: c, nc: 1 }, { ls: dc, nc: 1 }); }
+  body.push({ ls: c, nc: 2 }, { ls: dc, nc: 3 });
+  /* 言葉の持ち方：両方→麻雀の言葉だけ→面白みの一言だけ→無し */
+  const keep = [];
+  if (hasOmo && hasWord) { keep.push([true, true]); }
+  if (hasWord) { keep.push([false, true]); }
+  if (hasOmo) { keep.push([true, false]); }
+  keep.push([false, false]);
+  const out = [];
+  const nr = d ? advNoRiichiLs(c) : null;   // 言葉を残すためだけに使う段（守り）
+  const more = d ? [{ ls: nr, nc: 1 }, { ls: advDropSLs(nr), nc: 1 }, { ls: nr, nc: 2 }, { ls: advDropSLs(nr), nc: 3 }] : [];
+  keep.forEach(function (k) { ((k[0] || k[1]) ? body.concat(more) : body).forEach(function (b) { out.push({ ls: b.ls, omo: k[0], word: k[1], nc: b.nc }); }); });
   // v1506（y1118）：判定の一言が長い時（デレ・ツンの長い一言）の最後の段。終わりの一言（励まし）を外し、上限を33秒ほどまで緩める。結論（一言）・訳・切る牌・巡目は落とさない。
   out.push({ ls: dc, omo: false, word: false, nc: 3, noEnd: true, soft: true });   // 最後の段だけ、上限を33秒ほどまで緩める（訳は残す・y1118）
   return out;
@@ -3754,7 +3766,7 @@ function advDecodeWav(ab) {
   function advCompose(ctx, tone){
     const sd = ctx.attack ? 'a' : 'd', m = advMode(), dial = advDial();
     const endTok = (m !== 'n') ? [['advc-' + tone + '-' + sd + '-' + m + '-' + advPickOne('c-' + tone + '-' + sd + '-' + m)]] : [];   // ノーマルの終わりの一言は攻め・守りをもう一度言うので付けない（デレ・ツンだけ付ける）
-    /* v1506：声の長さを30秒以内に詰める。段は上から（一言→麻雀の言葉→短い言い方→つなぎ→リーチ一文化→呼びかけ）。収まった所で止める（核の advVariants・advBad）。 */
+    /* v1506：声の長さを30秒以内に詰める。枠 三百九十：本文（短い言い方→つなぎ→リーチ一文化→重なり→呼びかけ）を先に詰め、面白みの一言と麻雀の言葉は最後まで残す（核の advVariants・advBad）。 */
     const mkLines = function(ls, om, word, nc, hd, noEnd){
       const big = ctx.big ? advBigLine(tone, dial, ctx.attack) : '';   // v1509：大物手の一言（攻め）／惜しむ一言（守り）。判定の一言の前に、同じ行の書いた字で置く（詰めの段でも落ちない）。字が空なら出ない
       const base = [big ? [{ lit: big }, { lit: hd }] : [{ lit: hd }]].concat(ls);   // v1506：頭は判定の一言（結論はこの一言で一度だけ言う）
@@ -3785,7 +3797,7 @@ function advDecodeWav(ab) {
       for(let k = 0; k < vs.length; k++){
         L = mkLines(vs[k].ls, vs[k].omo ? om : null, vs[k].word ? word : '', vs[k].nc, hd, vs[k].noEnd);
         r = advTalk(L, tone, dial, m !== 'n' && !vs[k].noEnd);
-        if(!advBad(r.text, L.length, vs[k].soft ? ADV_SOFT : 0)) return { L: L, r: r, ok: true };
+        if(!advBad(r.text, L.length, vs[k].soft ? ADV_SOFT : 0)) return { L: L, r: r, ok: true, keep: (vs[k].word ? 2 : 0) + (vs[k].omo ? 1 : 0) };
       }
       return { L: L, r: r, ok: false };
     };
@@ -3796,9 +3808,10 @@ function advDecodeWav(ab) {
     else {
       const cands = advHeadCands(ctx.attack, tone, dial, m);
       let best = null;
+      const top = (vs[0].word ? 2 : 0) + (vs[0].omo ? 1 : 0);   // 枠 三百九十：言葉を残せる一言を先に探す
       for(let ci = 0; ci < cands.length; ci++){
         const rr = run(cands[ci]); rr.hd = cands[ci];
-        if(rr.ok){ res = rr; break; }
+        if(rr.ok){ if(!res || rr.keep > res.keep) res = rr; if(res.keep === top) break; }
         if(!best || advEst(rr.r.text, rr.L.length) < advEst(best.r.text, best.L.length)) best = rr;
       }
       if(!res) res = best;

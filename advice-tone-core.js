@@ -1390,19 +1390,31 @@ function advEchoLs(ls, sd) {
   return o;
 }
 function advNcLine(l) { return l.some(function (t) { return typeof t === 'string' && /^(advd-e-|adva-e$)/.test(t); }); }
+/* 枠 三百九十：守りの線（advd-sen）が在る時に、毎回付くリーチを受けた時の行を外した並び */
+function advNoRiichiLs(ls) {
+  const sen = ls.some(function (l) { return l.indexOf('advd-sen') >= 0 || l.indexOf('advd-sen-s') >= 0; });
+  return sen ? ls.filter(function (l) { return !/^advd-r(iichi|2a|2c|q0|q1)/.test(l[0]); }) : ls;
+}
 /* 詰めの段（上から順に試し、収まった所で止める）。nc：0＝そのまま／1＝中ほどのつなぎを外す／2＝最初のつなぎも外す／3＝終わりの呼びかけも外す */
 function advVariants(ls, sd, hasOmo, hasWord) {
-  const out = [{ ls: ls, omo: hasOmo, word: hasWord, nc: 0 }];
-  if (hasOmo) { out.push({ ls: ls, omo: false, word: hasWord, nc: 0 }); }
-  if (hasWord) { out.push({ ls: ls, omo: false, word: false, nc: 0 }); }
+  const d = (sd === 'd');
   const s = advShortLs(ls);
-  out.push({ ls: s, omo: false, word: false, nc: 0 });
-  out.push({ ls: s, omo: false, word: false, nc: 1 });
-  const c = (sd === 'd') ? advCompactLs(s) : s;
-  if (sd === 'd') { out.push({ ls: c, omo: false, word: false, nc: 1 }); out.push({ ls: advDropSLs(c), omo: false, word: false, nc: 1 }); }
-  out.push({ ls: c, omo: false, word: false, nc: 2 });
-  const dc = (sd === 'd') ? advDropSLs(c) : c;   // 守りの「ひと言添え」（対子は抱える等）は、最後の三段では外す
-  out.push({ ls: dc, omo: false, word: false, nc: 3 });
+  const c = d ? advCompactLs(s) : s;
+  const dc = d ? advDropSLs(c) : c;   // 守りの「ひと言添え」（対子は抱える等）を外した形
+  /* 本文の詰めの段（上から順）。枠 三百九十：人格の言葉を付けたまま、本文を先にここまで詰める */
+  const body = [{ ls: ls, nc: 0 }, { ls: s, nc: 0 }, { ls: s, nc: 1 }];
+  if (d) { body.push({ ls: c, nc: 1 }, { ls: dc, nc: 1 }); }
+  body.push({ ls: c, nc: 2 }, { ls: dc, nc: 3 });
+  /* 言葉の持ち方：両方→麻雀の言葉だけ→面白みの一言だけ→無し */
+  const keep = [];
+  if (hasOmo && hasWord) { keep.push([true, true]); }
+  if (hasWord) { keep.push([false, true]); }
+  if (hasOmo) { keep.push([true, false]); }
+  keep.push([false, false]);
+  const out = [];
+  const nr = d ? advNoRiichiLs(c) : null;   // 言葉を残すためだけに使う段（守り）
+  const more = d ? [{ ls: nr, nc: 1 }, { ls: advDropSLs(nr), nc: 1 }, { ls: nr, nc: 2 }, { ls: advDropSLs(nr), nc: 3 }] : [];
+  keep.forEach(function (k) { ((k[0] || k[1]) ? body.concat(more) : body).forEach(function (b) { out.push({ ls: b.ls, omo: k[0], word: k[1], nc: b.nc }); }); });
   // v1506（y1118）：判定の一言が長い時（デレ・ツンの長い一言）の最後の段。終わりの一言（励まし）を外し、上限を33秒ほどまで緩める。結論（一言）・訳・切る牌・巡目は落とさない。
   out.push({ ls: dc, omo: false, word: false, nc: 3, noEnd: true, soft: true });   // 最後の段だけ、上限を33秒ほどまで緩める（訳は残す・y1118）
   return out;
