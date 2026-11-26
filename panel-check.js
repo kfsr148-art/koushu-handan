@@ -286,7 +286,7 @@ function probeSource(scene) {
         if (cb) { cb.addEventListener('click', function () { clicks++; }); }
         var rr = function (id) { var e = document.getElementById(id); if (!e) { return null; } var b = e.getBoundingClientRect(); return { l: b.left, r: b.right, t: b.top, b: b.bottom, w: b.width, h: b.height }; };
         o.pBtn = { shots: rr('btnShots'), rec: rr('btnRecent'), url: rr('btnCopyUrl'), point: rr('btnPoint') }; o.pOver = document.documentElement.scrollWidth > window.innerWidth + 1;
-        if (bp) { bp.click(); }
+        if (bp) { pointToggle(); }
         setTimeout(function () {
           var vr = v.getBoundingClientRect(), cs = getComputedStyle(v);
           o.pVeil = { hidden: v.hidden, parent: v.parentElement && v.parentElement.tagName, w: vr.width, h: vr.height, pos: cs.position, ta: cs.touchAction, alpha: cs.backgroundColor };
@@ -294,11 +294,11 @@ function probeSource(scene) {
           var cr = cb.getBoundingClientRect(); v.dispatchEvent(new MouseEvent('click', { clientX: cr.left + 3, clientY: cr.top + cr.height / 2, bubbles: true }));   /* 下の釦（まとめて写す）の上を押す */
           o.pBoardClicks1 = clicks; o.pClipAfterBoard = CAP.clip;
           var ur = document.getElementById('btnCopyUrl').getBoundingClientRect();
-          if (document.getElementById('pointVeil').hidden) { bp.click(); }
+          if (document.getElementById('pointVeil').hidden) { pointToggle(); }
           v.dispatchEvent(new MouseEvent('click', { clientX: ur.left + ur.width / 2, clientY: ur.top + ur.height / 2, bubbles: true }));   /* 様子を写すの上を押す */
           setTimeout(function () {
             o.pClip = String(CAP.clip || ''); o.pVeilHiddenAfter = v.hidden; o.pLabelAfter = txt(bp); o.pBodyClsAfter = document.body.className; o.pBoardClicks2 = clicks;
-            bp.click(); o.pCancelOn = !v.hidden; bp.click(); o.pCancelOff = v.hidden;
+            pointToggle(); o.pCancelOn = !v.hidden; pointToggle(); o.pCancelOff = v.hidden;
             out2(o);
           }, 400);
         }, 200);
@@ -598,6 +598,14 @@ function staticParts() {
         const wired = hsrc.indexOf('core().headCat(headObj())') >= 0 && hsrc.indexOf("el.src = 'genba-taiki-80.png'") >= 0 && hsrc.indexOf('function headObj()') >= 0;
         if (!bad.length && wired) { ok('頭の猫と字の食い違い：' + n + '通りで 0 件（寝ている猫＝休憩中・接続不良だけ／仕事が残る確認中・待機中＝緑の服の猫／休憩中は仕事が全部無い時だけ）・panel.html は headCat を使う'); }
         else { ng('頭の猫と字の食い違い ' + bad.length + ' 件' + (wired ? '' : '（panel.html が headCat を使っていない）') + '：' + bad.slice(0, 3).join(' ／ ')); }
+      }
+      /* 枠 三百三十二（v264）：「👆 指さす」→「VAIOを見る」。釦の字・押すと ntfy の話題へ『vaio-look』を送る・1分に1度・札が来たら『VAIOの状態を写しました』（字面）。VAIO の側（yoshi-btn-recv.js の vaio-look）は ~/.claude の台本で、手元の作り値で別に確かめた */
+      {
+        const hv = fs.readFileSync(SRC, 'utf8');
+        const need = ['id="btnPoint">VAIOを見る</button>', "body: 'vaio-look'", "addEventListener('click', function () { vaioLook(); })", 'VL_GAP = 60000', "vlMsg('VAIOの状態を写しました', false)", 'VAIOの状態の写し', "vlMsg('1分に1度だけです', false)"];
+        const miss = need.filter(x => hv.indexOf(x) < 0);
+        if (!miss.length && hv.indexOf('👆 指さす') < 0) { ok('「VAIOを見る」釦：字・送り（vaio-look）・1分に1度・札が来たら写したの字が揃い、「👆 指さす」の字は釦から消えた'); }
+        else { ng('「VAIOを見る」釦の字面が足りない：' + miss.join(' ／ ') + (hv.indexOf('👆 指さす') >= 0 ? '（「👆 指さす」が残っている）' : '')); }
       }
       /* v254（枠 二百七十八）：ヨシの釦の『通った』は約2秒・『送れなかった』は約4秒で元の『ヨシ待ち N件』へ戻る（押して2秒後→元の字） */
       {
