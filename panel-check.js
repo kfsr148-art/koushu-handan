@@ -2251,6 +2251,22 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     if (okBtns && okGo && okFix && okLater && okClose && okNoSend && okOnclick) { ok('ヨシの釦の中身：押すと待ちの題と本文＋四つの釦・ヨシ＝yoshi <印>／直して＝yoshi-fix <印> <一言>／後では何も送らない・やめる＝yoshi-stop <印>（枠 二百八十九）'); }
     else { ng('ヨシの釦の中身の字面が違う（四釦 ' + okBtns + '・ヨシ ' + okGo + '・直して ' + okFix + '・後で ' + okLater + '・やめる ' + okClose + '・送らない ' + okNoSend + '・釦 ' + okOnclick + '）'); }
   }
+  /* v274（枠 三百六十）：札の『推し：』の釦は白の太枠（ヨシを送るの青より後ろの指定）・行頭の『直しの案：』は直しての入れ欄に最初から入る・どちらも無ければ枠なし・空欄。ybOshi を取り出して動かす */
+  {
+    const a = html.indexOf('function ybOshi('), b = html.indexOf('function ybPopClose(', a);
+    let f = null; try { f = new Function(html.slice(a, b) + '\nreturn ybOshi;')(); } catch (e) { f = null; }
+    let okRun = false, okWire = false, okCss = false;
+    if (f) {
+      const x = f('本文\n推し：直して\n直しの案：枠を白にして'), y = f('本文\n推し：ヨシを送る'), z = f('本文だけ。札に直しの案：の行があれば入る'), w = f('本文\n直しの案：三行にして'), v = f('本文\n推し：直して｜前の形');
+      okRun = x.pick === 'fix' && x.text === '枠を白にして' && x.rest === '本文' && y.pick === 'go' && y.text === '' && y.rest === '本文'
+        && z.pick === '' && z.text === '' && z.rest === '本文だけ。札に直しの案：の行があれば入る' && w.pick === '' && w.text === '三行にして' && w.rest === '本文' && v.pick === 'fix' && v.text === '前の形';
+    }
+    okWire = html.indexOf("esc(os.text) + '</textarea>") >= 0 && ['go', 'fix', 'later', 'close'].every(k => html.indexOf("rc('" + k + "')") >= 0);
+    const go = html.indexOf('#ybPop .yb-row button.yb-go{'), rec = html.indexOf('#ybPop .yb-row button.yb-rec{');
+    okCss = go >= 0 && rec > go && html.slice(rec, rec + 120).indexOf('border:4px solid #fff;') >= 0;
+    if (okRun && okWire && okCss) { ok('ヨシの釦の推しと直しの案：推しの釦だけ白の太枠（ヨシを送るでも白）・直しの案は入れ欄に最初から・無ければ枠なしで空欄（枠 三百六十）'); }
+    else { ng('推しと直しの案が違う（読み ' + okRun + '・結び ' + okWire + '・白枠 ' + okCss + '）'); }
+  }
   /* v224（枠 百五十六）：影の仕事の箱（panelView.shadowBox）。走っている間だけ載る・済んだら null・金額の字が無い・パネルが箱を出す字面がある */
   {
     const os = require('os'), fsx = require('fs'), pth = require('path');
