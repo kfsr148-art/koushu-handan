@@ -2278,6 +2278,19 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     } catch (e) { why = String(e && e.message); }
     if (r1 && r2) { ok('ヨシの後で：待ち1件なら閉じる・2件なら次へ移り最後で閉じる・何も送らない（枠 三百六十八）'); } else { ng('ヨシの後でが違う（1件 ' + r1 + '・2件 ' + r2 + '・' + why + '）'); }
   }
+  /* v276（枠 三百六十九・三百七十）：問いの行は一番上に大きく・束は印のある🙋の段だけ読む（推しも読める） */
+  {
+    const a = html.indexOf('function ybAskPart('), b = html.indexOf('function ybPopClose(', a);
+    let okR = false, why = '';
+    try {
+      const f = new Function(html.slice(a, b) + '\nreturn { part: ybAskPart, oshi: ybOshi };')();
+      const bundle = 'この間にまとまった知らせ 2本\n\n［✅ 終わりました］\n印: y1 の事\n推し：後で\n\n［🙋 ヨシしてください］\n枠 一\n印: y1\n問い: 白に直してよいか\n推し：ヨシを送る';
+      const x = f.part({ ask: 0, t: 1, title: '✅', message: bundle }, 'y1'), o = f.oshi(x.message);
+      okR = x.title.indexOf('🙋') === 0 && o.pick === 'go' && o.q === '白に直してよいか' && o.rest.indexOf('問い') < 0; why = x.title + ' / ' + o.pick + ' / ' + o.q;
+    } catch (e) { why = String(e && e.message); }
+    const okW = html.indexOf('<p class="yb-q">') >= 0 && html.indexOf('#ybPop .yb-q{') >= 0;
+    if (okR && okW) { ok('ヨシの問い：束は印のある🙋の段だけ読み推しも読める・問いの一文を一番上に大きく出す（枠 三百六十九・三百七十）'); } else { ng('ヨシの問いの読みが違う（読み ' + okR + '・字 ' + okW + '・' + why + '）'); }
+  }
   /* v224（枠 百五十六）：影の仕事の箱（panelView.shadowBox）。走っている間だけ載る・済んだら null・金額の字が無い・パネルが箱を出す字面がある */
   {
     const os = require('os'), fsx = require('fs'), pth = require('path');
