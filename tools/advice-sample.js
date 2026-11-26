@@ -79,8 +79,10 @@ if (res.err) { console.error('probe の誤り：' + res.err); process.exit(4); }
 /* ---- 機械の篩 ---- */
 let dupMod = null; try { dupMod = require(path.join(ROOT, 'scratchpad', 'jobs', 'v1522', 'advdup.js')); } catch (e) { }
 const SENT = t => String(t || '').split(/(?<=[。！？])/).map(s => s.trim()).filter(Boolean);
-const TILE_RE = /[一二三四五六七八九][萬筒索]|(?:^|[^一-龥])([東南西北白發発中])(?=[とをはがもの、。か])/g;
-const KIRE_RE = /(されば|ならば|それなら|よって|ゆえに|だから|ですから|だが|しかし|また|さて|つまり)[、,]?$/;
+/* 牌の名は『持っていると言う』言い方の時だけ見る（面白みの一言の豆知識『東は朝日、發は吉兆』は配牌の話ではないので数えない） */
+const CLAIM = '(?=(?:の対子|の暗刻|の刻子|を切|から切|を残|は残|を抱|は抱|が(?:あ|ござ|二枚|三枚|2枚|3枚)))';
+const TILE_RE = new RegExp('([一二三四五六七八九][萬筒索]|(?:^|[^一-龥])[東南西北白發発中])' + CLAIM, 'g');
+const KIRE_RE = /(?:^|[、。！？ ])(?:されば|ならば|それなら|よって|ゆえに|だから|ですから|だが|しかし|また|さて|つまり)[、,]?$/;
 const REP_LABEL = { rep: '語尾の二文続き', frag: '切れ端（述語の無い短い一文）', empty: '中身のない一文', dbl: '語尾の二重', dup: '隣り合う二文に同じ理由の言葉' };
 function sift(row) {
   const out = [], names = common.handNames(row.tiles);
@@ -92,7 +94,7 @@ function sift(row) {
   });
   let m; TILE_RE.lastIndex = 0;
   const said = new Set();
-  while ((m = TILE_RE.exec(row.text))) { const nm = m[1] || m[0]; if (!names.has(nm === '発' ? '發' : nm) && !said.has(nm)) { said.add(nm); out.push({ k: '牌の名', why: '配っていない牌の名「' + nm + '」を言っている（配牌：' + row.tiles + '）' }); } }
+  while ((m = TILE_RE.exec(row.text))) { const nm = String(m[1]).replace(/^[^一二三四五六七八九東南西北白發発中]/, ''); if (!names.has(nm === '発' ? '發' : nm) && !said.has(nm)) { said.add(nm); out.push({ k: '牌の名', why: '配っていない牌の名「' + nm + '」を言っている（配牌：' + row.tiles + '）' }); } }
   return out;
 }
 const TONE_JA = { butler: '執事', strategist: '軍師', blunt: 'ずんだ', lady: 'お嬢様', french: 'マダム', ichihime: '一姫', sensei: '先生' };
@@ -111,6 +113,12 @@ const L = ['# 助言の見本（センコ用・変な文を探す）', '', '版�
   '引っかかった文：' + flagged.length + '／' + all.length + '件（' + (Object.keys(byKind).map(k => (REP_LABEL[k] || k) + ' ' + byKind[k]).join('・') || 'なし') + '）', ''];
 flagged.slice(0, 60).forEach(x => { L.push('- ' + x.set + ' 局' + x.n + '｜' + label(x) + '｜印：' + x.flags.map(f => f.k).join('・') + '｜訳：' + x.flags.map(f => f.why).join('／')); });
 if (flagged.length > 60) { L.push('- …ほか ' + (flagged.length - 60) + '件（下の各局に印あり）'); }
+/* 判定カードの絵（advice-shots.js が先に作る）：はみ出し・切れの印 */
+try {
+  const sr = JSON.parse(fs.readFileSync(path.join(OD, 'advice-shots', ver, 'report.json'), 'utf8')), bad = sr.rows.filter(x => (x.issues && x.issues.length) || x.err || x.card === false);
+  L.push('', '## 判定カードの絵（iPhone 横向き 844x390 で撮り、568x320 の窓で枠の検査）', '', '絵：advice-shots/' + ver + '/fixed-NN.png（決まった30局）／印の付いた局：' + bad.length + '／' + sr.rows.length);
+  bad.forEach(x => { L.push('- 固定 局' + x.n + '：' + ((x.issues || []).join('／') || x.err || (x.card === false ? '判定カードが出ていない' : '')) + (x.shot ? '（' + x.shot + '）' : '')); });
+} catch (e) { L.push('', '## 判定カードの絵', '', '（この版の絵の記録が読めなかった）'); }
 L.push('', '## 無作為の百局', '', '読むだけの見本です。本体が実際に出す文（adviceFor）をそのまま並べています。', '');
 res.rows.forEach(x => { const f = x.flags || all.find(a => a.set === '見本' && a.n === x.n).flags; L.push('### 局 ' + x.n + '｜' + label(x) + (f && f.length ? '｜印：' + f.map(y => y.k).join('・') : '')); L.push('配牌：' + x.tiles); L.push(''); L.push(x.text || '（文なし）'); L.push(''); });
 L.push('## 決まった30局（版ごとの比べの元）', '');
