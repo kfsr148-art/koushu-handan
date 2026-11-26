@@ -2245,7 +2245,7 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     const bi = html.indexOf('function ybPopOpen('), bj = html.indexOf('function paintYoshiBtn') > bi ? html.length : html.indexOf('/* ---- 過去の札', bi), pop = bi >= 0 ? html.slice(bi, bj > bi ? bj : bi + 6000) : '';
     const okBtns = ['data-yb="go"', 'data-yb="fix"', 'data-yb="later"', 'data-yb="close"'].every(x => pop.indexOf(x) >= 0);
     const okGo = pop.indexOf("ybPost('yoshi ' + mark, mark)") >= 0, okFix = pop.indexOf("ybPost('yoshi-fix ' + mark + ' '") >= 0;
-    const okLater = /act === 'later'\) \{ ybPopOpen\(idx \+ 1\); \}/.test(pop), okClose = /act === 'close'\) \{ ybPost\('yoshi-stop ' \+ mark, mark, 'stop'\); ybPopClose\(\); \}/.test(pop);
+    const okLater = /act === 'later'\) \{ if \(idx \+ 1 < n\) \{ ybPopOpen\(idx \+ 1\); \} else \{ ybPopClose\(\); \} \}/.test(pop), okClose = /act === 'close'\) \{ ybPost\('yoshi-stop ' \+ mark, mark, 'stop'\); ybPopClose\(\); \}/.test(pop);
     const okNoSend = pop.indexOf("act === 'later'") >= 0 && !/act === 'later'[^}]*ybPost/.test(pop) && true;   /* v257：やめるは『yoshi-stop』を送る（後では何も送らない） */
     const okOnclick = html.indexOf('ybPopOpen(0);') >= 0 && html.indexOf("body: 'yoshi ' + mark }") < 0;
     if (okBtns && okGo && okFix && okLater && okClose && okNoSend && okOnclick) { ok('ヨシの釦の中身：押すと待ちの題と本文＋四つの釦・ヨシ＝yoshi <印>／直して＝yoshi-fix <印> <一言>／後では何も送らない・やめる＝yoshi-stop <印>（枠 二百八十九）'); }
@@ -2266,6 +2266,17 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     okCss = go >= 0 && rec > go && html.slice(rec, rec + 120).indexOf('border:4px solid #fff;') >= 0;
     if (okRun && okWire && okCss) { ok('ヨシの釦の推しと直しの案：推しの釦だけ白の太枠（ヨシを送るでも白）・直しの案は入れ欄に最初から・無ければ枠なしで空欄（枠 三百六十）'); }
     else { ng('推しと直しの案が違う（読み ' + okRun + '・結び ' + okWire + '・白枠 ' + okCss + '）'); }
+  }
+  /* v275（枠 三百六十八）：後で＝次の待ちがあれば開き、最後の一件（1件だけ）は閉じる。何も送らない。ybPopOpen を偽の画面で動かす */
+  {
+    const a = html.indexOf('function ybOshi('), b = html.indexOf('/* ---- 過去の札', a);
+    let r1 = false, r2 = false, why = '';
+    try {
+      const run = new Function('marks', 'var pop = null, sent = [], lastYoshiOpen = marks; var document = { getElementById: function (id) { return id === "ybPop" ? pop : null; }, createElement: function () { return { hidden: true, innerHTML: "" }; }, body: { appendChild: function (e) { pop = e; } } };' + 'function ybPost(x) { sent.push(x); } function ybInfo() { return null; } function esc(s) { return String(s); }\n' + html.slice(a, b) + '\nvar later = function () { pop.onclick({ target: { closest: function () { return { getAttribute: function () { return "later"; } }; } } }); }; ybPopOpen(0); var seq = []; for (var i = 0; i < marks.length; i++) { later(); var m = /yb-mk">([^<]*)</.exec(pop.innerHTML); seq.push(pop.hidden ? "閉" : (m ? m[1] : "?")); } return { seq: seq, sent: sent.length };');
+      const x = run(['y1']), y = run(['y1', 'y2']);
+      r1 = x.seq.join() === '閉' && x.sent === 0; r2 = y.seq.join() === 'y1,閉' && y.sent === 0; why = x.seq.join() + ' ／ ' + y.seq.join();
+    } catch (e) { why = String(e && e.message); }
+    if (r1 && r2) { ok('ヨシの後で：待ち1件なら閉じる・2件なら次へ移り最後で閉じる・何も送らない（枠 三百六十八）'); } else { ng('ヨシの後でが違う（1件 ' + r1 + '・2件 ' + r2 + '・' + why + '）'); }
   }
   /* v224（枠 百五十六）：影の仕事の箱（panelView.shadowBox）。走っている間だけ載る・済んだら null・金額の字が無い・パネルが箱を出す字面がある */
   {
