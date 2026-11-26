@@ -2149,6 +2149,35 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
       { const sv = PV2.sentView, e1 = { per: 0.8, nPer: 5, cur: { est: 1.5, used: 0.4 } }, t1 = sv({ stat: '作業中', foot: { wait: 5 } }, null, 16, e1), t2 = sv({ stat: '待機中', foot: { wait: 5 } }, null, 16, { per: 0.8, nPer: 5, cur: null }), t3 = sv({ stat: '作業中', foot: { wait: 3 } }, { n: 2, pct: 9.5, fb: 3 }, 16, null), hp2 = fs2.readFileSync(SRC, 'utf8');
         if (t1.pct === 5.1 && t1.src === '台帳 1件＋実測の中央値 5件' && t2.pct === 4 && t2.src === '実測の中央値 5件' && t3.pct === 21.5 && t3.src === '' && typeof PV2.sentEst === 'function' && hp2.indexOf("(sn.src ? '（' + sn.src + '）' : '')") < 0 && hp2.indexOf("$('wjEst').textContent = sn ? ('枠 ' + (sn.n | 0) + '件・予定 ' + (Math.round((Number(sn.pct) || 0) * 10) / 10).toFixed(1) + '%') : '';") >= 0) { ok('予定%は台帳と実測から出す：台帳の残り1.1＋待ち5件×0.8＝5.1%（元「台帳 1件＋実測の中央値 5件」）／台帳が無く待ちだけなら 4%／実測も台帳も無い時だけ昔の数え（21.5%）・パネルは元の字を赤い行には出さない（v273・値は sent.src に残る）'); }
         else { ng('予定%の元の出し方が違う：' + JSON.stringify([t1, t2, t3])); } }
+      /* v268・v269（枠 三百五十九）：脈の赤い行と「鳴った！（試し）」釦（v268）・拾われなかったエラーの送り（v269）の検査。新しい表示・釦・送りを足す直しは、同じ commit でここに検査を足す。 */
+      { const hp3 = fs2.readFileSync(SRC, 'utf8');
+        let r1 = null;
+        try {
+          const lateSrc = cutFn(hp3, 'beatLateList'), f = vm.runInNewContext('(' + lateSrc.replace(/^\s*function beatLateList/, 'function') + ')', {}), NOW3 = 1000000;
+          r1 = { a: f({ x: { label: 'X', at: NOW3 - 3600, every: 5, grace: 10 } }, NOW3).length, b: f({ x: { label: 'X', at: NOW3 - 60, every: 5, grace: 10 } }, NOW3).length, c: f({ x: { label: 'X', at: NOW3 - 99999, every: 0, grace: 0 } }, NOW3).length, d: f({ test: { monthly: {} } }, NOW3).length, e: f(null, NOW3).length };
+        } catch (e3) { r1 = { err: String(e3) }; }
+        if (r1 && r1.a === 1 && r1.b === 0 && r1.c === 0 && r1.d === 0 && r1.e === 0 && hp3.indexOf("'beat-ack ' + id") >= 0 && hp3.indexOf('id="beatAck"') >= 0 && /\.beat-ack \{[^}]*min-height: 44px/.test(hp3) && hp3.indexOf('setInterval(pullBeats, 120000)') >= 0 && hp3.indexOf('rl.missing > 0') >= 0 && hp3.indexOf("m && m.id && !m.pressedAt && now - m.sentAt < 3 * 86400") >= 0) { ok('脈（v268）：見込み＋猶予を過ぎた物だけ赤い（見込み 0 の物・test の欄・null は赤くしない）・「鳴った！（試し）」釦は押されていない月一の試しが3日以内の時だけ出て beat-ack <id> を送る・釦の外箱は44px・2分おきに読む・橋の札の差（relay.missing）の一言'); }
+        else { ng('脈（v268）の表示の決めが違う：' + JSON.stringify(r1)); }
+        const em = /<script id="khErr">([\s\S]*?)<\/script>/.exec(hp3);
+        if (!em) { ng('エラーの送り（v269）の script（khErr）が panel.html に無い'); }
+        else {
+          const run3 = (proto) => {
+            const ev = {}, beacons = [], store = {};
+            const sb = { Date: Date, JSON: JSON, String: String, Object: Object, Math: Math, location: { protocol: proto },
+              navigator: { sendBeacon: function (u, b) { beacons.push([String(u), String(b)]); return true; } },
+              localStorage: { getItem: function (k) { return store[k] || null; }, setItem: function (k, v) { store[k] = v; } },
+              document: { querySelector: function () { return null; }, documentElement: { getAttribute: function () { return null; } }, getElementById: function (id) { return id === 'verTag' ? { textContent: 'panel v271（11月26日）' } : null; }, body: { children: [{ id: 'main', offsetParent: {}, offsetHeight: 300 }] } },
+              window: { addEventListener: function (t, f) { ev[t] = f; } } };
+            sb.window.window = sb.window; vm.createContext(sb); vm.runInContext(em[1], sb);
+            const e1 = { message: 'x is not defined at https://a.b/c?q=secret#h', filename: 'https://h/panel.html?_v=1', lineno: 12, colno: 3 };
+            ev.error(e1); ev.error(e1); ev.unhandledrejection({ reason: { message: 'boom' } });
+            return beacons;
+          };
+          const bs = run3('https:'), bf = run3('file:');
+          if (bs.length === 2 && /^https:[/][/]ntfy[.]sh[/]/.test(bs[0][0]) && bs[0][1].indexOf('<url>') >= 0 && bs[0][1].indexOf('secret') < 0 && bs[0][1].indexOf('kind=panel') >= 0 && bs[0][1].indexOf('ver=271') >= 0 && bs[0][1].indexOf('at=panel.html:12:3') >= 0 && bs[1][1].indexOf('rejection') >= 0 && bf.length === 0 && em[1].indexOf('3600000') >= 0) { ok('エラーの送り（v269）：https の時だけ送る（file:// の検査機からは送らない）・同じエラーは1通だけ（1時間）・URL は <url> に替えて問い（?q=…）を送らない・版は verTag から・場所はファイル名と行だけ・別の話題へ sendBeacon'); }
+          else { ng('エラーの送りの決めが違う：https ' + bs.length + ' 通・file ' + bf.length + ' 通・' + JSON.stringify(bs[0] || null).slice(0, 160)); }
+        }
+      }
       if (c1 && c1.n === 2 && c1.pct === 18 && c1.items[1].title === '通し読み' && c1.cloud && c1.cloud.n === 2 && c1.cloud.pct === 9.5 && c1.cloud.items[0].type === '走行中・見込み推定' && c1.cloud.items[1].type === '待ち' &&
         c0 && c0.n === 2 && c0.cloud && c0.cloud.n === 0 && c2 && c2.n === 2 && c2.cloud === null && c3 && c3.n === 0 && c3.cloud && c3.cloud.n === 1 &&
         htmlP.indexOf("'棚 ' + n + '件・約'") >= 0 && htmlP.indexOf('function cloudLabel()') >= 0 && htmlP.indexOf('function cloudBox()') >= 0 && htmlP.indexOf("'雲 ' + ") >= 0) { ok('棚と雲：棚（shelf.json）は雲があっても2件のまま・雲は shelf.cloud に別の欄で載る（0件でも棚は消えない）・900秒より古い雲は null・棚が無く雲だけでも空の棚に雲が載る・釦の字は「棚 N件・約M%」の横に「雲 N件・M%」'); }
