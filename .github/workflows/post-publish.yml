@@ -1,0 +1,164 @@
+# 公開の後の試しと自動の戻し（2026-11-26・橋の枠 三百四十七・本人の決め）。
+#   ＊配信（check.yml「自動検査と配信」）が成功したあと、公開の ver.txt が前に試した版と違う時だけ、本物の公開ページ（Pages の koushu-handan.html）を取ってきて、
+#     配牌を数局打ち、判定カードと助言が出るか・画面に赤いエラーが無いかを見る（tools/post-publish-test.js）。
+#   ＊通れば、その版・commit を「前の良い版」に覚える（reports/post-publish/state.json）。
+#   ＊落ちた時は、30秒おいてもう一度試し、二度続けて落ちたら、前の良い版へ自動で戻す（本体 koushu-handan.html と ver.txt だけ・tools/post-publish-decide.js）。
+#     戻したら配信の検査を起こし直し、その配信のあとのこの走りが、戻した版も同じ試しで確かめる。札の知らせは ntfy（落ちた印は reports/post-publish/ に赤のまま残す）。
+#   ＊試しの道具が動かなかった時（ブラウザが無い・公開の物が取れない）は戻さない（試しの側の不調で良い版を戻さないため）。同じ版を二度は戻さない。
+#   ＊月一（毎月1日 03:00 日本時間）：前の良い版の commit の本体で同じ試しを回し、戻しの手順が取れるか（--dry）を確かめて、結果を reports/post-publish/rollback-test-<年月>.md と ntfy に出す（本番に触らない）。
+#   ＊この走りが書くのは reports/post-publish/ だけ（戻した時の本体・ver.txt を除く）。
+name: 公開の後の試し
+on:
+  workflow_run:
+    workflows: ['自動検査と配信']
+    types: [completed]
+  schedule:
+    - cron: '0 18 1 * *'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: '版が前の良い版と同じでも試す（true）'
+        required: false
+        default: 'false'
+      monthly:
+        description: '戻しの試し（月一の物）を今回す（true）'
+        required: false
+        default: 'false'
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: post-publish
+  cancel-in-progress: false
+jobs:
+  probe:
+    if: github.event_name != 'schedule' && github.event.inputs.monthly != 'true' && (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PAGE: https://kfsr148-art.github.io/koushu-handan
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - name: 公開の版と前の良い版を比べる
+        id: ver
+        run: |
+          git pull -q origin main || true
+          now=$(tr -dc '0-9' < ver.txt)
+          have=$(node -e 'try{console.log(require("./reports/post-publish/state.json").lastGood.ver)}catch(e){console.log("")}')
+          echo "リポジトリの版 ${now}／前の良い版 ${have:-無し}"
+          if [ "$now" = "$have" ] && [ "${{ github.event.inputs.force }}" != "true" ]; then echo "need=no" >> "$GITHUB_OUTPUT"; else echo "need=yes" >> "$GITHUB_OUTPUT"; fi
+          echo "head=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "now=${now}" >> "$GITHUB_OUTPUT"
+      - name: 公開の ver.txt が新しい版になるのを待つ（最大5分）
+        if: steps.ver.outputs.need == 'yes'
+        run: |
+          for i in $(seq 1 15); do
+            pub=$(curl -fsS --max-time 20 "$PAGE/ver.txt?_=$(date +%s)" | tr -dc '0-9' || true)
+            echo "公開 ${pub:-?}／期待 ${{ steps.ver.outputs.now }}"
+            [ "$pub" = "${{ steps.ver.outputs.now }}" ] && break
+            sleep 20
+          done
+      - uses: actions/setup-node@v4
+        if: steps.ver.outputs.need == 'yes'
+        with:
+          node-version: '20'
+      - name: 日本語の字体を入れる
+        if: steps.ver.outputs.need == 'yes'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+      - name: 本物の公開ページで配牌を数局打つ（落ちたらもう一度）
+        id: t
+        if: steps.ver.outputs.need == 'yes'
+        run: |
+          mkdir -p reports/post-publish
+          set +e
+          node tools/post-publish-test.js "$PAGE/koushu-handan.html" r1.json 5; c1=$?
+          echo "一回目：終了 $c1"
+          if [ $c1 -eq 10 ]; then
+            sleep 30
+            node tools/post-publish-test.js "$PAGE/koushu-handan.html" r2.json 5; c2=$?
+            echo "二回目：終了 $c2"
+          fi
+          cat r1.json; [ -f r2.json ] && cat r2.json
+          exit 0
+      - name: 決める（良い版を覚える／二度続けて落ちたら前の良い版へ戻す）
+        id: d
+        if: steps.ver.outputs.need == 'yes'
+        run: |
+          mkdir -p reports/post-publish
+          args="reports/post-publish/state.json ${{ steps.ver.outputs.head }} r1.json"
+          [ -f r2.json ] && args="$args r2.json"
+          node tools/post-publish-decide.js $args | tee decide.txt
+          act=$(grep '^ACTION=' decide.txt | tail -1 | cut -d= -f2)
+          echo "act=$act" >> "$GITHUB_OUTPUT"
+      - name: 結果の控えを押す（reports/post-publish/ だけ）
+        if: steps.ver.outputs.need == 'yes' && steps.d.outputs.act != 'rolled'
+        run: |
+          git config user.name "post-publish-bot"
+          git config user.email "post-publish-bot@users.noreply.github.com"
+          cp r1.json reports/post-publish/last-result.json
+          git add reports/post-publish
+          git diff --cached --quiet && exit 0
+          git commit -m "post-publish: 公開の試しの結果（版 ${{ steps.ver.outputs.now }}・${{ steps.d.outputs.act }}）"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && break; done
+      - name: 戻した時は配信の検査を起こし直す
+        if: steps.d.outputs.act == 'rolled'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run check.yml
+      - name: 落ちた・戻した・道具が動かなかった時は ntfy で知らせる
+        if: steps.d.outputs.act == 'rolled' || steps.d.outputs.act == 'fail-no-rollback' || steps.d.outputs.act == 'rollback-push-failed'
+        run: |
+          why=$(head -c 300 decide.txt | tr '\n' ' ')
+          curl -s -H "Title: $(printf '%s' '🪟 公開の試しに落ちた：')${{ steps.d.outputs.act }}" -d "$why" "https://ntfy.sh/${{ secrets.NTFY_TOPIC }}" > /dev/null || true
+  monthly:
+    if: github.event_name == 'schedule' || github.event.inputs.monthly == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: 日本語の字体を入れる
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+      - name: 戻しの試し（前の良い版の本体で試しを回し、戻す手順が取れるかを --dry で見る）
+        id: m
+        run: |
+          mkdir -p reports/post-publish
+          ym=$(date -u +%Y%m)
+          good=$(node -e 'try{console.log(require("./reports/post-publish/state.json").lastGood.sha)}catch(e){console.log("")}')
+          gv=$(node -e 'try{console.log(require("./reports/post-publish/state.json").lastGood.ver)}catch(e){console.log("")}')
+          out=reports/post-publish/rollback-test-${ym}.md
+          if [ -z "$good" ]; then echo "# 戻しの試し ${ym}" > $out; echo "前の良い版がまだ無いので試せない。" >> $out; echo "msg=前の良い版が無く試せなかった" >> "$GITHUB_OUTPUT"; exit 0; fi
+          mkdir -p /tmp/rb && git show ${good}:koushu-handan.html > /tmp/rb/koushu-handan.html
+          set +e
+          PPT_LOCAL=/tmp/rb/koushu-handan.html node tools/post-publish-test.js local /tmp/rb/res.json 5; c=$?
+          echo '{"kind":"fail","ver":"9999","bad":["試し"]}' > /tmp/rb/fake-fail.json
+          node tools/post-publish-decide.js /tmp/rb/state.json $(git rev-parse HEAD) /tmp/rb/fake-fail.json /tmp/rb/fake-fail.json --dry > /tmp/rb/dry.txt 2>&1
+          cp reports/post-publish/state.json /tmp/rb/state.json 2>/dev/null
+          node tools/post-publish-decide.js /tmp/rb/state.json $(git rev-parse HEAD) /tmp/rb/fake-fail.json /tmp/rb/fake-fail.json --dry > /tmp/rb/dry.txt 2>&1
+          {
+            echo "# 戻しの試し ${ym}（本番に触らない）"
+            echo ""
+            echo "前の良い版：v${gv}（commit ${good:0:9}）"
+            echo "その版の本体で、公開の後の試しを回した結果：終了 ${c}（0＝通る）"
+            echo "戻す手順（--dry・落ちた版を仮に 9999 として）：$(tail -2 /tmp/rb/dry.txt | tr '\n' ' ')"
+          } > $out
+          echo "msg=v${gv} の本体で試し 終了 ${c}／$(tail -1 /tmp/rb/dry.txt)" >> "$GITHUB_OUTPUT"
+      - name: 結果を押して ntfy で知らせる
+        run: |
+          git config user.name "post-publish-bot"
+          git config user.email "post-publish-bot@users.noreply.github.com"
+          git add reports/post-publish
+          git diff --cached --quiet || { git commit -m "post-publish: 月一の戻しの試し"; for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && break; done; }
+          curl -s -H "Title: $(printf '%s' '🧪 月一の戻しの試し')" -d "${{ steps.m.outputs.msg }}" "https://ntfy.sh/${{ secrets.NTFY_TOPIC }}" > /dev/null || true
