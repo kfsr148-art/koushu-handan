@@ -976,8 +976,8 @@ function staticParts() {
     }
     if (H.indexOf("el.src = 'genba-cat-80.png'") >= 0 && H.indexOf("'cat-sleep-w.png', 'genba-cat-80.png', 'genba-taiki-80.png'") >= 0) { ok('ほかの猫（作業中・待ち・指差し）の絵は今のまま'); } else { ng('ほかの猫の絵が変わった'); }
     /* 六十六：見出しの「返事パネル」は一行・固定幅・猫は 80x80 で縮まない・行の高さは 80px 固定 */
-    const hOk = H.indexOf('<h1><span id="hTitle"></span><span id="headWait"></span><img id="runcat"') >= 0 && /#hTitle\{flex:0 0 auto; white-space:nowrap; width:6em;/.test(H) && H.indexOf('h1{height:auto; align-items:flex-start;}') >= 0 && /#runcat\{width:80px; height:80px; flex:0 0 auto;/.test(H);
-    if (hOk) { ok('見出し：「返事パネル」は white-space:nowrap・幅 6em 固定・縮まない（flex:0 0 auto）／猫は 80x80・縮まない／行の高さは 80px 以上（v278：頭の字が長い回だけ伸び、猫は上に留める）'); } else { ng('見出しの固定の指定が無い／違う'); }
+    const hOk = H.indexOf('<h1><span id="hTitle"></span><span id="headWait"></span><img id="runcat"') >= 0 && /#hTitle\{flex:0 0 auto; white-space:nowrap; width:6em;/.test(H) && H.indexOf('h1{height:150px; align-items:flex-start;}') >= 0 && /#headWait{[^}]*max-height:150px; overflow-y:auto;/.test(H) && /#runcat\{width:80px; height:80px; flex:0 0 auto;/.test(H);
+    if (hOk) { ok('見出し：「返事パネル」は white-space:nowrap・幅 6em 固定・縮まない（flex:0 0 auto）／猫は 80x80・縮まない／行の高さは 150px 固定（v278：下の八つの釦は動かない・欄に収まらない字は欄の中で送る・猫は上に留める）'); } else { ng('見出しの固定の指定が無い／違う'); }
     /* 頭の字は短い一言だけ：総当たりで出る字の種類を数え、括弧・次「・刻が一つも無いこと */
     {
       const PV = require(path.join(dir, 'panel-view.js')), NOW = 1795200000, seen = {};

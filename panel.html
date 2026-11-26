@@ -90,8 +90,9 @@
      ＊幅が足りなければ折り返す（切らない）。80px の行の中で二行まで収まる。
      ＊字が無いときは `:empty` で行ごと消える。塗る側は textContent を空にするだけでよい。 */
   /* v278（枠 三百八十七）：頭の字は題の行の中の猫の左の欄へ（左上の数の行の右・猫の左）。15px のまま欄の中で折り返す（字は削らない）。猫は右端。字が欄で80pxを超える回は題の行が伸びる（猫は上に留める）。 */
-  h1{height:auto; align-items:flex-start;}
-  #headWait{display:block; flex:1 1 0; min-width:0; align-self:center; font-size:15px; font-weight:400;
+  /* 高さは 150px に固定する（⑤の二十六の二：下の八つの釦は件数や頭の字の長さで動かない）。欄に収まらない字は欄の中で送る（削らない・390px 幅では七行まで全部出る）。 */
+  h1{height:150px; align-items:flex-start;}
+  #headWait{display:block; flex:1 1 0; min-width:0; align-self:center; max-height:150px; overflow-y:auto; font-size:15px; font-weight:400;
     color:var(--ask); letter-spacing:normal; line-height:1.35;
     white-space:normal; overflow-wrap:anywhere;}
   #headWait:empty{display:none;}
