@@ -1,15 +1,15 @@
-﻿# 再起動-2（r1126-1632・後の測り）
+# 枠 三百六十：ヨシ待ちの釦に推しの白枠と直しの案（y1126-w360）
 
-**終わり** — 2026-11-26 16:32（VAIO）。毎週土曜の起こしで再起動し、起き上がった。
+**終わり** — 2026-11-26 17:12（VAIO）。panel v274 を公開した。**残り0件**（この枠の分）。
 
-| | 前 | 後 | 差 |
-|---|---|---|---|
-| 空き物理メモリ | 4145MB | **4100MB** | -45MB |
-| claude | 735MB | **261MB** | -474MB |
-
-起き上がった刻 … 11/26/2026 16:02:18
-claude が起きた刻 … 2026-11-26 16:24:37（1本）
-前の測りの刻 … 2026-11-26 16:00:21
+- 一、札の推しの釦だけを白の太枠にした。v260 では黄色で、推しが「ヨシを送る」の時は青のままだった。推しが無ければどれも囲まない。
+- 二、札の行頭に「直しの案：〈文〉」があれば、「直して」を押した時の入れ欄に初めから入る。無ければ空。前の「推し：直して｜言葉」の形も使える。
+- 釦の並び・送り方・文字は変えていない。
+- 確かめ：`panel-check --static` 198項目すべて通った（169秒。作法43の実測 3.7秒より大幅に長く、原因は調べていない）。check.yml（run 45778972673）success。公開の `panel-ver.txt` は 274。
+- 写し：`reports/y1126-w360/`。釦の所だけを抜き出した 390px 幅の写しで、送りは偽物（実送信 0）。**実機の iPhone では見ていない。**
+- 実機で見る所：版が panel v274。推しと案の行がある待ちでヨシの釦を押すと、推しの釦だけが白の太枠。「直して」で案の文が入った入れ欄が開く。
+- 未確認：橋の owed 73件のうち61件は台帳が「済」。12件（249・256・257・269・277・287〜293）は札の有無を台帳で確かめられず、出し直していない。
+- 橋の文書は長くなり、一回の読みで全文が返らない。4ページに分けて読み、繋げてから `bridge-pick.js` に渡した。
 
 ---
 
@@ -18,11 +18,12 @@ claude が起きた刻 … 2026-11-26 16:24:37（1本）
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **1289件**ある。
+　ここに出るのは新しい20件。全部で **1290件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`y1126-w360.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1126-w360.md) | 11-26 17:12 | 枠 三百六十：ヨシ待ちの釦に推しの白枠と直しの案（y1126-w360） |
 | [`r1126-1632-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1126-1632-2.md) | 11-26 16:32 | 再起動-2（r1126-1632・後の測り） |
 | [`r1126-1628-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1126-1628-2.md) | 11-26 16:28 | 再起動-2（r1126-1628・後の測り） |
 | [`r1126-1625-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1126-1625-2.md) | 11-26 16:25 | 再起動-2（r1126-1625・後の測り） |
@@ -42,6 +43,5 @@ claude が起きた刻 … 2026-11-26 16:24:37（1本）
 | [`cloud-shelf5-voice-plan-20261124-015746.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-shelf5-voice-plan-20261124-015746.md) | 11-25 17:51 | 雲で回した：`shelf5-voice-plan.js` |
 | [`cloud-panel-check-20261124-194003.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-panel-check-20261124-194003.md) | 11-25 17:51 | 雲で回した：`panel-check.js` |
 | [`cloud-panel-check-20261124-192208.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-panel-check-20261124-192208.md) | 11-25 17:51 | 雲で回した：`panel-check.js` |
-| [`cloud-panel-check-20261124-190431.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-panel-check-20261124-190431.md) | 11-25 17:51 | 雲で回した：`panel-check.js` |
 
 <!-- 控えの一覧 ここまで -->
