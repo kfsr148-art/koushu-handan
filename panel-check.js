@@ -613,17 +613,20 @@ function staticParts() {
         const PCa = require(path.join(path.dirname(SRC), 'panel-core.js'));
         const NOWS = 1700000000, bad = [];
         const case1 = (nm, o, wantT, wantC) => { const r = PCa.headAct(Object.assign({ now: NOWS, rows: [], left: 0 }, o)); if (!(wantT instanceof RegExp ? wantT.test(r.t) : r.t === wantT) || r.c !== wantC) { bad.push(nm + '：「' + r.t + '」' + r.c + '（想定 ' + wantT + ' ' + wantC + '）'); } };
-        case1('作業中（枠の名・あと分）', { stat: '作業中', subj: '枠 三百三十七：VAIOの写し', etaMin: 30 }, '待っておればよい。枠 三百三十七をやっておる、あと30分', 'g');
-        case1('作業中（見込み無し）', { stat: '作業中', subj: '枠 三百三十七' }, '待っておればよい。枠 三百三十七をやっておる', 'g');
-        case1('雲待ち（検査中）', { stat: '検査中', kumo: '雲：検査 見込み ' + (function () { const d = new Date((NOWS + 300) * 1000); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); })() }, /^待っておればよい。雲の検査待ち、あと[0-9]+分$/, 'g');
-        case1('止まり＋段が残る', { stat: '止まり（使用量）', stepTotal: 5, stepDone: 2 }, 'Codeタブに一言打って。窓が止まっておる', 'r');
-        case1('止まり＋段が無い', { stat: '止まり（使用量）', stepTotal: 0, stepDone: 0 }, /^見ておく。/, 'y');
-        case1('ヨシ待ち', { stat: '作業中', yoshiN: 1 }, 'Codeタブでヨシを。1件', 'r');
-        case1('ヨシ待ち（2件）', { stat: '待ち', yoshiN: 2 }, 'Codeタブでヨシを。2件', 'r');
-        case1('接続不良', { stat: '作業中', lost: true }, 'VAIOの電源と網を見て', 'r');
-        case1('全部無い', { stat: '待ち', resting: true }, '休憩中。次の枠を送れる', 'g');
-        case1('確認中（記録の途切れ）', { stat: '作業中', checking: true }, /^見ておく。/, 'y');
-        case1('写す物がある', { stat: '', left: 3 }, /^見ておく。写していない札が3件/, 'y');
+        const hmS = (sec) => { const d = new Date(sec * 1000); return d.getHours() + '時' + ('0' + d.getMinutes()).slice(-2) + '分'; };
+        const hmK = (sec) => { const d = new Date(sec * 1000); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); };
+        const W0 = '待っててにゃ。頼まれた仕事を進めてるにゃ。';
+        case1('作業中（終わる刻あり）', { stat: '作業中', subj: '枠 三百三十七：VAIOの写し', etaMin: 30 }, W0 + hmS(NOWS + 1800) + 'ごろ終わるにゃ、何もしなくていいにゃ', 'g');
+        case1('作業中（見込み無し）', { stat: '作業中', subj: '枠 三百三十七' }, W0 + '何もしなくていいにゃ', 'g');
+        case1('雲待ち（検査中）', { stat: '検査中', kumo: '雲：検査 見込み ' + hmK(NOWS + 300) }, '待っててにゃ。直した物を雲で検査してるにゃ。' + hmS(Math.floor((NOWS + 300) / 60) * 60) + 'ごろ終わるにゃ、何もしなくていいにゃ', 'g');
+        case1('止まり＋段が残る', { stat: '止まり（使用量）', stepTotal: 5, stepDone: 2 }, /Codeタブに一言打ってほしいにゃ$/, 'r');
+        case1('止まり＋段が無い', { stat: '止まり（使用量）', stepTotal: 0, stepDone: 0 }, /見ておいてほしいにゃ$/, 'y');
+        case1('ヨシ待ち', { stat: '作業中', yoshiN: 1 }, /ヨシの返事を1件待ってるにゃ。.*Codeタブでヨシを返してほしいにゃ$/, 'r');
+        case1('ヨシ待ち（2件）', { stat: '待ち', yoshiN: 2 }, /ヨシの返事を2件/, 'r');
+        case1('接続不良', { stat: '作業中', lost: true }, /VAIOの電源と網を見てほしいにゃ$/, 'r');
+        case1('全部無い', { stat: '待ち', resting: true }, /次の枠を送れるにゃ$/, 'g');
+        case1('確認中（記録の途切れ）', { stat: '作業中', checking: true }, /見ておいてほしいにゃ$/, 'y');
+        case1('写す物がある', { stat: '', left: 3 }, /^写していない札が3件あるにゃ/, 'y');
         const LABELS = new Set();
         ['待ち', '', '作業中', '検査中', '止まり', '動きなし', 'ヨシ待ち'].forEach(stat => [false, true].forEach(lost => [false, true].forEach(checking => [false, true].forEach(resting => [0, 1].forEach(yoshiN => [null, { sub: { running: 1 } }].forEach(ura => [0, 2].forEach(waitN => [[0, 0], [3, 1]].forEach(st => [0, 4].forEach(left => {
           const o = { stat: stat, lost: lost, checking: checking, resting: resting, yoshiN: yoshiN, ura: ura, waitN: waitN, stepTotal: st[0], stepDone: st[1], left: left, rows: [], now: NOWS };
@@ -2290,6 +2293,45 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
     } catch (e) { why = String(e && e.message); }
     const okW = html.indexOf('<p class="yb-q">') >= 0 && html.indexOf('#ybPop .yb-q{') >= 0;
     if (okR && okW) { ok('ヨシの問い：束は印のある🙋の段だけ読み推しも読める・問いの一文を一番上に大きく出す（枠 三百六十九・三百七十）'); } else { ng('ヨシの問いの読みが違う（読み ' + okR + '・字 ' + okW + '・' + why + '）'); }
+  }
+  /* v277（枠 三百七十五）：頭の字は猫の口ぶり。どの場面もどの文も「にゃ」で終わる・枠の番号が無い・作業中／検査中／待ちでは nya（何をしているか）を使う・色の字は場面ごとに前のまま。panelView.nya は控えの「ねこ:」の行から（番号は外す・行が無ければ空） */
+  {
+    const os = require('os'), fsx = require('fs'), pth = require('path');
+    const bad = [], NOWS = 1700000000, SAY = 'ヨシ待ちのカードに問いを大きく出す直しを検査してるにゃ';
+    const hmK = (sec) => { const d = new Date(sec * 1000); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); };
+    const ura = { sub: { running: 1, items: [{ id: 'a' }] } };
+    const SC = [
+      ['休憩中', { stat: '待ち', resting: true }, 'g', false], ['接続不良', { stat: '作業中', lost: true }, 'r', false], ['ヨシ待ち', { stat: '待ち', yoshiN: 1 }, 'r', false], ['確認中', { stat: '作業中', checking: true }, 'y', false],
+      ['止まり（段あり）', { stat: '止まり（使用量）', stepTotal: 3, stepDone: 1 }, 'r', false], ['止まり（段なし）', { stat: '止まり（使用量）' }, 'y', false], ['動きなし（段あり）', { stat: '動きなし', stepTotal: 3, stepDone: 1 }, 'r', false], ['動きなし（段なし）', { stat: '動きなし' }, 'y', false],
+      ['検査中', { stat: '検査中', endSec: NOWS + 600 }, 'g', true], ['作業中', { stat: '作業中', endSec: NOWS + 600 }, 'g', true], ['作業中（雲）', { stat: '作業中', kumo: '見込み ' + hmK(NOWS + 600) }, 'g', true], ['裏方', { stat: '待ち', ura: ura }, 'g', true], ['待ち（順番）', { stat: '待ち', waitN: 3 }, 'g', true],
+      ['写す物', { stat: '', left: 2, kumo: '見込み ' + hmK(NOWS + 600) }, 'y', false], ['札まとめ中', { stat: '', owedAt: NOWS - 10 }, 'y', false], ['札の遅れ', { stat: '', owedAt: NOWS - 400 }, 'r', false]];
+    const FR = /枠[ 　]*[一二三四五六七八九十百千〇零0-9０-９]/;
+    SC.forEach(([nm, o0, c, uses]) => {
+      [['', ''], ['nya', '枠 三百七十五：' + SAY + '（枠 三百七十）']].forEach(([k, nya]) => {
+        const r = PCORE.headAct(Object.assign({ now: NOWS, rows: [], left: 0, subj: '枠 三百七十五：頭の字', nya: nya }, o0));
+        if (!String(r.t).split('。').filter(Boolean).every(x => /にゃ$/.test(x))) { bad.push(nm + '：にゃで終わらない文「' + r.t + '」'); }
+        if (FR.test(r.t)) { bad.push(nm + '：枠の番号が出た「' + r.t + '」'); }
+        if (r.c !== c) { bad.push(nm + '：色が ' + r.c + '（想定 ' + c + '）'); }
+        if (k && uses !== (r.t.indexOf(SAY) >= 0)) { bad.push(nm + (uses ? '：nya を使っていない「' : '：使わない場面に nya が出た「') + r.t + '」'); }
+      });
+    });
+    const noEnd = PCORE.headAct({ stat: '作業中', now: NOWS, rows: [] }).t;
+    if (/[0-9]時[0-9]/.test(noEnd)) { bad.push('見込みが無いのに刻が出た「' + noEnd + '」'); }
+    if (PCORE.noFrame('次の仕事が3件あるにゃ') !== '次の仕事が3件あるにゃ' || PCORE.noFrame('橋の枠 七の直し') !== '直し') { bad.push('noFrame が違う'); }
+    const dir = fsx.mkdtempSync(pth.join(os.tmpdir(), 'koushu-nya-')), keep = process.env.SHADOW_HOME;
+    try {
+      process.env.SHADOW_HOME = dir;
+      const PV = require(pth.join(pth.dirname(SRC), 'panel-view.js')), CR = String.fromCharCode(13, 10);
+      const none = PV.panelView({}, [], [], NOWS).nya;
+      fsx.writeFileSync(pth.join(dir, 'work-note.txt'), String.fromCharCode(0xFEFF) + '件名: 枠 三百七十五' + CR + 'ねこ: 枠 三百七十五の' + SAY + CR + '待ち: なし' + CR);
+      const got = PV.panelView({}, [], [], NOWS).nya;
+      fsx.writeFileSync(pth.join(dir, 'work-note.txt'), 'ねこ:' + CR + '待ち: なし' + CR);
+      const empty = PV.panelView({}, [], [], NOWS).nya;
+      if (none !== '' || got !== SAY || empty !== '') { bad.push('panelView.nya が違う：' + JSON.stringify([none, got, empty])); }
+    } finally { if (keep === undefined) { delete process.env.SHADOW_HOME; } else { process.env.SHADOW_HOME = keep; } try { fsx.rmSync(dir, { recursive: true, force: true }); } catch (e) { } }
+    const wired = html.indexOf("nya: (typeof lastNya !== 'undefined') ? lastNya : ''") >= 0 && html.indexOf('lastNya = (d.panelView && typeof d.panelView.nya') >= 0 && /#headWait\{display:block;[^}]*font-size:15px;/.test(html) && html.indexOf('</h1>' + String.fromCharCode(13, 10) + '    <span id="headWait"></span>') >= 0;
+    if (!bad.length && wired) { ok('頭の字の猫の口ぶり：' + SC.length + '場面とも文は「にゃ」で終わり・枠の番号なし・nya は作業中／検査中／待ちで使う・色の字は前のまま・panelView.nya は控えの「ねこ:」から・字は15pxで題の行の下の全幅（枠 三百七十五）'); }
+    else { ng('頭の字の猫の口ぶりが違う ' + bad.length + ' 件' + (wired ? '' : '（panel.html の配り・置き場が足りない）') + '：' + bad.slice(0, 4).join(' ／ ')); }
   }
   /* v224（枠 百五十六）：影の仕事の箱（panelView.shadowBox）。走っている間だけ載る・済んだら null・金額の字が無い・パネルが箱を出す字面がある */
   {

@@ -222,6 +222,14 @@ function weekJobUpdate(d, now) {
   if (r.finish) { try { fs.appendFileSync(path.join(home, 'job-week-history.tsv'), [r.finish.at, r.finish.mikomi, r.finish.delta, r.finish.minutes, (r.finish.cost === null || r.finish.cost === undefined) ? '' : r.finish.cost.toFixed(3)].join(String.fromCharCode(9)) + String.fromCharCode(10)); } catch (e) { } }
   return r.view;
 }
+// 枠 三百七十五（v277）：頭の字の「何をしているか・なぜか」。窓が枠を受けた時に控え（~/.claude/work-note.txt）へ「ねこ: <平たい言葉の一文>」と書く。枠の番号は外す。行が無ければ空。
+function nyaLine() {
+  try {
+    const home = process.env.SHADOW_HOME || path.join(require('os').homedir(), '.claude');
+    const m = /^\uFEFF?ねこ[ 　]*[:：](.*)$/m.exec(fs.readFileSync(path.join(home, 'work-note.txt'), 'utf8'));
+    return m ? PC.noFrame(m[1]) : '';
+  } catch (e) { return ''; }
+}
 function panelView(d, notices, ntfySent, now) {
   d = d || {}; now = now || Math.floor(Date.now() / 1000);
   const rows = Array.isArray(notices) ? notices : [];
@@ -231,7 +239,7 @@ function panelView(d, notices, ntfySent, now) {
   const head = PC.headText({ stat: d.stat, cloud: (typeof d.cloud === 'string') ? d.cloud : '', detail: (typeof d.detail === 'string') ? d.detail.replace(/（なし）/g, '') : '', ura: d.ura || null, lost: false,
     owedAt: (typeof d.cardOwedAt === 'number') ? d.cardOwedAt : 0, owedEta: (typeof d.cardOwedEta === 'number') ? d.cardOwedEta : 0, rows: rows, kumo: ((typeof d.kumo === 'string') && d.kumo) ? d.kumo : ((typeof d.temoto === 'string') ? d.temoto : ''), left: left, yoshiN: yoshiOpenList().length, now: now, stepTotal: PC.stepsOf(d).total, stepDone: PC.stepsOf(d).done, waitN: (d.foot && Number(d.foot.wait) > 0) ? Number(d.foot.wait) : 0 });   // v250（枠 二百七十一）：ヨシ待ちが一件でもあれば作業中より先にヨシ待ち（パネルの headText と同じ）
   const shelfV = shelfView();
-  return { shadowBox: shadowBox(now), shelf: shelfV, sent: sentView(d, shelfV ? shelfV.cloud : null, (function () { const m = /([0-9]+(?:[.][0-9]+)?)%/.exec(String((shelfV && shelfV.capacity) || '')); return m ? Number(m[1]) : 16; })(), sentEst()), yoshiOpen: yoshiOpenList(), yubisashi: yubisashiView(), head: head, label: PC.todoLabel(left), left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), coreVer: PC.VER, pub: { ver: String(d.pubVer || ''), at: Number(d.pubVerAt) || 0, line: PC.pubLine({ pubVer: d.pubVer, pubVerAt: d.pubVerAt, coreVer: PC.VER }) }, noEstimate: (String(d.stat || '') === '作業中' && !/[0-9]/.test(String(d.mikomi == null ? '' : d.mikomi))), jobEnd: jobEnd(d), omote: omoteView(d, now), ura: uraView(d, now), all: allView(d, now), at: now };
+  return { nya: nyaLine(), shadowBox: shadowBox(now), shelf: shelfV, sent: sentView(d, shelfV ? shelfV.cloud : null, (function () { const m = /([0-9]+(?:[.][0-9]+)?)%/.exec(String((shelfV && shelfV.capacity) || '')); return m ? Number(m[1]) : 16; })(), sentEst()), yoshiOpen: yoshiOpenList(), yubisashi: yubisashiView(), head: head, label: PC.todoLabel(left), left: left, basis: 'センコの読み（senkoReadAt）だけで数えた。本人が端末で押した「写した」印は含まない', senkoReadAt: String(d.senkoReadAt || ''), coreVer: PC.VER, pub: { ver: String(d.pubVer || ''), at: Number(d.pubVerAt) || 0, line: PC.pubLine({ pubVer: d.pubVer, pubVerAt: d.pubVerAt, coreVer: PC.VER }) }, noEstimate: (String(d.stat || '') === '作業中' && !/[0-9]/.test(String(d.mikomi == null ? '' : d.mikomi))), jobEnd: jobEnd(d), omote: omoteView(d, now), ura: uraView(d, now), all: allView(d, now), at: now };
 }
 // v203（枠 五十）：omote／ura は {lines（様子を写すと同じ字。パネルの画面には出さない）, endAt（HH:MM・JST）, endSec, src（元の数の一言）, 元の数…}。E は d.eta（endat.js）。
 // v204（枠 五十一）：panel＝パネルの箱が今出している物だけ（gauge＝ゲージの横の小さい字・end＝「全部終わる見込み HH:MM」の一行。裏方は done／run も）。src・始まり・lines は state.json の中だけ。

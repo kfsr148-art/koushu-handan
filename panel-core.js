@@ -16,7 +16,7 @@
   else { root.PanelCore = m; }
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
-  var VER = '276';
+  var VER = '277';
   var WAIT_TEXT = '待機中、、、。', POINT_TEXT = 'まとめて写すヨシ！', WORK_TEXT = '作業中、、、。', LOST_TEXT = '接続不良、、、。', CHECKING_TEXT = '確認中、、、。', REST_TEXT = '休憩中、、、。', YOSHI_TEXT = 'ヨシ待ち、、、。', CHECK_TEXT = '検査中、、、。';
 
   /* ---- 刻 ---- */
@@ -133,33 +133,49 @@
     return (t === REST_TEXT || t === LOST_TEXT) ? 'sleep' : ((t === CHECKING_TEXT || t === WAIT_TEXT) ? 'green' : '');
   }
 
-  /* 枠 三百三十八（v267）：頭の字（猫の横）を「本人が今する事」に替える。形は「する事。訳、いつまで」の一文、色は g＝緑（何もせんでよい）・y＝黄（見ておく）・r＝赤（手が要る）。
-     ＊元の判定は headText（状態の短い字）のまま使い、その字から場面を決める（絵の headCat・panelView の head と同じ一つの判定）。数はパネルにある物だけ：件名の枠の名・見込みのあと分（etaMin）・雲の見込みのあと分（kumo）・ヨシ待ちの件数（yoshiN）・写す物の数（left）・順番待ち（waitN）。
+  /* 枠の番号を字から外す（枠 三百七十五）。「次の仕事が3件」のような数は残す（件・本・個・つ・通が続く物は枠の番号と見ない）。 */
+  function noFrame(s) {
+    return String(s == null ? '' : s)
+      .replace(/(?:橋の)?枠[ 　]*[#＃]?[一二三四五六七八九十百千〇零0-9０-９]+(?:[・、〜～-][一二三四五六七八九十百千〇零0-9０-９]+)*(?![一二三四五六七八九十百千〇零0-9０-９件本個つ通覧])(?:番)?(?:[ 　]*[：:]|の|で)?/g, '')
+      .replace(/（[ 　・、]*）|\([ 　・、]*\)|「[ 　]*」/g, '')
+      .replace(/[ 　]{2,}/g, ' ')
+      .replace(/^[ 　：:、。・]+/, '').trim();
+  }
+
+  /* 枠 三百三十八（v267）：頭の字（猫の横）は状態の短い字でなく詳しい文。枠 三百七十五（v277）：猫の口ぶり（どの文も「にゃ」で終わる）・枠の番号は出さない・何をしているか／なぜか・いつ終わるか・本人がする事。色は g＝緑（何もしなくてよい）・y＝黄（見ておく）・r＝赤（手が要る）。
+     ＊元の判定は headText（状態の短い字）のまま使い、その字から場面を決める（絵の headCat・panelView の head と同じ一つの判定）。
+     ＊「何をしているか・なぜか」は o.nya（窓が控えの「ねこ:」の行に平たい言葉で書き、panelView.nya で届く）。無ければ場面ごとの決まった一文。作業中・雲の検査・待ちの場面だけで使う。
+     ＊終わる刻はある欄からだけ出す：o.endSec（今の仕事の見込みの終わり・秒）か o.etaMin（あと分）か雲の一行の「見込み HH:MM」（kumo）。どれも無ければ刻は書かない。
      ＊返すのは {t, c}。元の字は headText で取れる（検査・様子を写す・brief.txt はそちらを読む）。 */
   function headAct(o) {
     o = o || {};
-    var lab = headText(o), stat = String(o.stat || ''), n = function (v) { return Number(v) || 0; };
-    var fm = String(o.subj || '').match(/枠[ 　]*[一二三四五六七八九十百〇零0-9A-Za-z]+/), frame = fm ? fm[0] : '';
-    var minsLeft = function (m) { return m > 0 ? '、あと' + m + '分' : ''; };
-    var kmin = (function () { var s = kumoEtaSec(o.kumo, o.now); return s > 0 ? Math.max(1, Math.ceil((s - (Number(o.now) || 0)) / 60)) : 0; })();
+    var lab = headText(o), n = function (v) { return Number(v) || 0; }, now = n(o.now);
+    var hm = function (sec) { var d = new Date(sec * 1000); return d.getHours() + '時' + ('0' + d.getMinutes()).slice(-2) + '分'; };
+    var cloudEnd = kumoEtaSec(o.kumo, o.now);
+    var jobEnd = n(o.endSec) > now ? n(o.endSec) : (n(o.etaMin) > 0 && now > 0 ? now + n(o.etaMin) * 60 : 0);
+    var nya = noFrame(o.nya).replace(/[ 　。．.！!]+$/, '');
+    var say = function (dflt) { if (!nya) { return dflt; } return /にゃ$/.test(nya) ? nya : nya + 'にゃ'; };
+    var wait = function (dflt, end, tail) { return '待っててにゃ。' + say(dflt) + '。' + (end > 0 ? hm(end) + 'ごろ' + (tail || '終わるにゃ') + '、' : '') + '何もしなくていいにゃ'; };
     var stepsLeft = n(o.stepTotal) > n(o.stepDone);
-    if (lab === REST_TEXT) { return { t: '休憩中。次の枠を送れる', c: 'g' }; }
-    if (lab === LOST_TEXT) { return { t: 'VAIOの電源と網を見て', c: 'r' }; }
-    if (lab === YOSHI_TEXT) { return { t: 'Codeタブでヨシを。' + Math.max(1, n(o.yoshiN)) + '件', c: 'r' }; }
-    if (lab === CHECKING_TEXT) { return { t: '見ておく。VAIOの記録が少し途切れておる', c: 'y' }; }
-    if (/^止まり/.test(lab)) { return stepsLeft ? { t: 'Codeタブに一言打って。窓が止まっておる', c: 'r' } : { t: '見ておく。窓は止まっておるが、残りの段は無い', c: 'y' }; }
-    if (lab === '動きなし') { return stepsLeft ? { t: 'Codeタブに一言打って。窓が止まっておる', c: 'r' } : { t: '見ておく。窓の動きが無い', c: 'y' }; }
-    if (lab === CHECK_TEXT) { return { t: '待っておればよい。雲の検査待ち' + minsLeft(kmin || n(o.etaMin)), c: 'g' }; }
-    if (lab === WORK_TEXT) {
-      if (kmin > 0 && !(n(o.etaMin) > 0)) { return { t: '待っておればよい。雲の結果待ち' + minsLeft(kmin), c: 'g' }; }
-      return { t: '待っておればよい。' + (frame ? frame + 'をやっておる' : 'やっておる') + minsLeft(n(o.etaMin)), c: 'g' };
+    if (lab === REST_TEXT) { return { t: 'いまは休憩中にゃ。仕事は残っていないから、次の枠を送れるにゃ', c: 'g' }; }
+    if (lab === LOST_TEXT) { return { t: 'VAIOの記録が届いていないにゃ。VAIOの電源と網を見てほしいにゃ', c: 'r' }; }
+    if (lab === YOSHI_TEXT) { return { t: 'ヨシの返事を' + Math.max(1, n(o.yoshiN)) + '件待ってるにゃ。問いを読んで、Codeタブでヨシを返してほしいにゃ', c: 'r' }; }
+    if (lab === CHECKING_TEXT) { return { t: 'VAIOの記録が少し途切れてるにゃ。戻るかどうか見ておいてほしいにゃ', c: 'y' }; }
+    if (/^止まり/.test(lab) || lab === '動きなし') {
+      var what = lab === '動きなし' ? '窓が動いていないにゃ' : '窓が止まってるにゃ';
+      return stepsLeft ? { t: '仕事の段が残ってるのに' + what + '。Codeタブに一言打ってほしいにゃ', c: 'r' } : { t: what + '。残りの段は無いから、様子だけ見ておいてほしいにゃ', c: 'y' };
     }
-    if (lab === POINT_TEXT) { return { t: '見ておく。写していない札が' + (n(o.left) > 0 ? n(o.left) + '件' : 'ある') + '、まとめて写せる' + (kmin > 0 ? '（雲の結果、あと' + kmin + '分）' : ''), c: 'y' }; }
-    if (/^札が遅れている/.test(lab)) { return { t: '見ておく。札が遅れておる', c: 'r' }; }
-    if (/^札まとめ中/.test(lab)) { return { t: '見ておく。札をまとめておる' + minsLeft(kmin), c: 'y' }; }
-    if (/^裏方作業中/.test(lab)) { return { t: '待っておればよい。裏方が働いておる' + minsLeft(kmin), c: 'g' }; }
-    if (lab === WAIT_TEXT) { return { t: '待っておればよい。' + (n(o.waitN) > 0 ? '次の枠が' + n(o.waitN) + '件待っておる' : '次の段が残っておる') + minsLeft(kmin), c: 'g' }; }
-    return { t: lab, c: 'y' };
+    if (lab === CHECK_TEXT) { return { t: wait('直した物を雲で検査してるにゃ', cloudEnd || jobEnd), c: 'g' }; }
+    if (lab === WORK_TEXT) {
+      if (cloudEnd > 0 && !(jobEnd > 0)) { return { t: wait('雲の結果を待ってるにゃ', cloudEnd), c: 'g' }; }
+      return { t: wait('頼まれた仕事を進めてるにゃ', jobEnd), c: 'g' };
+    }
+    if (lab === POINT_TEXT) { return { t: '写していない札が' + (n(o.left) > 0 ? n(o.left) + '件' : '') + 'あるにゃ。まとめて写せるから見ておいてほしいにゃ' + (cloudEnd > 0 ? '。雲の結果は' + hm(cloudEnd) + 'ごろ出るにゃ' : ''), c: 'y' }; }
+    if (/^札が遅れている/.test(lab)) { return { t: '札が出るのが遅れてるにゃ。様子を見ておいてほしいにゃ', c: 'r' }; }
+    if (/^札まとめ中/.test(lab)) { return { t: '済んだ仕事の札をまとめてるにゃ。' + (cloudEnd > 0 ? hm(cloudEnd) + 'ごろ出るにゃ。' : '') + '札が出たら見ておいてほしいにゃ', c: 'y' }; }
+    if (/^裏方作業中/.test(lab)) { return { t: wait('裏方が手分けして働いてるにゃ', cloudEnd), c: 'g' }; }
+    if (lab === WAIT_TEXT) { return { t: wait(n(o.waitN) > 0 ? '次の仕事が' + n(o.waitN) + '件、順番を待ってるにゃ' : '仕事の続きが残ってるにゃ', cloudEnd), c: 'g' }; }
+    return { t: '様子を見ておいてほしいにゃ', c: 'y' };
   }
 
   /* ---- 段（v212・本人の枠 七十七）：段の数・今の段は state.json の生の段（steps＝{job, rows:[{k, t}]}・見張りが job-steps.txt から写す）から毎回数える ----
@@ -289,7 +305,7 @@
     VER: VER, TEXT: { WAIT: WAIT_TEXT, POINT: POINT_TEXT, WORK: WORK_TEXT, LOST: LOST_TEXT, CHECKING: CHECKING_TEXT, REST: REST_TEXT, YOSHI: YOSHI_TEXT, CHECK: CHECK_TEXT },
     senkoEpoch: senkoEpoch, pad2s: pad2s, newestTime: newestTime,
     isCountCard: isCountCard, ntfyOfCard: ntfyOfCard, todoList: todoList, todoLabel: todoLabel,
-    cardsPending: cardsPending, cardEtaSec: cardEtaSec, cardLate: cardLate, cardPendText: cardPendText, kumoEtaSec: kumoEtaSec, uraBusyText: uraBusyText, isRunning: isRunning, headText: headText, headCat: headCat, headAct: headAct, workLeft: workLeft,
+    cardsPending: cardsPending, cardEtaSec: cardEtaSec, cardLate: cardLate, cardPendText: cardPendText, kumoEtaSec: kumoEtaSec, uraBusyText: uraBusyText, isRunning: isRunning, headText: headText, headCat: headCat, headAct: headAct, noFrame: noFrame, workLeft: workLeft,
     stepsOf: stepsOf, pubLine: pubLine, omoteLines: omoteLines, endLine: endLine, uraLines: uraLines,
     endShort: endShort, uraCount: uraCount, uraGauge: uraGauge, stepLab: stepLab, omoteGauge: omoteGauge, boxSpec: boxSpec, mikomiEnd: mikomiEnd, workLate: workLate, headEta: headEta, etaRow: etaRow
   };
