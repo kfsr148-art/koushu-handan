@@ -976,8 +976,8 @@ function staticParts() {
     }
     if (H.indexOf("el.src = 'genba-cat-80.png'") >= 0 && H.indexOf("'cat-sleep-w.png', 'genba-cat-80.png', 'genba-taiki-80.png'") >= 0) { ok('ほかの猫（作業中・待ち・指差し）の絵は今のまま'); } else { ng('ほかの猫の絵が変わった'); }
     /* 六十六：見出しの「返事パネル」は一行・固定幅・猫は 80x80 で縮まない・行の高さは 80px 固定 */
-    const hOk = H.indexOf('<h1><span id="hTitle"></span><span id="headWait"></span><img id="runcat"') >= 0 && /#hTitle\{flex:0 0 auto; white-space:nowrap; width:6em;/.test(H) && H.indexOf('h1{height:150px; align-items:flex-start;}') >= 0 && /#headWait{[^}]*max-height:150px; overflow-y:auto;/.test(H) && /#runcat\{width:80px; height:80px; flex:0 0 auto;/.test(H);
-    if (hOk) { ok('見出し：「返事パネル」は white-space:nowrap・幅 6em 固定・縮まない（flex:0 0 auto）／猫は 80x80・縮まない／行の高さは 150px 固定（v278：下の八つの釦は動かない・欄に収まらない字は欄の中で送る・猫は上に留める）'); } else { ng('見出しの固定の指定が無い／違う'); }
+    const hOk = H.indexOf('<h1><span id="hTitle"></span><span id="headWait"></span><img id="runcat"') >= 0 && /#hTitle\{flex:0 0 auto; white-space:nowrap; width:6em;/.test(H) && H.indexOf('h1{height:150px; align-items:flex-start;}') >= 0 && /#headWait{[^}]*max-height:150px; overflow-y:auto; font-size:11px; font-weight:400;/.test(H) && H.indexOf('.weekjob .wj-now{display:block; color:var(--dim); font-size:11px; white-space:nowrap;}') >= 0 && H.indexOf('#headWait.late{color:var(--act);}') >= 0 && H.indexOf('#headWait[data-c="r"]{color:var(--act);}') >= 0 && H.indexOf('h1 > #runcat{grid-column:2; grid-row:1 / span 2;') >= 0 && H.indexOf('<span class="weekjob" id="weekJob">') > H.indexOf('<h1><span id="hTitle">') && /#runcat\{width:80px; height:80px; flex:0 0 auto;/.test(H);
+    if (hOk) { ok('見出し：「返事パネル」は white-space:nowrap・幅 6em 固定・縮まない（flex:0 0 auto）／猫は 80x80・縮まない／行の高さは 150px 固定（v278：下の八つの釦は動かない・頭の字は左の欄の行の下・11px・400（セッションの行と同じ）・収まらない字は中で送る・猫は右の上）'); } else { ng('見出しの固定の指定が無い／違う'); }
     /* 頭の字は短い一言だけ：総当たりで出る字の種類を数え、括弧・次「・刻が一つも無いこと */
     {
       const PV = require(path.join(dir, 'panel-view.js')), NOW = 1795200000, seen = {};
@@ -1679,7 +1679,7 @@ try {
     }
     let r = run1({ cardOwedAt: nf() - 200 }, MIX);
     if (!r) { ng('測れない（札が遅れている）'); }
-    else if (/札が遅れている/.test(String(r.headWait || '')) && r.hwCls === 'late' && /^rgb\(/.test(String(r.hwColor || '')) && Number(r.hwWeight) >= 600) { ok('3分たっても出なければ赤く太く「札が遅れている」（色 ' + r.hwColor + '）'); } else { ng('「札が遅れている」が赤で出ない（「' + String(r.headWait) + '」・class「' + r.hwCls + '」・色 ' + r.hwColor + '）'); }
+    else if (/札が遅れている/.test(String(r.headWait || '')) && r.hwCls === 'late' && /^rgb\(/.test(String(r.hwColor || '')) && Number(r.hwWeight) === 400) { ok('3分たっても出なければ赤く（太さは左の欄の行と同じ 400）「札が遅れている」（色 ' + r.hwColor + '）'); } else { ng('「札が遅れている」が赤で出ない（「' + String(r.headWait) + '」・class「' + r.hwCls + '」・色 ' + r.hwColor + '）'); }
     const fresh = [N(nf() - 5, '✅ 終わりました（返事不要）', '済んだ仕事の本文')];
     r = run1({ cardOwedAt: nf() - 30 }, MIX.concat(fresh));
     if (!r) { ng('測れない（札が出た）'); }
@@ -2334,8 +2334,8 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
       const empty = PV.panelView({}, [], [], NOWS).nya;
       if (none !== '' || got !== SAY || empty !== '') { bad.push('panelView.nya が違う：' + JSON.stringify([none, got, empty])); }
     } finally { if (keep === undefined) { delete process.env.SHADOW_HOME; } else { process.env.SHADOW_HOME = keep; } try { fsx.rmSync(dir, { recursive: true, force: true }); } catch (e) { } }
-    const wired = html.indexOf("nya: (typeof lastNya !== 'undefined') ? lastNya : ''") >= 0 && html.indexOf('lastNya = (d.panelView && typeof d.panelView.nya') >= 0 && /#headWait\{display:block; flex:1 1 0; min-width:0;[^}]*font-size:15px;/.test(html) && html.indexOf('<h1><span id="hTitle"></span><span id="headWait"></span><img id="runcat"') >= 0 && html.split('id="headWait"').length === 2 && html.indexOf('#runcat{width:80px; height:80px; flex:0 0 auto; margin-left:auto;') >= 0;   /* v278（枠 三百八十七）：頭の字は題の行の中の猫の左の欄だけ（題の行の下に無い） */
-    if (!bad.length && wired) { ok('頭の字は普通の言葉：' + SC.length + '場面とも「にゃ」が一つも無い・枠の番号なし・nya は作業中／検査中／待ちで使う・色の字は前のまま・panelView.nya は控えの「ねこ:」から・字は15pxで猫の左の欄（枠 三百八十七・三百八十九）'); }
+    const wired = html.indexOf("nya: (typeof lastNya !== 'undefined') ? lastNya : ''") >= 0 && html.indexOf('lastNya = (d.panelView && typeof d.panelView.nya') >= 0 && /#headWait\{display:block; grid-column:1; grid-row:2; min-width:0;[^}]*font-size:11px; font-weight:400;/.test(html) && html.indexOf('<h1><span id="hTitle"></span><span id="headWait"></span><img id="runcat"') >= 0 && html.split('id="headWait"').length === 2 && html.indexOf('#runcat{width:80px; height:80px; flex:0 0 auto; margin-left:auto;') >= 0;   /* v278（枠 三百八十七）：頭の字は題の行の中の猫の左の欄だけ（題の行の下に無い） */
+    if (!bad.length && wired) { ok('頭の字は普通の言葉：' + SC.length + '場面とも「にゃ」が一つも無い・枠の番号なし・nya は作業中／検査中／待ちで使う・色の字は前のまま・panelView.nya は控えの「ねこ:」から・字は11px・400で左の欄の行の下（枠 三百八十九・三百九十一）'); }
     else { ng('頭の字（普通の言葉・置き場）が違う ' + bad.length + ' 件' + (wired ? '' : '（panel.html の配り・置き場が足りない）') + '：' + bad.slice(0, 4).join(' ／ ')); }
   }
   /* v224（枠 百五十六）：影の仕事の箱（panelView.shadowBox）。走っている間だけ載る・済んだら null・金額の字が無い・パネルが箱を出す字面がある */
