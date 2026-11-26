@@ -53,6 +53,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main   # 枠 三百五十八：取り出しは main を名指しする（枝から走らせても、その枝の commit を main へ運ばない）
           sparse-checkout: |
             /voice-used.txt
             /*.m4a
@@ -73,6 +74,13 @@ jobs:
           git config user.name "koushu-voice-bot"
           git config user.email "koushu-voice-bot@users.noreply.github.com"
           git add -- ./*.m4a
+          # 枠 三百五十八：押す前の見張り。足す物は直下の *.m4a だけ。ほかの物が混じっていたら押さず、ntfy で知らせて止まる
+          OTHER=$(git diff --cached --name-only | grep -v -E '^[^/]+[.]m4a$' || true)
+          if [ -n "$OTHER" ]; then
+            echo "押さない：直下の *.m4a 以外が混じっている：$OTHER"
+            curl -s -H "Title: voice-24k: stopped before push (non-m4a mixed)" -d "workflow=${{ github.workflow }} ref=${{ github.ref }} mixed: $(echo "$OTHER" | head -5 | tr '\n' ' ')" "https://ntfy.sh/${{ secrets.NTFY_TOPIC }}" > /dev/null || true
+            exit 1
+          fi
           git commit -q -m "voice-24k: ${N}本を 24kbps へ（台帳の欠け ${MISSING}本）"
           for i in 1 2 3 4 5; do
             if git push -q origin HEAD:main; then
