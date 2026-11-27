@@ -1,11 +1,11 @@
-﻿# 再起動-2（r1128-0400・後の測り）
+﻿# 再起動-2（r1128-0408・後の測り）
 
-**終わり** — 2026-11-28 04:00（VAIO）。毎週土曜の起こしで再起動し、起き上がった。
+**終わり** — 2026-11-28 04:08（VAIO）。毎週土曜の起こしで再起動し、起き上がった。
 
 | | 前 | 後 | 差 |
 |---|---|---|---|
-| 空き物理メモリ | 3136MB | **4154MB** | +1018MB |
-| claude | 575MB | **145MB** | -430MB |
+| 空き物理メモリ | 3136MB | **4032MB** | +896MB |
+| claude | 575MB | **302MB** | -273MB |
 
 起き上がった刻 … 11/28/2026 03:32:59
 claude が起きた刻 … 2026-11-28 03:54:10（1本）
@@ -18,11 +18,12 @@ claude が起きた刻 … 2026-11-28 03:54:10（1本）
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **1327件**ある。
+　ここに出るのは新しい20件。全部で **1328件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r1128-0408-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1128-0408-2.md) | 11-28 04:08 | 再起動-2（r1128-0408・後の測り） |
 | [`r1128-0400-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1128-0400-2.md) | 11-28 04:00 | 再起動-2（r1128-0400・後の測り） |
 | [`r1128-0355-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1128-0355-2.md) | 11-28 03:55 | 再起動-2（r1128-0355・後の測り） |
 | [`y1128-w413.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1128-w413.md) | 11-28 02:55 | パソコンの画面を直に写して手牌を読む（枠 四百十三・v1559） |
@@ -42,6 +43,5 @@ claude が起きた刻 … 2026-11-28 03:54:10（1本）
 | [`cloud-panel-check-20261125-192015.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-panel-check-20261125-192015.md) | 11-27 07:54 | 雲で回した：`panel-check.js` |
 | [`cloud-panel-check-20261125-133926.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-panel-check-20261125-133926.md) | 11-27 07:54 | 雲で回した：`panel-check.js` |
 | [`cloud-panel-check-20261125-132830.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-panel-check-20261125-132830.md) | 11-27 07:54 | 雲で回した：`panel-check.js` |
-| [`cloud-check-fast-20261125-194945.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-check-fast-20261125-194945.md) | 11-27 07:54 | 雲で回した：`check-fast.js` |
 
 <!-- 控えの一覧 ここまで -->
