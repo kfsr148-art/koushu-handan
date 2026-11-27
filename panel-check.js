@@ -491,6 +491,29 @@ function staticParts() {
       if (f(fake2) === 'div.zzz') { ok('どの名にも当たらない所だけ平たい名（タグ名.class）に落ちる'); } else { ng('平たい名への落ち方が違う'); }
     }
   }
+  /* ---- ⑤の十三の二 指さすの印（v281・枠 三百九十五）：パネルの指さすからゲームの画面を指させる。v1547 の「ここ変」は消した ---- */
+  head('⑤の十三の二 指さすの印を置く・消す・ゲームが同じ印を読む（作り値・字面）');
+  {
+    const sl = (name) => { const i = html.indexOf('  function ' + name + '('); if (i < 0) { return ''; } const k = html.indexOf(String.fromCharCode(10), i); const one = html.slice(i, k + 1); if (one.trim().slice(-1) === '}') { return one; } const j = html.indexOf(String.fromCharCode(10) + '  }', i); return (j > i) ? html.slice(i, j + 4) : ''; };
+    const fns = ['pointSetMark', 'pointDropMark', 'pointGameDone', 'pointEnd'].map(sl);
+    if (fns.some((x) => !x)) { ng('指さすの印の関数が無い'); }
+    else {
+      const box = {}, ls = { getItem: (k) => (k in box ? box[k] : null), setItem: (k, v) => { box[k] = String(v); }, removeItem: (k) => { delete box[k]; } };
+      const api = new Function('localStorage', '$', 'document', 'setTimeout', "var pointing = false, pointText = '', POINT_KEY = 'koushu_point', pointMark = 0;" + String.fromCharCode(10) + fns.join(String.fromCharCode(10)) + String.fromCharCode(10) + "return { start: function () { pointing = true; pointSetMark(); }, end: pointEnd, back: pointGameDone, on: function () { return pointing; } };")(ls, () => null, { body: { className: '' } }, () => 0);
+      api.start(); const put = Number(box.koushu_point) > 0; api.back(); const keep = api.on(); api.end(''); const gone = !('koushu_point' in box);
+      if (put && keep && gone) { ok('指さすを始めると印を置き、印がある間はそのまま、パネルでやめる・写すと印を消す'); } else { ng('印の置き消しが違う：' + [put, keep, gone].join('/')); }
+      api.start(); delete box.koushu_point; api.back();
+      if (!api.on()) { ok('ゲームの側で印が消えていたら、戻ったパネルの指さしも解く'); } else { ng('ゲームで指さし終えてもパネルが指さしのまま'); }
+      api.start(); box.koushu_point = '1'; api.end('');
+      if (box.koushu_point === '1') { ok('自分の置いた物でない印は消さない'); } else { ng('他の印を消した'); }
+    }
+    if (sl('pointStart').indexOf('pointSetMark();') >= 0 && sl('pointEnd').indexOf('pointDropMark();') >= 0 && html.indexOf("window.addEventListener('pageshow', pointGameDone)") >= 0) { ok('pointStart が置き・pointEnd が消し・戻った時に pointGameDone を呼ぶ'); } else { ng('印の呼び出しが足りない'); }
+    const game = fs.readFileSync(path.join(__dirname, 'koushu-handan.html'), 'utf8');
+    const g0 = game.indexOf("const KEY = 'koushu_point', LIFE = 5 * 60 * 1000;"), g1 = game.indexOf("veil.addEventListener('click'", g0), g2 = game.indexOf("stop.addEventListener('click'", g1);
+    const tap = (g0 > 0 && g1 > g0 && g2 > g1) ? game.slice(g1, g2) : '';
+    if (tap && tap.indexOf('copy(text);') >= 0 && !/await|setTimeout|fetch\(|sendBeacon|\.then\(/.test(tap) && game.indexOf('navigator.clipboard.writeText(text).then(ok, ng)', g0) > 0) { ok('ゲームは同じ印（5分で切れる）を読み、押しの手の中で待たずに写す'); } else { ng('ゲームの指さしの字面が違う'); }
+    if (!/ここ変|koko|kh-koko/.test(game)) { ok('ゲームに「ここ変」の釦と送る仕掛けが残っていない'); } else { ng('ゲームに「ここ変」が残っている'); }
+  }
   /* ---- ⑤の十四 着手から90秒以内の「見込み未記入」は赤くしない（v198・枠R） ---- */
   head('⑤の十四 着手の直後は「見込み未記入」を赤くしない（作り値・字面）');
   {
