@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1545">
+<html lang="ja" data-ver="1546">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1434,7 +1434,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1545</div>
+  <div id="verTag">v1546</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -2379,7 +2379,7 @@ function advDialSentenceV(core, dk, polite, v) {   // v＝0（今までの形）
    ＊返すのは字と、最後の文の語尾の番号。部品が「。」「！」「？」で終わらない時は変えない。 */
 /* 枠 三百十九〜三百二十三（2026-11-26）：語尾の見分け。方言（と人物）の語尾だけを見て、同じ語尾が続くかを調べる（です・ます は除く）。 */
 const ADV_DE = /(ございますぞ|でござるぞ|でござる|ござるぞ|ござる|のじゃ|じゃ|なり|ぜよ|ばい|たい|やけん|けん|やで|やんか|やん|やわ|どすえ|どす|びょん|さー|ねー|っちゃ|とよ|だべ|っぺ|だす|でおます|おます|ですわ|ですの|ますわ|にゃ|ぞ|のう|わい)$/;
-function advEndKey(s) { const b = String(s || '').replace(/[。！？…、 ー〜]+$/g, ''); const m = ADV_DE.exec(b); return m ? (/ござる/.test(m[1]) ? 'ござる' : m[1]) : ''; }   // ござる系（でござる・ござるぞ…）は同じ語尾として数える
+function advEndKey(s) { const t = String(s || ''); const m = ADV_DE.exec(t.replace(/[。！？…、 〜]+$/g, '')) || ADV_DE.exec(t.replace(/[。！？…、 ー〜]+$/g, '')); return m ? (/ござる/.test(m[1]) ? 'ござる' : m[1]) : ''; }   // ござる系（でござる・ござるぞ…）は同じ語尾として数える
 const ADV_DE_SAFE = /^(ばい|たい|けん|やけん|やで|やん|やんか|やわ|どすえ|どす|びょん|さー|ねー|っちゃ|とよ|だべ|っぺ|だす|でおます|おます|にゃ)$/;   // 語尾を取って体言止めにしても文が崩れない語尾（ござる・じゃ・なり は取ると崩れるので取らない）
 function advKuseOk(k, tone, dial) {   // 口癖（頭の短い一言）が、一文として立つか：語尾だけ（なのだ…）・途中で切れた言い方（…が／…に／…な／…ね）・呼びかけと同じ意味（執事×武士の「殿に申し上げる」）は使わない
   if (!k) { return false; }
