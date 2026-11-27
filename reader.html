@@ -349,30 +349,53 @@
     unlock();
     if(pcBusy) return;
     var c = pcCode(); if(!c) return;
-    var base = 'https://ntfy.sh/khpc-' + c, ts = String(Date.now()), es = null, timer = null, sent = false;
+    var base = 'https://ntfy.sh/khpc-' + c, ts = String(Date.now()), es = null, timer = null, sent = false, acked = false, done = false, taking = false;
     pcBusy = true;
     msg.textContent = 'パソコンに頼んでおりますの…';
-    function end(text, ask){ pcBusy = false; if(es) es.close(); if(timer) clearTimeout(timer); if(ask) pcAsk = true; if(text) msg.textContent = text; }
-    try{ es = new EventSource(base + '/sse'); }catch(e){ end('このブラウザでは受け取れませんの', false); return; }
-    timer = setTimeout(function(){ end('パソコンから返事がありませんわ。パソコンと合言葉をご確認くださいまし', true); }, 30000);
-    es.onopen = function(){
-      if(sent) return; sent = true;
-      fetch(base, { method: 'POST', body: 'grab ' + ts }).catch(function(){ end('パソコンに頼めませんでしたわ。通信をご確認くださいまし', false); });
-    };
-    es.onmessage = function(ev){
-      var d = null; try{ d = JSON.parse(ev.data); }catch(e){ return; }
-      if(!d) return;
+    function end(text, ask){ if(done) return; done = true; pcBusy = false; if(es) es.close(); if(timer) clearTimeout(timer); if(ask) pcAsk = true; if(text) msg.textContent = text; }
+    /* パソコンの返事を一つ読む（受け口からでも、後で読む記録からでも同じ）。止まった所はそのまま字にする（2026-11-28・枠 四百十四） */
+    function reply(d){
+      if(done || taking || !d) return;
+      if(d.message === 'ack ' + ts){ acked = true; msg.textContent = 'パソコンが頼みを受け取りましたわ。手牌を待っておりますの…'; return; }
       if(d.message === 'nogame ' + ts){ end('パソコンで雀魂の画面が一番前に出ておりませんの。前に出してから、もう一度お願いいたしますわ', false); return; }
+      if(d.message === 'fail ' + ts){ end('パソコンが手牌を返せませんでしたわ（パソコンの通信か撮り込みで止まりました）。もう一度お願いいたしますわ', false); return; }
       var u = d.attachment && d.attachment.url;
       if(d.message !== 'hand ' + ts || !u || String(u).indexOf('https://ntfy.sh/file/') !== 0) return;
-      es.close();
+      taking = true;
+      if(es) es.close();
+      if(timer) clearTimeout(timer);
+      timer = setTimeout(function(){ end('手牌の受け取りが止まりましたわ。この端末の通信をご確認くださいまし', false); }, 20000);
       msg.textContent = '手牌を受け取っておりますの…';
       fetch(u).then(function(res){ if(!res.ok) throw new Error('get'); return res.blob(); }).then(function(b){
         var url = URL.createObjectURL(b), img = new Image();
-        img.onload = function(){ end('', false); try{ window.ssReaderTake(img); }catch(e){ msg.textContent = '預かりに失敗しましたわ: ' + e.message; } URL.revokeObjectURL(url); };
+        img.onload = function(){ if(done) return; end('', false); try{ window.ssReaderTake(img); }catch(e){ msg.textContent = '預かりに失敗しましたわ: ' + e.message; } URL.revokeObjectURL(url); };
         img.onerror = function(){ URL.revokeObjectURL(url); end('画像を読み込めませんでしたわ', false); };
         img.src = url;
       }).catch(function(){ end('手牌を受け取れませんでしたわ。もう一度お願いいたしますわ', false); });
+    }
+    /* 返事が来ない時：話題の記録（12時間ぶん）を一度だけ読んで、どこで止まったかを言う。受け口が取りこぼした帯があれば、そのまま受け取る */
+    function why(){
+      if(done || taking) return;
+      var ac = window.AbortController ? new AbortController() : null, t2 = setTimeout(function(){ if(ac) ac.abort(); }, 10000);
+      fetch(base + '/json?poll=1&since=12h', { cache: 'no-store', signal: ac ? ac.signal : undefined }).then(function(r){ if(!r.ok) throw new Error('read'); return r.text(); }).then(function(t){
+        clearTimeout(t2);
+        var all = []; t.split('\n').forEach(function(l){ if(!l) return; try{ all.push(JSON.parse(l)); }catch(e){} });
+        all.forEach(reply);
+        if(done || taking) return;
+        if(acked) end('パソコンは頼みを受け取りましたが、手牌を返せておりませんの（パソコンの通信で止まっています）', false);
+        else if(all.some(function(d){ return /^(ack|hand|nogame|fail) [0-9]{13}$/.test(d.message || ''); })) end('頼みがパソコンに届いておりませんの。パソコンの待ち受けか通信が止まっていますわ（合言葉は合っております）', false);
+        else end('合言葉が違うようですわ（この合言葉でパソコンが返事をした記録がありません。パソコンが長く止まっていた時も同じ字になります）。次に押すと入れ直せますの', true);
+      }, function(){ clearTimeout(t2); end('この端末から返事を読めませんでしたわ。この端末の通信をご確認くださいまし', false); });
+    }
+    try{ es = new EventSource(base + '/sse'); }catch(e){ end('このブラウザでは受け取れませんの', false); return; }
+    timer = setTimeout(why, 30000);
+    es.onopen = function(){
+      if(sent) return; sent = true;
+      fetch(base, { method: 'POST', body: 'grab ' + ts }).then(function(r){ if(!r.ok) end('頼みを送れませんでしたわ（送り先が受け付けません：' + r.status + '）。少し待ってもう一度お願いいたしますわ', false); }, function(){ end('パソコンに頼めませんでしたわ。この端末の通信をご確認くださいまし', false); });
+    };
+    es.onmessage = function(ev){
+      var d = null; try{ d = JSON.parse(ev.data); }catch(e){ return; }
+      reply(d);
     };
   });
   document.getElementById('f').addEventListener('change', function(ev){
