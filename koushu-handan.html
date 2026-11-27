@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1556">
+<html lang="ja" data-ver="1557">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1456,7 +1456,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1556</div>
+  <div id="verTag">v1557</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -12080,61 +12080,8 @@ window.ssAutoBand = function(img){
     return { quad: Q };
   }catch(e){ return null; }
 };
-/* 2026-11-27・枠 四百七：境目を「帯の幅÷13」から決めると、帯が少し長い時（右端の牌の側面が写り込む等）に狂いが右へ溜まり、右寄りの牌を読み違える。
-   境目は牌と牌の隙間（上から下まで通る細い暗い筋）から取る。①隙間の並びに一番合う牌の幅と起点を探し ②左から一枚ずつ、前の境目＋牌の幅の近くで隙間を探す。
-   隙間が見つからない所は牌の幅どおりの位置で補う。隙間が8本に満たない時は、前の切り方（ssWarpCutsEven）に任せる。 */
+/* 補正した帯で、牌と牌の隙間（白い面の少ない縦の筋）を探して13枚に切る。見つからない所は等分の位置 */
 window.ssWarpCuts = function(o, OW, OH){
-  var cw = OW / 13, x, y, k, i;
-  var ya = Math.floor(OH * 0.06), yb = Math.ceil(OH * 0.94), yt = Math.ceil(OH * 0.2), yu = Math.floor(OH * 0.8);
-  var full = new Array(OW), edge = new Array(OW);
-  for(x = 0; x < OW; x++){
-    var sf = 0, nf = 0, se = 0, ne = 0;
-    for(y = ya; y < yb; y++){
-      i = (y * OW + x) * 4;
-      var L = 0.299 * o[i] + 0.587 * o[i + 1] + 0.114 * o[i + 2];
-      sf += L; nf++;
-      if(y < yt || y >= yu){ se += L; ne++; }
-    }
-    full[x] = nf ? sf / nf : 0; edge[x] = ne ? se / ne : full[x];
-  }
-  /* 筋の濃さ：左右の少し離れた列より暗い分（両側が明るい細い筋だけが残る）。上下の帯と全体の両方で暗い所だけ（牌の模様は上下の帯まで通らない） */
-  var d = Math.max(3, Math.round(cw * 0.05)), gap = new Array(OW);
-  function dip(P, x){ return Math.min(P[Math.max(0, x - d)], P[Math.min(OW - 1, x + d)]) - P[x]; }
-  for(x = 0; x < OW; x++) gap[x] = Math.max(0, Math.min(dip(full, x), dip(edge, x)));
-  function peak(c, r){
-    var bx = -1, bv = 0, a = Math.max(0, Math.round(c - r)), b = Math.min(OW - 1, Math.round(c + r));
-    for(var z = a; z <= b; z++) if(gap[z] > bv){ bv = gap[z]; bx = z; }
-    return { x: bx, v: bv };
-  }
-  var best = null, p, off;
-  for(p = cw * 0.84; p <= cw * 1.04; p += 0.25){
-    for(off = -cw * 0.06; off <= cw * 0.3; off += 1){
-      var sc = 0;
-      for(k = 1; k <= 12; k++) sc += Math.min(60, peak(off + k * p, 1.5).v);
-      sc -= Math.abs(p - cw) / cw * 20 + Math.abs(off) / cw * 10;
-      if(!best || sc > best.sc) best = { sc: sc, p: p, off: off };
-    }
-  }
-  if(!best) return window.ssWarpCutsEven(o, OW, OH);
-  var vs = [];
-  for(k = 1; k <= 12; k++) vs.push(peak(best.off + k * best.p, 1.5).v);
-  var mid = vs.slice().sort(function(a, b){ return a - b; })[6], thr = Math.max(8, mid * 0.35);
-  var sep = [], prev = null, found = 0;
-  for(k = 1; k <= 13; k++){
-    var model = best.off + k * best.p, e = (prev === null) ? model : prev + best.p;
-    var f = peak(e, best.p * 0.1), ok = f.x >= 0 && f.v >= thr, pos = ok ? f.x : (e + model) / 2;
-    if(ok && k <= 12) found++;
-    sep[k] = Math.max(0, Math.min(OW, Math.round(pos))); prev = pos;
-  }
-  if(found < 8) return window.ssWarpCutsEven(o, OW, OH);
-  var f0 = peak(sep[1] - best.p, best.p * 0.07);
-  sep[0] = Math.max(0, Math.round((f0.x >= 0 && f0.v >= thr) ? f0.x : sep[1] - best.p));
-  var cuts = [];
-  for(k = 0; k < 13; k++) cuts.push({ sx: sep[k], sy: 0, sw: Math.max(1, sep[k + 1] - sep[k]), sh: OH });
-  return cuts;
-};
-/* 前の切り方（等分の位置の前後2割で、白い面の少ない縦の筋を探す・v1464）。隙間が読めない写真の補い */
-window.ssWarpCutsEven = function(o, OW, OH){
   var y0 = Math.floor(OH * 0.2), y1 = Math.max(y0 + 1, Math.ceil(OH * 0.8)), rows = y1 - y0;
   var hist = [], n = 0, x, y, i, k;
   for(i = 0; i < 256; i++) hist.push(0);
