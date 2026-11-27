@@ -185,7 +185,7 @@ function probeSource(scene) {
     (function () { var b = document.getElementById('progBox'); o.pbExists = !!b; if (!b) { return; } var cs = getComputedStyle(b), r = b.getBoundingClientRect(); o.pbShown = cs.display !== 'none' && r.height > 0; o.pbPrev = (b.previousElementSibling && b.previousElementSibling.tagName) || ''; o.pbRows = b.querySelectorAll('.pb').length; o.pbEta = !!b.querySelector('.m.eta'); o.pbGauge = !!b.querySelector('.stg'); o.pbBorder = parseFloat(cs.borderTopWidth) || 0; o.pbW = r.width; o.pbLeft = r.left; o.pbRight = r.right; o.pbTop = r.top; var hd = document.querySelector('header'); o.pbHeadBottom = hd ? hd.getBoundingClientRect().bottom : -1; o.pbOver = document.documentElement.scrollWidth > window.innerWidth + 1 || b.scrollWidth > b.clientWidth + 1; })();
     /* v187：遠隔と終わりました N件 の二つ並び・写し取り一覧／直近に終わった仕事／様子を写す の三つ並び */
     (function () { function R(id) { var e = document.getElementById(id); if (!e) { return null; } var r = e.getBoundingClientRect(); var vis = getComputedStyle(e).display !== 'none' && r.width > 0 && r.height > 0; return vis ? { l: r.left, r: r.right, t: r.top, b: r.bottom, w: r.width, h: r.height } : null; }
-      o.rcR = R('rcLink'); o.doneR = R('doneHead'); o.stepsR = R('btnSteps'); o.stepsIn = !!document.querySelector('#halfRow > #btnSteps'); (function () { var e = document.getElementById('btnSteps'), d = document.getElementById('doneHead'); o.stepsSpill = !!(e && (e.scrollWidth > e.clientWidth + 1 || e.scrollHeight > e.clientHeight + 1)); o.doneSpill = !!(d && d.scrollWidth > d.clientWidth + 1); })(); o.hTitleR = R('hTitle'); o.statR = R('stat'); o.seenR = R('fSeen'); o.statTxt = (document.getElementById('stat') || {}).textContent || ''; o.catR = R('runcat'); o.hTitleSpill = (function () { var e = document.getElementById('hTitle'); return !!(e && (e.scrollWidth > e.clientWidth + 1 || e.getBoundingClientRect().height > 40)); })(); o.shR = R('btnShots'); o.recR = R('btnRecent'); o.urlR = R('btnCopyUrl');
+      o.rcR = R('rcLink'); o.doneR = R('doneHead'); o.stepsR = R('btnSteps'); o.stepsIn = !!document.querySelector('#halfRow > #btnSteps'); (function () { var e = document.getElementById('btnSteps'), d = document.getElementById('doneHead'); o.stepsSpill = !!(e && (e.scrollWidth > e.clientWidth + 1 || e.scrollHeight > e.clientHeight + 1)); o.doneSpill = !!(d && d.scrollWidth > d.clientWidth + 1); })(); o.hTitleR = R('hTitle'); o.statR = R('stat'); o.seenR = R('fSeen'); o.statTxt = (document.getElementById('stat') || {}).textContent || ''; o.catR = R('runcat'); (function () { var hh = document.querySelector('header h1'), wj = document.getElementById('weekJob'), hw = document.getElementById('headWait'); if (!hh) { return; } var a = hh.getBoundingClientRect(), low = 0; [wj, hw].forEach(function (e) { if (!e) { return; } var r = e.getBoundingClientRect(); if (r.height > 0) { low = Math.max(low, r.bottom - a.top); } }); o.h1H = a.height; o.h1Need = Math.max(80, low); o.hwCut = !!(hw && hw.clientHeight > 0 && hw.scrollHeight > hw.clientHeight + 1); })(); o.hTitleSpill = (function () { var e = document.getElementById('hTitle'); return !!(e && (e.scrollWidth > e.clientWidth + 1 || e.getBoundingClientRect().height > 40)); })(); o.shR = R('btnShots'); o.recR = R('btnRecent'); o.urlR = R('btnCopyUrl');
       var hr = document.getElementById('halfRow'); o.halfInHeader = !!(document.querySelector('header') && document.querySelector('header').querySelector('#rcLink')); o.halfExists = !!hr;
       o.btnOver = document.documentElement.scrollWidth > window.innerWidth + 1;
       o.halfDump = ['rcLink', 'doneBox', 'doneHead'].map(function (id) { var e = document.getElementById(id); if (!e) { return id + ':無し'; } var s = getComputedStyle(e); return id + '{w' + Math.round(e.getBoundingClientRect().width) + ',pad' + s.paddingLeft + '/' + s.paddingRight + ',bs:' + s.boxSizing + ',flex:' + s.flex + ',mar' + s.marginLeft + '/' + s.marginRight + '}'; }).join(' '); })();
@@ -1008,8 +1008,8 @@ function staticParts() {
     }
     if (H.indexOf("el.src = 'genba-cat-80.png'") >= 0 && H.indexOf("'cat-sleep-w.png', 'genba-cat-80.png', 'genba-taiki-80.png'") >= 0) { ok('ほかの猫（作業中・待ち・指差し）の絵は今のまま'); } else { ng('ほかの猫の絵が変わった'); }
     /* 六十六：見出しの「返事パネル」は一行・固定幅・猫は 80x80 で縮まない・行の高さは 80px 固定 */
-    const hOk = H.indexOf('<h1><span id="hTitle"></span><span id="headWait"></span><img id="runcat"') >= 0 && /#hTitle\{flex:0 0 auto; white-space:nowrap; width:6em;/.test(H) && H.indexOf('h1{height:136px; align-items:flex-start;}') >= 0 && H.indexOf('h1{height:150px') < 0 && !/\.weekjob \.wj-loop\{[^}]*max-width/.test(H) && /#headWait{[^}]*max-height:136px; overflow-y:auto; font-size:11px; font-weight:400;/.test(H) && H.indexOf('.weekjob .wj-now{display:block; color:var(--dim); font-size:11px; white-space:nowrap;}') >= 0 && H.indexOf('#headWait.late{color:var(--act);}') >= 0 && H.indexOf('#headWait[data-c="r"]{color:var(--act);}') >= 0 && H.indexOf('h1 > #runcat{grid-column:2; grid-row:1 / span 2;') >= 0 && H.indexOf('<span class="weekjob" id="weekJob">') > H.indexOf('<h1><span id="hTitle">') && /#runcat\{width:80px; height:80px; flex:0 0 auto;/.test(H);
-    if (hOk) { ok('見出し：「返事パネル」は white-space:nowrap・幅 6em 固定・縮まない（flex:0 0 auto）／猫は 80x80・縮まない／行の高さは 136px 固定（v280：直しの輪の行に幅の上限は無い・下の八つの釦は動かない・頭の字は左の欄の行の下・11px・400（セッションの行と同じ）・収まらない字は中で送る・猫は右の上）'); } else { ng('見出しの固定の指定が無い／違う'); }
+    const hOk = H.indexOf('<h1><span id="hTitle"></span><span id="headWait"></span><img id="runcat"') >= 0 && /#hTitle\{flex:0 0 auto; white-space:nowrap; width:6em;/.test(H) && H.indexOf('h1{height:auto; min-height:80px; align-items:flex-start;}') >= 0 && H.indexOf('h1{height:136px') < 0 && H.indexOf('h1{height:150px') < 0 && H.indexOf('grid-template-rows:auto 1fr; gap:0 10px;}') >= 0 && !/\.weekjob \.wj-loop\{[^}]*max-width/.test(H) && /#headWait{[^}]*align-self:start; font-size:11px; font-weight:400;/.test(H) && !/#headWait{[^}]*(max-height|overflow-y)/.test(H) && H.indexOf('.weekjob .wj-now{display:block; color:var(--dim); font-size:11px; white-space:nowrap;}') >= 0 && H.indexOf('#headWait.late{color:var(--act);}') >= 0 && H.indexOf('#headWait[data-c="r"]{color:var(--act);}') >= 0 && H.indexOf('h1 > #runcat{grid-column:2; grid-row:1 / span 2;') >= 0 && H.indexOf('<span class="weekjob" id="weekJob">') > H.indexOf('<h1><span id="hTitle">') && /#runcat\{width:80px; height:80px; flex:0 0 auto;/.test(H);
+    if (hOk) { ok('見出し：「返事パネル」は white-space:nowrap・幅 6em 固定・縮まない（flex:0 0 auto）／猫は 80x80・縮まない／行の高さは決め打ちしない（v283：最小は猫の 80px・字の要る分だけ伸びる・直しの輪の行に幅の上限は無い・頭の字は左の欄の行の下・11px・400（セッションの行と同じ）・切らず中で送らない・猫は右の上）'); } else { ng('見出しの固定の指定が無い／違う'); }
     /* 頭の字は短い一言だけ：総当たりで出る字の種類を数え、括弧・次「・刻が一つも無いこと */
     {
       const PV = require(path.join(dir, 'panel-view.js')), NOW = 1795200000, seen = {};
@@ -1642,8 +1642,9 @@ try {
     else if (/^棚 0件$/.test(String(rp.recBefore || '')) && rp.shelfOpen === true && rp.shelfClosed === true && /寝ているものはありません/.test(String(rp.shelfText || ''))) { ok('v225：二段目の釦は「棚 N件・約M%」（棚が無ければ「棚 0件」・雲の待ちは横に「・雲 N件・M%」と足すだけ）・押すと棚の一覧が開き、もう一度押すと閉じる（押す前「' + rp.recBefore + '」）'); }
     else { ng('棚の釦の字・開閉が違う（前「' + rp.recBefore + '」・後「' + rp.recAfter + '」・開 ' + rp.shelfOpen + '・閉 ' + rp.shelfClosed + '・中「' + String(rp.shelfText || '').slice(0, 40) + '」）'); }
   }
-  /* ---- ⑤の二十六の二 v211（本人の枠 七十八・七十九）：底の八つは、まとめて写すが0件・1件・10件以上の時も、押し通知が有る時も無い時も、場所が少しも動かない（390・375・320） ---- */
-  head('⑤の二十六の二 底の八つの場所は 0件・1件・10件以上・押し通知の有無で動かない（四つ×二段・同じ幅と高さ・iPhone の幅）');
+  /* ---- ⑤の二十六の二 v211（本人の枠 七十八・七十九）：底の八つは、まとめて写すが0件・1件・10件以上の時も、押し通知が有る時も無い時も、場所が少しも動かない（390・375・320）
+     v283（枠 四百）：見出しの帯は頭の字の要る分だけ伸びる。件数で頭の字が替わる時、八つは帯の高さが変わった分だけ上下してよい。守るのは、左・幅・高さが同じ／帯の高さを引いた上の位置が同じ（件数そのものでは動かない）／頭の字が同じなら上の位置も同じ。 ---- */
+  head('⑤の二十六の二 底の八つは 0件・1件・10件以上・押し通知の有無で並びと大きさが同じ・動くのは見出しの帯の高さの分だけ（同じ頭の字なら同じ場所・iPhone の幅）');
   {
     const nE = Math.floor(Date.now() / 1000);
     const base = Object.assign({}, ST['手待ち'], { at: nE, rcName: 'koushu-handan-93', rcPid: 6308, rcUrl: 'https://claude.ai/code/session_X' });
@@ -1652,7 +1653,7 @@ try {
     const CASES = [['0件', cards(0), [], ''], ['1件', cards(1), [], '1件'], ['12件', cards(12), [], '12件'], ['押し通知だけ', cards(0), pushes, '2件'], ['1件＋押し通知', cards(1), pushes, '3件']];
     const near = (a, b) => Math.abs(a - b) <= 0.6;
     for (const [w, h] of [[390, 844], [375, 667], [320, 568]]) {
-      let first = null; const why = [];
+      let first = null; const why = [], byWord = {};
       for (const [nm, nt, pu, sub] of CASES) {
         const r = run(tmp, { state: base, notices: nt, ntfy: pu, usage: U_OK, settle: 1500 }, w, h);
         if (!r || !r.b8) { why.push(nm + '：測れない'); continue; }
@@ -1669,13 +1670,17 @@ try {
         if (top[0].h < 44 || b.some(x => x.w < 44)) { why.push(nm + '：当たりが44px未満'); }
         if (b.some(x => x.id !== 'doneBox' && x.fs !== '13px')) { why.push(nm + '：字の大きさが揃わない（' + b.map(x => x.fs).join('・') + '）'); }
         if (r.btnOver) { why.push(nm + '：画面が横に溢れる'); }
-        if (!first) { first = { nm, b }; } else { const mv = b.filter((x, i) => !near(x.l, first.b[i].l) || !near(x.t, first.b[i].t) || !near(x.w, first.b[i].w) || !near(x.h, first.b[i].h)); if (mv.length) { why.push(nm + '：' + first.nm + 'の時から動いた（' + mv.map(x => x.id + ' ' + [x.l, x.t, x.w, x.h].join(',')).join('｜') + '）'); } }
+        if (typeof r.h1H !== 'number') { why.push(nm + '：見出しの帯が測れない'); continue; }
+        const word = String(r.hwAct || '');
+        if (!byWord[word]) { byWord[word] = { nm, b }; } else { const mw = b.filter((x, i) => !near(x.t, byWord[word].b[i].t)); if (mw.length) { why.push(nm + '：頭の字が' + byWord[word].nm + 'の時と同じなのに上下した（' + mw.map(x => x.id + ' ' + x.t).join('｜') + '）'); } }
+        if (!first) { first = { nm, b, h1: r.h1H }; } else { const mv = b.filter((x, i) => !near(x.l, first.b[i].l) || Math.abs((x.t - r.h1H) - (first.b[i].t - first.h1)) > 1 || !near(x.w, first.b[i].w) || !near(x.h, first.b[i].h)); if (mv.length) { why.push(nm + '：' + first.nm + 'の時から動いた（' + mv.map(x => x.id + ' ' + [x.l, x.t, x.w, x.h].join(',')).join('｜') + '）'); } }
       }
-      if (why.length) { ng(w + 'x' + h + '：' + why.join('／')); } else { ok(w + 'x' + h + '：' + CASES.map(c => c[0]).join('・') + ' の五つで、八つの場所と大きさが同じ（幅 ' + first.b[0].w + 'px・高さ ' + first.b[0].h + 'px・上の段の上 ' + first.b[0].t + '・下の段の上 ' + first.b[4].t + '）・まとめて写すは常に出て 0件は字だけ／1件以上は N件と青'); }
+      if (why.length) { ng(w + 'x' + h + '：' + why.join('／')); } else { ok(w + 'x' + h + '：' + CASES.map(c => c[0]).join('・') + ' の五つで、八つの左・幅・高さと帯の高さを引いた上の位置が同じ・同じ頭の字なら同じ場所（頭の字 ' + Object.keys(byWord).length + '種・幅 ' + first.b[0].w + 'px・高さ ' + first.b[0].h + 'px・' + first.nm + 'の上の段の上 ' + first.b[0].t + '・下の段の上 ' + first.b[4].t + '）・まとめて写すは常に出て 0件は字だけ／1件以上は N件と青'); }
     }
   }
-  /* ---- ⑤の二十二 見出しが動かない（v207・本人の枠 六十六）：どの一言の時も「返事パネル」と猫の位置・大きさが同じ（iPhone の幅・ブラウザ） ---- */
-  head('⑤の二十二 見出しの「返事パネル」と猫は、頭の字がどの一言でも同じ位置・同じ大きさ（iPhone の幅）');
+  /* ---- ⑤の二十二 見出しが動かない（v207・本人の枠 六十六）：どの一言の時も「返事パネル」と猫の位置・大きさが同じ（iPhone の幅・ブラウザ）
+     v283（枠 四百）：帯の高さは字で替わる。守るのは、猫の上の位置と大きさ（80x80）が同じ／帯の高さ＝左の欄の下端（最小 80px）で字の下に空きが無い／字が切れない。 ---- */
+  head('⑤の二十二 猫は頭の字がどの一言でも同じ位置（上）・同じ大きさ／見出しの帯は字の要る分だけ（最小 80px・字の下の空きと切れが無い）（iPhone の幅）');
   {
     const nh = Math.floor(Date.now() / 1000), UR = { sub: { running: 1, items: [{ id: 'a', desc: 'x', start: '02:00' }], recent: [] }, cloud: { running: [], recent: [] } };
     const CASES = [['作業中', Object.assign({}, ST['作業中'], { ura: UR }), []], ['裏方作業中', Object.assign({}, ST['手待ち'], { stat: '待ち', detail: '残りの段 2・次「長い長い段の名前」', ura: UR }), []], ['待機中', Object.assign({}, ST['手待ち']), []], ['札まとめ中', Object.assign({}, ST['手待ち'], { cardOwedAt: nh - 30 }), MIX], ['ヨシ待ち', Object.assign({}, ST['ヨシ待ち']), MIX], ['まとめて写す', Object.assign({}, ST['手待ち']), MIX]];
@@ -1686,6 +1691,8 @@ try {
         if (!r || !r.catR) { why.push(nm + '：測れない'); continue; }   /* v253 で題の字を消したので hTitle は幅0（測れない）。猫の位置・大きさで見る */
         words.push(String(r.headWait || ''));
         if (r.hTitleSpill) { why.push(nm + '：「返事パネル」が折り返す／はみ出す'); }
+        if (typeof r.h1H !== 'number' || Math.abs(r.h1H - r.h1Need) > 2) { why.push(nm + '：見出しの帯の高さが字の要る分でない（帯 ' + r.h1H + '・要る分 ' + r.h1Need + '）'); }   /* v283（枠 四百） */
+        if (r.hwCut) { why.push(nm + '：頭の字が帯の中で切れる／送りになる'); }
         if (Math.round(r.catR.w) !== 80 || Math.round(r.catR.h) !== 80) { why.push(nm + '：猫が80x80でない（' + Math.round(r.catR.w) + 'x' + Math.round(r.catR.h) + '）'); }
         const k = [(r.hTitleR || {}).l, (r.hTitleR || {}).t, (r.hTitleR || {}).w, (r.hTitleR || {}).h, r.catR.l, r.catR.t].map(x => Math.round(x)).join(',');
         if (base === null) { base = k; } else if (k !== base) { why.push(nm + '：見出しか猫が動いた（' + base + ' → ' + k + '）'); }
@@ -1694,7 +1701,7 @@ try {
         else if (!r.statR || !r.seenR || Math.abs(r.statR.t - r.seenR.t) > 1 || r.statR.h > 24 || r.statR.r > w - 13) { why.push(nm + '：「' + r.statTxt + '」が最終確認と同じ一行に収まらない'); }
         else if (Math.abs(r.statR.l - r.seenR.r - 14) > 2) { why.push(nm + '：「' + r.statTxt + '」が最終確認のすぐ後ろ（間 14px）でない（間 ' + Math.round(r.statR.l - r.seenR.r) + 'px・v214 枠 九十一）'); }   /* v214（本人の枠 九十一）：右の端へ寄せない */
       }
-      if (why.length) { ng(w + 'x' + h + '：' + why.join('／')); } else { ok(w + 'x' + h + '：' + words.length + 'つの一言（' + words.join('／') + '）で「返事パネル」と猫は同じ位置・同じ大きさ（' + base + '）'); }
+      if (why.length) { ng(w + 'x' + h + '：' + why.join('／')); } else { ok(w + 'x' + h + '：' + words.length + 'つの一言（' + words.join('／') + '）で猫は同じ位置・同じ大きさ（' + base + '）・見出しの帯は字の要る分だけ'); }
     }
   }
   /* ---- ⑤の十 札まとめ中（v188・2026-11-20 本人の枠）：控えにあるがまだ公開に見えていない札の印（cardOwedAt）がある間は待機中でなく「札まとめ中、、、」・出たら「まとめて写すヨシ！」・3分で赤「札が遅れている」・印が無ければ待機中・10秒おきに読み直す ---- */
@@ -2189,14 +2196,14 @@ head('⑰ v118 の三つ（過去の札・訴えの行・最後に受けた枠�
       { const sv = PV2.sentView, e1 = { per: 0.8, nPer: 5, cur: { est: 1.5, used: 0.4 } }, t1 = sv({ stat: '作業中', foot: { wait: 5 } }, null, 16, e1), t2 = sv({ stat: '待機中', foot: { wait: 5 } }, null, 16, { per: 0.8, nPer: 5, cur: null }), t3 = sv({ stat: '作業中', foot: { wait: 3 } }, { n: 2, pct: 9.5, fb: 3 }, 16, null), hp2 = fs2.readFileSync(SRC, 'utf8');
         if (t1.pct === 5.1 && t1.src === '台帳 1件＋実測の中央値 5件' && t2.pct === 4 && t2.src === '実測の中央値 5件' && t3.pct === 21.5 && t3.src === '' && typeof PV2.sentEst === 'function' && hp2.indexOf("(sn.src ? '（' + sn.src + '）' : '')") < 0 && hp2.indexOf("$('wjEst').textContent = sn ? ('枠 ' + (sn.n | 0) + '件・予定 ' + (Math.round((Number(sn.pct) || 0) * 10) / 10).toFixed(1) + '%') : '';") >= 0) { ok('予定%は台帳と実測から出す：台帳の残り1.1＋待ち5件×0.8＝5.1%（元「台帳 1件＋実測の中央値 5件」）／台帳が無く待ちだけなら 4%／実測も台帳も無い時だけ昔の数え（21.5%）・パネルは元の字を赤い行には出さない（v273・値は sent.src に残る）'); }
         else { ng('予定%の元の出し方が違う：' + JSON.stringify([t1, t2, t3])); } }
-      /* v268・v269（枠 三百五十九）：脈の赤い行と「鳴った！（試し）」釦（v268）・拾われなかったエラーの送り（v269）の検査。新しい表示・釦・送りを足す直しは、同じ commit でここに検査を足す。 */
+      /* v268・v269（枠 三百五十九）：脈の赤い行と試しの知らせの釦（v268）・拾われなかったエラーの送り（v269）の検査。新しい表示・釦・送りを足す直しは、同じ commit でここに検査を足す。 */
       { const hp3 = fs2.readFileSync(SRC, 'utf8');
         let r1 = null;
         try {
           const lateSrc = cutFn(hp3, 'beatLateList'), f = vm.runInNewContext('(' + lateSrc.replace(/^\s*function beatLateList/, 'function') + ')', {}), NOW3 = 1000000;
           r1 = { a: f({ x: { label: 'X', at: NOW3 - 3600, every: 5, grace: 10 } }, NOW3).length, b: f({ x: { label: 'X', at: NOW3 - 60, every: 5, grace: 10 } }, NOW3).length, c: f({ x: { label: 'X', at: NOW3 - 99999, every: 0, grace: 0 } }, NOW3).length, d: f({ test: { monthly: {} } }, NOW3).length, e: f(null, NOW3).length };
         } catch (e3) { r1 = { err: String(e3) }; }
-        if (r1 && r1.a === 1 && r1.b === 0 && r1.c === 0 && r1.d === 0 && r1.e === 0 && hp3.indexOf("'beat-ack ' + id") >= 0 && hp3.indexOf('id="beatAck"') >= 0 && /\.beat-ack \{[^}]*min-height: 44px/.test(hp3) && hp3.indexOf('setInterval(pullBeats, 120000)') >= 0 && hp3.indexOf('rl.missing > 0') >= 0 && hp3.indexOf("m && m.id && !m.pressedAt && now - m.sentAt < 3 * 86400") >= 0) { ok('脈（v268）：見込み＋猶予を過ぎた物だけ赤い（見込み 0 の物・test の欄・null は赤くしない）・「鳴った！（試し）」釦は押されていない月一の試しが3日以内の時だけ出て beat-ack <id> を送る・釦の外箱は44px・2分おきに読む・橋の札の差（relay.missing）の一言'); }
+        if (r1 && r1.a === 1 && r1.b === 0 && r1.c === 0 && r1.d === 0 && r1.e === 0 && hp3.indexOf("'beat-ack ' + id") >= 0 && hp3.indexOf('id="beatAck"') >= 0 && /\.beat-ack \{[^}]*min-height: 44px/.test(hp3) && /\.beat-ack \{ display: block; width: 100%; height: 44px;[^}]*margin: -5\.25px 0 -1\.25px;/.test(hp3) && /\.beat-ack::before \{[^}]*top: 5\.25px; bottom: 5\.25px;[^}]*border-radius: 8px; border: 1px solid/.test(hp3) && /\.beat-line \{ margin: 4px 0; padding: 6px 10px; border-radius: 8px;[^}]*font-size: 13px; line-height: 1\.5; \}/.test(hp3) && hp3.indexOf('id="beatAck" hidden>試しの知らせが鳴ったら押す</button>') >= 0 && hp3.indexOf("bt.textContent = '試しの知らせが鳴ったら押す'; }, 3000)") >= 0 && hp3.indexOf("bt.textContent = '押しました（ありがとう）'") >= 0 && hp3.indexOf('鳴った！（試し）') < 0 && hp3.indexOf('setInterval(pullBeats, 120000)') >= 0 && hp3.indexOf('rl.missing > 0') >= 0 && hp3.indexOf("m && m.id && !m.pressedAt && now - m.sentAt < 3 * 86400") >= 0) { ok('脈（v268）：見込み＋猶予を過ぎた物だけ赤い（見込み 0 の物・test の欄・null は赤くしない）・「試しの知らせが鳴ったら押す」釦は押されていない月一の試しが3日以内の時だけ出て beat-ack <id> を送る・釦の外箱は44pxで見た目は赤い帯の一行と同じ大きさ（33.5px・横いっぱい）・押した後の字は「押しました」のまま・2分おきに読む・橋の札の差（relay.missing）の一言'); }
         else { ng('脈（v268）の表示の決めが違う：' + JSON.stringify(r1)); }
         const em = /<script id="khErr">([\s\S]*?)<\/script>/.exec(hp3);
         if (!em) { ng('エラーの送り（v269）の script（khErr）が panel.html に無い'); }
