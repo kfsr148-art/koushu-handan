@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1549">
+<html lang="ja" data-ver="1550">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1299,14 +1299,14 @@
   #verTag { position: fixed; top: 2px; left: 5px; font-size: 9px; letter-spacing:0.05em; color: rgba(243,236,224,0.32); z-index: 100040; pointer-events: none; font-family: var(--sans); }
   /* ミニゲームの間だけ伏せる。HUD が top:6px left:10px で、版番号と重なるため。 */
   body.playing-tori #verTag { display: none; }
-  /* v1549（枠 三百九十五）：指さし。返事パネルの「指さす」が置く印（localStorage の koushu_point）がある間だけ。
+  /* v1549（枠 三百九十五）・v1550（枠 四百二）：指さし。返事パネルの「指さす」の印が届いた間だけ。幕と帯はその間だけ画面に足す（ふだんは画面に無い）。
      幕は透明で画面いっぱい（下の部品は押しを受けない）。案内の字は押しを下へ通し、押しを受けるのは「やめる」だけ。どの覆いよりも上。 */
   #pointVeil { position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 100060; background: transparent; box-shadow: inset 0 0 0 3px var(--gold); touch-action: none; cursor: crosshair; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
   #pointBar { position: fixed; right: calc(6px + env(safe-area-inset-right, 0px)); bottom: calc(6px + env(safe-area-inset-bottom, 0px)); z-index: 100061; max-width: calc(100% - 12px); box-sizing: border-box; display: flex; gap: 8px; align-items: center; padding: 4px 4px 4px 10px; border-radius: 10px; background: rgba(0,0,0,0.88); color: #fff; font-size: 13px; font-weight: 700; font-family: var(--sans); pointer-events: none; }
   #pointBar button { flex: 0 0 auto; min-width: 56px; height: 44px; border: 1px solid var(--gold); border-radius: 8px; background: #14271f; color: var(--bone); font-size: 13px; cursor: pointer; pointer-events: auto; }
   #pointText { display: block; width: 100%; height: 96px; box-sizing: border-box; font-size: 16px; background: #fff; color: #111; border: 0; border-radius: 8px; padding: 6px; -webkit-user-select: text; user-select: text; }
   #pointBar.manual { left: 6px; flex-wrap: wrap; justify-content: flex-end; pointer-events: auto; }
-  #pointVeil[hidden], #pointBar[hidden], #pointBar [hidden] { display: none; }
+  #pointBar [hidden] { display: none; }
   .voice-credit { position: fixed; top: 2px; left: 44px; font-size: 9px; letter-spacing: 0.04em; color: rgba(243,236,224,0.40); z-index: 99; pointer-events: none; font-family: var(--sans); display: none; }
   #tauntBtn{width:88px;box-sizing:border-box;flex:0 0 auto;text-align:center;}
   @media (orientation: landscape){
@@ -1387,6 +1387,20 @@
   window.addEventListener('kh-voice-miss', function(e){
     try { send('声の部品が欠けた：' + (e && e.detail || ''), 'voice'); } catch(x){}
   });
+  /* 指さしの印の道（枠 四百二）：パネルが印を送り、ゲームは起きた時と表に出た時だけ読む。ホーム画面のアプリはほかと置き場を分け合わないので、localStorage では届かない。
+     宛先は上と同じ（公開のページに載る話題で誰でも書ける）。通すのは『point-mark か point-end と、13桁の刻』の形だけ。読んだ側も刻の数字しか使わない。 */
+  window.addEventListener('kh-point-net', function(e){
+    try {
+      var d = e && e.detail;
+      if(!d || location.protocol !== 'https:'){ return; }
+      if(d.read){
+        d.reply = fetch('https://ntfy.sh/' + T + '/json?poll=1&since=6m', { cache: 'no-store' }).then(function(r){ if(!r.ok){ throw new Error('read'); } return r.text(); });
+      } else if(/^point-(mark|end) [0-9]{13}$/.test(d.send || '') && navigator.sendBeacon){
+        navigator.sendBeacon('https://ntfy.sh/' + T, d.send);
+      }
+    } catch(x){}
+  });
+
 })();
 </script>
 </head>
@@ -1442,14 +1456,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1549</div>
-  <div id="pointVeil" hidden></div>
-  <div id="pointBar" hidden>
-    <span id="pointMsg"></span>
-    <textarea id="pointText" readonly hidden></textarea>
-    <button type="button" id="pointCopy" hidden>写す</button>
-    <button type="button" id="pointStop">やめる</button>
-  </div>
+  <div id="verTag">v1550</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -11323,32 +11330,29 @@ function advDecodeWav(ab) {
     document.body.classList.add('judged');
   };
 
-  /* ---- v1549（枠 三百九十五）指さし ----
-     返事パネルで「指さす」を押すと、同じサイトのページ同士で読める置き場（localStorage の koushu_point）に印（押した刻）が置かれる。
-     ゲームは起きた時・表へ戻った時に印を見て指さしの形になる。押した部品の字は、その押しの手の中で直に写す（待ちも送りも挟まない。挟むと iPhone の Safari は写すのを断る）。
-     一度写すか「やめる」で形を解いて印を消す。印は 5 分で切れる。どこへも送らない。判定には触れない。押しは透明な幕が受けるので、下の部品はいつもの動きをしない。 */
+  /* ---- v1549（枠 三百九十五）指さし・v1550（枠 四百二）----
+     返事パネルで「指さす」を押すと印（押した刻）が送られる。ゲームは起きた時と表へ戻った時にだけ読みに行き、5分以内の印があれば指さしの形になる。
+     幕と帯はその間だけ画面に足し、終われば外す（指さし中でない時は、押しを取る物が画面に一つも無い）。読めない・古い・形が違う時は何も出さない。
+     押した部品の字は、その押しの手の中で直に写す（待ちも送りも挟まない）。使った印はこの端末に控えて二度は使わない。判定には触れない。 */
   (function(){
-    const KEY = 'koushu_point', LIFE = 5 * 60 * 1000;
-    const veil = document.getElementById('pointVeil'), bar = document.getElementById('pointBar'), msg = document.getElementById('pointMsg');
-    const box = document.getElementById('pointText'), again = document.getElementById('pointCopy'), stop = document.getElementById('pointStop');
+    const USED = 'koushu_point_used', LIFE = 5 * 60 * 1000;
+    const make = function(tag, id, word){ const el = document.createElement(tag); el.id = id; if(tag === 'button') el.type = 'button'; if(word) el.textContent = word; return el; };
+    const veil = make('div', 'pointVeil'), bar = make('div', 'pointBar'), msg = make('span', 'pointMsg');
+    const box = make('textarea', 'pointText'), again = make('button', 'pointCopy', '写す'), stop = make('button', 'pointStop', 'やめる');
+    box.setAttribute('readonly', '');
+    [msg, box, again, stop].forEach(function(el){ bar.appendChild(el); });
     const NL = String.fromCharCode(10);
-    let on = false, mark = 0, timer = 0, toast = 0;
-    function readMark(){
-      try {
-        const raw = localStorage.getItem(KEY);
-        if(raw === null) return 0;
-        const m = Number(raw), age = Date.now() - m;
-        if(m > 0 && age < LIFE && age > -60000) return m;
-        localStorage.removeItem(KEY);
-      } catch(e){}
-      return 0;
-    }
-    function dropMark(){ try { localStorage.removeItem(KEY); } catch(e){} }
-    /* 帯の形：on＝指さし中／done＝写した（しばらくで消える）／manual＝写せなかった（字を出して手で写してもらう） */
+    let on = false, mark = 0, timer = 0, toast = 0, used = 0, busy = false, again2 = 0;
+    try { used = Number(localStorage.getItem(USED)) || 0; } catch(e){}
+    function fresh(m){ const age = Date.now() - m; return m > 0 && age < LIFE && age > -60000; }
+    function net(d){ try { window.dispatchEvent(new CustomEvent('kh-point-net', { detail: d })); } catch(e){} return d; }
+    /* 帯の形：on＝指さし中／done＝写した（しばらくで消える）／manual＝写せなかった（字を出して手で写してもらう）／空＝何も無い */
     function show(kind, word){
       clearTimeout(toast);
-      veil.hidden = (kind !== 'on');
-      bar.hidden = !kind;
+      if(kind === 'on'){ if(!veil.parentNode) document.body.appendChild(veil); }
+      else if(veil.parentNode) veil.parentNode.removeChild(veil);
+      if(kind){ if(!bar.parentNode) document.body.appendChild(bar); }
+      else if(bar.parentNode) bar.parentNode.removeChild(bar);
       bar.classList.toggle('manual', kind === 'manual');
       box.hidden = again.hidden = (kind !== 'manual');
       stop.hidden = (kind === 'done');
@@ -11357,16 +11361,33 @@ function advDecodeWav(ab) {
       if(kind === 'done') toast = setTimeout(function(){ show(''); }, 2500);
     }
     function end(){ on = false; mark = 0; clearTimeout(timer); }
-    function sync(){
-      const m = readMark();
-      if(!m){
-        if(on){ end(); show(''); }
-        return;
-      }
+    function spend(m){ used = Math.max(used, m); try { localStorage.setItem(USED, String(used)); } catch(e){} }
+    function start(m){
       on = true; mark = m;
       show('on', 'おかしい所を押して');
       clearTimeout(timer);
-      timer = setTimeout(sync, Math.max(0, mark + LIFE - Date.now()) + 50);
+      timer = setTimeout(function(){ end(); show(''); }, Math.max(0, m + LIFE - Date.now()));
+    }
+    /* 届いた中身で使うのは、形が合う行の刻の数字だけ。ほかの字は読まない・画面に出さない */
+    function take(body){
+      let best = 0; const ended = {};
+      String(body).split(NL).forEach(function(line){
+        let o = null; try { o = JSON.parse(line); } catch(e){ return; }
+        const m = o && o.event === 'message' && typeof o.message === 'string' && /^point-(mark|end) ([0-9]{13})$/.exec(o.message);
+        if(!m) return;
+        const t = Number(m[2]);
+        if(m[1] === 'end') ended[t] = true; else if(fresh(t) && t > best) best = t;
+      });
+      if(on && ended[mark]){ spend(mark); end(); show(''); }
+      if(best && !ended[best] && best > used && best > mark) start(best);
+    }
+    function ask(retry){
+      if(on && !fresh(mark)){ end(); show(''); }
+      if(document.hidden || busy) return;
+      const d = net({ read: true, reply: null });
+      if(!d.reply) return;
+      busy = true;
+      d.reply.then(function(body){ busy = false; take(body); }, function(){ busy = false; if(retry){ clearTimeout(again2); again2 = setTimeout(function(){ ask(false); }, 3000); } });
     }
     function clean(t, n){ t = String(t || '').replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n) + '…' : t; }
     function suitName(s){ return ({ man:'萬', pin:'筒', sou:'索' })[s] || ''; }
@@ -11457,9 +11478,9 @@ function advDecodeWav(ab) {
       px = x0 = t.clientX; py = y0 = t.clientY; slid = false; roller = null;
     }, { passive:true });
     veil.addEventListener('touchmove', function(e){
-      e.preventDefault();
       const t = e.touches[0];
-      if(!slid && Math.abs(t.clientX - x0) < 10 && Math.abs(t.clientY - y0) < 10) return;
+      if(!slid && Math.abs(t.clientX - x0) < 10 && Math.abs(t.clientY - y0) < 10) return;   // 押しのぶれは止めない（押した事を取り消さない）
+      e.preventDefault();
       if(!slid){ slid = true; const u = underAt(x0, y0); roller = u ? rollerOf(u) : null; }
       if(roller){ roller.scrollLeft += px - t.clientX; roller.scrollTop += py - t.clientY; }
       px = t.clientX; py = t.clientY;
@@ -11468,21 +11489,21 @@ function advDecodeWav(ab) {
       e.preventDefault(); e.stopPropagation();
       if(!on) return;
       if(slid){ slid = false; return; }
-      if(!readMark()){ end(); show(''); return; }
+      if(!fresh(mark)){ end(); show(''); return; }
       const under = underAt(e.clientX, e.clientY);
       if(!under || under.closest('#portraitWarn, .rotate-hint')) return;   // 縦持ちの催促は部品に数えない（横にしてから押す）
       let text = '';
       try { text = textFor(under); } catch(x){ text = 'ここがおかしい：' + NL + '部品：' + under.tagName.toLowerCase() + NL + '出ていた字：' + clean(under.textContent, 200); }
-      end(); dropMark();
+      const m = mark;
+      end(); spend(m);
       copy(text);
+      net({ send: 'point-end ' + m });   // 写した後で送る（戻った返事パネルの指さしを解く合図・待たない）
     });
-    stop.addEventListener('click', function(e){ e.stopPropagation(); end(); dropMark(); show(''); });
+    stop.addEventListener('click', function(e){ e.stopPropagation(); const m = mark; end(); if(m){ spend(m); net({ send: 'point-end ' + m }); } show(''); });
     again.addEventListener('click', function(e){ e.stopPropagation(); copy(box.value); });
-    window.addEventListener('pageshow', sync);
-    window.addEventListener('focus', sync);
-    window.addEventListener('storage', function(e){ if(!e.key || e.key === KEY) sync(); });
-    document.addEventListener('visibilitychange', function(){ if(!document.hidden) sync(); });
-    sync();
+    window.addEventListener('pageshow', function(){ ask(true); });
+    document.addEventListener('visibilitychange', function(){ if(!document.hidden) ask(true); });
+    ask(true);
   })();
 
 
