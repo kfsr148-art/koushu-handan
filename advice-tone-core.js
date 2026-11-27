@@ -1185,12 +1185,12 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
   if (chara && chara.c && !lines.noAddr) { for (let q = items.length - 1; q >= 0; q--) { const it = items[q]; if (!it.conn && it.term && (it.v >= 0 || it.v === -2)) { if (/[。！？]$/.test(it.text)) { it.text = it.text.slice(0, -1) + '、' + chara.c + it.text.slice(-1); it.changed = true; text = ''; } break; } } }
   /* 枠 三百二十四（2026-11-26）：隣り合う二文が同じ方言の語尾で終わる時は、あとの文の方言を外して人物の語尾のままにする（語尾をすげ替えるだけにしない）。
      前の文が書いた字（頭の一言・口癖）でも同じ。三つ続く時は真ん中が外れて、方言の語尾は一つおきになる。 */
-  { let prevKey = '', prevIt = null, sawConn = false, lastConn = null;
+  { let prevKey = '', prevIt = null, sawConn = false;
     const origOf = function (it) { return (!it.conn && (it.v >= 0 || it.v === -2) && it.li !== undefined && lines[it.li] && lines[it.li][it.ti] && !lines[it.li][it.ti].lit && !lines[it.li][it.ti].head && !lines[it.li][it.ti].fx) ? lines[it.li][it.ti].t : null; };
     const lastKey = function (t) { const q = (t || '').match(/[^。！？]*[。！？]+/g) || []; return q.length ? advEndKey(q[q.length - 1]) : null; };
     items.forEach(function (it) {
       const ss0 = (it.text || '').match(/[^。！？]*[。！？]+/g) || [];
-      if (!ss0.length) { if (it.conn) { sawConn = true; lastConn = it; } return; }   // つなぎ（文の終わりが無い）は前の語尾を覚えたまま。間につなぎが入ったかは sawConn
+      if (!ss0.length) { if (it.conn) { sawConn = true; } return; }   // つなぎ（文の終わりが無い）は前の語尾を覚えたまま。間につなぎが入ったかは sawConn
       if (origOf(it) === null && ss0.length > 1) { const j0 = ss0.join(''), rem = it.text.slice(j0.length); let ch = false; for (let j = 1; j < ss0.length; j++) { const kj = advEndKey(ss0[j]); if (kj && kj === advEndKey(ss0[j - 1]) && ADV_DE_SAFE.test(kj)) { const m1 = /^(.*?)([。！？…]*)$/.exec(ss0[j - 1]); if (m1[1].length > kj.length) { ss0[j - 1] = m1[1].slice(0, -kj.length) + m1[2]; ch = true; } } } if (ch) { it.text = ss0.join('') + rem; it.changed = true; } }   // 書いた字の中の隣り合う二文が同じ語尾なら、前の文を体言止めにする
       const k0 = advEndKey(ss0[0]), o = origOf(it);
       if (k0 && k0 === prevKey) {
@@ -1207,7 +1207,7 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
               else if (kk === 'じゃ') { st = bd.replace(/(の)?じゃ$/, ''); }
               else if (kk === 'なり' || kk === 'ぞ' || kk === 'のう' || kk === 'わい') { st = bd.slice(0, -kk.length); }
             }
-            if (st && st.length >= 2 && /。$/.test(mk[2])) { if (sawConn && lastConn) { lastConn.text = ''; } rl(st + '、'); }   // ①つなぐ（間につなぎ言葉が無い時）
+            if (st && st.length >= 2 && !sawConn && /。$/.test(mk[2])) { rl(st + '、'); }   // ①つなぐ（間につなぎ言葉が無い時）
             else if (st && st.length >= 2 && /[。！]/.test(mk[2])) { rl(st + mk[2]); }   // ②体言止め（つなげない時）
             else {   // ③問いかけ（あとの文の語尾を問いにする）
               const m0 = /^(.*?)([。！？…]*)$/.exec(ss0[0]), b0 = m0[1]; let q = null;
@@ -1218,7 +1218,7 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
         }
       }
       const lk = lastKey(it.text);
-      prevKey = lk === null ? '' : lk; prevIt = it; sawConn = false; lastConn = null;
+      prevKey = lk === null ? '' : lk; prevIt = it; sawConn = false;
     }); }
   // 同じ語尾が三文続いたら、直せる文（付けていない部品の最後の文）の語尾を変えて切る。文ごとに見る（二文を持つ部品の中の文は直せない）。
   for (let it = 0; it < 6; it++) {
