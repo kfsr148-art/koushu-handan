@@ -572,6 +572,7 @@ advx-butler-advw-w102.wav.wav	九萬が来れば和了るとも申しますが�
 advx-butler-advw-w103.wav.wav	東南西北そろえば運が回るとも申しますが、フウハイの四種がそろうと運が回ると言われる。ただの言い伝えでございます。
 advx-butler-advw-w104.wav.wav	二五八は鳴くなとも申しますが、終盤に出やすいハイは鳴かない。ただの言い伝えでございます。
 advx-butler-advw-w105.wav.wav	「真ん中が多い」と申します。4・5・6のハイが五枚以上という事でございます。
+advx-butler-advd-sen-j.wav.wav	6じゅんめまでに、ジハイとはしとトイツを7枚抱えます。
 advx-butler-adva-kok-a-s.wav.wav	コクシの芽でございます。はしとジハイが
 advx-butler-adva-kok-c-s.wav.wav	真ん中から切り、はしとジハイを残すのがようございます。
 advx-butler-adva-chi-c-s.wav.wav	トイツは崩さず、いちまい入れ替えるのがようございます。
@@ -794,6 +795,7 @@ advx-strategist-advw-w102.wav.wav	九萬が来れば和了ると言うが、九�
 advx-strategist-advw-w103.wav.wav	東南西北そろえば運が回ると言うが、フウハイの四種がそろうと運が回ると言われる。ただの言い伝えだ。
 advx-strategist-advw-w104.wav.wav	二五八は鳴くなと言うが、終盤に出やすいハイは鳴かない。ただの言い伝えだ。
 advx-strategist-advw-w105.wav.wav	「真ん中が多い」と言う。4・5・6のハイが五枚以上という事だ。
+advx-strategist-advd-sen-j.wav.wav	6じゅんめまでに、ジハイとはしとトイツを7枚抱えるぞ。
 advx-strategist-adva-kok-a-s.wav.wav	コクシの芽だ。はしとジハイが
 advx-strategist-adva-kok-c-s.wav.wav	真ん中から切り、はしとジハイを残すといい。
 advx-strategist-adva-chi-c-s.wav.wav	トイツは崩さず、いちまい入れ替えるといい。
@@ -1016,6 +1018,7 @@ advx-lady-advw-w102.wav.wav	九萬が来れば和了ると申しますが、九�
 advx-lady-advw-w103.wav.wav	東南西北そろえば運が回ると申しますが、フウハイの四種がそろうと運が回ると言われていますわ。ただの言い伝えですわ。
 advx-lady-advw-w104.wav.wav	二五八は鳴くなと申しますが、終盤に出やすいハイは鳴かないものですわ。ただの言い伝えですわ。
 advx-lady-advw-w105.wav.wav	「真ん中が多い」と申しますわ。4・5・6のハイが五枚以上という事ですわ。
+advx-lady-advd-sen-j.wav.wav	6じゅんめまでに、ジハイとはしとトイツを7枚抱えますわ。
 advx-lady-adva-kok-a-s.wav.wav	コクシの芽ですわ。はしとジハイが
 advx-lady-adva-kok-c-s.wav.wav	真ん中から切り、はしとジハイを残すといいですわ。
 advx-lady-adva-chi-c-s.wav.wav	トイツは崩さず、いちまい入れ替えるといいですわ。
@@ -1238,6 +1241,7 @@ advx-french-advw-w102.wav.wav	九萬が来れば和了ると申しますが、�
 advx-french-advw-w103.wav.wav	東南西北そろえば運が回ると申しますが、フウハイの四種がそろうと運が回ると言われる。ただの言い伝えですの。
 advx-french-advw-w104.wav.wav	二五八は鳴くなと申しますが、終盤に出やすいハイは鳴かない。ただの言い伝えですの。
 advx-french-advw-w105.wav.wav	「真ん中が多い」と申しますの。4・5・6のハイが五枚以上という事ですの。
+advx-french-advd-sen-j.wav.wav	6じゅんめまでに、ジハイとはしとトイツを7枚抱えますの。
 advx-french-adva-kok-a-s.wav.wav	コクシの芽ですわ。はしとジハイが
 advx-french-adva-kok-c-s.wav.wav	真ん中から切り、はしとジハイを残すといいですわ。
 advx-french-adva-chi-c-s.wav.wav	トイツは崩さず、いちまい入れ替えるといいですわ。
@@ -1460,6 +1464,7 @@ advx-ichihime-advw-w102.wav.wav	九萬が来れば和了るって言うけど、
 advx-ichihime-advw-w103.wav.wav	東南西北そろえば運が回るって言うけど、フウハイの四種がそろうと運が回ると言われる。ただの言い伝えだにゃ。
 advx-ichihime-advw-w104.wav.wav	二五八は鳴くなって言うけど、終盤に出やすいハイは鳴かない。ただの言い伝えだにゃ。
 advx-ichihime-advw-w105.wav.wav	「真ん中が多い」と言うにゃ。4・5・6のハイが五枚以上って事だにゃ。
+advx-ichihime-advd-sen-j.wav.wav	6じゅんめまでに、ジハイとはしとトイツを7枚抱えるにゃ。
 advx-ichihime-adva-kok-a-s.wav.wav	コクシの芽だにゃ。はしとジハイが
 advx-ichihime-adva-kok-c-s.wav.wav	真ん中から切り、はしとジハイを残すといいにゃ。
 advx-ichihime-adva-chi-c-s.wav.wav	トイツは崩さず、いちまい入れ替えるといいにゃ。
@@ -1682,6 +1687,7 @@ advx-sensei-advw-w102.wav.wav	九萬が来れば和了ると言いますが、�
 advx-sensei-advw-w103.wav.wav	東南西北そろえば運が回ると言いますが、フウハイの四種がそろうと運が回ると言われる。ただの言い伝えです。
 advx-sensei-advw-w104.wav.wav	二五八は鳴くなと言いますが、終盤に出やすいハイは鳴かない。ただの言い伝えです。
 advx-sensei-advw-w105.wav.wav	「真ん中が多い」と言います。4・5・6のハイが五枚以上という事です。
+advx-sensei-advd-sen-j.wav.wav	6じゅんめまでに、ジハイとはしとトイツを7枚抱えなさい。
 advx-sensei-adva-kok-a-s.wav.wav	コクシの芽です。はしとジハイが
 advx-sensei-adva-kok-c-s.wav.wav	真ん中のハイから切って、はしのハイとジハイを残しなさい。
 advx-sensei-adva-chi-c-s.wav.wav	トイツは崩さずに、いちまいのハイを入れ替えなさい。
@@ -1885,6 +1891,7 @@ advw-w102.wav.wav	九萬が来れば和了るって言うけど、九萬を二�
 advw-w103.wav.wav	東南西北そろえば運が回るって言うけど、フウハイの四種がそろうと運が回ると言われる。ほんとかはわからないのだ。
 advw-w104.wav.wav	二五八は鳴くなって言うけど、終盤に出やすいハイは鳴かない。ほんとかはわからないのだ。
 advw-w105.wav.wav	「真ん中が多い」と言うのだ。4・5・6のハイが五枚以上ってことなのだ。
+advd-sen-j.wav.wav	6じゅんめまでに、ジハイとはしとトイツを7枚抱えるのだ。
 adva-kok-a-s.wav.wav	コクシの芽なのだ。はしとジハイが
 adva-kok-c-s.wav.wav	真ん中から切り、はしとジハイを残すといいのだ。
 adva-chi-c-s.wav.wav	トイツは崩さず、いちまい入れ替えるといいのだ。

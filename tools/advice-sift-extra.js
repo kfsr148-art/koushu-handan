@@ -48,6 +48,14 @@ function headOnly(row) {
   return s.slice(1).some(x => re.test(x)) ? [] : [{ k: '頭だけ方言', why: '頭の一言だけ方言：' + s[0].slice(0, 30) }];
 }
 
+/* 枠 三百八十一の型「中身のかぶり」：一つの助言の中で同じ事を指す文の組を、字で拾う。今の組は一つ（守りの「字牌は降りる時に切るために抱える」と「6巡目までに字牌と端と対子を7枚」）。
+   二つの組の頭は方言・幼児言葉でも字が変わらないので、語尾を見ずに拾う。二文を「、」でつないだ形も拾う。
+   拾えない物：表に無い別の組／言い回しや仮名書きに直した形／片方が「〔牌〕は残しておく」の形の重なり。新しい組は SAME に足す。 */
+const SAME = [
+  ['字牌を抱える一言と守りの線', /字牌は、?降り[^。！？]{0,24}抱え/, /(巡目|じゅんめ)までに、?字牌と端と対子を[^。！？]{0,8}7枚/]
+];
+function sameMeaning(t) { return SAME.filter(p => p[1].test(t) && p[2].test(t)).map(p => ({ k: '中身のかぶり', why: '同じ事を指す文が二つ：' + p[0] })); }
+
 function siftAdd(row) {
   const out = [], t = String(row.text || '');
   let m;
@@ -59,6 +67,7 @@ function siftAdd(row) {
   if ((m = NEVER.exec(t))) out.push({ k: '決まり文句', why: '場面の無い決まり文句が一文で入る：' + m[1] });
   if ((m = STUT.exec(t))) out.push({ k: '口ごもり', why: '頭の音が違う：' + m[1] });
   if (/残して染め/.test(t) && outsideMeld(row.tiles)) out.push({ k: '染め', why: '染め色の外に完成面子があるのに染めを勧める' });
+  sameMeaning(t).forEach(f => out.push(f));
   measMiss(row).forEach(f => out.push(f));
   headOnly(row).forEach(f => out.push(f));
   return out;
