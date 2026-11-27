@@ -55,7 +55,7 @@
 <script>
 /* 受付ページ（2026-11-14・v1469）
    ＊写真を選ぶのはこの軽いページで行う（重い本体で選ぶと落ちるため）。
-   ＊「写真を選ぶ」を押したその時に、音を鳴らせる状態を取っておく：攻め／守りの声のファイルを無音で一度鳴らして止め、
+   ＊「写真を選ぶ」を押したその時に、音を鳴らせる状態を取っておく：無音の短い音を一本だけ鳴らし（声のファイルは鳴らさない・枠 四百六）、
      OS の読み上げも空の一言で一度起こす。スマホは、押した操作の中で一度鳴らした物だけ、後で鳴らせる。
    ＊写真を預けたら、ページを読み直さずに、この画面の上へ本体を全面の枠で開く。本体は預かった写真を読んで判定まで進め、
      判定した直後の声だけをこのページ（window.ssReaderVoice）に頼む。読み直すと押した操作の効き目が消えるため。 */
@@ -67,7 +67,18 @@
   var SCENE = ['scene-nashi', 'scene-yakuhai'];
   ['man', 'pin', 'sou'].forEach(function(k){ [6, 7, 8, 9, 10, 11, 12, 13].forEach(function(n){ SCENE.push('scene-some-' + k + '-' + n); }); });
   var sceneOk = {};
-  var aud = {}, unlocked = false;
+  /* 声の再生器は一つだけ（2026-11-27・枠 四百六）。前は押した時に声のファイルを28本、消音で一斉に鳴らして鍵を開けていて、
+     iPhone で何本も重なって聞こえた。鍵開けは無音の一本だけにし、声は同じ再生器の中身を差し替えて鳴らす（声は一度に一本）。 */
+  var player = null, unlocked = false;
+  function silentWav(){   /* 無音の短い wav（8kHz・8bit・0.05秒）をその場で作る。声は入っていない */
+    var n = 400, b = [], i;
+    function str(t){ for(var k = 0; k < t.length; k++) b.push(t.charCodeAt(k)); }
+    function num(v, len){ for(var k = 0; k < len; k++) b.push((v >> (8 * k)) & 255); }
+    str('RIFF'); num(36 + n, 4); str('WAVEfmt '); num(16, 4); num(1, 2); num(1, 2); num(8000, 4); num(8000, 4); num(1, 2); num(8, 2); str('data'); num(n, 4);
+    for(i = 0; i < n; i++) b.push(128);
+    var t = ''; for(i = 0; i < b.length; i++) t += String.fromCharCode(b[i]);
+    return 'data:audio/wav;base64,' + btoa(t);
+  }
   function say(text, rate){
     if(!text || !window.speechSynthesis) return;
     try{
@@ -80,52 +91,34 @@
   function unlock(){
     if(unlocked) return;
     unlocked = true;
-    Object.keys(VOICES).forEach(function(k){
-      try{
-        var a = new Audio(VOICES[k]);
-        a.preload = 'auto';
-        a.muted = true;
-        var stop = function(){ try{ a.pause(); a.currentTime = 0; }catch(e){} a.muted = false; };
-        var p = a.play();
-        if(p && p.then) p.then(stop, function(){ a.muted = false; }); else stop();
-        aud[k] = a;
-      }catch(e){}
-    });
-    /* 場面の声も、押した操作の中で一度だけ無音で鳴らして止める。読めた物だけ sceneOk を立てる。 */
+    try{
+      player = new Audio(silentWav());
+      var p = player.play(); if(p && p.catch) p.catch(function(){});
+    }catch(e){}
+    /* 場面の声は鳴らさずに、置いてあるかだけを確かめる。在る物だけ sceneOk を立てる。 */
     SCENE.forEach(function(k){
-      try{
-        var a = new Audio(k + '.wav.wav');
-        a.preload = 'auto';
-        a.muted = true;
-        a.addEventListener('canplay', function(){ sceneOk[k] = true; }, { once: true });
-        a.addEventListener('error', function(){ sceneOk[k] = false; }, { once: true });
-        var stop = function(){ try{ a.pause(); a.currentTime = 0; }catch(e){} a.muted = false; };
-        var p = a.play();
-        if(p && p.then) p.then(stop, function(){ a.muted = false; }); else stop();
-        aud[k] = a;
-      }catch(e){}
+      try{ fetch(k + '.wav.wav', { method: 'HEAD' }).then(function(r){ sceneOk[k] = !!r.ok; }, function(){ sceneOk[k] = false; }); }catch(e){}
     });
     try{
       if(window.speechSynthesis){ var u = new SpeechSynthesisUtterance(' '); u.volume = 0; window.speechSynthesis.speak(u); }
     }catch(e){}
   }
-  /* 本体（枠の中）から先に問われる：この場面の声のファイルを鳴らせるか（読めた物だけ true） */
+  /* 本体（枠の中）から先に問われる：この場面の声のファイルを鳴らせるか（在る物だけ true） */
   /* 本体の枠が出ていない間（受付ページが見えている間）は、声を鳴らさない（v1483） */
   function appShown(){ var fr = document.getElementById('app'); return !!fr && fr.style.display === 'block'; }
-  function hush(){ try{ if(window.speechSynthesis) window.speechSynthesis.cancel(); }catch(e){} Object.keys(aud).forEach(function(k){ try{ aud[k].pause(); aud[k].currentTime = 0; }catch(e){} }); }
+  function hush(){ try{ if(window.speechSynthesis) window.speechSynthesis.cancel(); }catch(e){} try{ if(player){ player.pause(); player.currentTime = 0; } }catch(e){} }
   window.addEventListener('pagehide', hush);
-  window.ssReaderHas = function(name){ return appShown() && sceneOk[name] === true && !!aud[name]; };
-  /* 本体（枠の中）から呼ばれる。取っておいた声のファイルを鳴らし、無ければ OS の読み上げ */
+  window.ssReaderHas = function(name){ return appShown() && sceneOk[name] === true && !!player; };
+  /* 本体（枠の中）から呼ばれる。鳴っている声を止めてから、取っておいた再生器で鳴らす。鳴らせなければ OS の読み上げ */
   window.ssReaderVoice = function(name, text, rate){
     if(!appShown()) return false;
-    var a = aud[name];
-    if(a){
+    hush();
+    var file = VOICES[name] || (sceneOk[name] === true ? name + '.wav.wav' : '');
+    if(player && file){
       try{
-        if(window.speechSynthesis) window.speechSynthesis.cancel();
-        a.muted = false;
-        a.currentTime = 0;
-        var p = a.play();
-        if(p && p.catch) p.catch(function(){ say(text, rate); });
+        player.src = file;
+        var p = player.play();
+        if(p && p.catch) p.catch(function(e){ if(!e || e.name !== 'AbortError') say(text, rate); });
         return true;
       }catch(e){}
     }

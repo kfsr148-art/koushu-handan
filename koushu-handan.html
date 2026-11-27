@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1552">
+<html lang="ja" data-ver="1553">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1456,7 +1456,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1552</div>
+  <div id="verTag">v1553</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1949,6 +1949,7 @@ document.addEventListener('DOMContentLoaded', function () {
     try {
       const u = new SpeechSynthesisUtterance(text);
       u.lang = 'ja-JP'; if (jaVoice) u.voice = jaVoice; u.rate = rate || 1.0;
+      _stopAllAudio();   // 枠 四百六：読み上げの前にも、鳴っているファイルの声を止める（声は一度に一本）
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(u);
     } catch(e){}
@@ -1986,7 +1987,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
   _preloadVoices();
-  function _stopAllAudio(){ for (const k in _audio){ try { _audio[k].pause(); _audio[k].currentTime = 0; } catch(e){} } try { _advStop(); } catch(e){} }
+  function _stopAllAudio(){ for (const k in _audio){ try { _audio[k].pause(); _audio[k].currentTime = 0; } catch(e){} } try { _advStop(); } catch(e){} try { _stopSceneAudio(); } catch(e){} }
   // ファイルがあればそれを、無ければOS音声で。連打時は前を止めて今のだけ。
   let _playSeq = 0;   // 最新の再生要求だけを通す（連打・差し替え対策）
   function _doPlayAudio(a){
