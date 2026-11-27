@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1546">
+<html lang="ja" data-ver="1547">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1299,6 +1299,21 @@
   #verTag { position: fixed; top: 2px; left: 5px; font-size: 9px; letter-spacing:0.05em; color: rgba(243,236,224,0.32); z-index: 100040; pointer-events: none; font-family: var(--sans); }
   /* ミニゲームの間だけ伏せる。HUD が top:6px left:10px で、版番号と重なるため。 */
   body.playing-tori #verTag { display: none; }
+  /* v1547（枠 三百七十三）：「ここ変」の釦。判定画面だけ。外箱44px・見た目は小さい札（作法10）。置き場は kokoPlace() が決める。
+     上の段に44pxの空きが無い視野では .corner（版の字の下の左の余白に縦書き）。投票欄（z 6）の下に置くので、重なる所の押しは今の釦が取る。
+     覆いの z は 9000（縦持ちの催促 9999・タイトル 99999 より下）。 */
+  #kokoBtn { display: none; position: fixed; top: 0; left: 34px; width: 44px; height: 44px; padding: 0; margin: 0; border: 0; background: transparent; z-index: 98; cursor: pointer; }
+  @media (orientation: landscape) { body.judged #kokoBtn { display: block; } }
+  #kokoBtn span { position: absolute; top: 1px; left: 3px; width: 36px; font-size: 9px; line-height: 13px; border: 1px solid rgba(243,236,224,0.35); border-radius: 7px; color: rgba(243,236,224,0.72); text-align: center; white-space: nowrap; font-family: var(--sans); }
+  #kokoBtn.corner { left: 0; top: 14px; z-index: 5; }
+  #kokoBtn.corner span { top: 1px; left: 3px; width: 13px; line-height: 13px; padding: 4px 0; writing-mode: vertical-rl; }
+  #kokoVeil { display: none; position: fixed; inset: 0; z-index: 9000; background: rgba(0,0,0,0.5); cursor: pointer; }
+  #kokoVeil.open { display: block; }
+  #kokoBar { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: max-content; max-width: calc(100% - 16px); box-sizing: border-box; display: flex; gap: 8px; align-items: center; padding: 6px 8px; border-radius: 10px; background: #14271f; border: 1px solid var(--gold); color: var(--bone); font-size: 12px; font-family: var(--sans); cursor: default; }
+  #kokoBar button { flex: 0 0 auto; min-width: 56px; height: 44px; border: 1px solid var(--gold); border-radius: 8px; background: rgba(212,180,110,0.14); color: var(--bone); font-size: 13px; cursor: pointer; }
+  #kokoNote { display: none; flex: 1 1 200px; min-width: 0; height: 44px; box-sizing: border-box; padding: 0 8px; border: 1px solid rgba(243,236,224,0.5); border-radius: 8px; background: #fff; color: #111; font-size: 16px; }
+  #kokoSend { display: none; }
+  #kokoVeil.noting #kokoNote, #kokoVeil.noting #kokoSend { display: block; }
   .voice-credit { position: fixed; top: 2px; left: 44px; font-size: 9px; letter-spacing: 0.04em; color: rgba(243,236,224,0.40); z-index: 99; pointer-events: none; font-family: var(--sans); display: none; }
   #tauntBtn{width:88px;box-sizing:border-box;flex:0 0 auto;text-align:center;}
   @media (orientation: landscape){
@@ -1379,6 +1394,16 @@
   window.addEventListener('kh-voice-miss', function(e){
     try { send('声の部品が欠けた：' + (e && e.detail || ''), 'voice'); } catch(x){}
   });
+  /* v1547（枠 三百七十三）：「ここ変」。本人が釦を押して部品を選んだ時だけ、選んだ部品の字と配牌・人格・方言・金の丸・版を同じ道で送る（続けて書いた一言も）。
+     エラーではないので msg= の行は作らない。1時間に1通の絞りは掛けない。送れたかは e.detail.ok に返す。ntfy の一通の上限（4096バイト）に収まる長さで切る。 */
+  window.addEventListener('kh-koko', function(e){
+    try {
+      if(location.protocol !== 'https:' || !navigator.sendBeacon){ return; }
+      var body = 'ver=' + ver() + ' kind=ここ変 screen=' + screenName();
+      (e.detail.lines || []).forEach(function(l){ body += '\n' + l[0] + '=' + String(l[1]).replace(/https?:[^\s)]*/g, '<url>').replace(/\s+/g, ' ').slice(0, l[2]); });
+      e.detail.ok = navigator.sendBeacon('https://ntfy.sh/' + T, body);
+    } catch(x){}
+  });
 })();
 </script>
 </head>
@@ -1434,7 +1459,16 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1546</div>
+  <div id="verTag">v1547</div>
+  <button type="button" id="kokoBtn" onclick="window.kokoOpen()"><span>ここ変</span></button>
+  <div id="kokoVeil">
+    <div id="kokoBar">
+      <span id="kokoMsg"></span>
+      <input type="text" id="kokoNote" maxlength="100" placeholder="一言（例：二度言い）" autocomplete="off">
+      <button type="button" id="kokoSend">送る</button>
+      <button type="button" id="kokoClose">やめる</button>
+    </div>
+  </div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1934,7 +1968,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // 音声ファイル層（任意）。読み込めた名前だけファイル再生、それ以外はOS音声。
   const _audio = {};            // name -> HTMLAudioElement
   const _voiceReady = {};       // name -> true(読込成功) / false(失敗)
-  function _showVoiceCredit(){ const el = document.getElementById('voiceCredit'); if (el) el.style.display = 'block'; }
+  function _showVoiceCredit(){ const el = document.getElementById('voiceCredit'); if (el) el.style.display = 'block'; kokoPlace(); }
   const VOICE_EXTS = ['wav.wav','wav','m4a','mp3'];   // 形式：wav.wav(二重拡張子・実在する形)→wav→m4a→mp3
   const VOICE_DIRS = ['','voice/'];                  // 置き場所：リポジトリ直下→voice/ フォルダ内、両方探す
   function _preloadVoices(){
@@ -11297,7 +11331,101 @@ function advDecodeWav(ab) {
     v.classList.remove('pass');   // 多牌の素通り設定を解除（次の配牌へボタンを押せるように）
     v.classList.add('show');
     document.body.classList.add('judged');
+    kokoPlace(); setTimeout(kokoPlace, 700);
   };
+
+  /* ---- v1547（枠 三百七十三）「ここ変」----
+     釦 → 画面を暗くする → 次に押した部品（助言の文・見立て行・四枚の札・牌）を送る → 一言の欄。
+     押しは暗い覆いが受けるので、下の部品はいつもの動きをしない。判定には触れない。送り先は上の kh-koko の受け手（エラー送りと同じ道）。 */
+  /* 置き場：上の段で、版の字の右から画面の左半分までに、押せる物から8px離れた44pxの空きがあればそこ。無ければ版の字の下の左の余白（.corner） */
+  function kokoPlace(){
+    const b = document.getElementById('kokoBtn');
+    if(!b || !document.body.classList.contains('judged')) return;
+    const obs = [];
+    document.querySelectorAll('#verdict [onclick], #verdict button').forEach(function(el){
+      const r = el.getBoundingClientRect();
+      if(r.width < 1 || r.height < 1) return;
+      const cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2, hw = Math.max(r.width, 44) / 2 + 8, hh = Math.max(r.height, 44) / 2 + 8;   // 小さい的は44pxに広げて数え、8px離す
+      obs.push({ left: cx - hw, right: cx + hw, top: cy - hh, bottom: cy + hh });
+    });
+    const vc = document.getElementById('voiceCredit').getBoundingClientRect();
+    if(vc.width) obs.push(vc);
+    let at = -1;
+    for(let x = 34; x + 44 <= window.innerWidth / 2 && at < 0; x += 2){
+      if(!obs.some(function(o){ return x < o.right && x + 44 > o.left && o.top < 44 && o.bottom > 0; })) at = x;
+    }
+    b.classList.toggle('corner', at < 0);
+    b.style.left = at < 0 ? '' : at + 'px';
+  }
+  window.addEventListener('resize', kokoPlace);
+  function kokoHandText(){
+    const sn = { man:'m', pin:'p', sou:'s', honor:'z' }, hn = { E:1, S:2, W:3, N:4, P:5, F:6, C:7 };
+    const g = { man:'', pin:'', sou:'', honor:'' };
+    let cat = 0;
+    watchSortHand(hand.slice()).forEach(function(t){
+      if(t.suit === 'cat') cat++;
+      else g[t.suit] += (t.suit === 'honor') ? hn[t.code] : (t.red ? 0 : t.num);
+    });
+    return ['man','pin','sou','honor'].map(function(k){ return g[k] ? g[k] + sn[k] : ''; }).join('') + (cat ? ' 猫' + cat : '');
+  }
+  /* 押された点の部品を、送る字にする。四種のどれでもなければ null */
+  function kokoPart(el){
+    const p = el && el.closest('#verdict .tone-angle, #verdict .reason, #verdict .judged-hand .tile');
+    if(!p) return null;
+    const txt = function(s){ const n = p.querySelector(s); return n ? n.textContent.trim() : ''; };
+    if(p.classList.contains('tone-angle')) return { part: p.classList.contains('scene-line') ? '助言の文' : '見立て行', text: txt('.say-text') };
+    const i = Array.prototype.indexOf.call(p.parentElement.children, p);
+    if(p.classList.contains('reason')) return { part: '札' + (i + 1), text: txt('.r-title') + '／' + txt('.r-detail') };
+    const t = watchSortHand(hand.slice())[i];
+    if(!t) return null;
+    return { part: '牌' + (i + 1), text: t.suit === 'cat' ? '猫牌' : (t.suit === 'honor' ? t.label : (t.red ? '赤' : '') + advKey(t)) };
+  }
+  function kokoSendOut(lines){
+    const d = { lines: lines, ok: false };
+    try { window.dispatchEvent(new CustomEvent('kh-koko', { detail: d })); } catch(e){}
+    return d.ok;
+  }
+  (function(){
+    const veil = document.getElementById('kokoVeil'), msg = document.getElementById('kokoMsg'), note = document.getElementById('kokoNote');
+    const close = document.getElementById('kokoClose');
+    let id = '', picked = false;
+    const shut = function(){ veil.classList.remove('open', 'noting'); note.value = ''; note.blur(); };
+    const sendNote = function(){
+      const s = note.value.trim();
+      if(!s){ shut(); return; }
+      if(kokoSendOut([['id', id, 12], ['note', s, 100]])) shut();
+      else msg.textContent = '一言は送れませんでした';
+    };
+    window.kokoOpen = function(){
+      picked = false;
+      veil.classList.remove('noting');
+      msg.textContent = '変な所を押す（助言の文・見立て行・札・牌）';
+      close.textContent = 'やめる';
+      veil.classList.add('open');
+    };
+    veil.addEventListener('click', function(e){
+      e.preventDefault(); e.stopPropagation();
+      if(picked || (e.target.closest && e.target.closest('#kokoBar'))) return;
+      const under = document.elementsFromPoint(e.clientX, e.clientY).filter(function(el){ return !veil.contains(el); })[0];
+      const hit = kokoPart(under);
+      if(!hit) return;
+      picked = true;
+      id = Date.now().toString(36).slice(-6);
+      const gold = document.querySelector('#verdict .vz-chip.scene');
+      const ok = kokoSendOut([
+        ['id', id, 12], ['part', hit.part, 12], ['text', hit.text, 600],
+        ['hand', kokoHandText(), 60], ['dora', (doraIndicator || '-') + ' ' + doraCount + '枚', 20],
+        ['tone', currentTone || '-', 12], ['voice', advTone(), 12], ['dial', currentDialect || '-', 12], ['mode', advMode(), 2],
+        ['gold', gold ? gold.getAttribute('data-who') : '-', 12], ['lit', toolMark || '-', 8]
+      ]);
+      msg.textContent = ok ? hit.part + 'を送りました' : '送れませんでした';
+      close.textContent = '閉じる';
+      if(ok) veil.classList.add('noting');
+    });
+    close.addEventListener('click', shut);
+    document.getElementById('kokoSend').addEventListener('click', sendNote);
+    note.addEventListener('keydown', function(e){ if(e.key === 'Enter' && !e.isComposing){ e.preventDefault(); sendNote(); } });
+  })();
 
   render();
   if(typeof refreshCatBtn === 'function'){ refreshCatBtn(); }   // 解禁済みなら初期表示から探偵猫
