@@ -131,6 +131,8 @@ function bundle(d, J, wl, now) {
   let oLeft = Object.keys(live).filter(k => !live[k]).length;
   if (oLeft > 0 && b.oIdle > 0) { b.o = {}; b.oIdle = 0; }
   const newJob = Object.keys(live).some(k => /^s:/.test(k) && !(k in b.o));
+  // 枠 四百一：順番待ちから「手を付けた（下請け・雲）」へ移った枠は、済んでいないので緑に塗らず区切りから外す（下請けは裏方の区切りで数える）
+  ((d.foot && Array.isArray(d.foot.handedList)) ? d.foot.handedList : []).forEach(x => { delete b.o['w:' + String((x && x.at) || '') + ' ' + String((x && x.head) || '')]; });
   Object.keys(b.o).forEach(k => { if (!(k in live)) { if (/^w:/.test(k) && newJob && !b.o[k]) { delete b.o[k]; } else { b.o[k] = 1; } } });
   const jobOpen = (J.flags || []).some(f => !f);   // 新しく見えた済みの段は、その仕事に残りの段がある時だけ数える（済んだ仕事の段が次の束に紛れない）
   Object.keys(live).forEach(k => { if ((k in b.o) || !live[k] || jobOpen) { b.o[k] = live[k]; } });

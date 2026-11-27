@@ -473,6 +473,16 @@ function staticParts() {
       const NL = String.fromCharCode(10);
       const a = wl({ wait: 2, waitList: [{ at: '11-20 14:19', head: '見込みの種類は走りの jobs から' }, { at: '11-20 14:23', head: '順番待ちを見えるようにする' }] });
       if (a === '順番待ち：11-20 14:19　見込みの種類は走りの jobs から' + NL + '順番待ち：11-20 14:23　順番待ちを見えるようにする') { ok('順番待ち：〈届いた刻〉〈件名〉を一行ずつ'); } else { ng('順番待ちの行の形が違う：' + a.slice(0, 80)); }
+      /* v284（枠 四百一）：下請け・雲で手を付けた枠は順番待ちの外に「手を付けた（下請け）」の行で出る・順番待ちの数は手つかずだけ */
+      const HD = [{ at: '11-27 13:05', head: 'b396', by: '下請け', no: 396 }, { at: '11-27 13:04', head: 'a395', by: '下請け', no: 395 }];
+      if (wl({ wait: 0, handedList: HD }) === '順番待ち：なし' + NL + '手を付けた（下請け）：11-27 13:05　b396' + NL + '手を付けた（下請け）：11-27 13:04　a395') { ok('手を付けた枠だけの時は「順番待ち：なし」＋「手を付けた（下請け）」の行'); } else { ng('手を付けた行の形が違う：' + wl({ wait: 0, handedList: HD })); }
+      if (wl({ wait: 1, waitList: [{ at: 'a', head: 'b' }], handedList: [{ at: 'c', head: 'd', by: '雲', no: 0 }] }) === '順番待ち：a　b' + NL + '手を付けた（雲）：c　d') { ok('順番待ちの行の後に「手を付けた（雲）」の行'); } else { ng('順番待ち＋手を付けた（雲）の形が違う'); }
+      {
+        const ls = html.split(String.fromCharCode(10)).find(l => l.indexOf("var ftEl = $('footTag')") < 0 && l.indexOf('if (ftEl) { var ft = d.foot') >= 0) || '';
+        const run = (foot) => { const el = { textContent: '', hidden: true }; new Function('ftEl', 'd', ls)(el, { foot: foot }); return el.textContent; };
+        const t1 = run({ wait: 0, handedList: HD }), t2 = run({ wait: 2, handedList: [{ by: '雲', no: 0 }] }), t3 = run({ wait: 2 });
+        if (t1 === '順番待ち 0件 ／ 手を付けた（下請け） 枠 395・396' && t2 === '順番待ち 2件 ／ 手を付けた（雲） 1件' && t3 === '順番待ち 2件') { ok('下の行：「' + t1 + '」・番号が読めない時は件数・無ければ今までどおり'); } else { ng('下の行が違う：' + [t1, t2, t3].join('｜')); }
+      }
       if (wl({ wait: 0 }) === '順番待ち：なし') { ok('0件は「順番待ち：なし」'); } else { ng('0件の字が違う'); }
       if (/言い切れない/.test(wl({}))) { ok('数が無い（言い切れない）時はその旨'); } else { ng('言い切れない時の字が無い'); }
       if (/一覧は state に載っていない/.test(wl({ wait: 3 }))) { ok('数だけ有って一覧が無い時はその旨'); } else { ng('一覧が無い時の字が無い'); }
