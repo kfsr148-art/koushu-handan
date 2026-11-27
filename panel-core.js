@@ -16,7 +16,7 @@
   else { root.PanelCore = m; }
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
-  var VER = '279';
+  var VER = '280';
   var WAIT_TEXT = '待機中、、、。', POINT_TEXT = 'まとめて写すヨシ！', WORK_TEXT = '作業中、、、。', LOST_TEXT = '接続不良、、、。', CHECKING_TEXT = '確認中、、、。', REST_TEXT = '休憩中、、、。', YOSHI_TEXT = 'ヨシ待ち、、、。', CHECK_TEXT = '検査中、、、。';
 
   /* ---- 刻 ---- */
@@ -253,6 +253,16 @@
   function stepLab(done, total) { var n = Math.max(1, total | 0), d = Math.max(0, Math.min(n, done | 0)); return Math.min(n, d + 1) + '/' + n; }
   /* 表の仕事のゲージの字（今やる段があり、段の台帳がある時だけ・無ければ空） */
   function omoteGauge(sNow, done, total) { return (String(sNow || '').trim() && (Number(total) || 0) > 0) ? stepLab(Number(done) || 0, Number(total) || 0) : ''; }
+  /* v280（枠 三百九十四）：件名の「枠」のすぐ後の漢数字だけを、百・十の位を足し上げて普通の数字にする（三百七十七→377・百十五→115・二十→20）。位の字が無い並び（三九四）は一字ずつ。件名の他の漢数字は触らない */
+  function wakuNum(t) {
+    return String(t == null ? '' : t).replace(/(枠[ 　]*)([〇零一二三四五六七八九十百千]+)(?![〇零一二三四五六七八九十百千覧つ本件個枚周番])/g, function (m, head, k) {
+      var D = { '〇': 0, '零': 0, '一': 1, '二': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9 }, U = { '十': 10, '百': 100, '千': 1000 };
+      if (!/[十百千]/.test(k)) { return head + k.split('').map(function (c) { return D[c]; }).join(''); }
+      var sum = 0, d = 0;
+      k.split('').forEach(function (c) { if (U[c]) { sum += (d || 1) * U[c]; d = 0; } else { d = D[c]; } });
+      return head + (sum + d);
+    });
+  }
   /* ゲージの箱（全部／表の仕事／裏方）の中身（v205・v207）。E＝{omote, ura, all}（区切り seg は endat.js の束）・U＝state.json の ura。区切りが無い古い state は null */
   function boxSpec(E, U, k) {
     var s = function (v) { return String(v == null ? '' : v); }, x = (E && typeof E === 'object') ? E[k] : null;
@@ -263,7 +273,7 @@
     var a = function (v) { return Array.isArray(v) ? v : []; }, Uo = (U && typeof U === 'object') ? U : {}, So = Uo.sub || {}, Co = Uo.cloud || {};
     var ug = (E.ura && E.ura.seg) || {}, uT = Math.max(0, Number(ug.total) | 0), uD = Math.max(0, Math.min(uT, Number(ug.done) | 0));
     var now = '';
-    if (k === 'omote') { var c = x.cur || {}, w = x.wait || {}; now = c.job ? cut(c.job, 30) : (Number(w.n) > 0 ? '順番待ち ' + Number(w.n) + '件' : ''); }
+    if (k === 'omote') { var c = x.cur || {}, w = x.wait || {}; now = c.job ? cut(wakuNum(c.job), 30) : (Number(w.n) > 0 ? '順番待ち ' + Number(w.n) + '件' : ''); }
     else if (k === 'ura') { var o = []; a(So.items).forEach(function (y) { o.push('下請け・' + (s(y.desc) || '名なし')); }); a(Co.running).forEach(function (y) { o.push('雲・' + (s(y.name) || '名なし')); }); now = cut(o.join('、'), 40); }
     else { now = '表の仕事 残り' + left(E.omote) + '・裏方 残り' + (uT - uD); }
     return { k: (k === 'all') ? '全部' : ((k === 'ura') ? '裏方' : '表の仕事'), done: dn, run: run, total: tot, now: now, endSec: Number(x.endSec) || 0, endAt: s(x.endAt), over: !!x.over, unk: Number(x.unknown) > 0, lab: (k === 'ura') ? (dn + '/' + tot) : '' };
@@ -314,6 +324,6 @@
     isCountCard: isCountCard, ntfyOfCard: ntfyOfCard, todoList: todoList, todoLabel: todoLabel,
     cardsPending: cardsPending, cardEtaSec: cardEtaSec, cardLate: cardLate, cardPendText: cardPendText, kumoEtaSec: kumoEtaSec, uraBusyText: uraBusyText, isRunning: isRunning, headText: headText, headCat: headCat, headAct: headAct, noFrame: noFrame, loopLine: loopLine, workLeft: workLeft,
     stepsOf: stepsOf, pubLine: pubLine, omoteLines: omoteLines, endLine: endLine, uraLines: uraLines,
-    endShort: endShort, uraCount: uraCount, uraGauge: uraGauge, stepLab: stepLab, omoteGauge: omoteGauge, boxSpec: boxSpec, mikomiEnd: mikomiEnd, workLate: workLate, headEta: headEta, etaRow: etaRow
+    endShort: endShort, uraCount: uraCount, uraGauge: uraGauge, stepLab: stepLab, omoteGauge: omoteGauge, boxSpec: boxSpec, wakuNum: wakuNum, mikomiEnd: mikomiEnd, workLate: workLate, headEta: headEta, etaRow: etaRow
   };
 });
