@@ -1239,3 +1239,11 @@ advx-sensei-advk-z-1.wav.wav	ジハイが4枚そろっているては、暗槓�
 advx-sensei-advk-n-1.wav.wav	同じ数ハイが4枚そろっているては、暗槓してもしなくてもてんは変わらないです。
 advk-z-1.wav.wav	ジハイが4枚そろっているては、暗槓した方が槓しないよりてんが約1,200てん高いのだ。
 advk-n-1.wav.wav	同じ数ハイが4枚そろっているては、暗槓してもしなくてもてんは変わらないのだ。
+# 枠 三百八十一の足し（2026-11-27・畳んだ一文 advd-sen-j の部品7本。読みは voice-advice.txt）
+advx-butler-advd-sen-j.wav.wav	6じゅんめまでに、ジハイとはしとトイツを7枚抱えます。
+advx-strategist-advd-sen-j.wav.wav	6じゅんめまでに、ジハイとはしとトイツを7枚抱えるぞ。
+advx-lady-advd-sen-j.wav.wav	6じゅんめまでに、ジハイとはしとトイツを7枚抱えますわ。
+advx-french-advd-sen-j.wav.wav	6じゅんめまでに、ジハイとはしとトイツを7枚抱えますの。
+advx-ichihime-advd-sen-j.wav.wav	6じゅんめまでに、ジハイとはしとトイツを7枚抱えるにゃ。
+advx-sensei-advd-sen-j.wav.wav	6じゅんめまでに、ジハイとはしとトイツを7枚抱えなさい。
+advd-sen-j.wav.wav	6じゅんめまでに、ジハイとはしとトイツを7枚抱えるのだ。
