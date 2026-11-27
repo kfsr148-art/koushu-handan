@@ -1092,6 +1092,63 @@ const ADV_K_SCENE = { 'にふぇーでーびる': 'never', 'おおきに': 'neve
   'ちばりよー': 'cheer', 'なんくるないさ': 'cheer', 'よかよか': 'cheer', 'ええやんか': 'cheer', 'ここが勝負ばい': 'fight', 'あいー': 'surprise', 'やんだー': 'surprise', 'にゃんと': 'surprise', 'あらまあ': 'surprise', 'まあまあ': 'surprise', 'あらあら': 'surprise' };
 function advKScene(k) { return ADV_K_SCENE[k] || 'pre'; }
 function advKHere(k, side, big) { const s = advKScene(k); return s === 'pre' || (s === 'fight' && side === 'a') || (s === 'surprise' && side === 'a' && !!big); }   // 前置きの位置に入れてよいか
+/* 枠 四百四（2026-11-27）：方言が付いた段の文の終わりは方言の組だけにする。人柄の語尾（のじゃ・であろう・なのだ・にゃ・ですわ／ですの）で終わる文は、人柄の語尾を取った形に方言の語尾を付け直す。人柄らしさは言葉選びに残る。
+   見分けは篩 tools/advice-sift-extra.js の「人柄の語尾が混じる」と同じ。大阪の ですわ・ますわ は方言の丁寧な形、姫君・奥方様の武士の ですわ・ますわ は女の言い方（advBushiFem・y1116-6）なので触らない。一姫の段の最後の「にゃ」も残す。 */
+function advMixKey(core, tone, dial) {
+  const b = core.replace(/[。！？…、 ー〜]+$/g, '');
+  const m = /(のじゃ|であろう|なのだ|にゃ)$/.exec(b) || (dial === 'bushi' ? /(じゃ)$/.exec(b) : null)
+    || (dial !== 'osaka' ? ((dial === 'bushi' && (tone === 'lady' || tone === 'french')) ? /((?:で|ま)す(?:わよ|の))$/ : /((?:で|ま)す(?:わよ|わ|の))$/).exec(b) : null);
+  return m ? m[1] : '';
+}
+function advMixPlain(core, tone, dial) {   // 人柄の語尾を取った形
+  let b = core;
+  for (let n = 0; n < 3 && advMixKey(b, tone, dial); n++) {
+    const tail = /[…、 ー〜]*$/.exec(b)[0]; b = b.slice(0, b.length - tail.length);
+    b = b.replace(/にゃじゃ$/, 'にゃ').replace(/のじゃ$/, 'のだ').replace(/であろう$/, 'だろう').replace(/なのだ$/, 'だ').replace(/だにゃ$/, 'だ').replace(/にゃ$/, '').replace(/((?:で|ま)す)(わよ|わ|の)$/, '$1');
+    if (dial === 'bushi') { b = b.replace(/じゃ$/, 'だ'); }
+  }
+  return b;
+}
+/* 方言を付ける前の字から、一姫の「にゃ」・ずんだの「のだ」を取る（後ろに方言の語尾が重なって「にゃばい」「なのどす」にならないように）。字が変わった部品は元の字を o0 に控える（声の名は字から作る） */
+function advMixPre(lines, tone) {
+  if (tone !== 'ichihime' && tone !== 'blunt') { return lines; }
+  const out = lines.map(function (l) { return l.map(function (tk) {
+    if (tk.lit || tk.head || typeof tk.t !== 'string') { return tk; }
+    const t = (tone === 'ichihime') ? tk.t.replace(/だにゃ(?=[。！？])/g, 'だ').replace(/にゃ(?=[。！？])/g, '') : tk.t.replace(/なのだ(?=[。！？])/g, 'だ');
+    return t === tk.t ? tk : Object.assign({}, tk, { t: t, o0: tk.t });
+  }); });
+  Object.keys(lines).forEach(function (k) { if (!(k in out)) { out[k] = lines[k]; } });   // 行の並びに付いた印（side・big・noAddr）を移す
+  lines.forEach(function (l, i) { Object.keys(l).forEach(function (k) { if (!(k in out[i])) { out[i][k] = l[k]; } }); });
+  return out;
+}
+function advMix(items, tone, dial, polite, call) {
+  const split = function (t) { const ss = t.match(/[^。！？]*[。！？]+/g) || []; return { ss: ss, rem: t.slice(ss.join('').length) }; };
+  const all = [];
+  items.forEach(function (it) { split(it.text || '').ss.forEach(function (s, j) { all.push({ it: it, j: j, s: s }); }); });
+  all.forEach(function (x, a) {
+    let body = x.s.replace(/[。！？]+$/, ''); const end = x.s.slice(body.length);
+    let tailCall = '';
+    if (call && body.slice(-call.length - 1) === '、' + call) { tailCall = '、' + call; body = body.slice(0, -tailCall.length); }
+    if (!advMixKey(body, tone, dial)) { return; }
+    if (tone === 'ichihime' && a === all.length - 1 && /にゃ[…ー〜]*$/.test(body)) { return; }
+    const plain = advMixPlain(body.replace(/、(?:ウィ|モナミ)$/, ''), tone, dial), cands = [];
+    if (!x.it.conn && x.it.li !== undefined) {   // 書き下ろしの字（面白みの一言など）には方言を重ねない
+      if (dial === 'bushi' && !polite) {
+        const st = plain.replace(/だ$/, '');
+        if (/だろう$/.test(plain)) { cands.push(plain.replace(/(なの|の)?だろう$/, function (m, n) { return n ? 'のでござろう' : 'でござろう'; })); }
+        if (!/(ござる|ぞ)$/.test(plain)) { cands.push(st + 'でござる', plain + 'ぞ', st + 'でござるぞ'); }
+      } else { for (let v = 0; v < 3; v++) { let s = advDialSentenceV(plain, dial, polite, v); if (dial === 'bushi' && (tone === 'lady' || tone === 'french')) { s = advBushiFem(s + '。').slice(0, -1); } cands.push(s); } }
+    }
+    cands.push(plain);
+    const count = {}; all.forEach(function (y, q) { if (q !== a) { const k = advKey3(y.s, call); if (k) { count[k] = (count[k] || 0) + 1; } } });
+    const near = [a - 1, a + 1].map(function (q) { return all[q] ? advKey3(all[q].s, call) : ''; });
+    const ok = cands.filter(function (c) { return c && !advMixKey(c, tone, dial); });
+    const pick = ok.filter(function (c) { const k = advKey3(c + end, call); return !k || ((count[k] || 0) < 2 && near.indexOf(k) < 0); })[0] || ok.filter(function (c) { return !advKey3(c + end, call); })[0] || ok[0];
+    if (!pick) { return; }
+    const s = pick + tailCall + end, sp = split(x.it.text);
+    sp.ss[x.j] = s; x.s = s; x.it.text = sp.ss.join('') + sp.rem; x.it.changed = true; x.it.alt = true;
+  });
+}
 function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言の行が付いているか（v1500）
   const pd = (ADV_PERSONA_DIAL[tone] || {})[dial || 'std'] || null;   // v1509 人格×方言の決め（器）
   const kl = ADV_KIND_LIT[(dial || 'std') + ':' + tone] || null;
@@ -1101,6 +1158,7 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
   lines.forEach(function (l, li) { l.forEach(function (tk, ti) { if (tk.term && !tk.lit) { units.push([li, ti]); } }); });   // lit＝面白みの一言（書いた字のまま。方言を通さない・v1501）
   let chara = dial ? (ADV_CHARA[dial] && ADV_CHARA[dial][tone]) : null;
   if (bk) { chara = bk.std ? (bk.k ? { k: bk.k, c: '' } : null) : { k: chara.k, c: (bk.c !== undefined ? bk.c : chara.c) }; }
+  if (dial && dial !== 'yoji' && !(bk && bk.std)) { lines = advMixPre(lines, tone); }   // 枠 四百四
   const plan = dial ? advDialPlanAll(units.length) : [], pv = {};
   units.forEach(function (u, k) { pv[u[0] + ',' + u[1]] = dial ? plan[k] : -1; });
   const items = [], last = lines.length - 1, ends4 = []; let text = '', nconn = 0;
@@ -1127,12 +1185,12 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
   if (chara && chara.c && !lines.noAddr) { for (let q = items.length - 1; q >= 0; q--) { const it = items[q]; if (!it.conn && it.term && (it.v >= 0 || it.v === -2)) { if (/[。！？]$/.test(it.text)) { it.text = it.text.slice(0, -1) + '、' + chara.c + it.text.slice(-1); it.changed = true; text = ''; } break; } } }
   /* 枠 三百二十四（2026-11-26）：隣り合う二文が同じ方言の語尾で終わる時は、あとの文の方言を外して人物の語尾のままにする（語尾をすげ替えるだけにしない）。
      前の文が書いた字（頭の一言・口癖）でも同じ。三つ続く時は真ん中が外れて、方言の語尾は一つおきになる。 */
-  { let prevKey = '', prevIt = null, sawConn = false;
+  { let prevKey = '', prevIt = null, sawConn = false, lastConn = null;
     const origOf = function (it) { return (!it.conn && (it.v >= 0 || it.v === -2) && it.li !== undefined && lines[it.li] && lines[it.li][it.ti] && !lines[it.li][it.ti].lit && !lines[it.li][it.ti].head && !lines[it.li][it.ti].fx) ? lines[it.li][it.ti].t : null; };
     const lastKey = function (t) { const q = (t || '').match(/[^。！？]*[。！？]+/g) || []; return q.length ? advEndKey(q[q.length - 1]) : null; };
     items.forEach(function (it) {
       const ss0 = (it.text || '').match(/[^。！？]*[。！？]+/g) || [];
-      if (!ss0.length) { if (it.conn) { sawConn = true; } return; }   // つなぎ（文の終わりが無い）は前の語尾を覚えたまま。間につなぎが入ったかは sawConn
+      if (!ss0.length) { if (it.conn) { sawConn = true; lastConn = it; } return; }   // つなぎ（文の終わりが無い）は前の語尾を覚えたまま。間につなぎが入ったかは sawConn
       if (origOf(it) === null && ss0.length > 1) { const j0 = ss0.join(''), rem = it.text.slice(j0.length); let ch = false; for (let j = 1; j < ss0.length; j++) { const kj = advEndKey(ss0[j]); if (kj && kj === advEndKey(ss0[j - 1]) && ADV_DE_SAFE.test(kj)) { const m1 = /^(.*?)([。！？…]*)$/.exec(ss0[j - 1]); if (m1[1].length > kj.length) { ss0[j - 1] = m1[1].slice(0, -kj.length) + m1[2]; ch = true; } } } if (ch) { it.text = ss0.join('') + rem; it.changed = true; } }   // 書いた字の中の隣り合う二文が同じ語尾なら、前の文を体言止めにする
       const k0 = advEndKey(ss0[0]), o = origOf(it);
       if (k0 && k0 === prevKey) {
@@ -1149,7 +1207,7 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
               else if (kk === 'じゃ') { st = bd.replace(/(の)?じゃ$/, ''); }
               else if (kk === 'なり' || kk === 'ぞ' || kk === 'のう' || kk === 'わい') { st = bd.slice(0, -kk.length); }
             }
-            if (st && st.length >= 2 && !sawConn && /。$/.test(mk[2])) { rl(st + '、'); }   // ①つなぐ（間につなぎ言葉が無い時）
+            if (st && st.length >= 2 && /。$/.test(mk[2])) { if (sawConn && lastConn) { lastConn.text = ''; } rl(st + '、'); }   // ①つなぐ（間につなぎ言葉が無い時）
             else if (st && st.length >= 2 && /[。！]/.test(mk[2])) { rl(st + mk[2]); }   // ②体言止め（つなげない時）
             else {   // ③問いかけ（あとの文の語尾を問いにする）
               const m0 = /^(.*?)([。！？…]*)$/.exec(ss0[0]), b0 = m0[1]; let q = null;
@@ -1160,7 +1218,7 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
         }
       }
       const lk = lastKey(it.text);
-      prevKey = lk === null ? '' : lk; prevIt = it; sawConn = false;
+      prevKey = lk === null ? '' : lk; prevIt = it; sawConn = false; lastConn = null;
     }); }
   // 同じ語尾が三文続いたら、直せる文（付けていない部品の最後の文）の語尾を変えて切る。文ごとに見る（二文を持つ部品の中の文は直せない）。
   for (let it = 0; it < 6; it++) {
@@ -1211,6 +1269,8 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
     out.push({ s: put(os[j]) });
     return rest();
   });
+  if (dial && dial !== 'yoji' && !(bk && bk.std)) { advMix(items, tone, dial, polite, chara ? chara.c : '');
+    items.forEach(function (x) { const tk = (!x.conn && x.li !== undefined && lines[x.li]) ? lines[x.li][x.ti] : null; if (tk && tk.o0) { x.changed = true; } }); }   // 枠 四百四
   if (bk && bk.yoji && items.length) {   // 幼児：最初と最後を「ばぶ」で挟む（つなぎと同じ扱いの声）
     const w = advHash(items.map(function (x) { return x.text; }).join('')).charCodeAt(7) % 2;
     const bh = bk.bigHead && !items[0].conn && (items[0].text === bk.big || items[0].text === bk.bigDef);   // v1510 大物の一言が頭の「ばぶ」を替える（口調表 執事⑨）

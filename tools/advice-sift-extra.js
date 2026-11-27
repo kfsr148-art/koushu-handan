@@ -73,6 +73,26 @@ function tripleEnd(t) {
   return Object.keys(by).filter(k => by[k] >= 3).map(k => ({ k: '語尾の三回', why: '一段に「' + k + '」で終わる文が' + by[k] + '回' }));
 }
 
+/* 枠 四百四の型「人柄の語尾が方言の段に混じる」：方言の語尾が付く段（人柄×方言の決めで標準の丁寧語のままにする組と幼児は数えない）に、人柄の語尾で終わる文がある。
+   見る語尾：のじゃ・であろう（武士は じゃ も。武士の姫君・奥方様の ですわ・ますわ は女の言い方なので数えない）／ですわ・ますわ・ですの・ますの（大阪はそれが方言の丁寧な形なので数えない）／なのだ／にゃ（一姫の段の最後の「にゃ」は数えない）。文の終わりの呼びかけは外して見る。 */
+const CORE = (function () { try { return require("../advice-tone-core.js"); } catch (e) { return null; } })();
+function mixOn(tone, dial) {
+  if (!dial || dial === "yoji" || !DIAL_MARK[dial]) return false;
+  const pd = CORE && (CORE.ADV_PERSONA_DIAL[tone] || {})[dial];
+  return !(pd && pd.std);
+}
+function mixKey(s, dial, row_tone) {
+  let b = s.replace(/[。！？…、 ー〜]+$/g, "").replace(CALL3, "").replace(/[。！？…、 ー〜]+$/g, "");
+  const m = /(にゃ)(?:ばい|たい|けん|やけん|でござる(?:ぞ)?|じゃ|っちゃが?|とよ|とね|やで|やんか?|やわ|わぁ|どす|びょん|だべ|んだ|さー|ねー|やさ|なぁ|わな|ぞ)$/.exec(b) || /(のじゃ|であろう|なのだ|にゃ)$/.exec(b) || (dial === "bushi" ? /(じゃ)$/.exec(b) : null) || (dial !== "osaka" ? ((dial === "bushi" && (row_tone === "lady" || row_tone === "french")) ? /((?:で|ま)す(?:わよ|の))$/ : /((?:で|ま)す(?:わよ|わ|の))$/).exec(b) : null);
+  return m ? m[1] : "";
+}
+function mixEnd(row) {
+  if (!mixOn(row.tone, row.dial)) return [];
+  const ss = String(row.text || "").split(/(?<=[。！？])/).map(x => x.trim()).filter(Boolean), out = [];
+  ss.forEach((s, i) => { const k = mixKey(s, row.dial, row.tone); if (k && !(k === "にゃ" && row.tone === "ichihime" && i === ss.length - 1)) out.push({ k: "人柄の語尾が混じる", end: k, why: "方言の段に「" + k + "」：" + s.slice(-24) }); });
+  return out;
+}
+
 function siftAdd(row) {
   const out = [], t = String(row.text || '');
   let m;
@@ -88,6 +108,7 @@ function siftAdd(row) {
   tripleEnd(t).forEach(f => out.push(f));
   measMiss(row).forEach(f => out.push(f));
   headOnly(row).forEach(f => out.push(f));
+  mixEnd(row).forEach(f => out.push(f));
   return out;
 }
-module.exports = { siftAdd, outsideMeld };
+module.exports = { siftAdd, outsideMeld, mixEnd, mixOn, tripleEnd };
