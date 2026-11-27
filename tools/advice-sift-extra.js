@@ -56,6 +56,23 @@ const SAME = [
 ];
 function sameMeaning(t) { return SAME.filter(p => p[1].test(t) && p[2].test(t)).map(p => ({ k: '中身のかぶり', why: '同じ事を指す文が二つ：' + p[0] })); }
 
+/* 枠 三百九十六の型「語尾の三回」：一つの助言（一人の一段）の中で、隣り合っていなくても同じ語尾で終わる文が3回以上ある。
+   見る語尾は、本体の語尾の見分け（ADV_DE）に、前からの型「語尾の二文続き」（advdup.js）の「やろ」と、方言の語尾の三通り（本体の ADV_DIAL_VAR）の なぁ・わな・わぁ・とね・やさ・っちゃが・ねー・もん を足した物
+   （言い換えで繰り返しが別の語尾へ移るだけの直りも拾う。素の字にも多い の・だ・ね・よ は数えない）。です・ます は数えない（本体の見分けと同じ）。ござる系は一つに数える。耳に同じに聞こえる「ですわ・ますわ」「ですの・ますの」「ですわよ・ますわよ」「やけん・けん」も一つに数える。
+   文の終わりの呼びかけ（本体の ADV_CHARA の呼びかけ）は外して語尾を見る。語尾ごとに一件。 */
+const END3 = /(ございますぞ|でござるぞ|でござる|ござるぞ|ござる|のじゃ|じゃ|なり|ぜよ|ばい|たい|やけん|けん|やで|やんか|やん|やわ|どすえ|どす|びょん|さー|ねー|っちゃ|とよ|だべ|っぺ|だす|でおます|おます|ですわよ|ますわよ|ですわ|ですの|ますわ|ますの|にゃ|ぞ|のう|わい|やろ|なぁ|わな|わぁ|とね|やさ|っちゃが|ねー|もん)$/;
+const CALL3 = /、(旦那さま|旦那さん|旦那はん|旦那様|おまえさん|おまえら|おまえ|みんな|みなさん|あなたさま|あなた|お客さん|おきゃくはん|おっちゃん|あんたたち|あんた|にいちゃん|おにいさん|おめだち|おめ|殿方|殿|おぬし|おさむらいさん|門弟ども|おともだち)$/;
+function endKey3(s) {
+  const cut = (x, re) => END3.exec(x.replace(re, '').replace(CALL3, '').replace(re, ''));
+  const m = cut(s, /[。！？…、 〜]+$/) || cut(s, /[。！？…、 ー〜]+$/);   // 「さー」「ねー」は「ー」を残して先に当てる
+  return m ? (/ござる/.test(m[1]) ? 'ござる' : m[1].replace(/^(で|ま)(?=す(わよ|わ|の)$)/, '').replace(/^や(?=けん$)/, '')) : '';
+}
+function tripleEnd(t) {
+  const by = {};
+  String(t || '').split(/(?<=[。！？])/).map(x => x.trim()).filter(Boolean).forEach(s => { const k = endKey3(s); if (k) { by[k] = (by[k] || 0) + 1; } });
+  return Object.keys(by).filter(k => by[k] >= 3).map(k => ({ k: '語尾の三回', why: '一段に「' + k + '」で終わる文が' + by[k] + '回' }));
+}
+
 function siftAdd(row) {
   const out = [], t = String(row.text || '');
   let m;
@@ -68,6 +85,7 @@ function siftAdd(row) {
   if ((m = STUT.exec(t))) out.push({ k: '口ごもり', why: '頭の音が違う：' + m[1] });
   if (/残して染め/.test(t) && outsideMeld(row.tiles)) out.push({ k: '染め', why: '染め色の外に完成面子があるのに染めを勧める' });
   sameMeaning(t).forEach(f => out.push(f));
+  tripleEnd(t).forEach(f => out.push(f));
   measMiss(row).forEach(f => out.push(f));
   headOnly(row).forEach(f => out.push(f));
   return out;

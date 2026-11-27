@@ -289,6 +289,37 @@ function advDialSentenceV(core, dk, polite, v) {   // v＝0（今までの形）
 /* 枠 三百十九〜三百二十三（2026-11-26）：語尾の見分け。方言（と人物）の語尾だけを見て、同じ語尾が続くかを調べる（です・ます は除く）。 */
 const ADV_DE = /(ございますぞ|でござるぞ|でござる|ござるぞ|ござる|のじゃ|じゃ|なり|ぜよ|ばい|たい|やけん|けん|やで|やんか|やん|やわ|どすえ|どす|びょん|さー|ねー|っちゃ|とよ|だべ|っぺ|だす|でおます|おます|ですわ|ですの|ますわ|にゃ|ぞ|のう|わい)$/;
 function advEndKey(s) { const t = String(s || ''); const m = ADV_DE.exec(t.replace(/[。！？…、 〜]+$/g, '')) || ADV_DE.exec(t.replace(/[。！？…、 ー〜]+$/g, '')); return m ? (/ござる/.test(m[1]) ? 'ござる' : m[1]) : ''; }   // ござる系（でござる・ござるぞ…）は同じ語尾として数える
+/* 枠 三百九十六：一段の中で、隣り合っていなくても同じ語尾が三回以上にならないようにする。見分ける語尾は ADV_DE に、やろ・ますの と方言の語尾の三通りの なぁ・わな・わぁ・とね・やさ・っちゃが・ねー・もん を足した物（篩 tools/advice-sift-extra.js と同じ）。
+   文の終わりの呼びかけは外して見る。ござる系は一つ、ですわ・ますわ、ですの・ますの、ですわよ・ますわよ、やけん・けん も一つに数える。 */
+const ADV_DE3 = /(ございますぞ|でござるぞ|でござる|ござるぞ|ござる|のじゃ|じゃ|なり|ぜよ|ばい|たい|やけん|けん|やで|やんか|やん|やわ|どすえ|どす|びょん|さー|ねー|っちゃ|とよ|だべ|っぺ|だす|でおます|おます|ですわよ|ますわよ|ですわ|ですの|ますわ|ますの|にゃ|ぞ|のう|わい|やろ|なぁ|わな|わぁ|とね|やさ|っちゃが|ねー|もん)$/;
+function advKey3(s, call) {
+  const cut = function (re) { let b = String(s || '').replace(re, ''); if (call && b.slice(-call.length - 1) === '、' + call) { b = b.slice(0, -call.length - 1).replace(re, ''); } return ADV_DE3.exec(b); };
+  const m = cut(/[。！？…、 〜]+$/) || cut(/[。！？…、 ー〜]+$/);
+  return m ? (/ござる/.test(m[1]) ? 'ござる' : m[1].replace(/^(で|ま)(?=す(わよ|わ|の)$)/, '').replace(/^や(?=けん$)/, '')) : '';
+}
+/* 同じ語尾の三回目からを、後ろの文から順に直す。直し方は alts が返す字（今ある語尾の形だけ）を順に試し、直したあとの語尾が、段の中で二回までで、隣の文と同じにならない物を採る。 */
+function advTriple(items, call, alts) {
+  const split = function (t) { const ss = t.match(/[^。！？]*[。！？]+/g) || []; return { ss: ss, rem: t.slice(ss.join('').length) }; };
+  const stuck = {};
+  for (let n = 0; n < 24; n++) {
+    const all = [], count = {};
+    items.forEach(function (it, q) { split(it.text || '').ss.forEach(function (s, j) { const k = advKey3(s, call); all.push({ q: q, j: j, s: s, k: k }); if (k) { count[k] = (count[k] || 0) + 1; } }); });
+    const bad = Object.keys(count).filter(function (k) { return count[k] >= 3 && !stuck[k]; })[0];
+    if (!bad) { return; }
+    let fixed = false;
+    for (let a = all.length - 1; a >= 0 && !fixed; a--) {
+      const x = all[a]; if (x.k !== bad) { continue; }
+      const it = items[x.q], sp = split(it.text);
+      const list = alts(it, x.j, x.s, sp.ss.length);
+      for (let c = 0; c < list.length && !fixed; c++) {
+        const k2 = advKey3(list[c].s, call);
+        if (list[c].s === x.s || k2 === bad || (k2 && ((count[k2] || 0) >= 2 || (a > 0 && all[a - 1].k === k2) || (a + 1 < all.length && all[a + 1].k === k2)))) { continue; }
+        sp.ss[x.j] = list[c].s; it.text = sp.ss.join('') + sp.rem; it.changed = true; it.alt = true; if (list[c].done) { list[c].done(it); } fixed = true;
+      }
+    }
+    if (!fixed) { stuck[bad] = true; }
+  }
+}
 const ADV_DE_SAFE = /^(ばい|たい|けん|やけん|やで|やん|やんか|やわ|どすえ|どす|びょん|さー|ねー|っちゃ|とよ|だべ|っぺ|だす|でおます|おます|にゃ)$/;   // 語尾を取って体言止めにしても文が崩れない語尾（ござる・じゃ・なり は取ると崩れるので取らない）
 function advKuseOk(k, tone, dial) {   // 口癖（頭の短い一言）が、一文として立つか：語尾だけ（なのだ…）・途中で切れた言い方（…が／…に／…な／…ね）・呼びかけと同じ意味（執事×武士の「殿に申し上げる」）は使わない
   if (!k) { return false; }
@@ -1150,6 +1181,36 @@ function advTalk(lines, tone, dial, hasEnd) {   // hasEnd＝終わりの一言�
     }
     if (!fixed) { break; }
   }
+  /* 枠 三百九十六：一段の中の同じ語尾の三回目からを直す。方言を通した文は、①同じ方言の別の語尾（三通りの中から）②方言を外して人物の字のまま。 */
+  advTriple(items, chara ? chara.c : '', function (it, j, cur, nss) {
+    const tk = (!it.conn && it.li !== undefined && lines[it.li]) ? lines[it.li][it.ti] : null, out = [];
+    if (!tk || tk.lit || tk.head) { return out; }
+    const call = (chara && chara.c && cur.slice(-chara.c.length - 2, -1) === '、' + chara.c) ? '、' + chara.c : '';
+    const put = function (s) { return call ? s.slice(0, -1) + call + s.slice(-1) : s; };
+    /* ③人格の語尾のまま続く文：お嬢様・マダムは、今ある女言葉の語尾（ADV_FEM）の ですわ・ですの・ですわよ の中で入れ替える。④取っても文が崩れない語尾（ADV_DE_SAFE）は体言止め */
+    const rest = function () {
+      const m = /^(.*?)([。！？…]*)$/.exec(call ? cur.slice(0, -call.length - 1) + cur.slice(-1) : cur), b = m[1];
+      const f = (tone === 'lady' || tone === 'french') ? /(で|ま)す(わよ|わ|の)$/.exec(b) : null;
+      if (f) { ['わ', 'の', 'わよ'].forEach(function (w) { if (w !== f[2]) { out.push({ s: put(b.slice(0, -f[2].length) + w + m[2]) }); } }); }
+      const k = (ADV_DE3.exec(b) || [])[1];
+      if (k && ADV_DE_SAFE.test(k) && b.length > k.length + 1) { out.push({ s: put(b.slice(0, -k.length) + m[2]) }); }
+      return out;
+    };
+    if (!dial || it.v < 0) { return rest(); }
+    const os = tk.t.match(/[^。！？]*[。！？]+/g) || [];   // 麻雀の言葉の部品（fx）も同じ直し方
+    if (os.length !== nss || os.join('') !== tk.t) { return rest(); }
+    let base = os[j].replace(/、(?:ウィ|モナミ)(?=[。！？])/g, '');
+    if (tone === 'french') { base = base.replace(/ようございます/g, 'いいです').replace(/でございません/g, 'ません').replace(/でございます/g, 'です').replace(/ございません/g, 'ません').replace(/ございます/g, 'です'); }
+    const body = base.replace(/[。！？]+$/, ''), end = base.slice(body.length);
+    for (let v = 0; v < 3; v++) {
+      let s = advDialSentenceV(body, dial, polite, v) + end;
+      if (dial === 'bushi' && (tone === 'lady' || tone === 'french')) { s = advBushiFem(s); }
+      if (bk && bk.fx && (!bk.std || bk.yoji)) { s = bk.fx(s); }
+      out.push({ s: put(s) });
+    }
+    out.push({ s: put(os[j]) });
+    return rest();
+  });
   if (bk && bk.yoji && items.length) {   // 幼児：最初と最後を「ばぶ」で挟む（つなぎと同じ扱いの声）
     const w = advHash(items.map(function (x) { return x.text; }).join('')).charCodeAt(7) % 2;
     const bh = bk.bigHead && !items[0].conn && (items[0].text === bk.big || items[0].text === bk.bigDef);   // v1510 大物の一言が頭の「ばぶ」を替える（口調表 執事⑨）
