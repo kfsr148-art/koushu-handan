@@ -29,6 +29,7 @@
 <div class="wrap">
   <div class="note" id="msg">軽い受付ページですの。ここなら写真選択で落ちませんわ。</div>
   <button type="button" class="big" id="camOpen">📷 カメラで撮る</button>
+  <button type="button" class="big" id="pcGrab">🖥 パソコンから取る</button>
   <button type="button" class="big" id="pick">🖼 写真を選ぶ</button>
   <input type="file" id="f" accept="image/*" style="display:none">
   <a href="koushu-handan.html">← 本体へ戻る</a>
@@ -328,6 +329,52 @@
     fr.src = 'koushu-handan.html';
     fr.style.display = 'block';
   };
+  /* パソコンから取る（2026-11-28・枠 四百十三）：麻雀を打っているパソコンに頼み、雀魂の手牌の帯だけを受け取って、「写真を選ぶ」と同じ道で読む。
+     宛先は公開のページに載せない合言葉から作る（最初の一度だけ入れる・この端末にだけ覚える）。返事が無かった次の回は、入れ直せるように出し直す。 */
+  var pcBusy = false, pcAsk = false;
+  function pcCode(){
+    var c = '';
+    try{ c = localStorage.getItem('khPcCode') || ''; }catch(e){}
+    if(!c || pcAsk){
+      var t = window.prompt('パソコンの合言葉（10文字）を入れてくださいまし。VAIO のデスクトップの「iPhone合言葉.txt」にありますわ', c);
+      if(t === null) return '';
+      c = String(t).toLowerCase().replace(/[^a-z0-9]/g, '');
+      if(c.length !== 10){ msg.textContent = '合言葉は10文字ですわ。もう一度お願いいたしますわ'; return ''; }
+      try{ localStorage.setItem('khPcCode', c); }catch(e){}
+      pcAsk = false;
+    }
+    return c;
+  }
+  document.getElementById('pcGrab').addEventListener('click', function(){
+    unlock();
+    if(pcBusy) return;
+    var c = pcCode(); if(!c) return;
+    var base = 'https://ntfy.sh/khpc-' + c, ts = String(Date.now()), es = null, timer = null, sent = false;
+    pcBusy = true;
+    msg.textContent = 'パソコンに頼んでおりますの…';
+    function end(text, ask){ pcBusy = false; if(es) es.close(); if(timer) clearTimeout(timer); if(ask) pcAsk = true; if(text) msg.textContent = text; }
+    try{ es = new EventSource(base + '/sse'); }catch(e){ end('このブラウザでは受け取れませんの', false); return; }
+    timer = setTimeout(function(){ end('パソコンから返事がありませんわ。パソコンと合言葉をご確認くださいまし', true); }, 30000);
+    es.onopen = function(){
+      if(sent) return; sent = true;
+      fetch(base, { method: 'POST', body: 'grab ' + ts }).catch(function(){ end('パソコンに頼めませんでしたわ。通信をご確認くださいまし', false); });
+    };
+    es.onmessage = function(ev){
+      var d = null; try{ d = JSON.parse(ev.data); }catch(e){ return; }
+      if(!d) return;
+      if(d.message === 'nogame ' + ts){ end('パソコンで雀魂の画面が一番前に出ておりませんの。前に出してから、もう一度お願いいたしますわ', false); return; }
+      var u = d.attachment && d.attachment.url;
+      if(d.message !== 'hand ' + ts || !u || String(u).indexOf('https://ntfy.sh/file/') !== 0) return;
+      es.close();
+      msg.textContent = '手牌を受け取っておりますの…';
+      fetch(u).then(function(res){ if(!res.ok) throw new Error('get'); return res.blob(); }).then(function(b){
+        var url = URL.createObjectURL(b), img = new Image();
+        img.onload = function(){ end('', false); try{ window.ssReaderTake(img); }catch(e){ msg.textContent = '預かりに失敗しましたわ: ' + e.message; } URL.revokeObjectURL(url); };
+        img.onerror = function(){ URL.revokeObjectURL(url); end('画像を読み込めませんでしたわ', false); };
+        img.src = url;
+      }).catch(function(){ end('手牌を受け取れませんでしたわ。もう一度お願いいたしますわ', false); });
+    };
+  });
   document.getElementById('f').addEventListener('change', function(ev){
     var file = ev.target.files && ev.target.files[0];
     if(!file) return;
