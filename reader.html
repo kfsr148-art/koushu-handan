@@ -356,7 +356,7 @@
     /* パソコンの返事を一つ読む（受け口からでも、後で読む記録からでも同じ）。止まった所はそのまま字にする（2026-11-28・枠 四百十四） */
     function reply(d){
       if(done || taking || !d) return;
-      if(d.message === 'ack ' + ts){ acked = true; msg.textContent = 'パソコンが頼みを受け取りましたわ。手牌を待っておりますの…'; return; }
+      if(d.message === 'ack ' + ts){ if(!acked && timer){ clearTimeout(timer); timer = setTimeout(why, 60000); } acked = true; msg.textContent = 'パソコンが頼みを受け取りましたわ。手牌を待っておりますの…'; return; }
       if(d.message === 'nogame ' + ts){ end('パソコンで雀魂の画面が一番前に出ておりませんの。前に出してから、もう一度お願いいたしますわ', false); return; }
       if(d.message === 'fail ' + ts){ end('パソコンが手牌を返せませんでしたわ（パソコンの通信か撮り込みで止まりました）。もう一度お願いいたしますわ', false); return; }
       var u = d.attachment && d.attachment.url;
