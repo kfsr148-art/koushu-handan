@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1562">
+<html lang="ja" data-ver="1563">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1385,7 +1385,7 @@
   });
   /* v1541（枠 三百六十二）：助言の声の部品が欠けた時の合図（本体の playAdvice が出す）。送るのは部品の名と数だけ。 */
   window.addEventListener('kh-voice-miss', function(e){
-    try { send('声の部品が欠けた：' + (e && e.detail || ''), 'voice'); } catch(x){}
+    try { var d0 = String(e && e.detail || ''); send((d0.indexOf('play-refused ') === 0 ? '声の再生が断られた：' + d0.slice(13) : '声の部品が欠けた：' + d0), 'voice'); } catch(x){}
   });
   /* 指さしの印の道（枠 四百二）：パネルが印を送り、ゲームは起きた時と表に出た時だけ読む。ホーム画面のアプリはほかと置き場を分け合わないので、localStorage では届かない。
      宛先は上と同じ（公開のページに載る話題で誰でも書ける）。通すのは『point-mark か point-end と、13桁の刻』の形だけ。読んだ側も刻の数字しか使わない。 */
@@ -1456,7 +1456,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1562</div>
+  <div id="verTag">v1563</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -1987,7 +1987,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
   _preloadVoices();
-  function _stopAllAudio(){ for (const k in _audio){ try { _audio[k].pause(); _audio[k].currentTime = 0; } catch(e){} } try { _advStop(); } catch(e){} try { _stopSceneAudio(); } catch(e){} }
+  function _stopAllAudio(){ for (const k in _audio){ try { _audio[k].pause(); _audio[k].currentTime = 0; } catch(e){} } try { _advStop(); } catch(e){} try { _stopSceneAudio(); } catch(e){} try { const P = window.parent; if(P && P !== window && typeof P.ssReaderHush === 'function') P.ssReaderHush(); } catch(e){} }
   // ファイルがあればそれを、無ければOS音声で。連打時は前を止めて今のだけ。
   let _playSeq = 0;   // 最新の再生要求だけを通す（連打・差し替え対策）
   function _doPlayAudio(a){
@@ -4300,6 +4300,8 @@ function advDecodeWav(ab) {
     return new Blob([o.buffer], { type: 'audio/wav' });
   }
   const _advPcm = {};
+  /* 声の再生が断られた時は、記録に残す（エラー送りの道・枠 四百十七）。止め直し（AbortError）は数えない */
+  function _voiceRefused(where, e){ const n = (e && e.name) || String(e || ''); if(n === 'AbortError') return; try { window.dispatchEvent(new CustomEvent('kh-voice-miss', { detail: 'play-refused ' + where + ' ' + n })); } catch(x){} }
   function playAdvice(adv, attack){
     _stopSceneAudio(); _stopAllAudio();
     try { if('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch(e){}
@@ -4323,12 +4325,24 @@ function advDecodeWav(ab) {
       const parts = [];
       adv.audio.forEach(function(it){ if(it.skip) return; if(it.gap) parts.push(new Int16Array(Math.round(it.gap * 24000))); parts.push(_advPcm[it.name]); });
       parts.push(new Int16Array(3600));
-      const url = URL.createObjectURL(_advBlob(parts));
+      const blob = _advBlob(parts);
+      /* 押さずに判定した時（パソコンから取ってドラ表示牌を読めた時）は、iPhone がこの枠の新しい音を断る。受付ページが押した瞬間に起こした入れ物で鳴らす（2026-11-28・枠 四百十七） */
+      if(auto){
+        try {
+          const P = window.parent;
+          if(P && P !== window && typeof P.ssReaderPlay === 'function'){
+            _showVoiceCredit();
+            P.ssReaderPlay(blob).catch(function(e){ _voiceRefused('助言（受付ページの入れ物）', e); try { P.ssReaderVoice(attack ? 'attack' : 'defend', attack ? '攻め' : '守り', 1.05); } catch(x){} });
+            return;
+          }
+        } catch(x){}
+      }
+      const url = URL.createObjectURL(blob);
       const au = new Audio(url);
       _advAudio = au;
       au.addEventListener('ended', function(){ try { URL.revokeObjectURL(url); } catch(e){} }, { once: true });
       _showVoiceCredit();
-      const p = au.play(); if(p && p.catch) p.catch(function(){ if(!auto) return; try { const P = window.parent; if(P && P !== window && typeof P.ssReaderVoice === 'function') P.ssReaderVoice(attack ? 'attack' : 'defend', attack ? '攻め' : '守り', 1.05); } catch(x){} });
+      const p = au.play(); if(p && p.catch) p.catch(function(e){ _voiceRefused('助言', e); if(!auto) return; try { const P = window.parent; if(P && P !== window && typeof P.ssReaderVoice === 'function') P.ssReaderVoice(attack ? 'attack' : 'defend', attack ? '攻め' : '守り', 1.05); } catch(x){} });
     }).catch(function(){ tellMiss(); if(seq === _advSeq){ if(adv.scene) playVerdictOrScene(attack, adv.scene); else playVerdict(attack); } });
   }
   const _sceneAudio = {}, _sceneMiss = {};

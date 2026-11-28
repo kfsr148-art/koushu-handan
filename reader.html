@@ -104,6 +104,20 @@
       if(window.speechSynthesis){ var u = new SpeechSynthesisUtterance(' '); u.volume = 0; window.speechSynthesis.speak(u); }
     }catch(e){}
   }
+  /* 本体が組んだ助言の声（一本の wav）を、押した瞬間に起こした同じ入れ物で鳴らす（2026-11-28・枠 四百十七。
+     iPhone は押した後に新しく作った音を断るので、押さずに判定した時の声はここで鳴らす）。鳴らせなければ呼んだ側へ返す。 */
+  var playerUrl = null;
+  window.ssReaderPlay = function(blob){
+    if(!appShown() || !player) return Promise.reject(new Error(player ? 'hidden' : 'not-unlocked'));
+    hush();
+    if(playerUrl){ try{ URL.revokeObjectURL(playerUrl); }catch(e){} }
+    playerUrl = URL.createObjectURL(blob);
+    player.muted = false;
+    player.src = playerUrl;
+    var p = player.play();
+    return (p && p.then) ? p : Promise.resolve();
+  };
+  window.ssReaderHush = function(){ hush(); };
   /* 本体（枠の中）から先に問われる：この場面の声のファイルを鳴らせるか（在る物だけ true） */
   /* 本体の枠が出ていない間（受付ページが見えている間）は、声を鳴らさない（v1483） */
   function appShown(){ var fr = document.getElementById('app'); return !!fr && fr.style.display === 'block'; }
