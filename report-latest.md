@@ -1,15 +1,15 @@
-﻿# 再起動-2（r1128-0408・後の測り）
+﻿# 再起動-2（r1128-1656・後の測り）
 
-**終わり** — 2026-11-28 04:08（VAIO）。毎週土曜の起こしで再起動し、起き上がった。
+**終わり** — 2026-11-28 16:56（VAIO）。毎週土曜の起こしで再起動し、起き上がった。
 
 | | 前 | 後 | 差 |
 |---|---|---|---|
-| 空き物理メモリ | 3136MB | **4032MB** | +896MB |
-| claude | 575MB | **302MB** | -273MB |
+| 空き物理メモリ | 4631MB | **4493MB** | -138MB |
+| claude | 441MB | **99MB** | -342MB |
 
-起き上がった刻 … 11/28/2026 03:32:59
-claude が起きた刻 … 2026-11-28 03:54:10（1本）
-前の測りの刻 … 2026-11-28 03:30:34
+起き上がった刻 … 11/28/2026 16:31:50
+claude が起きた刻 … 2026-11-28 16:52:25（1本）
+前の測りの刻 … 2026-11-28 16:30:06
 
 ---
 
@@ -18,11 +18,18 @@ claude が起きた刻 … 2026-11-28 03:54:10（1本）
 ## 控えの一覧（reports/・新しい順に20件）
 
 ＊report-latest.md は毎回上書きするので、**印ごとの控えを `reports/` に残してある**。
-　ここに出るのは新しい20件。全部で **1328件**ある。
+　ここに出るのは新しい20件。全部で **1335件**ある。
 　raw で読める（下の名を押すとその控えへ飛ぶ）。
 
 | 控え | 書いた刻 | 題 |
 |---|---|---|
+| [`r1128-1656-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1128-1656-2.md) | 11-28 16:56 | 再起動-2（r1128-1656・後の測り） |
+| [`r1128-1652-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1128-1652-2.md) | 11-28 16:52 | 再起動-2（r1128-1652・後の測り） |
+| [`y1128-w418.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1128-w418.md) | 11-28 16:11 | 枠 四百十八：立ち上げ直しの後、パネル・digest・写しが止まる件 |
+| [`y1128-w417.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1128-w417.md) | 11-28 15:25 | ドラを手で押さない道で助言の声が鳴らない件（枠 四百十七・v1563） |
+| [`y1128-w416.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1128-w416.md) | 11-28 13:29 | 「パソコンから取る」で左上のドラ表示牌も読む（枠 四百十六・v1562） |
+| [`y1128-w415.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1128-w415.md) | 11-28 13:05 | 今の本物の雀魂の画面で「パソコンから取る」を通す（枠 四百十五・v1561） |
+| [`y1128-w414.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1128-w414.md) | 11-28 11:22 | 「パソコンから取る」が返事なしになる件（枠 四百十四・v1560） |
 | [`r1128-0408-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1128-0408-2.md) | 11-28 04:08 | 再起動-2（r1128-0408・後の測り） |
 | [`r1128-0400-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1128-0400-2.md) | 11-28 04:00 | 再起動-2（r1128-0400・後の測り） |
 | [`r1128-0355-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1128-0355-2.md) | 11-28 03:55 | 再起動-2（r1128-0355・後の測り） |
@@ -36,12 +43,5 @@ claude が起きた刻 … 2026-11-28 03:54:10（1本）
 | [`y1127-w404.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1127-w404.md) | 11-27 17:59 | 方言の段の語尾は方言の組だけにする（枠 四百四・v1552） |
 | [`r1127-1700-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1127-1700-2.md) | 11-27 17:00 | 再起動-2（r1127-1700・後の測り） |
 | [`r1127-1656-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/r1127-1656-2.md) | 11-27 16:56 | 再起動-2（r1127-1656・後の測り） |
-| [`y1127-w396.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1127-w396.md) | 11-27 16:08 | 同じ語尾が一段に何度も出る型（枠 三百九十六） |
-| [`y1127-w392.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1127-w392.md) | 11-27 12:07 | 同じ局で比べた直しの輪の3周目（枠 三百九十二） |
-| [`y1127-w374-3.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1127-w374-3.md) | 11-27 11:33 | 直しの輪 3周目（最後の周・枠 三百七十四） |
-| [`y1127-w374-2.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/y1127-w374-2.md) | 11-27 07:54 | 直しの輪 2周目（枠 三百七十四・三百九十） |
-| [`cloud-panel-check-20261125-192015.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-panel-check-20261125-192015.md) | 11-27 07:54 | 雲で回した：`panel-check.js` |
-| [`cloud-panel-check-20261125-133926.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-panel-check-20261125-133926.md) | 11-27 07:54 | 雲で回した：`panel-check.js` |
-| [`cloud-panel-check-20261125-132830.md`](https://raw.githubusercontent.com/kfsr148-art/koushu-handan/main/reports/cloud-panel-check-20261125-132830.md) | 11-27 07:54 | 雲で回した：`panel-check.js` |
 
 <!-- 控えの一覧 ここまで -->
