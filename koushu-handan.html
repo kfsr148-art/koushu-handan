@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-ver="1561">
+<html lang="ja" data-ver="1562">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -1456,7 +1456,7 @@
     <linearGradient id="bd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#39a35f"/><stop offset="55%" stop-color="#1f7a3d"/><stop offset="100%" stop-color="#14542a"/></linearGradient>
     <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f9457"/><stop offset="100%" stop-color="#155a2c"/></linearGradient>
   </defs></svg>
-  <div id="verTag">v1561</div>
+  <div id="verTag">v1562</div>
   <div id="portraitWarn" aria-hidden="true">
     <div class="pw-icon">📱➡️🔄</div>
     <div class="pw-text">画面を横向きにしてください</div>
@@ -4305,6 +4305,7 @@ function advDecodeWav(ab) {
     try { if('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch(e){}
     _advStop();
     const seq = _advSeq;
+    const auto = !!window._ssAutoVoice;   // 押さずに判定した時（枠 四百十六：ドラ表示牌を読めた時）は、本体の音が止められたら受付ページの攻め／守りの声にする
     if(_frameHidden()) return;
     const load = function(nm){
       if(_advPcm[nm]) return Promise.resolve();
@@ -4327,7 +4328,7 @@ function advDecodeWav(ab) {
       _advAudio = au;
       au.addEventListener('ended', function(){ try { URL.revokeObjectURL(url); } catch(e){} }, { once: true });
       _showVoiceCredit();
-      const p = au.play(); if(p && p.catch) p.catch(function(){});
+      const p = au.play(); if(p && p.catch) p.catch(function(){ if(!auto) return; try { const P = window.parent; if(P && P !== window && typeof P.ssReaderVoice === 'function') P.ssReaderVoice(attack ? 'attack' : 'defend', attack ? '攻め' : '守り', 1.05); } catch(x){} });
     }).catch(function(){ tellMiss(); if(seq === _advSeq){ if(adv.scene) playVerdictOrScene(attack, adv.scene); else playVerdict(attack); } });
   }
   const _sceneAudio = {}, _sceneMiss = {};
@@ -12721,7 +12722,62 @@ window.ssRecognize = function(){
     if(window.ssRebuildHand) window.ssRebuildHand();
   }
   window.ssClose();
+  /* パソコンから取った時は、左上のドラ表示牌を読めて確かなら、手で押す場面を飛ばして判定へ進む（枠 四百十六） */
+  var di = window.ssPcDoraImg; window.ssPcDoraImg = null;
+  var dcode = di ? window.ssReadDora(di) : null;
+  if(dcode){
+    if(window.ssSetDoraIndicator) window.ssSetDoraIndicator(dcode);
+    var jb0 = document.getElementById('judgeBtn');
+    if(jb0 && !jb0.disabled){ jb0.click(); return; }
+  }
   window.ssDoraPickOpen();
+};
+/* ==== パソコンから取る：左上のドラ表示牌を読む（2026-11-28・枠 四百十六） ====
+   待ち受けが送る小さな一枚（一番目の表の牌とそのまわり）から、白い牌の面を一つ切り出し、手牌と同じ見本で見比べる。
+   十分に近く（SS_DORA_FAR 以内）、二番目の別の牌との差もある時だけ牌の名を返す。それ以外は null（手で押す場面を出す）。裏ドラは読まない。 */
+window.SS_DORA_FAR = 24;     // 見本との遠さの線（直に写した同じ絵なら大きさが違っても13ほど。違う牌でも32前後になるので、手牌の撮り直しの線36より厳しくする）
+window.SS_DORA_MARGIN = 1.3;
+window.ssDoraFace = function(img){
+  var W = img.width, H = img.height, c = document.createElement('canvas'); c.width = W; c.height = H;
+  var g = c.getContext('2d'); g.drawImage(img, 0, 0);
+  var d = g.getImageData(0, 0, W, H).data, N = W * H, m = new Uint8Array(N), i;
+  for(i = 0; i < N; i++){ var R = d[i * 4], G = d[i * 4 + 1], B = d[i * 4 + 2]; m[i] = (0.299 * R + 0.587 * G + 0.114 * B >= 140 && Math.max(R, G, B) - Math.min(R, G, B) <= 60) ? 1 : 0; }
+  var lab = new Uint8Array(N), stack = [], best = null;
+  for(var p0 = 0; p0 < N; p0++){
+    if(!m[p0] || lab[p0]) continue;
+    var x0 = W, x1 = -1, y0 = H, y1 = -1, cnt = 0; stack.length = 0; stack.push(p0); lab[p0] = 1;
+    while(stack.length){
+      var p = stack.pop(), px = p % W, py = (p - px) / W; cnt++;
+      if(px < x0) x0 = px; if(px > x1) x1 = px; if(py < y0) y0 = py; if(py > y1) y1 = py;
+      if(px > 0 && m[p - 1] && !lab[p - 1]){ lab[p - 1] = 1; stack.push(p - 1); }
+      if(px < W - 1 && m[p + 1] && !lab[p + 1]){ lab[p + 1] = 1; stack.push(p + 1); }
+      if(py > 0 && m[p - W] && !lab[p - W]){ lab[p - W] = 1; stack.push(p - W); }
+      if(py < H - 1 && m[p + W] && !lab[p + W]){ lab[p + W] = 1; stack.push(p + W); }
+    }
+    if(!best || cnt > best.cnt) best = { sx: x0, sy: y0, sw: x1 - x0 + 1, sh: y1 - y0 + 1, cnt: cnt };
+  }
+  if(!best || best.sw < W * 0.45 || best.sh < H * 0.45) return null;
+  var asp = best.sw / best.sh;
+  if(asp < 0.5 || asp > 0.85) return null;
+  return { canvas: c, rect: best };
+};
+window.ssReadDora = function(img){
+  try{
+    var tpl = window.ssTplLoad(), keys = Object.keys(tpl);
+    if(!keys.length) return null;
+    var f = window.ssDoraFace(img);
+    if(!f) return null;
+    var feat = window.ssFeatShape(window.ssNormFeat(window.ssTileFeature(f.canvas, f.rect)));
+    var rank = window.ssMatchTile(feat, window.ssNormTpl(tpl, keys), keys).rank;
+    if(!rank.length) return null;
+    var base = function(k){ return (k && k.length === 3) ? k.slice(0, 2) : k; };
+    var code = base(rank[0].key), d0 = Math.sqrt(rank[0].dist), d1 = Infinity;
+    for(var j = 1; j < rank.length; j++){ if(base(rank[j].key) !== code){ d1 = Math.sqrt(rank[j].dist); break; } }
+    window._ssLastDora = { code: code, d0: Math.round(d0 * 10) / 10, d1: d1 === Infinity ? null : Math.round(d1 * 10) / 10 };
+    if(d0 > window.SS_DORA_FAR || d1 < d0 * window.SS_DORA_MARGIN) return null;
+    if(window.SS_DORA_CODES.indexOf(code) < 0) return null;
+    return code;
+  }catch(e){ return null; }
 };
 /* ==== ⑧ドラ表示牌を押す場面（v1472） ====
    写真から取り込んだ後、判定へ進む前に出す。34種の牌から場に見えているドラ表示牌を押すと、
@@ -12783,12 +12839,18 @@ window.ssDoubtFlip = function(ranks){
   return false;
 };
 /* 受付ページの枠（先に読み込んだ本体）へ、読み直さずに写真を渡す。受付ページの読み直し版（ssHandoff）と同じ流れ */
-window.ssTakeHandoff = function(dataUrl){
+window.ssTakeHandoff = function(dataUrl, dora){
+  try{ var ld = localStorage.getItem('ssHandoffDora'); if(!dora && ld) dora = ld; localStorage.removeItem('ssHandoffDora'); }catch(e){}
   try{ localStorage.setItem('ssResumeAt', String(Date.now())); }catch(e){}
   if(window.closeTitleScreen) window.closeTitleScreen();
   var im = new Image();
   im.onload = function(){ window.ssImg = im; window.ssShow(); if(window.ssAutoRun) window.ssAutoRun(); };
-  im.src = dataUrl;
+  window.ssPcDoraImg = null;
+  if(!dora){ im.src = dataUrl; return; }
+  var dim = new Image();
+  dim.onload = function(){ window.ssPcDoraImg = dim; im.src = dataUrl; };
+  dim.onerror = function(){ im.src = dataUrl; };
+  dim.src = dora;
 };
 window.SS_DORA_CODES = (function(){
   var a = [];
